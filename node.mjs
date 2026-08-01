@@ -7688,6 +7688,476 @@ var $;
 
 
 ;
+	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
+		stop_offset(id){
+			return "0%";
+		}
+		stop_color(id){
+			return "";
+		}
+		qr_view_box(){
+			return "0 0 1 1";
+		}
+		grad_x1(){
+			return "0";
+		}
+		grad_y1(){
+			return "0";
+		}
+		grad_x2(){
+			return "1";
+		}
+		grad_y2(){
+			return "1";
+		}
+		gradient_stop_list(){
+			return [];
+		}
+		Gradient(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("linearGradient");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"id": (this.gradient_id()), 
+				"x1": (this.grad_x1()), 
+				"y1": (this.grad_y1()), 
+				"x2": (this.grad_x2()), 
+				"y2": (this.grad_y2())
+			});
+			(obj.sub) = () => ((this.gradient_stop_list()));
+			return obj;
+		}
+		Defs(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("defs");
+			(obj.sub) = () => ([(this.Gradient())]);
+			return obj;
+		}
+		modules_d(){
+			return "";
+		}
+		Modules(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.modules_d()));
+			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
+			return obj;
+		}
+		rings_d(){
+			return "";
+		}
+		Rings(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.rings_d()));
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg_path.prototype.attr.call(obj)), 
+				"fill": (this.gradient_fill()), 
+				"fill-rule": "evenodd"
+			});
+			return obj;
+		}
+		centers_d(){
+			return "";
+		}
+		Centers(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.centers_d()));
+			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
+			return obj;
+		}
+		center_x(){
+			return "0";
+		}
+		center_y(){
+			return "0";
+		}
+		center_size(){
+			return "0";
+		}
+		Center_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.center()));
+			return obj;
+		}
+		Center_wrap(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("foreignObject");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"x": (this.center_x()), 
+				"y": (this.center_y()), 
+				"width": (this.center_size()), 
+				"height": (this.center_size())
+			});
+			(obj.sub) = () => ([(this.Center_body())]);
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		module_radius(){
+			return 0.35;
+		}
+		finder_radius(){
+			return 1.2;
+		}
+		gradient_angle(){
+			return 45;
+		}
+		error_correction(){
+			return "M";
+		}
+		quiet_zone(){
+			return 2;
+		}
+		center(){
+			return [];
+		}
+		gradient_id(){
+			return "qr-grad";
+		}
+		gradient_fill(){
+			return "url(#qr-grad)";
+		}
+		gradient_stops(){
+			return ["var(--mol_theme_special)", "var(--mol_theme_focus)"];
+		}
+		Stop(id){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("stop");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"offset": (this.stop_offset(id)), 
+				"stop-color": (this.stop_color(id))
+			});
+			return obj;
+		}
+		view_box(){
+			return (this.qr_view_box());
+		}
+		sub(){
+			return [
+				(this.Defs()), 
+				(this.Modules()), 
+				(this.Rings()), 
+				(this.Centers()), 
+				(this.Center_wrap())
+			];
+		}
+	};
+	($mol_mem(($.$bog_qr.prototype), "Gradient"));
+	($mol_mem(($.$bog_qr.prototype), "Defs"));
+	($mol_mem(($.$bog_qr.prototype), "Modules"));
+	($mol_mem(($.$bog_qr.prototype), "Rings"));
+	($mol_mem(($.$bog_qr.prototype), "Centers"));
+	($mol_mem(($.$bog_qr.prototype), "Center_body"));
+	($mol_mem(($.$bog_qr.prototype), "Center_wrap"));
+	($mol_mem_key(($.$bog_qr.prototype), "Stop"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Dynamic sources import. */
+    class $mol_import extends $mol_object2 {
+        static module(uri) {
+            $mol_wire_solid();
+            return $mol_wire_sync(this).module_async(uri);
+        }
+        static module_async(uri) {
+            return import(uri);
+        }
+        static script(uri) {
+            $mol_wire_solid();
+            return $mol_wire_sync(this).script_async(uri);
+        }
+        static script_async(uri) {
+            const doc = $mol_dom_context.document;
+            const script = doc.createElement('script');
+            script.src = uri;
+            doc.head.appendChild(script);
+            return new Promise((done, fail) => {
+                script.onload = () => done($mol_dom_context);
+                script.onerror = () => fail(new Error(`Can not import ${uri}`));
+            });
+        }
+        static style(uri) {
+            return $mol_wire_sync(this).style_async(uri);
+        }
+        static style_async(uri) {
+            const doc = $mol_dom_context.document;
+            const style = doc.createElement('link');
+            style.rel = 'stylesheet';
+            style.href = uri;
+            doc.head.appendChild(style);
+            return new Promise((done, fail) => {
+                style.onload = () => done(style.sheet);
+                style.onerror = () => fail(new Error(`Can not import ${uri}`));
+            });
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "module", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "script", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "style", null);
+    $.$mol_import = $mol_import;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        let grad_counter = 0;
+        class $bog_qr extends $.$bog_qr {
+            gradient_id() {
+                return 'qr-grad-' + (++grad_counter);
+            }
+            gradient_fill() {
+                return `url(#${this.gradient_id()})`;
+            }
+            grad_x1() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 - Math.cos(a) * 0.5);
+            }
+            grad_y1() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 - Math.sin(a) * 0.5);
+            }
+            grad_x2() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 + Math.cos(a) * 0.5);
+            }
+            grad_y2() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 + Math.sin(a) * 0.5);
+            }
+            gradient_stop_list() {
+                const colors = this.gradient_stops();
+                return colors.map((_, i) => this.Stop(i));
+            }
+            stop_offset(index) {
+                const colors = this.gradient_stops();
+                if (colors.length <= 1)
+                    return '0%';
+                return Math.round(index / (colors.length - 1) * 100) + '%';
+            }
+            stop_color(index) {
+                return this.gradient_stops()[index];
+            }
+            qr_lib() {
+                return $mol_import.script('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js');
+            }
+            qr_matrix() {
+                this.qr_lib();
+                const data = this.uri();
+                if (!data)
+                    return null;
+                const qr = qrcode(0, this.error_correction());
+                qr.addData(data);
+                qr.make();
+                const count = qr.getModuleCount();
+                const matrix = [];
+                for (let r = 0; r < count; r++) {
+                    matrix[r] = [];
+                    for (let c = 0; c < count; c++) {
+                        matrix[r][c] = qr.isDark(r, c);
+                    }
+                }
+                return matrix;
+            }
+            qr_view_box() {
+                const matrix = this.qr_matrix();
+                if (!matrix)
+                    return '0 0 1 1';
+                const total = matrix.length + this.quiet_zone() * 2;
+                return `0 0 ${total} ${total}`;
+            }
+            qr_paths() {
+                const matrix = this.qr_matrix();
+                if (!matrix)
+                    return { modules: '', rings: '', centers: '' };
+                const count = matrix.length;
+                const quiet = this.quiet_zone();
+                const r = this.module_radius();
+                const dark = (row, col) => row >= 0 && row < count && col >= 0 && col < count && matrix[row][col];
+                const isFinder = (row, col) => (row < 7 && col < 7) || (row < 7 && col >= count - 7) || (row >= count - 7 && col < 7);
+                const hasCenter = this.center().length > 0;
+                const centerRadius = hasCenter ? count * 0.15 : 0;
+                const centerMid = count / 2;
+                const isCenter = (row, col) => {
+                    if (!hasCenter)
+                        return false;
+                    const dx = col + 0.5 - centerMid;
+                    const dy = row + 0.5 - centerMid;
+                    return dx * dx + dy * dy < centerRadius * centerRadius;
+                };
+                let modules = '';
+                for (let row = 0; row < count; row++) {
+                    for (let col = 0; col < count; col++) {
+                        if (!matrix[row][col])
+                            continue;
+                        if (isFinder(row, col))
+                            continue;
+                        if (isCenter(row, col))
+                            continue;
+                        const x = col + quiet;
+                        const y = row + quiet;
+                        const top = dark(row - 1, col);
+                        const bottom = dark(row + 1, col);
+                        const left = dark(row, col - 1);
+                        const right = dark(row, col + 1);
+                        const alone = !top && !bottom && !left && !right;
+                        if (alone) {
+                            const cx = x + 0.5;
+                            const cy = y + 0.5;
+                            const cr = 0.5;
+                            modules += `M${cx - cr},${cy}A${cr},${cr},0,1,1,${cx + cr},${cy}A${cr},${cr},0,1,1,${cx - cr},${cy}Z`;
+                        }
+                        else {
+                            const tl = !top && !left ? r : 0;
+                            const tr = !top && !right ? r : 0;
+                            const br = !bottom && !right ? r : 0;
+                            const bl = !bottom && !left ? r : 0;
+                            modules += this.rect_path(x, y, 1, 1, tl, tr, br, bl);
+                        }
+                    }
+                }
+                const fr = this.finder_radius();
+                const finders = [
+                    [quiet, quiet],
+                    [count - 7 + quiet, quiet],
+                    [quiet, count - 7 + quiet],
+                ];
+                let rings = '';
+                let centers = '';
+                for (const [fx, fy] of finders) {
+                    rings += this.rect_path(fx, fy, 7, 7, fr, fr, fr, fr);
+                    rings += this.rect_path(fx + 1, fy + 1, 5, 5, fr * 0.7, fr * 0.7, fr * 0.7, fr * 0.7);
+                    centers += this.rect_path(fx + 2, fy + 2, 3, 3, fr * 0.5, fr * 0.5, fr * 0.5, fr * 0.5);
+                }
+                return { modules, rings, centers };
+            }
+            center_area() {
+                const matrix = this.qr_matrix();
+                if (!matrix || this.center().length === 0)
+                    return { x: 0, y: 0, size: 0 };
+                const count = matrix.length;
+                const quiet = this.quiet_zone();
+                const centerSize = count * 0.3;
+                const total = count + quiet * 2;
+                return {
+                    x: (total - centerSize) / 2,
+                    y: (total - centerSize) / 2,
+                    size: centerSize,
+                };
+            }
+            center_x() {
+                return String(this.center_area().x);
+            }
+            center_y() {
+                return String(this.center_area().y);
+            }
+            center_size() {
+                return String(this.center_area().size);
+            }
+            modules_d() {
+                return this.qr_paths().modules;
+            }
+            rings_d() {
+                return this.qr_paths().rings;
+            }
+            centers_d() {
+                return this.qr_paths().centers;
+            }
+            rect_path(x, y, w, h, tl, tr, br, bl) {
+                return [
+                    `M${x + tl},${y}`,
+                    `H${x + w - tr}`,
+                    tr ? `A${tr},${tr},0,0,1,${x + w},${y + tr}` : '',
+                    `V${y + h - br}`,
+                    br ? `A${br},${br},0,0,1,${x + w - br},${y + h}` : '',
+                    `H${x + bl}`,
+                    bl ? `A${bl},${bl},0,0,1,${x},${y + h - bl}` : '',
+                    `V${y + tl}`,
+                    tl ? `A${tl},${tl},0,0,1,${x + tl},${y}` : '',
+                    'Z',
+                ]
+                    .filter(Boolean)
+                    .join('');
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_id", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_fill", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_x1", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_y1", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_x2", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_y2", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_stop_list", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_lib", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_matrix", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_view_box", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_paths", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "center_area", null);
+        $$.$bog_qr = $bog_qr;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_qr, {
+            width: '300px',
+            height: '300px',
+            Center_body: {
+                width: '80%',
+                height: '80%',
+                position: 'absolute',
+                top: '10%',
+                left: '10%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_ghost) = class $mol_ghost extends ($.$mol_view) {
 		Sub(){
 			const obj = new this.$.$mol_view();
@@ -19061,476 +19531,6 @@ var $;
 
 
 ;
-	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
-		stop_offset(id){
-			return "0%";
-		}
-		stop_color(id){
-			return "";
-		}
-		qr_view_box(){
-			return "0 0 1 1";
-		}
-		grad_x1(){
-			return "0";
-		}
-		grad_y1(){
-			return "0";
-		}
-		grad_x2(){
-			return "1";
-		}
-		grad_y2(){
-			return "1";
-		}
-		gradient_stop_list(){
-			return [];
-		}
-		Gradient(){
-			const obj = new this.$.$mol_svg();
-			(obj.dom_name) = () => ("linearGradient");
-			(obj.attr) = () => ({
-				...(this.$.$mol_svg.prototype.attr.call(obj)), 
-				"id": (this.gradient_id()), 
-				"x1": (this.grad_x1()), 
-				"y1": (this.grad_y1()), 
-				"x2": (this.grad_x2()), 
-				"y2": (this.grad_y2())
-			});
-			(obj.sub) = () => ((this.gradient_stop_list()));
-			return obj;
-		}
-		Defs(){
-			const obj = new this.$.$mol_svg();
-			(obj.dom_name) = () => ("defs");
-			(obj.sub) = () => ([(this.Gradient())]);
-			return obj;
-		}
-		modules_d(){
-			return "";
-		}
-		Modules(){
-			const obj = new this.$.$mol_svg_path();
-			(obj.geometry) = () => ((this.modules_d()));
-			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
-			return obj;
-		}
-		rings_d(){
-			return "";
-		}
-		Rings(){
-			const obj = new this.$.$mol_svg_path();
-			(obj.geometry) = () => ((this.rings_d()));
-			(obj.attr) = () => ({
-				...(this.$.$mol_svg_path.prototype.attr.call(obj)), 
-				"fill": (this.gradient_fill()), 
-				"fill-rule": "evenodd"
-			});
-			return obj;
-		}
-		centers_d(){
-			return "";
-		}
-		Centers(){
-			const obj = new this.$.$mol_svg_path();
-			(obj.geometry) = () => ((this.centers_d()));
-			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
-			return obj;
-		}
-		center_x(){
-			return "0";
-		}
-		center_y(){
-			return "0";
-		}
-		center_size(){
-			return "0";
-		}
-		Center_body(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.center()));
-			return obj;
-		}
-		Center_wrap(){
-			const obj = new this.$.$mol_svg();
-			(obj.dom_name) = () => ("foreignObject");
-			(obj.attr) = () => ({
-				...(this.$.$mol_svg.prototype.attr.call(obj)), 
-				"x": (this.center_x()), 
-				"y": (this.center_y()), 
-				"width": (this.center_size()), 
-				"height": (this.center_size())
-			});
-			(obj.sub) = () => ([(this.Center_body())]);
-			return obj;
-		}
-		uri(){
-			return "";
-		}
-		module_radius(){
-			return 0.35;
-		}
-		finder_radius(){
-			return 1.2;
-		}
-		gradient_angle(){
-			return 45;
-		}
-		error_correction(){
-			return "M";
-		}
-		quiet_zone(){
-			return 2;
-		}
-		center(){
-			return [];
-		}
-		gradient_id(){
-			return "qr-grad";
-		}
-		gradient_fill(){
-			return "url(#qr-grad)";
-		}
-		gradient_stops(){
-			return ["var(--mol_theme_special)", "var(--mol_theme_focus)"];
-		}
-		Stop(id){
-			const obj = new this.$.$mol_svg();
-			(obj.dom_name) = () => ("stop");
-			(obj.attr) = () => ({
-				...(this.$.$mol_svg.prototype.attr.call(obj)), 
-				"offset": (this.stop_offset(id)), 
-				"stop-color": (this.stop_color(id))
-			});
-			return obj;
-		}
-		view_box(){
-			return (this.qr_view_box());
-		}
-		sub(){
-			return [
-				(this.Defs()), 
-				(this.Modules()), 
-				(this.Rings()), 
-				(this.Centers()), 
-				(this.Center_wrap())
-			];
-		}
-	};
-	($mol_mem(($.$bog_qr.prototype), "Gradient"));
-	($mol_mem(($.$bog_qr.prototype), "Defs"));
-	($mol_mem(($.$bog_qr.prototype), "Modules"));
-	($mol_mem(($.$bog_qr.prototype), "Rings"));
-	($mol_mem(($.$bog_qr.prototype), "Centers"));
-	($mol_mem(($.$bog_qr.prototype), "Center_body"));
-	($mol_mem(($.$bog_qr.prototype), "Center_wrap"));
-	($mol_mem_key(($.$bog_qr.prototype), "Stop"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Dynamic sources import. */
-    class $mol_import extends $mol_object2 {
-        static module(uri) {
-            $mol_wire_solid();
-            return $mol_wire_sync(this).module_async(uri);
-        }
-        static module_async(uri) {
-            return import(uri);
-        }
-        static script(uri) {
-            $mol_wire_solid();
-            return $mol_wire_sync(this).script_async(uri);
-        }
-        static script_async(uri) {
-            const doc = $mol_dom_context.document;
-            const script = doc.createElement('script');
-            script.src = uri;
-            doc.head.appendChild(script);
-            return new Promise((done, fail) => {
-                script.onload = () => done($mol_dom_context);
-                script.onerror = () => fail(new Error(`Can not import ${uri}`));
-            });
-        }
-        static style(uri) {
-            return $mol_wire_sync(this).style_async(uri);
-        }
-        static style_async(uri) {
-            const doc = $mol_dom_context.document;
-            const style = doc.createElement('link');
-            style.rel = 'stylesheet';
-            style.href = uri;
-            doc.head.appendChild(style);
-            return new Promise((done, fail) => {
-                style.onload = () => done(style.sheet);
-                style.onerror = () => fail(new Error(`Can not import ${uri}`));
-            });
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $mol_import, "module", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_import, "script", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_import, "style", null);
-    $.$mol_import = $mol_import;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        let grad_counter = 0;
-        class $bog_qr extends $.$bog_qr {
-            gradient_id() {
-                return 'qr-grad-' + (++grad_counter);
-            }
-            gradient_fill() {
-                return `url(#${this.gradient_id()})`;
-            }
-            grad_x1() {
-                const a = this.gradient_angle() * Math.PI / 180;
-                return String(0.5 - Math.cos(a) * 0.5);
-            }
-            grad_y1() {
-                const a = this.gradient_angle() * Math.PI / 180;
-                return String(0.5 - Math.sin(a) * 0.5);
-            }
-            grad_x2() {
-                const a = this.gradient_angle() * Math.PI / 180;
-                return String(0.5 + Math.cos(a) * 0.5);
-            }
-            grad_y2() {
-                const a = this.gradient_angle() * Math.PI / 180;
-                return String(0.5 + Math.sin(a) * 0.5);
-            }
-            gradient_stop_list() {
-                const colors = this.gradient_stops();
-                return colors.map((_, i) => this.Stop(i));
-            }
-            stop_offset(index) {
-                const colors = this.gradient_stops();
-                if (colors.length <= 1)
-                    return '0%';
-                return Math.round(index / (colors.length - 1) * 100) + '%';
-            }
-            stop_color(index) {
-                return this.gradient_stops()[index];
-            }
-            qr_lib() {
-                return $mol_import.script('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js');
-            }
-            qr_matrix() {
-                this.qr_lib();
-                const data = this.uri();
-                if (!data)
-                    return null;
-                const qr = qrcode(0, this.error_correction());
-                qr.addData(data);
-                qr.make();
-                const count = qr.getModuleCount();
-                const matrix = [];
-                for (let r = 0; r < count; r++) {
-                    matrix[r] = [];
-                    for (let c = 0; c < count; c++) {
-                        matrix[r][c] = qr.isDark(r, c);
-                    }
-                }
-                return matrix;
-            }
-            qr_view_box() {
-                const matrix = this.qr_matrix();
-                if (!matrix)
-                    return '0 0 1 1';
-                const total = matrix.length + this.quiet_zone() * 2;
-                return `0 0 ${total} ${total}`;
-            }
-            qr_paths() {
-                const matrix = this.qr_matrix();
-                if (!matrix)
-                    return { modules: '', rings: '', centers: '' };
-                const count = matrix.length;
-                const quiet = this.quiet_zone();
-                const r = this.module_radius();
-                const dark = (row, col) => row >= 0 && row < count && col >= 0 && col < count && matrix[row][col];
-                const isFinder = (row, col) => (row < 7 && col < 7) || (row < 7 && col >= count - 7) || (row >= count - 7 && col < 7);
-                const hasCenter = this.center().length > 0;
-                const centerRadius = hasCenter ? count * 0.15 : 0;
-                const centerMid = count / 2;
-                const isCenter = (row, col) => {
-                    if (!hasCenter)
-                        return false;
-                    const dx = col + 0.5 - centerMid;
-                    const dy = row + 0.5 - centerMid;
-                    return dx * dx + dy * dy < centerRadius * centerRadius;
-                };
-                let modules = '';
-                for (let row = 0; row < count; row++) {
-                    for (let col = 0; col < count; col++) {
-                        if (!matrix[row][col])
-                            continue;
-                        if (isFinder(row, col))
-                            continue;
-                        if (isCenter(row, col))
-                            continue;
-                        const x = col + quiet;
-                        const y = row + quiet;
-                        const top = dark(row - 1, col);
-                        const bottom = dark(row + 1, col);
-                        const left = dark(row, col - 1);
-                        const right = dark(row, col + 1);
-                        const alone = !top && !bottom && !left && !right;
-                        if (alone) {
-                            const cx = x + 0.5;
-                            const cy = y + 0.5;
-                            const cr = 0.5;
-                            modules += `M${cx - cr},${cy}A${cr},${cr},0,1,1,${cx + cr},${cy}A${cr},${cr},0,1,1,${cx - cr},${cy}Z`;
-                        }
-                        else {
-                            const tl = !top && !left ? r : 0;
-                            const tr = !top && !right ? r : 0;
-                            const br = !bottom && !right ? r : 0;
-                            const bl = !bottom && !left ? r : 0;
-                            modules += this.rect_path(x, y, 1, 1, tl, tr, br, bl);
-                        }
-                    }
-                }
-                const fr = this.finder_radius();
-                const finders = [
-                    [quiet, quiet],
-                    [count - 7 + quiet, quiet],
-                    [quiet, count - 7 + quiet],
-                ];
-                let rings = '';
-                let centers = '';
-                for (const [fx, fy] of finders) {
-                    rings += this.rect_path(fx, fy, 7, 7, fr, fr, fr, fr);
-                    rings += this.rect_path(fx + 1, fy + 1, 5, 5, fr * 0.7, fr * 0.7, fr * 0.7, fr * 0.7);
-                    centers += this.rect_path(fx + 2, fy + 2, 3, 3, fr * 0.5, fr * 0.5, fr * 0.5, fr * 0.5);
-                }
-                return { modules, rings, centers };
-            }
-            center_area() {
-                const matrix = this.qr_matrix();
-                if (!matrix || this.center().length === 0)
-                    return { x: 0, y: 0, size: 0 };
-                const count = matrix.length;
-                const quiet = this.quiet_zone();
-                const centerSize = count * 0.3;
-                const total = count + quiet * 2;
-                return {
-                    x: (total - centerSize) / 2,
-                    y: (total - centerSize) / 2,
-                    size: centerSize,
-                };
-            }
-            center_x() {
-                return String(this.center_area().x);
-            }
-            center_y() {
-                return String(this.center_area().y);
-            }
-            center_size() {
-                return String(this.center_area().size);
-            }
-            modules_d() {
-                return this.qr_paths().modules;
-            }
-            rings_d() {
-                return this.qr_paths().rings;
-            }
-            centers_d() {
-                return this.qr_paths().centers;
-            }
-            rect_path(x, y, w, h, tl, tr, br, bl) {
-                return [
-                    `M${x + tl},${y}`,
-                    `H${x + w - tr}`,
-                    tr ? `A${tr},${tr},0,0,1,${x + w},${y + tr}` : '',
-                    `V${y + h - br}`,
-                    br ? `A${br},${br},0,0,1,${x + w - br},${y + h}` : '',
-                    `H${x + bl}`,
-                    bl ? `A${bl},${bl},0,0,1,${x},${y + h - bl}` : '',
-                    `V${y + tl}`,
-                    tl ? `A${tl},${tl},0,0,1,${x + tl},${y}` : '',
-                    'Z',
-                ]
-                    .filter(Boolean)
-                    .join('');
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "gradient_id", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "gradient_fill", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "grad_x1", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "grad_y1", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "grad_x2", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "grad_y2", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "gradient_stop_list", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "qr_lib", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "qr_matrix", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "qr_view_box", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "qr_paths", null);
-        __decorate([
-            $mol_mem
-        ], $bog_qr.prototype, "center_area", null);
-        $$.$bog_qr = $bog_qr;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        $mol_style_define($bog_qr, {
-            width: '300px',
-            height: '300px',
-            Center_body: {
-                width: '80%',
-                height: '80%',
-                position: 'absolute',
-                top: '10%',
-                left: '10%',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
 	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
 		path(){
 			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
@@ -19663,6 +19663,54 @@ var $;
 	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
 		path(){
 			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_bookmark) = class $mol_icon_bookmark extends ($.$mol_icon) {
+		path(){
+			return "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive) = class $mol_icon_archive extends ($.$mol_icon) {
+		path(){
+			return "M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive_arrow_down) = class $mol_icon_archive_arrow_down extends ($.$mol_icon) {
+		path(){
+			return "M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive_arrow_up) = class $mol_icon_archive_arrow_up extends ($.$mol_icon) {
+		path(){
+			return "M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3";
 		}
 	};
 
@@ -19825,6 +19873,52 @@ var $;
 			(obj.content) = () => ([(this.My_id_text()), (this.My_id_copy())]);
 			return obj;
 		}
+		Invite_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Отправьте эту ссылку — у собеседника сразу откроется диалог с вами");
+			return obj;
+		}
+		invite_link(){
+			return "";
+		}
+		Invite_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.invite_link()));
+			return obj;
+		}
+		Invite_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.invite_link()));
+			return obj;
+		}
+		Invite_qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.invite_link()));
+			(obj.gradient_stops) = () => (["#229ED9", "#5ED0F5"]);
+			return obj;
+		}
+		Invite_qr_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Invite_qr())]);
+			return obj;
+		}
+		Invite_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Invite_hint()), 
+				(this.Invite_text()), 
+				(this.Invite_copy()), 
+				(this.Invite_qr_box())
+			]);
+			return obj;
+		}
+		Invite(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Ссылка на меня");
+			(obj.content) = () => ([(this.Invite_body())]);
+			return obj;
+		}
 		Status(){
 			const obj = new this.$.$giper_baza_status();
 			return obj;
@@ -19897,6 +19991,7 @@ var $;
 			(obj.body) = () => ([
 				(this.Name_row()), 
 				(this.My_id()), 
+				(this.Invite()), 
 				(this.Sync()), 
 				(this.Notify()), 
 				(this.Registry_block()), 
@@ -20155,6 +20250,7 @@ var $;
 		Key_qr(){
 			const obj = new this.$.$bog_qr();
 			(obj.uri) = () => ((this.key_text()));
+			(obj.gradient_stops) = () => (["#e14b4b", "#f0a04b"]);
 			return obj;
 		}
 		key_save(next){
@@ -20284,6 +20380,23 @@ var $;
 			(obj.sub) = () => ([(this.Dialog_top(id)), (this.Dialog_bottom(id))]);
 			return obj;
 		}
+		archive_hint(id){
+			return "";
+		}
+		dialog_archive_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_icons(id){
+			return [];
+		}
+		Dialog_archive(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.archive_hint(id)));
+			(obj.click) = (next) => ((this.dialog_archive_click(id, next)));
+			(obj.sub) = () => ((this.archive_icons(id)));
+			return obj;
+		}
 		delete_hint(id){
 			return "";
 		}
@@ -20304,6 +20417,100 @@ var $;
 			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed(id))});
 			(obj.click) = (next) => ((this.dialog_delete_click(id, next)));
 			(obj.sub) = () => ([(this.Dialog_delete_icon(id))]);
+			return obj;
+		}
+		saved_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		saved_current_is(){
+			return false;
+		}
+		Saved_avatar_icon(){
+			const obj = new this.$.$mol_icon_bookmark();
+			return obj;
+		}
+		Saved_avatar(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Saved_avatar_icon())]);
+			return obj;
+		}
+		saved_title(){
+			return "";
+		}
+		Saved_title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.saved_title())]);
+			return obj;
+		}
+		saved_time(){
+			return "";
+		}
+		Saved_time(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.saved_time())]);
+			return obj;
+		}
+		Saved_top(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Saved_title()), (this.Saved_time())]);
+			return obj;
+		}
+		saved_preview(){
+			return "";
+		}
+		Saved_preview(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.saved_preview())]);
+			return obj;
+		}
+		Saved_bottom(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Saved_preview())]);
+			return obj;
+		}
+		Saved_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Saved_top()), (this.Saved_bottom())]);
+			return obj;
+		}
+		archive_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Archive_avatar_icon(){
+			const obj = new this.$.$mol_icon_archive();
+			return obj;
+		}
+		Archive_avatar(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Archive_avatar_icon())]);
+			return obj;
+		}
+		Archive_title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Архив"]);
+			return obj;
+		}
+		archive_note(){
+			return "";
+		}
+		Archive_note(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.archive_note())]);
+			return obj;
+		}
+		Archive_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Archive_title()), (this.Archive_note())]);
+			return obj;
+		}
+		archive_unread_label(){
+			return "";
+		}
+		Archive_unread(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.archive_unread_label())]);
 			return obj;
 		}
 		user_pick(id, next){
@@ -20528,7 +20735,35 @@ var $;
 			(obj.sub) = () => ([
 				(this.Dialog_avatar(id)), 
 				(this.Dialog_info(id)), 
+				(this.Dialog_archive(id)), 
 				(this.Dialog_delete(id))
+			]);
+			return obj;
+		}
+		Dialog_archive_icon(id){
+			const obj = new this.$.$mol_icon_archive_arrow_down();
+			return obj;
+		}
+		Dialog_unarchive_icon(id){
+			const obj = new this.$.$mol_icon_archive_arrow_up();
+			return obj;
+		}
+		Saved_row(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Заметки для себя");
+			(obj.click) = (next) => ((this.saved_open(next)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.saved_current_is())});
+			(obj.sub) = () => ([(this.Saved_avatar()), (this.Saved_info())]);
+			return obj;
+		}
+		Archive_row(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Спрятанные диалоги");
+			(obj.click) = (next) => ((this.archive_toggle(next)));
+			(obj.sub) = () => ([
+				(this.Archive_avatar()), 
+				(this.Archive_info()), 
+				(this.Archive_unread())
 			]);
 			return obj;
 		}
@@ -20576,6 +20811,13 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram.prototype), "My_id_copy"));
 	($mol_mem(($.$bog_gram.prototype), "My_id"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_hint"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_text"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_copy"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_qr"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_qr_box"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_body"));
+	($mol_mem(($.$bog_gram.prototype), "Invite"));
 	($mol_mem(($.$bog_gram.prototype), "Status"));
 	($mol_mem(($.$bog_gram.prototype), "Sync"));
 	($mol_mem(($.$bog_gram.prototype), "Notify_status"));
@@ -20647,9 +20889,27 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Unread_badge"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_bottom"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_archive_click"));
+	($mol_mem_key(($.$bog_gram.prototype), "Dialog_archive"));
 	($mol_mem_key(($.$bog_gram.prototype), "dialog_delete_click"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete_icon"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete"));
+	($mol_mem(($.$bog_gram.prototype), "saved_open"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_avatar_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_avatar"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_title"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_time"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_top"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_preview"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_bottom"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_info"));
+	($mol_mem(($.$bog_gram.prototype), "archive_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_avatar_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_avatar"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_title"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_note"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_info"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_unread"));
 	($mol_mem_key(($.$bog_gram.prototype), "user_pick"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
@@ -20682,6 +20942,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Key_save"));
 	($mol_mem(($.$bog_gram.prototype), "Key_import_form"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_row"));
+	($mol_mem_key(($.$bog_gram.prototype), "Dialog_archive_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Dialog_unarchive_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Saved_row"));
+	($mol_mem(($.$bog_gram.prototype), "Archive_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
@@ -20846,6 +21110,10 @@ var $;
             Hidden: $giper_baza_list_str,
             /** Ссылки на известные владельцу реестры пользователей */
             Registries: $giper_baza_list_str,
+            /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
+            Saved_land: $giper_baza_atom_text,
+            /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
+            Archived: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -21340,6 +21608,8 @@ var $;
         const auth_size = 128;
         /** Имя файла, в который сохраняется ключ аккаунта. */
         const auth_file = 'gram-account.key';
+        /** Заголовок избранного: он же в списке, он же в шапке чата. */
+        const saved_name = 'Избранное';
         class $bog_gram extends $.$bog_gram {
             // ===== Подключение к мастеру =====
             baza_master() {
@@ -21476,6 +21746,73 @@ var $;
             user_tint(lord) {
                 return this.avatar_tint(lord);
             }
+            // ===== Избранное: диалог с самим собой =====
+            /** Заметки для себя лежат в приватном шифрованном ленде, как и список
+             * диалогов: ссылка на него хранится там же, а не в открытом профиле.
+             * Захват небыстрый, и клик по строке может позвать сюда второй раз —
+             * поэтому уже записанная ссылка всегда важнее только что захваченной. */
+            saved_land_make() {
+                const land = this.$.$giper_baza_glob.land_grab([
+                    [null, $giper_baza_rank_deny],
+                ]);
+                const str = this.dialogs_store().Saved_land()?.val();
+                if (str)
+                    return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
+                this.dialogs_store().Saved_land('auto')?.val(land.link().str);
+                return land;
+            }
+            saved_land() {
+                const str = this.dialogs_store().Saved_land()?.val();
+                if (!str)
+                    return this.saved_land_make();
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
+            }
+            /** Ссылка на уже заведённый ленд: строка избранного рисуется с первого
+             * кадра, а захват ленда идёт своим чередом — ждать его список не должен. */
+            saved_id() {
+                return String(this.dialogs_store().Saved_land()?.val() ?? '');
+            }
+            /** Единственная развилка на всё приложение: у избранного нет собеседника,
+             * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
+             * в превью ему не полагается. */
+            saved_is(id) {
+                const saved = this.saved_id();
+                return Boolean(saved) && id === saved;
+            }
+            saved_title() {
+                return saved_name;
+            }
+            /** На новом устройстве ленд избранного приезжает не мгновенно: пока он
+             * в пути, строка стоит с пустым превью, а не вешает весь список. */
+            saved_preview() {
+                try {
+                    return this.dialog_preview(this.saved_id());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            saved_time() {
+                try {
+                    return this.dialog_time(this.saved_id());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            saved_current_is() {
+                return this.saved_is(this.dialog_active());
+            }
+            /** Клик по строке заводит ленд, если его ещё нет: действие живёт в фибре,
+             * поэтому захват с его перебором степеней тут уместен. */
+            saved_open(next) {
+                this.dialog_select(this.saved_land().link().str);
+                return null;
+            }
             // ===== Диалоги =====
             dialog_ids() {
                 return (this.dialogs_store().Dialogs()?.items() ?? []).map(String);
@@ -21489,6 +21826,8 @@ var $;
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(id)).Data($bog_gram_dialog);
             }
             dialog_peer(id) {
+                if (this.saved_is(id))
+                    return '';
                 const peers = (this.dialog_store(id).Peers()?.items() ?? []).map(String);
                 return peers.find(lord => lord !== this.my_lord()) ?? peers[0] ?? '';
             }
@@ -21500,6 +21839,8 @@ var $;
                 return lord.slice(0, 6) + '…' + lord.slice(-4);
             }
             dialog_title(id) {
+                if (this.saved_is(id))
+                    return saved_name;
                 const peer = this.dialog_peer(id);
                 if (!peer)
                     return this.lord_short(id);
@@ -21523,13 +21864,24 @@ var $;
                     return 0;
                 }
             }
+            /** Порядок один и тот же и в основном списке, и в архиве: свежие сверху. */
+            fresh_first(ids) {
+                return [...ids].sort((a, b) => this.dialog_moment(b) - this.dialog_moment(a));
+            }
+            /** Избранное стоит первой строкой всегда, вход в архив — последней и
+             * только пока архив не пуст; развёрнутый архив досыпает строки туда же. */
             dialog_rows() {
-                const ids = this.dialog_ids();
-                if (!ids.length)
-                    return [this.Dialogs_empty()];
-                return [...ids]
-                    .sort((a, b) => this.dialog_moment(b) - this.dialog_moment(a))
-                    .map(id => this.Dialog_row(id));
+                const archived = this.archive_ids();
+                const folded = new Set(archived);
+                const visible = this.fresh_first(this.dialog_ids().filter(id => !folded.has(id)));
+                const empty = !visible.length && !archived.length;
+                return [
+                    this.Saved_row(),
+                    ...visible.map(id => this.Dialog_row(id)),
+                    ...empty ? [this.Dialogs_empty()] : [],
+                    ...archived.length ? [this.Archive_row()] : [],
+                    ...this.archive_opened() ? this.fresh_first(archived).map(id => this.Dialog_row(id)) : [],
+                ];
             }
             dialog_current(next) {
                 return next ?? '';
@@ -21589,10 +21941,14 @@ var $;
             dialog_delete(id, next) {
                 if (!id)
                     return null;
+                if (this.saved_is(id))
+                    return null;
                 const active = this.dialog_current() === id;
                 const store = this.dialogs_store();
                 store.Dialogs('auto').cut(id);
                 store.Hidden('auto').add(id);
+                if (this.archive_is(id))
+                    store.Archived('auto').cut(id);
                 // Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
                 // но выкидывание из своего списка важнее — просто не чистим монитор
                 try {
@@ -21613,10 +21969,103 @@ var $;
                 this.delete_armed(id, false);
                 return null;
             }
-            /** Только явно выбранный диалог: на узком экране чат не должен открываться сам. */
+            // ===== Архив: спрятанные, но живые диалоги =====
+            /** Сырые ссылки из хранилища: по ним рисуется состояние кнопки в строке,
+             * даже когда сам диалог из списка уже выпал. */
+            archive_links() {
+                return (this.dialogs_store().Archived()?.items() ?? []).map(String);
+            }
+            /** В архиве показываем только живые диалоги: удалённый осел в Hidden
+             * и вернуться на экран не должен ни в списке, ни в архиве. */
+            archive_ids() {
+                const alive = new Set(this.dialog_ids());
+                const dropped = new Set(this.hidden_ids());
+                return this.archive_links().filter(id => alive.has(id) && !dropped.has(id));
+            }
+            archive_is(id) {
+                return this.archive_links().includes(id);
+            }
+            archive_opened(next) {
+                return next ?? false;
+            }
+            /** Архив разворачивается прямо в списке: отдельная страница ради
+             * пары спрятанных диалогов — лишний шаг навигации. */
+            archive_toggle(next) {
+                this.delete_disarm();
+                this.archive_opened(!this.archive_opened());
+                return null;
+            }
+            /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
+             * всплытие: иначе тот же клик ещё и открыл бы прячущийся диалог.
+             * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
+            dialog_archive_click(id, next) {
+                next?.stopPropagation();
+                if (!id)
+                    return null;
+                this.delete_disarm();
+                if (this.archive_is(id))
+                    this.dialog_unarchive(id);
+                else
+                    this.dialog_archive(id);
+                return null;
+            }
+            /** Диалог остаётся в своём списке и продолжает принимать сообщения:
+             * архив — это только вторая полка, а не удаление. */
+            dialog_archive(id, next) {
+                if (!id)
+                    return null;
+                if (this.saved_is(id))
+                    return null;
+                this.dialogs_store().Archived('auto').add(id);
+                return null;
+            }
+            dialog_unarchive(id, next) {
+                if (!id)
+                    return null;
+                this.dialogs_store().Archived('auto').cut(id);
+                return null;
+            }
+            archive_hint(id) {
+                return this.archive_is(id) ? 'Вернуть из архива' : 'В архив';
+            }
+            /** Одна и та же кнопка прячет и возвращает, поэтому и стрелка на ней
+             * смотрит в ту сторону, куда уедет диалог. */
+            archive_icons(id) {
+                return [this.archive_is(id) ? this.Dialog_unarchive_icon(id) : this.Dialog_archive_icon(id)];
+            }
+            archive_note() {
+                return this.plural(this.archive_ids().length, 'диалог', 'диалога', 'диалогов');
+            }
+            /** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
+             * диалогов. Ленд любого из них может быть ещё в пути — такой не считаем. */
+            archive_unread() {
+                let count = 0;
+                for (const id of this.archive_ids()) {
+                    try {
+                        count += this.unread_count(id);
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return count;
+            }
+            archive_unread_label() {
+                return this.archive_unread() ? String(this.archive_unread()) : '';
+            }
+            Archive_unread() {
+                return this.archive_unread() ? super.Archive_unread() : null;
+            }
+            /** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
+             * Избранного нет в списке диалогов, но открывается оно так же. */
             dialog_active() {
                 const current = this.dialog_current();
-                if (current && this.dialog_ids().includes(current))
+                if (!current)
+                    return '';
+                if (this.saved_is(current))
+                    return current;
+                if (this.dialog_ids().includes(current))
                     return current;
                 return '';
             }
@@ -21810,10 +22259,14 @@ var $;
                 return true;
             }
             // ===== Сообщения =====
-            /** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции прочтения. */
+            /** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции
+             * прочтения. У избранного делить нечего и не с кем, поэтому его ленд
+             * сам себе сессия — остальной код от этого ничем не отличается. */
             session_land_of(id) {
                 if (!id)
                     return null;
+                if (this.saved_is(id))
+                    return this.saved_land();
                 const sessions = (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
                 const last = sessions[sessions.length - 1];
                 if (!last)
@@ -21887,11 +22340,14 @@ var $;
             Message_edited(id) {
                 return this.message_edited(id) ? super.Message_edited(id) : null;
             }
-            /** Одна галочка — доставлено, две — собеседник прочитал. Только для своих сообщений. */
+            /** Одна галочка — доставлено, две — собеседник прочитал. Только для своих
+             * сообщений и только там, где есть кому читать: в избранном галочек нет. */
             message_checks(id) {
                 if (!this.message_out(id))
                     return '';
                 const dialog = this.dialog_active();
+                if (this.saved_is(dialog))
+                    return '';
                 const peer = this.dialog_peer(dialog);
                 if (!peer)
                     return '✓';
@@ -21899,7 +22355,7 @@ var $;
                 return this.read_moment_of(dialog, peer) >= moment ? '✓✓' : '✓';
             }
             Message_checks(id) {
-                return this.message_out(id) ? super.Message_checks(id) : null;
+                return this.message_checks(id) ? super.Message_checks(id) : null;
             }
             Message_edit(id) {
                 return this.message_out(id) ? super.Message_edit(id) : null;
@@ -21974,6 +22430,8 @@ var $;
                 const id = this.dialog_active();
                 if (!id)
                     return 0;
+                if (this.saved_is(id))
+                    return 0;
                 const my = this.my_lord();
                 let last = 0;
                 for (const message of this.messages_alive_of(id)) {
@@ -21994,6 +22452,8 @@ var $;
             }
             unread_count(id) {
                 if (!id)
+                    return 0;
+                if (this.saved_is(id))
                     return 0;
                 if (id === this.dialog_active())
                     return 0;
@@ -22019,6 +22479,8 @@ var $;
                 if (!last)
                     return '';
                 const text = String(last.Text()?.val() ?? '');
+                if (this.saved_is(id))
+                    return text;
                 const mine = String(last.Author()?.val() ?? '') === this.my_lord();
                 return mine ? 'Вы: ' + text : text;
             }
@@ -22079,17 +22541,20 @@ var $;
             registry_active_is(id) {
                 return this.registry_active() === id;
             }
-            /** Русское склонение: 1 участник, 2 участника, 5 участников. */
-            people_count(count) {
+            /** Русское склонение числительных: 1 диалог, 2 диалога, 5 диалогов. */
+            plural(count, one, few, many) {
                 const tens = count % 100;
                 const ones = count % 10;
                 if (tens < 11 || tens > 14) {
                     if (ones === 1)
-                        return count + ' участник';
+                        return count + ' ' + one;
                     if (ones >= 2 && ones <= 4)
-                        return count + ' участника';
+                        return count + ' ' + few;
                 }
-                return count + ' участников';
+                return count + ' ' + many;
+            }
+            people_count(count) {
+                return this.plural(count, 'участник', 'участника', 'участников');
             }
             registry_status(id) {
                 const mine = this.registry_joined(id) ? 'вы в списке' : 'только смотрите';
@@ -22253,6 +22718,54 @@ var $;
                 }
                 this.dialog_pending(lord);
                 return null;
+            }
+            // ===== Личная ссылка-приглашение =====
+            /** Приглашение — адрес страницы с одним лишь лордом: остальные
+             * параметры (свой мастер, открытый реестр) чужому человеку не нужны. */
+            invite_uri(lord) {
+                if (!lord)
+                    return '';
+                const location = this.$.$mol_dom_context.location;
+                return location.origin + location.pathname + '#!invite=' + lord;
+            }
+            invite_link() {
+                return this.invite_uri(this.my_lord());
+            }
+            /** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
+            invite_lord() {
+                return this.$.$mol_state_arg.value('invite') ?? '';
+            }
+            /** Своя же ссылка диалога не заводит, знакомый собеседник просто
+             * открывается, а незнакомый уходит обычным путём — через ожидание. */
+            invite_plan(lord, my, exist) {
+                if (!lord)
+                    return 'skip';
+                if (lord === my)
+                    return 'skip';
+                return exist ? 'open' : 'start';
+            }
+            /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
+             * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
+            invite_handle() {
+                const lord = this.invite_lord();
+                if (!lord)
+                    return '';
+                $mol_wire_async(this).invite_accept(lord);
+                return lord;
+            }
+            /** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+             * страницы принимала бы то же приглашение снова и снова. */
+            invite_accept(lord) {
+                if (!lord)
+                    return 'skip';
+                const exist = this.dialog_with(lord);
+                const plan = this.invite_plan(lord, this.my_lord(), exist);
+                if (plan === 'open')
+                    this.dialog_select(exist);
+                if (plan === 'start')
+                    this.dialog_pending(lord);
+                this.$.$mol_state_arg.value('invite', null);
+                return plan;
             }
             // ===== Уведомления =====
             notify_supported() {
@@ -22424,6 +22937,7 @@ var $;
                 this.user_store();
                 this.inbox_land();
                 this.dialogs_land();
+                this.saved_land();
                 this.monitor_land();
                 this.device_ready();
                 return true;
@@ -22444,6 +22958,12 @@ var $;
                 }
                 try {
                     this.registry_remember();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
+                    this.invite_handle();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -22514,6 +23034,24 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_tint", null);
         __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "saved_land_make", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "saved_id", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "saved_preview", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "saved_time", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "saved_current_is", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "saved_open", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_ids", null);
         __decorate([
@@ -22555,6 +23093,39 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialog_delete", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "archive_links", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "archive_ids", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "archive_is", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "archive_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "archive_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_archive_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_archive", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_unarchive", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "archive_hint", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "archive_icons", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "archive_unread", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_active", null);
@@ -22722,6 +23293,9 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "user_pick", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "invite_handle", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "notify_permission", null);
@@ -23034,6 +23608,241 @@ var $;
             Dialog_delete_icon: {
                 width: '1rem',
                 height: '1rem',
+            },
+            /* кнопка архива стоит рядом с корзиной и повторяет её габариты:
+            две соседние операции не должны прыгать в строке */
+            Dialog_archive: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Dialog_archive_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            Dialog_unarchive_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            // ===== Избранное =====
+            // Первая строка списка, геометрия у неё ровно та же, что у обычной:
+            // отличается только кружок — вместо узора собеседника закладка.
+            Saved_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+            },
+            /* цвет закладки перебивается белым на выбранной строке — тем же
+            правилом из gram.view.css, что красит и остальной её текст */
+            Saved_avatar: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                width: '3rem',
+                height: '3rem',
+                borderRadius: '50%',
+                background: {
+                    color: veil,
+                },
+                color: tg_blue,
+            },
+            Saved_avatar_icon: {
+                width: '1.5rem',
+                height: '1.5rem',
+            },
+            Saved_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                /* без нуля ellipsis не срабатывает: колонка распирается содержимым */
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Saved_top: {
+                align: {
+                    items: 'baseline',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Saved_title: {
+                display: 'block',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    weight: 'bold',
+                },
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Saved_time: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+            },
+            Saved_bottom: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Saved_preview: {
+                display: 'block',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            // ===== Вход в архив =====
+            // Последняя строка списка: тот же кружок и та же сетка, что у диалога,
+            // чтобы раскрытый архив читался продолжением списка, а не врезкой.
+            Archive_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+            },
+            Archive_avatar: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                width: '3rem',
+                height: '3rem',
+                borderRadius: '50%',
+                background: {
+                    color: veil,
+                },
+                color: $mol_theme.shade,
+            },
+            Archive_avatar_icon: {
+                width: '1.5rem',
+                height: '1.5rem',
+            },
+            Archive_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Archive_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    weight: 'bold',
+                },
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Archive_note: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            /* свой бейдж вместо строчного: тот ключуется диалогом, а тут сумма по архиву */
+            Archive_unread: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                background: {
+                    color: tg_blue,
+                },
+                color: '#ffffff',
+                font: {
+                    size: '0.75rem',
+                    weight: 'bold',
+                },
+                lineHeight: '1.25rem',
+                minWidth: '1.25rem',
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '1rem',
             },
             // ===== Реестр пользователей =====
             Users_title: {
@@ -23367,6 +24176,96 @@ var $;
                 },
                 whiteSpace: 'nowrap',
             },
+            // ===== Личная ссылка-приглашение =====
+            // Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink
+            // и нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка
+            // иначе распирает колонку настроек вместо переноса внутри неё.
+            Invite: {
+                Content: {
+                    alignSelf: 'stretch',
+                    minWidth: 0,
+                    flex: {
+                        shrink: 1,
+                    },
+                },
+            },
+            Invite_body: {
+                alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                    shrink: 1,
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Invite_hint: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            /* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
+            Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
+            Invite_text: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
+                minWidth: 0,
+                maxWidth: '100%',
+                maxHeight: '6rem',
+                overflow: {
+                    y: 'auto',
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: veil,
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Invite_copy: {
+                alignSelf: 'flex-start',
+            },
+            /* Белая подложка обязательна: на тёмной теме цветной код выходит
+            светлее фона, и сканеры такой инверсный код берут не всякие. */
+            Invite_qr_box: {
+                alignSelf: 'center',
+                maxWidth: '100%',
+                justify: {
+                    content: 'center',
+                },
+                background: {
+                    color: '#ffffff',
+                },
+                padding: '0.5rem',
+                borderRadius: '0.75rem',
+            },
+            /* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
+            Invite_qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '12rem',
+                height: '12rem',
+                maxWidth: '100%',
+            },
             // ===== Ключ аккаунта =====
             /* Всей ветке нужен shrink и нулевой минимум: у вьюх по умолчанию
             flex-shrink 0, поэтому длинный ключ иначе распирает колонку настроек
@@ -23449,11 +24348,19 @@ var $;
             Key_copy: {
                 alignSelf: 'flex-start',
             },
+            /* Подложка — как у ссылки-приглашения: тревожный красный на тёмном
+            фоне без неё читается как инверсный код. */
             Key_qr_box: {
-                alignSelf: 'stretch',
+                alignSelf: 'center',
+                maxWidth: '100%',
                 justify: {
                     content: 'center',
                 },
+                background: {
+                    color: '#ffffff',
+                },
+                padding: '0.5rem',
+                borderRadius: '0.75rem',
             },
             /* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
             Key_qr: {

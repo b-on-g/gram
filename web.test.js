@@ -7036,6 +7036,78 @@ var $;
                 $mol_assert_equal(app.time_hm(new Date(2020, 0, 15, 9, 5).getTime()), '09:05');
                 $mol_assert_equal(app.time_hm(new Date(2020, 0, 15, 23, 59).getTime()), '23:59');
             },
+            async 'Приглашение не заводит диалог с самим собой'($) {
+                const app = $bog_gram.make({ $ });
+                const my = 'LordMine';
+                const other = 'LordOther';
+                // Ссылка — адрес страницы с одним лишь лордом приглашающего
+                const location = $.$mol_dom_context.location;
+                const uri = app.invite_uri(my);
+                $mol_assert_equal(uri, location.origin + location.pathname + '#!invite=' + my);
+                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!invite=LordMine');
+                $mol_assert_equal(app.invite_uri(''), '');
+                // Свою же ссылку и пустой параметр пропускаем мимо
+                $mol_assert_equal(app.invite_plan(my, my, ''), 'skip');
+                $mol_assert_equal(app.invite_plan('', my, ''), 'skip');
+                // Чужую: знакомого собеседника открываем, незнакомому заводим диалог
+                $mol_assert_equal(app.invite_plan(other, my, 'DialogLink'), 'open');
+                $mol_assert_equal(app.invite_plan(other, my, ''), 'start');
+            },
+            async 'Архив прячет диалог из списка, но не удаляет'($) {
+                const land = $giper_baza_land.make({ $ });
+                const store = land.Data($bog_gram_dialogs);
+                store.Dialogs('auto').add('DialogPlain');
+                store.Dialogs('auto').add('DialogFolded');
+                store.Archived('auto').add('DialogFolded');
+                // Сам список диалогов архив не трогает: ссылка остаётся на месте
+                const dialogs = store.Dialogs().items().map(String);
+                $mol_assert_equal(dialogs.length, 2);
+                $mol_assert_equal(new Set(dialogs).has('DialogFolded'), true);
+                // Основной список отдаёт одну строку, архив — другую
+                const archived = new Set(store.Archived().items().map(String));
+                const visible = dialogs.filter(id => !archived.has(id));
+                $mol_assert_equal(visible.length, 1);
+                $mol_assert_equal(visible[0], 'DialogPlain');
+                $mol_assert_equal(archived.has('DialogFolded'), true);
+                // Удалённый диалог в архиве не показывается: он осел в Hidden
+                store.Dialogs('auto').cut('DialogFolded');
+                store.Hidden('auto').add('DialogFolded');
+                const alive = new Set(store.Dialogs().items().map(String));
+                const dropped = new Set(store.Hidden().items().map(String));
+                const in_archive = store.Archived().items()
+                    .map(String)
+                    .filter(id => alive.has(id) && !dropped.has(id));
+                $mol_assert_equal(in_archive.length, 0);
+                // Возврат из архива — снятие одной ссылки, остальное не меняется
+                store.Archived('auto').cut('DialogFolded');
+                $mol_assert_equal(store.Archived().items().length, 0);
+                $mol_assert_equal(store.Dialogs().items().length, 1);
+            },
+            async 'Избранное живёт в своём ленде'($) {
+                const owner = $giper_baza_land.make({ $ });
+                // Ссылка на ленд заметок лежит в приватном списке диалогов владельца
+                const store = owner.Data($bog_gram_dialogs);
+                store.Saved_land('auto')?.val('SavedLandLink');
+                $mol_assert_equal(store.Saved_land().val(), 'SavedLandLink');
+                // Данные избранного — обычная сессия: сообщения пишутся и читаются
+                const saved = $giper_baza_land.make({ $ });
+                const session = saved.Data($bog_gram_session);
+                const note = session.Messages('auto').make(null);
+                note.Text('auto')?.val('Не забыть купить хлеб');
+                note.Author('auto')?.val('LordMine');
+                note.Moment('auto')?.val(1000);
+                const links = session.Messages().items();
+                $mol_assert_equal(links.length, 1);
+                const found = message_of(saved, links[0]);
+                $mol_assert_equal(found.Text().val(), 'Не забыть купить хлеб');
+                $mol_assert_equal(found.Author().val(), 'LordMine');
+                // Правка заметки — та же операция, что и в диалоге
+                found.Text('auto')?.val('Хлеб и молоко');
+                found.Edited('auto')?.val(1500);
+                $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
+                // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
+                $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));

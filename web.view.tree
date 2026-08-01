@@ -236,6 +236,68 @@ $mol_labeler $mol_list
 			minimal_height 24
 			sub <= content /
 
+$bog_qr $mol_svg_root
+	uri \
+	module_radius 0.35
+	finder_radius 1.2
+	gradient_angle 45
+	error_correction \M
+	quiet_zone 2
+	center /
+	gradient_id \qr-grad
+	gradient_fill \url(#qr-grad)
+	gradient_stops /
+		\var(--mol_theme_special)
+		\var(--mol_theme_focus)
+	Stop* $mol_svg
+		dom_name \stop
+		attr *
+			^
+			offset <= stop_offset* \0%
+			stop-color <= stop_color* \
+	view_box <= qr_view_box \0 0 1 1
+	sub /
+		<= Defs $mol_svg
+			dom_name \defs
+			sub /
+				<= Gradient $mol_svg
+					dom_name \linearGradient
+					attr *
+						^
+						id <= gradient_id
+						x1 <= grad_x1 \0
+						y1 <= grad_y1 \0
+						x2 <= grad_x2 \1
+						y2 <= grad_y2 \1
+					sub <= gradient_stop_list /
+		<= Modules $mol_svg_path
+			geometry <= modules_d \
+			attr *
+				^
+				fill <= gradient_fill
+		<= Rings $mol_svg_path
+			geometry <= rings_d \
+			attr *
+				^
+				fill <= gradient_fill
+				fill-rule \evenodd
+		<= Centers $mol_svg_path
+			geometry <= centers_d \
+			attr *
+				^
+				fill <= gradient_fill
+		<= Center_wrap $mol_svg
+			dom_name \foreignObject
+			attr *
+				^
+				x <= center_x \0
+				y <= center_y \0
+				width <= center_size \0
+				height <= center_size
+			sub /
+				<= Center_body $mol_view
+					sub <= center
+
 $mol_ghost $mol_view
 	Sub $mol_view
 
@@ -459,68 +521,6 @@ $giper_baza_status $mol_select
 $mol_button_major $mol_button_minor
 	theme \$mol_theme_base
 
-$bog_qr $mol_svg_root
-	uri \
-	module_radius 0.35
-	finder_radius 1.2
-	gradient_angle 45
-	error_correction \M
-	quiet_zone 2
-	center /
-	gradient_id \qr-grad
-	gradient_fill \url(#qr-grad)
-	gradient_stops /
-		\var(--mol_theme_special)
-		\var(--mol_theme_focus)
-	Stop* $mol_svg
-		dom_name \stop
-		attr *
-			^
-			offset <= stop_offset* \0%
-			stop-color <= stop_color* \
-	view_box <= qr_view_box \0 0 1 1
-	sub /
-		<= Defs $mol_svg
-			dom_name \defs
-			sub /
-				<= Gradient $mol_svg
-					dom_name \linearGradient
-					attr *
-						^
-						id <= gradient_id
-						x1 <= grad_x1 \0
-						y1 <= grad_y1 \0
-						x2 <= grad_x2 \1
-						y2 <= grad_y2 \1
-					sub <= gradient_stop_list /
-		<= Modules $mol_svg_path
-			geometry <= modules_d \
-			attr *
-				^
-				fill <= gradient_fill
-		<= Rings $mol_svg_path
-			geometry <= rings_d \
-			attr *
-				^
-				fill <= gradient_fill
-				fill-rule \evenodd
-		<= Centers $mol_svg_path
-			geometry <= centers_d \
-			attr *
-				^
-				fill <= gradient_fill
-		<= Center_wrap $mol_svg
-			dom_name \foreignObject
-			attr *
-				^
-				x <= center_x \0
-				y <= center_y \0
-				width <= center_size \0
-				height <= center_size
-			sub /
-				<= Center_body $mol_view
-					sub <= center
-
 $mol_icon_upload $mol_icon path \M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z
 
 $mol_button_open $mol_button_minor
@@ -542,6 +542,14 @@ $mol_button_open_native $mol_view
 		change? <=> picked? null
 
 $mol_icon_delete $mol_icon path \M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z
+
+$mol_icon_bookmark $mol_icon path \M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z
+
+$mol_icon_archive $mol_icon path \M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z
+
+$mol_icon_archive_arrow_down $mol_icon path \M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z
+
+$mol_icon_archive_arrow_up $mol_icon path \M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3
 
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
 
@@ -2046,6 +2054,25 @@ $bog_gram $mol_book2
 						<= My_id_copy $mol_button_copy
 							title \Скопировать
 							text <= my_lord
+				<= Invite $mol_labeler
+					title \Ссылка на меня
+					content /
+						<= Invite_body $mol_view
+							sub /
+								<= Invite_hint $mol_paragraph
+									title \Отправьте эту ссылку — у собеседника сразу откроется диалог с вами
+								<= Invite_text $mol_paragraph
+									title <= invite_link \
+								<= Invite_copy $mol_button_copy
+									title \Скопировать
+									text <= invite_link
+								<= Invite_qr_box $mol_view
+									sub /
+										<= Invite_qr $bog_qr
+											uri <= invite_link
+											gradient_stops /
+												\#229ED9
+												\#5ED0F5
 				<= Sync $mol_labeler
 					title \Синхронизация
 					content /
@@ -2180,6 +2207,9 @@ $bog_gram $mol_book2
 		sub /
 			<= Key_qr $bog_qr
 				uri <= key_text
+				gradient_stops /
+					\#e14b4b
+					\#f0a04b
 	Key_save $mol_button_minor
 		click? <=> key_save? null
 		sub /
@@ -2234,6 +2264,10 @@ $bog_gram $mol_book2
 							<= Unread_badge* $mol_view
 								sub /
 									<= unread_label* \
+			<= Dialog_archive* $mol_button_minor
+				hint <= archive_hint* \
+				click? <=> dialog_archive_click*? null
+				sub <= archive_icons* /
 			<= Dialog_delete* $mol_button_minor
 				hint <= delete_hint* \
 				attr *
@@ -2242,6 +2276,51 @@ $bog_gram $mol_book2
 				click? <=> dialog_delete_click*? null
 				sub /
 					<= Dialog_delete_icon* $mol_icon_delete
+	Dialog_archive_icon* $mol_icon_archive_arrow_down
+	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
+	Saved_row $mol_button_minor
+		hint \Заметки для себя
+		click? <=> saved_open? null
+		attr *
+			^
+			bog_gram_current <= saved_current_is false
+		sub /
+			<= Saved_avatar $mol_view
+				sub /
+					<= Saved_avatar_icon $mol_icon_bookmark
+			<= Saved_info $mol_view
+				sub /
+					<= Saved_top $mol_view
+						sub /
+							<= Saved_title $mol_view
+								sub /
+									<= saved_title \
+							<= Saved_time $mol_view
+								sub /
+									<= saved_time \
+					<= Saved_bottom $mol_view
+						sub /
+							<= Saved_preview $mol_view
+								sub /
+									<= saved_preview \
+	Archive_row $mol_button_minor
+		hint \Спрятанные диалоги
+		click? <=> archive_toggle? null
+		sub /
+			<= Archive_avatar $mol_view
+				sub /
+					<= Archive_avatar_icon $mol_icon_archive
+			<= Archive_info $mol_view
+				sub /
+					<= Archive_title $mol_view
+						sub /
+							\Архив
+					<= Archive_note $mol_view
+						sub /
+							<= archive_note \
+			<= Archive_unread $mol_view
+				sub /
+					<= archive_unread_label \
 	User_row* $mol_button_minor
 		click? <=> user_pick*? null
 		sub /
