@@ -799,8 +799,12 @@ namespace $.$$ {
 
 			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
 			const session_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-			dialog_land.give( peer_pass, $giper_baza_rank_post( 'just' ) )
-			session_land.give( peer_pass, $giper_baza_rank_post( 'just' ) )
+			// Ранг задаёт цену записи: на `just` подпись принимается с первой
+			// попытки, то есть работы ноль и поток сообщений ничем не ограничен.
+			// Берём следующую ступень — сотни подписей на сообщение: человек
+			// разницы не заметит, а заливать тысячами станет невыгодно.
+			dialog_land.give( peer_pass, $giper_baza_rank_post( 'fast' ) )
+			session_land.give( peer_pass, $giper_baza_rank_post( 'fast' ) )
 
 			const dialog = dialog_land.Data( $bog_gram_dialog )
 			dialog.Peers( 'auto' )!.add( this.my_lord() )
