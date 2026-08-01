@@ -177,6 +177,33 @@ namespace $.$$ {
 
 		},
 
+		async 'Удалённый диалог не возвращается инвайтом'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const store = land.Data( $bog_gram_dialogs )
+
+			store.Dialogs( 'auto' )!.add( 'DialogKeep' )
+			store.Dialogs( 'auto' )!.add( 'DialogDrop' )
+
+			// Удаление из своего списка: ссылка уходит из Dialogs и оседает в Hidden
+			store.Dialogs( 'auto' )!.cut( 'DialogDrop' )
+			store.Hidden( 'auto' )!.add( 'DialogDrop' )
+
+			const dialogs = ( store.Dialogs()!.items() as readonly string[] ).map( String )
+			$mol_assert_equal( dialogs.length, 1 )
+			$mol_assert_equal( dialogs[0], 'DialogKeep' )
+
+			const hidden = new Set( ( store.Hidden()!.items() as readonly string[] ).map( String ) )
+			$mol_assert_equal( hidden.has( 'DialogDrop' ), true )
+			$mol_assert_equal( hidden.has( 'DialogKeep' ), false )
+
+			// Собеседник шлёт инвайты на оба ленда: скрытый отсеивается, живой проходит
+			const merged = [ 'DialogKeep', 'DialogDrop' ].filter( link => !hidden.has( link ) )
+			$mol_assert_equal( merged.length, 1 )
+			$mol_assert_equal( merged[0], 'DialogKeep' )
+
+		},
+
 		async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'( $ ) {
 
 			const king = await $.$giper_baza_auth.generate()

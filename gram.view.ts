@@ -133,11 +133,74 @@ namespace $.$$ {
 			return this.peer_store( lord ).Name()?.val() ?? ''
 		}
 
+		// ===== Аватары =====
+
+		/** Инициал в кружке: первая буква имени собеседника, а пока имя не
+		 * приехало — первый символ самого лорда. Имя может начинаться с пробела
+		 * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
+		avatar_letter( lord: string ) {
+			if( !lord ) return ''
+			const source = this.peer_name( lord ) || lord
+			const char = [ ... source ].find( symbol => symbol.trim() )
+			return char ? char.toUpperCase() : ''
+		}
+
+		/** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
+		avatar_tint( lord: string ) {
+			let hash = 0
+			for( const symbol of lord ) hash = ( hash * 31 + symbol.charCodeAt( 0 ) ) % 7
+			return hash
+		}
+
+		/** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
+		 * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
+		 * сохраняется, буква и цвет проявятся сами. */
+		@$mol_mem_key
+		dialog_letter( id: string ) {
+			try {
+				return this.avatar_letter( this.dialog_peer( id ) )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		@$mol_mem_key
+		dialog_tint( id: string ) {
+			try {
+				return this.avatar_tint( this.dialog_peer( id ) )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return 0
+			}
+		}
+
+		@$mol_mem_key
+		user_letter( lord: string ) {
+			try {
+				return this.avatar_letter( lord )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		user_tint( lord: string ) {
+			return this.avatar_tint( lord )
+		}
+
 		// ===== Диалоги =====
 
 		@$mol_mem
 		dialog_ids() {
 			return ( this.dialogs_store().Dialogs()?.items() ?? [] ).map( String )
+		}
+
+		/** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
+		 * иначе собеседник вернул бы диалог обратно на следующем же синке. */
+		@$mol_mem
+		hidden_ids() {
+			return ( this.dialogs_store().Hidden()?.items() ?? [] ).map( String )
 		}
 
 		dialog_store( id: string ) {
@@ -150,11 +213,18 @@ namespace $.$$ {
 			return peers.find( lord => lord !== this.my_lord() ) ?? peers[0] ?? ''
 		}
 
+		/** Безымянного собеседника показываем началом и концом идентификатора:
+		 * у одного только начала первые символы у разных людей совпадают глазом. */
+		lord_short( lord: string ) {
+			if( lord.length <= 14 ) return lord
+			return lord.slice( 0, 6 ) + '…' + lord.slice( -4 )
+		}
+
 		@$mol_mem_key
 		dialog_title( id: string ) {
 			const peer = this.dialog_peer( id )
-			if( !peer ) return id.slice( 0, 8 ) + '…'
-			return this.peer_name( peer ) || peer.slice( 0, 8 ) + '…'
+			if( !peer ) return this.lord_short( id )
+			return this.peer_name( peer ) || this.lord_short( peer )
 		}
 
 		/** Момент последней активности — по нему диалоги сортируются в списке.
@@ -199,6 +269,7 @@ namespace $.$$ {
 			this.settings_opened( false )
 			this.edit_id( '' )
 			this.message_text( '' )
+			this.delete_armed( false )
 			this.dialog_current( id )
 			return null
 		}
@@ -207,7 +278,68 @@ namespace $.$$ {
 		dialog_close( next?: any ) {
 			this.edit_id( '' )
 			this.message_text( '' )
+			this.delete_armed( false )
 			this.dialog_current( '' )
+			return null
+		}
+
+		// ===== Удаление диалога из своего списка =====
+
+		/** Первый клик по корзине только взводит кнопку, второй удаляет:
+		 * подтверждение живёт в тулбаре, без модалок и системных алертов. */
+		@$mol_mem
+		delete_armed( next?: boolean ) {
+			return next ?? false
+		}
+
+		delete_hint() {
+			return this.delete_armed() ? 'Точно удалить?' : 'Удалить диалог'
+		}
+
+		/** Опираемся на сырой выбор, а не на dialog_active(): фибра действия может
+		 * перезапуститься уже после выреза ссылки из списка, и тогда активного диалога
+		 * с точки зрения списка нет — удаление оборвалось бы на полпути. */
+		@$mol_action
+		dialog_delete_current( next?: any ) {
+			const id = this.dialog_current()
+			if( !id ) return null
+			if( !this.delete_armed() ) {
+				this.delete_armed( true )
+				return null
+			}
+			this.dialog_delete( id )
+			return null
+		}
+
+		/** Диалог живёт в шаренном ленде и у собеседника остаётся:
+		 * убираем только свою ссылку и свою слежку за сессиями. */
+		@$mol_action
+		dialog_delete( id: string, next?: any ) {
+			if( !id ) return null
+
+			const active = this.dialog_current() === id
+			const store = this.dialogs_store()
+
+			store.Dialogs( 'auto' )!.cut( id )
+			store.Hidden( 'auto' )!.add( id )
+
+			// Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
+			// но выкидывание из своего списка важнее — просто не чистим монитор
+			try {
+				const sessions = ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
+				const watch = this.monitor_store().Watch( 'auto' )!
+				for( const link of sessions ) watch.cut( link )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+
+			if( active ) {
+				this.edit_id( '' )
+				this.message_text( '' )
+				this.dialog_current( '' )
+			}
+			this.delete_armed( false )
+
 			return null
 		}
 
@@ -405,8 +537,10 @@ namespace $.$$ {
 			const invites = ( this.inbox_store().Invites()?.items() ?? [] ).map( String )
 			if( !invites.length ) return 0
 			const have = new Set( this.dialog_ids() )
+			const hidden = new Set( this.hidden_ids() )
 			for( const link of invites ) {
 				if( have.has( link ) ) continue
+				if( hidden.has( link ) ) continue
 				this.dialogs_store().Dialogs( 'auto' )!.add( link )
 			}
 			return invites.length
@@ -744,13 +878,9 @@ namespace $.$$ {
 			return 'В реестре пока только вы'
 		}
 
-		user_lord( lord: string ) {
-			return lord
-		}
-
 		@$mol_mem_key
 		user_title( lord: string ) {
-			return this.peer_name( lord ) || lord.slice( 0, 8 ) + '…'
+			return this.peer_name( lord ) || this.lord_short( lord )
 		}
 
 		@$mol_action

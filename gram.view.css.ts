@@ -111,16 +111,13 @@ namespace $.$$ {
 			атрибут на встроенной кнопке не проходит типизацию Attrs */
 		},
 
+		/* общий вид кружка — в блоке аватара ниже, здесь только размер:
+		в списке диалогов он крупнее, чем в реестре */
 		Dialog_avatar: {
 			width: '3rem',
 			height: '3rem',
-			borderRadius: '50%',
-			flex: {
-				shrink: 0,
-			},
-			padding: '0.25rem',
-			background: {
-				color: veil,
+			font: {
+				size: '1.125rem',
 			},
 		},
 
@@ -266,13 +263,8 @@ namespace $.$$ {
 		User_avatar: {
 			width: '2.5rem',
 			height: '2.5rem',
-			borderRadius: '50%',
-			flex: {
-				shrink: 0,
-			},
-			padding: '0.25rem',
-			background: {
-				color: veil,
+			font: {
+				size: '1rem',
 			},
 		},
 
@@ -471,6 +463,72 @@ namespace $.$$ {
 				},
 			},
 
+		},
+
+	} )
+
+	// ===== Аватар-кружок с инициалом =====
+	// Общий вид держим на самом компоненте: список диалогов и реестр
+	// отличаются только размером, а палитра нужна обоим одинаковая.
+	// Размер и кегль задаются на месте использования: селекторы тут
+	// одной специфичности, повтори мы их здесь — перебили бы место вызова.
+
+	$mol_style_define( $bog_gram_avatar, {
+
+		flex: {
+			shrink: 0,
+		},
+		justify: {
+			content: 'center',
+		},
+		align: {
+			items: 'center',
+		},
+		borderRadius: '50%',
+		color: '#ffffff',
+		font: {
+			weight: 'bold',
+		},
+		userSelect: 'none',
+
+		'@': {
+			bog_gram_tint: {
+				'0': {
+					background: {
+						color: '#e17076',
+					},
+				},
+				'1': {
+					background: {
+						color: '#faa774',
+					},
+				},
+				'2': {
+					background: {
+						color: '#a695e7',
+					},
+				},
+				'3': {
+					background: {
+						color: '#7bc862',
+					},
+				},
+				'4': {
+					background: {
+						color: '#6ec9cb',
+					},
+				},
+				'5': {
+					background: {
+						color: '#65aadd',
+					},
+				},
+				'6': {
+					background: {
+						color: '#ee7aae',
+					},
+				},
+			},
 		},
 
 	} )

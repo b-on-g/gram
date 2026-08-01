@@ -5,6 +5,8 @@ namespace $.$$ {
 		Dialogs: $giper_baza_list_str,
 		/** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
 		Outbox: $giper_baza_list_str,
+		/** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
+		Hidden: $giper_baza_list_str,
 	}) {}
 
 }

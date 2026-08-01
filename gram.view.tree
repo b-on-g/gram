@@ -85,6 +85,9 @@ $bog_gram $mol_book2
 			message_send? <=> message_send? null
 			edit_cancel? <=> edit_cancel? null
 			close? <=> dialog_close? null
+			delete? <=> dialog_delete_current? null
+			delete_armed <= delete_armed false
+			delete_hint <= delete_hint \
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
@@ -105,8 +108,9 @@ $bog_gram $mol_book2
 			^
 			bog_gram_current <= dialog_current_is* false
 		sub /
-			<= Dialog_avatar* $mol_avatar
-				id <= dialog_peer* \
+			<= Dialog_avatar* $bog_gram_avatar
+				letter <= dialog_letter* \
+				tint <= dialog_tint* 0
 			<= Dialog_info* $mol_view
 				sub /
 					<= Dialog_top* $mol_view
@@ -128,8 +132,9 @@ $bog_gram $mol_book2
 	User_row* $mol_button_minor
 		click? <=> user_pick*? null
 		sub /
-			<= User_avatar* $mol_avatar
-				id <= user_lord* \
+			<= User_avatar* $bog_gram_avatar
+				letter <= user_letter* \
+				tint <= user_tint* 0
 			<= User_title* $mol_view
 				sub /
 					<= user_title* \
@@ -174,7 +179,18 @@ $bog_gram_chat $mol_page
 	message_send? null
 	edit_cancel? null
 	close? null
+	delete? null
+	delete_armed false
+	delete_hint \Удалить диалог
 	tools /
+		<= Delete $mol_button_minor
+			hint <= delete_hint
+			attr *
+				^
+				bog_gram_armed <= delete_armed
+			click? <=> delete? null
+			sub /
+				<= Delete_icon $mol_icon_delete
 		<= Close $mol_button_minor
 			hint \Закрыть
 			click? <=> close? null
@@ -206,3 +222,12 @@ $bog_gram_chat $mol_page
 							click? <=> message_send? null
 							sub /
 								<= Send_icon $mol_icon_send
+
+$bog_gram_avatar $mol_view
+	letter \
+	tint 0
+	attr *
+		^
+		bog_gram_tint <= tint
+	sub /
+		<= letter

@@ -9,3 +9,9 @@
 [bog_gram_current="true"] :where([mol_view]) {
 	color: #ffffff;
 }
+
+/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */
+[bog_gram_armed="true"] {
+	background-color: #e14b4b;
+	color: #ffffff;
+}
