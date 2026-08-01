@@ -162,53 +162,6 @@ $mol_page $mol_view
 
 $mol_icon_close $mol_icon path \M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
 
-$mol_hotkey $mol_plugin
-	event *
-		^
-		keydown? <=> keydown? null
-	key *
-	mod_ctrl false
-	mod_alt false
-	mod_shift false
-
-$mol_string $mol_view
-	dom_name \input
-	enabled true
-	minimal_height 40
-	autocomplete false
-	selection? /number
-		0
-		0
-	auto /
-		<= selection_watcher null
-		<= error_report null
-	field *
-		^
-		disabled <= disabled false
-		value <= value_changed? <=> value? \
-		placeholder <= hint_visible <= hint \
-		spellcheck <= spellcheck true
-		autocomplete <= autocomplete_native \
-		selectionEnd <= selection_end 0
-		selectionStart <= selection_start 0
-		inputMode <= keyboard \text
-		enterkeyhint <= enter \go
-	attr *
-		^
-		maxlength <= length_max +Infinity
-		type <= type? \text
-	event *
-		^
-		input? <=> event_change? null
-	plugins /
-		<= Submit $mol_hotkey
-			mod_ctrl <= submit_with_ctrl false
-			key * enter? <=> submit? null
-
-$mol_string_button $mol_string
-
-$mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
-
 $mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3
 
 $mol_icon_clipboard_outline $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z
@@ -393,6 +346,49 @@ $mol_nav $mol_plugin
 		^
 		keydown? <=> event_key? null
 
+$mol_hotkey $mol_plugin
+	event *
+		^
+		keydown? <=> keydown? null
+	key *
+	mod_ctrl false
+	mod_alt false
+	mod_shift false
+
+$mol_string $mol_view
+	dom_name \input
+	enabled true
+	minimal_height 40
+	autocomplete false
+	selection? /number
+		0
+		0
+	auto /
+		<= selection_watcher null
+		<= error_report null
+	field *
+		^
+		disabled <= disabled false
+		value <= value_changed? <=> value? \
+		placeholder <= hint_visible <= hint \
+		spellcheck <= spellcheck true
+		autocomplete <= autocomplete_native \
+		selectionEnd <= selection_end 0
+		selectionStart <= selection_start 0
+		inputMode <= keyboard \text
+		enterkeyhint <= enter \go
+	attr *
+		^
+		maxlength <= length_max +Infinity
+		type <= type? \text
+	event *
+		^
+		input? <=> event_change? null
+	plugins /
+		<= Submit $mol_hotkey
+			mod_ctrl <= submit_with_ctrl false
+			key * enter? <=> submit? null
+
 $mol_search $mol_pop
 	query? \
 	suggests /string
@@ -547,9 +543,13 @@ $mol_icon_bookmark $mol_icon path \M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.8
 
 $mol_icon_archive $mol_icon path \M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z
 
+$mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
+
 $mol_icon_archive_arrow_down $mol_icon path \M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z
 
 $mol_icon_archive_arrow_up $mol_icon path \M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3
+
+$mol_string_button $mol_string
 
 $mol_icon_arrow_left $mol_icon path \M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z
 
@@ -2042,12 +2042,9 @@ $bog_gram $mol_book2
 					sub /
 						<= Settings_close_icon $mol_icon_close
 			body /
-				<= Name_row $mol_view
-					sub /
-						<= Name_field $mol_string_button
-							hint \Ваше имя
-							value? <=> user_name? \
-						<= Name_edit_icon $mol_icon_pencil
+				<= Name_field $bog_gram_field
+					hint \Ваше имя
+					value? <=> user_name? \
 				<= My_id $mol_labeler
 					title \Мой ID
 					content /
@@ -2383,6 +2380,15 @@ $bog_gram $mol_book2
 						sub /
 							<= Message_delete_icon* $mol_icon_delete
 
+$bog_gram_field $mol_view
+	hint \
+	value? \
+	sub /
+		<= Field $mol_string_button
+			hint <= hint
+			value? <=> value? \
+		<= Edit_icon $mol_icon_pencil
+
 $bog_gram_chat $mol_page
 	rows /$mol_view
 	edit_mode false
@@ -2392,12 +2398,9 @@ $bog_gram_chat $mol_page
 	close? null
 	note_editable false
 	title_content /
-		<= Note_row $mol_view
-			sub /
-				<= Note_field $mol_string_button
-					hint <= note_hint \
-					value? <=> note? \
-				<= Note_edit_icon $mol_icon_pencil
+		<= Note_field $bog_gram_field
+			hint <= note_hint \
+			value? <=> note? \
 		<= Title_text $mol_view
 			sub /
 				<= title

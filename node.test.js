@@ -7184,332 +7184,6 @@ var $;
 
 
 ;
-	($.$mol_hotkey) = class $mol_hotkey extends ($.$mol_plugin) {
-		keydown(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		event(){
-			return {...(super.event()), "keydown": (next) => (this.keydown(next))};
-		}
-		key(){
-			return {};
-		}
-		mod_ctrl(){
-			return false;
-		}
-		mod_alt(){
-			return false;
-		}
-		mod_shift(){
-			return false;
-		}
-	};
-	($mol_mem(($.$mol_hotkey.prototype), "keydown"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * Plugin which adds handlers for keyboard keys.
-         * @see [mol_keyboard_code](../keyboard/code/code.ts)
-         */
-        class $mol_hotkey extends $.$mol_hotkey {
-            key() {
-                return super.key();
-            }
-            keydown(event) {
-                if (!event)
-                    return;
-                if (event.defaultPrevented)
-                    return;
-                let name = $mol_keyboard_code[event.keyCode];
-                if (this.mod_ctrl() !== (event.ctrlKey || event.metaKey))
-                    return;
-                if (this.mod_alt() !== event.altKey)
-                    return;
-                if (this.mod_shift() !== event.shiftKey)
-                    return;
-                const handle = this.key()[name];
-                if (handle)
-                    handle(event);
-            }
-        }
-        $$.$mol_hotkey = $mol_hotkey;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$mol_string) = class $mol_string extends ($.$mol_view) {
-		selection_watcher(){
-			return null;
-		}
-		error_report(){
-			return null;
-		}
-		disabled(){
-			return false;
-		}
-		value(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		value_changed(next){
-			return (this.value(next));
-		}
-		hint(){
-			return "";
-		}
-		hint_visible(){
-			return (this.hint());
-		}
-		spellcheck(){
-			return true;
-		}
-		autocomplete_native(){
-			return "";
-		}
-		selection_end(){
-			return 0;
-		}
-		selection_start(){
-			return 0;
-		}
-		keyboard(){
-			return "text";
-		}
-		enter(){
-			return "go";
-		}
-		length_max(){
-			return +Infinity;
-		}
-		type(next){
-			if(next !== undefined) return next;
-			return "text";
-		}
-		event_change(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		submit_with_ctrl(){
-			return false;
-		}
-		submit(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Submit(){
-			const obj = new this.$.$mol_hotkey();
-			(obj.mod_ctrl) = () => ((this.submit_with_ctrl()));
-			(obj.key) = () => ({"enter": (next) => (this.submit(next))});
-			return obj;
-		}
-		dom_name(){
-			return "input";
-		}
-		enabled(){
-			return true;
-		}
-		minimal_height(){
-			return 40;
-		}
-		autocomplete(){
-			return false;
-		}
-		selection(next){
-			if(next !== undefined) return next;
-			return [0, 0];
-		}
-		auto(){
-			return [(this.selection_watcher()), (this.error_report())];
-		}
-		field(){
-			return {
-				...(super.field()), 
-				"disabled": (this.disabled()), 
-				"value": (this.value_changed()), 
-				"placeholder": (this.hint_visible()), 
-				"spellcheck": (this.spellcheck()), 
-				"autocomplete": (this.autocomplete_native()), 
-				"selectionEnd": (this.selection_end()), 
-				"selectionStart": (this.selection_start()), 
-				"inputMode": (this.keyboard()), 
-				"enterkeyhint": (this.enter())
-			};
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"maxlength": (this.length_max()), 
-				"type": (this.type())
-			};
-		}
-		event(){
-			return {...(super.event()), "input": (next) => (this.event_change(next))};
-		}
-		plugins(){
-			return [(this.Submit())];
-		}
-	};
-	($mol_mem(($.$mol_string.prototype), "value"));
-	($mol_mem(($.$mol_string.prototype), "type"));
-	($mol_mem(($.$mol_string.prototype), "event_change"));
-	($mol_mem(($.$mol_string.prototype), "submit"));
-	($mol_mem(($.$mol_string.prototype), "Submit"));
-	($mol_mem(($.$mol_string.prototype), "selection"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * An input field for entering single line text.
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_string_demo
-         */
-        class $mol_string extends $.$mol_string {
-            event_change(next) {
-                if (!next)
-                    return;
-                const el = this.dom_node();
-                const from = el.selectionStart;
-                const to = el.selectionEnd;
-                try {
-                    el.value = this.value_changed(el.value);
-                }
-                catch (error) {
-                    const el = this.dom_node();
-                    if (error instanceof Error) {
-                        el.setCustomValidity(error.message);
-                        el.reportValidity();
-                    }
-                    $mol_fail_hidden(error);
-                }
-                if (to === null)
-                    return;
-                el.selectionEnd = to;
-                el.selectionStart = from;
-                this.selection_change(next);
-            }
-            error_report() {
-                try {
-                    if (this.focused())
-                        this.value();
-                }
-                catch (error) {
-                    const el = this.dom_node();
-                    if (error instanceof Error) {
-                        el.setCustomValidity(error.message);
-                        el.reportValidity();
-                    }
-                }
-            }
-            hint_visible() {
-                return (this.enabled() ? this.hint() : '') || ' ';
-            }
-            disabled() {
-                return !this.enabled();
-            }
-            autocomplete_native() {
-                return this.autocomplete() ? 'on' : 'off';
-            }
-            selection_watcher() {
-                return new $mol_dom_listener(this.$.$mol_dom_context.document, 'selectionchange', $mol_wire_async(event => this.selection_change(event)));
-            }
-            selection_change(event) {
-                const el = this.dom_node();
-                if (el !== this.$.$mol_dom_context.document.activeElement)
-                    return;
-                const [from, to] = this.selection([
-                    el.selectionStart,
-                    el.selectionEnd,
-                ]);
-                el.selectionEnd = to;
-                el.selectionStart = from;
-                if (to !== from && el.selectionEnd === el.selectionStart) {
-                    el.selectionEnd = to;
-                }
-            }
-            selection_start() {
-                const el = this.dom_node();
-                if (!this.focused())
-                    return undefined;
-                if (el.selectionStart == null)
-                    return undefined;
-                return this.selection()[0];
-            }
-            selection_end() {
-                const el = this.dom_node();
-                if (!this.focused())
-                    return undefined;
-                if (el.selectionEnd == null)
-                    return undefined;
-                return this.selection()[1];
-            }
-        }
-        __decorate([
-            $mol_action
-        ], $mol_string.prototype, "event_change", null);
-        __decorate([
-            $mol_mem
-        ], $mol_string.prototype, "error_report", null);
-        __decorate([
-            $mol_mem
-        ], $mol_string.prototype, "selection_watcher", null);
-        $$.$mol_string = $mol_string;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/string/string.view.css", "[mol_string] {\n\tbox-sizing: border-box;\n\toutline-offset: 0;\n\tborder: none;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpadding: var(--mol_gap_text);\n\ttext-align: left;\n\tposition: relative;\n\tfont: inherit;\n\tflex: 1 1 auto;\n\tbackground: transparent;\n\tmin-width: 0;\n\tcolor: inherit;\n\tbackground: var(--mol_theme_field);\n}\n\n[mol_string]:disabled:not(:placeholder-shown) {\n\tbackground-color: transparent;\n\tcolor: var(--mol_theme_text);\n}\n\n[mol_string]:where(:not(:disabled)) {\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_string]:where(:not(:disabled)):hover {\n\tbox-shadow: inset 0 0 0 2px var(--mol_theme_line);\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_string]:focus {\n\toutline: none;\n\tz-index: var(--mol_layer_focus);\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_focus);\n}\n\n[mol_string]::placeholder {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_string]::-ms-clear {\n\tdisplay: none;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/string/button/button.view.css", "[mol_string_button]:not(:placeholder-shown):not(:focus):not(:hover):not(:disabled) {\n\tcolor: var(--mol_theme_control);\n\tbackground: transparent;\n\tbox-shadow: none;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
-		path(){
-			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 "use strict";
 var $;
 (function ($) {
@@ -9166,6 +8840,305 @@ var $;
         }
         $$.$mol_nav = $mol_nav;
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_hotkey) = class $mol_hotkey extends ($.$mol_plugin) {
+		keydown(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event(){
+			return {...(super.event()), "keydown": (next) => (this.keydown(next))};
+		}
+		key(){
+			return {};
+		}
+		mod_ctrl(){
+			return false;
+		}
+		mod_alt(){
+			return false;
+		}
+		mod_shift(){
+			return false;
+		}
+	};
+	($mol_mem(($.$mol_hotkey.prototype), "keydown"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Plugin which adds handlers for keyboard keys.
+         * @see [mol_keyboard_code](../keyboard/code/code.ts)
+         */
+        class $mol_hotkey extends $.$mol_hotkey {
+            key() {
+                return super.key();
+            }
+            keydown(event) {
+                if (!event)
+                    return;
+                if (event.defaultPrevented)
+                    return;
+                let name = $mol_keyboard_code[event.keyCode];
+                if (this.mod_ctrl() !== (event.ctrlKey || event.metaKey))
+                    return;
+                if (this.mod_alt() !== event.altKey)
+                    return;
+                if (this.mod_shift() !== event.shiftKey)
+                    return;
+                const handle = this.key()[name];
+                if (handle)
+                    handle(event);
+            }
+        }
+        $$.$mol_hotkey = $mol_hotkey;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_string) = class $mol_string extends ($.$mol_view) {
+		selection_watcher(){
+			return null;
+		}
+		error_report(){
+			return null;
+		}
+		disabled(){
+			return false;
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		value_changed(next){
+			return (this.value(next));
+		}
+		hint(){
+			return "";
+		}
+		hint_visible(){
+			return (this.hint());
+		}
+		spellcheck(){
+			return true;
+		}
+		autocomplete_native(){
+			return "";
+		}
+		selection_end(){
+			return 0;
+		}
+		selection_start(){
+			return 0;
+		}
+		keyboard(){
+			return "text";
+		}
+		enter(){
+			return "go";
+		}
+		length_max(){
+			return +Infinity;
+		}
+		type(next){
+			if(next !== undefined) return next;
+			return "text";
+		}
+		event_change(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		submit_with_ctrl(){
+			return false;
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Submit(){
+			const obj = new this.$.$mol_hotkey();
+			(obj.mod_ctrl) = () => ((this.submit_with_ctrl()));
+			(obj.key) = () => ({"enter": (next) => (this.submit(next))});
+			return obj;
+		}
+		dom_name(){
+			return "input";
+		}
+		enabled(){
+			return true;
+		}
+		minimal_height(){
+			return 40;
+		}
+		autocomplete(){
+			return false;
+		}
+		selection(next){
+			if(next !== undefined) return next;
+			return [0, 0];
+		}
+		auto(){
+			return [(this.selection_watcher()), (this.error_report())];
+		}
+		field(){
+			return {
+				...(super.field()), 
+				"disabled": (this.disabled()), 
+				"value": (this.value_changed()), 
+				"placeholder": (this.hint_visible()), 
+				"spellcheck": (this.spellcheck()), 
+				"autocomplete": (this.autocomplete_native()), 
+				"selectionEnd": (this.selection_end()), 
+				"selectionStart": (this.selection_start()), 
+				"inputMode": (this.keyboard()), 
+				"enterkeyhint": (this.enter())
+			};
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"maxlength": (this.length_max()), 
+				"type": (this.type())
+			};
+		}
+		event(){
+			return {...(super.event()), "input": (next) => (this.event_change(next))};
+		}
+		plugins(){
+			return [(this.Submit())];
+		}
+	};
+	($mol_mem(($.$mol_string.prototype), "value"));
+	($mol_mem(($.$mol_string.prototype), "type"));
+	($mol_mem(($.$mol_string.prototype), "event_change"));
+	($mol_mem(($.$mol_string.prototype), "submit"));
+	($mol_mem(($.$mol_string.prototype), "Submit"));
+	($mol_mem(($.$mol_string.prototype), "selection"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * An input field for entering single line text.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_string_demo
+         */
+        class $mol_string extends $.$mol_string {
+            event_change(next) {
+                if (!next)
+                    return;
+                const el = this.dom_node();
+                const from = el.selectionStart;
+                const to = el.selectionEnd;
+                try {
+                    el.value = this.value_changed(el.value);
+                }
+                catch (error) {
+                    const el = this.dom_node();
+                    if (error instanceof Error) {
+                        el.setCustomValidity(error.message);
+                        el.reportValidity();
+                    }
+                    $mol_fail_hidden(error);
+                }
+                if (to === null)
+                    return;
+                el.selectionEnd = to;
+                el.selectionStart = from;
+                this.selection_change(next);
+            }
+            error_report() {
+                try {
+                    if (this.focused())
+                        this.value();
+                }
+                catch (error) {
+                    const el = this.dom_node();
+                    if (error instanceof Error) {
+                        el.setCustomValidity(error.message);
+                        el.reportValidity();
+                    }
+                }
+            }
+            hint_visible() {
+                return (this.enabled() ? this.hint() : '') || ' ';
+            }
+            disabled() {
+                return !this.enabled();
+            }
+            autocomplete_native() {
+                return this.autocomplete() ? 'on' : 'off';
+            }
+            selection_watcher() {
+                return new $mol_dom_listener(this.$.$mol_dom_context.document, 'selectionchange', $mol_wire_async(event => this.selection_change(event)));
+            }
+            selection_change(event) {
+                const el = this.dom_node();
+                if (el !== this.$.$mol_dom_context.document.activeElement)
+                    return;
+                const [from, to] = this.selection([
+                    el.selectionStart,
+                    el.selectionEnd,
+                ]);
+                el.selectionEnd = to;
+                el.selectionStart = from;
+                if (to !== from && el.selectionEnd === el.selectionStart) {
+                    el.selectionEnd = to;
+                }
+            }
+            selection_start() {
+                const el = this.dom_node();
+                if (!this.focused())
+                    return undefined;
+                if (el.selectionStart == null)
+                    return undefined;
+                return this.selection()[0];
+            }
+            selection_end() {
+                const el = this.dom_node();
+                if (!this.focused())
+                    return undefined;
+                if (el.selectionEnd == null)
+                    return undefined;
+                return this.selection()[1];
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $mol_string.prototype, "event_change", null);
+        __decorate([
+            $mol_mem
+        ], $mol_string.prototype, "error_report", null);
+        __decorate([
+            $mol_mem
+        ], $mol_string.prototype, "selection_watcher", null);
+        $$.$mol_string = $mol_string;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/string/string.view.css", "[mol_string] {\n\tbox-sizing: border-box;\n\toutline-offset: 0;\n\tborder: none;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpadding: var(--mol_gap_text);\n\ttext-align: left;\n\tposition: relative;\n\tfont: inherit;\n\tflex: 1 1 auto;\n\tbackground: transparent;\n\tmin-width: 0;\n\tcolor: inherit;\n\tbackground: var(--mol_theme_field);\n}\n\n[mol_string]:disabled:not(:placeholder-shown) {\n\tbackground-color: transparent;\n\tcolor: var(--mol_theme_text);\n}\n\n[mol_string]:where(:not(:disabled)) {\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_string]:where(:not(:disabled)):hover {\n\tbox-shadow: inset 0 0 0 2px var(--mol_theme_line);\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_string]:focus {\n\toutline: none;\n\tz-index: var(--mol_layer_focus);\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_focus);\n}\n\n[mol_string]::placeholder {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_string]::-ms-clear {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -19687,6 +19660,18 @@ var $;
 
 
 ;
+	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
+		path(){
+			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_archive_arrow_down) = class $mol_icon_archive_arrow_down extends ($.$mol_icon) {
 		path(){
 			return "M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z";
@@ -19705,6 +19690,21 @@ var $;
 		}
 	};
 
+
+;
+"use strict";
+
+
+;
+	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/string/button/button.view.css", "[mol_string_button]:not(:placeholder-shown):not(:focus):not(:hover):not(:disabled) {\n\tcolor: var(--mol_theme_control);\n\tbackground: transparent;\n\tbox-shadow: none;\n}\n");
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -19842,18 +19842,9 @@ var $;
 			return "";
 		}
 		Name_field(){
-			const obj = new this.$.$mol_string_button();
+			const obj = new this.$.$bog_gram_field();
 			(obj.hint) = () => ("Ваше имя");
 			(obj.value) = (next) => ((this.user_name(next)));
-			return obj;
-		}
-		Name_edit_icon(){
-			const obj = new this.$.$mol_icon_pencil();
-			return obj;
-		}
-		Name_row(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Name_field()), (this.Name_edit_icon())]);
 			return obj;
 		}
 		my_lord(){
@@ -19992,7 +19983,7 @@ var $;
 			(obj.title) = () => ("Настройки");
 			(obj.tools) = () => ([(this.Settings_close())]);
 			(obj.body) = () => ([
-				(this.Name_row()), 
+				(this.Name_field()), 
 				(this.My_id()), 
 				(this.Invite()), 
 				(this.Sync()), 
@@ -20855,8 +20846,6 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Settings_close"));
 	($mol_mem(($.$bog_gram.prototype), "user_name"));
 	($mol_mem(($.$bog_gram.prototype), "Name_field"));
-	($mol_mem(($.$bog_gram.prototype), "Name_edit_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Name_row"));
 	($mol_mem(($.$bog_gram.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram.prototype), "My_id_copy"));
 	($mol_mem(($.$bog_gram.prototype), "My_id"));
@@ -21003,6 +20992,31 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
+	($.$bog_gram_field) = class $bog_gram_field extends ($.$mol_view) {
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Field(){
+			const obj = new this.$.$mol_string_button();
+			(obj.hint) = () => ((this.hint()));
+			(obj.value) = (next) => ((this.value(next)));
+			return obj;
+		}
+		Edit_icon(){
+			const obj = new this.$.$mol_icon_pencil();
+			return obj;
+		}
+		hint(){
+			return "";
+		}
+		sub(){
+			return [(this.Field()), (this.Edit_icon())];
+		}
+	};
+	($mol_mem(($.$bog_gram_field.prototype), "value"));
+	($mol_mem(($.$bog_gram_field.prototype), "Field"));
+	($mol_mem(($.$bog_gram_field.prototype), "Edit_icon"));
 	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
 		note_hint(){
 			return "";
@@ -21012,18 +21026,9 @@ var $;
 			return "";
 		}
 		Note_field(){
-			const obj = new this.$.$mol_string_button();
+			const obj = new this.$.$bog_gram_field();
 			(obj.hint) = () => ((this.note_hint()));
 			(obj.value) = (next) => ((this.note(next)));
-			return obj;
-		}
-		Note_edit_icon(){
-			const obj = new this.$.$mol_icon_pencil();
-			return obj;
-		}
-		Note_row(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Note_field()), (this.Note_edit_icon())]);
 			return obj;
 		}
 		Title_text(){
@@ -21133,7 +21138,7 @@ var $;
 			return false;
 		}
 		title_content(){
-			return [(this.Note_row()), (this.Title_text())];
+			return [(this.Note_field()), (this.Title_text())];
 		}
 		head(){
 			return [
@@ -21154,8 +21159,6 @@ var $;
 	};
 	($mol_mem(($.$bog_gram_chat.prototype), "note"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Note_field"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Note_edit_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Note_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
@@ -22919,7 +22922,32 @@ var $;
                 this.message_menu('');
                 this.delete_disarm();
                 this.dialog_current(id);
+                this.chat_bring();
                 return null;
+            }
+            /** Книга доводит страницу до края сама только когда та появляется
+             * впервые. При переходе между диалогами страница чата уже открыта и
+             * лишь меняет содержимое, поэтому на узком экране пользователь
+             * оставался на списке и дальше листал руками. Досылаем прокрутку
+             * после отрисовки, когда размеры страницы уже известны. */
+            chat_bring() {
+                new this.$.$mol_after_tick(() => {
+                    try {
+                        const book = this.dom_node();
+                        const page = this.Chat_page().dom_node();
+                        if (!book || !page)
+                            return;
+                        book.scroll({
+                            left: page.offsetLeft + page.offsetWidth - book.offsetWidth,
+                            behavior: 'smooth',
+                        });
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            return;
+                        $mol_fail_log(error);
+                    }
+                });
             }
             dialog_close(next) {
                 this.edit_id('');
@@ -23228,6 +23256,7 @@ var $;
                     this.dialog_current(exist);
                     this.compose_opened(false);
                     this.dialog_pending('');
+                    this.chat_bring();
                     return exist;
                 }
                 const glob = this.$.$giper_baza_glob;
@@ -23251,6 +23280,7 @@ var $;
                 this.monitor_store().Watch('auto').add(session_land.link().str);
                 this.dialogs_store().Outbox('auto').add(peer + '|' + dialog_land.link().str);
                 this.dialog_current(dialog_land.link().str);
+                this.chat_bring();
                 this.compose_opened(false);
                 this.dialog_pending('');
                 return dialog_land.link().str;
@@ -24525,8 +24555,8 @@ var $;
             /** Заголовок чата — это подпись собеседника, поэтому он и правится
              * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
              * заголовок остаётся обычной строкой. */
-            Note_row() {
-                return this.note_editable() ? super.Note_row() : null;
+            Note_field() {
+                return this.note_editable() ? super.Note_field() : null;
             }
             Title_text() {
                 return this.note_editable() ? null : super.Title_text();
@@ -25322,29 +25352,8 @@ var $;
                 minWidth: 0,
             },
             // ===== Настройки и новый диалог =====
-            /* заполненное поле имени выглядит как обычная строка текста, пока в него
-            не ткнули, поэтому рядом висит карандаш — знак, что имя правится прямо тут */
-            Name_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
             Name_field: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-            },
-            Name_edit_icon: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '1rem',
-                height: '1rem',
-                color: $mol_theme.shade,
+                alignSelf: 'stretch',
             },
             Peer_form: {
                 flex: {
@@ -25887,6 +25896,43 @@ var $;
         // отличаются только размером, а палитра нужна обоим одинаковая.
         // Размер и кегль задаются на месте использования: селекторы тут
         // одной специфичности, повтори мы их здесь — перебили бы место вызова.
+        /* Поле с карандашом: заполненное выглядит обычной строкой текста, пока в
+        него не ткнули, а иконка подсказывает, что строку можно править. Иконку
+        кладём поверх правого края, чтобы поле оставалось цельным элементом и
+        переиспользовалось и в настройках, и в шапке чата. */
+        $mol_style_define($bog_gram_field, {
+            position: 'relative',
+            align: {
+                items: 'center',
+            },
+            minWidth: 0,
+            maxWidth: '100%',
+            Field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.375rem',
+                    right: '1.5rem',
+                },
+            },
+            Edit_icon: {
+                position: 'absolute',
+                right: '0.375rem',
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+                color: $mol_theme.shade,
+                pointerEvents: 'none',
+            },
+        });
         $mol_style_define($bog_gram_avatar, {
             flex: {
                 shrink: 0,
@@ -25926,23 +25972,9 @@ var $;
                     weight: 'bold',
                 },
             },
-            /* Подпись собеседника правится прямо в заголовке — тем же приёмом, что
-            и имя в настройках: поле выглядит обычной строкой, пока в него не ткнули,
-            а карандаш рядом показывает, что заголовок можно поменять. У вьюх по
-            умолчанию flex-shrink 0, поэтому строке нужен и shrink, и нулевой
-            минимум — иначе она распирает шапку. */
-            Note_row: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'center',
-                },
-                gap: '0.375rem',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
+            /* Подпись собеседника правится прямо в заголовке тем же полем, что и
+            имя в настройках. У вьюх по умолчанию flex-shrink 0, поэтому полю
+            нужен и shrink, и нулевой минимум — иначе оно распирает шапку. */
             Note_field: {
                 flex: {
                     grow: 1,
@@ -25950,20 +25982,6 @@ var $;
                 },
                 minWidth: 0,
                 maxWidth: '100%',
-                padding: {
-                    top: '0.125rem',
-                    bottom: '0.125rem',
-                    left: '0.375rem',
-                    right: '0.375rem',
-                },
-            },
-            Note_edit_icon: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '1rem',
-                height: '1rem',
-                color: $mol_theme.shade,
             },
             /* Заголовок без поля: подписывать некого, поэтому просто строка
             с многоточием на конце. */
