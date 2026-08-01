@@ -158,5 +158,6 @@
 \/bog/gram
 	include \/bog/gram/mine
 	include \/bog/gram/auth
+	include \/bog/gram/nozoom
 	include \/bog/gram/notify
 	include \/mol/offline/install

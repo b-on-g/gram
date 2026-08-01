@@ -30112,6 +30112,57 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    /**
+     * Сафари увеличивает всю страницу, когда фокус уходит в поле ввода, и
+     * обратно масштаб не возвращает — приходится разводить страницу пальцами,
+     * чтобы дотянуться до кнопки отправки. Шрифта в шестнадцать пикселей
+     * хватает не всегда: в приложении, добавленном на домашний экран, зум
+     * случается и при нём.
+     *
+     * Поэтому на время ввода запрещаем масштабирование, а как только фокус
+     * уходит — возвращаем. Пинч-зум остаётся доступен всегда, кроме короткого
+     * промежутка, пока человек печатает.
+     */
+    function $bog_gram_nozoom_web() {
+        if (typeof window === 'undefined')
+            return;
+        const doc = $mol_dom_context.document;
+        if (!doc)
+            return;
+        const meta = doc.querySelector('meta[name="viewport"]');
+        if (!meta)
+            return;
+        const free = meta.content;
+        const lock = free.includes('maximum-scale') ? free : free + ', maximum-scale=1';
+        const editable = (node) => {
+            const el = node;
+            if (!el?.tagName)
+                return false;
+            return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable;
+        };
+        doc.addEventListener('focusin', event => {
+            if (editable(event.target))
+                meta.content = lock;
+        });
+        doc.addEventListener('focusout', event => {
+            if (!editable(event.target))
+                return;
+            // Возврат откладываем: при переходе между полями фокус успевает
+            // моргнуть, и без паузы масштаб дёргался бы туда-сюда.
+            new $mol_after_timeout(300, () => {
+                if (editable(doc.activeElement))
+                    return;
+                meta.content = free;
+            });
+        });
+    }
+    $bog_gram_nozoom_web();
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_offline() { }
     $.$mol_offline = $mol_offline;
 })($ || ($ = {}));
@@ -30933,8 +30984,12 @@ var $;
                     return null;
                 const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
                 const session_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                dialog_land.give(peer_pass, $giper_baza_rank_post('just'));
-                session_land.give(peer_pass, $giper_baza_rank_post('just'));
+                // Ранг задаёт цену записи: на `just` подпись принимается с первой
+                // попытки, то есть работы ноль и поток сообщений ничем не ограничен.
+                // Берём следующую ступень — сотни подписей на сообщение: человек
+                // разницы не заметит, а заливать тысячами станет невыгодно.
+                dialog_land.give(peer_pass, $giper_baza_rank_post('fast'));
+                session_land.give(peer_pass, $giper_baza_rank_post('fast'));
                 const dialog = dialog_land.Data($bog_gram_dialog);
                 dialog.Peers('auto').add(this.my_lord());
                 dialog.Peers('auto').add(peer);
@@ -32254,7 +32309,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\ninput[mol_string],\ntextarea[mol_textarea] {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
