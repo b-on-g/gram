@@ -1,0 +1,11 @@
+/* Состояния по кастомным атрибутам: типизация $mol_style_define
+   не знает чужих attr на встроенных компонентах, поэтому raw css. */
+
+[bog_gram_current="true"] {
+	background-color: #229ED9;
+	color: #ffffff;
+}
+
+[bog_gram_current="true"] :where([mol_view]) {
+	color: #ffffff;
+}

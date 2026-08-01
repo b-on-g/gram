@@ -1,0 +1,208 @@
+$bog_gram $mol_book2
+	plugins /
+		<= Theme $mol_theme_auto
+	Placeholder <= Intro $mol_view
+		sub /
+			<= Intro_plate $mol_view
+				sub /
+					<= Intro_title $mol_paragraph
+						title \Выберите диалог
+					<= Intro_hint $mol_paragraph
+						title \Или начните новый: кнопка в шапке списка
+	pages /
+		<= Menu $mol_page
+			title \Gram
+			tools /
+				<= Compose_open $mol_button_minor
+					hint \Новый диалог
+					click? <=> compose_open? null
+					sub /
+						<= Compose_open_icon $mol_icon_message_plus
+				<= Settings_open $mol_button_minor
+					hint \Настройки
+					click? <=> settings_open? null
+					sub /
+						<= Settings_open_icon $mol_icon_cog
+				<= Lights $mol_lights_toggle
+			body /
+				<= Dialogs_list $mol_list
+					rows <= dialog_rows /
+		<= Settings_page $mol_page
+			title \Настройки
+			tools /
+				<= Settings_close $mol_button_minor
+					hint \Закрыть
+					click? <=> settings_close? null
+					sub /
+						<= Settings_close_icon $mol_icon_close
+			body /
+				<= Name_field $mol_string
+					hint \Ваше имя
+					value? <=> user_name? \
+				<= My_id $mol_labeler
+					title \Мой ID
+					content /
+						<= My_id_text $mol_paragraph
+							title <= my_lord \
+						<= My_id_copy $mol_button_copy
+							title \Скопировать
+							text <= my_lord
+				<= Sync $mol_labeler
+					title \Синхронизация
+					content /
+						<= Status $giper_baza_status
+				<= Registry_block $mol_labeler
+					title \Общий реестр
+					content <= registry_content /
+		<= Compose_page $mol_page
+			title \Новый диалог
+			tools /
+				<= Compose_close $mol_button_minor
+					hint \Закрыть
+					click? <=> compose_close? null
+					sub /
+						<= Compose_close_icon $mol_icon_close
+			body /
+				<= Peer_form $mol_view
+					sub /
+						<= Peer_field $mol_string
+							hint \ID собеседника
+							value? <=> peer_lord? \
+							submit? <=> dialog_start? null
+						<= Peer_start $mol_button_major
+							click? <=> dialog_start? null
+							sub /
+								\Начать диалог
+				<= Users_title $mol_paragraph
+					title \Пользователи реестра
+				<= Users_list $mol_list
+					rows <= user_rows /
+		<= Chat_page $bog_gram_chat
+			title <= chat_title \
+			rows <= chat_rows /
+			edit_mode <= edit_mode false
+			message_text? <=> message_text? \
+			message_send? <=> message_send? null
+			edit_cancel? <=> edit_cancel? null
+			close? <=> dialog_close? null
+	Dialogs_empty $mol_view
+		sub /
+			<= Dialogs_empty_text $mol_paragraph
+				title \Пока нет диалогов
+	Users_empty $mol_view
+		sub /
+			<= Users_empty_text $mol_paragraph
+				title <= users_empty_text \
+	Registry_make $mol_button_major
+		click? <=> registry_make? null
+		sub /
+			\Создать общий реестр
+	Registry_ready $mol_paragraph
+		title \Реестр подключён
+	Dialog_row* $mol_button_minor
+		click? <=> dialog_select*? null
+		attr *
+			^
+			bog_gram_current <= dialog_current_is* false
+		sub /
+			<= Dialog_avatar* $mol_avatar
+				id <= dialog_peer* \
+			<= Dialog_info* $mol_view
+				sub /
+					<= Dialog_top* $mol_view
+						sub /
+							<= Dialog_title* $mol_view
+								sub /
+									<= dialog_title* \
+							<= Dialog_time* $mol_view
+								sub /
+									<= dialog_time* \
+					<= Dialog_bottom* $mol_view
+						sub /
+							<= Dialog_preview* $mol_view
+								sub /
+									<= dialog_preview* \
+							<= Unread_badge* $mol_view
+								sub /
+									<= unread_label* \
+	User_row* $mol_button_minor
+		click? <=> user_pick*? null
+		sub /
+			<= User_avatar* $mol_avatar
+				id <= user_lord* \
+			<= User_title* $mol_view
+				sub /
+					<= user_title* \
+	Day_row* $mol_view
+		sub /
+			<= Day_chip* $mol_view
+				sub /
+					<= day_title* \
+	Message_row* $mol_view
+		attr *
+			^
+			bog_gram_out <= message_out* false
+		sub /
+			<= Message_body* $mol_paragraph
+				title <= message_body* \
+			<= Message_meta* $mol_view
+				sub /
+					<= Message_time* $mol_view
+						sub /
+							<= message_time* \
+					<= Message_edited* $mol_view
+						sub /
+							\изменено
+					<= Message_checks* $mol_view
+						sub /
+							<= message_checks* \
+					<= Message_edit* $mol_button_minor
+						hint \Редактировать
+						click? <=> message_edit*? null
+						sub /
+							<= Message_edit_icon* $mol_icon_pencil
+					<= Message_delete* $mol_button_minor
+						hint \Удалить
+						click? <=> message_delete*? null
+						sub /
+							<= Message_delete_icon* $mol_icon_delete
+
+$bog_gram_chat $mol_page
+	rows /$mol_view
+	edit_mode false
+	message_text? \
+	message_send? null
+	edit_cancel? null
+	close? null
+	tools /
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close? null
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Messages $mol_list
+			rows <= rows
+	foot /
+		<= Foot $mol_view
+			sub /
+				<= Edit_banner $mol_view
+					sub /
+						<= Edit_banner_text $mol_paragraph
+							title \Редактирование
+						<= Edit_cancel $mol_button_minor
+							hint \Отменить правку
+							click? <=> edit_cancel? null
+							sub /
+								<= Edit_cancel_icon $mol_icon_close
+				<= Send_row $mol_view
+					sub /
+						<= Message_field $mol_string
+							hint \Сообщение…
+							value? <=> message_text? \
+							submit? <=> message_send? null
+						<= Send $mol_button_major
+							hint \Отправить
+							click? <=> message_send? null
+							sub /
+								<= Send_icon $mol_icon_send
