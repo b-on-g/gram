@@ -39915,6 +39915,10 @@ declare namespace $.$$ {
         settings_close(next?: any): null;
         pages(): ($mol_page | $.$bog_gram_chat)[];
         Placeholder(): $mol_view;
+        /** Уже существующий диалог с этим собеседником — повторный старт
+         * не должен плодить новые ленды, а должен открывать старый.
+         * Незасинканный диалог считаем несовпадением, чтобы не виснуть. */
+        dialog_with(peer: string): string;
         dialog_pending(next?: string): string;
         dialog_start(next?: any): null;
         dialog_autocreate(): string;

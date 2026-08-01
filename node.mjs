@@ -20097,6 +20097,24 @@ var $;
                 return this.dialog_active() ? null : super.Placeholder();
             }
             // ===== Создание диалога =====
+            /** Уже существующий диалог с этим собеседником — повторный старт
+             * не должен плодить новые ленды, а должен открывать старый.
+             * Незасинканный диалог считаем несовпадением, чтобы не виснуть. */
+            dialog_with(peer) {
+                if (!peer)
+                    return '';
+                for (const id of this.dialog_ids()) {
+                    try {
+                        if (this.dialog_peer(id) === peer)
+                            return id;
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return '';
+            }
             dialog_pending(next) {
                 return next ?? '';
             }
@@ -20104,8 +20122,13 @@ var $;
                 const peer = this.peer_lord().trim();
                 if (!peer)
                     return null;
-                this.dialog_pending(peer);
                 this.peer_lord('');
+                const exist = this.dialog_with(peer);
+                if (exist) {
+                    this.dialog_select(exist);
+                    return null;
+                }
+                this.dialog_pending(peer);
                 return null;
             }
             // Ждём реактивно, пока home собеседника приедет с мастера, и только тогда создаём диалог
@@ -20123,6 +20146,14 @@ var $;
                 return peer;
             }
             dialog_create(peer) {
+                // Гонка: пока ждали king_pass, диалог мог появиться (или второй клик)
+                const exist = this.dialog_with(peer);
+                if (exist) {
+                    this.dialog_current(exist);
+                    this.compose_opened(false);
+                    this.dialog_pending('');
+                    return exist;
+                }
                 const glob = this.$.$giper_baza_glob;
                 const peer_user = this.peer_store(peer);
                 peer_user.Name()?.val();
@@ -20486,8 +20517,13 @@ var $;
             user_pick(lord, next) {
                 if (!lord)
                     return null;
-                this.dialog_pending(lord);
                 this.peer_lord('');
+                const exist = this.dialog_with(lord);
+                if (exist) {
+                    this.dialog_select(exist);
+                    return null;
+                }
+                this.dialog_pending(lord);
                 return null;
             }
             // ===== Автозапуск =====
