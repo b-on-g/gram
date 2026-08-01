@@ -279,6 +279,21 @@ namespace $.$$ {
 
 		// ===== Создание диалога =====
 
+		/** Уже существующий диалог с этим собеседником — повторный старт
+		 * не должен плодить новые ленды, а должен открывать старый.
+		 * Незасинканный диалог считаем несовпадением, чтобы не виснуть. */
+		dialog_with( peer: string ) {
+			if( !peer ) return ''
+			for( const id of this.dialog_ids() ) {
+				try {
+					if( this.dialog_peer( id ) === peer ) return id
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+			return ''
+		}
+
 		@$mol_mem
 		dialog_pending( next?: string ) {
 			return next ?? ''
@@ -288,8 +303,13 @@ namespace $.$$ {
 		dialog_start( next?: any ) {
 			const peer = this.peer_lord().trim()
 			if( !peer ) return null
-			this.dialog_pending( peer )
 			this.peer_lord( '' )
+			const exist = this.dialog_with( peer )
+			if( exist ) {
+				this.dialog_select( exist )
+				return null
+			}
+			this.dialog_pending( peer )
 			return null
 		}
 
@@ -311,6 +331,15 @@ namespace $.$$ {
 		}
 
 		dialog_create( peer: string ) {
+
+			// Гонка: пока ждали king_pass, диалог мог появиться (или второй клик)
+			const exist = this.dialog_with( peer )
+			if( exist ) {
+				this.dialog_current( exist )
+				this.compose_opened( false )
+				this.dialog_pending( '' )
+				return exist
+			}
 
 			const glob = this.$.$giper_baza_glob
 			const peer_user = this.peer_store( peer )
@@ -727,8 +756,13 @@ namespace $.$$ {
 		@$mol_action
 		user_pick( lord: string, next?: any ) {
 			if( !lord ) return null
-			this.dialog_pending( lord )
 			this.peer_lord( '' )
+			const exist = this.dialog_with( lord )
+			if( exist ) {
+				this.dialog_select( exist )
+				return null
+			}
+			this.dialog_pending( lord )
 			return null
 		}
 
