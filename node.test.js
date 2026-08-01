@@ -19123,6 +19123,38 @@ var $;
 			(obj.content) = () => ([(this.Status())]);
 			return obj;
 		}
+		notify_status(){
+			return "";
+		}
+		Notify_status(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.notify_status()));
+			return obj;
+		}
+		notify_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		notify_label(){
+			return "";
+		}
+		Notify_toggle(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.notify_toggle(next)));
+			(obj.sub) = () => ([(this.notify_label())]);
+			return obj;
+		}
+		Notify_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Notify_status()), (this.Notify_toggle())]);
+			return obj;
+		}
+		Notify(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Уведомления");
+			(obj.content) = () => ([(this.Notify_body())]);
+			return obj;
+		}
 		registry_content(){
 			return [];
 		}
@@ -19140,6 +19172,7 @@ var $;
 				(this.Name_field()), 
 				(this.My_id()), 
 				(this.Sync()), 
+				(this.Notify()), 
 				(this.Registry_block())
 			]);
 			return obj;
@@ -19530,6 +19563,11 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "My_id"));
 	($mol_mem(($.$bog_gram.prototype), "Status"));
 	($mol_mem(($.$bog_gram.prototype), "Sync"));
+	($mol_mem(($.$bog_gram.prototype), "Notify_status"));
+	($mol_mem(($.$bog_gram.prototype), "notify_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Notify_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Notify_body"));
+	($mol_mem(($.$bog_gram.prototype), "Notify"));
 	($mol_mem(($.$bog_gram.prototype), "Registry_block"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
 	($mol_mem(($.$bog_gram.prototype), "compose_close"));
@@ -19926,6 +19964,327 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    function pass(data) {
+        return data;
+    }
+    function $mol_error_fence(task, fallback, loading = pass) {
+        try {
+            return task();
+        }
+        catch (error) {
+            let normalized;
+            try {
+                normalized = $mol_promise_like(error) ? loading(error) : fallback(error);
+            }
+            catch (sub_error) {
+                normalized = $mol_promise_like(sub_error) ? sub_error : new $mol_error_mix(sub_error.message, { error }, sub_error);
+            }
+            if (normalized instanceof Error || $mol_promise_like(normalized)) {
+                $mol_fail_hidden(normalized);
+            }
+            return normalized;
+        }
+    }
+    $.$mol_error_fence = $mol_error_fence;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_error_enriched(cause, cb) {
+        return $mol_error_fence(cb, e => new $mol_error_mix(e.message, cause, e));
+    }
+    $.$mol_error_enriched = $mol_error_enriched;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_fetch_response extends $mol_object {
+        native;
+        request;
+        status() {
+            const types = ['unknown', 'inform', 'success', 'redirect', 'wrong', 'failed'];
+            return types[Math.floor(this.native.status / 100)];
+        }
+        code() {
+            return this.native.status;
+        }
+        ok() {
+            return this.native.ok;
+        }
+        message() {
+            return $mol_rest_code[this.code()] || `HTTP Error ${this.code()}`;
+        }
+        headers() {
+            return this.native.headers;
+        }
+        mime() {
+            return this.headers().get('content-type');
+        }
+        stream() {
+            return this.native.body;
+        }
+        text() {
+            const buffer = this.buffer();
+            const mime = this.mime() || '';
+            const [, charset] = /charset=(.*)/.exec(mime) || [, 'utf-8'];
+            const decoder = new TextDecoder(charset);
+            return decoder.decode(buffer);
+        }
+        json() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).json());
+        }
+        blob() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).blob());
+        }
+        buffer() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).arrayBuffer());
+        }
+        xml() {
+            return $mol_dom_parse(this.text(), 'application/xml');
+        }
+        xhtml() {
+            return $mol_dom_parse(this.text(), 'application/xhtml+xml');
+        }
+        html() {
+            return $mol_dom_parse(this.text(), 'text/html');
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "stream", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "text", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "xml", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "xhtml", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "html", null);
+    $.$mol_fetch_response = $mol_fetch_response;
+    class $mol_fetch_request extends $mol_object {
+        native;
+        response_async() {
+            const controller = new AbortController();
+            let done = false;
+            const request = new Request(this.native, { signal: controller.signal });
+            const promise = fetch(request).finally(() => {
+                done = true;
+            });
+            return Object.assign(promise, {
+                destructor: () => {
+                    // Abort of done request breaks response parsing
+                    if (!done && !controller.signal.aborted)
+                        controller.abort();
+                },
+            });
+        }
+        response() {
+            return this.$.$mol_fetch_response.make({
+                native: $mol_wire_sync(this).response_async(),
+                request: this
+            });
+        }
+        success() {
+            const response = this.response();
+            if (response.status() === 'success')
+                return response;
+            throw new Error(response.message(), { cause: response });
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch_request.prototype, "response", null);
+    $.$mol_fetch_request = $mol_fetch_request;
+    class $mol_fetch extends $mol_object {
+        static request(input, init) {
+            return this.$.$mol_fetch_request.make({
+                native: new Request(input, init)
+            });
+        }
+        static response(input, init) {
+            return this.request(input, init).response();
+        }
+        static success(input, init) {
+            return this.request(input, init).success();
+        }
+        static stream(input, init) {
+            return this.success(input, init).stream();
+        }
+        static text(input, init) {
+            return this.success(input, init).text();
+        }
+        static json(input, init) {
+            return this.success(input, init).json();
+        }
+        static blob(input, init) {
+            return this.success(input, init).blob();
+        }
+        static buffer(input, init) {
+            return this.success(input, init).buffer();
+        }
+        static xml(input, init) {
+            return this.success(input, init).xml();
+        }
+        static xhtml(input, init) {
+            return this.success(input, init).xhtml();
+        }
+        static html(input, init) {
+            return this.success(input, init).html();
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch, "request", null);
+    $.$mol_fetch = $mol_fetch;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Промисные браузерные API одной кучей: фибра дёргает их через
+     * синхронную обёртку, поэтому здесь только голые await-ы без логики. */
+    const api = {
+        async permission_ask() {
+            return await Notification.requestPermission();
+        },
+        async registration() {
+            return await navigator.serviceWorker.ready;
+        },
+        async subscription_get(reg) {
+            return await reg.pushManager.getSubscription();
+        },
+        async subscription_make(reg, key) {
+            return await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: key,
+            });
+        },
+        async subscription_drop(sub) {
+            return await sub.unsubscribe();
+        },
+    };
+    /** Ключ демона приезжает в base64url, а браузер ждёт сырые байты. */
+    function key_bytes(key) {
+        const tail = '='.repeat((4 - key.length % 4) % 4);
+        const raw = atob((key + tail).replace(/-/g, '+').replace(/_/g, '/'));
+        const bytes = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; ++i)
+            bytes[i] = raw.charCodeAt(i);
+        return bytes;
+    }
+    /** Клиент пуш-демона: подписка браузера плюс её регистрация на сервере.
+     * Демон держит endpoint у себя, а не в ленде: в публичном ленде ключи
+     * подписки означали бы, что слать пуши может любой прохожий. */
+    class $bog_gram_notify extends $mol_object {
+        static base = 'https://push.91-188-212-151.ip.giper.dev';
+        /** По http воркер не регистрируется, а ожидание готового так и висит:
+         * лучше честно сказать «не поддерживается», чем подвесить кнопку. */
+        static supported() {
+            if (typeof window === 'undefined')
+                return false;
+            if (typeof navigator === 'undefined')
+                return false;
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost')
+                return false;
+            return 'serviceWorker' in navigator
+                && 'PushManager' in window
+                && 'Notification' in window;
+        }
+        static permission() {
+            if (typeof Notification === 'undefined')
+                return 'default';
+            return Notification.permission;
+        }
+        /** Тело POST-ов шлём без заголовка типа: строка уходит как text/plain,
+         * это простой CORS-запрос без preflight, а демон всё равно парсит JSON. */
+        static send(path, body) {
+            return this.$.$mol_fetch.success(this.base + path, {
+                method: 'POST',
+                body: JSON.stringify(body),
+            });
+        }
+        /** Разрешение, подписка в браузере и отправка её демону. Наружу не роняем:
+         * при отказе кнопка в настройках просто останется выключенной. */
+        static subscribe(lord, monitor) {
+            try {
+                if (!lord || !monitor)
+                    return false;
+                if (!this.supported())
+                    return false;
+                if ($mol_wire_sync(api).permission_ask() !== 'granted')
+                    return false;
+                const reg = $mol_wire_sync(api).registration();
+                // Ключ мог смениться вместе с томом демона, поэтому не кэшируем
+                const answer = this.$.$mol_fetch.json(this.base + '/push/key', {
+                    cache: 'no-store',
+                });
+                const key = answer?.key;
+                if (!key)
+                    return false;
+                // Старая подписка могла быть выпущена под другой ключ: обновить
+                // такую браузер не даст, поэтому сперва снимаем её целиком
+                const stale = $mol_wire_sync(api).subscription_get(reg);
+                if (stale)
+                    $mol_wire_sync(api).subscription_drop(stale);
+                const sub = $mol_wire_sync(api).subscription_make(reg, key_bytes(key));
+                this.send('/push/subscribe', {
+                    lord,
+                    monitor,
+                    subscription: sub.toJSON(),
+                });
+                return true;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return false;
+            }
+        }
+        /** Снимаем подписку с обеих сторон. Браузерная может уже не существовать —
+         * это не повод не сказать демону, что слать больше некому. */
+        static unsubscribe(lord) {
+            try {
+                if (this.supported()) {
+                    const reg = $mol_wire_sync(api).registration();
+                    const sub = $mol_wire_sync(api).subscription_get(reg);
+                    if (sub)
+                        $mol_wire_sync(api).subscription_drop(sub);
+                }
+                if (lord)
+                    this.send('/push/unsubscribe', { lord });
+                return true;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return false;
+            }
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_gram_notify, "subscribe", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_notify, "unsubscribe", null);
+    $.$bog_gram_notify = $bog_gram_notify;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -19936,6 +20295,8 @@ var $;
     (function ($$) {
         const prod_master = 'https://baza.87.120.36.150.ip.giper.dev/';
         const day_ms = 24 * 60 * 60 * 1000;
+        /** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
+        const notify_key = 'bog_gram_notify';
         class $bog_gram extends $.$bog_gram {
             // ===== Подключение к мастеру =====
             baza_master() {
@@ -20241,9 +20602,12 @@ var $;
             settings_opened(next) {
                 return next ?? false;
             }
+            /** Кнопка в шапке работает как переключатель: повторный клик
+             * закрывает уже открытую страницу, а не оставляет её висеть. */
             compose_open(next) {
+                const open = !this.compose_opened();
                 this.settings_opened(false);
-                this.compose_opened(true);
+                this.compose_opened(open);
                 return null;
             }
             compose_close(next) {
@@ -20251,8 +20615,9 @@ var $;
                 return null;
             }
             settings_open(next) {
+                const open = !this.settings_opened();
                 this.compose_opened(false);
-                this.settings_opened(true);
+                this.settings_opened(open);
                 return null;
             }
             settings_close(next) {
@@ -20700,6 +21065,51 @@ var $;
                 this.dialog_pending(lord);
                 return null;
             }
+            // ===== Уведомления =====
+            notify_supported() {
+                return this.$.$bog_gram_notify.supported();
+            }
+            Notify_toggle() {
+                return this.notify_supported() ? super.Notify_toggle() : null;
+            }
+            /** Разрешение браузера само о себе не сообщает: держим копию в меме
+             * и обновляем её после запроса, иначе подпись останется старой. */
+            notify_permission(next) {
+                return next ?? this.$.$bog_gram_notify.permission();
+            }
+            /** Сам браузер о живой подписке расскажет только через воркер, а демон
+             * помнит её по лорду — нам достаточно своей отметки в хранилище. */
+            notify_on(next) {
+                return this.$.$mol_state_local.value(notify_key, next) ?? false;
+            }
+            notify_label() {
+                return this.notify_on() ? 'Выключить' : 'Включить уведомления';
+            }
+            notify_status() {
+                if (!this.notify_supported())
+                    return 'Не поддерживается этим браузером';
+                if (this.notify_permission() === 'denied')
+                    return 'Запрещены в браузере';
+                return this.notify_on() ? 'Уведомления включены' : 'Выключены';
+            }
+            notify_toggle(next) {
+                $mol_wire_async(this).notify_apply(!this.notify_on());
+                return null;
+            }
+            /** Разрешение и сеть ждать из обработчика клика нечем, поэтому вся
+             * работа уезжает в фибру, а сюда возвращается уже итог. */
+            notify_apply(on) {
+                const notify = this.$.$bog_gram_notify;
+                if (!on) {
+                    notify.unsubscribe(this.my_lord());
+                    this.notify_on(false);
+                    return false;
+                }
+                const ok = notify.subscribe(this.my_lord(), this.monitor_land().link().str);
+                this.notify_permission(notify.permission());
+                this.notify_on(ok);
+                return ok;
+            }
             // ===== Автозапуск =====
             setup_ready() {
                 this.user_store();
@@ -20850,6 +21260,8 @@ var $;
         ], $bog_gram.prototype, "settings_opened", null);
         __decorate([
             $mol_action
+            /** Кнопка в шапке работает как переключатель: повторный клик
+             * закрывает уже открытую страницу, а не оставляет её висеть. */
         ], $bog_gram.prototype, "compose_open", null);
         __decorate([
             $mol_action
@@ -20956,6 +21368,12 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "user_pick", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "notify_permission", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "notify_toggle", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "setup_ready", null);
@@ -21252,6 +21670,24 @@ var $;
                     direction: 'column',
                 },
                 gap: $mol_gap.block,
+            },
+            /* строка состояния над кнопкой, а не рядом: подпись длинная,
+            в одну строку с кнопкой она ломает узкую колонку настроек */
+            Notify_body: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Notify_status: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
             },
             My_id_text: {
                 font: {
@@ -27824,6 +28260,20 @@ var $;
         $giper_baza_glob.Seed();
         return ['http://localhost:9090/'];
     };
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async "Get and parse"($) {
+                $mol_assert_equal(await $mol_wire_async($mol_fetch).text('data:text/plain,foo'), 'foo');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;

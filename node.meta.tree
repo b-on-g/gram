@@ -157,3 +157,5 @@
 	deploy \/giper/baza/docker/autopull_and_restart.sh
 \/bog/gram
 	include \/bog/gram/mine
+	include \/bog/gram/notify
+	include \/mol/offline/install
