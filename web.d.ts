@@ -36949,7 +36949,7 @@ declare namespace $ {
 declare namespace $.$$ {
     class $giper_baza_flex_field extends $.$giper_baza_flex_field {
         dict_pawn(): $giper_baza_dict;
-        Sub(): $.$mol_select | $.$mol_expander | $.$mol_drop | $.$mol_number | $.$mol_textarea | $.$mol_date | $mol_check_box | $mol_bar;
+        Sub(): $.$mol_select | $.$mol_textarea | $.$mol_expander | $.$mol_drop | $.$mol_number | $.$mol_date | $mol_check_box | $mol_bar;
         enum(next?: $giper_baza_vary_type): string | number | bigint | boolean | Element | $giper_baza_link | Uint8Array<ArrayBuffer> | Uint16Array<ArrayBuffer> | Uint32Array<ArrayBuffer> | BigUint64Array<ArrayBuffer> | Int8Array<ArrayBuffer> | Int16Array<ArrayBuffer> | Int32Array<ArrayBuffer> | BigInt64Array<ArrayBuffer> | Float64Array<ArrayBuffer> | Float32Array<ArrayBuffer> | $mol_time_moment | $mol_time_duration | $mol_time_interval | $mol_tree2 | readonly $giper_baza_vary_type[] | Readonly<{
             [x: string]: $giper_baza_vary_type;
         }> | null;
@@ -43604,8 +43604,13 @@ declare namespace $.$$ {
     class $bog_gram_avatar extends $.$bog_gram_avatar {
         /** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
          * перекрываются, и у длинных идентификаторов картинка сливается в
-         * сплошное пятно. Берём сетку 3×5 с шагом крупнее толщины: точек
-         * меньше, зато узор читается и остаётся узнаваемым. */
+         * сплошное пятно. Берём шаг крупнее толщины: точек меньше, зато
+         * узор читается и остаётся узнаваемым.
+         *
+         * Сетка прямоугольная, а рамка круглая, поэтому угловые точки
+         * срезались краем. Вписываем узор в окружность: точку, которая не
+         * помещается целиком, просто не рисуем — обрезков не остаётся,
+         * а сам узор становится круглым, как и аватар. */
         path(): string;
     }
     class $bog_gram_chat extends $.$bog_gram_chat {

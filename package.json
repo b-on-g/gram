@@ -381,6 +381,13 @@
     "$mol_fetch",
     "$mol_error_enriched",
     "$mol_error_fence",
+    "$mol_textarea",
+    "$mol_stack",
+    "$mol_text_code",
+    "$mol_text",
+    "$mol_text_code_line",
+    "$mol_text_code_token",
+    "$mol_syntax2_md",
     "$bog_gram_mine",
     "$bog_gram_auth"
   ],
