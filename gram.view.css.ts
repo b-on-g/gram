@@ -9,6 +9,25 @@ namespace $.$$ {
 	/** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
 	const alert_red = '#e14b4b'
 
+	/** Шапка страницы прижата к верху экрана, а на айфоне там статус-бар и
+	 * вырез камеры: свой отступ складываем с системным. Вне телефона добавка
+	 * нулевая, и вёрстка остаётся ровно той же. */
+	const head_pad = {
+		top: $mol_style_func.calc( `${ $mol_gap.block } + env(safe-area-inset-top)` ),
+		bottom: $mol_gap.block,
+		left: $mol_gap.block,
+		right: $mol_gap.block,
+	}
+
+	/** То же снизу: последняя строка страницы не должна уезжать под
+	 * системную полоску-«домой». */
+	const body_pad = {
+		top: $mol_gap.block,
+		bottom: $mol_style_func.calc( `${ $mol_gap.block } + env(safe-area-inset-bottom)` ),
+		left: $mol_gap.block,
+		right: $mol_gap.block,
+	}
+
 	$mol_style_define( $bog_gram, {
 
 		// ===== Страницы буклета =====
@@ -21,6 +40,12 @@ namespace $.$$ {
 			width: '24rem',
 			background: {
 				color: $mol_theme.card,
+			},
+			Head: {
+				padding: head_pad,
+			},
+			Body_content: {
+				padding: body_pad,
 			},
 		},
 
@@ -36,10 +61,22 @@ namespace $.$$ {
 
 		Settings_page: {
 			width: '26rem',
+			Head: {
+				padding: head_pad,
+			},
+			Body_content: {
+				padding: body_pad,
+			},
 		},
 
 		Compose_page: {
 			width: '26rem',
+			Head: {
+				padding: head_pad,
+			},
+			Body_content: {
+				padding: body_pad,
+			},
 		},
 
 		// ===== Заглушка при пустом выборе =====
@@ -1158,6 +1195,8 @@ namespace $.$$ {
 		// ===== Пузыри сообщений =====
 
 		Message_row: {
+			/* якорь для всплывающей панели действий */
+			position: 'relative',
 			flex: {
 				direction: 'column',
 			},
@@ -1222,26 +1261,69 @@ namespace $.$$ {
 			whiteSpace: 'nowrap',
 		},
 
-		Message_edit: {
-			minWidth: '1.5rem',
-			minHeight: '1.5rem',
+		/* Панель правки и удаления: в пузыре её не видно, пока сообщение
+		не выбрано долгим нажатием (на мыши — наведением). Показ включается
+		в gram.view.css: там селектор по двум атрибутам сразу, а тут правило
+		одноатрибутное и проиграло бы ему по специфичности.
+		Из потока панель вынута и всплывает над нижним правым углом своего же
+		пузыря: стань она обычной строкой, каждое наведение мыши сдвигало бы
+		вниз всю переписку под сообщением. */
+		Message_actions: {
+			display: 'none',
+			position: 'absolute',
+			right: '0.25rem',
+			bottom: '0.25rem',
+			zIndex: 1,
+			align: {
+				items: 'center',
+			},
+			gap: '0.25rem',
 			padding: '0.125rem',
+			borderRadius: '1rem',
+			background: {
+				color: $mol_theme.card,
+			},
+			box: {
+				shadow: [
+					{ x: 0, y: '0.125rem', blur: '0.5rem', spread: 0, color: '#00000040' },
+				],
+			},
+		},
+
+		Message_edit: {
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2rem',
+			minHeight: '2rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
 		},
 
 		Message_delete: {
-			minWidth: '1.5rem',
-			minHeight: '1.5rem',
-			padding: '0.125rem',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2rem',
+			minHeight: '2rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
 		},
 
 		Message_edit_icon: {
-			width: '0.9rem',
-			height: '0.9rem',
+			width: '1.125rem',
+			height: '1.125rem',
 		},
 
 		Message_delete_icon: {
-			width: '0.9rem',
-			height: '0.9rem',
+			width: '1.125rem',
+			height: '1.125rem',
 		},
 
 		// ===== Заливки пузырей по теме =====
@@ -1288,6 +1370,100 @@ namespace $.$$ {
 
 		},
 
+		// ===== Телефон =====
+		// Страница занимает вьюпорт целиком, место дороже воздуха: строкам
+		// списка режем отступы, а кнопкам внутри них, наоборот, добавляем —
+		// 2.75rem это 44 точки, минимум под палец по гайдлайну Apple.
+		// Блок последний: специфичность та же, что у базовых правил,
+		// решает порядок.
+
+		'@media': {
+
+			'(max-width: 30rem)': {
+
+				Dialogs_list: {
+					gap: 0,
+				},
+
+				Users_list: {
+					gap: 0,
+				},
+
+				Dialog_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				Saved_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				Archive_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				User_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				/* корзина и архив стоят вплотную, поэтому обеим нужен свой
+				запас по краям: иначе палец накрывает сразу две */
+				Dialog_archive: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Dialog_delete: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Dialog_archive_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Dialog_unarchive_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Dialog_delete_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Registry_drop: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				/* пузырю можно шире: соседней колонки на телефоне всё равно нет */
+				Message_row: {
+					maxWidth: '85%',
+				},
+
+				Message_edit: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Message_delete: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+			},
+
+		},
+
 	} )
 
 	// ===== Аватар-кружок с инициалом =====
@@ -1325,10 +1501,42 @@ namespace $.$$ {
 
 	$mol_style_define( $bog_gram_chat, {
 
+		Head: {
+			align: {
+				items: 'center',
+			},
+			padding: head_pad,
+		},
+
 		Title: {
 			font: {
 				weight: 'bold',
 			},
+		},
+
+		/* Стрелка «назад» слева от имени собеседника — так закрывают чат на
+		телефоне. На широком экране рядом лежит открытый список диалогов,
+		возвращаться некуда, и вместо стрелки работает крестик справа. */
+		Back: {
+			display: 'none',
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2.5rem',
+			minHeight: '2.5rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Back_icon: {
+			width: '1.5rem',
+			height: '1.5rem',
 		},
 
 		Body: {
@@ -1357,6 +1565,8 @@ namespace $.$$ {
 			alignSelf: 'stretch',
 		},
 
+		/* Панель ввода стоит у самого низа экрана, а на айфоне там системная
+		полоска-«домой»: её высоту добавляем к своему отступу. */
 		Foot: {
 			flex: {
 				direction: 'column',
@@ -1365,7 +1575,12 @@ namespace $.$$ {
 				items: 'stretch',
 			},
 			gap: '0.5rem',
-			padding: '0.5rem',
+			padding: {
+				top: '0.5rem',
+				bottom: $mol_style_func.calc( '0.5rem + env(safe-area-inset-bottom)' ),
+				left: '0.5rem',
+				right: '0.5rem',
+			},
 		},
 
 		Edit_banner: {
@@ -1445,6 +1660,29 @@ namespace $.$$ {
 				color: tg_blue,
 			},
 			color: '#ffffff',
+		},
+
+		// ===== Одна страница на экран =====
+		// Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
+		// не помещаются, буклет листается по одной странице — и чат закрывает
+		// стрелка слева, а не крестик справа. Обе кнопки зовут один и тот же
+		// обработчик, поэтому лишнюю просто прячем. Блок последний:
+		// специфичность та же, что у базовых правил, решает порядок.
+
+		'@media': {
+
+			'(max-width: 54rem)': {
+
+				Back: {
+					display: 'flex',
+				},
+
+				Close: {
+					display: 'none',
+				},
+
+			},
+
 		},
 
 	} )

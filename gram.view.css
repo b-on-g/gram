@@ -16,3 +16,28 @@
 	background-color: #e14b4b;
 	color: #ffffff;
 }
+
+/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает
+   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.
+   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,
+   поэтому порядок подключения файлов тут ни на что не влияет. */
+[bog_gram_message_row][bog_gram_menu="true"] [bog_gram_message_actions] {
+	display: flex;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	[bog_gram_message_row]:hover [bog_gram_message_actions] {
+		display: flex;
+	}
+}
+
+/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,
+   а не выделение текста: системную лупу и меню копирования гасим.
+   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */
+@media (hover: none) {
+	[bog_gram_message_row][bog_gram_out="true"] {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		user-select: none;
+	}
+}

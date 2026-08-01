@@ -16,6 +16,11 @@ namespace $.$$ {
 	/** Заголовок избранного: он же в списке, он же в шапке чата. */
 	const saved_name = 'Избранное'
 
+	/** Сколько держать палец на своём пузыре, чтобы под ним раскрылись
+	 * правка и удаление: короче — срабатывает на обычном тапе, длиннее —
+	 * ощущается как зависший интерфейс. */
+	const press_delay = 400
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -356,6 +361,7 @@ namespace $.$$ {
 			this.account_reset()
 			this.edit_id( '' )
 			this.message_text( '' )
+			this.message_menu( '' )
 			this.delete_disarm()
 			this.dialog_current( id )
 			return null
@@ -365,6 +371,7 @@ namespace $.$$ {
 		dialog_close( next?: any ) {
 			this.edit_id( '' )
 			this.message_text( '' )
+			this.message_menu( '' )
 			this.delete_disarm()
 			this.dialog_current( '' )
 			return null
@@ -889,12 +896,89 @@ namespace $.$$ {
 			return this.message_checks( id ) ? super.Message_checks( id ) : null!
 		}
 
-		override Message_edit( id: string ) {
-			return this.message_out( id ) ? super.Message_edit( id ) : null!
+		// ===== Действия над сообщением =====
+
+		/** Чужое сообщение править и удалять нечем: панель есть только у своих. */
+		override Message_actions( id: string ) {
+			return this.message_out( id ) ? super.Message_actions( id ) : null!
 		}
 
-		override Message_delete( id: string ) {
-			return this.message_out( id ) ? super.Message_delete( id ) : null!
+		/** Пузырь с раскрытой панелью ровно один: второе долгое нажатие
+		 * переносит её на новое сообщение, а не плодит вторую. */
+		@$mol_mem
+		message_menu( next?: string ) {
+			return next ?? ''
+		}
+
+		@$mol_mem_key
+		message_menu_is( id: string ) {
+			return this.message_menu() === id
+		}
+
+		/** Отсчёт удержания живёт между двумя разными обработчиками, поэтому это
+		 * обычные поля, а не мемы: мем сбросился бы вместе с фиброй предыдущего
+		 * события, и отпускание пальца не увидело бы, что нажатие было долгим. */
+		press_timer: ReturnType< typeof setTimeout > | null = null
+		press_row = ''
+		press_held = false
+
+		press_stop() {
+			if( this.press_timer !== null ) this.$.$mol_dom_context.clearTimeout( this.press_timer )
+			this.press_timer = null
+		}
+
+		@$mol_action
+		message_press( id: string, next?: Event ) {
+			this.press_stop()
+			this.press_row = id
+			this.press_held = false
+			if( !this.message_out( id ) ) return null
+			this.press_timer = this.$.$mol_dom_context.setTimeout( ()=> this.message_hold( id ), press_delay )
+			return null
+		}
+
+		@$mol_action
+		message_hold( id: string ) {
+			this.press_timer = null
+			this.press_held = true
+			this.message_menu( id )
+			return null
+		}
+
+		/** Отпускание пальца внутри самой панели: по нему прятать её нельзя.
+		 * Клик браузер шлёт уже после отпускания, и кнопка, успевшая пропасть
+		 * из вёрстки, его не получит — правка и удаление просто не сработают. */
+		press_on_actions( next?: Event ) {
+			const spot = next?.target
+			if( !( spot instanceof this.$.$mol_dom_context.Element ) ) return false
+			return Boolean( spot.closest( '[bog_gram_message_actions]' ) )
+		}
+
+		/** Короткий тап по своему пузырю прячет раскрытую панель обратно. Отмена
+		 * жеста (палец поехал прокручивать ленту) приходит сюда же и делает то
+		 * же самое, а вот отпускание после сработавшего удержания — нет, иначе
+		 * панель закрывалась бы в тот же момент, когда открылась. */
+		@$mol_action
+		message_release( id: string, next?: Event ) {
+			const held = this.press_held && this.press_row === id
+			this.press_stop()
+			this.press_held = false
+			if( held ) return null
+			if( this.press_on_actions( next ) ) return null
+			if( this.message_menu() === id ) this.message_menu( '' )
+			return null
+		}
+
+		/** На телефоне это тот же долгий тап, на десктопе — правый клик.
+		 * Показываем свою панель, поэтому системное меню гасим. */
+		@$mol_action
+		message_context( id: string, next?: Event ) {
+			if( !this.message_out( id ) ) return null
+			next?.preventDefault()
+			this.press_stop()
+			this.press_held = true
+			this.message_menu( id )
+			return null
 		}
 
 		// ===== Отправка, правка, удаление =====
@@ -910,6 +994,7 @@ namespace $.$$ {
 
 		@$mol_action
 		message_edit( id: string, next?: any ) {
+			this.message_menu( '' )
 			this.edit_id( id )
 			this.message_text( this.message_body( id ) )
 			return null
@@ -924,6 +1009,7 @@ namespace $.$$ {
 
 		@$mol_action
 		message_delete( id: string, next?: any ) {
+			this.message_menu( '' )
 			const pawn = this.message_pawn( id )
 			if( !pawn ) return null
 			pawn.Deleted( 'auto' )?.val( Date.now() )
@@ -936,6 +1022,7 @@ namespace $.$$ {
 
 		@$mol_action
 		message_send( next?: any ) {
+			this.message_menu( '' )
 			const text = this.message_text().trim()
 			const editing = this.edit_id()
 
