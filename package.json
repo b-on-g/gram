@@ -349,6 +349,10 @@
     "$mol_memory",
     "$mol_bus",
     "$mol_button_major",
+    "$bog_qr",
+    "$mol_import",
+    "$mol_button_open",
+    "$mol_icon_upload",
     "$mol_icon_pencil",
     "$mol_icon_delete",
     "$mol_icon_send",
@@ -367,7 +371,8 @@
     "$mol_fetch",
     "$mol_error_enriched",
     "$mol_error_fence",
-    "$bog_gram_mine"
+    "$bog_gram_mine",
+    "$bog_gram_auth"
   ],
   "dependencies": {
     "autoinstall": "*",

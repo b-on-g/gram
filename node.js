@@ -18963,6 +18963,605 @@ var $;
 
 
 ;
+	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
+		stop_offset(id){
+			return "0%";
+		}
+		stop_color(id){
+			return "";
+		}
+		qr_view_box(){
+			return "0 0 1 1";
+		}
+		grad_x1(){
+			return "0";
+		}
+		grad_y1(){
+			return "0";
+		}
+		grad_x2(){
+			return "1";
+		}
+		grad_y2(){
+			return "1";
+		}
+		gradient_stop_list(){
+			return [];
+		}
+		Gradient(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("linearGradient");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"id": (this.gradient_id()), 
+				"x1": (this.grad_x1()), 
+				"y1": (this.grad_y1()), 
+				"x2": (this.grad_x2()), 
+				"y2": (this.grad_y2())
+			});
+			(obj.sub) = () => ((this.gradient_stop_list()));
+			return obj;
+		}
+		Defs(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("defs");
+			(obj.sub) = () => ([(this.Gradient())]);
+			return obj;
+		}
+		modules_d(){
+			return "";
+		}
+		Modules(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.modules_d()));
+			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
+			return obj;
+		}
+		rings_d(){
+			return "";
+		}
+		Rings(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.rings_d()));
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg_path.prototype.attr.call(obj)), 
+				"fill": (this.gradient_fill()), 
+				"fill-rule": "evenodd"
+			});
+			return obj;
+		}
+		centers_d(){
+			return "";
+		}
+		Centers(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.centers_d()));
+			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "fill": (this.gradient_fill())});
+			return obj;
+		}
+		center_x(){
+			return "0";
+		}
+		center_y(){
+			return "0";
+		}
+		center_size(){
+			return "0";
+		}
+		Center_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.center()));
+			return obj;
+		}
+		Center_wrap(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("foreignObject");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"x": (this.center_x()), 
+				"y": (this.center_y()), 
+				"width": (this.center_size()), 
+				"height": (this.center_size())
+			});
+			(obj.sub) = () => ([(this.Center_body())]);
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		module_radius(){
+			return 0.35;
+		}
+		finder_radius(){
+			return 1.2;
+		}
+		gradient_angle(){
+			return 45;
+		}
+		error_correction(){
+			return "M";
+		}
+		quiet_zone(){
+			return 2;
+		}
+		center(){
+			return [];
+		}
+		gradient_id(){
+			return "qr-grad";
+		}
+		gradient_fill(){
+			return "url(#qr-grad)";
+		}
+		gradient_stops(){
+			return ["var(--mol_theme_special)", "var(--mol_theme_focus)"];
+		}
+		Stop(id){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("stop");
+			(obj.attr) = () => ({
+				...(this.$.$mol_svg.prototype.attr.call(obj)), 
+				"offset": (this.stop_offset(id)), 
+				"stop-color": (this.stop_color(id))
+			});
+			return obj;
+		}
+		view_box(){
+			return (this.qr_view_box());
+		}
+		sub(){
+			return [
+				(this.Defs()), 
+				(this.Modules()), 
+				(this.Rings()), 
+				(this.Centers()), 
+				(this.Center_wrap())
+			];
+		}
+	};
+	($mol_mem(($.$bog_qr.prototype), "Gradient"));
+	($mol_mem(($.$bog_qr.prototype), "Defs"));
+	($mol_mem(($.$bog_qr.prototype), "Modules"));
+	($mol_mem(($.$bog_qr.prototype), "Rings"));
+	($mol_mem(($.$bog_qr.prototype), "Centers"));
+	($mol_mem(($.$bog_qr.prototype), "Center_body"));
+	($mol_mem(($.$bog_qr.prototype), "Center_wrap"));
+	($mol_mem_key(($.$bog_qr.prototype), "Stop"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Dynamic sources import. */
+    class $mol_import extends $mol_object2 {
+        static module(uri) {
+            $mol_wire_solid();
+            return $mol_wire_sync(this).module_async(uri);
+        }
+        static module_async(uri) {
+            return import(uri);
+        }
+        static script(uri) {
+            $mol_wire_solid();
+            return $mol_wire_sync(this).script_async(uri);
+        }
+        static script_async(uri) {
+            const doc = $mol_dom_context.document;
+            const script = doc.createElement('script');
+            script.src = uri;
+            doc.head.appendChild(script);
+            return new Promise((done, fail) => {
+                script.onload = () => done($mol_dom_context);
+                script.onerror = () => fail(new Error(`Can not import ${uri}`));
+            });
+        }
+        static style(uri) {
+            return $mol_wire_sync(this).style_async(uri);
+        }
+        static style_async(uri) {
+            const doc = $mol_dom_context.document;
+            const style = doc.createElement('link');
+            style.rel = 'stylesheet';
+            style.href = uri;
+            doc.head.appendChild(style);
+            return new Promise((done, fail) => {
+                style.onload = () => done(style.sheet);
+                style.onerror = () => fail(new Error(`Can not import ${uri}`));
+            });
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "module", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "script", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_import, "style", null);
+    $.$mol_import = $mol_import;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        let grad_counter = 0;
+        class $bog_qr extends $.$bog_qr {
+            gradient_id() {
+                return 'qr-grad-' + (++grad_counter);
+            }
+            gradient_fill() {
+                return `url(#${this.gradient_id()})`;
+            }
+            grad_x1() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 - Math.cos(a) * 0.5);
+            }
+            grad_y1() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 - Math.sin(a) * 0.5);
+            }
+            grad_x2() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 + Math.cos(a) * 0.5);
+            }
+            grad_y2() {
+                const a = this.gradient_angle() * Math.PI / 180;
+                return String(0.5 + Math.sin(a) * 0.5);
+            }
+            gradient_stop_list() {
+                const colors = this.gradient_stops();
+                return colors.map((_, i) => this.Stop(i));
+            }
+            stop_offset(index) {
+                const colors = this.gradient_stops();
+                if (colors.length <= 1)
+                    return '0%';
+                return Math.round(index / (colors.length - 1) * 100) + '%';
+            }
+            stop_color(index) {
+                return this.gradient_stops()[index];
+            }
+            qr_lib() {
+                return $mol_import.script('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js');
+            }
+            qr_matrix() {
+                this.qr_lib();
+                const data = this.uri();
+                if (!data)
+                    return null;
+                const qr = qrcode(0, this.error_correction());
+                qr.addData(data);
+                qr.make();
+                const count = qr.getModuleCount();
+                const matrix = [];
+                for (let r = 0; r < count; r++) {
+                    matrix[r] = [];
+                    for (let c = 0; c < count; c++) {
+                        matrix[r][c] = qr.isDark(r, c);
+                    }
+                }
+                return matrix;
+            }
+            qr_view_box() {
+                const matrix = this.qr_matrix();
+                if (!matrix)
+                    return '0 0 1 1';
+                const total = matrix.length + this.quiet_zone() * 2;
+                return `0 0 ${total} ${total}`;
+            }
+            qr_paths() {
+                const matrix = this.qr_matrix();
+                if (!matrix)
+                    return { modules: '', rings: '', centers: '' };
+                const count = matrix.length;
+                const quiet = this.quiet_zone();
+                const r = this.module_radius();
+                const dark = (row, col) => row >= 0 && row < count && col >= 0 && col < count && matrix[row][col];
+                const isFinder = (row, col) => (row < 7 && col < 7) || (row < 7 && col >= count - 7) || (row >= count - 7 && col < 7);
+                const hasCenter = this.center().length > 0;
+                const centerRadius = hasCenter ? count * 0.15 : 0;
+                const centerMid = count / 2;
+                const isCenter = (row, col) => {
+                    if (!hasCenter)
+                        return false;
+                    const dx = col + 0.5 - centerMid;
+                    const dy = row + 0.5 - centerMid;
+                    return dx * dx + dy * dy < centerRadius * centerRadius;
+                };
+                let modules = '';
+                for (let row = 0; row < count; row++) {
+                    for (let col = 0; col < count; col++) {
+                        if (!matrix[row][col])
+                            continue;
+                        if (isFinder(row, col))
+                            continue;
+                        if (isCenter(row, col))
+                            continue;
+                        const x = col + quiet;
+                        const y = row + quiet;
+                        const top = dark(row - 1, col);
+                        const bottom = dark(row + 1, col);
+                        const left = dark(row, col - 1);
+                        const right = dark(row, col + 1);
+                        const alone = !top && !bottom && !left && !right;
+                        if (alone) {
+                            const cx = x + 0.5;
+                            const cy = y + 0.5;
+                            const cr = 0.5;
+                            modules += `M${cx - cr},${cy}A${cr},${cr},0,1,1,${cx + cr},${cy}A${cr},${cr},0,1,1,${cx - cr},${cy}Z`;
+                        }
+                        else {
+                            const tl = !top && !left ? r : 0;
+                            const tr = !top && !right ? r : 0;
+                            const br = !bottom && !right ? r : 0;
+                            const bl = !bottom && !left ? r : 0;
+                            modules += this.rect_path(x, y, 1, 1, tl, tr, br, bl);
+                        }
+                    }
+                }
+                const fr = this.finder_radius();
+                const finders = [
+                    [quiet, quiet],
+                    [count - 7 + quiet, quiet],
+                    [quiet, count - 7 + quiet],
+                ];
+                let rings = '';
+                let centers = '';
+                for (const [fx, fy] of finders) {
+                    rings += this.rect_path(fx, fy, 7, 7, fr, fr, fr, fr);
+                    rings += this.rect_path(fx + 1, fy + 1, 5, 5, fr * 0.7, fr * 0.7, fr * 0.7, fr * 0.7);
+                    centers += this.rect_path(fx + 2, fy + 2, 3, 3, fr * 0.5, fr * 0.5, fr * 0.5, fr * 0.5);
+                }
+                return { modules, rings, centers };
+            }
+            center_area() {
+                const matrix = this.qr_matrix();
+                if (!matrix || this.center().length === 0)
+                    return { x: 0, y: 0, size: 0 };
+                const count = matrix.length;
+                const quiet = this.quiet_zone();
+                const centerSize = count * 0.3;
+                const total = count + quiet * 2;
+                return {
+                    x: (total - centerSize) / 2,
+                    y: (total - centerSize) / 2,
+                    size: centerSize,
+                };
+            }
+            center_x() {
+                return String(this.center_area().x);
+            }
+            center_y() {
+                return String(this.center_area().y);
+            }
+            center_size() {
+                return String(this.center_area().size);
+            }
+            modules_d() {
+                return this.qr_paths().modules;
+            }
+            rings_d() {
+                return this.qr_paths().rings;
+            }
+            centers_d() {
+                return this.qr_paths().centers;
+            }
+            rect_path(x, y, w, h, tl, tr, br, bl) {
+                return [
+                    `M${x + tl},${y}`,
+                    `H${x + w - tr}`,
+                    tr ? `A${tr},${tr},0,0,1,${x + w},${y + tr}` : '',
+                    `V${y + h - br}`,
+                    br ? `A${br},${br},0,0,1,${x + w - br},${y + h}` : '',
+                    `H${x + bl}`,
+                    bl ? `A${bl},${bl},0,0,1,${x},${y + h - bl}` : '',
+                    `V${y + tl}`,
+                    tl ? `A${tl},${tl},0,0,1,${x + tl},${y}` : '',
+                    'Z',
+                ]
+                    .filter(Boolean)
+                    .join('');
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_id", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_fill", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_x1", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_y1", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_x2", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "grad_y2", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "gradient_stop_list", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_lib", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_matrix", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_view_box", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "qr_paths", null);
+        __decorate([
+            $mol_mem
+        ], $bog_qr.prototype, "center_area", null);
+        $$.$bog_qr = $bog_qr;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_qr, {
+            width: '300px',
+            height: '300px',
+            Center_body: {
+                width: '80%',
+                height: '80%',
+                position: 'absolute',
+                top: '10%',
+                left: '10%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
+		path(){
+			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_upload();
+			return obj;
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		files_handled(next){
+			return (this.files(next));
+		}
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		Native(){
+			const obj = new this.$.$mol_button_open_native();
+			(obj.files) = (next) => ((this.files_handled(next)));
+			(obj.accept) = () => ((this.accept()));
+			(obj.multiple) = () => ((this.multiple()));
+			return obj;
+		}
+		sub(){
+			return [(this.Icon()), (this.Native())];
+		}
+	};
+	($mol_mem(($.$mol_button_open.prototype), "Icon"));
+	($mol_mem(($.$mol_button_open.prototype), "files"));
+	($mol_mem(($.$mol_button_open.prototype), "Native"));
+	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		picked(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "input";
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		attr(){
+			return {
+				"type": "file", 
+				"accept": (this.accept()), 
+				"multiple": (this.multiple())
+			};
+		}
+		event(){
+			return {"change": (next) => (this.picked(next))};
+		}
+	};
+	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
+	($mol_mem(($.$mol_button_open_native.prototype), "files"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_button_open extends $.$mol_button_open {
+            files_handled(next) {
+                try {
+                    const files = this.files(next);
+                    this.status([null]);
+                    return files;
+                }
+                catch (error) {
+                    // Calling actions from catch section, if throwing promise breaks idempotency
+                    Promise.resolve().then(() => this.status([error]));
+                    $mol_fail_hidden(error);
+                }
+            }
+        }
+        $$.$mol_button_open = $mol_button_open;
+        /**
+         * File open button
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_open_native extends $.$mol_button_open_native {
+            dom_node() {
+                return super.dom_node();
+            }
+            picked() {
+                const files = this.dom_node().files;
+                if (!files || !files.length)
+                    return;
+                this.files([...files]);
+            }
+        }
+        $$.$mol_button_open_native = $mol_button_open_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
+})($ || ($ = {}));
+
+;
 	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
 		path(){
 			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
@@ -19173,6 +19772,20 @@ var $;
 			(obj.content) = () => ((this.registry_content()));
 			return obj;
 		}
+		account_rows(){
+			return [];
+		}
+		Account_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.account_rows()));
+			return obj;
+		}
+		Account(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Аккаунт");
+			(obj.content) = () => ([(this.Account_body())]);
+			return obj;
+		}
 		Settings_page(){
 			const obj = new this.$.$mol_page();
 			(obj.title) = () => ("Настройки");
@@ -19182,7 +19795,8 @@ var $;
 				(this.My_id()), 
 				(this.Sync()), 
 				(this.Notify()), 
-				(this.Registry_block())
+				(this.Registry_block()), 
+				(this.Account())
 			]);
 			return obj;
 		}
@@ -19317,6 +19931,93 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		key_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		key_toggle_label(){
+			return "";
+		}
+		key_text(){
+			return "";
+		}
+		Key_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.key_text()));
+			return obj;
+		}
+		Key_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.key_text()));
+			return obj;
+		}
+		Key_qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.key_text()));
+			return obj;
+		}
+		key_save(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		key_input(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Key_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Ключ аккаунта");
+			(obj.value) = (next) => ((this.key_input(next)));
+			return obj;
+		}
+		Key_load_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Или загрузите файл с ключом");
+			return obj;
+		}
+		key_file(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Key_open(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ("Выбрать файл");
+			(obj.accept) = () => (".key,text/plain");
+			(obj.multiple) = () => (false);
+			(obj.files) = (next) => ((this.key_file(next)));
+			return obj;
+		}
+		Key_load_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Key_load_hint()), (this.Key_open())]);
+			return obj;
+		}
+		import_armed(){
+			return false;
+		}
+		key_import(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		key_import_label(){
+			return "";
+		}
+		Key_import(){
+			const obj = new this.$.$mol_button_major();
+			(obj.attr) = () => ({...(this.$.$mol_button_major.prototype.attr.call(obj)), "bog_gram_armed": (this.import_armed())});
+			(obj.click) = (next) => ((this.key_import(next)));
+			(obj.sub) = () => ([(this.key_import_label())]);
+			return obj;
+		}
+		key_error(){
+			return "";
+		}
+		Key_error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.key_error()));
+			return obj;
+		}
 		dialog_select(id, next){
 			if(next !== undefined) return next;
 			return null;
@@ -19324,7 +20025,7 @@ var $;
 		dialog_current_is(id){
 			return false;
 		}
-		dialog_letter(id){
+		dialog_avatar_id(id){
 			return "";
 		}
 		dialog_tint(id){
@@ -19332,7 +20033,7 @@ var $;
 		}
 		Dialog_avatar(id){
 			const obj = new this.$.$bog_gram_avatar();
-			(obj.letter) = () => ((this.dialog_letter(id)));
+			(obj.id) = () => ((this.dialog_avatar_id(id)));
 			(obj.tint) = () => ((this.dialog_tint(id)));
 			return obj;
 		}
@@ -19387,7 +20088,7 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		user_letter(id){
+		user_lord(id){
 			return "";
 		}
 		user_tint(id){
@@ -19395,7 +20096,7 @@ var $;
 		}
 		User_avatar(id){
 			const obj = new this.$.$bog_gram_avatar();
-			(obj.letter) = () => ((this.user_letter(id)));
+			(obj.id) = () => ((this.user_lord(id)));
 			(obj.tint) = () => ((this.user_tint(id)));
 			return obj;
 		}
@@ -19523,6 +20224,43 @@ var $;
 			(obj.title) = () => ("Реестр подключён");
 			return obj;
 		}
+		Key_toggle(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.key_toggle(next)));
+			(obj.sub) = () => ([(this.key_toggle_label())]);
+			return obj;
+		}
+		Key_warning(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.");
+			return obj;
+		}
+		Key_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Key_text()), (this.Key_copy())]);
+			return obj;
+		}
+		Key_qr_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Key_qr())]);
+			return obj;
+		}
+		Key_save(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.key_save(next)));
+			(obj.sub) = () => (["Скачать файл"]);
+			return obj;
+		}
+		Key_import_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Key_field()), 
+				(this.Key_load_row()), 
+				(this.Key_import()), 
+				(this.Key_error())
+			]);
+			return obj;
+		}
 		Dialog_row(id){
 			const obj = new this.$.$mol_button_minor();
 			(obj.click) = (next) => ((this.dialog_select(id, next)));
@@ -19578,6 +20316,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Notify_body"));
 	($mol_mem(($.$bog_gram.prototype), "Notify"));
 	($mol_mem(($.$bog_gram.prototype), "Registry_block"));
+	($mol_mem(($.$bog_gram.prototype), "Account_body"));
+	($mol_mem(($.$bog_gram.prototype), "Account"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
 	($mol_mem(($.$bog_gram.prototype), "compose_close"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_close_icon"));
@@ -19599,6 +20339,20 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "registry_make"));
+	($mol_mem(($.$bog_gram.prototype), "key_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Key_text"));
+	($mol_mem(($.$bog_gram.prototype), "Key_copy"));
+	($mol_mem(($.$bog_gram.prototype), "Key_qr"));
+	($mol_mem(($.$bog_gram.prototype), "key_save"));
+	($mol_mem(($.$bog_gram.prototype), "key_input"));
+	($mol_mem(($.$bog_gram.prototype), "Key_field"));
+	($mol_mem(($.$bog_gram.prototype), "Key_load_hint"));
+	($mol_mem(($.$bog_gram.prototype), "key_file"));
+	($mol_mem(($.$bog_gram.prototype), "Key_open"));
+	($mol_mem(($.$bog_gram.prototype), "Key_load_row"));
+	($mol_mem(($.$bog_gram.prototype), "key_import"));
+	($mol_mem(($.$bog_gram.prototype), "Key_import"));
+	($mol_mem(($.$bog_gram.prototype), "Key_error"));
 	($mol_mem_key(($.$bog_gram.prototype), "dialog_select"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_title"));
@@ -19627,6 +20381,12 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Users_empty"));
 	($mol_mem(($.$bog_gram.prototype), "Registry_make"));
 	($mol_mem(($.$bog_gram.prototype), "Registry_ready"));
+	($mol_mem(($.$bog_gram.prototype), "Key_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Key_warning"));
+	($mol_mem(($.$bog_gram.prototype), "Key_row"));
+	($mol_mem(($.$bog_gram.prototype), "Key_qr_box"));
+	($mol_mem(($.$bog_gram.prototype), "Key_save"));
+	($mol_mem(($.$bog_gram.prototype), "Key_import_form"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
@@ -19770,8 +20530,8 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Foot"));
-	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_view) {
-		letter(){
+	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_avatar) {
+		id(){
 			return "";
 		}
 		tint(){
@@ -19779,9 +20539,6 @@ var $;
 		}
 		attr(){
 			return {...(super.attr()), "bog_gram_tint": (this.tint())};
-		}
-		sub(){
-			return [(this.letter())];
 		}
 	};
 
@@ -20306,6 +21063,10 @@ var $;
         const day_ms = 24 * 60 * 60 * 1000;
         /** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
         const notify_key = 'bog_gram_notify';
+        /** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
+        const auth_size = 128;
+        /** Имя файла, в который сохраняется ключ аккаунта. */
+        const auth_file = 'gram-account.key';
         class $bog_gram extends $.$bog_gram {
             // ===== Подключение к мастеру =====
             baza_master() {
@@ -20409,16 +21170,6 @@ var $;
                 return this.peer_store(lord).Name()?.val() ?? '';
             }
             // ===== Аватары =====
-            /** Инициал в кружке: первая буква имени собеседника, а пока имя не
-             * приехало — первый символ самого лорда. Имя может начинаться с пробела
-             * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
-            avatar_letter(lord) {
-                if (!lord)
-                    return '';
-                const source = this.peer_name(lord) || lord;
-                const char = [...source].find(symbol => symbol.trim());
-                return char ? char.toUpperCase() : '';
-            }
             /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
             avatar_tint(lord) {
                 let hash = 0;
@@ -20427,11 +21178,11 @@ var $;
                 return hash;
             }
             /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
-             * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
-             * сохраняется, буква и цвет проявятся сами. */
-            dialog_letter(id) {
+             * весь список, поэтому пока рисуем пустой кружок — подписка
+             * сохраняется, узор и цвет проявятся сами. */
+            dialog_avatar_id(id) {
                 try {
-                    return this.avatar_letter(this.dialog_peer(id));
+                    return this.dialog_peer(id);
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -20447,16 +21198,6 @@ var $;
                     if (!$mol_promise_like(error))
                         $mol_fail_log(error);
                     return 0;
-                }
-            }
-            user_letter(lord) {
-                try {
-                    return this.avatar_letter(lord);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
                 }
             }
             user_tint(lord) {
@@ -20526,6 +21267,7 @@ var $;
             dialog_select(id, next) {
                 this.compose_opened(false);
                 this.settings_opened(false);
+                this.account_reset();
                 this.edit_id('');
                 this.message_text('');
                 this.delete_armed(false);
@@ -20617,6 +21359,7 @@ var $;
                 const open = !this.compose_opened();
                 this.settings_opened(false);
                 this.compose_opened(open);
+                this.account_reset();
                 return null;
             }
             compose_close(next) {
@@ -20627,10 +21370,12 @@ var $;
                 const open = !this.settings_opened();
                 this.compose_opened(false);
                 this.settings_opened(open);
+                this.account_reset();
                 return null;
             }
             settings_close(next) {
                 this.settings_opened(false);
+                this.account_reset();
                 return null;
             }
             pages() {
@@ -21119,6 +21864,126 @@ var $;
                 this.notify_on(ok);
                 return ok;
             }
+            // ===== Ключ аккаунта: показ и экспорт =====
+            /** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
+             * не уезжает: только на экран и только по явной просьбе. */
+            key_text() {
+                const auth = this.$.$giper_baza_auth.current();
+                return auth.toString() + auth.toStringPrivate();
+            }
+            key_shown(next) {
+                return next ?? false;
+            }
+            key_toggle_label() {
+                return this.key_shown() ? 'Скрыть ключ' : 'Показать ключ';
+            }
+            key_toggle(next) {
+                this.key_shown(!this.key_shown());
+                return null;
+            }
+            /** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
+             * останется на экране, а следующий одиночный клик сменит аккаунт. */
+            account_reset() {
+                this.key_shown(false);
+                this.import_armed(false);
+                this.key_error('');
+            }
+            /** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
+             * ни QR — в дереве компонентов их просто нет. */
+            account_rows() {
+                if (!this.key_shown())
+                    return [this.Key_toggle(), this.Key_import_form()];
+                return [
+                    this.Key_toggle(),
+                    this.Key_warning(),
+                    this.Key_row(),
+                    this.Key_qr_box(),
+                    this.Key_save(),
+                    this.Key_import_form(),
+                ];
+            }
+            /** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
+             * программно и тут же освобождаем, в документе она не остаётся. */
+            key_save(next) {
+                const context = this.$.$mol_dom_context;
+                const blob = new Blob([this.key_text()], { type: 'text/plain' });
+                const uri = context.URL.createObjectURL(blob);
+                const link = context.document.createElement('a');
+                link.href = uri;
+                link.download = auth_file;
+                context.document.body.appendChild(link);
+                link.click();
+                link.remove();
+                context.URL.revokeObjectURL(uri);
+                return null;
+            }
+            // ===== Вход по чужому ключу =====
+            key_error(next) {
+                return next ?? '';
+            }
+            Key_error() {
+                return this.key_error() ? super.Key_error() : null;
+            }
+            import_armed(next) {
+                return next ?? false;
+            }
+            key_import_label() {
+                return this.import_armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу';
+            }
+            /** Ключом считаем только строку полного размера: обрезок или случайный
+             * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
+            auth_from(str) {
+                try {
+                    const auth = this.$.$giper_baza_auth.from(str);
+                    return auth.byteLength === auth_size ? auth : null;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    return null;
+                }
+            }
+            /** Первый клик взводит кнопку, второй применяет — как корзина в чате.
+             * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
+            key_import(next) {
+                const str = this.key_input().trim();
+                if (!str) {
+                    this.key_error('Вставьте ключ или загрузите файл');
+                    return null;
+                }
+                const auth = this.auth_from(str);
+                if (!auth) {
+                    this.import_armed(false);
+                    this.key_error('Это не похоже на ключ аккаунта');
+                    return null;
+                }
+                if (!this.import_armed()) {
+                    this.key_error('');
+                    this.import_armed(true);
+                    return null;
+                }
+                // Подписка на пуши выдана прежнему лорду и новому уже не подходит:
+                // снимаем отметку, чтобы настройки не обещали то, чего нет
+                this.notify_on(false);
+                this.$.$giper_baza_auth.current(auth);
+                // Весь граф данных завязан на текущий ключ, поэтому проще начать страницу заново
+                this.$.$mol_dom_context.location.reload();
+                return null;
+            }
+            /** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
+            key_file(next) {
+                const file = next?.[0];
+                if (file)
+                    $mol_wire_async(this).key_file_read(file);
+                return next ?? null;
+            }
+            key_file_read(file) {
+                const text = $mol_wire_sync(file).text();
+                this.key_input(text.trim());
+                this.import_armed(false);
+                this.key_error('');
+                return true;
+            }
             // ===== Автозапуск =====
             setup_ready() {
                 this.user_store();
@@ -21209,13 +22074,10 @@ var $;
         ], $bog_gram.prototype, "peer_name", null);
         __decorate([
             $mol_mem_key
-        ], $bog_gram.prototype, "dialog_letter", null);
+        ], $bog_gram.prototype, "dialog_avatar_id", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_tint", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "user_letter", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_ids", null);
@@ -21385,8 +22247,55 @@ var $;
         ], $bog_gram.prototype, "notify_toggle", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "key_shown", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "key_toggle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "account_rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "key_save", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "key_error", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "import_armed", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "key_import", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "setup_ready", null);
         $$.$bog_gram = $bog_gram;
+        class $bog_gram_avatar extends $.$bog_gram_avatar {
+            /** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
+             * перекрываются, и у длинных идентификаторов картинка сливается в
+             * сплошное пятно. Берём сетку 3×5 с шагом крупнее толщины: точек
+             * меньше, зато узор читается и остаётся узнаваемым. */
+            path() {
+                const id = $mol_hash_string(this.id());
+                const start = 3;
+                const step = 4.5;
+                let path = '';
+                for (let x = 0; x < 3; ++x) {
+                    for (let y = 0; y < 5; ++y) {
+                        if (!((id >> (x + y * 3)) & 1))
+                            continue;
+                        const px = Math.ceil(step * x + start);
+                        const py = Math.ceil(step * y + start);
+                        path += `M ${px} ${py} l 0 0 ` + `M ${24 - px} ${py} l 0 0 `;
+                    }
+                }
+                return path;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_avatar.prototype, "path", null);
+        $$.$bog_gram_avatar = $bog_gram_avatar;
         class $bog_gram_chat extends $.$bog_gram_chat {
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
@@ -21428,6 +22337,8 @@ var $;
         const tg_blue = '#229ED9';
         /** Нейтральная полупрозрачная заливка: чуть темнее на светлой теме, чуть светлее на тёмной. */
         const veil = '#8888881a';
+        /** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
+        const alert_red = '#e14b4b';
         $mol_style_define($bog_gram, {
             // ===== Страницы буклета =====
             // Книга сама даёт страницам flex-shrink: 0, а $mol_page — maxWidth: 100%.
@@ -21524,9 +22435,6 @@ var $;
             Dialog_avatar: {
                 width: '3rem',
                 height: '3rem',
-                font: {
-                    size: '1.125rem',
-                },
             },
             Dialog_info: {
                 flex: {
@@ -21658,9 +22566,6 @@ var $;
             User_avatar: {
                 width: '2.5rem',
                 height: '2.5rem',
-                font: {
-                    size: '1rem',
-                },
             },
             User_title: {
                 display: 'block',
@@ -21698,6 +22603,13 @@ var $;
                 },
                 color: $mol_theme.shade,
             },
+            My_id: {
+                Content: {
+                    align: {
+                        items: 'center',
+                    },
+                },
+            },
             My_id_text: {
                 font: {
                     family: 'monospace',
@@ -21708,6 +22620,98 @@ var $;
                     x: 'auto',
                 },
                 whiteSpace: 'nowrap',
+            },
+            // ===== Ключ аккаунта =====
+            Account_body: {
+                alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Key_warning: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: alert_red,
+            },
+            Key_row: {
+                alignSelf: 'stretch',
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            /* ключ длинный и без пробелов: прокручиваем его, а не ломаем колонку */
+            Key_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                minWidth: 0,
+                overflow: {
+                    x: 'auto',
+                },
+                whiteSpace: 'nowrap',
+            },
+            Key_qr_box: {
+                alignSelf: 'stretch',
+                justify: {
+                    content: 'center',
+                },
+            },
+            /* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
+            Key_qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '12rem',
+                height: '12rem',
+                maxWidth: '100%',
+            },
+            Key_import_form: {
+                alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Key_load_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Key_load_hint: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Key_error: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: alert_red,
             },
             // ===== Разделитель дня =====
             Day_row: {
@@ -21862,55 +22866,22 @@ var $;
             flex: {
                 shrink: 0,
             },
-            justify: {
-                content: 'center',
-            },
-            align: {
-                items: 'center',
-            },
             borderRadius: '50%',
-            color: '#ffffff',
-            font: {
-                weight: 'bold',
+            background: {
+                color: veil,
             },
-            userSelect: 'none',
+            padding: '0.25rem',
+            // Узор рисуется обводкой currentColor, поэтому цвет из палитры
+            // красит сами точки, а не подложку
             '@': {
                 bog_gram_tint: {
-                    '0': {
-                        background: {
-                            color: '#e17076',
-                        },
-                    },
-                    '1': {
-                        background: {
-                            color: '#faa774',
-                        },
-                    },
-                    '2': {
-                        background: {
-                            color: '#a695e7',
-                        },
-                    },
-                    '3': {
-                        background: {
-                            color: '#7bc862',
-                        },
-                    },
-                    '4': {
-                        background: {
-                            color: '#6ec9cb',
-                        },
-                    },
-                    '5': {
-                        background: {
-                            color: '#65aadd',
-                        },
-                    },
-                    '6': {
-                        background: {
-                            color: '#ee7aae',
-                        },
-                    },
+                    '0': { color: '#e17076' },
+                    '1': { color: '#faa774' },
+                    '2': { color: '#a695e7' },
+                    '3': { color: '#7bc862' },
+                    '4': { color: '#6ec9cb' },
+                    '5': { color: '#65aadd' },
+                    '6': { color: '#ee7aae' },
                 },
             },
         });

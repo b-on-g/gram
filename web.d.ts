@@ -34275,6 +34275,275 @@ declare namespace $ {
 
 //# sourceMappingURL=major.view.tree.d.ts.map
 declare namespace $ {
+    /** Dynamic sources import. */
+    class $mol_import extends $mol_object2 {
+        static module(uri: string): any;
+        static module_async(uri: string): Promise<any>;
+        static script(uri: string): any;
+        static script_async(uri: string): Promise<any>;
+        static style(uri: string): any;
+        static style_async(uri: string): any;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_svg__dom_name_bog_qr_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_2 = $mol_type_enforce<
+		({ 
+			'id': ReturnType< $bog_qr['gradient_id'] >,
+			'x1': ReturnType< $bog_qr['grad_x1'] >,
+			'y1': ReturnType< $bog_qr['grad_y1'] >,
+			'x2': ReturnType< $bog_qr['grad_x2'] >,
+			'y2': ReturnType< $bog_qr['grad_y2'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	type $mol_svg__sub_bog_qr_3 = $mol_type_enforce<
+		ReturnType< $bog_qr['gradient_stop_list'] >
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__sub_bog_qr_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_6 = $mol_type_enforce<
+		ReturnType< $bog_qr['modules_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_7 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_8 = $mol_type_enforce<
+		ReturnType< $bog_qr['rings_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_9 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+			'fill-rule': string,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_10 = $mol_type_enforce<
+		ReturnType< $bog_qr['centers_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_11 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_view__sub_bog_qr_12 = $mol_type_enforce<
+		ReturnType< $bog_qr['center'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_13 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_14 = $mol_type_enforce<
+		({ 
+			'x': ReturnType< $bog_qr['center_x'] >,
+			'y': ReturnType< $bog_qr['center_y'] >,
+			'width': ReturnType< $bog_qr['center_size'] >,
+			'height': ReturnType< $bog_qr['center_size'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	type $mol_svg__sub_bog_qr_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_16 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_17 = $mol_type_enforce<
+		({ 
+			'offset': ReturnType< $bog_qr['stop_offset'] >,
+			'stop-color': ReturnType< $bog_qr['stop_color'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	export class $bog_qr extends $mol_svg_root {
+		stop_offset( id: any): string
+		stop_color( id: any): string
+		qr_view_box( ): string
+		grad_x1( ): string
+		grad_y1( ): string
+		grad_x2( ): string
+		grad_y2( ): string
+		gradient_stop_list( ): readonly(any)[]
+		Gradient( ): $mol_svg
+		Defs( ): $mol_svg
+		modules_d( ): string
+		Modules( ): $mol_svg_path
+		rings_d( ): string
+		Rings( ): $mol_svg_path
+		centers_d( ): string
+		Centers( ): $mol_svg_path
+		center_x( ): string
+		center_y( ): string
+		center_size( ): string
+		Center_body( ): $mol_view
+		Center_wrap( ): $mol_svg
+		uri( ): string
+		module_radius( ): number
+		finder_radius( ): number
+		gradient_angle( ): number
+		error_correction( ): string
+		quiet_zone( ): number
+		center( ): readonly(any)[]
+		gradient_id( ): string
+		gradient_fill( ): string
+		gradient_stops( ): readonly(any)[]
+		Stop( id: any): $mol_svg
+		view_box( ): ReturnType< $bog_qr['qr_view_box'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=qr.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_qr extends $.$bog_qr {
+        gradient_id(): string;
+        gradient_fill(): string;
+        grad_x1(): string;
+        grad_y1(): string;
+        grad_x2(): string;
+        grad_y2(): string;
+        gradient_stop_list(): $.$mol_svg[];
+        stop_offset(index: number): string;
+        stop_color(index: number): any;
+        qr_lib(): any;
+        qr_matrix(): boolean[][] | null;
+        qr_view_box(): string;
+        qr_paths(): {
+            modules: string;
+            rings: string;
+            centers: string;
+        };
+        center_area(): {
+            x: number;
+            y: number;
+            size: number;
+        };
+        center_x(): string;
+        center_y(): string;
+        center_size(): string;
+        modules_d(): string;
+        rings_d(): string;
+        centers_d(): string;
+        rect_path(x: number, y: number, w: number, h: number, tl: number, tr: number, br: number, bl: number): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_upload extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=upload.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_button_open_native__files_mol_button_open_1 = $mol_type_enforce<
+		ReturnType< $mol_button_open['files_handled'] >
+		,
+		ReturnType< $mol_button_open_native['files'] >
+	>
+	type $mol_button_open_native__accept_mol_button_open_2 = $mol_type_enforce<
+		ReturnType< $mol_button_open['accept'] >
+		,
+		ReturnType< $mol_button_open_native['accept'] >
+	>
+	type $mol_button_open_native__multiple_mol_button_open_3 = $mol_type_enforce<
+		ReturnType< $mol_button_open['multiple'] >
+		,
+		ReturnType< $mol_button_open_native['multiple'] >
+	>
+	export class $mol_button_open extends $mol_button_minor {
+		Icon( ): $mol_icon_upload
+		files( next?: readonly(File)[] ): readonly(File)[]
+		files_handled( next?: ReturnType< $mol_button_open['files'] > ): ReturnType< $mol_button_open['files'] >
+		accept( ): string
+		multiple( ): boolean
+		Native( ): $mol_button_open_native
+		sub( ): readonly(any)[]
+	}
+	
+	export class $mol_button_open_native extends $mol_view {
+		accept( ): string
+		multiple( ): boolean
+		picked( next?: any ): any
+		dom_name( ): string
+		files( next?: readonly(File)[] ): readonly(File)[]
+		attr( ): ({ 
+			'type': string,
+			'accept': ReturnType< $mol_button_open_native['accept'] >,
+			'multiple': ReturnType< $mol_button_open_native['multiple'] >,
+		}) 
+		event( ): ({ 
+			change( next?: ReturnType< $mol_button_open_native['picked'] > ): ReturnType< $mol_button_open_native['picked'] >,
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=open.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_button_open extends $.$mol_button_open {
+        files_handled(next?: readonly File[]): readonly File[];
+    }
+    /**
+     * File open button
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+     */
+    class $mol_button_open_native extends $.$mol_button_open_native {
+        dom_node(): HTMLInputElement;
+        picked(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
 
 	export class $mol_icon_pencil extends $mol_icon {
 		path( ): string
@@ -37331,78 +37600,6 @@ declare namespace $.$$ {
     class $giper_baza_land_grab extends $.$giper_baza_land_grab {
         value(rights?: string): string;
     }
-}
-
-declare namespace $ {
-
-	export class $mol_icon_upload extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=upload.view.tree.d.ts.map
-declare namespace $ {
-
-	type $mol_button_open_native__files_mol_button_open_1 = $mol_type_enforce<
-		ReturnType< $mol_button_open['files_handled'] >
-		,
-		ReturnType< $mol_button_open_native['files'] >
-	>
-	type $mol_button_open_native__accept_mol_button_open_2 = $mol_type_enforce<
-		ReturnType< $mol_button_open['accept'] >
-		,
-		ReturnType< $mol_button_open_native['accept'] >
-	>
-	type $mol_button_open_native__multiple_mol_button_open_3 = $mol_type_enforce<
-		ReturnType< $mol_button_open['multiple'] >
-		,
-		ReturnType< $mol_button_open_native['multiple'] >
-	>
-	export class $mol_button_open extends $mol_button_minor {
-		Icon( ): $mol_icon_upload
-		files( next?: readonly(File)[] ): readonly(File)[]
-		files_handled( next?: ReturnType< $mol_button_open['files'] > ): ReturnType< $mol_button_open['files'] >
-		accept( ): string
-		multiple( ): boolean
-		Native( ): $mol_button_open_native
-		sub( ): readonly(any)[]
-	}
-	
-	export class $mol_button_open_native extends $mol_view {
-		accept( ): string
-		multiple( ): boolean
-		picked( next?: any ): any
-		dom_name( ): string
-		files( next?: readonly(File)[] ): readonly(File)[]
-		attr( ): ({ 
-			'type': string,
-			'accept': ReturnType< $mol_button_open_native['accept'] >,
-			'multiple': ReturnType< $mol_button_open_native['multiple'] >,
-		}) 
-		event( ): ({ 
-			change( next?: ReturnType< $mol_button_open_native['picked'] > ): ReturnType< $mol_button_open_native['picked'] >,
-		}) 
-	}
-	
-}
-
-//# sourceMappingURL=open.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $mol_button_open extends $.$mol_button_open {
-        files_handled(next?: readonly File[]): readonly File[];
-    }
-    /**
-     * File open button
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-     */
-    class $mol_button_open_native extends $.$mol_button_open_native {
-        dom_node(): HTMLInputElement;
-        picked(): void;
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -41202,6 +41399,15 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $bog_gram_auth extends $giper_baza_auth {
+        /** Строку из хранилища принимаем только целым ключом: обрезок бросил бы
+         * исключение прямо на старте, и приложение осталось бы без экрана. */
+        static restore(key: string): $bog_gram_auth | null;
+        static current(next?: $giper_baza_auth | null): $giper_baza_auth;
+    }
+}
+
+declare namespace $ {
     function $mol_offline(): void;
 }
 
@@ -41385,265 +41591,267 @@ declare namespace $ {
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_page__title_bog_gram_35 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_35 = $mol_type_enforce<
+		ReturnType< $bog_gram['account_rows'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_labeler__title_bog_gram_36 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_37 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_page__title_bog_gram_38 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_page['title'] >
 	>
-	type $mol_page__tools_bog_gram_36 = $mol_type_enforce<
+	type $mol_page__tools_bog_gram_39 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_page['tools'] >
 	>
-	type $mol_page__body_bog_gram_37 = $mol_type_enforce<
+	type $mol_page__body_bog_gram_40 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_page['body'] >
 	>
-	type $mol_button_minor__hint_bog_gram_38 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_41 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_39 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_42 = $mol_type_enforce<
 		ReturnType< $bog_gram['compose_close'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_40 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_43 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_string__hint_bog_gram_41 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_44 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_42 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_45 = $mol_type_enforce<
 		ReturnType< $bog_gram['peer_lord'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_43 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_46 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_start'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__click_bog_gram_44 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_47 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_start'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_45 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_48 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_46 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_49 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_47 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_50 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_list__rows_bog_gram_48 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_51 = $mol_type_enforce<
 		ReturnType< $bog_gram['user_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_page__title_bog_gram_49 = $mol_type_enforce<
+	type $mol_page__title_bog_gram_52 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_page['title'] >
 	>
-	type $mol_page__tools_bog_gram_50 = $mol_type_enforce<
+	type $mol_page__tools_bog_gram_53 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_page['tools'] >
 	>
-	type $mol_page__body_bog_gram_51 = $mol_type_enforce<
+	type $mol_page__body_bog_gram_54 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_page['body'] >
 	>
-	type $bog_gram_chat__title_bog_gram_52 = $mol_type_enforce<
+	type $bog_gram_chat__title_bog_gram_55 = $mol_type_enforce<
 		ReturnType< $bog_gram['chat_title'] >
 		,
 		ReturnType< $bog_gram_chat['title'] >
 	>
-	type $bog_gram_chat__rows_bog_gram_53 = $mol_type_enforce<
+	type $bog_gram_chat__rows_bog_gram_56 = $mol_type_enforce<
 		ReturnType< $bog_gram['chat_rows'] >
 		,
 		ReturnType< $bog_gram_chat['rows'] >
 	>
-	type $bog_gram_chat__edit_mode_bog_gram_54 = $mol_type_enforce<
+	type $bog_gram_chat__edit_mode_bog_gram_57 = $mol_type_enforce<
 		ReturnType< $bog_gram['edit_mode'] >
 		,
 		ReturnType< $bog_gram_chat['edit_mode'] >
 	>
-	type $bog_gram_chat__message_text_bog_gram_55 = $mol_type_enforce<
+	type $bog_gram_chat__message_text_bog_gram_58 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_text'] >
 		,
 		ReturnType< $bog_gram_chat['message_text'] >
 	>
-	type $bog_gram_chat__message_send_bog_gram_56 = $mol_type_enforce<
+	type $bog_gram_chat__message_send_bog_gram_59 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_send'] >
 		,
 		ReturnType< $bog_gram_chat['message_send'] >
 	>
-	type $bog_gram_chat__edit_cancel_bog_gram_57 = $mol_type_enforce<
+	type $bog_gram_chat__edit_cancel_bog_gram_60 = $mol_type_enforce<
 		ReturnType< $bog_gram['edit_cancel'] >
 		,
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 	>
-	type $bog_gram_chat__close_bog_gram_58 = $mol_type_enforce<
+	type $bog_gram_chat__close_bog_gram_61 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_close'] >
 		,
 		ReturnType< $bog_gram_chat['close'] >
 	>
-	type $bog_gram_chat__delete_bog_gram_59 = $mol_type_enforce<
+	type $bog_gram_chat__delete_bog_gram_62 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_delete_current'] >
 		,
 		ReturnType< $bog_gram_chat['delete'] >
 	>
-	type $bog_gram_chat__delete_armed_bog_gram_60 = $mol_type_enforce<
+	type $bog_gram_chat__delete_armed_bog_gram_63 = $mol_type_enforce<
 		ReturnType< $bog_gram['delete_armed'] >
 		,
 		ReturnType< $bog_gram_chat['delete_armed'] >
 	>
-	type $bog_gram_chat__delete_hint_bog_gram_61 = $mol_type_enforce<
+	type $bog_gram_chat__delete_hint_bog_gram_64 = $mol_type_enforce<
 		ReturnType< $bog_gram['delete_hint'] >
 		,
 		ReturnType< $bog_gram_chat['delete_hint'] >
 	>
-	type $mol_paragraph__title_bog_gram_62 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_65 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_gram_63 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_66 = $mol_type_enforce<
 		ReturnType< $bog_gram['users_empty_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $bog_gram_avatar__letter_bog_gram_64 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_letter'] >
-		,
-		ReturnType< $bog_gram_avatar['letter'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_65 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_66 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_67 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_68 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_69 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_70 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_71 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_72 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_avatar__letter_bog_gram_73 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_letter'] >
-		,
-		ReturnType< $bog_gram_avatar['letter'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_74 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_75 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_76 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_77 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_body'] >
+	type $mol_paragraph__title_bog_gram_67 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_68 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_69 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_text'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $bog_qr__uri_bog_gram_70 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_text'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $mol_string__hint_bog_gram_71 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_72 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_input'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_paragraph__title_bog_gram_73 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_open__hint_bog_gram_74 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_open['hint'] >
+	>
+	type $mol_button_open__accept_bog_gram_75 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_open['accept'] >
+	>
+	type $mol_button_open__multiple_bog_gram_76 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $mol_button_open['multiple'] >
+	>
+	type $mol_button_open__files_bog_gram_77 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_file'] >
+		,
+		ReturnType< $mol_button_open['files'] >
 	>
 	type $mol_view__sub_bog_gram_78 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_79 = $mol_type_enforce<
+	type $mol_button_major__attr_bog_gram_79 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram['import_armed'] >,
+		})  & ReturnType< $mol_button_major['attr'] >
+		,
+		ReturnType< $mol_button_major['attr'] >
+	>
+	type $mol_button_major__click_bog_gram_80 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_import'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_81 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_82 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_error'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $bog_gram_avatar__id_bog_gram_83 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_avatar_id'] >
+		,
+		ReturnType< $bog_gram_avatar['id'] >
+	>
+	type $bog_gram_avatar__tint_bog_gram_84 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_tint'] >
+		,
+		ReturnType< $bog_gram_avatar['tint'] >
+	>
+	type $mol_view__sub_bog_gram_85 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_80 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_86 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_81 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_82 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_edit'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_83 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_84 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_85 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_delete'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_86 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_view__sub_bog_gram_87 = $mol_type_enforce<
 		readonly(any)[]
@@ -41660,61 +41868,196 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_major__click_bog_gram_90 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_make'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_91 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_90 = $mol_type_enforce<
 		readonly(any)[]
 		,
-		ReturnType< $mol_button_major['sub'] >
+		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_92 = $mol_type_enforce<
-		string
+	type $mol_view__sub_bog_gram_91 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_avatar__id_bog_gram_92 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_lord'] >
+		,
+		ReturnType< $bog_gram_avatar['id'] >
+	>
+	type $bog_gram_avatar__tint_bog_gram_93 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_tint'] >
+		,
+		ReturnType< $bog_gram_avatar['tint'] >
+	>
+	type $mol_view__sub_bog_gram_94 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_95 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_96 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_body'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__click_bog_gram_93 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_select'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__attr_bog_gram_94 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__sub_bog_gram_95 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_97 = $mol_type_enforce<
 		readonly(any)[]
 		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_96 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_pick'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_97 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_98 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_99 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_99 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_100 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_101 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_edit'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_102 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_103 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_104 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_delete'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_105 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_106 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_107 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_108 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_major__click_bog_gram_109 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_make'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_110 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_111 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__click_bog_gram_112 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_113 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_114 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_115 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_116 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_117 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_save'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_118 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_119 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_120 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_select'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__attr_bog_gram_121 = $mol_type_enforce<
+		({ 
+			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__sub_bog_gram_122 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_123 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_pick'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_124 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_125 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__attr_bog_gram_126 = $mol_type_enforce<
 		({ 
 			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__sub_bog_gram_100 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_127 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -41755,6 +42098,9 @@ declare namespace $ {
 		Notify( ): $mol_labeler
 		registry_content( ): readonly(any)[]
 		Registry_block( ): $mol_labeler
+		account_rows( ): readonly(any)[]
+		Account_body( ): $mol_view
+		Account( ): $mol_labeler
 		Settings_page( ): $mol_page
 		compose_close( next?: any ): any
 		Compose_close_icon( ): $mol_icon_close
@@ -41783,9 +42129,28 @@ declare namespace $ {
 		users_empty_text( ): string
 		Users_empty_text( ): $mol_paragraph
 		registry_make( next?: any ): any
+		key_toggle( next?: any ): any
+		key_toggle_label( ): string
+		key_text( ): string
+		Key_text( ): $mol_paragraph
+		Key_copy( ): $mol_button_copy
+		Key_qr( ): $bog_qr
+		key_save( next?: any ): any
+		key_input( next?: string ): string
+		Key_field( ): $mol_string
+		Key_load_hint( ): $mol_paragraph
+		key_file( next?: any ): any
+		Key_open( ): $mol_button_open
+		Key_load_row( ): $mol_view
+		import_armed( ): boolean
+		key_import( next?: any ): any
+		key_import_label( ): string
+		Key_import( ): $mol_button_major
+		key_error( ): string
+		Key_error( ): $mol_paragraph
 		dialog_select( id: any, next?: any ): any
 		dialog_current_is( id: any): boolean
-		dialog_letter( id: any): string
+		dialog_avatar_id( id: any): string
 		dialog_tint( id: any): number
 		Dialog_avatar( id: any): $bog_gram_avatar
 		dialog_title( id: any): string
@@ -41800,7 +42165,7 @@ declare namespace $ {
 		Dialog_bottom( id: any): $mol_view
 		Dialog_info( id: any): $mol_view
 		user_pick( id: any, next?: any ): any
-		user_letter( id: any): string
+		user_lord( id: any): string
 		user_tint( id: any): number
 		User_avatar( id: any): $bog_gram_avatar
 		user_title( id: any): string
@@ -41829,6 +42194,12 @@ declare namespace $ {
 		Users_empty( ): $mol_view
 		Registry_make( ): $mol_button_major
 		Registry_ready( ): $mol_paragraph
+		Key_toggle( ): $mol_button_minor
+		Key_warning( ): $mol_paragraph
+		Key_row( ): $mol_view
+		Key_qr_box( ): $mol_view
+		Key_save( ): $mol_button_minor
+		Key_import_form( ): $mol_view
 		Dialog_row( id: any): $mol_button_minor
 		User_row( id: any): $mol_button_minor
 		Day_row( id: any): $mol_view
@@ -41971,13 +42342,12 @@ declare namespace $ {
 		foot( ): readonly(any)[]
 	}
 	
-	export class $bog_gram_avatar extends $mol_view {
-		letter( ): string
+	export class $bog_gram_avatar extends $mol_avatar {
+		id( ): string
 		tint( ): number
 		attr( ): ({ 
 			'bog_gram_tint': ReturnType< $bog_gram_avatar['tint'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		sub( ): readonly(any)[]
+		})  & ReturnType< $mol_avatar['attr'] >
 	}
 	
 }
@@ -42004,18 +42374,13 @@ declare namespace $.$$ {
         device_ready(): boolean;
         peer_store(lord: string): $bog_gram_user;
         peer_name(lord: string): string;
-        /** Инициал в кружке: первая буква имени собеседника, а пока имя не
-         * приехало — первый символ самого лорда. Имя может начинаться с пробела
-         * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
-        avatar_letter(lord: string): string;
         /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
         avatar_tint(lord: string): number;
         /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
-         * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
-         * сохраняется, буква и цвет проявятся сами. */
-        dialog_letter(id: string): string;
+         * весь список, поэтому пока рисуем пустой кружок — подписка
+         * сохраняется, узор и цвет проявятся сами. */
+        dialog_avatar_id(id: string): string;
         dialog_tint(id: string): number;
-        user_letter(lord: string): string;
         user_tint(lord: string): number;
         dialog_ids(): string[];
         /** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
@@ -42133,8 +42498,43 @@ declare namespace $.$$ {
         /** Разрешение и сеть ждать из обработчика клика нечем, поэтому вся
          * работа уезжает в фибру, а сюда возвращается уже итог. */
         notify_apply(on: boolean): boolean;
+        /** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
+         * не уезжает: только на экран и только по явной просьбе. */
+        key_text(): string;
+        key_shown(next?: boolean): boolean;
+        key_toggle_label(): "Скрыть ключ" | "Показать ключ";
+        key_toggle(next?: any): null;
+        /** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
+         * останется на экране, а следующий одиночный клик сменит аккаунт. */
+        account_reset(): void;
+        /** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
+         * ни QR — в дереве компонентов их просто нет. */
+        account_rows(): ($mol_view | $.$mol_paragraph)[];
+        /** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
+         * программно и тут же освобождаем, в документе она не остаётся. */
+        key_save(next?: any): null;
+        key_error(next?: string): string;
+        Key_error(): $.$mol_paragraph;
+        import_armed(next?: boolean): boolean;
+        key_import_label(): "Точно войти? Текущий аккаунт будет заменён" | "Войти по ключу";
+        /** Ключом считаем только строку полного размера: обрезок или случайный
+         * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
+        auth_from(str: string): $giper_baza_auth | null;
+        /** Первый клик взводит кнопку, второй применяет — как корзина в чате.
+         * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
+        key_import(next?: any): null;
+        /** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
+        key_file(next?: readonly File[]): readonly File[] | null;
+        key_file_read(file: File): boolean;
         setup_ready(): boolean;
         auto(): void;
+    }
+    class $bog_gram_avatar extends $.$bog_gram_avatar {
+        /** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
+         * перекрываются, и у длинных идентификаторов картинка сливается в
+         * сплошное пятно. Берём сетку 3×5 с шагом крупнее толщины: точек
+         * меньше, зато узор читается и остаётся узнаваемым. */
+        path(): string;
     }
     class $bog_gram_chat extends $.$bog_gram_chat {
         Edit_banner(): $mol_view;
