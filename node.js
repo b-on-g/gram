@@ -20772,40 +20772,30 @@ var $;
         const veil = '#8888881a';
         $mol_style_define($bog_gram, {
             // ===== Страницы буклета =====
+            // Книга сама даёт страницам flex-shrink: 0, а $mol_page — maxWidth: 100%.
+            // Поэтому страницам задаётся ТОЛЬКО width: на телефоне она упирается
+            // в 100% вьюпорта и буклет листается горизонтальным снапом; любые
+            // shrink/grow/minWidth поверх этого ломают адаптивность.
             Menu: {
-                flex: {
-                    basis: '24rem',
-                    grow: 0,
-                    shrink: 1,
-                },
-                minWidth: '15rem',
+                width: '24rem',
                 background: {
                     color: $mol_theme.card,
                 },
             },
             Chat_page: {
+                width: '30rem',
                 flex: {
                     grow: 1,
-                    shrink: 1,
                 },
-                minWidth: 0,
                 background: {
                     color: $mol_theme.back,
                 },
             },
             Settings_page: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
+                width: '26rem',
             },
             Compose_page: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
+                width: '26rem',
             },
             // ===== Заглушка при пустом выборе =====
             Intro: {
