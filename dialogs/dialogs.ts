@@ -13,6 +13,9 @@ namespace $.$$ {
 		Saved_land: $giper_baza_atom_text,
 		/** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
 		Archived: $giper_baza_list_str,
+		/** Подписи собеседников «как я его назвал», ключ — lord собеседника.
+		 * Ленд приватный, поэтому подпись видна только владельцу */
+		Notes: $giper_baza_dict_to( $bog_gram_note ),
 	}) {}
 
 }

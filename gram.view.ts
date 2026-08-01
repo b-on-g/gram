@@ -150,6 +150,47 @@ namespace $.$$ {
 			return this.peer_store( lord ).Name()?.val() ?? ''
 		}
 
+		// ===== Свои подписи собеседников =====
+
+		/** Как я назвал человека для себя. Подписи лежат в том же приватном
+		 * ленде, что и список диалогов, поэтому собеседник их не видит и
+		 * своего имени в профиле из-за них не теряет. */
+		@$mol_mem_key
+		peer_note( lord: string ) {
+			if( !lord ) return ''
+			return this.dialogs_store().Notes()?.key( lord )?.Title()?.val() ?? ''
+		}
+
+		/** Пустая подпись означает «показывать настоящее имя»: ради неё запись
+		 * в словаре не заводим, а уже заведённую просто очищаем. */
+		@$mol_action
+		peer_note_set( lord: string, next?: string ) {
+
+			if( !lord ) return null
+
+			const title = next ?? ''
+			const notes = this.dialogs_store().Notes( 'auto' )
+			if( !notes ) return null
+			if( !title && !notes.key( lord ) ) return null
+
+			notes.key( lord, 'auto' )?.Title( 'auto' )?.val( title )
+
+			return null
+		}
+
+		/** Порядок один на всё приложение: моя подпись важнее имени из чужого
+		 * профиля, а безымянного и неподписанного показываем сокращённым
+		 * идентификатором. Аватар при этом остаётся привязан к лорду —
+		 * от переименования человек не должен менять лицо. */
+		label_pick( lord: string, note: string, name: string ) {
+			if( !lord ) return ''
+			return note || name || this.lord_short( lord )
+		}
+
+		peer_label( lord: string ) {
+			return this.label_pick( lord, this.peer_note( lord ), this.peer_name( lord ) )
+		}
+
 		// ===== Аватары =====
 
 		/** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
@@ -300,7 +341,7 @@ namespace $.$$ {
 			if( this.saved_is( id ) ) return saved_name
 			const peer = this.dialog_peer( id )
 			if( !peer ) return this.lord_short( id )
-			return this.peer_name( peer ) || this.lord_short( peer )
+			return this.peer_label( peer )
 		}
 
 		/** Момент последней активности — по нему диалоги сортируются в списке.
@@ -569,6 +610,38 @@ namespace $.$$ {
 			const id = this.dialog_active()
 			if( !id ) return 'Выберите диалог'
 			return this.dialog_title( id )
+		}
+
+		/** Собеседник открытого диалога: у избранного его нет, поэтому и
+		 * подписывать там некого. */
+		@$mol_mem
+		chat_peer() {
+			const id = this.dialog_active()
+			if( !id ) return ''
+			if( this.saved_is( id ) ) return ''
+			return this.dialog_peer( id )
+		}
+
+		/** Заголовок чата — это подпись собеседника, и правится она прямо
+		 * в шапке. У избранного заголовок фиксированный, поле там не нужно. */
+		override chat_note_editable() {
+			return Boolean( this.chat_peer() )
+		}
+
+		/** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
+		 * стоит то, как человек назвал себя сам. */
+		override chat_note_hint() {
+			const lord = this.chat_peer()
+			if( !lord ) return ''
+			return this.peer_name( lord ) || this.lord_short( lord )
+		}
+
+		@$mol_mem
+		chat_note( next?: string ) {
+			const lord = this.chat_peer()
+			if( !lord ) return ''
+			if( next !== undefined ) this.peer_note_set( lord, next )
+			return this.peer_note( lord )
 		}
 
 		// ===== Страницы буклета =====
@@ -1364,7 +1437,7 @@ namespace $.$$ {
 
 		@$mol_mem_key
 		user_title( lord: string ) {
-			return this.peer_name( lord ) || this.lord_short( lord )
+			return this.peer_label( lord )
 		}
 
 		/** Пока реестр один, называть его в каждой строке незачем. */
@@ -1717,6 +1790,17 @@ namespace $.$$ {
 	}
 
 	export class $bog_gram_chat extends $.$bog_gram_chat {
+
+		/** Заголовок чата — это подпись собеседника, поэтому он и правится
+		 * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
+		 * заголовок остаётся обычной строкой. */
+		override Note_row() {
+			return this.note_editable() ? super.Note_row() : null!
+		}
+
+		override Title_text() {
+			return this.note_editable() ? null! : super.Title_text()
+		}
 
 		override Edit_banner() {
 			return this.edit_mode() ? super.Edit_banner() : null!
