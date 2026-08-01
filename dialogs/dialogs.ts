@@ -9,6 +9,10 @@ namespace $.$$ {
 		Hidden: $giper_baza_list_str,
 		/** Ссылки на известные владельцу реестры пользователей */
 		Registries: $giper_baza_list_str,
+		/** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
+		Saved_land: $giper_baza_atom_text,
+		/** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
+		Archived: $giper_baza_list_str,
 	}) {}
 
 }

@@ -71,10 +71,6 @@ function subs_save() {
 
 // ===== Клиент Гипер Базы =====
 
-const ambient = $.$mol_ambient({})
-ambient.$giper_baza_mine = $.$giper_baza_mine_temp
-if (process.env.GRAM_PUSH_BAZA_LOG) ambient.$giper_baza_log = () => true
-
 const auth_file = path.join(DATA, 'auth.key')
 
 /** Своя постоянная личность демона: подписка на ленд заводится от лица
@@ -91,71 +87,80 @@ async function auth_load() {
 	return auth
 }
 
-class Yard extends $.$giper_baza_yard {}
-Yard.masters = $.$mol_const([MASTER])
-ambient.$giper_baza_yard = Yard
+let auth = null
 
-class Glob extends $.$giper_baza_glob {}
-Glob.$ = ambient
-Glob.lands_touched = new $.$mol_wire_set()
-ambient.$giper_baza_glob = Glob
+/** Свежий изолированный клиент на каждый обход.
+ *
+ * Долгоживущий клиент вне браузера не догоняет обновления: он берёт
+ * состояние ленда в момент подписки и застревает на нём — некому
+ * прокручивать синхронизацию без рендер-цикла. Переподключение сокета
+ * помогало лишь иногда, потому что запросы лендов уже закэшированы.
+ * Поэтому на каждый цикл поднимаем клиента с нуля: он тянет ленды
+ * заново и всегда видит актуальную картину. Ленды тут крошечные
+ * (список ссылок и карта лиц), так что цена приемлемая. */
+function client_make() {
+	const ctx = $.$mol_ambient({})
 
-/** Ленд остаётся подписанным, пока жив его корневой атом. */
-const keepers = new Map()
-function keep(link_str) {
-	if (keepers.has(link_str)) return
-	const link = new $.$giper_baza_link(link_str)
-	const atom = new $.$mol_wire_atom('keep_' + link_str, () => {
-		$.$mol_wire_solid()
-		Glob.Land(link).sync()
-		return true
-	})
-	keepers.set(link_str, atom)
-	atom.async().catch(error => log('keep failed', link_str, String(error?.message ?? error)))
-}
+	ctx.$giper_baza_mine = $.$giper_baza_mine_temp
+	if (process.env.GRAM_PUSH_BAZA_LOG) ctx.$giper_baza_log = () => true
 
-const ops = {
-	/** Ссылки на session-ленды из публичного monitor-ленда подписчика. */
-	watch_list(monitor, _tick) {
-		const land = Glob.Land(new $.$giper_baza_link(monitor))
-		Glob.yard().sync_land(land.link())
-		const list = land.Data($.$bog_gram_monitor).Watch()?.items() ?? []
-		return [...list].map(String)
-	},
-	/** Счётчики юнитов по пирам. Содержимое не читаем — оно зашифровано,
-	 * а вот сколько юнитов чей пир добавил, видно из карты лиц.
-	 *
-	 * Карта лиц — обычное поле, чтение её ничего не подписывает. Поэтому
-	 * сначала трогаем реактивный узел данных: он поднимает синхронизацию
-	 * ленда и держит подписку живой, чтобы новые юниты доезжали сами.
-	 * Расшифровать содержимое демон не может и не должен — ошибка тут
-	 * ожидаема и гасится. */
-	session_faces(session, _tick) {
-		const link = new $.$giper_baza_link(session)
-		const land = Glob.Land(link)
-		Glob.yard().sync_land(link)
+	class Yard extends $.$giper_baza_yard {}
+	Yard.masters = $.$mol_const([MASTER])
+	ctx.$giper_baza_yard = Yard
 
-		const out = {}
-		for (const [peer, face] of land.faces) out[peer] = face.summ ?? 0
-		if (process.env.GRAM_PUSH_DEBUG) out['#total'] = land.total()
-		return out
-	},
-}
+	class Glob extends $.$giper_baza_glob {}
+	Glob.$ = ctx
+	Glob.lands_touched = new $.$mol_wire_set()
+	ctx.$giper_baza_glob = Glob
 
-async function connect() {
-	const auth = await auth_load()
 	class Auth extends $.$giper_baza_auth {}
 	Auth.current = () => auth
-	ambient.$giper_baza_auth = Auth
-	log('lord', auth.pass().lord().str.slice(0, 10))
+	ctx.$giper_baza_auth = Auth
 
-	const atom = new $.$mol_wire_atom('master', () => {
-		$.$mol_wire_solid()
-		return Glob.yard().master()
-	})
-	const port = await atom.async()
-	if (!port) throw new Error('no master port')
-	log('connected to', MASTER)
+	const ops = {
+		/** Ссылки на session-ленды из публичного monitor-ленда подписчика. */
+		watch_list(monitor) {
+			const land = Glob.Land(new $.$giper_baza_link(monitor))
+			land.sync()
+			Glob.yard().sync_land(land.link())
+			const list = land.Data($.$bog_gram_monitor).Watch()?.items() ?? []
+			return [...list].map(String)
+		},
+		/** Счётчики юнитов по пирам: содержимое сессий зашифровано и демону
+		 * недоступно, а вот сколько юнитов чей пир добавил — видно. */
+		session_faces(session) {
+			const link = new $.$giper_baza_link(session)
+			const land = Glob.Land(link)
+			land.sync()
+			Glob.yard().sync_land(link)
+
+			const out = {}
+			for (const [peer, face] of land.faces) out[peer] = face.summ ?? 0
+			return out
+		},
+	}
+
+	return {
+		Glob,
+		ops,
+		async connect() {
+			const atom = new $.$mol_wire_atom('master_' + (++ticks), () => {
+				$.$mol_wire_solid()
+				return Glob.yard().master()
+			})
+			const port = await atom.async()
+			if (!port) throw new Error('no master port')
+			return port
+		},
+		close(port) {
+			try {
+				const socket = port?.socket
+				if (socket) socket.close()
+			} catch (error) {
+				debug('close failed', String(error?.message ?? error))
+			}
+		},
+	}
 }
 
 // ===== Цикл слежения =====
@@ -185,73 +190,87 @@ async function notify(sub, count) {
 
 let ticks = 0
 
-/** Долгоживущая подписка в отдельном процессе дельты не догоняет: без
- * рендер-цикла некому прокручивать синхронизацию, и ленд застывает на
- * состоянии первой загрузки. Переподключение дёшево и надёжно — на новом
- * сокете клиент отдаёт свои лица, а мастер в ответ присылает всё, что
- * накопилось с тех пор. */
-async function reconnect() {
-	try {
-		Glob.yard().reconnects(null)
-		const atom = new $.$mol_wire_atom('reconnect_' + ticks, () => {
-			$.$mol_wire_solid()
-			return Glob.yard().master()
-		})
-		await atom.async()
-		await new Promise(done => setTimeout(done, 700))
-	} catch (error) {
-		log('reconnect failed', String(error?.message ?? error))
+/** Свежий клиент отвечает раньше, чем ленд успевает приехать с мастера:
+ * пустой ответ тут означает не «пусто», а «ещё не доехало». Переспрашиваем
+ * несколько раз, прежде чем поверить в пустоту. */
+async function settle(read, filled, tries = 4, pause = 1200) {
+	let value = await read()
+	for (let i = 1; i < tries && !filled(value); ++i) {
+		await new Promise(done => setTimeout(done, pause))
+		value = await read()
 	}
+	return value
 }
 
 async function tick() {
-	await reconnect()
 
-	for (const sub of Object.values(subs)) {
-		try {
-			keep(sub.monitor)
-			const sessions = await $.$mol_wire_async(ops).watch_list(sub.monitor, ++ticks)
+	const client = client_make()
+	let port = null
 
-			const my_peer = new $.$giper_baza_link(sub.lord).peer().str
-			let fresh = 0
-
-			debug('watch', sub.lord.slice(0, 8), 'sessions:', sessions.length)
-
-			for (const session of sessions) {
-				keep(session)
-				const faces = await $.$mol_wire_async(ops).session_faces(session, ticks)
-				debug('  session', session.slice(0, 8), JSON.stringify(faces), 'mine:', my_peer)
-
-				// Пир самого ленда — это его король: гифты и права числятся за
-				// ним, сообщениями они не являются и уведомлять о них не нужно
-				const king_peer = new $.$giper_baza_link(session).peer().str
-
-				for (const [peer, summ] of Object.entries(faces)) {
-					if (peer === my_peer) continue
-					if (peer === king_peer) continue
-					if (peer.startsWith('#')) continue
-					const key = session + '|' + peer
-					const seen = sub.seen[key]
-					// На первом обходе только запоминаем состояние, иначе
-					// подписчик получил бы пуш по всей истории переписки.
-					// Дальше уже и новый собеседник считается новостью:
-					// иначе первое сообщение в новом диалоге пропало бы.
-					if (seen === undefined) {
-						sub.seen[key] = summ
-						if (sub.primed) fresh += summ
-						continue
-					}
-					if (summ > seen) { fresh += summ - seen; sub.seen[key] = summ }
-				}
-			}
-
-			if (fresh) { sub.primed = true; subs_save(); await notify(sub, fresh) }
-			else { sub.primed = true; subs_save() }
-
-		} catch (error) {
-			log('tick failed for', sub.lord.slice(0, 8), String(error?.message ?? error))
-		}
+	try {
+		port = await client.connect()
+	} catch (error) {
+		log('connect failed:', String(error?.message ?? error))
+		return
 	}
+
+	try {
+
+		for (const sub of Object.values(subs)) {
+			try {
+				const sessions = await settle(
+					() => $.$mol_wire_async(client.ops).watch_list(sub.monitor),
+					list => list.length > 0,
+				)
+				debug('watch', sub.lord.slice(0, 8), 'sessions:', sessions.length)
+
+				const my_peer = new $.$giper_baza_link(sub.lord).peer().str
+				let fresh = 0
+
+				for (const session of sessions) {
+					const faces = await settle(
+						() => $.$mol_wire_async(client.ops).session_faces(session),
+						map => Object.keys(map).length > 0,
+					)
+					debug('  session', session.slice(0, 8), JSON.stringify(faces), 'mine:', my_peer)
+
+					// Пир самого ленда — это его король: гифты и права числятся за
+					// ним, сообщениями они не являются и уведомлять о них не нужно
+					const king_peer = new $.$giper_baza_link(session).peer().str
+
+					for (const [peer, summ] of Object.entries(faces)) {
+						if (peer === my_peer) continue
+						if (peer === king_peer) continue
+
+						const key = session + '|' + peer
+						const seen = sub.seen[key]
+
+						// На первом обходе только запоминаем состояние, иначе
+						// подписчик получил бы пуш по всей истории переписки.
+						// Дальше уже и новый собеседник считается новостью:
+						// иначе первое сообщение в новом диалоге пропало бы.
+						if (seen === undefined) {
+							sub.seen[key] = summ
+							if (sub.primed) fresh += summ
+							continue
+						}
+						if (summ > seen) { fresh += summ - seen; sub.seen[key] = summ }
+					}
+				}
+
+				sub.primed = true
+				subs_save()
+				if (fresh) await notify(sub, fresh)
+
+			} catch (error) {
+				log('tick failed for', sub.lord.slice(0, 8), String(error?.message ?? error))
+			}
+		}
+
+	} finally {
+		client.close(port)
+	}
+
 }
 
 // ===== HTTP =====
@@ -326,18 +345,8 @@ async function main() {
 	subs_load()
 	server.listen(PORT, () => log('http up on', PORT))
 
-	// Мастер может быть недоступен на старте или моргнуть позже: демон
-	// не должен от этого умирать — HTTP-приём подписок работает всегда,
-	// а слежение подхватится, как только связь восстановится.
-	for (;;) {
-		try {
-			await connect()
-			break
-		} catch (error) {
-			log('connect failed, retry in 10s:', String(error?.message ?? error))
-			await new Promise(done => setTimeout(done, 10000))
-		}
-	}
+	auth = await auth_load()
+	log('lord', auth.pass().lord().str.slice(0, 10), 'master', MASTER)
 
 	for (;;) {
 		try {

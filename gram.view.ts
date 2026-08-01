@@ -13,6 +13,9 @@ namespace $.$$ {
 	/** Имя файла, в который сохраняется ключ аккаунта. */
 	const auth_file = 'gram-account.key'
 
+	/** Заголовок избранного: он же в списке, он же в шапке чата. */
+	const saved_name = 'Избранное'
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -178,6 +181,83 @@ namespace $.$$ {
 			return this.avatar_tint( lord )
 		}
 
+		// ===== Избранное: диалог с самим собой =====
+
+		/** Заметки для себя лежат в приватном шифрованном ленде, как и список
+		 * диалогов: ссылка на него хранится там же, а не в открытом профиле.
+		 * Захват небыстрый, и клик по строке может позвать сюда второй раз —
+		 * поэтому уже записанная ссылка всегда важнее только что захваченной. */
+		@$mol_action
+		saved_land_make() {
+			const land = this.$.$giper_baza_glob.land_grab([
+				[ null, $giper_baza_rank_deny ],
+			])
+			const str = this.dialogs_store().Saved_land()?.val()
+			if( str ) return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
+			this.dialogs_store().Saved_land( 'auto' )?.val( land.link().str )
+			return land
+		}
+
+		saved_land() {
+			const str = this.dialogs_store().Saved_land()?.val()
+			if( !str ) return this.saved_land_make()
+			return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
+		}
+
+		/** Ссылка на уже заведённый ленд: строка избранного рисуется с первого
+		 * кадра, а захват ленда идёт своим чередом — ждать его список не должен. */
+		@$mol_mem
+		saved_id() {
+			return String( this.dialogs_store().Saved_land()?.val() ?? '' )
+		}
+
+		/** Единственная развилка на всё приложение: у избранного нет собеседника,
+		 * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
+		 * в превью ему не полагается. */
+		saved_is( id: string ) {
+			const saved = this.saved_id()
+			return Boolean( saved ) && id === saved
+		}
+
+		override saved_title() {
+			return saved_name
+		}
+
+		/** На новом устройстве ленд избранного приезжает не мгновенно: пока он
+		 * в пути, строка стоит с пустым превью, а не вешает весь список. */
+		@$mol_mem
+		saved_preview() {
+			try {
+				return this.dialog_preview( this.saved_id() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		@$mol_mem
+		saved_time() {
+			try {
+				return this.dialog_time( this.saved_id() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		@$mol_mem
+		saved_current_is() {
+			return this.saved_is( this.dialog_active() )
+		}
+
+		/** Клик по строке заводит ленд, если его ещё нет: действие живёт в фибре,
+		 * поэтому захват с его перебором степеней тут уместен. */
+		@$mol_action
+		saved_open( next?: any ) {
+			this.dialog_select( this.saved_land().link().str )
+			return null
+		}
+
 		// ===== Диалоги =====
 
 		@$mol_mem
@@ -198,6 +278,7 @@ namespace $.$$ {
 
 		@$mol_mem_key
 		dialog_peer( id: string ) {
+			if( this.saved_is( id ) ) return ''
 			const peers = ( this.dialog_store( id ).Peers()?.items() ?? [] ).map( String )
 			return peers.find( lord => lord !== this.my_lord() ) ?? peers[0] ?? ''
 		}
@@ -211,6 +292,7 @@ namespace $.$$ {
 
 		@$mol_mem_key
 		dialog_title( id: string ) {
+			if( this.saved_is( id ) ) return saved_name
 			const peer = this.dialog_peer( id )
 			if( !peer ) return this.lord_short( id )
 			return this.peer_name( peer ) || this.lord_short( peer )
@@ -233,13 +315,28 @@ namespace $.$$ {
 			}
 		}
 
+		/** Порядок один и тот же и в основном списке, и в архиве: свежие сверху. */
+		fresh_first( ids: readonly string[] ) {
+			return [ ... ids ].sort( ( a, b )=> this.dialog_moment( b ) - this.dialog_moment( a ) )
+		}
+
+		/** Избранное стоит первой строкой всегда, вход в архив — последней и
+		 * только пока архив не пуст; развёрнутый архив досыпает строки туда же. */
 		@$mol_mem
 		dialog_rows() {
-			const ids = this.dialog_ids()
-			if( !ids.length ) return [ this.Dialogs_empty() ]
-			return [ ... ids ]
-				.sort( ( a, b )=> this.dialog_moment( b ) - this.dialog_moment( a ) )
-				.map( id => this.Dialog_row( id ) )
+
+			const archived = this.archive_ids()
+			const folded = new Set( archived )
+			const visible = this.fresh_first( this.dialog_ids().filter( id => !folded.has( id ) ) )
+			const empty = !visible.length && !archived.length
+
+			return [
+				this.Saved_row(),
+				... visible.map( id => this.Dialog_row( id ) ),
+				... empty ? [ this.Dialogs_empty() ] : [],
+				... archived.length ? [ this.Archive_row() ] : [],
+				... this.archive_opened() ? this.fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
+			]
 		}
 
 		@$mol_mem
@@ -314,12 +411,14 @@ namespace $.$$ {
 		@$mol_action
 		dialog_delete( id: string, next?: any ) {
 			if( !id ) return null
+			if( this.saved_is( id ) ) return null
 
 			const active = this.dialog_current() === id
 			const store = this.dialogs_store()
 
 			store.Dialogs( 'auto' )!.cut( id )
 			store.Hidden( 'auto' )!.add( id )
+			if( this.archive_is( id ) ) store.Archived( 'auto' )!.cut( id )
 
 			// Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
 			// но выкидывание из своего списка важнее — просто не чистим монитор
@@ -341,11 +440,120 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Только явно выбранный диалог: на узком экране чат не должен открываться сам. */
+		// ===== Архив: спрятанные, но живые диалоги =====
+
+		/** Сырые ссылки из хранилища: по ним рисуется состояние кнопки в строке,
+		 * даже когда сам диалог из списка уже выпал. */
+		@$mol_mem
+		archive_links() {
+			return ( this.dialogs_store().Archived()?.items() ?? [] ).map( String )
+		}
+
+		/** В архиве показываем только живые диалоги: удалённый осел в Hidden
+		 * и вернуться на экран не должен ни в списке, ни в архиве. */
+		@$mol_mem
+		archive_ids() {
+			const alive = new Set( this.dialog_ids() )
+			const dropped = new Set( this.hidden_ids() )
+			return this.archive_links().filter( id => alive.has( id ) && !dropped.has( id ) )
+		}
+
+		@$mol_mem_key
+		archive_is( id: string ) {
+			return this.archive_links().includes( id )
+		}
+
+		@$mol_mem
+		archive_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Архив разворачивается прямо в списке: отдельная страница ради
+		 * пары спрятанных диалогов — лишний шаг навигации. */
+		@$mol_action
+		archive_toggle( next?: any ) {
+			this.delete_disarm()
+			this.archive_opened( !this.archive_opened() )
+			return null
+		}
+
+		/** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
+		 * всплытие: иначе тот же клик ещё и открыл бы прячущийся диалог.
+		 * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
+		@$mol_action
+		dialog_archive_click( id: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !id ) return null
+			this.delete_disarm()
+			if( this.archive_is( id ) ) this.dialog_unarchive( id )
+			else this.dialog_archive( id )
+			return null
+		}
+
+		/** Диалог остаётся в своём списке и продолжает принимать сообщения:
+		 * архив — это только вторая полка, а не удаление. */
+		@$mol_action
+		dialog_archive( id: string, next?: any ) {
+			if( !id ) return null
+			if( this.saved_is( id ) ) return null
+			this.dialogs_store().Archived( 'auto' )!.add( id )
+			return null
+		}
+
+		@$mol_action
+		dialog_unarchive( id: string, next?: any ) {
+			if( !id ) return null
+			this.dialogs_store().Archived( 'auto' )!.cut( id )
+			return null
+		}
+
+		@$mol_mem_key
+		archive_hint( id: string ) {
+			return this.archive_is( id ) ? 'Вернуть из архива' : 'В архив'
+		}
+
+		/** Одна и та же кнопка прячет и возвращает, поэтому и стрелка на ней
+		 * смотрит в ту сторону, куда уедет диалог. */
+		@$mol_mem_key
+		archive_icons( id: string ) {
+			return [ this.archive_is( id ) ? this.Dialog_unarchive_icon( id ) : this.Dialog_archive_icon( id ) ]
+		}
+
+		override archive_note() {
+			return this.plural( this.archive_ids().length, 'диалог', 'диалога', 'диалогов' )
+		}
+
+		/** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
+		 * диалогов. Ленд любого из них может быть ещё в пути — такой не считаем. */
+		@$mol_mem
+		archive_unread() {
+			let count = 0
+			for( const id of this.archive_ids() ) {
+				try {
+					count += this.unread_count( id )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+			return count
+		}
+
+		override archive_unread_label() {
+			return this.archive_unread() ? String( this.archive_unread() ) : ''
+		}
+
+		override Archive_unread() {
+			return this.archive_unread() ? super.Archive_unread() : null!
+		}
+
+		/** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
+		 * Избранного нет в списке диалогов, но открывается оно так же. */
 		@$mol_mem
 		dialog_active() {
 			const current = this.dialog_current()
-			if( current && this.dialog_ids().includes( current ) ) return current
+			if( !current ) return ''
+			if( this.saved_is( current ) ) return current
+			if( this.dialog_ids().includes( current ) ) return current
 			return ''
 		}
 
@@ -567,9 +775,12 @@ namespace $.$$ {
 
 		// ===== Сообщения =====
 
-		/** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции прочтения. */
+		/** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции
+		 * прочтения. У избранного делить нечего и не с кем, поэтому его ленд
+		 * сам себе сессия — остальной код от этого ничем не отличается. */
 		session_land_of( id: string ) {
 			if( !id ) return null
+			if( this.saved_is( id ) ) return this.saved_land()
 			const sessions = ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
 			const last = sessions[ sessions.length - 1 ]
 			if( !last ) return null
@@ -661,11 +872,13 @@ namespace $.$$ {
 			return this.message_edited( id ) ? super.Message_edited( id ) : null!
 		}
 
-		/** Одна галочка — доставлено, две — собеседник прочитал. Только для своих сообщений. */
+		/** Одна галочка — доставлено, две — собеседник прочитал. Только для своих
+		 * сообщений и только там, где есть кому читать: в избранном галочек нет. */
 		@$mol_mem_key
 		message_checks( id: string ) {
 			if( !this.message_out( id ) ) return ''
 			const dialog = this.dialog_active()
+			if( this.saved_is( dialog ) ) return ''
 			const peer = this.dialog_peer( dialog )
 			if( !peer ) return '✓'
 			const moment = Number( this.message_pawn( id )?.Moment()?.val() ?? 0 )
@@ -673,7 +886,7 @@ namespace $.$$ {
 		}
 
 		override Message_checks( id: string ) {
-			return this.message_out( id ) ? super.Message_checks( id ) : null!
+			return this.message_checks( id ) ? super.Message_checks( id ) : null!
 		}
 
 		override Message_edit( id: string ) {
@@ -762,6 +975,7 @@ namespace $.$$ {
 		read_sync() {
 			const id = this.dialog_active()
 			if( !id ) return 0
+			if( this.saved_is( id ) ) return 0
 			const my = this.my_lord()
 
 			let last = 0
@@ -783,6 +997,7 @@ namespace $.$$ {
 		@$mol_mem_key
 		unread_count( id: string ) {
 			if( !id ) return 0
+			if( this.saved_is( id ) ) return 0
 			if( id === this.dialog_active() ) return 0
 			const my = this.my_lord()
 			const seen = this.read_moment_of( id, my )
@@ -810,6 +1025,7 @@ namespace $.$$ {
 			const last = messages[ messages.length - 1 ]
 			if( !last ) return ''
 			const text = String( last.Text()?.val() ?? '' )
+			if( this.saved_is( id ) ) return text
 			const mine = String( last.Author()?.val() ?? '' ) === this.my_lord()
 			return mine ? 'Вы: ' + text : text
 		}
@@ -882,15 +1098,19 @@ namespace $.$$ {
 			return this.registry_active() === id
 		}
 
-		/** Русское склонение: 1 участник, 2 участника, 5 участников. */
-		people_count( count: number ) {
+		/** Русское склонение числительных: 1 диалог, 2 диалога, 5 диалогов. */
+		plural( count: number, one: string, few: string, many: string ) {
 			const tens = count % 100
 			const ones = count % 10
 			if( tens < 11 || tens > 14 ) {
-				if( ones === 1 ) return count + ' участник'
-				if( ones >= 2 && ones <= 4 ) return count + ' участника'
+				if( ones === 1 ) return count + ' ' + one
+				if( ones >= 2 && ones <= 4 ) return count + ' ' + few
 			}
-			return count + ' участников'
+			return count + ' ' + many
+		}
+
+		people_count( count: number ) {
+			return this.plural( count, 'участник', 'участника', 'участников' )
 		}
 
 		@$mol_mem_key
@@ -1083,6 +1303,60 @@ namespace $.$$ {
 			}
 			this.dialog_pending( lord )
 			return null
+		}
+
+		// ===== Личная ссылка-приглашение =====
+
+		/** Приглашение — адрес страницы с одним лишь лордом: остальные
+		 * параметры (свой мастер, открытый реестр) чужому человеку не нужны. */
+		invite_uri( lord: string ) {
+			if( !lord ) return ''
+			const location = this.$.$mol_dom_context.location
+			return location.origin + location.pathname + '#!invite=' + lord
+		}
+
+		override invite_link() {
+			return this.invite_uri( this.my_lord() )
+		}
+
+		/** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
+		invite_lord() {
+			return this.$.$mol_state_arg.value( 'invite' ) ?? ''
+		}
+
+		/** Своя же ссылка диалога не заводит, знакомый собеседник просто
+		 * открывается, а незнакомый уходит обычным путём — через ожидание. */
+		invite_plan( lord: string, my: string, exist: string ): 'skip' | 'open' | 'start' {
+			if( !lord ) return 'skip'
+			if( lord === my ) return 'skip'
+			return exist ? 'open' : 'start'
+		}
+
+		/** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
+		 * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
+		@$mol_mem
+		invite_handle() {
+			const lord = this.invite_lord()
+			if( !lord ) return ''
+			$mol_wire_async( this ).invite_accept( lord )
+			return lord
+		}
+
+		/** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+		 * страницы принимала бы то же приглашение снова и снова. */
+		invite_accept( lord: string ) {
+
+			if( !lord ) return 'skip'
+
+			const exist = this.dialog_with( lord )
+			const plan = this.invite_plan( lord, this.my_lord(), exist )
+
+			if( plan === 'open' ) this.dialog_select( exist )
+			if( plan === 'start' ) this.dialog_pending( lord )
+
+			this.$.$mol_state_arg.value( 'invite', null )
+
+			return plan
 		}
 
 		// ===== Уведомления =====
@@ -1301,6 +1575,7 @@ namespace $.$$ {
 			this.user_store()
 			this.inbox_land()
 			this.dialogs_land()
+			this.saved_land()
 			this.monitor_land()
 			this.device_ready()
 			return true
@@ -1311,6 +1586,7 @@ namespace $.$$ {
 			try { this.baza_master() } catch( error ) { $mol_fail_log( error ) }
 			try { this.setup_ready() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
+			try { this.invite_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }

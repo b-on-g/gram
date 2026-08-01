@@ -246,6 +246,262 @@ namespace $.$$ {
 			height: '1rem',
 		},
 
+		/* кнопка архива стоит рядом с корзиной и повторяет её габариты:
+		две соседние операции не должны прыгать в строке */
+		Dialog_archive: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Dialog_archive_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Dialog_unarchive_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		// ===== Избранное =====
+		// Первая строка списка, геометрия у неё ровно та же, что у обычной:
+		// отличается только кружок — вместо узора собеседника закладка.
+
+		Saved_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+		},
+
+		/* цвет закладки перебивается белым на выбранной строке — тем же
+		правилом из gram.view.css, что красит и остальной её текст */
+		Saved_avatar: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			width: '3rem',
+			height: '3rem',
+			borderRadius: '50%',
+			background: {
+				color: veil,
+			},
+			color: tg_blue,
+		},
+
+		Saved_avatar_icon: {
+			width: '1.5rem',
+			height: '1.5rem',
+		},
+
+		Saved_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			/* без нуля ellipsis не срабатывает: колонка распирается содержимым */
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Saved_top: {
+			align: {
+				items: 'baseline',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Saved_title: {
+			display: 'block',
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				weight: 'bold',
+			},
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Saved_time: {
+			flex: {
+				shrink: 0,
+			},
+			font: {
+				size: '0.75rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+		},
+
+		Saved_bottom: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Saved_preview: {
+			display: 'block',
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		// ===== Вход в архив =====
+		// Последняя строка списка: тот же кружок и та же сетка, что у диалога,
+		// чтобы раскрытый архив читался продолжением списка, а не врезкой.
+
+		Archive_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+		},
+
+		Archive_avatar: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			width: '3rem',
+			height: '3rem',
+			borderRadius: '50%',
+			background: {
+				color: veil,
+			},
+			color: $mol_theme.shade,
+		},
+
+		Archive_avatar_icon: {
+			width: '1.5rem',
+			height: '1.5rem',
+		},
+
+		Archive_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Archive_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				weight: 'bold',
+			},
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Archive_note: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		/* свой бейдж вместо строчного: тот ключуется диалогом, а тут сумма по архиву */
+		Archive_unread: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			background: {
+				color: tg_blue,
+			},
+			color: '#ffffff',
+			font: {
+				size: '0.75rem',
+				weight: 'bold',
+			},
+			lineHeight: '1.25rem',
+			minWidth: '1.25rem',
+			padding: {
+				top: 0,
+				bottom: 0,
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '1rem',
+		},
+
 		// ===== Реестр пользователей =====
 
 		Users_title: {
@@ -615,6 +871,104 @@ namespace $.$$ {
 			whiteSpace: 'nowrap',
 		},
 
+		// ===== Личная ссылка-приглашение =====
+		// Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink
+		// и нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка
+		// иначе распирает колонку настроек вместо переноса внутри неё.
+
+		Invite: {
+			Content: {
+				alignSelf: 'stretch',
+				minWidth: 0,
+				flex: {
+					shrink: 1,
+				},
+			},
+		},
+
+		Invite_body: {
+			alignSelf: 'stretch',
+			flex: {
+				direction: 'column',
+				shrink: 1,
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			maxWidth: '100%',
+		},
+
+		Invite_hint: {
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		/* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
+		Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
+		Invite_text: {
+			alignSelf: 'stretch',
+			flex: {
+				shrink: 1,
+			},
+			width: '100%',
+			minWidth: 0,
+			maxWidth: '100%',
+			maxHeight: '6rem',
+			overflow: {
+				y: 'auto',
+			},
+			font: {
+				family: 'monospace',
+				size: '0.75rem',
+			},
+			whiteSpace: 'pre-wrap',
+			overflowWrap: 'anywhere',
+			userSelect: 'all',
+			background: {
+				color: veil,
+			},
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.625rem',
+				right: '0.625rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
+		Invite_copy: {
+			alignSelf: 'flex-start',
+		},
+
+		/* Белая подложка обязательна: на тёмной теме цветной код выходит
+		светлее фона, и сканеры такой инверсный код берут не всякие. */
+		Invite_qr_box: {
+			alignSelf: 'center',
+			maxWidth: '100%',
+			justify: {
+				content: 'center',
+			},
+			background: {
+				color: '#ffffff',
+			},
+			padding: '0.5rem',
+			borderRadius: '0.75rem',
+		},
+
+		/* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
+		Invite_qr: {
+			flex: {
+				shrink: 0,
+			},
+			width: '12rem',
+			height: '12rem',
+			maxWidth: '100%',
+		},
+
 		// ===== Ключ аккаунта =====
 
 		/* Всей ветке нужен shrink и нулевой минимум: у вьюх по умолчанию
@@ -704,11 +1058,19 @@ namespace $.$$ {
 			alignSelf: 'flex-start',
 		},
 
+		/* Подложка — как у ссылки-приглашения: тревожный красный на тёмном
+		фоне без неё читается как инверсный код. */
 		Key_qr_box: {
-			alignSelf: 'stretch',
+			alignSelf: 'center',
+			maxWidth: '100%',
 			justify: {
 				content: 'center',
 			},
+			background: {
+				color: '#ffffff',
+			},
+			padding: '0.5rem',
+			borderRadius: '0.75rem',
 		},
 
 		/* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
