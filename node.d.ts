@@ -37888,6 +37888,15 @@ declare namespace $ {
 //# sourceMappingURL=up.view.tree.d.ts.map
 declare namespace $ {
 
+	export class $mol_icon_arrow_left extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=left.view.tree.d.ts.map
+declare namespace $ {
+
 	export class $mol_icon_send extends $mol_icon {
 		path( ): string
 	}
@@ -40386,40 +40395,40 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_152 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_152 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_153 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_153 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_154 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_154 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_155 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_155 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_156 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_156 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_157 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_157 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_158 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_158 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_159 = $mol_type_enforce<
 		readonly(any)[]
@@ -40431,165 +40440,181 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_161 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_161 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_162 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_list__rows_bog_gram_162 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_163 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_163 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_164 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_164 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_165 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_166 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_166 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_167 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_167 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_168 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['registry_active_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_168 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_169 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_169 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_170 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_170 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_171 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_171 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_172 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_172 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_173 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_174 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_save'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_175 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_176 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_174 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_177 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_175 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_save'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_176 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_177 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_178 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_select'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_178 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_179 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_179 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_180 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_180 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_181 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_181 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_182 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_182 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_183 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['saved_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_183 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_184 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_184 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_185 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_185 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_186 = $mol_type_enforce<
 		ReturnType< $bog_gram['archive_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_186 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_187 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_187 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_188 = $mol_type_enforce<
 		ReturnType< $bog_gram['user_pick'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_188 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_189 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_189 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_190 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_190 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_191 = $mol_type_enforce<
 		({ 
 			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
+			'bog_gram_menu': ReturnType< $bog_gram['message_menu_is'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__sub_bog_gram_191 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_192 = $mol_type_enforce<
+		({ 
+			pointerdown( next?: ReturnType< $bog_gram['message_press'] > ): ReturnType< $bog_gram['message_press'] >,
+			pointerup( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
+			pointercancel( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
+			contextmenu( next?: ReturnType< $bog_gram['message_context'] > ): ReturnType< $bog_gram['message_context'] >,
+		})  & ReturnType< $mol_view['event'] >
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_bog_gram_193 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -40771,6 +40796,10 @@ declare namespace $ {
 		day_title( id: any): string
 		Day_chip( id: any): $mol_view
 		message_out( id: any): boolean
+		message_menu_is( id: any): boolean
+		message_press( id: any, next?: any ): any
+		message_release( id: any, next?: any ): any
+		message_context( id: any, next?: any ): any
 		message_body( id: any): string
 		Message_body( id: any): $mol_paragraph
 		message_time( id: any): string
@@ -40778,13 +40807,14 @@ declare namespace $ {
 		Message_edited( id: any): $mol_view
 		message_checks( id: any): string
 		Message_checks( id: any): $mol_view
+		Message_meta( id: any): $mol_view
 		message_edit( id: any, next?: any ): any
 		Message_edit_icon( id: any): $mol_icon_pencil
 		Message_edit( id: any): $mol_button_minor
 		message_delete( id: any, next?: any ): any
 		Message_delete_icon( id: any): $mol_icon_delete
 		Message_delete( id: any): $mol_button_minor
-		Message_meta( id: any): $mol_view
+		Message_actions( id: any): $mol_view
 		plugins( ): readonly(any)[]
 		Placeholder( ): ReturnType< $bog_gram['Intro'] >
 		pages( ): readonly(any)[]
@@ -40827,78 +40857,95 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_list__rows_bog_gram_chat_4 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_chat_5 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_6 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_4 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_7 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['edit_cancel'] >
+	type $mol_button_minor__click_bog_gram_chat_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['close'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_8 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_6 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_9 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_chat_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_chat_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_9 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_10 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['edit_cancel'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_11 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_12 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_string__hint_bog_gram_chat_10 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_chat_13 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_chat_11 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_chat_14 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_text'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_chat_12 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_chat_15 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_13 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_16 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_14 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_17 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_15 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_18 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_19 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_17 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_20 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
 	export class $bog_gram_chat extends $mol_page {
 		close( next?: any ): any
+		Back_icon( ): $mol_icon_arrow_left
+		Back( ): $mol_button_minor
 		Close_icon( ): $mol_icon_close
 		Close( ): $mol_button_minor
 		Messages( ): $mol_list
@@ -40916,6 +40963,7 @@ declare namespace $ {
 		Foot( ): $mol_view
 		rows( ): readonly($mol_view)[]
 		edit_mode( ): boolean
+		head( ): readonly(any)[]
 		tools( ): readonly(any)[]
 		body( ): readonly(any)[]
 		foot( ): readonly(any)[]
@@ -41098,8 +41146,33 @@ declare namespace $.$$ {
          * сообщений и только там, где есть кому читать: в избранном галочек нет. */
         message_checks(id: string): "" | "✓" | "✓✓";
         Message_checks(id: string): $mol_view;
-        Message_edit(id: string): $mol_button_minor;
-        Message_delete(id: string): $mol_button_minor;
+        /** Чужое сообщение править и удалять нечем: панель есть только у своих. */
+        Message_actions(id: string): $mol_view;
+        /** Пузырь с раскрытой панелью ровно один: второе долгое нажатие
+         * переносит её на новое сообщение, а не плодит вторую. */
+        message_menu(next?: string): string;
+        message_menu_is(id: string): boolean;
+        /** Отсчёт удержания живёт между двумя разными обработчиками, поэтому это
+         * обычные поля, а не мемы: мем сбросился бы вместе с фиброй предыдущего
+         * события, и отпускание пальца не увидело бы, что нажатие было долгим. */
+        press_timer: ReturnType<typeof setTimeout> | null;
+        press_row: string;
+        press_held: boolean;
+        press_stop(): void;
+        message_press(id: string, next?: Event): null;
+        message_hold(id: string): null;
+        /** Отпускание пальца внутри самой панели: по нему прятать её нельзя.
+         * Клик браузер шлёт уже после отпускания, и кнопка, успевшая пропасть
+         * из вёрстки, его не получит — правка и удаление просто не сработают. */
+        press_on_actions(next?: Event): boolean;
+        /** Короткий тап по своему пузырю прячет раскрытую панель обратно. Отмена
+         * жеста (палец поехал прокручивать ленту) приходит сюда же и делает то
+         * же самое, а вот отпускание после сработавшего удержания — нет, иначе
+         * панель закрывалась бы в тот же момент, когда открылась. */
+        message_release(id: string, next?: Event): null;
+        /** На телефоне это тот же долгий тап, на десктопе — правый клик.
+         * Показываем свою панель, поэтому системное меню гасим. */
+        message_context(id: string, next?: Event): null;
         edit_id(next?: string): string;
         edit_mode(): boolean;
         message_edit(id: string, next?: any): null;

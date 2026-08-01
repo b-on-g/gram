@@ -362,6 +362,8 @@
     "$mol_icon_archive_arrow_down",
     "$mol_icon_archive_arrow",
     "$mol_icon_archive_arrow_up",
+    "$mol_icon_arrow_left",
+    "$mol_icon_arrow",
     "$mol_icon_send",
     "$bog_gram_user",
     "$bog_gram_dialogs",

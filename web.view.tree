@@ -551,6 +551,8 @@ $mol_icon_archive_arrow_down $mol_icon path \M3 3H21V7H3V3M4 21V8H20V21H4M14 14V
 
 $mol_icon_archive_arrow_up $mol_icon path \M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3
 
+$mol_icon_arrow_left $mol_icon path \M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z
+
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
 
 $mol_book2_catalog $mol_book2
@@ -2344,6 +2346,13 @@ $bog_gram $mol_book2
 		attr *
 			^
 			bog_gram_out <= message_out* false
+			bog_gram_menu <= message_menu_is* false
+		event *
+			^
+			pointerdown? <=> message_press*? null
+			pointerup? <=> message_release*? null
+			pointercancel? <=> message_release*? null
+			contextmenu? <=> message_context*? null
 		sub /
 			<= Message_body* $mol_paragraph
 				title <= message_body* \
@@ -2358,6 +2367,8 @@ $bog_gram $mol_book2
 					<= Message_checks* $mol_view
 						sub /
 							<= message_checks* \
+			<= Message_actions* $mol_view
+				sub /
 					<= Message_edit* $mol_button_minor
 						hint \Редактировать
 						click? <=> message_edit*? null
@@ -2376,6 +2387,14 @@ $bog_gram_chat $mol_page
 	message_send? null
 	edit_cancel? null
 	close? null
+	head /
+		<= Back $mol_button_minor
+			hint \Назад
+			click? <=> close? null
+			sub /
+				<= Back_icon $mol_icon_arrow_left
+		<= Title
+		<= Tools
 	tools /
 		<= Close $mol_button_minor
 			hint \Закрыть
