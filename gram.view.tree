@@ -65,6 +65,11 @@ $bog_gram $mol_book2
 				<= Registry_block $mol_labeler
 					title \Общий реестр
 					content <= registry_content /
+				<= Account $mol_labeler
+					title \Аккаунт
+					content /
+						<= Account_body $mol_view
+							sub <= account_rows /
 		<= Compose_page $mol_page
 			title \Новый диалог
 			tools /
@@ -113,6 +118,50 @@ $bog_gram $mol_book2
 			\Создать общий реестр
 	Registry_ready $mol_paragraph
 		title \Реестр подключён
+	Key_toggle $mol_button_minor
+		click? <=> key_toggle? null
+		sub /
+			<= key_toggle_label \
+	Key_warning $mol_paragraph
+		title \Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.
+	Key_row $mol_view
+		sub /
+			<= Key_text $mol_paragraph
+				title <= key_text \
+			<= Key_copy $mol_button_copy
+				title \Скопировать
+				text <= key_text
+	Key_qr_box $mol_view
+		sub /
+			<= Key_qr $bog_qr
+				uri <= key_text
+	Key_save $mol_button_minor
+		click? <=> key_save? null
+		sub /
+			\Скачать файл
+	Key_import_form $mol_view
+		sub /
+			<= Key_field $mol_string
+				hint \Ключ аккаунта
+				value? <=> key_input? \
+			<= Key_load_row $mol_view
+				sub /
+					<= Key_load_hint $mol_paragraph
+						title \Или загрузите файл с ключом
+					<= Key_open $mol_button_open
+						hint \Выбрать файл
+						accept \.key,text/plain
+						multiple false
+						files? <=> key_file? null
+			<= Key_import $mol_button_major
+				attr *
+					^
+					bog_gram_armed <= import_armed false
+				click? <=> key_import? null
+				sub /
+					<= key_import_label \
+			<= Key_error $mol_paragraph
+				title <= key_error \
 	Dialog_row* $mol_button_minor
 		click? <=> dialog_select*? null
 		attr *
@@ -120,7 +169,7 @@ $bog_gram $mol_book2
 			bog_gram_current <= dialog_current_is* false
 		sub /
 			<= Dialog_avatar* $bog_gram_avatar
-				letter <= dialog_letter* \
+				id <= dialog_avatar_id* \
 				tint <= dialog_tint* 0
 			<= Dialog_info* $mol_view
 				sub /
@@ -144,7 +193,7 @@ $bog_gram $mol_book2
 		click? <=> user_pick*? null
 		sub /
 			<= User_avatar* $bog_gram_avatar
-				letter <= user_letter* \
+				id <= user_lord* \
 				tint <= user_tint* 0
 			<= User_title* $mol_view
 				sub /
@@ -234,11 +283,9 @@ $bog_gram_chat $mol_page
 							sub /
 								<= Send_icon $mol_icon_send
 
-$bog_gram_avatar $mol_view
-	letter \
+$bog_gram_avatar $mol_avatar
+	id \
 	tint 0
 	attr *
 		^
 		bog_gram_tint <= tint
-	sub /
-		<= letter

@@ -6,6 +6,9 @@ namespace $.$$ {
 	/** Нейтральная полупрозрачная заливка: чуть темнее на светлой теме, чуть светлее на тёмной. */
 	const veil = '#8888881a'
 
+	/** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
+	const alert_red = '#e14b4b'
+
 	$mol_style_define( $bog_gram, {
 
 		// ===== Страницы буклета =====
@@ -116,9 +119,6 @@ namespace $.$$ {
 		Dialog_avatar: {
 			width: '3rem',
 			height: '3rem',
-			font: {
-				size: '1.125rem',
-			},
 		},
 
 		Dialog_info: {
@@ -263,9 +263,6 @@ namespace $.$$ {
 		User_avatar: {
 			width: '2.5rem',
 			height: '2.5rem',
-			font: {
-				size: '1rem',
-			},
 		},
 
 		User_title: {
@@ -309,6 +306,14 @@ namespace $.$$ {
 			color: $mol_theme.shade,
 		},
 
+		My_id: {
+			Content: {
+				align: {
+					items: 'center',
+				},
+			},
+		},
+
 		My_id_text: {
 			font: {
 				family: 'monospace',
@@ -319,6 +324,109 @@ namespace $.$$ {
 				x: 'auto',
 			},
 			whiteSpace: 'nowrap',
+		},
+
+		// ===== Ключ аккаунта =====
+
+		Account_body: {
+			alignSelf: 'stretch',
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'flex-start',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Key_warning: {
+			font: {
+				size: '0.875rem',
+			},
+			color: alert_red,
+		},
+
+		Key_row: {
+			alignSelf: 'stretch',
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		/* ключ длинный и без пробелов: прокручиваем его, а не ломаем колонку */
+		Key_text: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			font: {
+				family: 'monospace',
+				size: '0.75rem',
+			},
+			minWidth: 0,
+			overflow: {
+				x: 'auto',
+			},
+			whiteSpace: 'nowrap',
+		},
+
+		Key_qr_box: {
+			alignSelf: 'stretch',
+			justify: {
+				content: 'center',
+			},
+		},
+
+		/* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
+		Key_qr: {
+			flex: {
+				shrink: 0,
+			},
+			width: '12rem',
+			height: '12rem',
+			maxWidth: '100%',
+		},
+
+		Key_import_form: {
+			alignSelf: 'stretch',
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Key_load_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Key_load_hint: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Key_error: {
+			font: {
+				size: '0.875rem',
+			},
+			color: alert_red,
 		},
 
 		// ===== Разделитель дня =====
@@ -498,56 +606,23 @@ namespace $.$$ {
 		flex: {
 			shrink: 0,
 		},
-		justify: {
-			content: 'center',
-		},
-		align: {
-			items: 'center',
-		},
 		borderRadius: '50%',
-		color: '#ffffff',
-		font: {
-			weight: 'bold',
+		background: {
+			color: veil,
 		},
-		userSelect: 'none',
+		padding: '0.25rem',
 
+		// Узор рисуется обводкой currentColor, поэтому цвет из палитры
+		// красит сами точки, а не подложку
 		'@': {
 			bog_gram_tint: {
-				'0': {
-					background: {
-						color: '#e17076',
-					},
-				},
-				'1': {
-					background: {
-						color: '#faa774',
-					},
-				},
-				'2': {
-					background: {
-						color: '#a695e7',
-					},
-				},
-				'3': {
-					background: {
-						color: '#7bc862',
-					},
-				},
-				'4': {
-					background: {
-						color: '#6ec9cb',
-					},
-				},
-				'5': {
-					background: {
-						color: '#65aadd',
-					},
-				},
-				'6': {
-					background: {
-						color: '#ee7aae',
-					},
-				},
+				'0': { color: '#e17076' },
+				'1': { color: '#faa774' },
+				'2': { color: '#a695e7' },
+				'3': { color: '#7bc862' },
+				'4': { color: '#6ec9cb' },
+				'5': { color: '#65aadd' },
+				'6': { color: '#ee7aae' },
 			},
 		},
 

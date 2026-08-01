@@ -7,6 +7,12 @@ namespace $.$$ {
 	/** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
 	const notify_key = 'bog_gram_notify'
 
+	/** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
+	const auth_size = 128
+
+	/** Имя файла, в который сохраняется ключ аккаунта. */
+	const auth_file = 'gram-account.key'
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -138,16 +144,6 @@ namespace $.$$ {
 
 		// ===== Аватары =====
 
-		/** Инициал в кружке: первая буква имени собеседника, а пока имя не
-		 * приехало — первый символ самого лорда. Имя может начинаться с пробела
-		 * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
-		avatar_letter( lord: string ) {
-			if( !lord ) return ''
-			const source = this.peer_name( lord ) || lord
-			const char = [ ... source ].find( symbol => symbol.trim() )
-			return char ? char.toUpperCase() : ''
-		}
-
 		/** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
 		avatar_tint( lord: string ) {
 			let hash = 0
@@ -156,12 +152,12 @@ namespace $.$$ {
 		}
 
 		/** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
-		 * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
-		 * сохраняется, буква и цвет проявятся сами. */
+		 * весь список, поэтому пока рисуем пустой кружок — подписка
+		 * сохраняется, узор и цвет проявятся сами. */
 		@$mol_mem_key
-		dialog_letter( id: string ) {
+		dialog_avatar_id( id: string ) {
 			try {
-				return this.avatar_letter( this.dialog_peer( id ) )
+				return this.dialog_peer( id )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return ''
@@ -175,16 +171,6 @@ namespace $.$$ {
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return 0
-			}
-		}
-
-		@$mol_mem_key
-		user_letter( lord: string ) {
-			try {
-				return this.avatar_letter( lord )
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				return ''
 			}
 		}
 
@@ -270,6 +256,7 @@ namespace $.$$ {
 		dialog_select( id: string, next?: any ) {
 			this.compose_opened( false )
 			this.settings_opened( false )
+			this.account_reset()
 			this.edit_id( '' )
 			this.message_text( '' )
 			this.delete_armed( false )
@@ -380,6 +367,7 @@ namespace $.$$ {
 			const open = !this.compose_opened()
 			this.settings_opened( false )
 			this.compose_opened( open )
+			this.account_reset()
 			return null
 		}
 
@@ -394,12 +382,14 @@ namespace $.$$ {
 			const open = !this.settings_opened()
 			this.compose_opened( false )
 			this.settings_opened( open )
+			this.account_reset()
 			return null
 		}
 
 		@$mol_action
 		settings_close( next?: any ) {
 			this.settings_opened( false )
+			this.account_reset()
 			return null
 		}
 
@@ -960,6 +950,158 @@ namespace $.$$ {
 			return ok
 		}
 
+		// ===== Ключ аккаунта: показ и экспорт =====
+
+		/** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
+		 * не уезжает: только на экран и только по явной просьбе. */
+		override key_text() {
+			const auth = this.$.$giper_baza_auth.current()
+			return auth.toString() + auth.toStringPrivate()
+		}
+
+		@$mol_mem
+		key_shown( next?: boolean ) {
+			return next ?? false
+		}
+
+		override key_toggle_label() {
+			return this.key_shown() ? 'Скрыть ключ' : 'Показать ключ'
+		}
+
+		@$mol_action
+		key_toggle( next?: any ) {
+			this.key_shown( !this.key_shown() )
+			return null
+		}
+
+		/** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
+		 * останется на экране, а следующий одиночный клик сменит аккаунт. */
+		account_reset() {
+			this.key_shown( false )
+			this.import_armed( false )
+			this.key_error( '' )
+		}
+
+		/** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
+		 * ни QR — в дереве компонентов их просто нет. */
+		@$mol_mem
+		account_rows() {
+			if( !this.key_shown() ) return [ this.Key_toggle(), this.Key_import_form() ]
+			return [
+				this.Key_toggle(),
+				this.Key_warning(),
+				this.Key_row(),
+				this.Key_qr_box(),
+				this.Key_save(),
+				this.Key_import_form(),
+			]
+		}
+
+		/** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
+		 * программно и тут же освобождаем, в документе она не остаётся. */
+		@$mol_action
+		key_save( next?: any ) {
+
+			const context = this.$.$mol_dom_context
+			const blob = new Blob( [ this.key_text() ], { type: 'text/plain' } )
+			const uri = context.URL.createObjectURL( blob )
+
+			const link = context.document.createElement( 'a' )
+			link.href = uri
+			link.download = auth_file
+
+			context.document.body.appendChild( link )
+			link.click()
+			link.remove()
+
+			context.URL.revokeObjectURL( uri )
+
+			return null
+		}
+
+		// ===== Вход по чужому ключу =====
+
+		@$mol_mem
+		key_error( next?: string ) {
+			return next ?? ''
+		}
+
+		override Key_error() {
+			return this.key_error() ? super.Key_error() : null!
+		}
+
+		@$mol_mem
+		import_armed( next?: boolean ) {
+			return next ?? false
+		}
+
+		override key_import_label() {
+			return this.import_armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу'
+		}
+
+		/** Ключом считаем только строку полного размера: обрезок или случайный
+		 * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
+		auth_from( str: string ) {
+			try {
+				const auth = this.$.$giper_baza_auth.from( str )
+				return auth.byteLength === auth_size ? auth : null
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				return null
+			}
+		}
+
+		/** Первый клик взводит кнопку, второй применяет — как корзина в чате.
+		 * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
+		@$mol_action
+		key_import( next?: any ) {
+
+			const str = this.key_input().trim()
+			if( !str ) {
+				this.key_error( 'Вставьте ключ или загрузите файл' )
+				return null
+			}
+
+			const auth = this.auth_from( str )
+			if( !auth ) {
+				this.import_armed( false )
+				this.key_error( 'Это не похоже на ключ аккаунта' )
+				return null
+			}
+
+			if( !this.import_armed() ) {
+				this.key_error( '' )
+				this.import_armed( true )
+				return null
+			}
+
+			// Подписка на пуши выдана прежнему лорду и новому уже не подходит:
+			// снимаем отметку, чтобы настройки не обещали то, чего нет
+			this.notify_on( false )
+
+			this.$.$giper_baza_auth.current( auth )
+
+			// Весь граф данных завязан на текущий ключ, поэтому проще начать страницу заново
+			this.$.$mol_dom_context.location.reload()
+
+			return null
+		}
+
+		/** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
+		key_file( next?: readonly File[] ) {
+			const file = next?.[ 0 ]
+			if( file ) $mol_wire_async( this ).key_file_read( file )
+			return next ?? null
+		}
+
+		key_file_read( file: File ) {
+			const text = $mol_wire_sync( file ).text()
+			this.key_input( text.trim() )
+			this.import_armed( false )
+			this.key_error( '' )
+			return true
+		}
+
 		// ===== Автозапуск =====
 
 		@$mol_mem
@@ -982,6 +1124,39 @@ namespace $.$$ {
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }
 			try { this.monitor_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.read_sync() } catch( error ) { $mol_fail_log( error ) }
+		}
+
+	}
+
+	export class $bog_gram_avatar extends $.$bog_gram_avatar {
+
+		/** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
+		 * перекрываются, и у длинных идентификаторов картинка сливается в
+		 * сплошное пятно. Берём сетку 3×5 с шагом крупнее толщины: точек
+		 * меньше, зато узор читается и остаётся узнаваемым. */
+		@ $mol_mem
+		override path() {
+
+			const id = $mol_hash_string( this.id() )
+			const start = 3
+			const step = 4.5
+
+			let path = ''
+
+			for( let x = 0; x < 3; ++x ) {
+				for( let y = 0; y < 5; ++y ) {
+
+					if( !( ( id >> ( x + y * 3 ) ) & 1 ) ) continue
+
+					const px = Math.ceil( step * x + start )
+					const py = Math.ceil( step * y + start )
+
+					path += `M ${ px } ${ py } l 0 0 ` + `M ${ 24 - px } ${ py } l 0 0 `
+
+				}
+			}
+
+			return path
 		}
 
 	}
