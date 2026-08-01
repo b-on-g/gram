@@ -22788,27 +22788,46 @@ var $;
             },
             Key_row: {
                 alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                },
                 align: {
-                    items: 'center',
+                    items: 'stretch',
                 },
                 gap: '0.5rem',
                 minWidth: 0,
             },
-            /* ключ длинный и без пробелов: прокручиваем его, а не ломаем колонку */
+            /* Ключ длинный и без пробелов. Ломаем его по символам, а не гоним
+            в горизонтальный скролл: так он не распирает колонку настроек.
+            Перенос рисуется стилем и в текст не попадает — копируется цельная
+            строка. Высоту ограничиваем, чтобы блок не занял пол-экрана. */
             Key_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
+                alignSelf: 'stretch',
+                minWidth: 0,
+                maxHeight: '8rem',
+                overflow: {
+                    y: 'auto',
                 },
                 font: {
                     family: 'monospace',
                     size: '0.75rem',
                 },
-                minWidth: 0,
-                overflow: {
-                    x: 'auto',
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: veil,
                 },
-                whiteSpace: 'nowrap',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Key_copy: {
+                alignSelf: 'flex-start',
             },
             Key_qr_box: {
                 alignSelf: 'stretch',
