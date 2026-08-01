@@ -291,16 +291,245 @@ namespace $.$$ {
 			height: '2.5rem',
 		},
 
+		User_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			/* без нуля ellipsis не срабатывает: колонка распирается содержимым */
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
 		User_title: {
 			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		/* откуда человек: подпись появляется, только когда реестров несколько */
+		User_source: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		/* открыт чужой реестр, а записи в нём нет: зовём вступить прямо тут */
+		Join_plate: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.75rem',
+				right: '0.75rem',
+			},
+			background: {
+				color: veil,
+			},
+			borderRadius: '0.75rem',
+		},
+
+		Join_plate_text: {
 			flex: {
 				grow: 1,
 				shrink: 1,
 			},
 			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Join_plate_button: {
+			flex: {
+				shrink: 0,
+			},
+		},
+
+		// ===== Список реестров в настройках =====
+
+		Registry_block: {
+			Content: {
+				flex: {
+					direction: 'column',
+				},
+				align: {
+					items: 'stretch',
+				},
+				gap: '0.5rem',
+				minWidth: 0,
+			},
+		},
+
+		Registry_list: {
+			gap: '0.125rem',
+		},
+
+		Registry_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+			/* подсветка активного реестра — в gram.view.css: тот же атрибут,
+			что и у выбранного диалога, кастомный attr на встроенной кнопке
+			не проходит типизацию Attrs */
+		},
+
+		Registry_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Registry_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				weight: 'bold',
+			},
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
 			textOverflow: 'ellipsis',
+		},
+
+		Registry_status: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			/* приглушаем прозрачностью, а не цветом: на активной строке текст белый */
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Registry_join: {
+			flex: {
+				shrink: 0,
+			},
+			font: {
+				size: '0.75rem',
+			},
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
+		/* крестик не должен распирать строку: своя ширина и минимум отступов */
+		Registry_drop: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Registry_drop_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Registry_note: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Registry_empty: {
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Registry_share: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Registry_share_text: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Registry_share_copy: {
+			flex: {
+				shrink: 0,
+			},
+		},
+
+		Registry_form: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
 		},
 
 		// ===== Настройки и новый диалог =====
@@ -381,16 +610,31 @@ namespace $.$$ {
 
 		// ===== Ключ аккаунта =====
 
+		/* Всей ветке нужен shrink и нулевой минимум: у вьюх по умолчанию
+		flex-shrink 0, поэтому длинный ключ иначе распирает колонку настроек
+		вместо того, чтобы переноситься внутри отведённой ширины. */
+		Account: {
+			Content: {
+				alignSelf: 'stretch',
+				minWidth: 0,
+				flex: {
+					shrink: 1,
+				},
+			},
+		},
+
 		Account_body: {
 			alignSelf: 'stretch',
 			flex: {
 				direction: 'column',
+				shrink: 1,
 			},
 			align: {
-				items: 'flex-start',
+				items: 'stretch',
 			},
 			gap: '0.5rem',
 			minWidth: 0,
+			maxWidth: '100%',
 		},
 
 		Key_warning: {
@@ -404,12 +648,14 @@ namespace $.$$ {
 			alignSelf: 'stretch',
 			flex: {
 				direction: 'column',
+				shrink: 1,
 			},
 			align: {
 				items: 'stretch',
 			},
 			gap: '0.5rem',
 			minWidth: 0,
+			maxWidth: '100%',
 		},
 
 		/* Ключ длинный и без пробелов. Ломаем его по символам, а не гоним
@@ -418,7 +664,12 @@ namespace $.$$ {
 		строка. Высоту ограничиваем, чтобы блок не занял пол-экрана. */
 		Key_text: {
 			alignSelf: 'stretch',
+			flex: {
+				shrink: 1,
+			},
+			width: '100%',
 			minWidth: 0,
+			maxWidth: '100%',
 			maxHeight: '8rem',
 			overflow: {
 				y: 'auto',
@@ -467,12 +718,14 @@ namespace $.$$ {
 			alignSelf: 'stretch',
 			flex: {
 				direction: 'column',
+				shrink: 1,
 			},
 			align: {
 				items: 'stretch',
 			},
 			gap: '0.5rem',
 			minWidth: 0,
+			maxWidth: '100%',
 		},
 
 		Key_load_row: {
