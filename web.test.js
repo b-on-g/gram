@@ -6841,6 +6841,64 @@ var $;
                 $mol_assert_equal(lords_a.includes(auth_b.pass().lord().str), true);
                 $mol_assert_equal(lords_a.length, lords_b.length);
             },
+            async 'Вступление в реестр — явное действие, чтение список не меняет'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const guest = await $.$giper_baza_auth.generate();
+                const guest_lord = guest.pass().lord().str;
+                const registry0 = $giper_baza_land.make({ $, auth: () => king });
+                registry0.give(null, $giper_baza_rank_post('just'));
+                // Гость просто открыл ссылку и прочитал реестр
+                const registry_guest = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => guest });
+                await $mol_wire_async(registry_guest).units_steal(registry0);
+                const before = (registry_guest.Data($bog_gram_users).Lords()?.items() ?? []);
+                $mol_assert_equal(before.length, 0);
+                // Запись появляется только от явного вступления
+                registry_guest.Data($bog_gram_users).Lords('auto').add(guest_lord);
+                const after = registry_guest.Data($bog_gram_users).Lords().items();
+                $mol_assert_equal(after.includes(guest_lord), true);
+                // И доезжает до владельца реестра
+                await $mol_wire_async(registry0).units_steal(registry_guest);
+                const owner_side = registry0.Data($bog_gram_users).Lords().items();
+                $mol_assert_equal(owner_side.includes(guest_lord), true);
+            },
+            async 'Название реестра задаёт создатель, видит участник'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const guest = await $.$giper_baza_auth.generate();
+                const king_lord = king.pass().lord().str;
+                const registry0 = $giper_baza_land.make({ $, auth: () => king });
+                registry0.give(null, $giper_baza_rank_post('just'));
+                const data0 = registry0.Data($bog_gram_users);
+                data0.Title('auto')?.val('Соседи по даче');
+                data0.Lords('auto').add(king_lord);
+                const registry_guest = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => guest });
+                await $mol_wire_async(registry_guest).units_steal(registry0);
+                const data_guest = registry_guest.Data($bog_gram_users);
+                $mol_assert_equal(data_guest.Title().val(), 'Соседи по даче');
+                $mol_assert_equal(data_guest.Lords().items().includes(king_lord), true);
+            },
+            async 'Забыть реестр — локальная операция, запись в нём остаётся'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const me = await $.$giper_baza_auth.generate();
+                const my_lord = me.pass().lord().str;
+                const registry0 = $giper_baza_land.make({ $, auth: () => king });
+                registry0.give(null, $giper_baza_rank_post('just'));
+                const registry_me = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => me });
+                await $mol_wire_async(registry_me).units_steal(registry0);
+                registry_me.Data($bog_gram_users).Lords('auto').add(my_lord);
+                // Свой приватный список известных реестров
+                const private_land = $giper_baza_land.make({ $, auth: () => me });
+                const store = private_land.Data($bog_gram_dialogs);
+                const link = registry0.link().str;
+                store.Registries('auto').add(link);
+                store.Registries('auto').add('OtherRegistry');
+                store.Registries('auto').cut(link);
+                const known = store.Registries().items().map(String);
+                $mol_assert_equal(known.includes(link), false);
+                $mol_assert_equal(known.includes('OtherRegistry'), true);
+                // Из самого реестра это не выкидывает
+                const lords = registry_me.Data($bog_gram_users).Lords().items();
+                $mol_assert_equal(lords.includes(my_lord), true);
+            },
             async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
                 const land = $giper_baza_land.make({ $ });
                 const session = land.Data($bog_gram_session);

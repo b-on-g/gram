@@ -19872,7 +19872,7 @@ var $;
 		}
 		Registry_block(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Общий реестр");
+			(obj.title) = () => ("Реестры");
 			(obj.content) = () => ((this.registry_content()));
 			return obj;
 		}
@@ -19947,7 +19947,27 @@ var $;
 		}
 		Users_title(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Пользователи реестра");
+			(obj.title) = () => ("Пользователи");
+			return obj;
+		}
+		Join_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Вас нет в этом реестре — другие вас тут не найдут");
+			return obj;
+		}
+		registry_join_active(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Join_plate_button(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.registry_join_active(next)));
+			(obj.sub) = () => (["Вступить"]);
+			return obj;
+		}
+		Join_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Join_plate_text()), (this.Join_plate_button())]);
 			return obj;
 		}
 		user_rows(){
@@ -19965,6 +19985,7 @@ var $;
 			(obj.body) = () => ([
 				(this.Peer_form()), 
 				(this.Users_title()), 
+				(this.Join_plate()), 
 				(this.Users_list())
 			]);
 			return obj;
@@ -20018,9 +20039,97 @@ var $;
 			(obj.title) = () => ((this.users_empty_text()));
 			return obj;
 		}
+		registry_rows(){
+			return [];
+		}
+		Registry_share_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ссылка-приглашение в активный реестр");
+			return obj;
+		}
+		registry_uri(){
+			return "";
+		}
+		Registry_share_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать ссылку");
+			(obj.text) = () => ((this.registry_uri()));
+			return obj;
+		}
+		registry_name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
 		registry_make(next){
 			if(next !== undefined) return next;
 			return null;
+		}
+		Registry_name(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название реестра");
+			(obj.value) = (next) => ((this.registry_name(next)));
+			(obj.submit) = (next) => ((this.registry_make(next)));
+			return obj;
+		}
+		Registry_make(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.registry_make(next)));
+			(obj.sub) = () => (["Создать реестр"]);
+			return obj;
+		}
+		registry_open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		registry_active_is(id){
+			return false;
+		}
+		registry_title(id){
+			return "";
+		}
+		Registry_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.registry_title(id))]);
+			return obj;
+		}
+		registry_status(id){
+			return "";
+		}
+		Registry_status(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.registry_status(id))]);
+			return obj;
+		}
+		Registry_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Registry_title(id)), (this.Registry_status(id))]);
+			return obj;
+		}
+		registry_join(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Registry_join(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Вступить в реестр");
+			(obj.click) = (next) => ((this.registry_join(id, next)));
+			(obj.sub) = () => (["Вступить"]);
+			return obj;
+		}
+		registry_forget(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Registry_drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Registry_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать из своего списка");
+			(obj.click) = (next) => ((this.registry_forget(id, next)));
+			(obj.sub) = () => ([(this.Registry_drop_icon(id))]);
+			return obj;
 		}
 		key_toggle(next){
 			if(next !== undefined) return next;
@@ -20221,6 +20330,19 @@ var $;
 			(obj.sub) = () => ([(this.user_title(id))]);
 			return obj;
 		}
+		user_source(id){
+			return "";
+		}
+		User_source(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.user_source(id))]);
+			return obj;
+		}
+		User_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.User_title(id)), (this.User_source(id))]);
+			return obj;
+		}
 		day_title(id){
 			return "";
 		}
@@ -20326,15 +20448,40 @@ var $;
 			(obj.sub) = () => ([(this.Users_empty_text())]);
 			return obj;
 		}
-		Registry_make(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.registry_make(next)));
-			(obj.sub) = () => (["Создать общий реестр"]);
+		Registry_empty(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Вы не состоите ни в одном реестре");
 			return obj;
 		}
-		Registry_ready(){
+		Registry_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.registry_rows()));
+			return obj;
+		}
+		Registry_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Реестр подключён");
+			(obj.title) = () => ("Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.");
+			return obj;
+		}
+		Registry_share(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Registry_share_text()), (this.Registry_share_copy())]);
+			return obj;
+		}
+		Registry_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Registry_name()), (this.Registry_make())]);
+			return obj;
+		}
+		Registry_row(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.registry_open(id, next)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.registry_active_is(id))});
+			(obj.sub) = () => ([
+				(this.Registry_info(id)), 
+				(this.Registry_join(id)), 
+				(this.Registry_drop(id))
+			]);
 			return obj;
 		}
 		Key_toggle(){
@@ -20388,7 +20535,7 @@ var $;
 		User_row(id){
 			const obj = new this.$.$mol_button_minor();
 			(obj.click) = (next) => ((this.user_pick(id, next)));
-			(obj.sub) = () => ([(this.User_avatar(id)), (this.User_title(id))]);
+			(obj.sub) = () => ([(this.User_avatar(id)), (this.User_info(id))]);
 			return obj;
 		}
 		Day_row(id){
@@ -20449,6 +20596,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Peer_start"));
 	($mol_mem(($.$bog_gram.prototype), "Peer_form"));
 	($mol_mem(($.$bog_gram.prototype), "Users_title"));
+	($mol_mem(($.$bog_gram.prototype), "Join_plate_text"));
+	($mol_mem(($.$bog_gram.prototype), "registry_join_active"));
+	($mol_mem(($.$bog_gram.prototype), "Join_plate_button"));
+	($mol_mem(($.$bog_gram.prototype), "Join_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Users_list"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
 	($mol_mem(($.$bog_gram.prototype), "message_text"));
@@ -20458,7 +20609,21 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_share_text"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_share_copy"));
+	($mol_mem(($.$bog_gram.prototype), "registry_name"));
 	($mol_mem(($.$bog_gram.prototype), "registry_make"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_name"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_make"));
+	($mol_mem_key(($.$bog_gram.prototype), "registry_open"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_status"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "registry_join"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_join"));
+	($mol_mem_key(($.$bog_gram.prototype), "registry_forget"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_drop_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_drop"));
 	($mol_mem(($.$bog_gram.prototype), "key_toggle"));
 	($mol_mem(($.$bog_gram.prototype), "Key_text"));
 	($mol_mem(($.$bog_gram.prototype), "Key_copy"));
@@ -20488,6 +20653,8 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "user_pick"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "User_source"));
+	($mol_mem_key(($.$bog_gram.prototype), "User_info"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_chip"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_body"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_time"));
@@ -20502,8 +20669,12 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Message_meta"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_make"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_ready"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_empty"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_list"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_note"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_share"));
+	($mol_mem(($.$bog_gram.prototype), "Registry_form"));
+	($mol_mem_key(($.$bog_gram.prototype), "Registry_row"));
 	($mol_mem(($.$bog_gram.prototype), "Key_toggle"));
 	($mol_mem(($.$bog_gram.prototype), "Key_warning"));
 	($mol_mem(($.$bog_gram.prototype), "Key_row"));
@@ -20673,6 +20844,8 @@ var $;
             Outbox: $giper_baza_list_str,
             /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             Hidden: $giper_baza_list_str,
+            /** Ссылки на известные владельцу реестры пользователей */
+            Registries: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -20819,6 +20992,8 @@ var $;
     (function ($$) {
         /** Публичный реестр пользователей (для обнаружения и пуш-сервиса). */
         class $bog_gram_users extends $giper_baza_dict.with({
+            /** Название реестра: задаёт создатель, видят все. */
+            Title: $giper_baza_atom_text,
             Lords: $giper_baza_list_str,
         }) {
         }
@@ -21858,59 +22033,214 @@ var $;
                     return this.time_hm(moment);
                 return String(date.getDate()).padStart(2, '0') + '.' + String(date.getMonth() + 1).padStart(2, '0');
             }
-            // ===== Общий реестр пользователей =====
-            users_land() {
-                const str = this.$.$mol_state_arg.value('users');
-                if (!str)
-                    return null;
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(str));
+            // ===== Реестры пользователей =====
+            /** Реестр из адреса страницы: по такой ссылке зовут в реестр, а свой
+             * список известных реестров ведётся отдельно, в приватном ленде. */
+            registry_active() {
+                return this.$.$mol_state_arg.value('users') ?? '';
             }
+            registry_ids() {
+                return (this.dialogs_store().Registries()?.items() ?? []).map(String);
+            }
+            registry_store(id) {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id)).Data($bog_gram_users);
+            }
+            /** Чужой реестр может быть ещё не засинкан: подписка на его приход
+             * сохраняется, а пустой список не даёт одному ленду подвесить весь
+             * экран настроек — строка дорисуется сама. */
+            registry_lords(id) {
+                try {
+                    return (this.registry_store(id).Lords()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            /** Название задаёт создатель. Пока оно не приехало (или его не задали),
+             * показываем сокращённую ссылку — молчащая строка хуже. */
+            registry_title(id) {
+                try {
+                    return String(this.registry_store(id).Title()?.val() ?? '') || this.lord_short(id);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return this.lord_short(id);
+                }
+            }
+            registry_size(id) {
+                return this.registry_lords(id).length;
+            }
+            registry_joined(id) {
+                return this.registry_lords(id).includes(this.my_lord());
+            }
+            registry_active_is(id) {
+                return this.registry_active() === id;
+            }
+            /** Русское склонение: 1 участник, 2 участника, 5 участников. */
+            people_count(count) {
+                const tens = count % 100;
+                const ones = count % 10;
+                if (tens < 11 || tens > 14) {
+                    if (ones === 1)
+                        return count + ' участник';
+                    if (ones >= 2 && ones <= 4)
+                        return count + ' участника';
+                }
+                return count + ' участников';
+            }
+            registry_status(id) {
+                const mine = this.registry_joined(id) ? 'вы в списке' : 'только смотрите';
+                return this.people_count(this.registry_size(id)) + ' · ' + mine;
+            }
+            Registry_join(id) {
+                return this.registry_joined(id) ? null : super.Registry_join(id);
+            }
+            registry_rows() {
+                return this.registry_ids().map(id => this.Registry_row(id));
+            }
+            /** Приглашение — адрес страницы с одним лишь реестром: остальные
+             * параметры (свой мастер, открытый диалог) чужому человеку не нужны. */
+            registry_uri() {
+                const id = this.registry_active();
+                if (!id)
+                    return '';
+                const location = this.$.$mol_dom_context.location;
+                return location.origin + location.pathname + '#!users=' + id;
+            }
+            registry_content() {
+                if (!this.registry_ids().length)
+                    return [this.Registry_empty(), this.Registry_form()];
+                return [
+                    this.Registry_list(),
+                    this.Registry_note(),
+                    ...this.registry_active() ? [this.Registry_share()] : [],
+                    this.Registry_form(),
+                ];
+            }
+            /** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
             registry_make(next) {
+                const title = this.registry_name().trim();
                 const land = this.$.$giper_baza_glob.land_grab([
                     [null, $giper_baza_rank_post('slow')],
                 ]);
-                this.$.$mol_state_arg.value('users', land.link().str);
+                const id = land.link().str;
+                const store = land.Data($bog_gram_users);
+                if (title)
+                    store.Title('auto')?.val(title);
+                store.Lords('auto')?.add(this.my_lord());
+                this.dialogs_store().Registries('auto').add(id);
+                this.registry_name('');
+                this.$.$mol_state_arg.value('users', id);
                 return null;
             }
-            users_store() {
-                const land = this.users_land();
-                if (!land)
+            /** Открытая ссылка только запоминает реестр: попасть в чужой список
+             * людей — отдельное решение, поэтому лорд туда не дописывается. */
+            registry_remember() {
+                const id = this.registry_active();
+                if (!id)
+                    return '';
+                if (!this.registry_ids().includes(id)) {
+                    this.dialogs_store().Registries('auto').add(id);
+                }
+                return id;
+            }
+            /** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
+             * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр. */
+            registry_join(id, next) {
+                next?.stopPropagation();
+                if (!id)
                     return null;
-                return land.Data($bog_gram_users);
+                if (!this.registry_ids().includes(id)) {
+                    this.dialogs_store().Registries('auto').add(id);
+                }
+                if (!this.registry_lords(id).includes(this.my_lord())) {
+                    this.registry_store(id).Lords('auto')?.add(this.my_lord());
+                }
+                return null;
+            }
+            registry_join_active(next) {
+                this.registry_join(this.registry_active());
+                return null;
+            }
+            /** Убрать — значит забыть ссылку у себя: запись в самом реестре остаётся,
+             * выйти из него нельзя. Заодно снимаем реестр с адреса, иначе он
+             * вернулся бы в список на ближайшем же заходе. */
+            registry_forget(id, next) {
+                next?.stopPropagation();
+                if (!id)
+                    return null;
+                this.dialogs_store().Registries('auto').cut(id);
+                if (this.registry_active() === id)
+                    this.$.$mol_state_arg.value('users', null);
+                return null;
+            }
+            registry_open(id, next) {
+                if (!id)
+                    return null;
+                this.$.$mol_state_arg.value('users', id);
+                return null;
+            }
+            /** Открытый чужой реестр, в котором нет твоей записи: собеседники
+             * листают его список и тебя там не видят. */
+            registry_join_needed() {
+                const id = this.registry_active();
+                if (!id)
+                    return false;
+                return !this.registry_joined(id);
+            }
+            Join_plate() {
+                return this.registry_join_needed() ? super.Join_plate() : null;
+            }
+            // ===== Люди из реестров =====
+            /** Один человек — одна строка, даже если он числится в нескольких
+             * реестрах: подписью берём тот, где он встретился первым. */
+            user_sources() {
+                const sources = {};
+                const my = this.my_lord();
+                for (const id of this.registry_ids()) {
+                    for (const lord of this.registry_lords(id)) {
+                        if (lord === my)
+                            continue;
+                        if (sources[lord])
+                            continue;
+                        sources[lord] = id;
+                    }
+                }
+                return sources;
             }
             user_lords() {
-                const store = this.users_store();
-                if (!store)
-                    return [];
-                return (store.Lords()?.items() ?? []).map(String);
-            }
-            users_register() {
-                const store = this.users_store();
-                if (!store)
-                    return false;
-                if (!this.user_lords().includes(this.my_lord())) {
-                    store.Lords('auto')?.add(this.my_lord());
-                }
-                return true;
-            }
-            registry_content() {
-                if (!this.users_land())
-                    return [this.Registry_make()];
-                return [this.Registry_ready()];
+                return Object.keys(this.user_sources());
             }
             user_rows() {
-                const lords = this.user_lords().filter(lord => lord !== this.my_lord());
+                const lords = this.user_lords();
                 if (!lords.length)
                     return [this.Users_empty()];
                 return lords.map(lord => this.User_row(lord));
             }
             users_empty_text() {
-                if (!this.users_land())
-                    return 'Общий реестр не подключён. Создайте его в настройках';
-                return 'В реестре пока только вы';
+                if (!this.registry_ids().length)
+                    return 'Вы не состоите ни в одном реестре. Создайте свой в настройках';
+                return 'Кроме вас в реестрах пока никого нет';
+            }
+            /** Строка человека ключуется его же лордом — по нему и рисуется узор. */
+            user_lord(lord) {
+                return lord;
             }
             user_title(lord) {
                 return this.peer_name(lord) || this.lord_short(lord);
+            }
+            /** Пока реестр один, называть его в каждой строке незачем. */
+            user_source(lord) {
+                if (this.registry_ids().length < 2)
+                    return '';
+                const id = this.user_sources()[lord];
+                return id ? this.registry_title(id) : '';
+            }
+            User_source(lord) {
+                return this.user_source(lord) ? super.User_source(lord) : null;
             }
             user_pick(lord, next) {
                 if (!lord)
@@ -22113,7 +22443,7 @@ var $;
                     $mol_fail_log(error);
                 }
                 try {
-                    this.users_register();
+                    this.registry_remember();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -22327,23 +22657,68 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_time", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "registry_ids", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_lords", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_size", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_joined", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_active_is", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "registry_status", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "registry_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "registry_content", null);
+        __decorate([
             $mol_action
         ], $bog_gram.prototype, "registry_make", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "registry_remember", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "registry_join", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "registry_join_active", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "registry_forget", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "registry_open", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "registry_join_needed", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "user_sources", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "user_lords", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "users_register", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_content", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "user_rows", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "user_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "user_source", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "user_pick", null);
@@ -22432,7 +22807,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -22699,16 +23074,231 @@ var $;
                 width: '2.5rem',
                 height: '2.5rem',
             },
+            User_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                /* без нуля ellipsis не срабатывает: колонка распирается содержимым */
+                minWidth: 0,
+                gap: '0.125rem',
+            },
             User_title: {
                 display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            /* откуда человек: подпись появляется, только когда реестров несколько */
+            User_source: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            /* открыт чужой реестр, а записи в нём нет: зовём вступить прямо тут */
+            Join_plate: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Join_plate_text: {
                 flex: {
                     grow: 1,
                     shrink: 1,
                 },
                 minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Join_plate_button: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            // ===== Список реестров в настройках =====
+            Registry_block: {
+                Content: {
+                    alignSelf: 'stretch',
+                    flex: {
+                        direction: 'column',
+                        shrink: 1,
+                    },
+                    align: {
+                        items: 'stretch',
+                    },
+                    gap: '0.5rem',
+                    minWidth: 0,
+                },
+            },
+            Registry_list: {
+                gap: '0.125rem',
+            },
+            Registry_row: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                maxWidth: '100%',
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+                /* подсветка активного реестра — в gram.view.css: тот же атрибут,
+                что и у выбранного диалога, кастомный attr на встроенной кнопке
+                не проходит типизацию Attrs */
+            },
+            Registry_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Registry_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    weight: 'bold',
+                },
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
+            },
+            Registry_status: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                /* приглушаем прозрачностью, а не цветом: на активной строке текст белый */
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Registry_join: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            /* крестик не должен распирать строку: своя ширина и минимум отступов */
+            Registry_drop: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Registry_drop_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            Registry_note: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Registry_empty: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Registry_share: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Registry_share_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Registry_share_copy: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Registry_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
             },
             // ===== Настройки и новый диалог =====
             /* заполненное поле имени выглядит как обычная строка текста, пока в него
@@ -22778,16 +23368,30 @@ var $;
                 whiteSpace: 'nowrap',
             },
             // ===== Ключ аккаунта =====
+            /* Всей ветке нужен shrink и нулевой минимум: у вьюх по умолчанию
+            flex-shrink 0, поэтому длинный ключ иначе распирает колонку настроек
+            вместо того, чтобы переноситься внутри отведённой ширины. */
+            Account: {
+                Content: {
+                    alignSelf: 'stretch',
+                    minWidth: 0,
+                    flex: {
+                        shrink: 1,
+                    },
+                },
+            },
             Account_body: {
                 alignSelf: 'stretch',
                 flex: {
                     direction: 'column',
+                    shrink: 1,
                 },
                 align: {
-                    items: 'flex-start',
+                    items: 'stretch',
                 },
                 gap: '0.5rem',
                 minWidth: 0,
+                maxWidth: '100%',
             },
             Key_warning: {
                 font: {
@@ -22799,12 +23403,14 @@ var $;
                 alignSelf: 'stretch',
                 flex: {
                     direction: 'column',
+                    shrink: 1,
                 },
                 align: {
                     items: 'stretch',
                 },
                 gap: '0.5rem',
                 minWidth: 0,
+                maxWidth: '100%',
             },
             /* Ключ длинный и без пробелов. Ломаем его по символам, а не гоним
             в горизонтальный скролл: так он не распирает колонку настроек.
@@ -22812,7 +23418,12 @@ var $;
             строка. Высоту ограничиваем, чтобы блок не занял пол-экрана. */
             Key_text: {
                 alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
                 minWidth: 0,
+                maxWidth: '100%',
                 maxHeight: '8rem',
                 overflow: {
                     y: 'auto',
@@ -22857,12 +23468,14 @@ var $;
                 alignSelf: 'stretch',
                 flex: {
                     direction: 'column',
+                    shrink: 1,
                 },
                 align: {
                     items: 'stretch',
                 },
                 gap: '0.5rem',
                 minWidth: 0,
+                maxWidth: '100%',
             },
             Key_load_row: {
                 align: {
