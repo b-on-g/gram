@@ -1,1 +1,3 @@
 include \/bog/gram/mine
+include \/bog/gram/notify
+include \/mol/offline/install

@@ -1,3 +1,5 @@
 -*
 node_modules
 .DS_Store
+push/node.js
+push/node_modules

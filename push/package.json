@@ -1,0 +1,8 @@
+{
+	"name": "bog-gram-push",
+	"private": true,
+	"dependencies": {
+		"web-push": "^3",
+		"jsdom": "^26"
+	}
+}

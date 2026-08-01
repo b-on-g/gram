@@ -4,6 +4,9 @@ namespace $.$$ {
 
 	const day_ms = 24 * 60 * 60 * 1000
 
+	/** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
+	const notify_key = 'bog_gram_notify'
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -371,9 +374,12 @@ namespace $.$$ {
 		}
 
 		@$mol_action
+		/** Кнопка в шапке работает как переключатель: повторный клик
+		 * закрывает уже открытую страницу, а не оставляет её висеть. */
 		compose_open( next?: any ) {
+			const open = !this.compose_opened()
 			this.settings_opened( false )
-			this.compose_opened( true )
+			this.compose_opened( open )
 			return null
 		}
 
@@ -385,8 +391,9 @@ namespace $.$$ {
 
 		@$mol_action
 		settings_open( next?: any ) {
+			const open = !this.settings_opened()
 			this.compose_opened( false )
-			this.settings_opened( true )
+			this.settings_opened( open )
 			return null
 		}
 
@@ -894,6 +901,63 @@ namespace $.$$ {
 			}
 			this.dialog_pending( lord )
 			return null
+		}
+
+		// ===== Уведомления =====
+
+		notify_supported() {
+			return this.$.$bog_gram_notify.supported()
+		}
+
+		override Notify_toggle() {
+			return this.notify_supported() ? super.Notify_toggle() : null!
+		}
+
+		/** Разрешение браузера само о себе не сообщает: держим копию в меме
+		 * и обновляем её после запроса, иначе подпись останется старой. */
+		@$mol_mem
+		notify_permission( next?: NotificationPermission ) {
+			return next ?? this.$.$bog_gram_notify.permission()
+		}
+
+		/** Сам браузер о живой подписке расскажет только через воркер, а демон
+		 * помнит её по лорду — нам достаточно своей отметки в хранилище. */
+		notify_on( next?: boolean ) {
+			return this.$.$mol_state_local.value< boolean >( notify_key, next ) ?? false
+		}
+
+		notify_label() {
+			return this.notify_on() ? 'Выключить' : 'Включить уведомления'
+		}
+
+		notify_status() {
+			if( !this.notify_supported() ) return 'Не поддерживается этим браузером'
+			if( this.notify_permission() === 'denied' ) return 'Запрещены в браузере'
+			return this.notify_on() ? 'Уведомления включены' : 'Выключены'
+		}
+
+		@$mol_action
+		notify_toggle( next?: any ) {
+			$mol_wire_async( this ).notify_apply( !this.notify_on() )
+			return null
+		}
+
+		/** Разрешение и сеть ждать из обработчика клика нечем, поэтому вся
+		 * работа уезжает в фибру, а сюда возвращается уже итог. */
+		notify_apply( on: boolean ) {
+
+			const notify = this.$.$bog_gram_notify
+
+			if( !on ) {
+				notify.unsubscribe( this.my_lord() )
+				this.notify_on( false )
+				return false
+			}
+
+			const ok = notify.subscribe( this.my_lord(), this.monitor_land().link().str )
+			this.notify_permission( notify.permission() )
+			this.notify_on( ok )
+			return ok
 		}
 
 		// ===== Автозапуск =====

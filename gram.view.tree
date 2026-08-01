@@ -51,6 +51,17 @@ $bog_gram $mol_book2
 					title \Синхронизация
 					content /
 						<= Status $giper_baza_status
+				<= Notify $mol_labeler
+					title \Уведомления
+					content /
+						<= Notify_body $mol_view
+							sub /
+								<= Notify_status $mol_paragraph
+									title <= notify_status \
+								<= Notify_toggle $mol_button_major
+									click? <=> notify_toggle? null
+									sub /
+										<= notify_label \
 				<= Registry_block $mol_labeler
 					title \Общий реестр
 					content <= registry_content /

@@ -1,0 +1,27 @@
+services:
+  push:
+    build: .
+    container_name: gram-push
+    restart: unless-stopped
+    environment:
+      # Мастер на этой же машине, но docker-сети закрыт путь к хосту,
+      # поэтому ходим публичным адресом через тот же прокси
+      GRAM_PUSH_MASTER: https://baza.91-188-212-151.ip.giper.dev/
+      GRAM_PUSH_APP: https://b-on-g.github.io/gram/
+      GRAM_PUSH_POLL: '10000'
+    # Прокси живёт в сети host и по имени контейнера нас не видит,
+    # поэтому отдаём порт на петлю хоста и проксируем на неё
+    ports:
+      - "127.0.0.1:9099:9099"
+    volumes:
+      - gram_push_data:/data
+    # Демон держит ленды подписчиков в памяти и со временем пухнет
+    # (известная течь node-клиента), поэтому потолок и авторестарт.
+    mem_limit: 512m
+    cpus: 0.5
+    labels:
+      caddy: push.91-188-212-151.ip.giper.dev
+      caddy.reverse_proxy: "127.0.0.1:9099"
+
+volumes:
+  gram_push_data:

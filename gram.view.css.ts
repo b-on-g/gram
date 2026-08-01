@@ -289,6 +289,26 @@ namespace $.$$ {
 			gap: $mol_gap.block,
 		},
 
+		/* строка состояния над кнопкой, а не рядом: подпись длинная,
+		в одну строку с кнопкой она ломает узкую колонку настроек */
+		Notify_body: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'flex-start',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Notify_status: {
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
 		My_id_text: {
 			font: {
 				family: 'monospace',
