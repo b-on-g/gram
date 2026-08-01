@@ -834,31 +834,9 @@ namespace $.$$ {
 
 		// ===== Настройки и новый диалог =====
 
-		/* заполненное поле имени выглядит как обычная строка текста, пока в него
-		не ткнули, поэтому рядом висит карандаш — знак, что имя правится прямо тут */
-		Name_row: {
-			align: {
-				items: 'center',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-		},
 
 		Name_field: {
-			flex: {
-				grow: 1,
-				shrink: 1,
-			},
-			minWidth: 0,
-		},
-
-		Name_edit_icon: {
-			flex: {
-				shrink: 0,
-			},
-			width: '1rem',
-			height: '1rem',
-			color: $mol_theme.shade,
+			alignSelf: 'stretch',
 		},
 
 		Peer_form: {
@@ -1472,6 +1450,49 @@ namespace $.$$ {
 	// Размер и кегль задаются на месте использования: селекторы тут
 	// одной специфичности, повтори мы их здесь — перебили бы место вызова.
 
+
+	/* Поле с карандашом: заполненное выглядит обычной строкой текста, пока в
+	него не ткнули, а иконка подсказывает, что строку можно править. Иконку
+	кладём поверх правого края, чтобы поле оставалось цельным элементом и
+	переиспользовалось и в настройках, и в шапке чата. */
+	$mol_style_define( $bog_gram_field, {
+
+		position: 'relative',
+		align: {
+			items: 'center',
+		},
+		minWidth: 0,
+		maxWidth: '100%',
+
+		Field: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			maxWidth: '100%',
+			padding: {
+				top: '0.125rem',
+				bottom: '0.125rem',
+				left: '0.375rem',
+				right: '1.5rem',
+			},
+		},
+
+		Edit_icon: {
+			position: 'absolute',
+			right: '0.375rem',
+			flex: {
+				shrink: 0,
+			},
+			width: '1rem',
+			height: '1rem',
+			color: $mol_theme.shade,
+			pointerEvents: 'none',
+		},
+
+	} )
+
 	$mol_style_define( $bog_gram_avatar, {
 
 		flex: {
@@ -1518,24 +1539,9 @@ namespace $.$$ {
 			},
 		},
 
-		/* Подпись собеседника правится прямо в заголовке — тем же приёмом, что
-		и имя в настройках: поле выглядит обычной строкой, пока в него не ткнули,
-		а карандаш рядом показывает, что заголовок можно поменять. У вьюх по
-		умолчанию flex-shrink 0, поэтому строке нужен и shrink, и нулевой
-		минимум — иначе она распирает шапку. */
-		Note_row: {
-			flex: {
-				grow: 1,
-				shrink: 1,
-			},
-			align: {
-				items: 'center',
-			},
-			gap: '0.375rem',
-			minWidth: 0,
-			maxWidth: '100%',
-		},
-
+		/* Подпись собеседника правится прямо в заголовке тем же полем, что и
+		имя в настройках. У вьюх по умолчанию flex-shrink 0, поэтому полю
+		нужен и shrink, и нулевой минимум — иначе оно распирает шапку. */
 		Note_field: {
 			flex: {
 				grow: 1,
@@ -1543,21 +1549,6 @@ namespace $.$$ {
 			},
 			minWidth: 0,
 			maxWidth: '100%',
-			padding: {
-				top: '0.125rem',
-				bottom: '0.125rem',
-				left: '0.375rem',
-				right: '0.375rem',
-			},
-		},
-
-		Note_edit_icon: {
-			flex: {
-				shrink: 0,
-			},
-			width: '1rem',
-			height: '1rem',
-			color: $mol_theme.shade,
 		},
 
 		/* Заголовок без поля: подписывать некого, поэтому просто строка

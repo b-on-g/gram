@@ -405,7 +405,30 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.delete_disarm()
 			this.dialog_current( id )
+			this.chat_bring()
 			return null
+		}
+
+		/** Книга доводит страницу до края сама только когда та появляется
+		 * впервые. При переходе между диалогами страница чата уже открыта и
+		 * лишь меняет содержимое, поэтому на узком экране пользователь
+		 * оставался на списке и дальше листал руками. Досылаем прокрутку
+		 * после отрисовки, когда размеры страницы уже известны. */
+		chat_bring() {
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					const book = this.dom_node() as HTMLElement
+					const page = this.Chat_page().dom_node() as HTMLElement
+					if( !book || !page ) return
+					book.scroll({
+						left: page.offsetLeft + page.offsetWidth - book.offsetWidth,
+						behavior: 'smooth',
+					})
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) return
+					$mol_fail_log( error )
+				}
+			} )
 		}
 
 		@$mol_action
@@ -763,6 +786,7 @@ namespace $.$$ {
 				this.dialog_current( exist )
 				this.compose_opened( false )
 				this.dialog_pending( '' )
+				this.chat_bring()
 				return exist
 			}
 
@@ -793,6 +817,7 @@ namespace $.$$ {
 			this.dialogs_store().Outbox( 'auto' )!.add( peer + '|' + dialog_land.link().str )
 
 			this.dialog_current( dialog_land.link().str )
+			this.chat_bring()
 			this.compose_opened( false )
 			this.dialog_pending( '' )
 			return dialog_land.link().str
@@ -1806,8 +1831,8 @@ namespace $.$$ {
 		/** Заголовок чата — это подпись собеседника, поэтому он и правится
 		 * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
 		 * заголовок остаётся обычной строкой. */
-		override Note_row() {
-			return this.note_editable() ? super.Note_row() : null!
+		override Note_field() {
+			return this.note_editable() ? super.Note_field() : null!
 		}
 
 		override Title_text() {
