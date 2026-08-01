@@ -7492,6 +7492,33 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/string/button/button.view.css", "[mol_string_button]:not(:placeholder-shown):not(:focus):not(:hover):not(:disabled) {\n\tcolor: var(--mol_theme_control);\n\tbackground: transparent;\n\tbox-shadow: none;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
+		path(){
+			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 "use strict";
 var $;
 (function ($) {
@@ -19633,18 +19660,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
-		path(){
-			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
 		path(){
 			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
@@ -19776,9 +19791,18 @@ var $;
 			return "";
 		}
 		Name_field(){
-			const obj = new this.$.$mol_string();
+			const obj = new this.$.$mol_string_button();
 			(obj.hint) = () => ("Ваше имя");
 			(obj.value) = (next) => ((this.user_name(next)));
+			return obj;
+		}
+		Name_edit_icon(){
+			const obj = new this.$.$mol_icon_pencil();
+			return obj;
+		}
+		Name_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Name_field()), (this.Name_edit_icon())]);
 			return obj;
 		}
 		my_lord(){
@@ -19871,7 +19895,7 @@ var $;
 			(obj.title) = () => ("Настройки");
 			(obj.tools) = () => ([(this.Settings_close())]);
 			(obj.body) = () => ([
-				(this.Name_field()), 
+				(this.Name_row()), 
 				(this.My_id()), 
 				(this.Sync()), 
 				(this.Notify()), 
@@ -19970,16 +19994,6 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		dialog_delete_current(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		delete_armed(){
-			return false;
-		}
-		delete_hint(){
-			return "";
-		}
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
@@ -19989,9 +20003,6 @@ var $;
 			(obj.message_send) = (next) => ((this.message_send(next)));
 			(obj.edit_cancel) = (next) => ((this.edit_cancel(next)));
 			(obj.close) = (next) => ((this.dialog_close(next)));
-			(obj.delete) = (next) => ((this.dialog_delete_current(next)));
-			(obj.delete_armed) = () => ((this.delete_armed()));
-			(obj.delete_hint) = () => ((this.delete_hint()));
 			return obj;
 		}
 		Dialogs_empty_text(){
@@ -20162,6 +20173,28 @@ var $;
 		Dialog_info(id){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.Dialog_top(id)), (this.Dialog_bottom(id))]);
+			return obj;
+		}
+		delete_hint(id){
+			return "";
+		}
+		delete_armed(id){
+			return false;
+		}
+		dialog_delete_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Dialog_delete_icon(id){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		Dialog_delete(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.delete_hint(id)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed(id))});
+			(obj.click) = (next) => ((this.dialog_delete_click(id, next)));
+			(obj.sub) = () => ([(this.Dialog_delete_icon(id))]);
 			return obj;
 		}
 		user_pick(id, next){
@@ -20345,7 +20378,11 @@ var $;
 			const obj = new this.$.$mol_button_minor();
 			(obj.click) = (next) => ((this.dialog_select(id, next)));
 			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.dialog_current_is(id))});
-			(obj.sub) = () => ([(this.Dialog_avatar(id)), (this.Dialog_info(id))]);
+			(obj.sub) = () => ([
+				(this.Dialog_avatar(id)), 
+				(this.Dialog_info(id)), 
+				(this.Dialog_delete(id))
+			]);
 			return obj;
 		}
 		User_row(id){
@@ -20387,6 +20424,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Settings_close"));
 	($mol_mem(($.$bog_gram.prototype), "user_name"));
 	($mol_mem(($.$bog_gram.prototype), "Name_field"));
+	($mol_mem(($.$bog_gram.prototype), "Name_edit_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Name_row"));
 	($mol_mem(($.$bog_gram.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram.prototype), "My_id_copy"));
 	($mol_mem(($.$bog_gram.prototype), "My_id"));
@@ -20416,7 +20455,6 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
 	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
-	($mol_mem(($.$bog_gram.prototype), "dialog_delete_current"));
 	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
@@ -20444,6 +20482,9 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Unread_badge"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_bottom"));
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_delete_click"));
+	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete"));
 	($mol_mem_key(($.$bog_gram.prototype), "user_pick"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
@@ -20474,22 +20515,6 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
 	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
-		delete(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Delete_icon(){
-			const obj = new this.$.$mol_icon_delete();
-			return obj;
-		}
-		Delete(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.delete_hint()));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed())});
-			(obj.click) = (next) => ((this.delete(next)));
-			(obj.sub) = () => ([(this.Delete_icon())]);
-			return obj;
-		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -20577,14 +20602,8 @@ var $;
 		edit_mode(){
 			return false;
 		}
-		delete_armed(){
-			return false;
-		}
-		delete_hint(){
-			return "Удалить диалог";
-		}
 		tools(){
-			return [(this.Delete()), (this.Close())];
+			return [(this.Close())];
 		}
 		body(){
 			return [(this.Messages())];
@@ -20593,9 +20612,6 @@ var $;
 			return [(this.Foot())];
 		}
 	};
-	($mol_mem(($.$bog_gram_chat.prototype), "delete"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Delete_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Delete"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
@@ -21352,35 +21368,42 @@ var $;
                 this.account_reset();
                 this.edit_id('');
                 this.message_text('');
-                this.delete_armed(false);
+                this.delete_disarm();
                 this.dialog_current(id);
                 return null;
             }
             dialog_close(next) {
                 this.edit_id('');
                 this.message_text('');
-                this.delete_armed(false);
+                this.delete_disarm();
                 this.dialog_current('');
                 return null;
             }
             // ===== Удаление диалога из своего списка =====
-            /** Первый клик по корзине только взводит кнопку, второй удаляет:
-             * подтверждение живёт в тулбаре, без модалок и системных алертов. */
-            delete_armed(next) {
+            /** Взвод корзины живёт на своей строке: первый клик красит её,
+             * второй удаляет — без модалок и системных алертов. */
+            delete_armed(id, next) {
                 return next ?? false;
             }
-            delete_hint() {
-                return this.delete_armed() ? 'Точно удалить?' : 'Удалить диалог';
+            delete_hint(id) {
+                return this.delete_armed(id) ? 'Точно удалить?' : 'Удалить диалог';
             }
-            /** Опираемся на сырой выбор, а не на dialog_active(): фибра действия может
-             * перезапуститься уже после выреза ссылки из списка, и тогда активного диалога
-             * с точки зрения списка нет — удаление оборвалось бы на полпути. */
-            dialog_delete_current(next) {
-                const id = this.dialog_current();
+            /** Красной ждёт подтверждения максимум одна строка: любой другой клик
+             * по списку снимает взвод, чтобы забытая корзина не сработала потом. */
+            delete_disarm(next) {
+                for (const id of this.dialog_ids())
+                    this.delete_armed(id, false);
+                return null;
+            }
+            /** Корзина лежит внутри кликабельной строки, поэтому первым делом гасим
+             * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
+            dialog_delete_click(id, next) {
+                next?.stopPropagation();
                 if (!id)
                     return null;
-                if (!this.delete_armed()) {
-                    this.delete_armed(true);
+                if (!this.delete_armed(id)) {
+                    this.delete_disarm();
+                    this.delete_armed(id, true);
                     return null;
                 }
                 this.dialog_delete(id);
@@ -21412,7 +21435,7 @@ var $;
                     this.message_text('');
                     this.dialog_current('');
                 }
-                this.delete_armed(false);
+                this.delete_armed(id, false);
                 return null;
             }
             /** Только явно выбранный диалог: на узком экране чат не должен открываться сам. */
@@ -22025,7 +22048,7 @@ var $;
                     return null;
                 }
             }
-            /** Первый клик взводит кнопку, второй применяет — как корзина в чате.
+            /** Первый клик взводит кнопку, второй применяет — как корзина в списке диалогов.
              * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
             key_import(next) {
                 const str = this.key_input().trim();
@@ -22191,11 +22214,14 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "dialog_close", null);
         __decorate([
-            $mol_mem
+            $mol_mem_key
         ], $bog_gram.prototype, "delete_armed", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "dialog_delete_current", null);
+        ], $bog_gram.prototype, "delete_disarm", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_delete_click", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialog_delete", null);
@@ -22610,6 +22636,30 @@ var $;
                 },
                 borderRadius: '1rem',
             },
+            /* корзина не должна распирать строку: своя ширина, минимум отступов,
+            цвет наследуется от строки — на выбранной он белый */
+            Dialog_delete: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+                /* красная заливка взведённой корзины — в gram.view.css:
+                кастомный атрибут на встроенной кнопке не проходит типизацию Attrs */
+            },
+            Dialog_delete_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
             // ===== Реестр пользователей =====
             Users_title: {
                 font: {
@@ -22661,6 +22711,30 @@ var $;
                 textOverflow: 'ellipsis',
             },
             // ===== Настройки и новый диалог =====
+            /* заполненное поле имени выглядит как обычная строка текста, пока в него
+            не ткнули, поэтому рядом висит карандаш — знак, что имя правится прямо тут */
+            Name_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Name_field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+            },
+            Name_edit_icon: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+                color: $mol_theme.shade,
+            },
             Peer_form: {
                 flex: {
                     direction: 'column',

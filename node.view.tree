@@ -205,6 +205,10 @@ $mol_string $mol_view
 			mod_ctrl <= submit_with_ctrl false
 			key * enter? <=> submit? null
 
+$mol_string_button $mol_string
+
+$mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
+
 $mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3
 
 $mol_icon_clipboard_outline $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z
@@ -537,8 +541,6 @@ $mol_button_open_native $mol_view
 	event *
 		change? <=> picked? null
 
-$mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
-
 $mol_icon_delete $mol_icon path \M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z
 
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
@@ -583,9 +585,12 @@ $bog_gram $mol_book2
 					sub /
 						<= Settings_close_icon $mol_icon_close
 			body /
-				<= Name_field $mol_string
-					hint \Ваше имя
-					value? <=> user_name? \
+				<= Name_row $mol_view
+					sub /
+						<= Name_field $mol_string_button
+							hint \Ваше имя
+							value? <=> user_name? \
+						<= Name_edit_icon $mol_icon_pencil
 				<= My_id $mol_labeler
 					title \Мой ID
 					content /
@@ -648,9 +653,6 @@ $bog_gram $mol_book2
 			message_send? <=> message_send? null
 			edit_cancel? <=> edit_cancel? null
 			close? <=> dialog_close? null
-			delete? <=> dialog_delete_current? null
-			delete_armed <= delete_armed false
-			delete_hint <= delete_hint \
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
@@ -736,6 +738,14 @@ $bog_gram $mol_book2
 							<= Unread_badge* $mol_view
 								sub /
 									<= unread_label* \
+			<= Dialog_delete* $mol_button_minor
+				hint <= delete_hint* \
+				attr *
+					^
+					bog_gram_armed <= delete_armed* false
+				click? <=> dialog_delete_click*? null
+				sub /
+					<= Dialog_delete_icon* $mol_icon_delete
 	User_row* $mol_button_minor
 		click? <=> user_pick*? null
 		sub /
@@ -786,18 +796,7 @@ $bog_gram_chat $mol_page
 	message_send? null
 	edit_cancel? null
 	close? null
-	delete? null
-	delete_armed false
-	delete_hint \Удалить диалог
 	tools /
-		<= Delete $mol_button_minor
-			hint <= delete_hint
-			attr *
-				^
-				bog_gram_armed <= delete_armed
-			click? <=> delete? null
-			sub /
-				<= Delete_icon $mol_icon_delete
 		<= Close $mol_button_minor
 			hint \Закрыть
 			click? <=> close? null
