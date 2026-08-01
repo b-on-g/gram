@@ -5723,85 +5723,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_paragraph) = class $mol_paragraph extends ($.$mol_view) {
-		line_height(){
-			return 24;
-		}
-		letter_width(){
-			return 7;
-		}
-		width_limit(){
-			return +Infinity;
-		}
-		row_width(){
-			return 0;
-		}
-		sub(){
-			return [(this.title())];
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_paragraph extends $.$mol_paragraph {
-            maximal_width() {
-                let width = 0;
-                const letter = this.letter_width();
-                for (const kid of this.sub()) {
-                    if (!kid)
-                        continue;
-                    if (kid instanceof $mol_view) {
-                        width += kid.maximal_width();
-                    }
-                    else if (typeof kid !== 'object') {
-                        width += String(kid).length * letter;
-                    }
-                }
-                return width;
-            }
-            width_limit() {
-                return this.$.$mol_window.size().width;
-            }
-            minimal_width() {
-                return this.letter_width();
-            }
-            row_width() {
-                return Math.max(Math.min(this.width_limit(), this.maximal_width()), this.letter_width());
-            }
-            minimal_height() {
-                return Math.max(1, Math.ceil(this.maximal_width() / this.row_width())) * this.line_height();
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_paragraph.prototype, "maximal_width", null);
-        __decorate([
-            $mol_mem
-        ], $mol_paragraph.prototype, "row_width", null);
-        __decorate([
-            $mol_mem
-        ], $mol_paragraph.prototype, "minimal_height", null);
-        $$.$mol_paragraph = $mol_paragraph;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/paragraph/paragraph.view.css", ":where([mol_paragraph]) {\n\tmargin: 0;\n\tmax-width: 100%;\n}\n");
-})($ || ($ = {}));
-
-;
 	($.$mol_svg) = class $mol_svg extends ($.$mol_view) {
 		dom_name(){
 			return "svg";
@@ -5986,6 +5907,156 @@ var $;
 ;
 "use strict";
 
+
+;
+	($.$bog_favicon) = class $bog_favicon extends ($.$mol_plugin) {
+		Icon(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_favicon.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /** Плагин, который ставит favicon из переданного $mol_icon_* и подобных */
+        class $bog_favicon extends $.$bog_favicon {
+            // сюда передаем Icon <= icon $mol_icon_waze
+            Icon(next) {
+                if (next !== undefined)
+                    return next;
+                throw new Error('[bog_favicon] Icon is required: use `Icon <= icon $mol_icon_*` in view.tree');
+            }
+            favicon_data() {
+                const icon = this.Icon();
+                const node = icon.dom_tree();
+                if (!node.getAttribute('xmlns')) {
+                    node.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                }
+                const svg = node.outerHTML;
+                return 'data:image/svg+xml,' + encodeURIComponent(svg);
+            }
+            apply_favicon() {
+                const doc = $mol_dom_context.document;
+                if (!doc)
+                    return;
+                const href = this.favicon_data();
+                let link = doc.querySelector('link[rel="icon"]');
+                if (!link) {
+                    link = doc.createElement('link');
+                    link.rel = 'icon';
+                    doc.head.appendChild(link);
+                }
+                link.type = 'image/svg+xml';
+                if (link.href !== href)
+                    link.href = href;
+            }
+            auto() {
+                this.favicon_data();
+                this.apply_favicon();
+                return null;
+            }
+            sub() {
+                return [];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_favicon.prototype, "Icon", null);
+        __decorate([
+            $mol_mem
+        ], $bog_favicon.prototype, "favicon_data", null);
+        $$.$bog_favicon = $bog_favicon;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_paragraph) = class $mol_paragraph extends ($.$mol_view) {
+		line_height(){
+			return 24;
+		}
+		letter_width(){
+			return 7;
+		}
+		width_limit(){
+			return +Infinity;
+		}
+		row_width(){
+			return 0;
+		}
+		sub(){
+			return [(this.title())];
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_paragraph extends $.$mol_paragraph {
+            maximal_width() {
+                let width = 0;
+                const letter = this.letter_width();
+                for (const kid of this.sub()) {
+                    if (!kid)
+                        continue;
+                    if (kid instanceof $mol_view) {
+                        width += kid.maximal_width();
+                    }
+                    else if (typeof kid !== 'object') {
+                        width += String(kid).length * letter;
+                    }
+                }
+                return width;
+            }
+            width_limit() {
+                return this.$.$mol_window.size().width;
+            }
+            minimal_width() {
+                return this.letter_width();
+            }
+            row_width() {
+                return Math.max(Math.min(this.width_limit(), this.maximal_width()), this.letter_width());
+            }
+            minimal_height() {
+                return Math.max(1, Math.ceil(this.maximal_width() / this.row_width())) * this.line_height();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_paragraph.prototype, "maximal_width", null);
+        __decorate([
+            $mol_mem
+        ], $mol_paragraph.prototype, "row_width", null);
+        __decorate([
+            $mol_mem
+        ], $mol_paragraph.prototype, "minimal_height", null);
+        $$.$mol_paragraph = $mol_paragraph;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/paragraph/paragraph.view.css", ":where([mol_paragraph]) {\n\tmargin: 0;\n\tmax-width: 100%;\n}\n");
+})($ || ($ = {}));
 
 ;
 	($.$mol_icon_message_plus) = class $mol_icon_message_plus extends ($.$mol_icon) {
@@ -19594,6 +19665,15 @@ var $;
 			const obj = new this.$.$mol_theme_auto();
 			return obj;
 		}
+		Favicon_icon(){
+			const obj = new this.$.$mol_icon_message();
+			return obj;
+		}
+		Favicon(){
+			const obj = new this.$.$bog_favicon();
+			(obj.Icon) = () => ((this.Favicon_icon()));
+			return obj;
+		}
 		Intro_title(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ("Выберите диалог");
@@ -20181,7 +20261,7 @@ var $;
 			return obj;
 		}
 		plugins(){
-			return [(this.Theme())];
+			return [(this.Theme()), (this.Favicon())];
 		}
 		Placeholder(){
 			return (this.Intro());
@@ -20278,6 +20358,8 @@ var $;
 		}
 	};
 	($mol_mem(($.$bog_gram.prototype), "Theme"));
+	($mol_mem(($.$bog_gram.prototype), "Favicon_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Favicon"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_title"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_hint"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_plate"));

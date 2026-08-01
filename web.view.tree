@@ -21,13 +21,6 @@ $mol_theme_auto $mol_plugin
 	light \$mol_theme_light
 	attr * mol_theme <= theme <= dark \$mol_theme_dark
 
-$mol_paragraph $mol_view
-	line_height 24
-	letter_width 7
-	width_limit +Infinity
-	row_width 0
-	sub / <= title
-
 $mol_svg $mol_view
 	dom_name \svg
 	dom_name_space \http://www.w3.org/2000/svg
@@ -58,6 +51,16 @@ $mol_icon $mol_svg_root
 			geometry <= path \
 
 $mol_icon_message $mol_icon path \M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z
+
+$bog_favicon $mol_plugin
+	Icon $mol_view
+
+$mol_paragraph $mol_view
+	line_height 24
+	letter_width 7
+	width_limit +Infinity
+	row_width 0
+	sub / <= title
 
 $mol_icon_message_plus $mol_icon path \M20,2A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H6L2,22V4C2,2.89 2.9,2 4,2H20M11,6V9H8V11H11V14H13V11H16V9H13V6H11Z
 
@@ -1990,6 +1993,8 @@ $giper_baza_app $mol_book2_catalog
 $bog_gram $mol_book2
 	plugins /
 		<= Theme $mol_theme_auto
+		<= Favicon $bog_favicon
+			Icon <= Favicon_icon $mol_icon_message
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
