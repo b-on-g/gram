@@ -7,6 +7,8 @@ namespace $.$$ {
 		Outbox: $giper_baza_list_str,
 		/** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
 		Hidden: $giper_baza_list_str,
+		/** Ссылки на известные владельцу реестры пользователей */
+		Registries: $giper_baza_list_str,
 	}) {}
 
 }

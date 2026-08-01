@@ -825,67 +825,251 @@ namespace $.$$ {
 			return String( date.getDate() ).padStart( 2, '0' ) + '.' + String( date.getMonth() + 1 ).padStart( 2, '0' )
 		}
 
-		// ===== Общий реестр пользователей =====
+		// ===== Реестры пользователей =====
 
-		users_land() {
-			const str = this.$.$mol_state_arg.value( 'users' )
-			if( !str ) return null
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( str ) )
-		}
-
-		@$mol_action
-		registry_make( next?: any ) {
-			const land = this.$.$giper_baza_glob.land_grab([
-				[ null, $giper_baza_rank_post( 'slow' ) ],
-			])
-			this.$.$mol_state_arg.value( 'users', land.link().str )
-			return null
-		}
-
-		users_store() {
-			const land = this.users_land()
-			if( !land ) return null
-			return land.Data( $bog_gram_users )
+		/** Реестр из адреса страницы: по такой ссылке зовут в реестр, а свой
+		 * список известных реестров ведётся отдельно, в приватном ленде. */
+		registry_active() {
+			return this.$.$mol_state_arg.value( 'users' ) ?? ''
 		}
 
 		@$mol_mem
-		user_lords() {
-			const store = this.users_store()
-			if( !store ) return [] as string[]
-			return ( store.Lords()?.items() ?? [] ).map( String )
+		registry_ids() {
+			return ( this.dialogs_store().Registries()?.items() ?? [] ).map( String )
 		}
 
-		@$mol_mem
-		users_register() {
-			const store = this.users_store()
-			if( !store ) return false
-			if( !this.user_lords().includes( this.my_lord() ) ) {
-				store.Lords( 'auto' )?.add( this.my_lord() )
+		registry_store( id: string ) {
+			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) ).Data( $bog_gram_users )
+		}
+
+		/** Чужой реестр может быть ещё не засинкан: подписка на его приход
+		 * сохраняется, а пустой список не даёт одному ленду подвесить весь
+		 * экран настроек — строка дорисуется сама. */
+		@$mol_mem_key
+		registry_lords( id: string ) {
+			try {
+				return ( this.registry_store( id ).Lords()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
 			}
-			return true
+		}
+
+		/** Название задаёт создатель. Пока оно не приехало (или его не задали),
+		 * показываем сокращённую ссылку — молчащая строка хуже. */
+		@$mol_mem_key
+		registry_title( id: string ) {
+			try {
+				return String( this.registry_store( id ).Title()?.val() ?? '' ) || this.lord_short( id )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return this.lord_short( id )
+			}
+		}
+
+		@$mol_mem_key
+		registry_size( id: string ) {
+			return this.registry_lords( id ).length
+		}
+
+		@$mol_mem_key
+		registry_joined( id: string ) {
+			return this.registry_lords( id ).includes( this.my_lord() )
+		}
+
+		@$mol_mem_key
+		registry_active_is( id: string ) {
+			return this.registry_active() === id
+		}
+
+		/** Русское склонение: 1 участник, 2 участника, 5 участников. */
+		people_count( count: number ) {
+			const tens = count % 100
+			const ones = count % 10
+			if( tens < 11 || tens > 14 ) {
+				if( ones === 1 ) return count + ' участник'
+				if( ones >= 2 && ones <= 4 ) return count + ' участника'
+			}
+			return count + ' участников'
+		}
+
+		@$mol_mem_key
+		registry_status( id: string ) {
+			const mine = this.registry_joined( id ) ? 'вы в списке' : 'только смотрите'
+			return this.people_count( this.registry_size( id ) ) + ' · ' + mine
+		}
+
+		override Registry_join( id: string ) {
+			return this.registry_joined( id ) ? null! : super.Registry_join( id )
+		}
+
+		@$mol_mem
+		registry_rows() {
+			return this.registry_ids().map( id => this.Registry_row( id ) )
+		}
+
+		/** Приглашение — адрес страницы с одним лишь реестром: остальные
+		 * параметры (свой мастер, открытый диалог) чужому человеку не нужны. */
+		override registry_uri() {
+			const id = this.registry_active()
+			if( !id ) return ''
+			const location = this.$.$mol_dom_context.location
+			return location.origin + location.pathname + '#!users=' + id
 		}
 
 		@$mol_mem
 		registry_content() {
-			if( !this.users_land() ) return [ this.Registry_make() ]
-			return [ this.Registry_ready() ]
+			if( !this.registry_ids().length ) return [ this.Registry_empty(), this.Registry_form() ]
+			return [
+				this.Registry_list(),
+				this.Registry_note(),
+				... this.registry_active() ? [ this.Registry_share() ] : [],
+				this.Registry_form(),
+			]
+		}
+
+		/** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
+		@$mol_action
+		registry_make( next?: any ) {
+
+			const title = this.registry_name().trim()
+
+			const land = this.$.$giper_baza_glob.land_grab([
+				[ null, $giper_baza_rank_post( 'slow' ) ],
+			])
+			const id = land.link().str
+
+			const store = land.Data( $bog_gram_users )
+			if( title ) store.Title( 'auto' )?.val( title )
+			store.Lords( 'auto' )?.add( this.my_lord() )
+
+			this.dialogs_store().Registries( 'auto' )!.add( id )
+			this.registry_name( '' )
+			this.$.$mol_state_arg.value( 'users', id )
+
+			return null
+		}
+
+		/** Открытая ссылка только запоминает реестр: попасть в чужой список
+		 * людей — отдельное решение, поэтому лорд туда не дописывается. */
+		@$mol_mem
+		registry_remember() {
+			const id = this.registry_active()
+			if( !id ) return ''
+			if( !this.registry_ids().includes( id ) ) {
+				this.dialogs_store().Registries( 'auto' )!.add( id )
+			}
+			return id
+		}
+
+		/** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
+		 * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр. */
+		@$mol_action
+		registry_join( id: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !id ) return null
+			if( !this.registry_ids().includes( id ) ) {
+				this.dialogs_store().Registries( 'auto' )!.add( id )
+			}
+			if( !this.registry_lords( id ).includes( this.my_lord() ) ) {
+				this.registry_store( id ).Lords( 'auto' )?.add( this.my_lord() )
+			}
+			return null
+		}
+
+		@$mol_action
+		registry_join_active( next?: any ) {
+			this.registry_join( this.registry_active() )
+			return null
+		}
+
+		/** Убрать — значит забыть ссылку у себя: запись в самом реестре остаётся,
+		 * выйти из него нельзя. Заодно снимаем реестр с адреса, иначе он
+		 * вернулся бы в список на ближайшем же заходе. */
+		@$mol_action
+		registry_forget( id: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !id ) return null
+			this.dialogs_store().Registries( 'auto' )!.cut( id )
+			if( this.registry_active() === id ) this.$.$mol_state_arg.value( 'users', null )
+			return null
+		}
+
+		@$mol_action
+		registry_open( id: string, next?: any ) {
+			if( !id ) return null
+			this.$.$mol_state_arg.value( 'users', id )
+			return null
+		}
+
+		/** Открытый чужой реестр, в котором нет твоей записи: собеседники
+		 * листают его список и тебя там не видят. */
+		@$mol_mem
+		registry_join_needed() {
+			const id = this.registry_active()
+			if( !id ) return false
+			return !this.registry_joined( id )
+		}
+
+		override Join_plate() {
+			return this.registry_join_needed() ? super.Join_plate() : null!
+		}
+
+		// ===== Люди из реестров =====
+
+		/** Один человек — одна строка, даже если он числится в нескольких
+		 * реестрах: подписью берём тот, где он встретился первым. */
+		@$mol_mem
+		user_sources() {
+			const sources: Record< string, string > = {}
+			const my = this.my_lord()
+			for( const id of this.registry_ids() ) {
+				for( const lord of this.registry_lords( id ) ) {
+					if( lord === my ) continue
+					if( sources[ lord ] ) continue
+					sources[ lord ] = id
+				}
+			}
+			return sources
+		}
+
+		@$mol_mem
+		user_lords() {
+			return Object.keys( this.user_sources() )
 		}
 
 		@$mol_mem
 		user_rows() {
-			const lords = this.user_lords().filter( lord => lord !== this.my_lord() )
+			const lords = this.user_lords()
 			if( !lords.length ) return [ this.Users_empty() ]
 			return lords.map( lord => this.User_row( lord ) )
 		}
 
 		override users_empty_text() {
-			if( !this.users_land() ) return 'Общий реестр не подключён. Создайте его в настройках'
-			return 'В реестре пока только вы'
+			if( !this.registry_ids().length ) return 'Вы не состоите ни в одном реестре. Создайте свой в настройках'
+			return 'Кроме вас в реестрах пока никого нет'
+		}
+
+		/** Строка человека ключуется его же лордом — по нему и рисуется узор. */
+		user_lord( lord: string ) {
+			return lord
 		}
 
 		@$mol_mem_key
 		user_title( lord: string ) {
 			return this.peer_name( lord ) || this.lord_short( lord )
+		}
+
+		/** Пока реестр один, называть его в каждой строке незачем. */
+		@$mol_mem_key
+		user_source( lord: string ) {
+			if( this.registry_ids().length < 2 ) return ''
+			const id = this.user_sources()[ lord ]
+			return id ? this.registry_title( id ) : ''
+		}
+
+		override User_source( lord: string ) {
+			return this.user_source( lord ) ? super.User_source( lord ) : null!
 		}
 
 		@$mol_action
@@ -1126,7 +1310,7 @@ namespace $.$$ {
 			super.auto()
 			try { this.baza_master() } catch( error ) { $mol_fail_log( error ) }
 			try { this.setup_ready() } catch( error ) { $mol_fail_log( error ) }
-			try { this.users_register() } catch( error ) { $mol_fail_log( error ) }
+			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }

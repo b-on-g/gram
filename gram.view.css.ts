@@ -369,8 +369,10 @@ namespace $.$$ {
 
 		Registry_block: {
 			Content: {
+				alignSelf: 'stretch',
 				flex: {
 					direction: 'column',
+					shrink: 1,
 				},
 				align: {
 					items: 'stretch',
@@ -385,6 +387,11 @@ namespace $.$$ {
 		},
 
 		Registry_row: {
+			alignSelf: 'stretch',
+			flex: {
+				shrink: 1,
+			},
+			maxWidth: '100%',
 			align: {
 				items: 'center',
 			},

@@ -68,7 +68,7 @@ $bog_gram $mol_book2
 									sub /
 										<= notify_label \
 				<= Registry_block $mol_labeler
-					title \Общий реестр
+					title \Реестры
 					content <= registry_content /
 				<= Account $mol_labeler
 					title \Аккаунт
@@ -95,7 +95,15 @@ $bog_gram $mol_book2
 							sub /
 								\Начать диалог
 				<= Users_title $mol_paragraph
-					title \Пользователи реестра
+					title \Пользователи
+				<= Join_plate $mol_view
+					sub /
+						<= Join_plate_text $mol_paragraph
+							title \Вас нет в этом реестре — другие вас тут не найдут
+						<= Join_plate_button $mol_button_major
+							click? <=> registry_join_active? null
+							sub /
+								\Вступить
 				<= Users_list $mol_list
 					rows <= user_rows /
 		<= Chat_page $bog_gram_chat
@@ -114,12 +122,53 @@ $bog_gram $mol_book2
 		sub /
 			<= Users_empty_text $mol_paragraph
 				title <= users_empty_text \
-	Registry_make $mol_button_major
-		click? <=> registry_make? null
+	Registry_empty $mol_paragraph
+		title \Вы не состоите ни в одном реестре
+	Registry_list $mol_list
+		rows <= registry_rows /
+	Registry_note $mol_paragraph
+		title \Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.
+	Registry_share $mol_view
 		sub /
-			\Создать общий реестр
-	Registry_ready $mol_paragraph
-		title \Реестр подключён
+			<= Registry_share_text $mol_paragraph
+				title \Ссылка-приглашение в активный реестр
+			<= Registry_share_copy $mol_button_copy
+				title \Скопировать ссылку
+				text <= registry_uri \
+	Registry_form $mol_view
+		sub /
+			<= Registry_name $mol_string
+				hint \Название реестра
+				value? <=> registry_name? \
+				submit? <=> registry_make? null
+			<= Registry_make $mol_button_major
+				click? <=> registry_make? null
+				sub /
+					\Создать реестр
+	Registry_row* $mol_button_minor
+		click? <=> registry_open*? null
+		attr *
+			^
+			bog_gram_current <= registry_active_is* false
+		sub /
+			<= Registry_info* $mol_view
+				sub /
+					<= Registry_title* $mol_view
+						sub /
+							<= registry_title* \
+					<= Registry_status* $mol_view
+						sub /
+							<= registry_status* \
+			<= Registry_join* $mol_button_minor
+				hint \Вступить в реестр
+				click? <=> registry_join*? null
+				sub /
+					\Вступить
+			<= Registry_drop* $mol_button_minor
+				hint \Убрать из своего списка
+				click? <=> registry_forget*? null
+				sub /
+					<= Registry_drop_icon* $mol_icon_close
 	Key_toggle $mol_button_minor
 		click? <=> key_toggle? null
 		sub /
@@ -205,9 +254,14 @@ $bog_gram $mol_book2
 			<= User_avatar* $bog_gram_avatar
 				id <= user_lord* \
 				tint <= user_tint* 0
-			<= User_title* $mol_view
+			<= User_info* $mol_view
 				sub /
-					<= user_title* \
+					<= User_title* $mol_view
+						sub /
+							<= user_title* \
+					<= User_source* $mol_view
+						sub /
+							<= user_source* \
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view
