@@ -7108,6 +7108,27 @@ var $;
                 // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
                 $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
             },
+            async 'Подпись собеседника живёт в приватном ленде и перекрывает его имя'($) {
+                const land = $giper_baza_land.make({ $ });
+                const store = land.Data($bog_gram_dialogs);
+                const peer = 'LordPeerWithVeryLongIdentifier';
+                // Пока никого не подписали, словаря подписей нет вовсе
+                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
+                store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('Костя с работы');
+                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', 'Костя с работы');
+                // Подпись лежит по ключу-лорду и соседей не задевает
+                $mol_assert_equal(Boolean(store.Notes()?.key('LordStranger')), false);
+                // Снятая подпись — это пустое значение, а не исчезнувшая запись
+                store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('');
+                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
+                // Приоритет: своя подпись важнее имени из чужого профиля, а без
+                // обоих человек показывается сокращённым идентификатором
+                const app = $bog_gram.make({ $ });
+                $mol_assert_equal(app.label_pick(peer, 'Костя с работы', 'Иииии'), 'Костя с работы');
+                $mol_assert_equal(app.label_pick(peer, '', 'Иииии'), 'Иииии');
+                $mol_assert_equal(app.label_pick(peer, '', ''), app.lord_short(peer));
+                $mol_assert_equal(app.label_pick('', 'Костя с работы', 'Иииии'), '');
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));

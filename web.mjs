@@ -28512,6 +28512,16 @@ var $;
 		chat_title(){
 			return "";
 		}
+		chat_note(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		chat_note_hint(){
+			return "";
+		}
+		chat_note_editable(){
+			return false;
+		}
 		chat_rows(){
 			return [];
 		}
@@ -28537,6 +28547,9 @@ var $;
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
+			(obj.note) = (next) => ((this.chat_note(next)));
+			(obj.note_hint) = () => ((this.chat_note_hint()));
+			(obj.note_editable) = () => ((this.chat_note_editable()));
 			(obj.rows) = () => ((this.chat_rows()));
 			(obj.edit_mode) = () => ((this.edit_mode()));
 			(obj.message_text) = (next) => ((this.message_text(next)));
@@ -29301,6 +29314,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Join_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Users_list"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
+	($mol_mem(($.$bog_gram.prototype), "chat_note"));
 	($mol_mem(($.$bog_gram.prototype), "message_text"));
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
 	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
@@ -29411,6 +29425,33 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
 	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
+		note_hint(){
+			return "";
+		}
+		note(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Note_field(){
+			const obj = new this.$.$mol_string_button();
+			(obj.hint) = () => ((this.note_hint()));
+			(obj.value) = (next) => ((this.note(next)));
+			return obj;
+		}
+		Note_edit_icon(){
+			const obj = new this.$.$mol_icon_pencil();
+			return obj;
+		}
+		Note_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Note_field()), (this.Note_edit_icon())]);
+			return obj;
+		}
+		Title_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -29509,6 +29550,12 @@ var $;
 		edit_mode(){
 			return false;
 		}
+		note_editable(){
+			return false;
+		}
+		title_content(){
+			return [(this.Note_row()), (this.Title_text())];
+		}
 		head(){
 			return [
 				(this.Back()), 
@@ -29526,6 +29573,11 @@ var $;
 			return [(this.Foot())];
 		}
 	};
+	($mol_mem(($.$bog_gram_chat.prototype), "note"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Note_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Note_edit_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Note_row"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back"));
@@ -29582,6 +29634,21 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        /** Личная подпись собеседника: как владелец назвал его для себя. */
+        class $bog_gram_note extends $giper_baza_dict.with({
+            Title: $giper_baza_atom_text,
+        }) {
+        }
+        $$.$bog_gram_note = $bog_gram_note;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
         /** Приватный (шифрованный ленд) список диалогов пользователя. */
         class $bog_gram_dialogs extends $giper_baza_dict.with({
             Dialogs: $giper_baza_list_str,
@@ -29595,6 +29662,9 @@ var $;
             Saved_land: $giper_baza_atom_text,
             /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
             Archived: $giper_baza_list_str,
+            /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
+             * Ленд приватный, поэтому подпись видна только владельцу */
+            Notes: $giper_baza_dict_to($bog_gram_note),
         }) {
         }
         $$.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -30294,6 +30364,41 @@ var $;
             peer_name(lord) {
                 return this.peer_store(lord).Name()?.val() ?? '';
             }
+            // ===== Свои подписи собеседников =====
+            /** Как я назвал человека для себя. Подписи лежат в том же приватном
+             * ленде, что и список диалогов, поэтому собеседник их не видит и
+             * своего имени в профиле из-за них не теряет. */
+            peer_note(lord) {
+                if (!lord)
+                    return '';
+                return this.dialogs_store().Notes()?.key(lord)?.Title()?.val() ?? '';
+            }
+            /** Пустая подпись означает «показывать настоящее имя»: ради неё запись
+             * в словаре не заводим, а уже заведённую просто очищаем. */
+            peer_note_set(lord, next) {
+                if (!lord)
+                    return null;
+                const title = next ?? '';
+                const notes = this.dialogs_store().Notes('auto');
+                if (!notes)
+                    return null;
+                if (!title && !notes.key(lord))
+                    return null;
+                notes.key(lord, 'auto')?.Title('auto')?.val(title);
+                return null;
+            }
+            /** Порядок один на всё приложение: моя подпись важнее имени из чужого
+             * профиля, а безымянного и неподписанного показываем сокращённым
+             * идентификатором. Аватар при этом остаётся привязан к лорду —
+             * от переименования человек не должен менять лицо. */
+            label_pick(lord, note, name) {
+                if (!lord)
+                    return '';
+                return note || name || this.lord_short(lord);
+            }
+            peer_label(lord) {
+                return this.label_pick(lord, this.peer_note(lord), this.peer_name(lord));
+            }
             // ===== Аватары =====
             /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
             avatar_tint(lord) {
@@ -30426,7 +30531,7 @@ var $;
                 const peer = this.dialog_peer(id);
                 if (!peer)
                     return this.lord_short(id);
-                return this.peer_name(peer) || this.lord_short(peer);
+                return this.peer_label(peer);
             }
             /** Момент последней активности — по нему диалоги сортируются в списке.
              * Ленды могут быть ещё не засинканы: suspend любого из них не должен
@@ -30658,6 +30763,37 @@ var $;
                 if (!id)
                     return 'Выберите диалог';
                 return this.dialog_title(id);
+            }
+            /** Собеседник открытого диалога: у избранного его нет, поэтому и
+             * подписывать там некого. */
+            chat_peer() {
+                const id = this.dialog_active();
+                if (!id)
+                    return '';
+                if (this.saved_is(id))
+                    return '';
+                return this.dialog_peer(id);
+            }
+            /** Заголовок чата — это подпись собеседника, и правится она прямо
+             * в шапке. У избранного заголовок фиксированный, поле там не нужно. */
+            chat_note_editable() {
+                return Boolean(this.chat_peer());
+            }
+            /** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
+             * стоит то, как человек назвал себя сам. */
+            chat_note_hint() {
+                const lord = this.chat_peer();
+                if (!lord)
+                    return '';
+                return this.peer_name(lord) || this.lord_short(lord);
+            }
+            chat_note(next) {
+                const lord = this.chat_peer();
+                if (!lord)
+                    return '';
+                if (next !== undefined)
+                    this.peer_note_set(lord, next);
+                return this.peer_note(lord);
             }
             // ===== Страницы буклета =====
             compose_opened(next) {
@@ -31351,7 +31487,7 @@ var $;
                 return lord;
             }
             user_title(lord) {
-                return this.peer_name(lord) || this.lord_short(lord);
+                return this.peer_label(lord);
             }
             /** Пока реестр один, называть его в каждой строке незачем. */
             user_source(lord) {
@@ -31685,6 +31821,12 @@ var $;
         ], $bog_gram.prototype, "peer_name", null);
         __decorate([
             $mol_mem_key
+        ], $bog_gram.prototype, "peer_note", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "peer_note_set", null);
+        __decorate([
+            $mol_mem_key
         ], $bog_gram.prototype, "dialog_avatar_id", null);
         __decorate([
             $mol_mem_key
@@ -31788,6 +31930,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "chat_title", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "chat_peer", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "chat_note", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "compose_opened", null);
@@ -32028,6 +32176,15 @@ var $;
         ], $bog_gram_avatar.prototype, "path", null);
         $$.$bog_gram_avatar = $bog_gram_avatar;
         class $bog_gram_chat extends $.$bog_gram_chat {
+            /** Заголовок чата — это подпись собеседника, поэтому он и правится
+             * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
+             * заголовок остаётся обычной строкой. */
+            Note_row() {
+                return this.note_editable() ? super.Note_row() : null;
+            }
+            Title_text() {
+                return this.note_editable() ? null : super.Title_text();
+            }
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
             }
@@ -33414,10 +33571,67 @@ var $;
                 },
                 padding: head_pad,
             },
+            /* Место в шапке поделено со стрелкой «назад» и кнопками, поэтому
+            заголовку нужен нулевой минимум: без него длинная подпись распирает
+            шапку вместо того, чтобы ужиматься в отведённой ей ширине. */
             Title: {
+                minWidth: 0,
                 font: {
                     weight: 'bold',
                 },
+            },
+            /* Подпись собеседника правится прямо в заголовке — тем же приёмом, что
+            и имя в настройках: поле выглядит обычной строкой, пока в него не ткнули,
+            а карандаш рядом показывает, что заголовок можно поменять. У вьюх по
+            умолчанию flex-shrink 0, поэтому строке нужен и shrink, и нулевой
+            минимум — иначе она распирает шапку. */
+            Note_row: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: '0.375rem',
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Note_field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.375rem',
+                    right: '0.375rem',
+                },
+            },
+            Note_edit_icon: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+                color: $mol_theme.shade,
+            },
+            /* Заголовок без поля: подписывать некого, поэтому просто строка
+            с многоточием на конце. */
+            Title_text: {
+                display: 'block',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
             },
             /* Стрелка «назад» слева от имени собеседника — так закрывают чат на
             телефоне. На широком экране рядом лежит открытый список диалогов,

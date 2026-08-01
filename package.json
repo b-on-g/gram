@@ -367,6 +367,7 @@
     "$mol_icon_send",
     "$bog_gram_user",
     "$bog_gram_dialogs",
+    "$bog_gram_note",
     "$bog_gram_inbox",
     "$bog_gram_monitor",
     "$bog_gram_devices",

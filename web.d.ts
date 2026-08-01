@@ -39814,6 +39814,25 @@ declare namespace $.$$ {
 }
 
 declare namespace $.$$ {
+    const $bog_gram_note_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Title: (auto?: any) => $giper_baza_atom_text | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Title: typeof $giper_baza_atom_text;
+        };
+    };
+    /** Личная подпись собеседника: как владелец назвал его для себя. */
+    export class $bog_gram_note extends $bog_gram_note_base {
+    }
+    export {};
+}
+
+declare namespace $.$$ {
     const $bog_gram_dialogs_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Dialogs: (auto?: any) => $giper_baza_list_str | null;
@@ -39822,6 +39841,44 @@ declare namespace $.$$ {
             readonly Registries: (auto?: any) => $giper_baza_list_str | null;
             readonly Saved_land: (auto?: any) => $giper_baza_atom_text | null;
             readonly Archived: (auto?: any) => $giper_baza_list_str | null;
+            readonly Notes: (auto?: any) => {
+                Value: typeof $bog_gram_note;
+                key(key: $giper_baza_vary_type, auto?: any): $bog_gram_note;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
         }>;
         path: string;
     } & {
@@ -39839,6 +39896,305 @@ declare namespace $.$$ {
             readonly Saved_land: typeof $giper_baza_atom_text;
             /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
             readonly Archived: typeof $giper_baza_list_str;
+            /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
+             * Ленд приватный, поэтому подпись видна только владельцу */
+            readonly Notes: {
+                new (): {
+                    Value: typeof $bog_gram_note;
+                    key(key: $giper_baza_vary_type, auto?: any): $bog_gram_note;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
         };
     };
     /** Приватный (шифрованный ленд) список диалогов пользователя. */
@@ -41864,115 +42220,115 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_chat['title'] >
 	>
-	type $bog_gram_chat__rows_bog_gram_72 = $mol_type_enforce<
+	type $bog_gram_chat__note_bog_gram_72 = $mol_type_enforce<
+		ReturnType< $bog_gram['chat_note'] >
+		,
+		ReturnType< $bog_gram_chat['note'] >
+	>
+	type $bog_gram_chat__note_hint_bog_gram_73 = $mol_type_enforce<
+		ReturnType< $bog_gram['chat_note_hint'] >
+		,
+		ReturnType< $bog_gram_chat['note_hint'] >
+	>
+	type $bog_gram_chat__note_editable_bog_gram_74 = $mol_type_enforce<
+		ReturnType< $bog_gram['chat_note_editable'] >
+		,
+		ReturnType< $bog_gram_chat['note_editable'] >
+	>
+	type $bog_gram_chat__rows_bog_gram_75 = $mol_type_enforce<
 		ReturnType< $bog_gram['chat_rows'] >
 		,
 		ReturnType< $bog_gram_chat['rows'] >
 	>
-	type $bog_gram_chat__edit_mode_bog_gram_73 = $mol_type_enforce<
+	type $bog_gram_chat__edit_mode_bog_gram_76 = $mol_type_enforce<
 		ReturnType< $bog_gram['edit_mode'] >
 		,
 		ReturnType< $bog_gram_chat['edit_mode'] >
 	>
-	type $bog_gram_chat__message_text_bog_gram_74 = $mol_type_enforce<
+	type $bog_gram_chat__message_text_bog_gram_77 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_text'] >
 		,
 		ReturnType< $bog_gram_chat['message_text'] >
 	>
-	type $bog_gram_chat__message_send_bog_gram_75 = $mol_type_enforce<
+	type $bog_gram_chat__message_send_bog_gram_78 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_send'] >
 		,
 		ReturnType< $bog_gram_chat['message_send'] >
 	>
-	type $bog_gram_chat__edit_cancel_bog_gram_76 = $mol_type_enforce<
+	type $bog_gram_chat__edit_cancel_bog_gram_79 = $mol_type_enforce<
 		ReturnType< $bog_gram['edit_cancel'] >
 		,
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 	>
-	type $bog_gram_chat__close_bog_gram_77 = $mol_type_enforce<
+	type $bog_gram_chat__close_bog_gram_80 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_close'] >
 		,
 		ReturnType< $bog_gram_chat['close'] >
 	>
-	type $mol_paragraph__title_bog_gram_78 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_81 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_gram_79 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_82 = $mol_type_enforce<
 		ReturnType< $bog_gram['users_empty_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_gram_80 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_83 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_copy__title_bog_gram_81 = $mol_type_enforce<
+	type $mol_button_copy__title_bog_gram_84 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['title'] >
 	>
-	type $mol_button_copy__text_bog_gram_82 = $mol_type_enforce<
+	type $mol_button_copy__text_bog_gram_85 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_uri'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
 	>
-	type $mol_string__hint_bog_gram_83 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_86 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_84 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_87 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_name'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_85 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_88 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_make'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__click_bog_gram_86 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_89 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_make'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_87 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_90 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_88 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_91 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_89 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_92 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_90 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_93 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_91 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_92 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_93 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_button_minor__hint_bog_gram_94 = $mol_type_enforce<
 		string
@@ -41980,7 +42336,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_gram_95 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_forget'] >
+		ReturnType< $bog_gram['registry_join'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -41989,117 +42345,117 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_97 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_97 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_98 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_forget'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_99 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_100 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_copy__title_bog_gram_98 = $mol_type_enforce<
+	type $mol_button_copy__title_bog_gram_101 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['title'] >
 	>
-	type $mol_button_copy__text_bog_gram_99 = $mol_type_enforce<
+	type $mol_button_copy__text_bog_gram_102 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_text'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
 	>
-	type $bog_qr__uri_bog_gram_100 = $mol_type_enforce<
+	type $bog_qr__uri_bog_gram_103 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_text'] >
 		,
 		ReturnType< $bog_qr['uri'] >
 	>
-	type $bog_qr__gradient_stops_bog_gram_101 = $mol_type_enforce<
+	type $bog_qr__gradient_stops_bog_gram_104 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_qr['gradient_stops'] >
 	>
-	type $mol_string__hint_bog_gram_102 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_105 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_103 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_106 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_input'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_paragraph__title_bog_gram_104 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_107 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_open__hint_bog_gram_105 = $mol_type_enforce<
+	type $mol_button_open__hint_bog_gram_108 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_open['hint'] >
 	>
-	type $mol_button_open__accept_bog_gram_106 = $mol_type_enforce<
+	type $mol_button_open__accept_bog_gram_109 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_open['accept'] >
 	>
-	type $mol_button_open__multiple_bog_gram_107 = $mol_type_enforce<
+	type $mol_button_open__multiple_bog_gram_110 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $mol_button_open['multiple'] >
 	>
-	type $mol_button_open__files_bog_gram_108 = $mol_type_enforce<
+	type $mol_button_open__files_bog_gram_111 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_file'] >
 		,
 		ReturnType< $mol_button_open['files'] >
 	>
-	type $mol_view__sub_bog_gram_109 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_112 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_major__attr_bog_gram_110 = $mol_type_enforce<
+	type $mol_button_major__attr_bog_gram_113 = $mol_type_enforce<
 		({ 
 			'bog_gram_armed': ReturnType< $bog_gram['import_armed'] >,
 		})  & ReturnType< $mol_button_major['attr'] >
 		,
 		ReturnType< $mol_button_major['attr'] >
 	>
-	type $mol_button_major__click_bog_gram_111 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_114 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_import'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_112 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_115 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_113 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_116 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_error'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $bog_gram_avatar__id_bog_gram_114 = $mol_type_enforce<
+	type $bog_gram_avatar__id_bog_gram_117 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_avatar_id'] >
 		,
 		ReturnType< $bog_gram_avatar['id'] >
 	>
-	type $bog_gram_avatar__tint_bog_gram_115 = $mol_type_enforce<
+	type $bog_gram_avatar__tint_bog_gram_118 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_tint'] >
 		,
 		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_116 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_117 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_118 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_119 = $mol_type_enforce<
 		readonly(any)[]
@@ -42121,57 +42477,57 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_123 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_123 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_124 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_125 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_126 = $mol_type_enforce<
 		ReturnType< $bog_gram['archive_hint'] >
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_124 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_127 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_archive_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_125 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_128 = $mol_type_enforce<
 		ReturnType< $bog_gram['archive_icons'] >
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_126 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_129 = $mol_type_enforce<
 		ReturnType< $bog_gram['delete_hint'] >
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__attr_bog_gram_127 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_130 = $mol_type_enforce<
 		({ 
 			'bog_gram_armed': ReturnType< $bog_gram['delete_armed'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__click_bog_gram_128 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_131 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_delete_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_129 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_132 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_130 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_131 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_132 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_133 = $mol_type_enforce<
 		readonly(any)[]
@@ -42218,40 +42574,40 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_avatar__id_bog_gram_142 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_lord'] >
+	type $mol_view__sub_bog_gram_142 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $bog_gram_avatar['id'] >
+		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_avatar__tint_bog_gram_143 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_tint'] >
+	type $mol_view__sub_bog_gram_143 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $bog_gram_avatar['tint'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_144 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_145 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_gram_avatar__id_bog_gram_145 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_lord'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_gram_avatar['id'] >
 	>
-	type $mol_view__sub_bog_gram_146 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_gram_avatar__tint_bog_gram_146 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_tint'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_gram_avatar['tint'] >
 	>
 	type $mol_view__sub_bog_gram_147 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_148 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_body'] >
+	type $mol_view__sub_bog_gram_148 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $mol_paragraph['title'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_149 = $mol_type_enforce<
 		readonly(any)[]
@@ -42263,30 +42619,30 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_151 = $mol_type_enforce<
-		readonly(any)[]
+	type $mol_paragraph__title_bog_gram_151 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_body'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $mol_paragraph['title'] >
 	>
 	type $mol_view__sub_bog_gram_152 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_153 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_154 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_edit'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_155 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_153 = $mol_type_enforce<
 		readonly(any)[]
 		,
-		ReturnType< $mol_button_minor['sub'] >
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_154 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_155 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_button_minor__hint_bog_gram_156 = $mol_type_enforce<
 		string
@@ -42294,7 +42650,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_gram_157 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_delete'] >
+		ReturnType< $bog_gram['message_edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -42303,97 +42659,97 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_159 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_159 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_160 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_delete'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_161 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_162 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_160 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_163 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_161 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_164 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_162 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_165 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_list__rows_bog_gram_163 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_166 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_164 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_167 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_165 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_168 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_166 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_169 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_167 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_170 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_168 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_171 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['registry_active_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_169 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_172 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_170 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_173 = $mol_type_enforce<
 		ReturnType< $bog_gram['key_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_171 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_174 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_172 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_175 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_173 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_176 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_174 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_175 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_save'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_176 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_view__sub_bog_gram_177 = $mol_type_enforce<
 		readonly(any)[]
@@ -42401,75 +42757,90 @@ declare namespace $ {
 		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_button_minor__click_bog_gram_178 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_save'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_179 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_180 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_181 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_select'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_179 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_182 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_180 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_183 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_181 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_184 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_182 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_185 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_183 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_186 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['saved_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_184 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_185 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_186 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
 	type $mol_button_minor__sub_bog_gram_187 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_188 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_pick'] >
+	type $mol_button_minor__hint_bog_gram_188 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_189 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_189 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_190 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_190 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_191 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_pick'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_192 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_193 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_191 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_194 = $mol_type_enforce<
 		({ 
 			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
 			'bog_gram_menu': ReturnType< $bog_gram['message_menu_is'] >,
@@ -42477,7 +42848,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__event_bog_gram_192 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_195 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram['message_press'] > ): ReturnType< $bog_gram['message_press'] >,
 			pointerup( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
@@ -42487,7 +42858,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_193 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_196 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -42561,6 +42932,9 @@ declare namespace $ {
 		Users_list( ): $mol_list
 		Compose_page( ): $mol_page
 		chat_title( ): string
+		chat_note( next?: string ): string
+		chat_note_hint( ): string
+		chat_note_editable( ): boolean
 		chat_rows( ): readonly(any)[]
 		edit_mode( ): boolean
 		message_text( next?: string ): string
@@ -42715,107 +43089,133 @@ declare namespace $ {
 		Message_row( id: any): $mol_view
 	}
 	
-	type $mol_button_minor__hint_bog_gram_chat_1 = $mol_type_enforce<
+	type $mol_string_button__hint_bog_gram_chat_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['note_hint'] >
+		,
+		ReturnType< $mol_string_button['hint'] >
+	>
+	type $mol_string_button__value_bog_gram_chat_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['note'] >
+		,
+		ReturnType< $mol_string_button['value'] >
+	>
+	type $mol_view__sub_bog_gram_chat_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_5 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_2 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_6 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['close'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_3 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_7 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_4 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_8 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_5 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_9 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['close'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_6 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_10 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_list__rows_bog_gram_chat_7 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_chat_11 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_8 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_12 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_9 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_13 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_10 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_14 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_11 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_15 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_12 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_string__hint_bog_gram_chat_13 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_chat_17 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_chat_14 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_chat_18 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_text'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_chat_15 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_chat_19 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_16 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_20 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_17 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_21 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_18 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_22 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_19 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_23 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_20 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
 	export class $bog_gram_chat extends $mol_page {
+		note_hint( ): string
+		note( next?: string ): string
+		Note_field( ): $mol_string_button
+		Note_edit_icon( ): $mol_icon_pencil
+		Note_row( ): $mol_view
+		Title_text( ): $mol_view
 		close( next?: any ): any
 		Back_icon( ): $mol_icon_arrow_left
 		Back( ): $mol_button_minor
@@ -42836,6 +43236,8 @@ declare namespace $ {
 		Foot( ): $mol_view
 		rows( ): readonly($mol_view)[]
 		edit_mode( ): boolean
+		note_editable( ): boolean
+		title_content( ): readonly(any)[]
 		head( ): readonly(any)[]
 		tools( ): readonly(any)[]
 		body( ): readonly(any)[]
@@ -42874,6 +43276,19 @@ declare namespace $.$$ {
         device_ready(): boolean;
         peer_store(lord: string): $bog_gram_user;
         peer_name(lord: string): string;
+        /** Как я назвал человека для себя. Подписи лежат в том же приватном
+         * ленде, что и список диалогов, поэтому собеседник их не видит и
+         * своего имени в профиле из-за них не теряет. */
+        peer_note(lord: string): string;
+        /** Пустая подпись означает «показывать настоящее имя»: ради неё запись
+         * в словаре не заводим, а уже заведённую просто очищаем. */
+        peer_note_set(lord: string, next?: string): null;
+        /** Порядок один на всё приложение: моя подпись важнее имени из чужого
+         * профиля, а безымянного и неподписанного показываем сокращённым
+         * идентификатором. Аватар при этом остаётся привязан к лорду —
+         * от переименования человек не должен менять лицо. */
+        label_pick(lord: string, note: string, name: string): string;
+        peer_label(lord: string): string;
         /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
         avatar_tint(lord: string): number;
         /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
@@ -42974,6 +43389,16 @@ declare namespace $.$$ {
          * Избранного нет в списке диалогов, но открывается оно так же. */
         dialog_active(): string;
         chat_title(): string;
+        /** Собеседник открытого диалога: у избранного его нет, поэтому и
+         * подписывать там некого. */
+        chat_peer(): string;
+        /** Заголовок чата — это подпись собеседника, и правится она прямо
+         * в шапке. У избранного заголовок фиксированный, поле там не нужно. */
+        chat_note_editable(): boolean;
+        /** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
+         * стоит то, как человек назвал себя сам. */
+        chat_note_hint(): string;
+        chat_note(next?: string): string;
         compose_opened(next?: boolean): boolean;
         settings_opened(next?: boolean): boolean;
         /** Кнопка в шапке работает как переключатель: повторный клик
@@ -43184,6 +43609,11 @@ declare namespace $.$$ {
         path(): string;
     }
     class $bog_gram_chat extends $.$bog_gram_chat {
+        /** Заголовок чата — это подпись собеседника, поэтому он и правится
+         * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
+         * заголовок остаётся обычной строкой. */
+        Note_row(): $mol_view;
+        Title_text(): $mol_view;
         Edit_banner(): $mol_view;
         auto(): void;
     }

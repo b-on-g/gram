@@ -684,6 +684,9 @@ $bog_gram $mol_book2
 					rows <= user_rows /
 		<= Chat_page $bog_gram_chat
 			title <= chat_title \
+			note? <=> chat_note? \
+			note_hint <= chat_note_hint \
+			note_editable <= chat_note_editable false
 			rows <= chat_rows /
 			edit_mode <= edit_mode false
 			message_text? <=> message_text? \
@@ -940,6 +943,17 @@ $bog_gram_chat $mol_page
 	message_send? null
 	edit_cancel? null
 	close? null
+	note_editable false
+	title_content /
+		<= Note_row $mol_view
+			sub /
+				<= Note_field $mol_string_button
+					hint <= note_hint \
+					value? <=> note? \
+				<= Note_edit_icon $mol_icon_pencil
+		<= Title_text $mol_view
+			sub /
+				<= title
 	head /
 		<= Back $mol_button_minor
 			hint \Назад
