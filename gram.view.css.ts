@@ -220,6 +220,32 @@ namespace $.$$ {
 			borderRadius: '1rem',
 		},
 
+		/* корзина не должна распирать строку: своя ширина, минимум отступов,
+		цвет наследуется от строки — на выбранной он белый */
+		Dialog_delete: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+			/* красная заливка взведённой корзины — в gram.view.css:
+			кастомный атрибут на встроенной кнопке не проходит типизацию Attrs */
+		},
+
+		Dialog_delete_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
 		// ===== Реестр пользователей =====
 
 		Users_title: {
@@ -278,6 +304,33 @@ namespace $.$$ {
 		},
 
 		// ===== Настройки и новый диалог =====
+
+		/* заполненное поле имени выглядит как обычная строка текста, пока в него
+		не ткнули, поэтому рядом висит карандаш — знак, что имя правится прямо тут */
+		Name_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Name_field: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+		},
+
+		Name_edit_icon: {
+			flex: {
+				shrink: 0,
+			},
+			width: '1rem',
+			height: '1rem',
+			color: $mol_theme.shade,
+		},
 
 		Peer_form: {
 			flex: {

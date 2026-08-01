@@ -259,7 +259,7 @@ namespace $.$$ {
 			this.account_reset()
 			this.edit_id( '' )
 			this.message_text( '' )
-			this.delete_armed( false )
+			this.delete_disarm()
 			this.dialog_current( id )
 			return null
 		}
@@ -268,33 +268,41 @@ namespace $.$$ {
 		dialog_close( next?: any ) {
 			this.edit_id( '' )
 			this.message_text( '' )
-			this.delete_armed( false )
+			this.delete_disarm()
 			this.dialog_current( '' )
 			return null
 		}
 
 		// ===== Удаление диалога из своего списка =====
 
-		/** Первый клик по корзине только взводит кнопку, второй удаляет:
-		 * подтверждение живёт в тулбаре, без модалок и системных алертов. */
-		@$mol_mem
-		delete_armed( next?: boolean ) {
+		/** Взвод корзины живёт на своей строке: первый клик красит её,
+		 * второй удаляет — без модалок и системных алертов. */
+		@$mol_mem_key
+		delete_armed( id: string, next?: boolean ) {
 			return next ?? false
 		}
 
-		delete_hint() {
-			return this.delete_armed() ? 'Точно удалить?' : 'Удалить диалог'
+		delete_hint( id: string ) {
+			return this.delete_armed( id ) ? 'Точно удалить?' : 'Удалить диалог'
 		}
 
-		/** Опираемся на сырой выбор, а не на dialog_active(): фибра действия может
-		 * перезапуститься уже после выреза ссылки из списка, и тогда активного диалога
-		 * с точки зрения списка нет — удаление оборвалось бы на полпути. */
+		/** Красной ждёт подтверждения максимум одна строка: любой другой клик
+		 * по списку снимает взвод, чтобы забытая корзина не сработала потом. */
 		@$mol_action
-		dialog_delete_current( next?: any ) {
-			const id = this.dialog_current()
+		delete_disarm( next?: any ) {
+			for( const id of this.dialog_ids() ) this.delete_armed( id, false )
+			return null
+		}
+
+		/** Корзина лежит внутри кликабельной строки, поэтому первым делом гасим
+		 * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
+		@$mol_action
+		dialog_delete_click( id: string, next?: Event ) {
+			next?.stopPropagation()
 			if( !id ) return null
-			if( !this.delete_armed() ) {
-				this.delete_armed( true )
+			if( !this.delete_armed( id ) ) {
+				this.delete_disarm()
+				this.delete_armed( id, true )
 				return null
 			}
 			this.dialog_delete( id )
@@ -328,7 +336,7 @@ namespace $.$$ {
 				this.message_text( '' )
 				this.dialog_current( '' )
 			}
-			this.delete_armed( false )
+			this.delete_armed( id, false )
 
 			return null
 		}
@@ -1051,7 +1059,7 @@ namespace $.$$ {
 			}
 		}
 
-		/** Первый клик взводит кнопку, второй применяет — как корзина в чате.
+		/** Первый клик взводит кнопку, второй применяет — как корзина в списке диалогов.
 		 * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
 		@$mol_action
 		key_import( next?: any ) {
