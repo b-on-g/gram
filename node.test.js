@@ -19234,6 +19234,16 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		dialog_delete_current(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		delete_armed(){
+			return false;
+		}
+		delete_hint(){
+			return "";
+		}
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
@@ -19243,6 +19253,9 @@ var $;
 			(obj.message_send) = (next) => ((this.message_send(next)));
 			(obj.edit_cancel) = (next) => ((this.edit_cancel(next)));
 			(obj.close) = (next) => ((this.dialog_close(next)));
+			(obj.delete) = (next) => ((this.dialog_delete_current(next)));
+			(obj.delete_armed) = () => ((this.delete_armed()));
+			(obj.delete_hint) = () => ((this.delete_hint()));
 			return obj;
 		}
 		Dialogs_empty_text(){
@@ -19269,12 +19282,16 @@ var $;
 		dialog_current_is(id){
 			return false;
 		}
-		dialog_peer(id){
+		dialog_letter(id){
 			return "";
 		}
+		dialog_tint(id){
+			return 0;
+		}
 		Dialog_avatar(id){
-			const obj = new this.$.$mol_avatar();
-			(obj.id) = () => ((this.dialog_peer(id)));
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.letter) = () => ((this.dialog_letter(id)));
+			(obj.tint) = () => ((this.dialog_tint(id)));
 			return obj;
 		}
 		dialog_title(id){
@@ -19328,12 +19345,16 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		user_lord(id){
+		user_letter(id){
 			return "";
 		}
+		user_tint(id){
+			return 0;
+		}
 		User_avatar(id){
-			const obj = new this.$.$mol_avatar();
-			(obj.id) = () => ((this.user_lord(id)));
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.letter) = () => ((this.user_letter(id)));
+			(obj.tint) = () => ((this.user_tint(id)));
 			return obj;
 		}
 		user_title(id){
@@ -19526,6 +19547,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
 	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
+	($mol_mem(($.$bog_gram.prototype), "dialog_delete_current"));
 	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
@@ -19563,6 +19585,22 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
 	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
+		delete(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete_icon(){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		Delete(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.delete_hint()));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed())});
+			(obj.click) = (next) => ((this.delete(next)));
+			(obj.sub) = () => ([(this.Delete_icon())]);
+			return obj;
+		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -19650,8 +19688,14 @@ var $;
 		edit_mode(){
 			return false;
 		}
+		delete_armed(){
+			return false;
+		}
+		delete_hint(){
+			return "Удалить диалог";
+		}
 		tools(){
-			return [(this.Close())];
+			return [(this.Delete()), (this.Close())];
 		}
 		body(){
 			return [(this.Messages())];
@@ -19660,6 +19704,9 @@ var $;
 			return [(this.Foot())];
 		}
 	};
+	($mol_mem(($.$bog_gram_chat.prototype), "delete"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Delete_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Delete"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
@@ -19676,6 +19723,20 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Foot"));
+	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_view) {
+		letter(){
+			return "";
+		}
+		tint(){
+			return 0;
+		}
+		attr(){
+			return {...(super.attr()), "bog_gram_tint": (this.tint())};
+		}
+		sub(){
+			return [(this.letter())];
+		}
+	};
 
 
 ;
@@ -19708,6 +19769,8 @@ var $;
             Dialogs: $giper_baza_list_str,
             /** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
             Outbox: $giper_baza_list_str,
+            /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
+            Hidden: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -19975,9 +20038,68 @@ var $;
             peer_name(lord) {
                 return this.peer_store(lord).Name()?.val() ?? '';
             }
+            // ===== Аватары =====
+            /** Инициал в кружке: первая буква имени собеседника, а пока имя не
+             * приехало — первый символ самого лорда. Имя может начинаться с пробела
+             * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
+            avatar_letter(lord) {
+                if (!lord)
+                    return '';
+                const source = this.peer_name(lord) || lord;
+                const char = [...source].find(symbol => symbol.trim());
+                return char ? char.toUpperCase() : '';
+            }
+            /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
+            avatar_tint(lord) {
+                let hash = 0;
+                for (const symbol of lord)
+                    hash = (hash * 31 + symbol.charCodeAt(0)) % 7;
+                return hash;
+            }
+            /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
+             * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
+             * сохраняется, буква и цвет проявятся сами. */
+            dialog_letter(id) {
+                try {
+                    return this.avatar_letter(this.dialog_peer(id));
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            dialog_tint(id) {
+                try {
+                    return this.avatar_tint(this.dialog_peer(id));
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return 0;
+                }
+            }
+            user_letter(lord) {
+                try {
+                    return this.avatar_letter(lord);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            user_tint(lord) {
+                return this.avatar_tint(lord);
+            }
             // ===== Диалоги =====
             dialog_ids() {
                 return (this.dialogs_store().Dialogs()?.items() ?? []).map(String);
+            }
+            /** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
+             * иначе собеседник вернул бы диалог обратно на следующем же синке. */
+            hidden_ids() {
+                return (this.dialogs_store().Hidden()?.items() ?? []).map(String);
             }
             dialog_store(id) {
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(id)).Data($bog_gram_dialog);
@@ -19986,11 +20108,18 @@ var $;
                 const peers = (this.dialog_store(id).Peers()?.items() ?? []).map(String);
                 return peers.find(lord => lord !== this.my_lord()) ?? peers[0] ?? '';
             }
+            /** Безымянного собеседника показываем началом и концом идентификатора:
+             * у одного только начала первые символы у разных людей совпадают глазом. */
+            lord_short(lord) {
+                if (lord.length <= 14)
+                    return lord;
+                return lord.slice(0, 6) + '…' + lord.slice(-4);
+            }
             dialog_title(id) {
                 const peer = this.dialog_peer(id);
                 if (!peer)
-                    return id.slice(0, 8) + '…';
-                return this.peer_name(peer) || peer.slice(0, 8) + '…';
+                    return this.lord_short(id);
+                return this.peer_name(peer) || this.lord_short(peer);
             }
             /** Момент последней активности — по нему диалоги сортируются в списке.
              * Ленды могут быть ещё не засинканы: suspend любого из них не должен
@@ -20029,13 +20158,67 @@ var $;
                 this.settings_opened(false);
                 this.edit_id('');
                 this.message_text('');
+                this.delete_armed(false);
                 this.dialog_current(id);
                 return null;
             }
             dialog_close(next) {
                 this.edit_id('');
                 this.message_text('');
+                this.delete_armed(false);
                 this.dialog_current('');
+                return null;
+            }
+            // ===== Удаление диалога из своего списка =====
+            /** Первый клик по корзине только взводит кнопку, второй удаляет:
+             * подтверждение живёт в тулбаре, без модалок и системных алертов. */
+            delete_armed(next) {
+                return next ?? false;
+            }
+            delete_hint() {
+                return this.delete_armed() ? 'Точно удалить?' : 'Удалить диалог';
+            }
+            /** Опираемся на сырой выбор, а не на dialog_active(): фибра действия может
+             * перезапуститься уже после выреза ссылки из списка, и тогда активного диалога
+             * с точки зрения списка нет — удаление оборвалось бы на полпути. */
+            dialog_delete_current(next) {
+                const id = this.dialog_current();
+                if (!id)
+                    return null;
+                if (!this.delete_armed()) {
+                    this.delete_armed(true);
+                    return null;
+                }
+                this.dialog_delete(id);
+                return null;
+            }
+            /** Диалог живёт в шаренном ленде и у собеседника остаётся:
+             * убираем только свою ссылку и свою слежку за сессиями. */
+            dialog_delete(id, next) {
+                if (!id)
+                    return null;
+                const active = this.dialog_current() === id;
+                const store = this.dialogs_store();
+                store.Dialogs('auto').cut(id);
+                store.Hidden('auto').add(id);
+                // Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
+                // но выкидывание из своего списка важнее — просто не чистим монитор
+                try {
+                    const sessions = (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
+                    const watch = this.monitor_store().Watch('auto');
+                    for (const link of sessions)
+                        watch.cut(link);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                if (active) {
+                    this.edit_id('');
+                    this.message_text('');
+                    this.dialog_current('');
+                }
+                this.delete_armed(false);
                 return null;
             }
             /** Только явно выбранный диалог: на узком экране чат не должен открываться сам. */
@@ -20204,8 +20387,11 @@ var $;
                 if (!invites.length)
                     return 0;
                 const have = new Set(this.dialog_ids());
+                const hidden = new Set(this.hidden_ids());
                 for (const link of invites) {
                     if (have.has(link))
+                        continue;
+                    if (hidden.has(link))
                         continue;
                     this.dialogs_store().Dialogs('auto').add(link);
                 }
@@ -20499,11 +20685,8 @@ var $;
                     return 'Общий реестр не подключён. Создайте его в настройках';
                 return 'В реестре пока только вы';
             }
-            user_lord(lord) {
-                return lord;
-            }
             user_title(lord) {
-                return this.peer_name(lord) || lord.slice(0, 8) + '…';
+                return this.peer_name(lord) || this.lord_short(lord);
             }
             user_pick(lord, next) {
                 if (!lord)
@@ -20606,8 +20789,20 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "peer_name", null);
         __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_letter", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_tint", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "user_letter", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_ids", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "hidden_ids", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_peer", null);
@@ -20632,6 +20827,15 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialog_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "delete_armed", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_delete_current", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "dialog_delete", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_active", null);
@@ -20784,7 +20988,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -20888,16 +21092,13 @@ var $;
                 /* подсветка активного диалога — в gram.view.css: кастомный
                 атрибут на встроенной кнопке не проходит типизацию Attrs */
             },
+            /* общий вид кружка — в блоке аватара ниже, здесь только размер:
+            в списке диалогов он крупнее, чем в реестре */
             Dialog_avatar: {
                 width: '3rem',
                 height: '3rem',
-                borderRadius: '50%',
-                flex: {
-                    shrink: 0,
-                },
-                padding: '0.25rem',
-                background: {
-                    color: veil,
+                font: {
+                    size: '1.125rem',
                 },
             },
             Dialog_info: {
@@ -21030,13 +21231,8 @@ var $;
             User_avatar: {
                 width: '2.5rem',
                 height: '2.5rem',
-                borderRadius: '50%',
-                flex: {
-                    shrink: 0,
-                },
-                padding: '0.25rem',
-                background: {
-                    color: veil,
+                font: {
+                    size: '1rem',
                 },
             },
             User_title: {
@@ -21207,6 +21403,67 @@ var $;
                                     },
                                 },
                             },
+                        },
+                    },
+                },
+            },
+        });
+        // ===== Аватар-кружок с инициалом =====
+        // Общий вид держим на самом компоненте: список диалогов и реестр
+        // отличаются только размером, а палитра нужна обоим одинаковая.
+        // Размер и кегль задаются на месте использования: селекторы тут
+        // одной специфичности, повтори мы их здесь — перебили бы место вызова.
+        $mol_style_define($bog_gram_avatar, {
+            flex: {
+                shrink: 0,
+            },
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            borderRadius: '50%',
+            color: '#ffffff',
+            font: {
+                weight: 'bold',
+            },
+            userSelect: 'none',
+            '@': {
+                bog_gram_tint: {
+                    '0': {
+                        background: {
+                            color: '#e17076',
+                        },
+                    },
+                    '1': {
+                        background: {
+                            color: '#faa774',
+                        },
+                    },
+                    '2': {
+                        background: {
+                            color: '#a695e7',
+                        },
+                    },
+                    '3': {
+                        background: {
+                            color: '#7bc862',
+                        },
+                    },
+                    '4': {
+                        background: {
+                            color: '#6ec9cb',
+                        },
+                    },
+                    '5': {
+                        background: {
+                            color: '#65aadd',
+                        },
+                    },
+                    '6': {
+                        background: {
+                            color: '#ee7aae',
                         },
                     },
                 },
@@ -28235,6 +28492,25 @@ var $;
                 await $mol_wire_async(inbox0).units_steal(inbox_stranger);
                 const invites = inbox0.Data($bog_gram_inbox).Invites().items();
                 $mol_assert_equal(invites.includes('NewDialogLink'), true);
+            },
+            async 'Удалённый диалог не возвращается инвайтом'($) {
+                const land = $giper_baza_land.make({ $ });
+                const store = land.Data($bog_gram_dialogs);
+                store.Dialogs('auto').add('DialogKeep');
+                store.Dialogs('auto').add('DialogDrop');
+                // Удаление из своего списка: ссылка уходит из Dialogs и оседает в Hidden
+                store.Dialogs('auto').cut('DialogDrop');
+                store.Hidden('auto').add('DialogDrop');
+                const dialogs = store.Dialogs().items().map(String);
+                $mol_assert_equal(dialogs.length, 1);
+                $mol_assert_equal(dialogs[0], 'DialogKeep');
+                const hidden = new Set(store.Hidden().items().map(String));
+                $mol_assert_equal(hidden.has('DialogDrop'), true);
+                $mol_assert_equal(hidden.has('DialogKeep'), false);
+                // Собеседник шлёт инвайты на оба ленда: скрытый отсеивается, живой проходит
+                const merged = ['DialogKeep', 'DialogDrop'].filter(link => !hidden.has(link));
+                $mol_assert_equal(merged.length, 1);
+                $mol_assert_equal(merged[0], 'DialogKeep');
             },
             async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'($) {
                 const king = await $.$giper_baza_auth.generate();

@@ -39545,6 +39545,7 @@ declare namespace $.$$ {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Dialogs: (auto?: any) => $giper_baza_list_str | null;
             readonly Outbox: (auto?: any) => $giper_baza_list_str | null;
+            readonly Hidden: (auto?: any) => $giper_baza_list_str | null;
         }>;
         path: string;
     } & {
@@ -39554,6 +39555,8 @@ declare namespace $.$$ {
             readonly Dialogs: typeof $giper_baza_list_str;
             /** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
             readonly Outbox: typeof $giper_baza_list_str;
+            /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
+            readonly Hidden: typeof $giper_baza_list_str;
         };
     };
     /** Приватный (шифрованный ленд) список диалогов пользователя. */
@@ -41435,40 +41438,40 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_chat['close'] >
 	>
-	type $mol_paragraph__title_bog_gram_53 = $mol_type_enforce<
+	type $bog_gram_chat__delete_bog_gram_53 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_delete_current'] >
+		,
+		ReturnType< $bog_gram_chat['delete'] >
+	>
+	type $bog_gram_chat__delete_armed_bog_gram_54 = $mol_type_enforce<
+		ReturnType< $bog_gram['delete_armed'] >
+		,
+		ReturnType< $bog_gram_chat['delete_armed'] >
+	>
+	type $bog_gram_chat__delete_hint_bog_gram_55 = $mol_type_enforce<
+		ReturnType< $bog_gram['delete_hint'] >
+		,
+		ReturnType< $bog_gram_chat['delete_hint'] >
+	>
+	type $mol_paragraph__title_bog_gram_56 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_gram_54 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_57 = $mol_type_enforce<
 		ReturnType< $bog_gram['users_empty_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_avatar__id_bog_gram_55 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_peer'] >
+	type $bog_gram_avatar__letter_bog_gram_58 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_letter'] >
 		,
-		ReturnType< $mol_avatar['id'] >
+		ReturnType< $bog_gram_avatar['letter'] >
 	>
-	type $mol_view__sub_bog_gram_56 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_gram_avatar__tint_bog_gram_59 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_tint'] >
 		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_57 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_58 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_59 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_gram_avatar['tint'] >
 	>
 	type $mol_view__sub_bog_gram_60 = $mol_type_enforce<
 		readonly(any)[]
@@ -41485,10 +41488,10 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_avatar__id_bog_gram_63 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_lord'] >
+	type $mol_view__sub_bog_gram_63 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $mol_avatar['id'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_64 = $mol_type_enforce<
 		readonly(any)[]
@@ -41500,126 +41503,151 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_66 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_body'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_67 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_66 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_68 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_gram_avatar__letter_bog_gram_67 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_letter'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_gram_avatar['letter'] >
+	>
+	type $bog_gram_avatar__tint_bog_gram_68 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_tint'] >
+		,
+		ReturnType< $bog_gram_avatar['tint'] >
 	>
 	type $mol_view__sub_bog_gram_69 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_70 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_70 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_71 = $mol_type_enforce<
+		ReturnType< $bog_gram['message_body'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_72 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_73 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_74 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_75 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_71 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_76 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_72 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_77 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_73 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_78 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_74 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_79 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_75 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_80 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_76 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_81 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_77 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_82 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_78 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_83 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_major__click_bog_gram_79 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_84 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_make'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_80 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_85 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_81 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_86 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__click_bog_gram_82 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_87 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_select'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_83 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_88 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_84 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_89 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_85 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_90 = $mol_type_enforce<
 		ReturnType< $bog_gram['user_pick'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_86 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_91 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_87 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_92 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_88 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_93 = $mol_type_enforce<
 		({ 
 			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__sub_bog_gram_89 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_94 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -41673,6 +41701,9 @@ declare namespace $ {
 		message_send( next?: any ): any
 		edit_cancel( next?: any ): any
 		dialog_close( next?: any ): any
+		dialog_delete_current( next?: any ): any
+		delete_armed( ): boolean
+		delete_hint( ): string
 		Chat_page( ): $bog_gram_chat
 		Dialogs_empty_text( ): $mol_paragraph
 		users_empty_text( ): string
@@ -41680,8 +41711,9 @@ declare namespace $ {
 		registry_make( next?: any ): any
 		dialog_select( id: any, next?: any ): any
 		dialog_current_is( id: any): boolean
-		dialog_peer( id: any): string
-		Dialog_avatar( id: any): $mol_avatar
+		dialog_letter( id: any): string
+		dialog_tint( id: any): number
+		Dialog_avatar( id: any): $bog_gram_avatar
 		dialog_title( id: any): string
 		Dialog_title( id: any): $mol_view
 		dialog_time( id: any): string
@@ -41694,8 +41726,9 @@ declare namespace $ {
 		Dialog_bottom( id: any): $mol_view
 		Dialog_info( id: any): $mol_view
 		user_pick( id: any, next?: any ): any
-		user_lord( id: any): string
-		User_avatar( id: any): $mol_avatar
+		user_letter( id: any): string
+		user_tint( id: any): number
+		User_avatar( id: any): $bog_gram_avatar
 		user_title( id: any): string
 		User_title( id: any): $mol_view
 		day_title( id: any): string
@@ -41729,91 +41762,116 @@ declare namespace $ {
 	}
 	
 	type $mol_button_minor__hint_bog_gram_chat_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['delete_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_chat_2 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram_chat['delete_armed'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['delete'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_5 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_2 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_6 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['close'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_3 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_7 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_list__rows_bog_gram_chat_4 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_chat_8 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_5 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_9 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_6 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_10 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_7 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_11 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_8 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_12 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_9 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_13 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_string__hint_bog_gram_chat_10 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_chat_14 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_chat_11 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_chat_15 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_text'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_chat_12 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_chat_16 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_13 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_17 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_14 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_18 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_15 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_19 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_20 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_17 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_21 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
 	export class $bog_gram_chat extends $mol_page {
+		delete( next?: any ): any
+		Delete_icon( ): $mol_icon_delete
+		Delete( ): $mol_button_minor
 		close( next?: any ): any
 		Close_icon( ): $mol_icon_close
 		Close( ): $mol_button_minor
@@ -41832,9 +41890,20 @@ declare namespace $ {
 		Foot( ): $mol_view
 		rows( ): readonly($mol_view)[]
 		edit_mode( ): boolean
+		delete_armed( ): boolean
+		delete_hint( ): string
 		tools( ): readonly(any)[]
 		body( ): readonly(any)[]
 		foot( ): readonly(any)[]
+	}
+	
+	export class $bog_gram_avatar extends $mol_view {
+		letter( ): string
+		tint( ): number
+		attr( ): ({ 
+			'bog_gram_tint': ReturnType< $bog_gram_avatar['tint'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly(any)[]
 	}
 	
 }
@@ -41861,9 +41930,28 @@ declare namespace $.$$ {
         device_ready(): boolean;
         peer_store(lord: string): $bog_gram_user;
         peer_name(lord: string): string;
+        /** Инициал в кружке: первая буква имени собеседника, а пока имя не
+         * приехало — первый символ самого лорда. Имя может начинаться с пробела
+         * или эмодзи, поэтому идём по кодпойнтам до первого непробельного. */
+        avatar_letter(lord: string): string;
+        /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
+        avatar_tint(lord: string): number;
+        /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
+         * весь список, поэтому на промисе рисуем нейтральный кружок — подписка
+         * сохраняется, буква и цвет проявятся сами. */
+        dialog_letter(id: string): string;
+        dialog_tint(id: string): number;
+        user_letter(lord: string): string;
+        user_tint(lord: string): number;
         dialog_ids(): string[];
+        /** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
+         * иначе собеседник вернул бы диалог обратно на следующем же синке. */
+        hidden_ids(): string[];
         dialog_store(id: string): $bog_gram_dialog;
         dialog_peer(id: string): string;
+        /** Безымянного собеседника показываем началом и концом идентификатора:
+         * у одного только начала первые символы у разных людей совпадают глазом. */
+        lord_short(lord: string): string;
         dialog_title(id: string): string;
         /** Момент последней активности — по нему диалоги сортируются в списке.
          * Ленды могут быть ещё не засинканы: suspend любого из них не должен
@@ -41875,6 +41963,17 @@ declare namespace $.$$ {
         dialog_current_is(id: string): boolean;
         dialog_select(id: string, next?: any): null;
         dialog_close(next?: any): null;
+        /** Первый клик по корзине только взводит кнопку, второй удаляет:
+         * подтверждение живёт в тулбаре, без модалок и системных алертов. */
+        delete_armed(next?: boolean): boolean;
+        delete_hint(): "Точно удалить?" | "Удалить диалог";
+        /** Опираемся на сырой выбор, а не на dialog_active(): фибра действия может
+         * перезапуститься уже после выреза ссылки из списка, и тогда активного диалога
+         * с точки зрения списка нет — удаление оборвалось бы на полпути. */
+        dialog_delete_current(next?: any): null;
+        /** Диалог живёт в шаренном ленде и у собеседника остаётся:
+         * убираем только свою ссылку и свою слежку за сессиями. */
+        dialog_delete(id: string, next?: any): null;
         /** Только явно выбранный диалог: на узком экране чат не должен открываться сам. */
         dialog_active(): string;
         chat_title(): string;
@@ -41942,7 +42041,6 @@ declare namespace $.$$ {
         registry_content(): $mol_button_major[] | $.$mol_paragraph[];
         user_rows(): $mol_view[];
         users_empty_text(): "Общий реестр не подключён. Создайте его в настройках" | "В реестре пока только вы";
-        user_lord(lord: string): string;
         user_title(lord: string): string;
         user_pick(lord: string, next?: any): null;
         setup_ready(): boolean;
