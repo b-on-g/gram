@@ -334,6 +334,34 @@ $bog_gram $mol_book2
 			<= Archive_unread $mol_view
 				sub /
 					<= archive_unread_label \
+	Requests_row $mol_button_minor
+		hint \Запросы на переписку
+		click? <=> requests_toggle? null
+		sub /
+			<= Requests_avatar $mol_view
+				sub /
+					<= Requests_avatar_icon $mol_icon_account_question
+			<= Requests_info $mol_view
+				sub /
+					<= Requests_title $mol_view
+						sub /
+							\Запросы
+					<= Requests_note $mol_view
+						sub /
+							\Хотят вам написать
+			<= Requests_count $mol_view
+				sub /
+					<= requests_count_label \
+	Request_accept* $mol_button_minor
+		hint \Принять
+		click? <=> request_accept*? null
+		sub /
+			<= Request_accept_icon* $mol_icon_check
+	Request_reject* $mol_button_minor
+		hint \Отклонить
+		click? <=> request_reject*? null
+		sub /
+			<= Request_reject_icon* $mol_icon_close
 	User_row* $mol_button_minor
 		click? <=> user_pick*? null
 		sub /

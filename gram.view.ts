@@ -407,15 +407,125 @@ namespace $.$$ {
 			return [ ... ids ].sort( ( a, b )=> this.dialog_moment( b ) - this.dialog_moment( a ) )
 		}
 
-		/** Избранное стоит первой строкой всегда, вход в архив — последней и
-		 * только пока архив не пуст; развёрнутый архив досыпает строки туда же. */
+		// ===== Кого пускать в список =====
+
+		/** Создатель диалога — лорд его ленда: ленд заводит тот, кто начал
+		 * переписку. Ссылка приезжает из инбокса, открытого на запись всем,
+		 * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
+		 * весь список из-за одной такой строки падать не должен. */
+		dialog_owner( id: string ) {
+			if( !id ) return ''
+			try {
+				return new $giper_baza_link( id ).lord().str
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+				return ''
+			}
+		}
+
+		/** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
+		 * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
+		 * подождёт снаружи списка. Подписка на приход данных сохраняется, так
+		 * что строка появится сама вместе с первым сообщением. */
+		@$mol_mem_key
+		dialog_alive( id: string ) {
+			try {
+				return this.messages_alive_of( id ).length > 0
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return false
+			}
+		}
+
+		/** Собеседники, с которыми я согласился переписываться. Список свой,
+		 * приватный: собеседник не знает ни что попал в запросы, ни что вышел
+		 * из них. */
+		@$mol_mem
+		accepted_lords() {
+			return ( this.dialogs_store().Accepted()?.items() ?? [] ).map( String )
+		}
+
+		/** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
+		 * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
+		 * его приход сохраняется, и запрос уедет в общий список сам. */
+		@$mol_mem_key
+		peer_known( lord: string ) {
+			if( !lord ) return false
+			if( this.accepted_lords().includes( lord ) ) return true
+			return Boolean( this.user_sources()[ lord ] )
+		}
+
+		/** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
+		 * ним не должен оказаться в запросах, даже если ленд под него завёл он.
+		 * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
+		 * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
+		 * Запись идемпотентна — обработчик события перезапускается на каждом
+		 * ожидании, и повторный заход не должен ничего дописывать. */
+		@$mol_action
+		peer_accept( lord: string ) {
+			if( !lord ) return null
+			if( lord === this.my_lord() ) return null
+			if( !$giper_baza_link.check( lord ) ) return null
+			if( this.accepted_lords().includes( lord ) ) return null
+			this.dialogs_store().Accepted( 'auto' )!.add( lord )
+			return null
+		}
+
+		/** Куда попадает диалог в списке. Свой показываем всегда — пустым его
+		 * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
+		 * человек мог открыть диалог со мной и передумать, а строка от него
+		 * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
+		 * уходит в запросы: знакомство предлагают, а не назначают. */
+		dialog_sort( own: boolean, alive: boolean, known: boolean ): 'plain' | 'request' | 'skip' {
+			if( own ) return 'plain'
+			if( !alive ) return 'skip'
+			return known ? 'plain' : 'request'
+		}
+
+		/** То же по ссылке на диалог. Заархивированный не разбираем: он уже
+		 * прошёл через мои руки, и второй раз спрашивать про него незачем.
+		 * Свой ответ в диалоге — то же согласие, только данное молча: иначе
+		 * давняя переписка с человеком не из реестра уехала бы в запросы. */
+		@$mol_mem_key
+		dialog_kind( id: string ): 'plain' | 'request' | 'skip' {
+			if( this.archive_is( id ) ) return 'plain'
+			const lord = this.dialog_owner( id )
+			const own = Boolean( lord ) && lord === this.my_lord()
+			const known = this.peer_known( lord ) || this.mine_wrote( id )
+			return this.dialog_sort( own, this.dialog_alive( id ), known )
+		}
+
+		/** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
+		 * я нигде не встречал. Убранные из списка сюда не попадают — отказ
+		 * такое же решение, как и согласие. */
+		@$mol_mem
+		request_ids() {
+			const dropped = new Set( this.hidden_ids() )
+			return this.fresh_first( this.dialog_ids().filter( id => {
+				if( dropped.has( id ) ) return false
+				return this.dialog_kind( id ) === 'request'
+			} ) )
+		}
+
+		/** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
+		 * последними и только пока им есть что показать; развёрнутый раздел
+		 * досыпает строки туда же. */
 		@$mol_mem
 		dialog_rows() {
 
 			const archived = this.archive_ids()
 			const folded = new Set( archived )
-			const visible = this.fresh_first( this.dialog_ids().filter( id => !folded.has( id ) ) )
-			const empty = !visible.length && !archived.length
+			const requests = this.request_ids()
+			const asked = new Set( requests )
+
+			const visible = this.fresh_first( this.dialog_ids().filter( id => {
+				if( folded.has( id ) ) return false
+				if( asked.has( id ) ) return false
+				return this.dialog_kind( id ) !== 'skip'
+			} ) )
+
+			const empty = !visible.length && !archived.length && !requests.length
 
 			return [
 				this.Saved_row(),
@@ -423,6 +533,8 @@ namespace $.$$ {
 				... empty ? [ this.Dialogs_empty() ] : [],
 				... archived.length ? [ this.Archive_row() ] : [],
 				... this.archive_opened() ? this.fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
+				... requests.length ? [ this.Requests_row() ] : [],
+				... this.requests_opened() ? requests.map( id => this.Dialog_row( id ) ) : [],
 			]
 		}
 
@@ -662,6 +774,62 @@ namespace $.$$ {
 			return this.archive_unread() ? super.Archive_unread() : null!
 		}
 
+		// ===== Запросы на переписку =====
+
+		@$mol_mem
+		requests_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Запросы разворачиваются прямо в списке, как и архив: отдельная
+		 * страница ради пары незнакомцев — лишний шаг навигации. */
+		@$mol_action
+		requests_toggle( next?: any ) {
+			this.delete_disarm()
+			this.requests_opened( !this.requests_opened() )
+			return null
+		}
+
+		override requests_count_label() {
+			return String( this.request_ids().length )
+		}
+
+		/** В строке запроса на месте архива и корзины стоят согласие и отказ:
+		 * прятать на вторую полку то, о чём решение ещё не принято, незачем.
+		 * Сама строка остаётся обычной строкой диалога — по клику она так же
+		 * открывает переписку, и прочитать её до решения это нормально. */
+		override Dialog_archive( id: string ) {
+			if( this.dialog_kind( id ) === 'request' ) return this.Request_accept( id )
+			return super.Dialog_archive( id )
+		}
+
+		override Dialog_delete( id: string ) {
+			if( this.dialog_kind( id ) === 'request' ) return this.Request_reject( id )
+			return super.Dialog_delete( id )
+		}
+
+		/** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
+		 * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
+		 * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
+		@$mol_action
+		request_accept( id: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !id ) return null
+			this.peer_accept( this.dialog_owner( id ) )
+			return null
+		}
+
+		/** Отказ — то же самое, что удаление диалога из своего списка: ссылка
+		 * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
+		 * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
+		@$mol_action
+		request_reject( id: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !id ) return null
+			this.dialog_delete( id )
+			return null
+		}
+
 		/** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
 		 * Избранного нет в списке диалогов, но открывается оно так же. */
 		@$mol_mem
@@ -796,6 +964,7 @@ namespace $.$$ {
 		dialog_start( next?: any ) {
 			const peer = this.peer_lord().trim()
 			if( !peer ) return null
+			this.peer_accept( peer )
 			this.peer_lord( '' )
 			const exist = this.dialog_with( peer )
 			if( exist ) {
@@ -934,6 +1103,26 @@ namespace $.$$ {
 			return dialog_land.link().str
 		}
 
+		/** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
+		 * приглашение до первого своего сообщения никуда не едет, а диалог,
+		 * в котором я уже отвечал, никаким запросом быть не может. */
+		mine_among( messages: readonly $bog_gram_message[], my: string ) {
+			return messages.some( message => String( message.Author()?.val() ?? '' ) === my )
+		}
+
+		/** То же по ссылке на диалог. Ленд может быть ещё не засинкан: тогда
+		 * считаем, что писать было нечего — приглашение подождёт, а подписка
+		 * на приход данных сохраняется, и флаш вернётся сам. */
+		@$mol_mem_key
+		mine_wrote( id: string ) {
+			try {
+				return this.mine_among( this.messages_alive_of( id ), this.my_lord() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return false
+			}
+		}
+
 		// Доставка инвайтов: ретраим, пока не приедут права чужого inbox-ленда
 		@$mol_mem
 		outbox_flush() {
@@ -942,6 +1131,7 @@ namespace $.$$ {
 			this.$.$mol_state_time.now( 3000 )
 			for( const entry of entries ) {
 				const [ peer, dialog_link ] = entry.split( '|' )
+				if( !this.mine_wrote( dialog_link ) ) continue
 				try {
 					const inbox_link = this.peer_store( peer ).Inbox_land()?.val()
 					if( !inbox_link ) continue
@@ -2236,6 +2426,7 @@ namespace $.$$ {
 		@$mol_action
 		user_pick( lord: string, next?: any ) {
 			if( !lord ) return null
+			this.peer_accept( lord )
 			this.peer_lord( '' )
 			const exist = this.dialog_with( lord )
 			if( exist ) {
@@ -2291,6 +2482,10 @@ namespace $.$$ {
 
 			const exist = this.dialog_with( lord )
 			const plan = this.invite_plan( lord, this.my_lord(), exist )
+
+			/** По ссылке приходят сами: человек, чьё приглашение я открыл,
+			 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
+			if( plan !== 'skip' ) this.peer_accept( lord )
 
 			if( plan === 'open' ) this.dialog_select( exist )
 			if( plan === 'start' ) this.dialog_pending( lord )

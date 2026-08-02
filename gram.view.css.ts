@@ -539,6 +539,165 @@ namespace $.$$ {
 			borderRadius: '1rem',
 		},
 
+		// ===== Вход в запросы на переписку =====
+		// Устроен как вход в архив: тот же кружок и та же сетка, чтобы
+		// раскрытые запросы читались продолжением списка, а не врезкой.
+
+		Requests_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+		},
+
+		Requests_avatar: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			width: '3rem',
+			height: '3rem',
+			borderRadius: '50%',
+			background: {
+				color: veil,
+			},
+			color: $mol_theme.shade,
+		},
+
+		Requests_avatar_icon: {
+			width: '1.5rem',
+			height: '1.5rem',
+		},
+
+		Requests_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Requests_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				weight: 'bold',
+			},
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Requests_note: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		/* сколько человек ждёт ответа: тот же бейдж, что и у непрочитанного */
+		Requests_count: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			background: {
+				color: tg_blue,
+			},
+			color: '#ffffff',
+			font: {
+				size: '0.75rem',
+				weight: 'bold',
+			},
+			lineHeight: '1.25rem',
+			minWidth: '1.25rem',
+			padding: {
+				top: 0,
+				bottom: 0,
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '1rem',
+		},
+
+		/* согласие и отказ стоят на месте архива и корзины и повторяют их
+		габариты: строка запроса не должна отличаться от обычной ничем, кроме
+		самих значков. Цвет наследуется от строки — на выбранной он белый */
+		Request_accept: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Request_accept_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Request_reject: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Request_reject_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
 		// ===== Реестр пользователей =====
 
 		Users_title: {
@@ -1401,6 +1560,12 @@ namespace $.$$ {
 					padding: '0.375rem',
 				},
 
+				Requests_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
 				User_row: {
 					gap: '0.5rem',
 					minHeight: '2.75rem',
@@ -1430,6 +1595,28 @@ namespace $.$$ {
 				},
 
 				Dialog_delete_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				/* согласие и отказ стоят на тех же местах, что архив и корзина,
+				и запас под палец им нужен тот же */
+				Request_accept: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Request_reject: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Request_accept_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Request_reject_icon: {
 					width: '1.125rem',
 					height: '1.125rem',
 				},

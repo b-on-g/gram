@@ -888,6 +888,108 @@ namespace $.$$ {
 
 		},
 
+		async 'Приглашение ждёт первого сообщения'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const session = land.Data( $bog_gram_session )
+			const app = $bog_gram.make({ $ })
+
+			const my = 'LordMine'
+			const peer = 'LordPeer'
+
+			// Диалог только что заведён: показывать собеседнику нечего
+			$mol_assert_equal( app.mine_among( [], my ), false )
+
+			// Чужое сообщение приглашения не отпускает: считаются только свои
+			const alien = session.Messages( 'auto' )!.make( null )
+			alien.Text( 'auto' )?.val( 'Эй' )
+			alien.Author( 'auto' )?.val( peer )
+			alien.Moment( 'auto' )?.val( 1000 )
+
+			const one = ( session.Messages()!.items() as readonly $giper_baza_link[] )
+				.map( link => message_of( land, link ) )
+			$mol_assert_equal( one.length, 1 )
+			$mol_assert_equal( app.mine_among( one, my ), false )
+
+			// Написал сам — теперь диалогу есть чем себя показать
+			const mine = session.Messages( 'auto' )!.make( null )
+			mine.Text( 'auto' )?.val( 'Привет' )
+			mine.Author( 'auto' )?.val( my )
+			mine.Moment( 'auto' )?.val( 2000 )
+
+			const both = ( session.Messages()!.items() as readonly $giper_baza_link[] )
+				.map( link => message_of( land, link ) )
+			$mol_assert_equal( both.length, 2 )
+			$mol_assert_equal( app.mine_among( both, my ), true )
+
+			// Удалённое сообщение из списка живых уходит вместе со своим правом
+			// на доставку: список сообщений сюда приходит уже отфильтрованным
+			mine.Deleted( 'auto' )?.val( 3000 )
+			const alive = both.filter( message => !message.Deleted()?.val() )
+			$mol_assert_equal( app.mine_among( alive, my ), false )
+
+		},
+
+		async 'Принятый собеседник уходит из запросов'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const store = land.Data( $bog_gram_dialogs )
+
+			const known = 'LordKnown'
+			const stranger = 'LordStranger'
+
+			// Пока никого не принимали, списка согласий нет вовсе
+			$mol_assert_equal( ( store.Accepted()?.items() ?? [] ).length, 0 )
+
+			store.Accepted( 'auto' )!.add( known )
+
+			const accepted = new Set( ( store.Accepted()!.items() as readonly string[] ).map( String ) )
+			$mol_assert_equal( accepted.has( known ), true )
+			$mol_assert_equal( accepted.has( stranger ), false )
+
+			// Повторное согласие ничего не задваивает
+			store.Accepted( 'auto' )!.add( known )
+			$mol_assert_equal( ( store.Accepted()!.items() as readonly string[] ).length, 1 )
+
+			// Согласие даётся человеку, а отказ прячет ссылку на диалог:
+			// это разные записи и друг друга они не задевают
+			store.Hidden( 'auto' )!.add( 'DialogFromStranger' )
+
+			const hidden = new Set( ( store.Hidden()!.items() as readonly string[] ).map( String ) )
+			$mol_assert_equal( hidden.has( 'DialogFromStranger' ), true )
+			$mol_assert_equal( hidden.has( known ), false )
+			$mol_assert_equal( ( store.Accepted()!.items() as readonly string[] ).length, 1 )
+			$mol_assert_equal( ( store.Archived()?.items() ?? [] ).length, 0 )
+
+		},
+
+		async 'Чужой диалог показывается по сообщениям и знакомству'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			// Свой диалог показывается всегда: пустым его завёл я сам
+			$mol_assert_equal( app.dialog_sort( true, false, false ), 'plain' )
+			$mol_assert_equal( app.dialog_sort( true, true, false ), 'plain' )
+
+			// Чужой пустой не показывается вовсе, знаком его автор или нет
+			$mol_assert_equal( app.dialog_sort( false, false, true ), 'skip' )
+			$mol_assert_equal( app.dialog_sort( false, false, false ), 'skip' )
+
+			// Чужой с сообщениями: от знакомого в общий список, от незнакомца в запросы
+			$mol_assert_equal( app.dialog_sort( false, true, true ), 'plain' )
+			$mol_assert_equal( app.dialog_sort( false, true, false ), 'request' )
+
+			// Создатель — лорд ленда диалога: по нему и решается, свой он или чужой
+			const auth = await $.$giper_baza_auth.generate()
+			const lord = auth.pass().lord().str
+			const dialog_link = new $giper_baza_link( lord + '_KJhgFdSa' ).str
+
+			$mol_assert_equal( app.dialog_owner( dialog_link ), lord )
+			$mol_assert_equal( app.dialog_owner( lord ), lord )
+			$mol_assert_equal( app.dialog_owner( '' ), '' )
+
+		},
+
 	})
 
 }
