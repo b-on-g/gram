@@ -1217,6 +1217,14 @@ namespace $.$$ {
 			maxWidth: '100%',
 		},
 
+		/* Строка голосового растягивается на всю ширину пузыря: кнопка,
+		полоса и длина иначе жались бы в комок у левого края. */
+		Message_sound: {
+			alignSelf: 'stretch',
+			minWidth: 0,
+			maxWidth: '100%',
+		},
+
 		Message_meta: {
 			alignSelf: 'flex-end',
 			align: {
@@ -1749,6 +1757,125 @@ namespace $.$$ {
 			height: '1.25rem',
 		},
 
+		/* Микрофон занимает место отправки, когда писать нечего, поэтому и
+		габариты у него те же: строка ввода не должна дёргаться от того,
+		что в поле появилась буква. */
+		Voice: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2.5rem',
+			minHeight: '2.5rem',
+			padding: 0,
+			borderRadius: '50%',
+			color: $mol_theme.shade,
+			/* запрет выделения и системного меню — в gram.view.css: долгое
+			нажатие тут жест, а не вызов лупы */
+		},
+
+		Voice_icon: {
+			width: '1.25rem',
+			height: '1.25rem',
+		},
+
+		/* Состояние записи занимает место поля ввода: мигающая точка и
+		растущий таймер. */
+		Record_state: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.875rem',
+				right: '0.875rem',
+			},
+		},
+
+		Record_dot: {
+			flex: {
+				shrink: 0,
+			},
+			width: '0.625rem',
+			height: '0.625rem',
+			borderRadius: '50%',
+			background: {
+				color: alert_red,
+			},
+			/* мигание — в gram.view.css: ключевые кадры в типизированные
+			стили не входят */
+		},
+
+		Record_time: {
+			flex: {
+				shrink: 0,
+			},
+			font: {
+				family: 'monospace',
+			},
+			whiteSpace: 'nowrap',
+		},
+
+		/* Крестик — цель для пальца, съехавшего с микрофона: отпускание над
+		ним отменяет запись, поэтому кнопка широкая и подписанная. */
+		Voice_cancel: {
+			flex: {
+				shrink: 0,
+			},
+			align: {
+				items: 'center',
+			},
+			gap: '0.25rem',
+			minHeight: '2.5rem',
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: '0.625rem',
+				right: '0.625rem',
+			},
+			borderRadius: '1rem',
+			color: alert_red,
+		},
+
+		Voice_cancel_icon: {
+			flex: {
+				shrink: 0,
+			},
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Voice_cancel_text: {
+			whiteSpace: 'nowrap',
+		},
+
+		/* Отказ микрофона и промах по кнопке объясняются строкой над полем
+		ввода: ни модалок, ни системных окон. */
+		Voice_note: {
+			font: {
+				size: '0.8rem',
+			},
+			color: $mol_theme.shade,
+			padding: {
+				top: 0,
+				bottom: 0,
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+		},
+
 		// ===== Одна страница на экран =====
 		// Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
 		// не помещаются, буклет листается по одной странице — и чат закрывает
@@ -1776,6 +1903,15 @@ namespace $.$$ {
 
 				Attach: {
 					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Voice: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Voice_cancel: {
 					minHeight: '2.75rem',
 				},
 
@@ -1808,6 +1944,95 @@ namespace $.$$ {
 			height: '100%',
 			/* object-fit нет в словаре типизированных стилей — правило
 			лежит в gram.view.css */
+		},
+
+	} )
+
+	/* Голосовое в пузыре: кнопка, полоса прогресса и длина одной строкой.
+	Сам элемент звука лежит тут же и не показывается — играть это ему не
+	мешает. */
+	$mol_style_define( $bog_gram_sound, {
+
+		align: {
+			items: 'center',
+		},
+		gap: '0.5rem',
+		minWidth: 0,
+		maxWidth: '100%',
+		padding: {
+			top: '0.125rem',
+			bottom: '0.125rem',
+			left: 0,
+			right: 0,
+		},
+
+		Toggle: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2rem',
+			minHeight: '2rem',
+			padding: 0,
+			borderRadius: '50%',
+			background: {
+				color: tg_blue,
+			},
+			color: '#ffffff',
+		},
+
+		Play_icon: {
+			width: '1.125rem',
+			height: '1.125rem',
+		},
+
+		Pause_icon: {
+			width: '1.125rem',
+			height: '1.125rem',
+		},
+
+		/* Полоса тянется на всё свободное место, но не схлопывается в точку
+		на узком пузыре: у вьюх flex-shrink нулевой, поэтому и растяжение, и
+		сжатие задаются явно. */
+		Track: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: '3rem',
+			height: '0.25rem',
+			borderRadius: '0.25rem',
+			background: {
+				color: veil,
+			},
+			overflow: 'hidden',
+		},
+
+		Fill: {
+			height: '100%',
+			background: {
+				color: tg_blue,
+			},
+		},
+
+		Stamp: {
+			flex: {
+				shrink: 0,
+			},
+			font: {
+				size: '0.75rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+		},
+
+		Node: {
+			display: 'none',
 		},
 
 	} )

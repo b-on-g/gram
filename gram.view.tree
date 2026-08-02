@@ -139,6 +139,15 @@ $bog_gram $mol_book2
 			image_drop? <=> image_drop? null
 			zoom_uri <= zoom_uri \
 			zoom_close? <=> zoom_close? null
+			voice_on <= voice_on false
+			voice_ready <= voice_ready false
+			voice_clock <= voice_clock \
+			voice_hint <= voice_hint \
+			voice_press? <=> voice_press? null
+			voice_release? <=> voice_release? null
+			voice_abort? <=> voice_abort? null
+			voice_cancel? <=> voice_cancel? null
+			voice_menu? <=> voice_menu? null
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
@@ -362,6 +371,12 @@ $bog_gram $mol_book2
 				box_width <= message_shot_width* \
 				box_ratio <= message_shot_ratio* \
 				click? <=> message_zoom*? null
+			<= Message_sound* $bog_gram_sound
+				uri <= message_sound_uri* \
+				span <= message_sound_span* 0
+				playing <= message_sound_playing* false
+				toggle? <=> message_sound_toggle*? null
+				ended? <=> message_sound_ended*? null
 			<= Message_body* $mol_paragraph
 				title <= message_body* \
 			<= Message_meta* $mol_view
@@ -411,6 +426,15 @@ $bog_gram_chat $mol_page
 	image_drop? null
 	zoom_uri \
 	zoom_close? null
+	voice_on false
+	voice_ready false
+	voice_clock \
+	voice_hint \
+	voice_press? null
+	voice_release? null
+	voice_abort? null
+	voice_cancel? null
+	voice_menu? null
 	event *
 		^
 		paste? <=> image_paste? null
@@ -455,23 +479,49 @@ $bog_gram_chat $mol_page
 							click? <=> edit_cancel? null
 							sub /
 								<= Edit_cancel_icon $mol_icon_close
+				<= Voice_note $mol_paragraph
+					title <= voice_hint
 				<= Send_row $mol_view
-					sub /
-						<= Attach $mol_button_open
-							hint \Отправить картинку
-							accept \image/*
-							multiple false
-							files? <=> image_files? null
-							Icon <= Attach_icon $mol_icon_paperclip
-						<= Message_field $mol_string
-							hint \Сообщение…
-							value? <=> message_text? \
-							submit? <=> message_send? null
-						<= Send $mol_button_major
-							hint \Отправить
-							click? <=> message_send? null
-							sub /
-								<= Send_icon $mol_icon_send
+					sub <= send_tools /
+	Attach $mol_button_open
+		hint \Отправить картинку
+		accept \image/*
+		multiple false
+		files? <=> image_files? null
+		Icon <= Attach_icon $mol_icon_paperclip
+	Message_field $mol_string
+		hint \Сообщение…
+		value? <=> message_text? \
+		submit? <=> message_send? null
+	Send $mol_button_major
+		hint \Отправить
+		click? <=> message_send? null
+		sub /
+			<= Send_icon $mol_icon_send
+	Voice $mol_button_minor
+		hint \Удерживайте для записи
+		event *
+			^
+			pointerdown? <=> voice_press? null
+			pointerup? <=> voice_release? null
+			pointercancel? <=> voice_abort? null
+			contextmenu? <=> voice_menu? null
+		sub /
+			<= Voice_icon $mol_icon_microphone
+	Record_state $mol_view
+		sub /
+			<= Record_dot $mol_view
+			<= Record_time $mol_view
+				sub /
+					<= voice_clock
+	Voice_cancel $mol_button_minor
+		hint \Отпустите здесь, чтобы отменить
+		click? <=> voice_cancel? null
+		sub /
+			<= Voice_cancel_icon $mol_icon_close
+			<= Voice_cancel_text $mol_view
+				sub /
+					\Отмена
 
 $bog_gram_avatar $mol_avatar
 	id \
@@ -490,6 +540,45 @@ $bog_gram_photo $mol_button
 	sub /
 		<= Image $mol_image
 			uri <= uri
+
+$bog_gram_sound $mol_view
+	uri \
+	span 0
+	playing false
+	toggle? null
+	ended? null
+	sub /
+		<= Toggle $mol_button_minor
+			hint \Прослушать
+			click? <=> toggle? null
+			sub <= toggle_icons /
+		<= Track $mol_view
+			sub /
+				<= Fill $mol_view
+					style *
+						width <= fill_width \0%
+		<= Stamp $mol_view
+			sub /
+				<= stamp \
+		<= Node $bog_gram_sound_node
+			uri <= uri
+			ended? <=> ended? null
+	Play_icon $mol_icon_play
+	Pause_icon $mol_icon_pause
+
+$bog_gram_sound_node $mol_view
+	dom_name \audio
+	uri \
+	retime? null
+	ended? null
+	attr *
+		^
+		src <= uri
+		preload \metadata
+	event *
+		^
+		timeupdate? <=> retime? null
+		ended? <=> ended? null
 
 $bog_gram_zoom $mol_view
 	uri \

@@ -29,6 +29,15 @@ namespace $.$$ {
 	 * отведённой ей коробки — растягивать мелкий кадр незачем. */
 	const rem_px = 16
 
+	/** Как часто перерисовывается таймер записи: чаще человек всё равно не
+	 * заметит, а реже секунды начинают перескакивать через одну. */
+	const clock_tick = 200
+
+	/** Что показать под полем ввода, когда с записью не сложилось. Ни
+	 * модалок, ни системных окон — одна строка на месте. */
+	const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера'
+	const voice_short = 'Слишком коротко — запись отменена'
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -405,6 +414,7 @@ namespace $.$$ {
 
 		@$mol_action
 		dialog_select( id: string, next?: any ) {
+			this.sound_hush()
 			this.compose_opened( false )
 			this.settings_opened( false )
 			this.account_reset()
@@ -442,6 +452,7 @@ namespace $.$$ {
 
 		@$mol_action
 		dialog_close( next?: any ) {
+			this.sound_hush()
 			this.edit_id( '' )
 			this.message_text( '' )
 			this.message_menu( '' )
@@ -1412,6 +1423,325 @@ namespace $.$$ {
 			return message.link().str
 		}
 
+		// ===== Голосовые: запись =====
+
+		/** Микрофон показываем, только если браузер умеет писать звук: иначе
+		 * кнопка обещала бы то, чего не будет. */
+		override voice_ready() {
+			return this.$.$bog_gram_voice.supported()
+		}
+
+		/** Живая запись между двумя событиями: нажатие её заводит, отпускание
+		 * забирает результат. Это обычное поле, а не мем — фибра нажатия к
+		 * моменту отпускания давно кончилась, и мем обнулился бы вместе с ней. */
+		voice_live: $bog_gram_voice | null = null
+
+		/** Момент начала записи, ноль — не пишем. По нему же идёт таймер. */
+		@$mol_mem
+		voice_start( next?: number ) {
+			return next ?? 0
+		}
+
+		override voice_on() {
+			return Boolean( this.voice_start() )
+		}
+
+		@$mol_mem
+		voice_hint( next?: string ) {
+			return next ?? ''
+		}
+
+		/** Растущий таймер. Пока не пишем, время не читаем вовсе: иначе вся
+		 * страница пересчитывалась бы пять раз в секунду впустую. */
+		@$mol_mem
+		override voice_clock() {
+			const start = this.voice_start()
+			if( !start ) return ''
+			const now = this.$.$mol_state_time.now( clock_tick )
+			return this.$.$bog_gram_voice.stamp( ( now - start ) / 1000 )
+		}
+
+		/** Нажали микрофон. Разрешение и кодировщик умеют ждать, поэтому
+		 * уходим в фибру: держать обработчик события нельзя, mol перезапускает
+		 * его на каждом ожидании. */
+		@$mol_action
+		voice_press( next?: Event ) {
+
+			if( this.voice_live ) return null
+			if( !this.voice_ready() ) return null
+
+			const take = this.$.$bog_gram_voice.make({
+				filled: ()=> this.voice_finish(),
+			})
+
+			this.voice_live = take
+			this.voice_hint( '' )
+			this.voice_start( Date.now() )
+			this.voice_grab( next )
+
+			$mol_wire_async( this ).voice_open( take )
+
+			return null
+		}
+
+		/** Палец может съехать с кнопки, а мышь — уйти вообще со страницы:
+		 * без захвата указателя отпускание пришло бы другому элементу, и
+		 * запись осталась бы висеть включённой. */
+		voice_grab( next?: Event ) {
+			try {
+				const event = next as PointerEvent | undefined
+				if( event?.pointerId === undefined ) return
+				this.Chat_page().Voice().dom_node().setPointerCapture( event.pointerId )
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) return
+				$mol_fail_log( error )
+			}
+		}
+
+		/** Разрешение спрашивает браузер, и ответа можно ждать сколько угодно.
+		 * Отказ объясняем строкой над полем ввода, ничего не отправляя. */
+		voice_open( take: $bog_gram_voice ) {
+
+			try {
+				$mol_wire_sync( take ).open()
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+				if( this.voice_live === take ) {
+					this.voice_live = null
+					this.voice_start( 0 )
+				}
+				this.voice_hint( voice_denied )
+				return false
+			}
+
+			return true
+		}
+
+		/** Отпустили палец. На крестике это отмена: во время удержания все
+		 * события указателя захвачены самим микрофоном, и дотянуться до
+		 * крестика можно только отпустив палец над ним. */
+		@$mol_action
+		voice_release( next?: Event ) {
+			if( !this.voice_live ) return null
+			if( this.voice_on_cancel( next ) ) return this.voice_cancel()
+			return this.voice_finish()
+		}
+
+		/** Смотрим точку отпускания, а не цель события: цель захвачена кнопкой
+		 * микрофона и на всё время жеста остаётся ею же. */
+		voice_on_cancel( next?: Event ) {
+			const event = next as PointerEvent | undefined
+			if( !event ) return false
+			const spot = this.$.$mol_dom_context.document.elementFromPoint( event.clientX, event.clientY )
+			if( !spot ) return false
+			return Boolean( spot.closest( '[bog_gram_chat_voice_cancel]' ) )
+		}
+
+		/** Конец записи: останавливаем её прямо здесь, синхронно. Уйди
+		 * остановка в фибру — микрофон писал бы всё время, пока та ждёт
+		 * права собеседника, и в сообщение попала бы лишняя тишина. */
+		@$mol_action
+		voice_finish( next?: any ) {
+
+			const take = this.voice_live
+			if( !take ) return null
+
+			this.voice_live = null
+			this.voice_start( 0 )
+			take.stop()
+
+			$mol_wire_async( this ).voice_send( take )
+
+			return null
+		}
+
+		/** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
+		@$mol_action
+		voice_cancel( next?: any ) {
+			const take = this.voice_live
+			this.voice_live = null
+			this.voice_start( 0 )
+			take?.drop()
+			return null
+		}
+
+		/** Жест прервала система — входящий звонок, переключение окна. */
+		@$mol_action
+		voice_abort( next?: any ) {
+			return this.voice_cancel()
+		}
+
+		/** Долгое нажатие на тач-экране — это ещё и вызов системного меню,
+		 * а на мыши правый клик. Здесь и то, и другое только мешает. */
+		@$mol_action
+		voice_menu( next?: Event ) {
+			next?.preventDefault()
+			return null
+		}
+
+		/** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
+		 * читать выдаём одному собеседнику, для всех остальных — включая
+		 * мастера — там шифрованный мусор. В избранном выдавать право некому,
+		 * ленд просто остаётся закрытым.
+		 *
+		 * Порядок тот же, что и у кадра, и по той же причине: всё, что умеет
+		 * ждать, стоит до создания сообщения — фибра перезапускается с начала
+		 * на каждом ожидании, и созданное раньше сообщение она завела бы
+		 * заново, оставив в переписке копии. */
+		voice_send( take: $bog_gram_voice ) {
+
+			const id = this.dialog_active()
+			if( !id ) return ''
+
+			const session = this.session_store_of( id )
+			if( !session ) return ''
+
+			const glob = this.$.$giper_baza_glob
+			const peer = this.saved_is( id ) ? '' : this.dialog_peer( id )
+
+			// Права собеседника приезжают вместе с его лендом. Пока их нет,
+			// не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
+			const pass = peer ? glob.Land( new $giper_baza_link( peer ) ).king_pass() : null
+			if( peer && !pass ) return ''
+
+			const sound = $mol_wire_sync( take ).take()
+			if( !sound ) {
+				this.voice_hint( voice_short )
+				return ''
+			}
+
+			const land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+			const store = land.Data( $giper_baza_file )
+			store.buffer( sound.bytes )
+			store.type( sound.type )
+
+			if( pass ) land.give( pass, $giper_baza_rank_read )
+
+			// Ленд записи лежит в стороне от переписки, поэтому пуш на мастер
+			// зовём сами — сам он туда не поедет
+			land.sync()
+
+			const message = session.Messages( 'auto' )!.make( null )
+
+			message.Voice( 'auto' )!.remote( store )
+			message.Voice_span( 'auto' )?.val( sound.span )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
+
+			this.voice_hint( '' )
+
+			return message.link().str
+		}
+
+		// ===== Голосовые: воспроизведение =====
+
+		/** Голос есть, если у сообщения есть ссылка на его ленд. Сам звук при
+		 * этом может быть ещё в пути: строку с кнопкой и длиной рисуем всё
+		 * равно, иначе лента дёрнется при её появлении. */
+		@$mol_mem_key
+		message_sound( id: string ) {
+			return Boolean( this.message_pawn( id )?.Voice()?.val() )
+		}
+
+		override Message_sound( id: string ) {
+			return this.message_sound( id ) ? super.Message_sound( id ) : null!
+		}
+
+		/** Длина приезжает вместе с сообщением, до самой записи: пузырь
+		 * сообщает её сразу, ещё до того, как звук можно включить. */
+		@$mol_mem_key
+		message_sound_span( id: string ) {
+			return Number( this.message_pawn( id )?.Voice_span()?.val() ?? 0 )
+		}
+
+		/** Ленд записи приезжает отдельно от переписки: пока буфер пуст,
+		 * отдаём пустую ссылку — подписка на приход ленда сохраняется, и
+		 * звук включится сам, как только доедет. */
+		@$mol_mem_key
+		message_sound_uri( id: string ) {
+			try {
+				const file = this.message_pawn( id )?.Voice()?.remote()
+				if( !file ) return ''
+				if( !file.buffer().byteLength ) return ''
+				return this.$.$mol_dom_context.URL.createObjectURL( file.blob() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		/** Звучит ровно одно сообщение на всё приложение. */
+		@$mol_mem
+		voice_playing( next?: string ) {
+			return next ?? ''
+		}
+
+		@$mol_mem_key
+		message_sound_playing( id: string ) {
+			return this.voice_playing() === id
+		}
+
+		/** Включение нового гасит предыдущее: два голоса разом — это шум. */
+		@$mol_action
+		message_sound_toggle( id: string, next?: any ) {
+
+			const now = this.voice_playing()
+			if( now ) this.sound_stop( now )
+
+			if( now === id ) {
+				this.voice_playing( '' )
+				return null
+			}
+
+			// Записи ещё нет — включать нечего, и подсвечивать паузу незачем
+			if( !this.message_sound_uri( id ) ) {
+				this.voice_playing( '' )
+				return null
+			}
+
+			this.voice_playing( id )
+			this.sound_start( id )
+
+			return null
+		}
+
+		/** Дослушали до конца: кнопка возвращается к треугольнику сама. */
+		@$mol_action
+		message_sound_ended( id: string, next?: any ) {
+			if( this.voice_playing() === id ) this.voice_playing( '' )
+			return null
+		}
+
+		/** Пузырь мог уехать из ленты вместе со своим сообщением: тогда
+		 * управлять уже нечем, и это не ошибка. */
+		sound_start( id: string ) {
+			try {
+				( this.Message_sound( id ) as $.$$.$bog_gram_sound )?.start()
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) return
+				$mol_fail_log( error )
+			}
+		}
+
+		sound_stop( id: string ) {
+			try {
+				( this.Message_sound( id ) as $.$$.$bog_gram_sound )?.stop()
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) return
+				$mol_fail_log( error )
+			}
+		}
+
+		/** Смена диалога не должна оставлять голос звучать из закрытой
+		 * переписки. Зовётся только из действий, поэтому обычный метод. */
+		sound_hush() {
+			const now = this.voice_playing()
+			if( !now ) return
+			this.sound_stop( now )
+			this.voice_playing( '' )
+		}
+
 		// ===== Прочтения =====
 
 		read_moment_of( id: string, lord: string ) {
@@ -1469,16 +1799,18 @@ namespace $.$$ {
 
 		// ===== Превью в списке диалогов =====
 
-		/** Картинку в строке списка называем словом: сам кадр там показывать
-		 * негде, а подпись под ним, если она есть, идёт следом. */
+		/** Вложение в строке списка называем словом: ни кадра, ни звука там
+		 * показать негде, а подпись под ними, если она есть, идёт следом. */
 		@$mol_mem_key
 		dialog_preview( id: string ) {
 			const messages = this.messages_alive_of( id )
 			const last = messages[ messages.length - 1 ]
 			if( !last ) return ''
 			const text = String( last.Text()?.val() ?? '' )
-			const shot = Boolean( last.Image()?.val() )
-			const body = shot ? ( text ? 'Фото · ' + text : 'Фото' ) : text
+			const kind = last.Image()?.val() ? 'Фото'
+				: last.Voice()?.val() ? 'Голосовое сообщение'
+				: ''
+			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text
 			if( this.saved_is( id ) ) return body
 			const mine = String( last.Author()?.val() ?? '' ) === this.my_lord()
 			return mine ? 'Вы: ' + body : body
@@ -2105,6 +2437,92 @@ namespace $.$$ {
 
 	}
 
+	/** Строка голосового в пузыре: кнопка, полоса и длина. Сам элемент
+	 * звука лежит тут же, просто не показывается. */
+	export class $bog_gram_sound extends $.$bog_gram_sound {
+
+		/** Пока запись не приехала, элемент звука не заводим: пустой адрес
+		 * источника браузер честно пытается загрузить — и ругается. */
+		override Node() {
+			return this.uri() ? super.Node() : null!
+		}
+
+		/** Сколько уже прозвучало. Ленд может быть ещё в пути, а разметка —
+		 * не отрисована: тогда просто стоим в начале. */
+		@$mol_mem
+		moment() {
+			try {
+				return ( this.Node() as $.$$.$bog_gram_sound_node )?.time() ?? 0
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return 0
+			}
+		}
+
+		/** Молчит — показываем общую длину, на ходу — сколько прозвучало. */
+		@$mol_mem
+		override stamp() {
+			const span = this.playing() ? this.moment() : this.span()
+			return this.$.$bog_gram_voice.stamp( span )
+		}
+
+		@$mol_mem
+		override fill_width() {
+			const span = this.span()
+			if( !span ) return '0%'
+			const share = Math.max( 0, Math.min( 1, this.moment() / span ) )
+			return ( share * 100 ).toFixed( 1 ) + '%'
+		}
+
+		override toggle_icons() {
+			return [ this.playing() ? this.Pause_icon() : this.Play_icon() ]
+		}
+
+		/** Играет ровно то, что решил список: решение принимается снаружи,
+		 * иначе два голосовых заговорили бы разом.
+		 *
+		 * Управление объявлено в наследнике, а свойство отдаёт тип базы —
+		 * отсюда приведение: без него сборка не видит этих методов. */
+		start() {
+			( this.Node() as $.$$.$bog_gram_sound_node )?.start()
+		}
+
+		stop() {
+			( this.Node() as $.$$.$bog_gram_sound_node )?.stop()
+		}
+
+	}
+
+	export class $bog_gram_sound_node extends $.$bog_gram_sound_node {
+
+		override dom_node( next?: Element ) {
+			return super.dom_node( next ) as HTMLAudioElement
+		}
+
+		/** Позиция звучания: событие сдвига объявляет её устаревшей, и полоса
+		 * прогресса едет сама. */
+		@$mol_mem
+		time() {
+			this.retime()
+			return this.dom_node().currentTime
+		}
+
+		/** Обещание запуска не ждём: браузер отказывает, только когда звук
+		 * включают без участия человека, а тут за кнопкой стоит его нажатие.
+		 * Дослушанное до конца начинаем сначала. */
+		start() {
+			const node = this.dom_node()
+			if( node.ended ) node.currentTime = 0
+			node.play().catch( error => $mol_fail_log( error ) )
+		}
+
+		stop() {
+			const node = this.dom_node()
+			if( !node.paused ) node.pause()
+		}
+
+	}
+
 	export class $bog_gram_chat extends $.$bog_gram_chat {
 
 		/** Заголовок чата — это подпись собеседника, поэтому он и правится
@@ -2120,6 +2538,36 @@ namespace $.$$ {
 
 		override Edit_banner() {
 			return this.edit_mode() ? super.Edit_banner() : null!
+		}
+
+		override Voice_note() {
+			return this.voice_hint() ? super.Voice_note() : null!
+		}
+
+		/** Микрофон стоит на месте отправки, пока писать нечего — как в телеге.
+		 * В правке его нет: она про текст. Нет и там, где браузер не умеет
+		 * писать звук: тогда отправка остаётся единственной кнопкой. */
+		send_is() {
+			if( this.edit_mode() ) return true
+			if( !this.voice_ready() ) return true
+			return Boolean( this.message_text().trim() )
+		}
+
+		override Send() {
+			return this.send_is() ? super.Send() : null!
+		}
+
+		override Voice() {
+			return this.send_is() ? null! : super.Voice()
+		}
+
+		/** Пока идёт запись, поле ввода со скрепкой уступают место таймеру и
+		 * отмене. Сам микрофон при этом остаётся на месте и той же кнопкой:
+		 * палец всё ещё лежит на ней, и отпускание должно прийти именно туда. */
+		@$mol_mem
+		override send_tools() {
+			if( this.voice_on() ) return [ this.Record_state(), this.Voice_cancel(), this.Voice() ]
+			return [ this.Attach(), this.Message_field(), this.Send(), this.Voice() ]
 		}
 
 		/** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
