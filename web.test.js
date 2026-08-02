@@ -5492,6 +5492,496 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    function check(str, query) {
+        $mol_assert_like(str, $hyoo_harp_to_string(query));
+        $mol_assert_like(query, $hyoo_harp_from_string(str));
+    }
+    $mol_test({
+        'root'() {
+            check('', {});
+        },
+        'only field'() {
+            check('user%3D777', {
+                'user=777': {},
+            });
+        },
+        'primary key'() {
+            check('user=jin%2C777!=', {
+                user: {
+                    '=': [['jin,777!']],
+                },
+            });
+        },
+        'single fetch'() {
+            check('friend(age%24)', {
+                friend: {
+                    age$: {},
+                },
+            });
+        },
+        'fetch and primary key'() {
+            check('user=jin()=(friend)', {
+                'user': {
+                    '=': [['jin()']],
+                    friend: {},
+                },
+            });
+        },
+        'multiple fetch'() {
+            check('age;friend', {
+                age: {},
+                friend: {},
+            });
+        },
+        'common query string back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('user=jin&age=100500'), {
+                user: {
+                    '=': [['jin']],
+                },
+                age: {
+                    '=': [['100500']],
+                },
+            });
+        },
+        'common pathname back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('users/jin/comments'), {
+                users: {},
+                jin: {},
+                comments: {},
+            });
+        },
+        'deep fetch'() {
+            check('my(friend(age);name);stat', {
+                my: {
+                    friend: {
+                        age: {},
+                    },
+                    name: {},
+                },
+                stat: {},
+            });
+        },
+        'orders'() {
+            check('+age;-name', {
+                age: {
+                    '+': true
+                },
+                name: {
+                    '+': false
+                },
+            });
+        },
+        'filter types'() {
+            check('sex=female=;status!=married=', {
+                sex: {
+                    '=': [['female']],
+                },
+                status: {
+                    '!=': [['married']],
+                },
+            });
+        },
+        'filter ranges'() {
+            check('sex=female=;age=18@25=;weight=@50=;height=150@=;hobby=paint=singing=', {
+                sex: {
+                    '=': [['female']],
+                },
+                age: {
+                    '=': [['18', '25']],
+                },
+                weight: {
+                    '=': [['', '50']],
+                },
+                height: {
+                    '=': [['150', '']],
+                },
+                hobby: {
+                    '=': [['paint'], ['singing']],
+                },
+            });
+        },
+        'unescaped values'() {
+            $mol_assert_like($hyoo_harp_from_string('foo=jin=777=;bar=jin!=666='), {
+                foo: {
+                    '=': [['jin'], ['777']],
+                },
+                bar: {
+                    '=': [['jin!'], ['666']],
+                },
+            });
+        },
+        'slicing'() {
+            check('friend(_num=0@100=)', {
+                friend: {
+                    _num: { '=': [['0', '100']] },
+                },
+            });
+        },
+        'complex'() {
+            check('pullRequest(state=closed=merged=;+repository(name;private);-updateTime;_num=0@100=)', {
+                pullRequest: {
+                    state: {
+                        '=': [
+                            ['closed'],
+                            ['merged'],
+                        ]
+                    },
+                    repository: {
+                        '+': true,
+                        name: {},
+                        private: {},
+                    },
+                    updateTime: {
+                        '+': false,
+                    },
+                    _num: {
+                        '=': [['0', '100']],
+                    },
+                },
+            });
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is string'() {
+            $mol_data_string('');
+        },
+        'Is not string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(0);
+            }, '0 is not a string');
+        },
+        'Is object string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(new String('x'));
+            }, 'x is not a string');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is first'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)(0);
+        },
+        'Is second'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)('');
+        },
+        'Is false'() {
+            $mol_assert_fail(() => {
+                $mol_data_variant($mol_data_number, $mol_data_string)(false);
+            }, 'false is not any of variants');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const Age = $mol_data_optional($mol_data_number);
+    const Age_or_zero = $mol_data_optional($mol_data_number, () => 0);
+    $mol_test({
+        'Is not present'() {
+            $mol_assert_equal(Age(undefined), undefined);
+        },
+        'Is present'() {
+            $mol_assert_equal(Age(0), 0);
+        },
+        'Fallbacked'() {
+            $mol_assert_equal(Age_or_zero(undefined), 0);
+        },
+        'Is null'() {
+            $mol_assert_fail(() => Age(null), 'null is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Fit to record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0 });
+        },
+        'Extends record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0, name: 'Jin' });
+        },
+        // 'Recursive record' () {
+        // 	const User = $mol_data_record({
+        // 		name : $mol_data_string ,
+        // 		get kids() { return $mol_data_array( User ) } ,
+        // 	})
+        // 	User({
+        // 		name : 'Jin' ,
+        // 		kids : [
+        // 			{
+        // 				name : 'John' ,
+        // 				kids : [] ,
+        // 			}
+        // 		] ,
+        // 	})
+        // } ,
+        'Shrinks record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ age: $mol_data_number, name: $mol_data_string });
+                User({ age: 0 });
+            }, '["name"] undefined is not a string');
+        },
+        'Shrinks deep record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ wife: $mol_data_record({ age: $mol_data_number }) });
+                User({ wife: {} });
+            }, '["wife"] ["age"] undefined is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is empty array'() {
+            $mol_data_array($mol_data_number)([]);
+        },
+        'Is array'() {
+            $mol_data_array($mol_data_number)([1, 2]);
+        },
+        'Is not array'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)({ [0]: 1, length: 1, map: () => { } });
+            }, '[object Object] is not an array');
+        },
+        'Has wrong item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)([1, '1']);
+            }, '[1] 1 is not a number');
+        },
+        'Has wrong deep item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_array($mol_data_number))([[], [0, 0, false]]);
+            }, '[1] [2] false is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is boolean - true'() {
+            $mol_data_boolean(true);
+        },
+        'Is boolean - false'() {
+            $mol_data_boolean(false);
+        },
+        'Is not boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean('x');
+            }, 'x is not a boolean');
+        },
+        'Is object boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean(new Boolean(''));
+            }, 'false is not a boolean');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for value of given enum and returns expected type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_enum_demo
+     */
+    function $mol_data_enum(name, dict) {
+        const index = {};
+        for (let key in dict) {
+            if (Number.isNaN(Number(key))) {
+                index[dict[key]] = key;
+            }
+        }
+        return $mol_data_setup((value) => {
+            if (typeof index[value] !== 'string') {
+                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
+            }
+            return value;
+        }, { name, dict });
+    }
+    $.$mol_data_enum = $mol_data_enum;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    let sex;
+    (function (sex) {
+        sex[sex["male"] = 0] = "male";
+        sex[sex["female"] = 1] = "female";
+    })(sex || (sex = {}));
+    let gender;
+    (function (gender) {
+        gender["bisexual"] = "bisexual";
+        gender["trans"] = "transgender";
+    })(gender || (gender = {}));
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // const Sex = $mol_data_enum( 'sex' , sex )
+    // type sex_value =  $mol_type_assert< typeof Sex.Value , sex >
+    $mol_test({
+        'config of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_like(Sex.config, {
+                name: 'sex',
+                dict: sex,
+            });
+        },
+        'name of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex.config.name, 'sex');
+        },
+        'Is right value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex(0), sex.male);
+        },
+        'Is wrong value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex(2), `2 is not value of sex enum`);
+        },
+        'Is name instead of value'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('male'), `male is not value of sex enum`);
+        },
+        'Is common object field'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('__proto__'), `__proto__ is not value of sex enum`);
+        },
+    });
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // type gender_value =  $mol_type_assert< typeof Gender.Value , gender >
+    $mol_test({
+        'config of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_like(Gender.config, {
+                name: 'gender',
+                dict: gender,
+            });
+        },
+        'Is right value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_equal(Gender('transgender'), gender.trans);
+        },
+        'Is wrong value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('xxx'), `xxx is not value of gender enum`);
+        },
+        'Is name instead of value'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('trans'), `trans is not value of gender enum`);
+        },
+        'Is common object field'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('__proto__'), `__proto__ is not value of gender enum`);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'type safe build & parse'() {
+            let States;
+            (function (States) {
+                States["opened"] = "opened";
+                States["closed"] = "closed";
+            })(States || (States = {}));
+            const State = $hyoo_harp_scheme({}, $mol_data_enum('States', States));
+            const Str = $hyoo_harp_scheme({}, $mol_data_string);
+            const Bool = $hyoo_harp_scheme({}, $mol_data_boolean);
+            const Repository = $hyoo_harp_scheme({
+                name: $mol_data_optional(Str),
+                isPrivate: $mol_data_optional(Bool),
+                // pullRequests: PullRequest,
+            });
+            const PullRequest = $hyoo_harp_scheme({
+                state: $mol_data_optional(State),
+                updated_at: $mol_data_optional(Str),
+                repository: $mol_data_optional(Repository),
+            });
+            const Request = $hyoo_harp_scheme({
+                pullRequest: $mol_data_optional(PullRequest),
+            });
+            const uri = 'pullRequest(state=closed=;-updated_at;repository(name;isPrivate);_num=0@100=)';
+            let query = Request({
+                pullRequest: {
+                    state: { '=': [[States.closed]] }, // filter
+                    updated_at: { '+': false }, // order
+                    repository: {
+                        name: {},
+                        isPrivate: {},
+                    },
+                    _num: { '=': [[0, 100]] }, // slice
+                }
+            });
+            $mol_assert_like(uri, Request.build(query));
+            $mol_assert_like(query, Request.parse(uri));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'save and load buffers'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15] = 255;
+            file.buffer(source);
+            $mol_assert_equal(file.chunks().length, 2);
+            $mol_assert_equal(file.buffer(), source);
+        },
+        async 'save and load blobs'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 16 + 1);
+            source[2 ** 16 + 1] = 255;
+            await $mol_wire_async(file).blob(new $mol_blob([source], { type: 'test/test' }));
+            $mol_assert_equal('test/test', file.blob().type);
+            $mol_assert_equal(source, new Uint8Array(await file.blob().arrayBuffer()));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -5951,9 +6441,6 @@ var $;
         $.$mol_locale = $mol_locale_mock;
     });
 })($ || ($ = {}));
-
-;
-"use strict";
 
 ;
 "use strict";
@@ -7107,6 +7594,86 @@ var $;
                 $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
                 // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
                 $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+            },
+            async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const session0 = $giper_baza_land.make({ $, auth: () => king });
+                session0.give(auth_a.pass(), $giper_baza_rank_rule);
+                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+                await $mol_wire_async(session_a).units_steal(session0);
+                // Сам кадр лежит в отдельном ленде, в переписку едет только ссылка на него
+                const shot_land = $giper_baza_land.make({ $, auth: () => auth_a });
+                const shot = shot_land.Data($giper_baza_file);
+                shot.buffer(new Uint8Array([1, 2, 3, 4]));
+                shot.type('image/webp');
+                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+                msg_a.Author('auto')?.val(lord_a);
+                msg_a.Moment('auto')?.val(1000);
+                msg_a.Image('auto').remote(shot);
+                msg_a.Image_width('auto')?.val(1200);
+                msg_a.Image_height('auto')?.val(900);
+                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+                await $mol_wire_async(session_b).units_steal(session_a);
+                const links_b = session_b.Data($bog_gram_session).Messages().items();
+                $mol_assert_equal(links_b.length, 1);
+                // Ленд самого кадра тут не поднимаем: он приезжает по сети отдельно,
+                // у собеседника от сообщения есть ссылка на него и размеры
+                const got = message_of(session_b, links_b[0]);
+                $mol_assert_equal(got.Image().val().str, shot.link().str);
+                $mol_assert_equal(got.Image_width().val(), 1200);
+                $mol_assert_equal(got.Image_height().val(), 900);
+            },
+            async 'Сообщение с картинкой без текста остаётся живым и читаемым'($) {
+                const land = $giper_baza_land.make({ $ });
+                const session = land.Data($bog_gram_session);
+                const shot_land = $giper_baza_land.make({ $ });
+                const shot = shot_land.Data($giper_baza_file);
+                shot.buffer(new Uint8Array([7, 7, 7]));
+                shot.type('image/webp');
+                const message = session.Messages('auto').make(null);
+                message.Author('auto')?.val('LordMine');
+                message.Moment('auto')?.val(1000);
+                message.Image('auto').remote(shot);
+                message.Image_width('auto')?.val(800);
+                message.Image_height('auto')?.val(600);
+                const links = session.Messages().items();
+                const found = message_of(land, links[0]);
+                // Подписи нет — и это норма: пустой текст сообщение не ломает
+                $mol_assert_equal(found.Text()?.val() ?? '', '');
+                $mol_assert_equal(found.Deleted()?.val() ?? null, null);
+                $mol_assert_equal(found.Image().val().str, shot.link().str);
+                $mol_assert_equal(found.Image_width().val(), 800);
+                $mol_assert_equal(found.Image_height().val(), 600);
+                // Подпись можно дописать правкой, как и любой другой текст
+                found.Text('auto')?.val('Вид с балкона');
+                found.Edited('auto')?.val(1500);
+                $mol_assert_equal(message_of(land, links[0]).Text().val(), 'Вид с балкона');
+                $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
+            },
+            async 'Пережатие вписывает большую сторону в предел, сохраняя пропорции'($) {
+                const wide = $bog_gram_shrink.fit(4000, 3000, 1600);
+                $mol_assert_equal(wide.width, 1600);
+                $mol_assert_equal(wide.height, 1200);
+                const tall = $bog_gram_shrink.fit(3000, 4000, 1600);
+                $mol_assert_equal(tall.width, 1200);
+                $mol_assert_equal(tall.height, 1600);
+                const square = $bog_gram_shrink.fit(2000, 2000, 1600);
+                $mol_assert_equal(square.width, 1600);
+                $mol_assert_equal(square.height, 1600);
+                // Помещается — оставляем как есть: растянутый кадр только потяжелеет
+                const small = $bog_gram_shrink.fit(320, 200, 1600);
+                $mol_assert_equal(small.width, 320);
+                $mol_assert_equal(small.height, 200);
+                // Совсем узкая полоска не схлопывается в ноль
+                const strip = $bog_gram_shrink.fit(4000, 1, 1600);
+                $mol_assert_equal(strip.width, 1600);
+                $mol_assert_equal(strip.height, 1);
+                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
+                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
             },
             async 'Подпись собеседника живёт в приватном ленде и перекрывает его имя'($) {
                 const land = $giper_baza_land.make({ $ });

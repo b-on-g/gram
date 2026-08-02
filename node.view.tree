@@ -553,7 +553,26 @@ $mol_string_button $mol_string
 
 $mol_icon_arrow_left $mol_icon path \M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z
 
+$mol_icon_paperclip $mol_icon path \M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z
+
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
+
+$mol_image $mol_view
+	dom_name \img
+	attr *any
+		^
+		src <= uri \
+		title <= hint
+		alt <= title \
+		loading <= loading \lazy
+		decoding <= decoding \async
+		crossOrigin <= cors null
+		width <= natural_width 0
+		height <= natural_height 0
+	event *any
+		load? <=> load? null
+	minimal_width 16
+	minimal_height 16
 
 $bog_gram $mol_book2
 	plugins /
@@ -690,6 +709,12 @@ $bog_gram $mol_book2
 			message_send? <=> message_send? null
 			edit_cancel? <=> edit_cancel? null
 			close? <=> dialog_close? null
+			image_files? <=> image_files? null
+			image_paste? <=> image_paste? null
+			image_over? <=> image_over? null
+			image_drop? <=> image_drop? null
+			zoom_uri <= zoom_uri \
+			zoom_close? <=> zoom_close? null
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
@@ -907,6 +932,12 @@ $bog_gram $mol_book2
 			pointercancel? <=> message_release*? null
 			contextmenu? <=> message_context*? null
 		sub /
+			<= Message_shot* $bog_gram_photo
+				hint \Открыть картинку
+				uri <= message_shot_uri* \
+				box_width <= message_shot_width* \
+				box_ratio <= message_shot_ratio* \
+				click? <=> message_zoom*? null
 			<= Message_body* $mol_paragraph
 				title <= message_body* \
 			<= Message_meta* $mol_view
@@ -950,6 +981,20 @@ $bog_gram_chat $mol_page
 	edit_cancel? null
 	close? null
 	note_editable false
+	image_files? null
+	image_paste? null
+	image_over? null
+	image_drop? null
+	zoom_uri \
+	zoom_close? null
+	event *
+		^
+		paste? <=> image_paste? null
+		dragover? <=> image_over? null
+		drop? <=> image_drop? null
+	Zoom $bog_gram_zoom
+		uri <= zoom_uri
+		close? <=> zoom_close? null
 	title_content /
 		<= Note_field $bog_gram_field
 			hint <= note_hint \
@@ -988,6 +1033,12 @@ $bog_gram_chat $mol_page
 								<= Edit_cancel_icon $mol_icon_close
 				<= Send_row $mol_view
 					sub /
+						<= Attach $mol_button_open
+							hint \Отправить картинку
+							accept \image/*
+							multiple false
+							files? <=> image_files? null
+							Icon <= Attach_icon $mol_icon_paperclip
 						<= Message_field $mol_string
 							hint \Сообщение…
 							value? <=> message_text? \
@@ -1004,3 +1055,30 @@ $bog_gram_avatar $mol_avatar
 	attr *
 		^
 		bog_gram_tint <= tint
+
+$bog_gram_photo $mol_button
+	uri \
+	box_width \15rem
+	box_ratio \1
+	style *
+		width <= box_width
+		aspectRatio <= box_ratio
+	sub /
+		<= Image $mol_image
+			uri <= uri
+
+$bog_gram_zoom $mol_view
+	uri \
+	close? null
+	attr *
+		^
+		tabindex <= tab_index 0
+	event *
+		^
+		click? <=> close? null
+	plugins /
+		<= Hotkey $mol_hotkey
+			key * escape? <=> close? null
+	sub /
+		<= Shot $mol_image
+			uri <= uri

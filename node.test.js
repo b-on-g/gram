@@ -19723,6 +19723,18 @@ var $;
 
 
 ;
+	($.$mol_icon_paperclip) = class $mol_icon_paperclip extends ($.$mol_icon) {
+		path(){
+			return "M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
 		path(){
 			return "M2,21L23,12L2,3V10L17,12L2,14V21Z";
@@ -19733,6 +19745,109 @@ var $;
 ;
 "use strict";
 
+
+;
+	($.$mol_image) = class $mol_image extends ($.$mol_view) {
+		uri(){
+			return "";
+		}
+		title(){
+			return "";
+		}
+		loading(){
+			return "lazy";
+		}
+		decoding(){
+			return "async";
+		}
+		cors(){
+			return null;
+		}
+		natural_width(){
+			return 0;
+		}
+		natural_height(){
+			return 0;
+		}
+		load(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "img";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"src": (this.uri()), 
+				"title": (this.hint()), 
+				"alt": (this.title()), 
+				"loading": (this.loading()), 
+				"decoding": (this.decoding()), 
+				"crossOrigin": (this.cors()), 
+				"width": (this.natural_width()), 
+				"height": (this.natural_height())
+			};
+		}
+		event(){
+			return {"load": (next) => (this.load(next))};
+		}
+		minimal_width(){
+			return 16;
+		}
+		minimal_height(){
+			return 16;
+		}
+	};
+	($mol_mem(($.$mol_image.prototype), "load"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_image extends $.$mol_image {
+            natural_width(next) {
+                const dom = this.dom_node();
+                if (dom.naturalWidth)
+                    return dom.naturalWidth;
+                const found = this.uri().match(/\bwidth=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            natural_height(next) {
+                const dom = this.dom_node();
+                if (dom.naturalHeight)
+                    return dom.naturalHeight;
+                const found = this.uri().match(/\bheight=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            load() {
+                this.natural_width(null);
+                this.natural_height(null);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_width", null);
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_height", null);
+        $$.$mol_image = $mol_image;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
+})($ || ($ = {}));
 
 ;
 	($.$bog_gram) = class $bog_gram extends ($.$mol_book2) {
@@ -20114,6 +20229,29 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		image_files(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_paste(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_over(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		zoom_uri(){
+			return "";
+		}
+		zoom_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
@@ -20126,6 +20264,12 @@ var $;
 			(obj.message_send) = (next) => ((this.message_send(next)));
 			(obj.edit_cancel) = (next) => ((this.edit_cancel(next)));
 			(obj.close) = (next) => ((this.dialog_close(next)));
+			(obj.image_files) = (next) => ((this.image_files(next)));
+			(obj.image_paste) = (next) => ((this.image_paste(next)));
+			(obj.image_over) = (next) => ((this.image_over(next)));
+			(obj.image_drop) = (next) => ((this.image_drop(next)));
+			(obj.zoom_uri) = () => ((this.zoom_uri()));
+			(obj.zoom_close) = (next) => ((this.zoom_close(next)));
 			return obj;
 		}
 		Dialogs_empty_text(){
@@ -20583,6 +20727,28 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_shot_uri(id){
+			return "";
+		}
+		message_shot_width(id){
+			return "";
+		}
+		message_shot_ratio(id){
+			return "";
+		}
+		message_zoom(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Message_shot(id){
+			const obj = new this.$.$bog_gram_photo();
+			(obj.hint) = () => ("Открыть картинку");
+			(obj.uri) = () => ((this.message_shot_uri(id)));
+			(obj.box_width) = () => ((this.message_shot_width(id)));
+			(obj.box_ratio) = () => ((this.message_shot_ratio(id)));
+			(obj.click) = (next) => ((this.message_zoom(id, next)));
+			return obj;
+		}
 		message_body(id){
 			return "";
 		}
@@ -20818,6 +20984,7 @@ var $;
 				"contextmenu": (next) => (this.message_context(id, next))
 			});
 			(obj.sub) = () => ([
+				(this.Message_shot(id)), 
 				(this.Message_body(id)), 
 				(this.Message_meta(id)), 
 				(this.Message_actions(id))
@@ -20887,6 +21054,11 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
 	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
+	($mol_mem(($.$bog_gram.prototype), "image_files"));
+	($mol_mem(($.$bog_gram.prototype), "image_paste"));
+	($mol_mem(($.$bog_gram.prototype), "image_over"));
+	($mol_mem(($.$bog_gram.prototype), "image_drop"));
+	($mol_mem(($.$bog_gram.prototype), "zoom_close"));
 	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
@@ -20958,6 +21130,8 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "message_press"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_release"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_context"));
+	($mol_mem_key(($.$bog_gram.prototype), "message_zoom"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_shot"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_body"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_time"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_edited"));
@@ -21018,6 +21192,22 @@ var $;
 	($mol_mem(($.$bog_gram_field.prototype), "Field"));
 	($mol_mem(($.$bog_gram_field.prototype), "Edit_icon"));
 	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
+		image_paste(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_over(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		zoom_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		note_hint(){
 			return "";
 		}
@@ -21092,6 +21282,23 @@ var $;
 			(obj.sub) = () => ([(this.Edit_banner_text()), (this.Edit_cancel())]);
 			return obj;
 		}
+		image_files(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Attach_icon(){
+			const obj = new this.$.$mol_icon_paperclip();
+			return obj;
+		}
+		Attach(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ("Отправить картинку");
+			(obj.accept) = () => ("image/*");
+			(obj.multiple) = () => (false);
+			(obj.files) = (next) => ((this.image_files(next)));
+			(obj.Icon) = () => ((this.Attach_icon()));
+			return obj;
+		}
 		message_text(next){
 			if(next !== undefined) return next;
 			return "";
@@ -21120,7 +21327,11 @@ var $;
 		}
 		Send_row(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Message_field()), (this.Send())]);
+			(obj.sub) = () => ([
+				(this.Attach()), 
+				(this.Message_field()), 
+				(this.Send())
+			]);
 			return obj;
 		}
 		Foot(){
@@ -21136,6 +21347,23 @@ var $;
 		}
 		note_editable(){
 			return false;
+		}
+		zoom_uri(){
+			return "";
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"paste": (next) => (this.image_paste(next)), 
+				"dragover": (next) => (this.image_over(next)), 
+				"drop": (next) => (this.image_drop(next))
+			};
+		}
+		Zoom(){
+			const obj = new this.$.$bog_gram_zoom();
+			(obj.uri) = () => ((this.zoom_uri()));
+			(obj.close) = (next) => ((this.zoom_close(next)));
+			return obj;
 		}
 		title_content(){
 			return [(this.Note_field()), (this.Title_text())];
@@ -21157,6 +21385,10 @@ var $;
 			return [(this.Foot())];
 		}
 	};
+	($mol_mem(($.$bog_gram_chat.prototype), "image_paste"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_over"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_drop"));
+	($mol_mem(($.$bog_gram_chat.prototype), "zoom_close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "note"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Note_field"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
@@ -21171,6 +21403,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
@@ -21178,6 +21413,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Foot"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
 	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_avatar) {
 		id(){
 			return "";
@@ -21189,6 +21425,66 @@ var $;
 			return {...(super.attr()), "bog_gram_tint": (this.tint())};
 		}
 	};
+	($.$bog_gram_photo) = class $bog_gram_photo extends ($.$mol_button) {
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		box_width(){
+			return "15rem";
+		}
+		box_ratio(){
+			return "1";
+		}
+		style(){
+			return {"width": (this.box_width()), "aspectRatio": (this.box_ratio())};
+		}
+		sub(){
+			return [(this.Image())];
+		}
+	};
+	($mol_mem(($.$bog_gram_photo.prototype), "Image"));
+	($.$bog_gram_zoom) = class $bog_gram_zoom extends ($.$mol_view) {
+		tab_index(){
+			return 0;
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Hotkey(){
+			const obj = new this.$.$mol_hotkey();
+			(obj.key) = () => ({"escape": (next) => (this.close(next))});
+			return obj;
+		}
+		Shot(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		attr(){
+			return {...(super.attr()), "tabindex": (this.tab_index())};
+		}
+		event(){
+			return {...(super.event()), "click": (next) => (this.close(next))};
+		}
+		plugins(){
+			return [(this.Hotkey())];
+		}
+		sub(){
+			return [(this.Shot())];
+		}
+	};
+	($mol_mem(($.$bog_gram_zoom.prototype), "close"));
+	($mol_mem(($.$bog_gram_zoom.prototype), "Hotkey"));
+	($mol_mem(($.$bog_gram_zoom.prototype), "Shot"));
 
 
 ;
@@ -21335,6 +21631,45 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    /** Ссылка на пешку в чужом ленде, которая на чтении сама поднимает синк
+     * этого ленда. Базовый `remote()` только строит прокси, поэтому без
+     * такой обёртки содержимое отдельного ленда никогда не докачивается:
+     * ссылка есть, а данных по ней нет. Синк дёргается только на чтении —
+     * сразу после записи ленд ещё наш собственный и тянуть нечего. */
+    function $bog_gram_link_synced(Value) {
+        const Base = $giper_baza_atom_link.to(Value);
+        class $bog_gram_link_synced extends Base {
+            remote(next) {
+                const target = super.remote(next);
+                if (next === undefined)
+                    this.target_sync();
+                return target;
+            }
+            /** Ленд, на который смотрит ссылка, тянется в фоне: обещание
+             * ловим и гасим, потому что ждать его тут нечем — чтение
+             * реактивно и повторится само, когда данные приедут. */
+            target_sync() {
+                const link = this.val();
+                if (!link)
+                    return;
+                try {
+                    this.$.$giper_baza_glob.Land(link.land()).sync();
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        throw error;
+                }
+            }
+        }
+        return $bog_gram_link_synced;
+    }
+    $.$bog_gram_link_synced = $bog_gram_link_synced;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     var $$;
     (function ($$) {
         /** Сообщение: порядок задаётся полем Moment в самих данных, а не порядком доставки. */
@@ -21346,6 +21681,13 @@ var $;
             Edited: $giper_baza_atom_real,
             /** Момент удаления, отсутствует — сообщение живое. */
             Deleted: $giper_baza_atom_real,
+            /** Картинка лежит в своём ленде: переписка синкается налегке, а
+             * тяжёлый кадр приезжает отдельно и только когда его показывают. */
+            Image: $bog_gram_link_synced(() => $giper_baza_file),
+            /** Размеры кадра в пикселях: место под него в ленте занимается
+             * заранее, и приехавшая картинка ничего под собой не сдвигает. */
+            Image_width: $giper_baza_atom_real,
+            Image_height: $giper_baza_atom_real,
         }) {
         }
         $$.$bog_gram_message = $bog_gram_message;
@@ -21383,6 +21725,127 @@ var $;
         }
         $$.$bog_gram_session = $bog_gram_session;
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Предел большей стороны кадра в пикселях. Оригинал с телефона весит
+     * мегабайты и в пузыре всё равно показывается мелким, а по сети едет
+     * целиком и целиком же оседает в памяти мастера. */
+    const side_limit = 1600;
+    /** Предел веса готового кадра в байтах. */
+    const weight_limit = 1.5 * 1024 * 1024;
+    /** Качество кодирования: с чего начинаем и ниже чего не опускаемся —
+     * дальше картинка идёт квадратами, и лучше отдать её потяжелее. */
+    const quality_max = 0.8;
+    const quality_min = 0.5;
+    const quality_step = 0.15;
+    /** Во сколько ужимаем сторону, когда качество уже на нижнем пределе. */
+    const scale_step = 0.75;
+    /** Сколько заходов пытаемся уложиться в вес: дальше отдаём что вышло. */
+    const tries_limit = 6;
+    function encode(canvas, type, quality) {
+        return new Promise(done => canvas.toBlob(done, type, quality));
+    }
+    /** Всё пережатие — один промис на вызов, и это принципиально: фибра
+     * перезапускается на каждом ожидании, а холст на новом заходе был бы
+     * уже другим объектом — то есть другой задачей, и так до бесконечности.
+     * Внутри же обычный async без фибр, поэтому холстов можно сколько угодно. */
+    const api = {
+        async shrink(file, side, weight) {
+            const bitmap = await createImageBitmap(file);
+            try {
+                const fit = $bog_gram_shrink.fit(bitmap.width, bitmap.height, side);
+                const same = fit.width === bitmap.width && fit.height === bitmap.height;
+                // Мелкий кадр не трогаем: перекодирование только испортило бы его
+                if (same && file.size <= weight)
+                    return {
+                        bytes: new Uint8Array(await file.arrayBuffer()),
+                        type: file.type || 'image/jpeg',
+                        width: bitmap.width,
+                        height: bitmap.height,
+                    };
+                let width = fit.width;
+                let height = fit.height;
+                let quality = quality_max;
+                let best = null;
+                for (let step = 0; step < tries_limit; ++step) {
+                    const canvas = $mol_dom_context.document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const paper = canvas.getContext('2d');
+                    if (!paper)
+                        break;
+                    paper.drawImage(bitmap, 0, 0, width, height);
+                    // Тип результата проверяем всегда: браузер без WebP молча
+                    // отдаёт PNG, а он тяжелее исходной фотографии
+                    let blob = await encode(canvas, 'image/webp', quality);
+                    if (blob?.type !== 'image/webp')
+                        blob = await encode(canvas, 'image/jpeg', quality);
+                    if (!blob)
+                        break;
+                    best = blob;
+                    if (blob.size <= weight)
+                        break;
+                    if (quality > quality_min) {
+                        quality = Math.max(quality_min, quality - quality_step);
+                    }
+                    else {
+                        const next = $bog_gram_shrink.fit(width, height, Math.round(Math.max(width, height) * scale_step));
+                        if (next.width === width && next.height === height)
+                            break;
+                        width = next.width;
+                        height = next.height;
+                    }
+                }
+                // Ни холст, ни кодек не дались: отправляем оригинал — это всё
+                // же лучше, чем сообщение без картинки
+                if (!best)
+                    return {
+                        bytes: new Uint8Array(await file.arrayBuffer()),
+                        type: file.type || 'image/jpeg',
+                        width: bitmap.width,
+                        height: bitmap.height,
+                    };
+                return {
+                    bytes: new Uint8Array(await best.arrayBuffer()),
+                    type: best.type || 'image/jpeg',
+                    width,
+                    height,
+                };
+            }
+            finally {
+                bitmap.close();
+            }
+        },
+    };
+    /** Пережатие картинки перед отправкой. */
+    class $bog_gram_shrink extends $mol_object {
+        /** Вписывает размеры в квадрат со стороной limit, сохраняя пропорции.
+         * То, что уже помещается, оставляем как есть: растянутый кадр только
+         * потяжелеет и станет мыльным. */
+        static fit(width, height, limit) {
+            const side = Math.max(width, height);
+            if (!(limit > 0) || !(side > limit))
+                return { width, height };
+            const scale = limit / side;
+            return {
+                width: Math.max(1, Math.round(width * scale)),
+                height: Math.max(1, Math.round(height * scale)),
+            };
+        }
+        /** Это картинка, а не документ и не видео. */
+        static image_is(file) {
+            return file.type.startsWith('image/');
+        }
+        /** Готовый к отправке кадр. Зовётся только из фибры: внутри промисы. */
+        static shrink(file) {
+            return $mol_wire_sync(api).shrink(file, side_limit, weight_limit);
+        }
+    }
+    $.$bog_gram_shrink = $bog_gram_shrink;
 })($ || ($ = {}));
 
 ;
@@ -21747,6 +22210,12 @@ var $;
          * правка и удаление: короче — срабатывает на обычном тапе, длиннее —
          * ощущается как зависший интерфейс. */
         const press_delay = 400;
+        /** Предел большей стороны кадра в пузыре. Крупнее — и переписка
+         * превращается в ленту плакатов, где текста уже не видно. */
+        const shot_side = 15;
+        /** Пикселей в одном rem: по нему понимаем, не мельче ли сама картинка
+         * отведённой ей коробки — растягивать мелкий кадр незачем. */
+        const rem_px = 16;
         class $bog_gram extends $.$bog_gram {
             // ===== Подключение к мастеру =====
             baza_master() {
@@ -22068,6 +22537,7 @@ var $;
                 this.edit_id('');
                 this.message_text('');
                 this.message_menu('');
+                this.zoom_id('');
                 this.delete_disarm();
                 this.dialog_current(id);
                 this.chat_bring();
@@ -22101,6 +22571,7 @@ var $;
                 this.edit_id('');
                 this.message_text('');
                 this.message_menu('');
+                this.zoom_id('');
                 this.delete_disarm();
                 this.dialog_current('');
                 return null;
@@ -22726,6 +23197,225 @@ var $;
                 this.message_text('');
                 return null;
             }
+            // ===== Картинки =====
+            /** Кадр есть, если у сообщения есть ссылка на его ленд. Сама
+             * картинка при этом может быть ещё в пути — коробку под неё
+             * рисуем всё равно, иначе лента дёрнется при её появлении. */
+            message_shot(id) {
+                return Boolean(this.message_pawn(id)?.Image()?.val());
+            }
+            Message_shot(id) {
+                return this.message_shot(id) ? super.Message_shot(id) : null;
+            }
+            /** Картинка без подписи — обычное дело, и пустой абзац под ней
+             * оставлял бы в пузыре лишнюю полосу. */
+            Message_body(id) {
+                return this.message_body(id) ? super.Message_body(id) : null;
+            }
+            /** Размеры кадра приезжают вместе с сообщением, до самой картинки.
+             * Пока их нет, считаем кадр квадратным: перепрыгнуть один раз при
+             * загрузке лучше, чем схлопнуть пузырь в ноль. */
+            message_shot_size(id) {
+                const pawn = this.message_pawn(id);
+                const width = Number(pawn?.Image_width()?.val() ?? 0);
+                const height = Number(pawn?.Image_height()?.val() ?? 0);
+                if (!width || !height)
+                    return { width: 1, height: 1 };
+                return { width, height };
+            }
+            message_shot_ratio(id) {
+                const size = this.message_shot_size(id);
+                return size.width + ' / ' + size.height;
+            }
+            /** В предел упирается большая сторона, меньшая считается от неё по
+             * пропорциям. Кадр мельче предела показываем как есть. */
+            message_shot_width(id) {
+                const size = this.message_shot_size(id);
+                const side = Math.max(size.width, size.height);
+                const limit = Math.min(shot_side, side / rem_px);
+                return (limit * size.width / side).toFixed(2) + 'rem';
+            }
+            /** Ленд картинки приезжает отдельно от переписки: пока буфер пуст,
+             * отдаём пустую ссылку — место уже занято коробкой, а подписка на
+             * приход ленда сохраняется, и кадр проявится сам. */
+            message_shot_uri(id) {
+                try {
+                    const file = this.message_pawn(id)?.Image()?.remote();
+                    if (!file)
+                        return '';
+                    if (!file.buffer().byteLength)
+                        return '';
+                    return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            // ===== Развёрнутый кадр =====
+            zoom_id(next) {
+                return next ?? '';
+            }
+            zoom_uri() {
+                const id = this.zoom_id();
+                if (!id)
+                    return '';
+                return this.message_shot_uri(id);
+            }
+            /** Долгое нажатие уже раскрыло под пузырём правку с удалением —
+             * тот же жест не должен вдобавок разворачивать картинку. */
+            message_zoom(id, next) {
+                if (this.message_menu() === id)
+                    return null;
+                if (!this.message_shot_uri(id))
+                    return null;
+                this.zoom_id(id);
+                this.zoom_focus();
+                return null;
+            }
+            zoom_close(next) {
+                this.zoom_id('');
+                return null;
+            }
+            /** Слой ловит Esc, только пока на нём фокус, а в разметке он
+             * появляется лишь следующим кадром — тогда же его и фокусируем. */
+            zoom_focus() {
+                new this.$.$mol_after_tick(() => {
+                    try {
+                        const node = this.Chat_page().Zoom().dom_node();
+                        node.focus();
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            return;
+                        $mol_fail_log(error);
+                    }
+                });
+            }
+            // ===== Отправка картинки =====
+            /** Кнопка со скрепкой. Из выбранного берём первую картинку:
+             * множественный выбор в поле отключён, но система может подсунуть
+             * заодно и что-нибудь постороннее. */
+            image_files(next) {
+                const file = (next ?? []).find(item => this.$.$bog_gram_shrink.image_is(item));
+                if (file)
+                    this.image_start(file);
+                this.attach_reset();
+                return next ?? null;
+            }
+            /** Поле выбора файла помнит прошлый выбор и о повторе того же самого
+             * файла уже не сообщает: без сброса одну картинку нельзя было бы
+             * отправить дважды. */
+            attach_reset() {
+                new this.$.$mol_after_tick(() => {
+                    try {
+                        const node = this.Chat_page().Attach().Native().dom_node();
+                        node.value = '';
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            return;
+                        $mol_fail_log(error);
+                    }
+                });
+            }
+            /** Вставка из буфера. Картинку достаём синхронно, пока событие живо,
+             * и тут же уходим в фибру: ждать прямо в обработчике нельзя — mol
+             * перезапускает его на каждом ожидании, а каждый перезапуск доставал
+             * бы из буфера новый файл, то есть отправлял бы копию. */
+            image_paste(next) {
+                const event = next;
+                const items = event?.clipboardData?.items;
+                if (!items)
+                    return null;
+                for (let i = 0; i < items.length; ++i) {
+                    const file = items[i].getAsFile();
+                    if (!file)
+                        continue;
+                    if (!this.$.$bog_gram_shrink.image_is(file))
+                        continue;
+                    event?.preventDefault();
+                    this.image_start(file);
+                    break;
+                }
+                return null;
+            }
+            /** Без отмены умолчания браузер откроет брошенный файл вместо
+             * страницы — и переписка просто исчезнет с экрана. */
+            image_over(next) {
+                next?.preventDefault();
+                return null;
+            }
+            image_drop(next) {
+                const event = next;
+                event?.preventDefault();
+                const files = event?.dataTransfer?.files;
+                if (!files)
+                    return null;
+                const file = Array.from(files).find(item => this.$.$bog_gram_shrink.image_is(item));
+                if (file)
+                    this.image_start(file);
+                return null;
+            }
+            /** Пережатие, захват ленда и подпись — это криптография с перебором
+             * степеней: из обработчика уходим в фибру, иначе каждое ожидание
+             * начинало бы перебор заново, а интерфейс всё это время стоял бы. */
+            image_start(file) {
+                // Картинка — всегда новое сообщение, а начатая правка держит в поле
+                // чужой текст: подписью к кадру он стать не должен
+                if (this.edit_id()) {
+                    this.edit_id('');
+                    this.message_text('');
+                }
+                $mol_wire_async(this).image_send(file);
+            }
+            /** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
+             * читать выдаём одному собеседнику, для всех остальных — включая
+             * мастера — там шифрованный мусор. В избранном выдавать право некому,
+             * ленд просто остаётся закрытым.
+             *
+             * Порядок здесь не косметика. Всё, что умеет ждать — пережатие,
+             * захват ленда, выдача права, — стоит до создания сообщения: фибра
+             * перезапускается с начала на каждом ожидании, и созданное раньше
+             * сообщение она завела бы заново, оставив в переписке копии. */
+            image_send(file) {
+                const id = this.dialog_active();
+                if (!id)
+                    return '';
+                const session = this.session_store_of(id);
+                if (!session)
+                    return '';
+                const glob = this.$.$giper_baza_glob;
+                const peer = this.saved_is(id) ? '' : this.dialog_peer(id);
+                // Права собеседника приезжают вместе с его лендом. Пока их нет,
+                // не пишем ничего: кадр в закрытом ленде он не прочитал бы никогда,
+                // а так отправку можно просто повторить
+                const pass = peer ? glob.Land(new $giper_baza_link(peer)).king_pass() : null;
+                if (peer && !pass)
+                    return '';
+                const shot = this.$.$bog_gram_shrink.shrink(file);
+                const land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+                const store = land.Data($giper_baza_file);
+                store.buffer(shot.bytes);
+                store.type(shot.type);
+                if (pass)
+                    land.give(pass, $giper_baza_rank_read);
+                // Ленд кадра лежит в стороне от переписки, поэтому пуш на мастер
+                // зовём сами — сам он туда не поедет
+                land.sync();
+                const text = this.message_text().trim();
+                const message = session.Messages('auto').make(null);
+                message.Image('auto').remote(store);
+                message.Image_width('auto')?.val(shot.width);
+                message.Image_height('auto')?.val(shot.height);
+                if (text)
+                    message.Text('auto')?.val(text);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.message_text('');
+                return message.link().str;
+            }
             // ===== Прочтения =====
             read_moment_of(id, lord) {
                 const session = this.session_store_of(id);
@@ -22781,16 +23471,20 @@ var $;
                 return this.unread_count(id) ? super.Unread_badge(id) : null;
             }
             // ===== Превью в списке диалогов =====
+            /** Картинку в строке списка называем словом: сам кадр там показывать
+             * негде, а подпись под ним, если она есть, идёт следом. */
             dialog_preview(id) {
                 const messages = this.messages_alive_of(id);
                 const last = messages[messages.length - 1];
                 if (!last)
                     return '';
                 const text = String(last.Text()?.val() ?? '');
+                const shot = Boolean(last.Image()?.val());
+                const body = shot ? (text ? 'Фото · ' + text : 'Фото') : text;
                 if (this.saved_is(id))
-                    return text;
+                    return body;
                 const mine = String(last.Author()?.val() ?? '') === this.my_lord();
-                return mine ? 'Вы: ' + text : text;
+                return mine ? 'Вы: ' + body : body;
             }
             dialog_time(id) {
                 const messages = this.messages_alive_of(id);
@@ -23551,6 +24245,42 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "message_send", null);
         __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_shot", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_shot_size", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_shot_ratio", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_shot_width", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_shot_uri", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "zoom_id", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "message_zoom", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "zoom_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "image_files", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "image_paste", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "image_over", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "image_drop", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "read_sync", null);
         __decorate([
@@ -23703,6 +24433,14 @@ var $;
             $mol_mem
         ], $bog_gram_avatar.prototype, "path", null);
         $$.$bog_gram_avatar = $bog_gram_avatar;
+        class $bog_gram_photo extends $.$bog_gram_photo {
+            /** Пока кадр не докачался, коробка стоит пустой: картинку с пустым
+             * адресом браузер рисует значком битой. */
+            Image() {
+                return this.uri() ? super.Image() : null;
+            }
+        }
+        $$.$bog_gram_photo = $bog_gram_photo;
         class $bog_gram_chat extends $.$bog_gram_chat {
             /** Заголовок чата — это подпись собеседника, поэтому он и правится
              * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
@@ -23715,6 +24453,13 @@ var $;
             }
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
+            }
+            /** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
+             * в ленте он ездил бы вместе с прокруткой переписки. */
+            sub() {
+                if (!this.zoom_uri())
+                    return super.sub();
+                return [...super.sub(), this.Zoom()];
             }
             // Лента прокручивается вниз после рендера: auto() зовётся из dom_tree,
             // когда DOM уже актуален. Чтение rows() подписывает на новые сообщения.
@@ -23740,7 +24485,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -24843,6 +25588,13 @@ var $;
                 whiteSpace: 'pre-wrap',
                 overflowWrap: 'anywhere',
             },
+            /* Размеры коробки приходят из данных сообщения (style в view.tree),
+            здесь только предел по ширине пузыря: на узком экране кадр ужимается
+            вместе с ним, а не вылезает наружу. */
+            Message_shot: {
+                alignSelf: 'flex-start',
+                maxWidth: '100%',
+            },
             Message_meta: {
                 alignSelf: 'flex-end',
                 align: {
@@ -25286,6 +26038,31 @@ var $;
                 },
                 color: '#ffffff',
             },
+            /* Скрепка — такой же круглый пятачок, что и отправка, только без
+            заливки: две кнопки по краям поля ввода должны быть одного роста. */
+            Attach: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '2.5rem',
+                minHeight: '2.5rem',
+                padding: 0,
+                borderRadius: '50%',
+                color: $mol_theme.shade,
+                /* Скрытое поле выбора файла вдвое выше своей кнопки и без обрезки
+                перехватывало бы клики по строке правки над ней. */
+                overflow: 'hidden',
+            },
+            Attach_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
+            },
             // ===== Одна страница на экран =====
             // Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
             // не помещаются, буклет листается по одной странице — и чат закрывает
@@ -25301,6 +26078,63 @@ var $;
                         display: 'none',
                     },
                 },
+                /* Скрепка стоит вплотную к полю ввода, поэтому на телефоне ей
+                нужен тот же запас под палец, что и остальным кнопкам списка. */
+                '(max-width: 30rem)': {
+                    Attach: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                },
+            },
+        });
+        /* Коробка кадра: размер задаётся в разметке из данных сообщения, здесь
+        только вид. Пока картинка не приехала, коробка стоит пустой заливкой —
+        лента уже разложена и от появления кадра не дёрнется. */
+        $mol_style_define($bog_gram_photo, {
+            display: 'block',
+            flex: {
+                shrink: 0,
+            },
+            maxWidth: '100%',
+            padding: 0,
+            overflow: 'hidden',
+            borderRadius: '0.5rem',
+            background: {
+                color: veil,
+            },
+            Image: {
+                display: 'block',
+                width: '100%',
+                height: '100%',
+                /* object-fit нет в словаре типизированных стилей — правило
+                лежит в gram.view.css */
+            },
+        });
+        /* Развёрнутый кадр: слой на всю страницу чата, а не на весь экран —
+        на широком мониторе список диалогов остаётся видимым. */
+        $mol_style_define($bog_gram_zoom, {
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            zIndex: 2,
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            padding: '1rem',
+            background: {
+                color: '#000000cc',
+            },
+            outline: 'none',
+            Shot: {
+                maxWidth: '100%',
+                maxHeight: '100%',
+                borderRadius: '0.5rem',
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
@@ -30727,6 +31561,496 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    function check(str, query) {
+        $mol_assert_like(str, $hyoo_harp_to_string(query));
+        $mol_assert_like(query, $hyoo_harp_from_string(str));
+    }
+    $mol_test({
+        'root'() {
+            check('', {});
+        },
+        'only field'() {
+            check('user%3D777', {
+                'user=777': {},
+            });
+        },
+        'primary key'() {
+            check('user=jin%2C777!=', {
+                user: {
+                    '=': [['jin,777!']],
+                },
+            });
+        },
+        'single fetch'() {
+            check('friend(age%24)', {
+                friend: {
+                    age$: {},
+                },
+            });
+        },
+        'fetch and primary key'() {
+            check('user=jin()=(friend)', {
+                'user': {
+                    '=': [['jin()']],
+                    friend: {},
+                },
+            });
+        },
+        'multiple fetch'() {
+            check('age;friend', {
+                age: {},
+                friend: {},
+            });
+        },
+        'common query string back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('user=jin&age=100500'), {
+                user: {
+                    '=': [['jin']],
+                },
+                age: {
+                    '=': [['100500']],
+                },
+            });
+        },
+        'common pathname back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('users/jin/comments'), {
+                users: {},
+                jin: {},
+                comments: {},
+            });
+        },
+        'deep fetch'() {
+            check('my(friend(age);name);stat', {
+                my: {
+                    friend: {
+                        age: {},
+                    },
+                    name: {},
+                },
+                stat: {},
+            });
+        },
+        'orders'() {
+            check('+age;-name', {
+                age: {
+                    '+': true
+                },
+                name: {
+                    '+': false
+                },
+            });
+        },
+        'filter types'() {
+            check('sex=female=;status!=married=', {
+                sex: {
+                    '=': [['female']],
+                },
+                status: {
+                    '!=': [['married']],
+                },
+            });
+        },
+        'filter ranges'() {
+            check('sex=female=;age=18@25=;weight=@50=;height=150@=;hobby=paint=singing=', {
+                sex: {
+                    '=': [['female']],
+                },
+                age: {
+                    '=': [['18', '25']],
+                },
+                weight: {
+                    '=': [['', '50']],
+                },
+                height: {
+                    '=': [['150', '']],
+                },
+                hobby: {
+                    '=': [['paint'], ['singing']],
+                },
+            });
+        },
+        'unescaped values'() {
+            $mol_assert_like($hyoo_harp_from_string('foo=jin=777=;bar=jin!=666='), {
+                foo: {
+                    '=': [['jin'], ['777']],
+                },
+                bar: {
+                    '=': [['jin!'], ['666']],
+                },
+            });
+        },
+        'slicing'() {
+            check('friend(_num=0@100=)', {
+                friend: {
+                    _num: { '=': [['0', '100']] },
+                },
+            });
+        },
+        'complex'() {
+            check('pullRequest(state=closed=merged=;+repository(name;private);-updateTime;_num=0@100=)', {
+                pullRequest: {
+                    state: {
+                        '=': [
+                            ['closed'],
+                            ['merged'],
+                        ]
+                    },
+                    repository: {
+                        '+': true,
+                        name: {},
+                        private: {},
+                    },
+                    updateTime: {
+                        '+': false,
+                    },
+                    _num: {
+                        '=': [['0', '100']],
+                    },
+                },
+            });
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is string'() {
+            $mol_data_string('');
+        },
+        'Is not string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(0);
+            }, '0 is not a string');
+        },
+        'Is object string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(new String('x'));
+            }, 'x is not a string');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is first'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)(0);
+        },
+        'Is second'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)('');
+        },
+        'Is false'() {
+            $mol_assert_fail(() => {
+                $mol_data_variant($mol_data_number, $mol_data_string)(false);
+            }, 'false is not any of variants');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const Age = $mol_data_optional($mol_data_number);
+    const Age_or_zero = $mol_data_optional($mol_data_number, () => 0);
+    $mol_test({
+        'Is not present'() {
+            $mol_assert_equal(Age(undefined), undefined);
+        },
+        'Is present'() {
+            $mol_assert_equal(Age(0), 0);
+        },
+        'Fallbacked'() {
+            $mol_assert_equal(Age_or_zero(undefined), 0);
+        },
+        'Is null'() {
+            $mol_assert_fail(() => Age(null), 'null is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Fit to record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0 });
+        },
+        'Extends record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0, name: 'Jin' });
+        },
+        // 'Recursive record' () {
+        // 	const User = $mol_data_record({
+        // 		name : $mol_data_string ,
+        // 		get kids() { return $mol_data_array( User ) } ,
+        // 	})
+        // 	User({
+        // 		name : 'Jin' ,
+        // 		kids : [
+        // 			{
+        // 				name : 'John' ,
+        // 				kids : [] ,
+        // 			}
+        // 		] ,
+        // 	})
+        // } ,
+        'Shrinks record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ age: $mol_data_number, name: $mol_data_string });
+                User({ age: 0 });
+            }, '["name"] undefined is not a string');
+        },
+        'Shrinks deep record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ wife: $mol_data_record({ age: $mol_data_number }) });
+                User({ wife: {} });
+            }, '["wife"] ["age"] undefined is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is empty array'() {
+            $mol_data_array($mol_data_number)([]);
+        },
+        'Is array'() {
+            $mol_data_array($mol_data_number)([1, 2]);
+        },
+        'Is not array'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)({ [0]: 1, length: 1, map: () => { } });
+            }, '[object Object] is not an array');
+        },
+        'Has wrong item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)([1, '1']);
+            }, '[1] 1 is not a number');
+        },
+        'Has wrong deep item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_array($mol_data_number))([[], [0, 0, false]]);
+            }, '[1] [2] false is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is boolean - true'() {
+            $mol_data_boolean(true);
+        },
+        'Is boolean - false'() {
+            $mol_data_boolean(false);
+        },
+        'Is not boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean('x');
+            }, 'x is not a boolean');
+        },
+        'Is object boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean(new Boolean(''));
+            }, 'false is not a boolean');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for value of given enum and returns expected type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_enum_demo
+     */
+    function $mol_data_enum(name, dict) {
+        const index = {};
+        for (let key in dict) {
+            if (Number.isNaN(Number(key))) {
+                index[dict[key]] = key;
+            }
+        }
+        return $mol_data_setup((value) => {
+            if (typeof index[value] !== 'string') {
+                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
+            }
+            return value;
+        }, { name, dict });
+    }
+    $.$mol_data_enum = $mol_data_enum;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    let sex;
+    (function (sex) {
+        sex[sex["male"] = 0] = "male";
+        sex[sex["female"] = 1] = "female";
+    })(sex || (sex = {}));
+    let gender;
+    (function (gender) {
+        gender["bisexual"] = "bisexual";
+        gender["trans"] = "transgender";
+    })(gender || (gender = {}));
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // const Sex = $mol_data_enum( 'sex' , sex )
+    // type sex_value =  $mol_type_assert< typeof Sex.Value , sex >
+    $mol_test({
+        'config of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_like(Sex.config, {
+                name: 'sex',
+                dict: sex,
+            });
+        },
+        'name of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex.config.name, 'sex');
+        },
+        'Is right value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex(0), sex.male);
+        },
+        'Is wrong value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex(2), `2 is not value of sex enum`);
+        },
+        'Is name instead of value'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('male'), `male is not value of sex enum`);
+        },
+        'Is common object field'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('__proto__'), `__proto__ is not value of sex enum`);
+        },
+    });
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // type gender_value =  $mol_type_assert< typeof Gender.Value , gender >
+    $mol_test({
+        'config of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_like(Gender.config, {
+                name: 'gender',
+                dict: gender,
+            });
+        },
+        'Is right value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_equal(Gender('transgender'), gender.trans);
+        },
+        'Is wrong value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('xxx'), `xxx is not value of gender enum`);
+        },
+        'Is name instead of value'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('trans'), `trans is not value of gender enum`);
+        },
+        'Is common object field'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('__proto__'), `__proto__ is not value of gender enum`);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'type safe build & parse'() {
+            let States;
+            (function (States) {
+                States["opened"] = "opened";
+                States["closed"] = "closed";
+            })(States || (States = {}));
+            const State = $hyoo_harp_scheme({}, $mol_data_enum('States', States));
+            const Str = $hyoo_harp_scheme({}, $mol_data_string);
+            const Bool = $hyoo_harp_scheme({}, $mol_data_boolean);
+            const Repository = $hyoo_harp_scheme({
+                name: $mol_data_optional(Str),
+                isPrivate: $mol_data_optional(Bool),
+                // pullRequests: PullRequest,
+            });
+            const PullRequest = $hyoo_harp_scheme({
+                state: $mol_data_optional(State),
+                updated_at: $mol_data_optional(Str),
+                repository: $mol_data_optional(Repository),
+            });
+            const Request = $hyoo_harp_scheme({
+                pullRequest: $mol_data_optional(PullRequest),
+            });
+            const uri = 'pullRequest(state=closed=;-updated_at;repository(name;isPrivate);_num=0@100=)';
+            let query = Request({
+                pullRequest: {
+                    state: { '=': [[States.closed]] }, // filter
+                    updated_at: { '+': false }, // order
+                    repository: {
+                        name: {},
+                        isPrivate: {},
+                    },
+                    _num: { '=': [[0, 100]] }, // slice
+                }
+            });
+            $mol_assert_like(uri, Request.build(query));
+            $mol_assert_like(query, Request.parse(uri));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'save and load buffers'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15] = 255;
+            file.buffer(source);
+            $mol_assert_equal(file.chunks().length, 2);
+            $mol_assert_equal(file.buffer(), source);
+        },
+        async 'save and load blobs'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 16 + 1);
+            source[2 ** 16 + 1] = 255;
+            await $mol_wire_async(file).blob(new $mol_blob([source], { type: 'test/test' }));
+            $mol_assert_equal('test/test', file.blob().type);
+            $mol_assert_equal(source, new Uint8Array(await file.blob().arrayBuffer()));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -31195,9 +32519,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
 var $;
 (function ($) {
     $mol_test({
@@ -31558,493 +32879,6 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function check(str, query) {
-        $mol_assert_like(str, $hyoo_harp_to_string(query));
-        $mol_assert_like(query, $hyoo_harp_from_string(str));
-    }
-    $mol_test({
-        'root'() {
-            check('', {});
-        },
-        'only field'() {
-            check('user%3D777', {
-                'user=777': {},
-            });
-        },
-        'primary key'() {
-            check('user=jin%2C777!=', {
-                user: {
-                    '=': [['jin,777!']],
-                },
-            });
-        },
-        'single fetch'() {
-            check('friend(age%24)', {
-                friend: {
-                    age$: {},
-                },
-            });
-        },
-        'fetch and primary key'() {
-            check('user=jin()=(friend)', {
-                'user': {
-                    '=': [['jin()']],
-                    friend: {},
-                },
-            });
-        },
-        'multiple fetch'() {
-            check('age;friend', {
-                age: {},
-                friend: {},
-            });
-        },
-        'common query string back compatible'() {
-            $mol_assert_like($hyoo_harp_from_string('user=jin&age=100500'), {
-                user: {
-                    '=': [['jin']],
-                },
-                age: {
-                    '=': [['100500']],
-                },
-            });
-        },
-        'common pathname back compatible'() {
-            $mol_assert_like($hyoo_harp_from_string('users/jin/comments'), {
-                users: {},
-                jin: {},
-                comments: {},
-            });
-        },
-        'deep fetch'() {
-            check('my(friend(age);name);stat', {
-                my: {
-                    friend: {
-                        age: {},
-                    },
-                    name: {},
-                },
-                stat: {},
-            });
-        },
-        'orders'() {
-            check('+age;-name', {
-                age: {
-                    '+': true
-                },
-                name: {
-                    '+': false
-                },
-            });
-        },
-        'filter types'() {
-            check('sex=female=;status!=married=', {
-                sex: {
-                    '=': [['female']],
-                },
-                status: {
-                    '!=': [['married']],
-                },
-            });
-        },
-        'filter ranges'() {
-            check('sex=female=;age=18@25=;weight=@50=;height=150@=;hobby=paint=singing=', {
-                sex: {
-                    '=': [['female']],
-                },
-                age: {
-                    '=': [['18', '25']],
-                },
-                weight: {
-                    '=': [['', '50']],
-                },
-                height: {
-                    '=': [['150', '']],
-                },
-                hobby: {
-                    '=': [['paint'], ['singing']],
-                },
-            });
-        },
-        'unescaped values'() {
-            $mol_assert_like($hyoo_harp_from_string('foo=jin=777=;bar=jin!=666='), {
-                foo: {
-                    '=': [['jin'], ['777']],
-                },
-                bar: {
-                    '=': [['jin!'], ['666']],
-                },
-            });
-        },
-        'slicing'() {
-            check('friend(_num=0@100=)', {
-                friend: {
-                    _num: { '=': [['0', '100']] },
-                },
-            });
-        },
-        'complex'() {
-            check('pullRequest(state=closed=merged=;+repository(name;private);-updateTime;_num=0@100=)', {
-                pullRequest: {
-                    state: {
-                        '=': [
-                            ['closed'],
-                            ['merged'],
-                        ]
-                    },
-                    repository: {
-                        '+': true,
-                        name: {},
-                        private: {},
-                    },
-                    updateTime: {
-                        '+': false,
-                    },
-                    _num: {
-                        '=': [['0', '100']],
-                    },
-                },
-            });
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is string'() {
-            $mol_data_string('');
-        },
-        'Is not string'() {
-            $mol_assert_fail(() => {
-                $mol_data_string(0);
-            }, '0 is not a string');
-        },
-        'Is object string'() {
-            $mol_assert_fail(() => {
-                $mol_data_string(new String('x'));
-            }, 'x is not a string');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is first'() {
-            $mol_data_variant($mol_data_number, $mol_data_string)(0);
-        },
-        'Is second'() {
-            $mol_data_variant($mol_data_number, $mol_data_string)('');
-        },
-        'Is false'() {
-            $mol_assert_fail(() => {
-                $mol_data_variant($mol_data_number, $mol_data_string)(false);
-            }, 'false is not any of variants');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const Age = $mol_data_optional($mol_data_number);
-    const Age_or_zero = $mol_data_optional($mol_data_number, () => 0);
-    $mol_test({
-        'Is not present'() {
-            $mol_assert_equal(Age(undefined), undefined);
-        },
-        'Is present'() {
-            $mol_assert_equal(Age(0), 0);
-        },
-        'Fallbacked'() {
-            $mol_assert_equal(Age_or_zero(undefined), 0);
-        },
-        'Is null'() {
-            $mol_assert_fail(() => Age(null), 'null is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Fit to record'() {
-            const User = $mol_data_record({ age: $mol_data_number });
-            User({ age: 0 });
-        },
-        'Extends record'() {
-            const User = $mol_data_record({ age: $mol_data_number });
-            User({ age: 0, name: 'Jin' });
-        },
-        // 'Recursive record' () {
-        // 	const User = $mol_data_record({
-        // 		name : $mol_data_string ,
-        // 		get kids() { return $mol_data_array( User ) } ,
-        // 	})
-        // 	User({
-        // 		name : 'Jin' ,
-        // 		kids : [
-        // 			{
-        // 				name : 'John' ,
-        // 				kids : [] ,
-        // 			}
-        // 		] ,
-        // 	})
-        // } ,
-        'Shrinks record'() {
-            $mol_assert_fail(() => {
-                const User = $mol_data_record({ age: $mol_data_number, name: $mol_data_string });
-                User({ age: 0 });
-            }, '["name"] undefined is not a string');
-        },
-        'Shrinks deep record'() {
-            $mol_assert_fail(() => {
-                const User = $mol_data_record({ wife: $mol_data_record({ age: $mol_data_number }) });
-                User({ wife: {} });
-            }, '["wife"] ["age"] undefined is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is empty array'() {
-            $mol_data_array($mol_data_number)([]);
-        },
-        'Is array'() {
-            $mol_data_array($mol_data_number)([1, 2]);
-        },
-        'Is not array'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_number)({ [0]: 1, length: 1, map: () => { } });
-            }, '[object Object] is not an array');
-        },
-        'Has wrong item'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_number)([1, '1']);
-            }, '[1] 1 is not a number');
-        },
-        'Has wrong deep item'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_array($mol_data_number))([[], [0, 0, false]]);
-            }, '[1] [2] false is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is boolean - true'() {
-            $mol_data_boolean(true);
-        },
-        'Is boolean - false'() {
-            $mol_data_boolean(false);
-        },
-        'Is not boolean'() {
-            $mol_assert_fail(() => {
-                $mol_data_boolean('x');
-            }, 'x is not a boolean');
-        },
-        'Is object boolean'() {
-            $mol_assert_fail(() => {
-                $mol_data_boolean(new Boolean(''));
-            }, 'false is not a boolean');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for value of given enum and returns expected type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_enum_demo
-     */
-    function $mol_data_enum(name, dict) {
-        const index = {};
-        for (let key in dict) {
-            if (Number.isNaN(Number(key))) {
-                index[dict[key]] = key;
-            }
-        }
-        return $mol_data_setup((value) => {
-            if (typeof index[value] !== 'string') {
-                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
-            }
-            return value;
-        }, { name, dict });
-    }
-    $.$mol_data_enum = $mol_data_enum;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    let sex;
-    (function (sex) {
-        sex[sex["male"] = 0] = "male";
-        sex[sex["female"] = 1] = "female";
-    })(sex || (sex = {}));
-    let gender;
-    (function (gender) {
-        gender["bisexual"] = "bisexual";
-        gender["trans"] = "transgender";
-    })(gender || (gender = {}));
-    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
-    // const Sex = $mol_data_enum( 'sex' , sex )
-    // type sex_value =  $mol_type_assert< typeof Sex.Value , sex >
-    $mol_test({
-        'config of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_like(Sex.config, {
-                name: 'sex',
-                dict: sex,
-            });
-        },
-        'name of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_equal(Sex.config.name, 'sex');
-        },
-        'Is right value of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_equal(Sex(0), sex.male);
-        },
-        'Is wrong value of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex(2), `2 is not value of sex enum`);
-        },
-        'Is name instead of value'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex('male'), `male is not value of sex enum`);
-        },
-        'Is common object field'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex('__proto__'), `__proto__ is not value of sex enum`);
-        },
-    });
-    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
-    // type gender_value =  $mol_type_assert< typeof Gender.Value , gender >
-    $mol_test({
-        'config of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_like(Gender.config, {
-                name: 'gender',
-                dict: gender,
-            });
-        },
-        'Is right value of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_equal(Gender('transgender'), gender.trans);
-        },
-        'Is wrong value of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('xxx'), `xxx is not value of gender enum`);
-        },
-        'Is name instead of value'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('trans'), `trans is not value of gender enum`);
-        },
-        'Is common object field'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('__proto__'), `__proto__ is not value of gender enum`);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'type safe build & parse'() {
-            let States;
-            (function (States) {
-                States["opened"] = "opened";
-                States["closed"] = "closed";
-            })(States || (States = {}));
-            const State = $hyoo_harp_scheme({}, $mol_data_enum('States', States));
-            const Str = $hyoo_harp_scheme({}, $mol_data_string);
-            const Bool = $hyoo_harp_scheme({}, $mol_data_boolean);
-            const Repository = $hyoo_harp_scheme({
-                name: $mol_data_optional(Str),
-                isPrivate: $mol_data_optional(Bool),
-                // pullRequests: PullRequest,
-            });
-            const PullRequest = $hyoo_harp_scheme({
-                state: $mol_data_optional(State),
-                updated_at: $mol_data_optional(Str),
-                repository: $mol_data_optional(Repository),
-            });
-            const Request = $hyoo_harp_scheme({
-                pullRequest: $mol_data_optional(PullRequest),
-            });
-            const uri = 'pullRequest(state=closed=;-updated_at;repository(name;isPrivate);_num=0@100=)';
-            let query = Request({
-                pullRequest: {
-                    state: { '=': [[States.closed]] }, // filter
-                    updated_at: { '+': false }, // order
-                    repository: {
-                        name: {},
-                        isPrivate: {},
-                    },
-                    _num: { '=': [[0, 100]] }, // slice
-                }
-            });
-            $mol_assert_like(uri, Request.build(query));
-            $mol_assert_like(query, Request.parse(uri));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'save and load buffers'($) {
-            const land = $giper_baza_land.make({ $ });
-            const file = land.Data($giper_baza_file);
-            const source = new Uint8Array(2 ** 15 + 1);
-            source[2 ** 15] = 255;
-            file.buffer(source);
-            $mol_assert_equal(file.chunks().length, 2);
-            $mol_assert_equal(file.buffer(), source);
-        },
-        async 'save and load blobs'($) {
-            const land = $giper_baza_land.make({ $ });
-            const file = land.Data($giper_baza_file);
-            const source = new Uint8Array(2 ** 16 + 1);
-            source[2 ** 16 + 1] = 255;
-            await $mol_wire_async(file).blob(new $mol_blob([source], { type: 'test/test' }));
-            $mol_assert_equal('test/test', file.blob().type);
-            $mol_assert_equal(source, new Uint8Array(await file.blob().arrayBuffer()));
-        },
-    });
 })($ || ($ = {}));
 
 ;
@@ -32534,6 +33368,86 @@ var $;
                 $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
                 // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
                 $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+            },
+            async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const session0 = $giper_baza_land.make({ $, auth: () => king });
+                session0.give(auth_a.pass(), $giper_baza_rank_rule);
+                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+                await $mol_wire_async(session_a).units_steal(session0);
+                // Сам кадр лежит в отдельном ленде, в переписку едет только ссылка на него
+                const shot_land = $giper_baza_land.make({ $, auth: () => auth_a });
+                const shot = shot_land.Data($giper_baza_file);
+                shot.buffer(new Uint8Array([1, 2, 3, 4]));
+                shot.type('image/webp');
+                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+                msg_a.Author('auto')?.val(lord_a);
+                msg_a.Moment('auto')?.val(1000);
+                msg_a.Image('auto').remote(shot);
+                msg_a.Image_width('auto')?.val(1200);
+                msg_a.Image_height('auto')?.val(900);
+                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+                await $mol_wire_async(session_b).units_steal(session_a);
+                const links_b = session_b.Data($bog_gram_session).Messages().items();
+                $mol_assert_equal(links_b.length, 1);
+                // Ленд самого кадра тут не поднимаем: он приезжает по сети отдельно,
+                // у собеседника от сообщения есть ссылка на него и размеры
+                const got = message_of(session_b, links_b[0]);
+                $mol_assert_equal(got.Image().val().str, shot.link().str);
+                $mol_assert_equal(got.Image_width().val(), 1200);
+                $mol_assert_equal(got.Image_height().val(), 900);
+            },
+            async 'Сообщение с картинкой без текста остаётся живым и читаемым'($) {
+                const land = $giper_baza_land.make({ $ });
+                const session = land.Data($bog_gram_session);
+                const shot_land = $giper_baza_land.make({ $ });
+                const shot = shot_land.Data($giper_baza_file);
+                shot.buffer(new Uint8Array([7, 7, 7]));
+                shot.type('image/webp');
+                const message = session.Messages('auto').make(null);
+                message.Author('auto')?.val('LordMine');
+                message.Moment('auto')?.val(1000);
+                message.Image('auto').remote(shot);
+                message.Image_width('auto')?.val(800);
+                message.Image_height('auto')?.val(600);
+                const links = session.Messages().items();
+                const found = message_of(land, links[0]);
+                // Подписи нет — и это норма: пустой текст сообщение не ломает
+                $mol_assert_equal(found.Text()?.val() ?? '', '');
+                $mol_assert_equal(found.Deleted()?.val() ?? null, null);
+                $mol_assert_equal(found.Image().val().str, shot.link().str);
+                $mol_assert_equal(found.Image_width().val(), 800);
+                $mol_assert_equal(found.Image_height().val(), 600);
+                // Подпись можно дописать правкой, как и любой другой текст
+                found.Text('auto')?.val('Вид с балкона');
+                found.Edited('auto')?.val(1500);
+                $mol_assert_equal(message_of(land, links[0]).Text().val(), 'Вид с балкона');
+                $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
+            },
+            async 'Пережатие вписывает большую сторону в предел, сохраняя пропорции'($) {
+                const wide = $bog_gram_shrink.fit(4000, 3000, 1600);
+                $mol_assert_equal(wide.width, 1600);
+                $mol_assert_equal(wide.height, 1200);
+                const tall = $bog_gram_shrink.fit(3000, 4000, 1600);
+                $mol_assert_equal(tall.width, 1200);
+                $mol_assert_equal(tall.height, 1600);
+                const square = $bog_gram_shrink.fit(2000, 2000, 1600);
+                $mol_assert_equal(square.width, 1600);
+                $mol_assert_equal(square.height, 1600);
+                // Помещается — оставляем как есть: растянутый кадр только потяжелеет
+                const small = $bog_gram_shrink.fit(320, 200, 1600);
+                $mol_assert_equal(small.width, 320);
+                $mol_assert_equal(small.height, 200);
+                // Совсем узкая полоска не схлопывается в ноль
+                const strip = $bog_gram_shrink.fit(4000, 1, 1600);
+                $mol_assert_equal(strip.width, 1600);
+                $mol_assert_equal(strip.height, 1);
+                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
+                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
             },
             async 'Подпись собеседника живёт в приватном ленде и перекрывает его имя'($) {
                 const land = $giper_baza_land.make({ $ });
