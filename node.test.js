@@ -19660,6 +19660,42 @@ var $;
 
 
 ;
+	($.$mol_icon_account) = class $mol_icon_account extends ($.$mol_icon) {
+		path(){
+			return "M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_question) = class $mol_icon_account_question extends ($.$mol_icon) {
+		path(){
+			return "M13,8A4,4 0 0,1 9,12A4,4 0 0,1 5,8A4,4 0 0,1 9,4A4,4 0 0,1 13,8M17,18V20H1V18C1,15.79 4.58,14 9,14C13.42,14 17,15.79 17,18M20.5,14.5V16H19V14.5H20.5M18.5,9.5H17V9A3,3 0 0,1 20,6A3,3 0 0,1 23,9C23,9.97 22.5,10.88 21.71,11.41L21.41,11.6C20.84,12 20.5,12.61 20.5,13.3V13.5H19V13.3C19,12.11 19.6,11 20.59,10.35L20.88,10.16C21.27,9.9 21.5,9.47 21.5,9A1.5,1.5 0 0,0 20,7.5A1.5,1.5 0 0,0 18.5,9V9.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_check) = class $mol_icon_check extends ($.$mol_icon) {
+		path(){
+			return "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
 		path(){
 			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
@@ -20741,6 +20777,58 @@ var $;
 			(obj.sub) = () => ([(this.archive_unread_label())]);
 			return obj;
 		}
+		requests_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Requests_avatar_icon(){
+			const obj = new this.$.$mol_icon_account_question();
+			return obj;
+		}
+		Requests_avatar(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Requests_avatar_icon())]);
+			return obj;
+		}
+		Requests_title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Запросы"]);
+			return obj;
+		}
+		Requests_note(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Хотят вам написать"]);
+			return obj;
+		}
+		Requests_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Requests_title()), (this.Requests_note())]);
+			return obj;
+		}
+		requests_count_label(){
+			return "";
+		}
+		Requests_count(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.requests_count_label())]);
+			return obj;
+		}
+		request_accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Request_accept_icon(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		request_reject(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Request_reject_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
 		user_pick(id, next){
 			if(next !== undefined) return next;
 			return null;
@@ -21061,6 +21149,31 @@ var $;
 			]);
 			return obj;
 		}
+		Requests_row(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Запросы на переписку");
+			(obj.click) = (next) => ((this.requests_toggle(next)));
+			(obj.sub) = () => ([
+				(this.Requests_avatar()), 
+				(this.Requests_info()), 
+				(this.Requests_count())
+			]);
+			return obj;
+		}
+		Request_accept(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Принять");
+			(obj.click) = (next) => ((this.request_accept(id, next)));
+			(obj.sub) = () => ([(this.Request_accept_icon(id))]);
+			return obj;
+		}
+		Request_reject(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отклонить");
+			(obj.click) = (next) => ((this.request_reject(id, next)));
+			(obj.sub) = () => ([(this.Request_reject_icon(id))]);
+			return obj;
+		}
 		User_row(id){
 			const obj = new this.$.$mol_button_minor();
 			(obj.click) = (next) => ((this.user_pick(id, next)));
@@ -21230,6 +21343,17 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Archive_note"));
 	($mol_mem(($.$bog_gram.prototype), "Archive_info"));
 	($mol_mem(($.$bog_gram.prototype), "Archive_unread"));
+	($mol_mem(($.$bog_gram.prototype), "requests_toggle"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_avatar_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_avatar"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_title"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_note"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_info"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_count"));
+	($mol_mem_key(($.$bog_gram.prototype), "request_accept"));
+	($mol_mem_key(($.$bog_gram.prototype), "Request_accept_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "request_reject"));
+	($mol_mem_key(($.$bog_gram.prototype), "Request_reject_icon"));
 	($mol_mem_key(($.$bog_gram.prototype), "user_pick"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
@@ -21275,6 +21399,9 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Dialog_unarchive_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Saved_row"));
 	($mol_mem(($.$bog_gram.prototype), "Archive_row"));
+	($mol_mem(($.$bog_gram.prototype), "Requests_row"));
+	($mol_mem_key(($.$bog_gram.prototype), "Request_accept"));
+	($mol_mem_key(($.$bog_gram.prototype), "Request_reject"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
@@ -21860,6 +21987,10 @@ var $;
             Outbox: $giper_baza_list_str,
             /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             Hidden: $giper_baza_list_str,
+            /** Собеседники, с которыми владелец согласился переписываться: их диалоги
+             * идут в общий список, а не в запросы. Ключ — lord человека, а не ссылка
+             * на диалог: согласие даётся один раз и на все его будущие диалоги */
+            Accepted: $giper_baza_list_str,
             /** Ссылки на известные владельцу реестры пользователей */
             Registries: $giper_baza_list_str,
             /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
@@ -23045,19 +23176,131 @@ var $;
             fresh_first(ids) {
                 return [...ids].sort((a, b) => this.dialog_moment(b) - this.dialog_moment(a));
             }
-            /** Избранное стоит первой строкой всегда, вход в архив — последней и
-             * только пока архив не пуст; развёрнутый архив досыпает строки туда же. */
+            // ===== Кого пускать в список =====
+            /** Создатель диалога — лорд его ленда: ленд заводит тот, кто начал
+             * переписку. Ссылка приезжает из инбокса, открытого на запись всем,
+             * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
+             * весь список из-за одной такой строки падать не должен. */
+            dialog_owner(id) {
+                if (!id)
+                    return '';
+                try {
+                    return new $giper_baza_link(id).lord().str;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                    return '';
+                }
+            }
+            /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
+             * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
+             * подождёт снаружи списка. Подписка на приход данных сохраняется, так
+             * что строка появится сама вместе с первым сообщением. */
+            dialog_alive(id) {
+                try {
+                    return this.messages_alive_of(id).length > 0;
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return false;
+                }
+            }
+            /** Собеседники, с которыми я согласился переписываться. Список свой,
+             * приватный: собеседник не знает ни что попал в запросы, ни что вышел
+             * из них. */
+            accepted_lords() {
+                return (this.dialogs_store().Accepted()?.items() ?? []).map(String);
+            }
+            /** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
+             * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
+             * его приход сохраняется, и запрос уедет в общий список сам. */
+            peer_known(lord) {
+                if (!lord)
+                    return false;
+                if (this.accepted_lords().includes(lord))
+                    return true;
+                return Boolean(this.user_sources()[lord]);
+            }
+            /** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
+             * ним не должен оказаться в запросах, даже если ленд под него завёл он.
+             * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
+             * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
+             * Запись идемпотентна — обработчик события перезапускается на каждом
+             * ожидании, и повторный заход не должен ничего дописывать. */
+            peer_accept(lord) {
+                if (!lord)
+                    return null;
+                if (lord === this.my_lord())
+                    return null;
+                if (!$giper_baza_link.check(lord))
+                    return null;
+                if (this.accepted_lords().includes(lord))
+                    return null;
+                this.dialogs_store().Accepted('auto').add(lord);
+                return null;
+            }
+            /** Куда попадает диалог в списке. Свой показываем всегда — пустым его
+             * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
+             * человек мог открыть диалог со мной и передумать, а строка от него
+             * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
+             * уходит в запросы: знакомство предлагают, а не назначают. */
+            dialog_sort(own, alive, known) {
+                if (own)
+                    return 'plain';
+                if (!alive)
+                    return 'skip';
+                return known ? 'plain' : 'request';
+            }
+            /** То же по ссылке на диалог. Заархивированный не разбираем: он уже
+             * прошёл через мои руки, и второй раз спрашивать про него незачем.
+             * Свой ответ в диалоге — то же согласие, только данное молча: иначе
+             * давняя переписка с человеком не из реестра уехала бы в запросы. */
+            dialog_kind(id) {
+                if (this.archive_is(id))
+                    return 'plain';
+                const lord = this.dialog_owner(id);
+                const own = Boolean(lord) && lord === this.my_lord();
+                const known = this.peer_known(lord) || this.mine_wrote(id);
+                return this.dialog_sort(own, this.dialog_alive(id), known);
+            }
+            /** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
+             * я нигде не встречал. Убранные из списка сюда не попадают — отказ
+             * такое же решение, как и согласие. */
+            request_ids() {
+                const dropped = new Set(this.hidden_ids());
+                return this.fresh_first(this.dialog_ids().filter(id => {
+                    if (dropped.has(id))
+                        return false;
+                    return this.dialog_kind(id) === 'request';
+                }));
+            }
+            /** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
+             * последними и только пока им есть что показать; развёрнутый раздел
+             * досыпает строки туда же. */
             dialog_rows() {
                 const archived = this.archive_ids();
                 const folded = new Set(archived);
-                const visible = this.fresh_first(this.dialog_ids().filter(id => !folded.has(id)));
-                const empty = !visible.length && !archived.length;
+                const requests = this.request_ids();
+                const asked = new Set(requests);
+                const visible = this.fresh_first(this.dialog_ids().filter(id => {
+                    if (folded.has(id))
+                        return false;
+                    if (asked.has(id))
+                        return false;
+                    return this.dialog_kind(id) !== 'skip';
+                }));
+                const empty = !visible.length && !archived.length && !requests.length;
                 return [
                     this.Saved_row(),
                     ...visible.map(id => this.Dialog_row(id)),
                     ...empty ? [this.Dialogs_empty()] : [],
                     ...archived.length ? [this.Archive_row()] : [],
                     ...this.archive_opened() ? this.fresh_first(archived).map(id => this.Dialog_row(id)) : [],
+                    ...requests.length ? [this.Requests_row()] : [],
+                    ...this.requests_opened() ? requests.map(id => this.Dialog_row(id)) : [],
                 ];
             }
             dialog_current(next) {
@@ -23265,6 +23508,54 @@ var $;
             Archive_unread() {
                 return this.archive_unread() ? super.Archive_unread() : null;
             }
+            // ===== Запросы на переписку =====
+            requests_opened(next) {
+                return next ?? false;
+            }
+            /** Запросы разворачиваются прямо в списке, как и архив: отдельная
+             * страница ради пары незнакомцев — лишний шаг навигации. */
+            requests_toggle(next) {
+                this.delete_disarm();
+                this.requests_opened(!this.requests_opened());
+                return null;
+            }
+            requests_count_label() {
+                return String(this.request_ids().length);
+            }
+            /** В строке запроса на месте архива и корзины стоят согласие и отказ:
+             * прятать на вторую полку то, о чём решение ещё не принято, незачем.
+             * Сама строка остаётся обычной строкой диалога — по клику она так же
+             * открывает переписку, и прочитать её до решения это нормально. */
+            Dialog_archive(id) {
+                if (this.dialog_kind(id) === 'request')
+                    return this.Request_accept(id);
+                return super.Dialog_archive(id);
+            }
+            Dialog_delete(id) {
+                if (this.dialog_kind(id) === 'request')
+                    return this.Request_reject(id);
+                return super.Dialog_delete(id);
+            }
+            /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
+             * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
+             * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
+            request_accept(id, next) {
+                next?.stopPropagation();
+                if (!id)
+                    return null;
+                this.peer_accept(this.dialog_owner(id));
+                return null;
+            }
+            /** Отказ — то же самое, что удаление диалога из своего списка: ссылка
+             * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
+             * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
+            request_reject(id, next) {
+                next?.stopPropagation();
+                if (!id)
+                    return null;
+                this.dialog_delete(id);
+                return null;
+            }
             /** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
              * Избранного нет в списке диалогов, но открывается оно так же. */
             dialog_active() {
@@ -23383,6 +23674,7 @@ var $;
                 const peer = this.peer_lord().trim();
                 if (!peer)
                     return null;
+                this.peer_accept(peer);
                 this.peer_lord('');
                 const exist = this.dialog_with(peer);
                 if (exist) {
@@ -23505,6 +23797,25 @@ var $;
                 this.dialog_pending('');
                 return dialog_land.link().str;
             }
+            /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
+             * приглашение до первого своего сообщения никуда не едет, а диалог,
+             * в котором я уже отвечал, никаким запросом быть не может. */
+            mine_among(messages, my) {
+                return messages.some(message => String(message.Author()?.val() ?? '') === my);
+            }
+            /** То же по ссылке на диалог. Ленд может быть ещё не засинкан: тогда
+             * считаем, что писать было нечего — приглашение подождёт, а подписка
+             * на приход данных сохраняется, и флаш вернётся сам. */
+            mine_wrote(id) {
+                try {
+                    return this.mine_among(this.messages_alive_of(id), this.my_lord());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return false;
+                }
+            }
             // Доставка инвайтов: ретраим, пока не приедут права чужого inbox-ленда
             outbox_flush() {
                 const entries = (this.dialogs_store().Outbox()?.items() ?? []).map(String);
@@ -23513,6 +23824,8 @@ var $;
                 this.$.$mol_state_time.now(3000);
                 for (const entry of entries) {
                     const [peer, dialog_link] = entry.split('|');
+                    if (!this.mine_wrote(dialog_link))
+                        continue;
                     try {
                         const inbox_link = this.peer_store(peer).Inbox_land()?.val();
                         if (!inbox_link)
@@ -24647,6 +24960,7 @@ var $;
             user_pick(lord, next) {
                 if (!lord)
                     return null;
+                this.peer_accept(lord);
                 this.peer_lord('');
                 const exist = this.dialog_with(lord);
                 if (exist) {
@@ -24697,6 +25011,10 @@ var $;
                     return 'skip';
                 const exist = this.dialog_with(lord);
                 const plan = this.invite_plan(lord, this.my_lord(), exist);
+                /** По ссылке приходят сами: человек, чьё приглашение я открыл,
+                 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
+                if (plan !== 'skip')
+                    this.peer_accept(lord);
                 if (plan === 'open')
                     this.dialog_select(exist);
                 if (plan === 'start')
@@ -25019,6 +25337,24 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_moment", null);
         __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_alive", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "accepted_lords", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "peer_known", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "peer_accept", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_kind", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "request_ids", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_rows", null);
         __decorate([
@@ -25080,6 +25416,18 @@ var $;
         ], $bog_gram.prototype, "archive_unread", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "requests_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "requests_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "request_accept", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "request_reject", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "dialog_active", null);
         __decorate([
             $mol_mem
@@ -25119,6 +25467,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_autocreate", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "mine_wrote", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "outbox_flush", null);
@@ -26094,6 +26445,153 @@ var $;
                 },
                 borderRadius: '1rem',
             },
+            // ===== Вход в запросы на переписку =====
+            // Устроен как вход в архив: тот же кружок и та же сетка, чтобы
+            // раскрытые запросы читались продолжением списка, а не врезкой.
+            Requests_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+            },
+            Requests_avatar: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                width: '3rem',
+                height: '3rem',
+                borderRadius: '50%',
+                background: {
+                    color: veil,
+                },
+                color: $mol_theme.shade,
+            },
+            Requests_avatar_icon: {
+                width: '1.5rem',
+                height: '1.5rem',
+            },
+            Requests_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Requests_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    weight: 'bold',
+                },
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Requests_note: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            /* сколько человек ждёт ответа: тот же бейдж, что и у непрочитанного */
+            Requests_count: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                background: {
+                    color: tg_blue,
+                },
+                color: '#ffffff',
+                font: {
+                    size: '0.75rem',
+                    weight: 'bold',
+                },
+                lineHeight: '1.25rem',
+                minWidth: '1.25rem',
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '1rem',
+            },
+            /* согласие и отказ стоят на месте архива и корзины и повторяют их
+            габариты: строка запроса не должна отличаться от обычной ничем, кроме
+            самих значков. Цвет наследуется от строки — на выбранной он белый */
+            Request_accept: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Request_accept_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            Request_reject: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Request_reject_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
             // ===== Реестр пользователей =====
             Users_title: {
                 font: {
@@ -26867,6 +27365,11 @@ var $;
                         minHeight: '2.75rem',
                         padding: '0.375rem',
                     },
+                    Requests_row: {
+                        gap: '0.5rem',
+                        minHeight: '2.75rem',
+                        padding: '0.375rem',
+                    },
                     User_row: {
                         gap: '0.5rem',
                         minHeight: '2.75rem',
@@ -26891,6 +27394,24 @@ var $;
                         height: '1.125rem',
                     },
                     Dialog_delete_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
+                    },
+                    /* согласие и отказ стоят на тех же местах, что архив и корзина,
+                    и запас под палец им нужен тот же */
+                    Request_accept: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Request_reject: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Request_accept_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
+                    },
+                    Request_reject_icon: {
                         width: '1.125rem',
                         height: '1.125rem',
                     },
@@ -34879,6 +35400,80 @@ var $;
                 $mol_assert_equal(app.label_pick(peer, '', 'Иииии'), 'Иииии');
                 $mol_assert_equal(app.label_pick(peer, '', ''), app.lord_short(peer));
                 $mol_assert_equal(app.label_pick('', 'Костя с работы', 'Иииии'), '');
+            },
+            async 'Приглашение ждёт первого сообщения'($) {
+                const land = $giper_baza_land.make({ $ });
+                const session = land.Data($bog_gram_session);
+                const app = $bog_gram.make({ $ });
+                const my = 'LordMine';
+                const peer = 'LordPeer';
+                // Диалог только что заведён: показывать собеседнику нечего
+                $mol_assert_equal(app.mine_among([], my), false);
+                // Чужое сообщение приглашения не отпускает: считаются только свои
+                const alien = session.Messages('auto').make(null);
+                alien.Text('auto')?.val('Эй');
+                alien.Author('auto')?.val(peer);
+                alien.Moment('auto')?.val(1000);
+                const one = session.Messages().items()
+                    .map(link => message_of(land, link));
+                $mol_assert_equal(one.length, 1);
+                $mol_assert_equal(app.mine_among(one, my), false);
+                // Написал сам — теперь диалогу есть чем себя показать
+                const mine = session.Messages('auto').make(null);
+                mine.Text('auto')?.val('Привет');
+                mine.Author('auto')?.val(my);
+                mine.Moment('auto')?.val(2000);
+                const both = session.Messages().items()
+                    .map(link => message_of(land, link));
+                $mol_assert_equal(both.length, 2);
+                $mol_assert_equal(app.mine_among(both, my), true);
+                // Удалённое сообщение из списка живых уходит вместе со своим правом
+                // на доставку: список сообщений сюда приходит уже отфильтрованным
+                mine.Deleted('auto')?.val(3000);
+                const alive = both.filter(message => !message.Deleted()?.val());
+                $mol_assert_equal(app.mine_among(alive, my), false);
+            },
+            async 'Принятый собеседник уходит из запросов'($) {
+                const land = $giper_baza_land.make({ $ });
+                const store = land.Data($bog_gram_dialogs);
+                const known = 'LordKnown';
+                const stranger = 'LordStranger';
+                // Пока никого не принимали, списка согласий нет вовсе
+                $mol_assert_equal((store.Accepted()?.items() ?? []).length, 0);
+                store.Accepted('auto').add(known);
+                const accepted = new Set(store.Accepted().items().map(String));
+                $mol_assert_equal(accepted.has(known), true);
+                $mol_assert_equal(accepted.has(stranger), false);
+                // Повторное согласие ничего не задваивает
+                store.Accepted('auto').add(known);
+                $mol_assert_equal(store.Accepted().items().length, 1);
+                // Согласие даётся человеку, а отказ прячет ссылку на диалог:
+                // это разные записи и друг друга они не задевают
+                store.Hidden('auto').add('DialogFromStranger');
+                const hidden = new Set(store.Hidden().items().map(String));
+                $mol_assert_equal(hidden.has('DialogFromStranger'), true);
+                $mol_assert_equal(hidden.has(known), false);
+                $mol_assert_equal(store.Accepted().items().length, 1);
+                $mol_assert_equal((store.Archived()?.items() ?? []).length, 0);
+            },
+            async 'Чужой диалог показывается по сообщениям и знакомству'($) {
+                const app = $bog_gram.make({ $ });
+                // Свой диалог показывается всегда: пустым его завёл я сам
+                $mol_assert_equal(app.dialog_sort(true, false, false), 'plain');
+                $mol_assert_equal(app.dialog_sort(true, true, false), 'plain');
+                // Чужой пустой не показывается вовсе, знаком его автор или нет
+                $mol_assert_equal(app.dialog_sort(false, false, true), 'skip');
+                $mol_assert_equal(app.dialog_sort(false, false, false), 'skip');
+                // Чужой с сообщениями: от знакомого в общий список, от незнакомца в запросы
+                $mol_assert_equal(app.dialog_sort(false, true, true), 'plain');
+                $mol_assert_equal(app.dialog_sort(false, true, false), 'request');
+                // Создатель — лорд ленда диалога: по нему и решается, свой он или чужой
+                const auth = await $.$giper_baza_auth.generate();
+                const lord = auth.pass().lord().str;
+                const dialog_link = new $giper_baza_link(lord + '_KJhgFdSa').str;
+                $mol_assert_equal(app.dialog_owner(dialog_link), lord);
+                $mol_assert_equal(app.dialog_owner(lord), lord);
+                $mol_assert_equal(app.dialog_owner(''), '');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

@@ -37850,6 +37850,33 @@ declare namespace $ {
 //# sourceMappingURL=archive.view.tree.d.ts.map
 declare namespace $ {
 
+	export class $mol_icon_account extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=account.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_account_question extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=question.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_check extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=check.view.tree.d.ts.map
+declare namespace $ {
+
 	export class $mol_icon_pencil extends $mol_icon {
 		path( ): string
 	}
@@ -38024,6 +38051,7 @@ declare namespace $.$$ {
             readonly Dialogs: (auto?: any) => $giper_baza_list_str | null;
             readonly Outbox: (auto?: any) => $giper_baza_list_str | null;
             readonly Hidden: (auto?: any) => $giper_baza_list_str | null;
+            readonly Accepted: (auto?: any) => $giper_baza_list_str | null;
             readonly Registries: (auto?: any) => $giper_baza_list_str | null;
             readonly Saved_land: (auto?: any) => $giper_baza_atom_text | null;
             readonly Archived: (auto?: any) => $giper_baza_list_str | null;
@@ -38076,6 +38104,10 @@ declare namespace $.$$ {
             readonly Outbox: typeof $giper_baza_list_str;
             /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             readonly Hidden: typeof $giper_baza_list_str;
+            /** Собеседники, с которыми владелец согласился переписываться: их диалоги
+             * идут в общий список, а не в запросы. Ключ — lord человека, а не ссылка
+             * на диалог: согласие даётся один раз и на все его будущие диалоги */
+            readonly Accepted: typeof $giper_baza_list_str;
             /** Ссылки на известные владельцу реестры пользователей */
             readonly Registries: typeof $giper_baza_list_str;
             /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
@@ -45345,15 +45377,15 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_avatar__id_bog_gram_159 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_lord'] >
+	type $mol_view__sub_bog_gram_159 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $bog_gram_avatar['id'] >
+		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_avatar__tint_bog_gram_160 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_tint'] >
+	type $mol_view__sub_bog_gram_160 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $bog_gram_avatar['tint'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_161 = $mol_type_enforce<
 		readonly(any)[]
@@ -45370,145 +45402,145 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_164 = $mol_type_enforce<
+	type $bog_gram_avatar__id_bog_gram_164 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_lord'] >
+		,
+		ReturnType< $bog_gram_avatar['id'] >
+	>
+	type $bog_gram_avatar__tint_bog_gram_165 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_tint'] >
+		,
+		ReturnType< $bog_gram_avatar['tint'] >
+	>
+	type $mol_view__sub_bog_gram_166 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_photo__hint_bog_gram_165 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_167 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_168 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_169 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_photo__hint_bog_gram_170 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_photo['hint'] >
 	>
-	type $bog_gram_photo__uri_bog_gram_166 = $mol_type_enforce<
+	type $bog_gram_photo__uri_bog_gram_171 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_shot_uri'] >
 		,
 		ReturnType< $bog_gram_photo['uri'] >
 	>
-	type $bog_gram_photo__box_width_bog_gram_167 = $mol_type_enforce<
+	type $bog_gram_photo__box_width_bog_gram_172 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_photo['box_width'] >
 	>
-	type $bog_gram_photo__box_ratio_bog_gram_168 = $mol_type_enforce<
+	type $bog_gram_photo__box_ratio_bog_gram_173 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_shot_ratio'] >
 		,
 		ReturnType< $bog_gram_photo['box_ratio'] >
 	>
-	type $bog_gram_photo__click_bog_gram_169 = $mol_type_enforce<
+	type $bog_gram_photo__click_bog_gram_174 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_zoom'] >
 		,
 		ReturnType< $bog_gram_photo['click'] >
 	>
-	type $bog_gram_sound__uri_bog_gram_170 = $mol_type_enforce<
+	type $bog_gram_sound__uri_bog_gram_175 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_sound['uri'] >
 	>
-	type $bog_gram_sound__span_bog_gram_171 = $mol_type_enforce<
+	type $bog_gram_sound__span_bog_gram_176 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_sound['span'] >
 	>
-	type $bog_gram_sound__playing_bog_gram_172 = $mol_type_enforce<
+	type $bog_gram_sound__playing_bog_gram_177 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_sound['playing'] >
 	>
-	type $bog_gram_sound__toggle_bog_gram_173 = $mol_type_enforce<
+	type $bog_gram_sound__toggle_bog_gram_178 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_sound['toggle'] >
 	>
-	type $bog_gram_sound__ended_bog_gram_174 = $mol_type_enforce<
+	type $bog_gram_sound__ended_bog_gram_179 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_sound['ended'] >
 	>
-	type $mol_paragraph__title_bog_gram_175 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_180 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_body'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_176 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_181 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_177 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_182 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_178 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_183 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_179 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_184 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_180 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_185 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_181 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_186 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_182 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_187 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_183 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_188 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_184 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_189 = $mol_type_enforce<
 		ReturnType< $bog_gram['message_delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_185 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_190 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_186 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_191 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_187 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_188 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_189 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_list__rows_bog_gram_190 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_191 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
 	>
 	type $mol_view__sub_bog_gram_192 = $mol_type_enforce<
 		readonly(any)[]
@@ -45520,50 +45552,50 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_194 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_194 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_gram_195 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_196 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_197 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_198 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_199 = $mol_type_enforce<
 		ReturnType< $bog_gram['registry_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_195 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_200 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['registry_active_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_196 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_201 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_197 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_198 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_199 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_200 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_201 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_button_minor__click_bog_gram_202 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_save'] >
+		ReturnType< $bog_gram['key_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -45572,81 +45604,151 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_204 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_204 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_205 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_gram_205 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_206 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_207 = $mol_type_enforce<
+		ReturnType< $bog_gram['key_save'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_208 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_209 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_210 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_select'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_206 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_211 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_207 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_212 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_208 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_213 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_209 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_214 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_open'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__attr_bog_gram_210 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_215 = $mol_type_enforce<
 		({ 
 			'bog_gram_current': ReturnType< $bog_gram['saved_current_is'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__sub_bog_gram_211 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_212 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_213 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_214 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_215 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_pick'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
 	type $mol_button_minor__sub_bog_gram_216 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_217 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_217 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_218 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_219 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_220 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_221 = $mol_type_enforce<
+		ReturnType< $bog_gram['requests_toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_222 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_223 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_224 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_accept'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_225 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_226 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_227 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_reject'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_228 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__click_bog_gram_229 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_pick'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_230 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_231 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_218 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_232 = $mol_type_enforce<
 		({ 
 			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
 			'bog_gram_menu': ReturnType< $bog_gram['message_menu_is'] >,
@@ -45654,7 +45756,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__event_bog_gram_219 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_233 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram['message_press'] > ): ReturnType< $bog_gram['message_press'] >,
 			pointerup( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
@@ -45664,7 +45766,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_220 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_234 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -45850,6 +45952,18 @@ declare namespace $ {
 		Archive_info( ): $mol_view
 		archive_unread_label( ): string
 		Archive_unread( ): $mol_view
+		requests_toggle( next?: any ): any
+		Requests_avatar_icon( ): $mol_icon_account_question
+		Requests_avatar( ): $mol_view
+		Requests_title( ): $mol_view
+		Requests_note( ): $mol_view
+		Requests_info( ): $mol_view
+		requests_count_label( ): string
+		Requests_count( ): $mol_view
+		request_accept( id: any, next?: any ): any
+		Request_accept_icon( id: any): $mol_icon_check
+		request_reject( id: any, next?: any ): any
+		Request_reject_icon( id: any): $mol_icon_close
 		user_pick( id: any, next?: any ): any
 		user_lord( id: any): string
 		user_tint( id: any): number
@@ -45914,6 +46028,9 @@ declare namespace $ {
 		Dialog_unarchive_icon( id: any): $mol_icon_archive_arrow_up
 		Saved_row( ): $mol_button_minor
 		Archive_row( ): $mol_button_minor
+		Requests_row( ): $mol_button_minor
+		Request_accept( id: any): $mol_button_minor
+		Request_reject( id: any): $mol_button_minor
 		User_row( id: any): $mol_button_minor
 		Day_row( id: any): $mol_view
 		Message_row( id: any): $mol_view
@@ -46429,8 +46546,49 @@ declare namespace $.$$ {
         dialog_moment(id: string): number;
         /** Порядок один и тот же и в основном списке, и в архиве: свежие сверху. */
         fresh_first(ids: readonly string[]): string[];
-        /** Избранное стоит первой строкой всегда, вход в архив — последней и
-         * только пока архив не пуст; развёрнутый архив досыпает строки туда же. */
+        /** Создатель диалога — лорд его ленда: ленд заводит тот, кто начал
+         * переписку. Ссылка приезжает из инбокса, открытого на запись всем,
+         * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
+         * весь список из-за одной такой строки падать не должен. */
+        dialog_owner(id: string): string;
+        /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
+         * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
+         * подождёт снаружи списка. Подписка на приход данных сохраняется, так
+         * что строка появится сама вместе с первым сообщением. */
+        dialog_alive(id: string): boolean;
+        /** Собеседники, с которыми я согласился переписываться. Список свой,
+         * приватный: собеседник не знает ни что попал в запросы, ни что вышел
+         * из них. */
+        accepted_lords(): string[];
+        /** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
+         * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
+         * его приход сохраняется, и запрос уедет в общий список сам. */
+        peer_known(lord: string): boolean;
+        /** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
+         * ним не должен оказаться в запросах, даже если ленд под него завёл он.
+         * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
+         * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
+         * Запись идемпотентна — обработчик события перезапускается на каждом
+         * ожидании, и повторный заход не должен ничего дописывать. */
+        peer_accept(lord: string): null;
+        /** Куда попадает диалог в списке. Свой показываем всегда — пустым его
+         * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
+         * человек мог открыть диалог со мной и передумать, а строка от него
+         * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
+         * уходит в запросы: знакомство предлагают, а не назначают. */
+        dialog_sort(own: boolean, alive: boolean, known: boolean): 'plain' | 'request' | 'skip';
+        /** То же по ссылке на диалог. Заархивированный не разбираем: он уже
+         * прошёл через мои руки, и второй раз спрашивать про него незачем.
+         * Свой ответ в диалоге — то же согласие, только данное молча: иначе
+         * давняя переписка с человеком не из реестра уехала бы в запросы. */
+        dialog_kind(id: string): 'plain' | 'request' | 'skip';
+        /** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
+         * я нигде не встречал. Убранные из списка сюда не попадают — отказ
+         * такое же решение, как и согласие. */
+        request_ids(): string[];
+        /** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
+         * последними и только пока им есть что показать; развёрнутый раздел
+         * досыпает строки туда же. */
         dialog_rows(): $mol_view[];
         dialog_current(next?: string): string;
         dialog_current_is(id: string): boolean;
@@ -46484,6 +46642,25 @@ declare namespace $.$$ {
         archive_unread(): number;
         archive_unread_label(): string;
         Archive_unread(): $mol_view;
+        requests_opened(next?: boolean): boolean;
+        /** Запросы разворачиваются прямо в списке, как и архив: отдельная
+         * страница ради пары незнакомцев — лишний шаг навигации. */
+        requests_toggle(next?: any): null;
+        requests_count_label(): string;
+        /** В строке запроса на месте архива и корзины стоят согласие и отказ:
+         * прятать на вторую полку то, о чём решение ещё не принято, незачем.
+         * Сама строка остаётся обычной строкой диалога — по клику она так же
+         * открывает переписку, и прочитать её до решения это нормально. */
+        Dialog_archive(id: string): $mol_button_minor;
+        Dialog_delete(id: string): $mol_button_minor;
+        /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
+         * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
+         * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
+        request_accept(id: string, next?: Event): null;
+        /** Отказ — то же самое, что удаление диалога из своего списка: ссылка
+         * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
+         * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
+        request_reject(id: string, next?: Event): null;
         /** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
          * Избранного нет в списке диалогов, но открывается оно так же. */
         dialog_active(): string;
@@ -46530,6 +46707,14 @@ declare namespace $.$$ {
         peer_pass_of(lord: string): $giper_baza_auth_pass | null;
         dialog_autocreate(): string;
         dialog_create(peer: string): string | null;
+        /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
+         * приглашение до первого своего сообщения никуда не едет, а диалог,
+         * в котором я уже отвечал, никаким запросом быть не может. */
+        mine_among(messages: readonly $bog_gram_message[], my: string): boolean;
+        /** То же по ссылке на диалог. Ленд может быть ещё не засинкан: тогда
+         * считаем, что писать было нечего — приглашение подождёт, а подписка
+         * на приход данных сохраняется, и флаш вернётся сам. */
+        mine_wrote(id: string): boolean;
         outbox_flush(): number;
         inbox_merge(): number;
         monitor_fill(): boolean;
@@ -46834,7 +47019,7 @@ declare namespace $.$$ {
         invite_handle(): string;
         /** Параметр из адреса снимаем в любом случае: иначе перезагрузка
          * страницы принимала бы то же приглашение снова и снова. */
-        invite_accept(lord: string): "start" | "open" | "skip";
+        invite_accept(lord: string): "start" | "skip" | "open";
         notify_supported(): boolean;
         Notify_toggle(): $mol_button_major;
         /** Разрешение браузера само о себе не сообщает: держим копию в меме
