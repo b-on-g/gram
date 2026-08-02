@@ -322,6 +322,80 @@ namespace $.$$ {
 
 		},
 
+		async 'Ключ участника доезжает до других через реестр'( $ ) {
+
+			const king = await $.$giper_baza_auth.generate()
+			const auth_a = await $.$giper_baza_auth.generate()
+			const auth_b = await $.$giper_baza_auth.generate()
+
+			const lord_a = auth_a.pass().lord().str
+			const key_a = auth_a.pass().toString()
+
+			const registry0 = $giper_baza_land.make({ $, auth: ()=> king })
+			registry0.give( null, $giper_baza_rank_post( 'just' ) )
+
+			// A вступает в реестр: рядом со своим идентификатором кладёт и ключ
+			const registry_a = $giper_baza_land.make({ $, link: ()=> registry0.link(), auth: ()=> auth_a })
+			await $mol_wire_async( registry_a ).units_steal( registry0 )
+
+			const data_a = registry_a.Data( $bog_gram_users )
+			data_a.Lords( 'auto' )!.add( lord_a )
+			data_a.Keys( 'auto' )?.key( lord_a, 'auto' )?.Pass( 'auto' )?.val( key_a )
+
+			// B стягивает реестр и находит там ключ A
+			const registry_b = $giper_baza_land.make({ $, link: ()=> registry0.link(), auth: ()=> auth_b })
+			await $mol_wire_async( registry_b ).units_steal( registry_a )
+
+			const data_b = registry_b.Data( $bog_gram_users )
+			$mol_assert_equal( ( data_b.Lords()!.items() as readonly string[] ).includes( lord_a ), true )
+
+			const got = String( data_b.Keys()?.key( lord_a )?.Pass()?.val() ?? '' )
+			$mol_assert_equal( got, key_a )
+
+			// Из строки собирается тот самый ключ: по нему и выдаются права
+			const app = $bog_gram.make({ $ })
+			$mol_assert_equal( app.pass_verified( lord_a, got )?.lord().str, lord_a )
+
+			// Ключи лежат по ключу-лорду и соседей не задевают
+			$mol_assert_equal( Boolean( data_b.Keys()?.key( auth_b.pass().lord().str ) ), false )
+
+		},
+
+		async 'Подложенный ключ не принимается: идентификатор его не подтверждает'( $ ) {
+
+			const auth_a = await $.$giper_baza_auth.generate()
+			const auth_b = await $.$giper_baza_auth.generate()
+
+			const lord_a = auth_a.pass().lord().str
+			const app = $bog_gram.make({ $ })
+
+			// Свой ключ под своей записью проходит
+			$mol_assert_equal( app.pass_verified( lord_a, auth_a.pass().toString() )?.lord().str, lord_a )
+
+			// Реестр открыт всем, и чужой ключ под записью A мог положить кто
+			// угодно: идентификатор это хеш ключа, пересчёт ловит подмену
+			$mol_assert_equal( app.pass_verified( lord_a, auth_b.pass().toString() ), null )
+			$mol_assert_equal( app.pass_verified( auth_b.pass().lord().str, auth_a.pass().toString() ), null )
+
+		},
+
+		async 'Мусор вместо ключа не роняет разбор'( $ ) {
+
+			const auth = await $.$giper_baza_auth.generate()
+			const lord = auth.pass().lord().str
+			const app = $bog_gram.make({ $ })
+
+			// Ни строки короче ключа, ни строки нужной длины из чего попало
+			$mol_assert_equal( app.pass_verified( lord, 'не ключ' ), null )
+			$mol_assert_equal( app.pass_verified( lord, 'a'.repeat( 43 ) ), null )
+			$mol_assert_equal( app.pass_verified( lord, 'a'.repeat( 86 ) ), null )
+
+			// Пустого места в реестре тоже достаточно, чтобы ничего не делать
+			$mol_assert_equal( app.pass_verified( lord, '' ), null )
+			$mol_assert_equal( app.pass_verified( '', auth.pass().toString() ), null )
+
+		},
+
 		async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'( $ ) {
 
 			const land = $giper_baza_land.make({ $ })

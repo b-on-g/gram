@@ -33,6 +33,13 @@ namespace $.$$ {
 	 * заметит, а реже секунды начинают перескакивать через одну. */
 	const clock_tick = 200
 
+	/** Разобранные ключи участников: одной и той же строке должен отвечать
+	 * один и тот же объект. Выдача права на шифрованный ленд считает общий
+	 * секрет и держит его при самом объекте ключа, а фибра перезапускается с
+	 * начала на каждом ожидании — свежий разбор на каждой попытке заводил бы
+	 * счёт заново, и попытки не кончились бы никогда. */
+	const pass_parsed = new Map< string, $giper_baza_auth_pass >()
+
 	/** Что показать под полем ввода, когда с записью не сложилось. Ни
 	 * модалок, ни системных окон — одна строка на месте. */
 	const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера'
@@ -60,6 +67,14 @@ namespace $.$$ {
 		@$mol_mem
 		my_lord() {
 			return this.$.$giper_baza_auth.current().pass().lord().str
+		}
+
+		/** Публичная часть своего ключа строкой. Приватная сюда не попадает:
+		 * это ровно то, что можно класть в открытый реестр — по нему мне и
+		 * выдадут право читать шифрованный ленд диалога. */
+		@$mol_mem
+		my_pass_str() {
+			return this.$.$giper_baza_auth.current().pass().toString()
 		}
 
 		@$mol_mem
@@ -162,9 +177,18 @@ namespace $.$$ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) ).Data( $bog_gram_user )
 		}
 
+		/** Имя человек хранит в своём ленде, и тот приезжает не сразу — а с
+		 * ключом из реестра диалог заводится и вовсе без сети. Ждать имени
+		 * поэтому нельзя: пока его нет, показываем сокращённый идентификатор,
+		 * подписка на приход ленда сохраняется, и имя проявится само. */
 		@$mol_mem_key
 		peer_name( lord: string ) {
-			return this.peer_store( lord ).Name()?.val() ?? ''
+			try {
+				return this.peer_store( lord ).Name()?.val() ?? ''
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
 		}
 
 		// ===== Свои подписи собеседников =====
@@ -782,17 +806,79 @@ namespace $.$$ {
 			return null
 		}
 
-		// Ждём реактивно, пока home собеседника приедет с мастера, и только тогда создаём диалог
+		/** Разбор ключа из реестра с проверкой подлинности. Реестр открыт на
+		 * запись всем, поэтому положить туда свой ключ под чужой записью может
+		 * кто угодно — и тогда диалог, заведённый для одного человека,
+		 * открылся бы совсем другому. Идентификатор это хеш ключа, так что
+		 * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
+		 * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
+		 * исключение, и оно не должно мешать заводить диалог. */
+		pass_verified( lord: string, str: string ): $giper_baza_auth_pass | null {
+
+			if( !lord || !str ) return null
+
+			try {
+
+				let pass = pass_parsed.get( str )
+				if( !pass ) {
+					pass = $giper_baza_auth_pass.from( str )
+					pass_parsed.set( str, pass )
+				}
+
+				if( pass.lord().str === lord ) return pass
+
+				$mol_fail_log( new Error( 'Ключ в реестре не сходится со своим владельцем', { cause: lord } ) )
+				return null
+
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+				return null
+			}
+
+		}
+
+		/** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
+		 * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
+		 * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
+		 * ленд ждёт сети — но у человека из реестра ключ лежит ещё и там,
+		 * поэтому запрос ленда шлём, а доставки не дожидаемся. */
+		peer_pass_of( lord: string ): $giper_baza_auth_pass | null {
+
+			if( !lord ) return null
+
+			const land = this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) )
+
+			try {
+				land.sync()
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+
+			const own = land.king_pass()
+			if( own ) return own
+
+			for( const id of this.registry_ids() ) {
+				try {
+					const str = String( this.registry_store( id ).Keys()?.key( lord )?.Pass()?.val() ?? '' )
+					const pass = this.pass_verified( lord, str )
+					if( pass ) return pass
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+
+			return null
+		}
+
+		// Ждём реактивно, пока ключ собеседника не окажется под рукой, и только
+		// тогда создаём диалог. Имени не ждём: оно косметика и подъедет само
 		@$mol_mem
 		dialog_autocreate() {
 			const peer = this.dialog_pending()
 			if( !peer ) return ''
 
-			const peer_user = this.peer_store( peer )
-			peer_user.keys()
-			peer_user.Name()?.val()
-
-			const pass = this.$.$giper_baza_glob.Land( new $giper_baza_link( peer ) ).king_pass()
+			const pass = this.peer_pass_of( peer )
 			if( !pass ) return ''
 
 			$mol_wire_async( this ).dialog_create( peer )
@@ -801,7 +887,7 @@ namespace $.$$ {
 
 		dialog_create( peer: string ) {
 
-			// Гонка: пока ждали king_pass, диалог мог появиться (или второй клик)
+			// Гонка: пока ждали ключ, диалог мог появиться (или второй клик)
 			const exist = this.dialog_with( peer )
 			if( exist ) {
 				this.dialog_current( exist )
@@ -812,10 +898,10 @@ namespace $.$$ {
 			}
 
 			const glob = this.$.$giper_baza_glob
-			const peer_user = this.peer_store( peer )
-			peer_user.Name()?.val()
 
-			const peer_pass = glob.Land( new $giper_baza_link( peer ) ).king_pass()
+			// Имя собеседника тут не читаем: оно живёт в его ленде и офлайн
+			// подвесило бы фибру целиком, хотя для самого диалога не нужно
+			const peer_pass = this.peer_pass_of( peer )
 			if( !peer_pass ) return null
 
 			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
@@ -1840,8 +1926,12 @@ namespace $.$$ {
 			return ( this.dialogs_store().Registries()?.items() ?? [] ).map( String )
 		}
 
+		registry_land( id: string ) {
+			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
+		}
+
 		registry_store( id: string ) {
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) ).Data( $bog_gram_users )
+			return this.registry_land( id ).Data( $bog_gram_users )
 		}
 
 		/** Чужой реестр может быть ещё не засинкан: подписка на его приход
@@ -1934,6 +2024,47 @@ namespace $.$$ {
 			]
 		}
 
+		/** Свой ключ рядом со своей записью: по одному идентификатору диалог со
+		 * мной не завести, а так скачанного реестра собеседнику хватает.
+		 * Запись идемпотентна — уже лежащий там ключ второй раз не пишем,
+		 * поэтому звать её можно и из действия, и из реактивной дозаписи. */
+		registry_key_put( id: string ) {
+
+			if( !id ) return null
+
+			const store = this.registry_store( id )
+			const my = this.my_lord()
+			const str = this.my_pass_str()
+
+			if( String( store.Keys()?.key( my )?.Pass()?.val() ?? '' ) === str ) return null
+			store.Keys( 'auto' )?.key( my, 'auto' )?.Pass( 'auto' )?.val( str )
+
+			return null
+		}
+
+		/** Реестры, куда я вступил до появления ключей: там лежит только мой
+		 * идентификатор, и собеседник без сети диалог со мной не заведёт.
+		 * Дописываем ключ туда, где я уже числюсь. Чужой реестр может быть ещё
+		 * не засинкан — подписка на его приход сохраняется, дозапись случится
+		 * сама, а один незасинканный не должен мешать остальным. */
+		@$mol_mem
+		registry_keys_fill() {
+
+			let count = 0
+
+			for( const id of this.registry_ids() ) {
+				if( !this.registry_joined( id ) ) continue
+				try {
+					this.registry_key_put( id )
+					++ count
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+
+			return count
+		}
+
 		/** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
 		@$mol_action
 		registry_make( next?: any ) {
@@ -1948,6 +2079,18 @@ namespace $.$$ {
 			const store = land.Data( $bog_gram_users )
 			if( title ) store.Title( 'auto' )?.val( title )
 			store.Lords( 'auto' )?.add( this.my_lord() )
+			store.Keys( 'auto' )?.key( this.my_lord(), 'auto' )?.Pass( 'auto' )?.val( this.my_pass_str() )
+
+			/** Дожидаемся, пока записи подпишутся и осядут в хранилище. Ждём не
+			 * ради вида: право писать всем выдаётся отдельной записью, и пока
+			 * та не подписана, чужой клиент её не примет — люди приходили бы в
+			 * реестр, где им можно только смотреть. Заодно обработчик всё это
+			 * время висит в фибре, и кнопка сама мигает.
+			 *
+			 * Стоит до очистки поля с названием: фибра перезапускается с начала
+			 * на каждом ожидании, а очищенное название следующий заход прочитал
+			 * бы уже пустым. */
+			land.units_saving()
 
 			this.dialogs_store().Registries( 'auto' )!.add( id )
 			this.registry_name( '' )
@@ -1969,7 +2112,17 @@ namespace $.$$ {
 		}
 
 		/** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
-		 * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр. */
+		 * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр.
+		 *
+		 * Дописать запись мало: подпись с перебором степеней и сохранение
+		 * уезжают в фон, действие кончается мгновенно, и человек видит, что
+		 * ничего не произошло. Поэтому подтверждения дожидаемся тут же, не
+		 * выходя из фибры: обработчик приостанавливается, кнопка мигает сама,
+		 * пока запись не осядет, и перестаёт, когда та подтвердилась.
+		 *
+		 * Перезапуск фибры при этом ничего не задваивает: список сам отказывает
+		 * уже лежащему в нём значению, а ключ пишется только когда отличается
+		 * от записанного. */
 		@$mol_action
 		registry_join( id: string, next?: Event ) {
 			next?.stopPropagation()
@@ -1980,6 +2133,8 @@ namespace $.$$ {
 			if( !this.registry_lords( id ).includes( this.my_lord() ) ) {
 				this.registry_store( id ).Lords( 'auto' )?.add( this.my_lord() )
 			}
+			this.registry_key_put( id )
+			this.registry_land( id ).units_saving()
 			return null
 		}
 
@@ -2372,6 +2527,7 @@ namespace $.$$ {
 			try { this.baza_master() } catch( error ) { $mol_fail_log( error ) }
 			try { this.setup_ready() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
+			try { this.registry_keys_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.invite_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
