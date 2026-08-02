@@ -22337,11 +22337,34 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        /** Публичный ключ участника. Ленды диалога шифрованные, и право читать их
+         * заворачивается на ключ конкретного человека — по одному лишь его
+         * идентификатору выдать это право нечем. Идентификатор — хеш ключа,
+         * поэтому чужой ключ, подложенный под чужую же запись, отличается от
+         * настоящего пересчётом на месте, без всякой сети. */
+        class $bog_gram_key extends $giper_baza_dict.with({
+            Pass: $giper_baza_atom_text,
+        }) {
+        }
+        $$.$bog_gram_key = $bog_gram_key;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
         /** Публичный реестр пользователей (для обнаружения и пуш-сервиса). */
         class $bog_gram_users extends $giper_baza_dict.with({
             /** Название реестра: задаёт создатель, видят все. */
             Title: $giper_baza_atom_text,
             Lords: $giper_baza_list_str,
+            /** Публичные ключи участников, ключ словаря — лорд участника. Со
+             * скачанным реестром диалог заводится без сети: одного идентификатора
+             * для шифрованного ленда мало, нужен сам ключ. */
+            Keys: $giper_baza_dict_to($bog_gram_key),
         }) {
         }
         $$.$bog_gram_users = $bog_gram_users;
@@ -22702,6 +22725,12 @@ var $;
         /** Как часто перерисовывается таймер записи: чаще человек всё равно не
          * заметит, а реже секунды начинают перескакивать через одну. */
         const clock_tick = 200;
+        /** Разобранные ключи участников: одной и той же строке должен отвечать
+         * один и тот же объект. Выдача права на шифрованный ленд считает общий
+         * секрет и держит его при самом объекте ключа, а фибра перезапускается с
+         * начала на каждом ожидании — свежий разбор на каждой попытке заводил бы
+         * счёт заново, и попытки не кончились бы никогда. */
+        const pass_parsed = new Map();
         /** Что показать под полем ввода, когда с записью не сложилось. Ни
          * модалок, ни системных окон — одна строка на месте. */
         const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
@@ -22722,6 +22751,12 @@ var $;
             }
             my_lord() {
                 return this.$.$giper_baza_auth.current().pass().lord().str;
+            }
+            /** Публичная часть своего ключа строкой. Приватная сюда не попадает:
+             * это ровно то, что можно класть в открытый реестр — по нему мне и
+             * выдадут право читать шифрованный ленд диалога. */
+            my_pass_str() {
+                return this.$.$giper_baza_auth.current().pass().toString();
             }
             user_name(next) {
                 if (next !== undefined)
@@ -22805,8 +22840,19 @@ var $;
             peer_store(lord) {
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(lord)).Data($bog_gram_user);
             }
+            /** Имя человек хранит в своём ленде, и тот приезжает не сразу — а с
+             * ключом из реестра диалог заводится и вовсе без сети. Ждать имени
+             * поэтому нельзя: пока его нет, показываем сокращённый идентификатор,
+             * подписка на приход ленда сохраняется, и имя проявится само. */
             peer_name(lord) {
-                return this.peer_store(lord).Name()?.val() ?? '';
+                try {
+                    return this.peer_store(lord).Name()?.val() ?? '';
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
             }
             // ===== Свои подписи собеседников =====
             /** Как я назвал человека для себя. Подписи лежат в том же приватном
@@ -23346,22 +23392,81 @@ var $;
                 this.dialog_pending(peer);
                 return null;
             }
-            // Ждём реактивно, пока home собеседника приедет с мастера, и только тогда создаём диалог
+            /** Разбор ключа из реестра с проверкой подлинности. Реестр открыт на
+             * запись всем, поэтому положить туда свой ключ под чужой записью может
+             * кто угодно — и тогда диалог, заведённый для одного человека,
+             * открылся бы совсем другому. Идентификатор это хеш ключа, так что
+             * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
+             * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
+             * исключение, и оно не должно мешать заводить диалог. */
+            pass_verified(lord, str) {
+                if (!lord || !str)
+                    return null;
+                try {
+                    let pass = pass_parsed.get(str);
+                    if (!pass) {
+                        pass = $giper_baza_auth_pass.from(str);
+                        pass_parsed.set(str, pass);
+                    }
+                    if (pass.lord().str === lord)
+                        return pass;
+                    $mol_fail_log(new Error('Ключ в реестре не сходится со своим владельцем', { cause: lord }));
+                    return null;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            /** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
+             * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
+             * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
+             * ленд ждёт сети — но у человека из реестра ключ лежит ещё и там,
+             * поэтому запрос ленда шлём, а доставки не дожидаемся. */
+            peer_pass_of(lord) {
+                if (!lord)
+                    return null;
+                const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
+                try {
+                    land.sync();
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                const own = land.king_pass();
+                if (own)
+                    return own;
+                for (const id of this.registry_ids()) {
+                    try {
+                        const str = String(this.registry_store(id).Keys()?.key(lord)?.Pass()?.val() ?? '');
+                        const pass = this.pass_verified(lord, str);
+                        if (pass)
+                            return pass;
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return null;
+            }
+            // Ждём реактивно, пока ключ собеседника не окажется под рукой, и только
+            // тогда создаём диалог. Имени не ждём: оно косметика и подъедет само
             dialog_autocreate() {
                 const peer = this.dialog_pending();
                 if (!peer)
                     return '';
-                const peer_user = this.peer_store(peer);
-                peer_user.keys();
-                peer_user.Name()?.val();
-                const pass = this.$.$giper_baza_glob.Land(new $giper_baza_link(peer)).king_pass();
+                const pass = this.peer_pass_of(peer);
                 if (!pass)
                     return '';
                 $mol_wire_async(this).dialog_create(peer);
                 return peer;
             }
             dialog_create(peer) {
-                // Гонка: пока ждали king_pass, диалог мог появиться (или второй клик)
+                // Гонка: пока ждали ключ, диалог мог появиться (или второй клик)
                 const exist = this.dialog_with(peer);
                 if (exist) {
                     this.dialog_current(exist);
@@ -23371,9 +23476,9 @@ var $;
                     return exist;
                 }
                 const glob = this.$.$giper_baza_glob;
-                const peer_user = this.peer_store(peer);
-                peer_user.Name()?.val();
-                const peer_pass = glob.Land(new $giper_baza_link(peer)).king_pass();
+                // Имя собеседника тут не читаем: оно живёт в его ленде и офлайн
+                // подвесило бы фибру целиком, хотя для самого диалога не нужно
+                const peer_pass = this.peer_pass_of(peer);
                 if (!peer_pass)
                     return null;
                 const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
@@ -24274,8 +24379,11 @@ var $;
             registry_ids() {
                 return (this.dialogs_store().Registries()?.items() ?? []).map(String);
             }
+            registry_land(id) {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+            }
             registry_store(id) {
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id)).Data($bog_gram_users);
+                return this.registry_land(id).Data($bog_gram_users);
             }
             /** Чужой реестр может быть ещё не засинкан: подписка на его приход
              * сохраняется, а пустой список не даёт одному ленду подвесить весь
@@ -24355,6 +24463,42 @@ var $;
                     this.Registry_form(),
                 ];
             }
+            /** Свой ключ рядом со своей записью: по одному идентификатору диалог со
+             * мной не завести, а так скачанного реестра собеседнику хватает.
+             * Запись идемпотентна — уже лежащий там ключ второй раз не пишем,
+             * поэтому звать её можно и из действия, и из реактивной дозаписи. */
+            registry_key_put(id) {
+                if (!id)
+                    return null;
+                const store = this.registry_store(id);
+                const my = this.my_lord();
+                const str = this.my_pass_str();
+                if (String(store.Keys()?.key(my)?.Pass()?.val() ?? '') === str)
+                    return null;
+                store.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val(str);
+                return null;
+            }
+            /** Реестры, куда я вступил до появления ключей: там лежит только мой
+             * идентификатор, и собеседник без сети диалог со мной не заведёт.
+             * Дописываем ключ туда, где я уже числюсь. Чужой реестр может быть ещё
+             * не засинкан — подписка на его приход сохраняется, дозапись случится
+             * сама, а один незасинканный не должен мешать остальным. */
+            registry_keys_fill() {
+                let count = 0;
+                for (const id of this.registry_ids()) {
+                    if (!this.registry_joined(id))
+                        continue;
+                    try {
+                        this.registry_key_put(id);
+                        ++count;
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return count;
+            }
             /** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
             registry_make(next) {
                 const title = this.registry_name().trim();
@@ -24366,6 +24510,17 @@ var $;
                 if (title)
                     store.Title('auto')?.val(title);
                 store.Lords('auto')?.add(this.my_lord());
+                store.Keys('auto')?.key(this.my_lord(), 'auto')?.Pass('auto')?.val(this.my_pass_str());
+                /** Дожидаемся, пока записи подпишутся и осядут в хранилище. Ждём не
+                 * ради вида: право писать всем выдаётся отдельной записью, и пока
+                 * та не подписана, чужой клиент её не примет — люди приходили бы в
+                 * реестр, где им можно только смотреть. Заодно обработчик всё это
+                 * время висит в фибре, и кнопка сама мигает.
+                 *
+                 * Стоит до очистки поля с названием: фибра перезапускается с начала
+                 * на каждом ожидании, а очищенное название следующий заход прочитал
+                 * бы уже пустым. */
+                land.units_saving();
                 this.dialogs_store().Registries('auto').add(id);
                 this.registry_name('');
                 this.$.$mol_state_arg.value('users', id);
@@ -24383,7 +24538,17 @@ var $;
                 return id;
             }
             /** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
-             * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр. */
+             * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр.
+             *
+             * Дописать запись мало: подпись с перебором степеней и сохранение
+             * уезжают в фон, действие кончается мгновенно, и человек видит, что
+             * ничего не произошло. Поэтому подтверждения дожидаемся тут же, не
+             * выходя из фибры: обработчик приостанавливается, кнопка мигает сама,
+             * пока запись не осядет, и перестаёт, когда та подтвердилась.
+             *
+             * Перезапуск фибры при этом ничего не задваивает: список сам отказывает
+             * уже лежащему в нём значению, а ключ пишется только когда отличается
+             * от записанного. */
             registry_join(id, next) {
                 next?.stopPropagation();
                 if (!id)
@@ -24394,6 +24559,8 @@ var $;
                 if (!this.registry_lords(id).includes(this.my_lord())) {
                     this.registry_store(id).Lords('auto')?.add(this.my_lord());
                 }
+                this.registry_key_put(id);
+                this.registry_land(id).units_saving();
                 return null;
             }
             registry_join_active(next) {
@@ -24733,6 +24900,12 @@ var $;
                     $mol_fail_log(error);
                 }
                 try {
+                    this.registry_keys_fill();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
                     this.invite_handle();
                 }
                 catch (error) {
@@ -24776,6 +24949,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "my_lord", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "my_pass_str", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "user_name", null);
@@ -25138,6 +25314,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "registry_content", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "registry_keys_fill", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "registry_make", null);
@@ -34294,6 +34473,57 @@ var $;
                 // Из самого реестра это не выкидывает
                 const lords = registry_me.Data($bog_gram_users).Lords().items();
                 $mol_assert_equal(lords.includes(my_lord), true);
+            },
+            async 'Ключ участника доезжает до других через реестр'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const key_a = auth_a.pass().toString();
+                const registry0 = $giper_baza_land.make({ $, auth: () => king });
+                registry0.give(null, $giper_baza_rank_post('just'));
+                // A вступает в реестр: рядом со своим идентификатором кладёт и ключ
+                const registry_a = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_a });
+                await $mol_wire_async(registry_a).units_steal(registry0);
+                const data_a = registry_a.Data($bog_gram_users);
+                data_a.Lords('auto').add(lord_a);
+                data_a.Keys('auto')?.key(lord_a, 'auto')?.Pass('auto')?.val(key_a);
+                // B стягивает реестр и находит там ключ A
+                const registry_b = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_b });
+                await $mol_wire_async(registry_b).units_steal(registry_a);
+                const data_b = registry_b.Data($bog_gram_users);
+                $mol_assert_equal(data_b.Lords().items().includes(lord_a), true);
+                const got = String(data_b.Keys()?.key(lord_a)?.Pass()?.val() ?? '');
+                $mol_assert_equal(got, key_a);
+                // Из строки собирается тот самый ключ: по нему и выдаются права
+                const app = $bog_gram.make({ $ });
+                $mol_assert_equal(app.pass_verified(lord_a, got)?.lord().str, lord_a);
+                // Ключи лежат по ключу-лорду и соседей не задевают
+                $mol_assert_equal(Boolean(data_b.Keys()?.key(auth_b.pass().lord().str)), false);
+            },
+            async 'Подложенный ключ не принимается: идентификатор его не подтверждает'($) {
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const app = $bog_gram.make({ $ });
+                // Свой ключ под своей записью проходит
+                $mol_assert_equal(app.pass_verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+                // Реестр открыт всем, и чужой ключ под записью A мог положить кто
+                // угодно: идентификатор это хеш ключа, пересчёт ловит подмену
+                $mol_assert_equal(app.pass_verified(lord_a, auth_b.pass().toString()), null);
+                $mol_assert_equal(app.pass_verified(auth_b.pass().lord().str, auth_a.pass().toString()), null);
+            },
+            async 'Мусор вместо ключа не роняет разбор'($) {
+                const auth = await $.$giper_baza_auth.generate();
+                const lord = auth.pass().lord().str;
+                const app = $bog_gram.make({ $ });
+                // Ни строки короче ключа, ни строки нужной длины из чего попало
+                $mol_assert_equal(app.pass_verified(lord, 'не ключ'), null);
+                $mol_assert_equal(app.pass_verified(lord, 'a'.repeat(43)), null);
+                $mol_assert_equal(app.pass_verified(lord, 'a'.repeat(86)), null);
+                // Пустого места в реестре тоже достаточно, чтобы ничего не делать
+                $mol_assert_equal(app.pass_verified(lord, ''), null);
+                $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
             async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
                 const land = $giper_baza_land.make({ $ });

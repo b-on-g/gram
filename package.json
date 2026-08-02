@@ -385,6 +385,7 @@
     "$bog_gram_shrink",
     "$bog_gram_voice",
     "$bog_gram_users",
+    "$bog_gram_key",
     "$bog_gram_notify",
     "$mol_fetch",
     "$mol_error_enriched",
