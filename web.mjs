@@ -18425,6 +18425,18 @@ var $;
 
 
 ;
+	($.$mol_icon_microphone) = class $mol_icon_microphone extends ($.$mol_icon) {
+		path(){
+			return "M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_image) = class $mol_image extends ($.$mol_view) {
 		uri(){
 			return "";
@@ -18526,6 +18538,30 @@ var $;
 (function ($) {
     $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
 })($ || ($ = {}));
+
+;
+	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
+		path(){
+			return "M8,5.14V19.14L19,12.14L8,5.14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_pause) = class $mol_icon_pause extends ($.$mol_icon) {
+		path(){
+			return "M14,19H18V5H14M6,19H10V5H6V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
 
 ;
 	($.$mol_book2_catalog) = class $mol_book2_catalog extends ($.$mol_book2) {
@@ -27913,18 +27949,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
-		path(){
-			return "M8,5.14V19.14L19,12.14L8,5.14Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$giper_baza_auth_slot) = class $giper_baza_auth_slot extends ($.$mol_page) {
 		prefix(next){
 			if(next !== undefined) return next;
@@ -28673,6 +28697,38 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		voice_on(){
+			return false;
+		}
+		voice_ready(){
+			return false;
+		}
+		voice_clock(){
+			return "";
+		}
+		voice_hint(){
+			return "";
+		}
+		voice_press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_release(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_abort(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_menu(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
@@ -28691,6 +28747,15 @@ var $;
 			(obj.image_drop) = (next) => ((this.image_drop(next)));
 			(obj.zoom_uri) = () => ((this.zoom_uri()));
 			(obj.zoom_close) = (next) => ((this.zoom_close(next)));
+			(obj.voice_on) = () => ((this.voice_on()));
+			(obj.voice_ready) = () => ((this.voice_ready()));
+			(obj.voice_clock) = () => ((this.voice_clock()));
+			(obj.voice_hint) = () => ((this.voice_hint()));
+			(obj.voice_press) = (next) => ((this.voice_press(next)));
+			(obj.voice_release) = (next) => ((this.voice_release(next)));
+			(obj.voice_abort) = (next) => ((this.voice_abort(next)));
+			(obj.voice_cancel) = (next) => ((this.voice_cancel(next)));
+			(obj.voice_menu) = (next) => ((this.voice_menu(next)));
 			return obj;
 		}
 		Dialogs_empty_text(){
@@ -29170,6 +29235,32 @@ var $;
 			(obj.click) = (next) => ((this.message_zoom(id, next)));
 			return obj;
 		}
+		message_sound_uri(id){
+			return "";
+		}
+		message_sound_span(id){
+			return 0;
+		}
+		message_sound_playing(id){
+			return false;
+		}
+		message_sound_toggle(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_sound_ended(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Message_sound(id){
+			const obj = new this.$.$bog_gram_sound();
+			(obj.uri) = () => ((this.message_sound_uri(id)));
+			(obj.span) = () => ((this.message_sound_span(id)));
+			(obj.playing) = () => ((this.message_sound_playing(id)));
+			(obj.toggle) = (next) => ((this.message_sound_toggle(id, next)));
+			(obj.ended) = (next) => ((this.message_sound_ended(id, next)));
+			return obj;
+		}
 		message_body(id){
 			return "";
 		}
@@ -29406,6 +29497,7 @@ var $;
 			});
 			(obj.sub) = () => ([
 				(this.Message_shot(id)), 
+				(this.Message_sound(id)), 
 				(this.Message_body(id)), 
 				(this.Message_meta(id)), 
 				(this.Message_actions(id))
@@ -29480,6 +29572,11 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "image_over"));
 	($mol_mem(($.$bog_gram.prototype), "image_drop"));
 	($mol_mem(($.$bog_gram.prototype), "zoom_close"));
+	($mol_mem(($.$bog_gram.prototype), "voice_press"));
+	($mol_mem(($.$bog_gram.prototype), "voice_release"));
+	($mol_mem(($.$bog_gram.prototype), "voice_abort"));
+	($mol_mem(($.$bog_gram.prototype), "voice_cancel"));
+	($mol_mem(($.$bog_gram.prototype), "voice_menu"));
 	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
 	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
@@ -29553,6 +29650,9 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "message_context"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_zoom"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_shot"));
+	($mol_mem_key(($.$bog_gram.prototype), "message_sound_toggle"));
+	($mol_mem_key(($.$bog_gram.prototype), "message_sound_ended"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_sound"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_body"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_time"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_edited"));
@@ -29703,21 +29803,34 @@ var $;
 			(obj.sub) = () => ([(this.Edit_banner_text()), (this.Edit_cancel())]);
 			return obj;
 		}
+		Voice_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.voice_hint()));
+			return obj;
+		}
+		send_tools(){
+			return [];
+		}
+		Send_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.send_tools()));
+			return obj;
+		}
+		Foot(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Edit_banner()), 
+				(this.Voice_note()), 
+				(this.Send_row())
+			]);
+			return obj;
+		}
 		image_files(next){
 			if(next !== undefined) return next;
 			return null;
 		}
 		Attach_icon(){
 			const obj = new this.$.$mol_icon_paperclip();
-			return obj;
-		}
-		Attach(){
-			const obj = new this.$.$mol_button_open();
-			(obj.hint) = () => ("Отправить картинку");
-			(obj.accept) = () => ("image/*");
-			(obj.multiple) = () => (false);
-			(obj.files) = (next) => ((this.image_files(next)));
-			(obj.Icon) = () => ((this.Attach_icon()));
 			return obj;
 		}
 		message_text(next){
@@ -29728,36 +29841,50 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		Message_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Сообщение…");
-			(obj.value) = (next) => ((this.message_text(next)));
-			(obj.submit) = (next) => ((this.message_send(next)));
-			return obj;
-		}
 		Send_icon(){
 			const obj = new this.$.$mol_icon_send();
 			return obj;
 		}
-		Send(){
-			const obj = new this.$.$mol_button_major();
-			(obj.hint) = () => ("Отправить");
-			(obj.click) = (next) => ((this.message_send(next)));
-			(obj.sub) = () => ([(this.Send_icon())]);
+		voice_press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_release(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_abort(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_menu(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Voice_icon(){
+			const obj = new this.$.$mol_icon_microphone();
 			return obj;
 		}
-		Send_row(){
+		Record_dot(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Attach()), 
-				(this.Message_field()), 
-				(this.Send())
-			]);
 			return obj;
 		}
-		Foot(){
+		Record_time(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Edit_banner()), (this.Send_row())]);
+			(obj.sub) = () => ([(this.voice_clock())]);
+			return obj;
+		}
+		voice_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Voice_cancel_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Voice_cancel_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Отмена"]);
 			return obj;
 		}
 		rows(){
@@ -29770,6 +29897,18 @@ var $;
 			return false;
 		}
 		zoom_uri(){
+			return "";
+		}
+		voice_on(){
+			return false;
+		}
+		voice_ready(){
+			return false;
+		}
+		voice_clock(){
+			return "";
+		}
+		voice_hint(){
 			return "";
 		}
 		event(){
@@ -29805,6 +29944,54 @@ var $;
 		foot(){
 			return [(this.Foot())];
 		}
+		Attach(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ("Отправить картинку");
+			(obj.accept) = () => ("image/*");
+			(obj.multiple) = () => (false);
+			(obj.files) = (next) => ((this.image_files(next)));
+			(obj.Icon) = () => ((this.Attach_icon()));
+			return obj;
+		}
+		Message_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Сообщение…");
+			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.submit) = (next) => ((this.message_send(next)));
+			return obj;
+		}
+		Send(){
+			const obj = new this.$.$mol_button_major();
+			(obj.hint) = () => ("Отправить");
+			(obj.click) = (next) => ((this.message_send(next)));
+			(obj.sub) = () => ([(this.Send_icon())]);
+			return obj;
+		}
+		Voice(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Удерживайте для записи");
+			(obj.event) = () => ({
+				...(this.$.$mol_button_minor.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.voice_press(next)), 
+				"pointerup": (next) => (this.voice_release(next)), 
+				"pointercancel": (next) => (this.voice_abort(next)), 
+				"contextmenu": (next) => (this.voice_menu(next))
+			});
+			(obj.sub) = () => ([(this.Voice_icon())]);
+			return obj;
+		}
+		Record_state(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Record_dot()), (this.Record_time())]);
+			return obj;
+		}
+		Voice_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отпустите здесь, чтобы отменить");
+			(obj.click) = (next) => ((this.voice_cancel(next)));
+			(obj.sub) = () => ([(this.Voice_cancel_icon()), (this.Voice_cancel_text())]);
+			return obj;
+		}
 	};
 	($mol_mem(($.$bog_gram_chat.prototype), "image_paste"));
 	($mol_mem(($.$bog_gram_chat.prototype), "image_over"));
@@ -29824,17 +30011,31 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner"));
-	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
-	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_note"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Foot"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_release"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_abort"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_menu"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_dot"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_time"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel"));
 	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_avatar) {
 		id(){
 			return "";
@@ -29869,6 +30070,119 @@ var $;
 		}
 	};
 	($mol_mem(($.$bog_gram_photo.prototype), "Image"));
+	($.$bog_gram_sound) = class $bog_gram_sound extends ($.$mol_view) {
+		toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		toggle_icons(){
+			return [];
+		}
+		Toggle(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Прослушать");
+			(obj.click) = (next) => ((this.toggle(next)));
+			(obj.sub) = () => ((this.toggle_icons()));
+			return obj;
+		}
+		fill_width(){
+			return "0%";
+		}
+		Fill(){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"width": (this.fill_width())});
+			return obj;
+		}
+		Track(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Fill())]);
+			return obj;
+		}
+		stamp(){
+			return "";
+		}
+		Stamp(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.stamp())]);
+			return obj;
+		}
+		ended(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Node(){
+			const obj = new this.$.$bog_gram_sound_node();
+			(obj.uri) = () => ((this.uri()));
+			(obj.ended) = (next) => ((this.ended(next)));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		span(){
+			return 0;
+		}
+		playing(){
+			return false;
+		}
+		sub(){
+			return [
+				(this.Toggle()), 
+				(this.Track()), 
+				(this.Stamp()), 
+				(this.Node())
+			];
+		}
+		Play_icon(){
+			const obj = new this.$.$mol_icon_play();
+			return obj;
+		}
+		Pause_icon(){
+			const obj = new this.$.$mol_icon_pause();
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_sound.prototype), "toggle"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Toggle"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Fill"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Track"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Stamp"));
+	($mol_mem(($.$bog_gram_sound.prototype), "ended"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Node"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Play_icon"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Pause_icon"));
+	($.$bog_gram_sound_node) = class $bog_gram_sound_node extends ($.$mol_view) {
+		retime(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ended(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "audio";
+		}
+		uri(){
+			return "";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"src": (this.uri()), 
+				"preload": "metadata"
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"timeupdate": (next) => (this.retime(next)), 
+				"ended": (next) => (this.ended(next))
+			};
+		}
+	};
+	($mol_mem(($.$bog_gram_sound_node.prototype), "retime"));
+	($mol_mem(($.$bog_gram_sound_node.prototype), "ended"));
 	($.$bog_gram_zoom) = class $bog_gram_zoom extends ($.$mol_view) {
 		tab_index(){
 			return 0;
@@ -30678,6 +30992,12 @@ var $;
              * заранее, и приехавшая картинка ничего под собой не сдвигает. */
             Image_width: $giper_baza_atom_real,
             Image_height: $giper_baza_atom_real,
+            /** Голосовое лежит в своём ленде, как и картинка: переписка
+             * синкается налегке, а звук приезжает отдельно. */
+            Voice: $bog_gram_link_synced(() => $giper_baza_file),
+            /** Длительность записи в секундах. Едет вместе с сообщением, до
+             * самого звука: длину пузырь показывает сразу. */
+            Voice_span: $giper_baza_atom_real,
         }) {
         }
         $$.$bog_gram_message = $bog_gram_message;
@@ -30836,6 +31156,157 @@ var $;
         }
     }
     $.$bog_gram_shrink = $bog_gram_shrink;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Голосу хватает скромного потока: на такой скорости запись звучит как
+     * телефонный разговор, а минута весит четверть мегабайта. Дожимать её
+     * нечем и незачем — опус и так плотнее любого нашего пережатия. */
+    const rate = 32000;
+    /** Форматы по убыванию желанности: опус компактнее всех, но у Safari
+     * своего опуса нет, и там остаётся только контейнер от четвёртого мпега. */
+    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'];
+    /** Потолок длительности в секундах: на нём запись останавливается сама.
+     * Получасовой монолог никто не дослушает, а микрофон, забытый включённым,
+     * лучше выключить за пользователя. */
+    const span_limit = 5 * 60;
+    /** Короче этого удержание считаем промахом по кнопке, а не сообщением. */
+    const span_min = 0.7;
+    /** Запись голоса с микрофона: один объект — одна запись. Начало и конец
+     * приходят разными событиями, поэтому она не может жить ни в меме, ни
+     * внутри одной фибры: фибра нажатия к моменту отпускания давно кончилась. */
+    class $bog_gram_voice extends $mol_object {
+        /** Длительность строкой: семь секунд — это «0:07», а не «7». */
+        static stamp(span) {
+            const whole = Math.max(0, Math.round(span));
+            const min = Math.floor(whole / 60);
+            const sec = whole % 60;
+            return min + ':' + String(sec).padStart(2, '0');
+        }
+        /** Формат, который здешний браузер умеет писать. Пусто — не умеет ни
+         * одного из наших, и микрофон показывать незачем. */
+        static type() {
+            const maker = $mol_dom_context.MediaRecorder;
+            if (!maker)
+                return '';
+            return types.find(type => maker.isTypeSupported(type)) ?? '';
+        }
+        static supported() {
+            if (!$mol_dom_context.navigator?.mediaDevices?.getUserMedia)
+                return false;
+            return Boolean(this.type());
+        }
+        /** Кого позвать, когда запись упёрлась в потолок длительности. */
+        filled = () => { };
+        /** Итог отдаём одним и тем же промисом, и это принципиально: фибра
+         * перезапускается на каждом ожидании, а новый промис на каждом её
+         * заходе означал бы запись, которая никогда не кончается. */
+        done = (take) => { };
+        result = new Promise(done => { this.done = done; });
+        /** Микрофон просим тоже ровно один раз — по той же причине. */
+        opening = null;
+        stream = null;
+        recorder = null;
+        /** Просили остановиться. Взводится и до того, как браузер отдал
+         * микрофон: тогда его сразу же и возвращаем. */
+        asked = false;
+        /** Момент, с которого пошла запись: по нему считается её длина. */
+        moment = 0;
+        limit = null;
+        open() {
+            return this.opening ??= this.open_run();
+        }
+        /** Разрешение спрашивает браузер, и ответа можно ждать сколько
+         * угодно, поэтому внутри обычный async без фибр. */
+        async open_run() {
+            const type = $bog_gram_voice.type();
+            if (!type)
+                throw new Error('Запись звука тут не поддерживается');
+            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true });
+            // Палец отпустили, пока браузер спрашивал разрешение: микрофон
+            // возвращаем сразу, записывать уже нечего
+            if (this.asked) {
+                this.hush(stream);
+                this.done(null);
+                return false;
+            }
+            const chunks = [];
+            const recorder = new $mol_dom_context.MediaRecorder(stream, {
+                mimeType: type,
+                audioBitsPerSecond: rate,
+            });
+            recorder.ondataavailable = event => {
+                if (event.data.size)
+                    chunks.push(event.data);
+            };
+            recorder.onstop = () => {
+                this.hush(stream);
+                const span = (Date.now() - this.moment) / 1000;
+                if (span < span_min || !chunks.length)
+                    return this.done(null);
+                void this.pack(chunks, type, span);
+            };
+            this.stream = stream;
+            this.recorder = recorder;
+            this.moment = Date.now();
+            recorder.start();
+            this.limit = $mol_dom_context.setTimeout(() => this.filled(), span_limit * 1000);
+            return true;
+        }
+        /** Кодировщик отдаёт запись кусками, а ленду нужен цельный буфер. */
+        async pack(chunks, type, span) {
+            try {
+                const blob = new $mol_blob(chunks, { type });
+                const bytes = new Uint8Array(await blob.arrayBuffer());
+                this.done({ bytes, type: blob.type || type, span });
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                this.done(null);
+            }
+        }
+        /** Микрофон отпускаем сразу, как запись кончилась: иначе на телефоне
+         * так и останется гореть индикатор записи. */
+        hush(stream) {
+            for (const track of stream?.getTracks() ?? [])
+                track.stop();
+        }
+        /** Остановка синхронная и повторов не боится: палец могли отпустить
+         * ровно тогда же, когда сработал потолок длительности. */
+        stop() {
+            if (this.asked)
+                return;
+            this.asked = true;
+            if (this.limit !== null)
+                $mol_dom_context.clearTimeout(this.limit);
+            this.limit = null;
+            const recorder = this.recorder;
+            // Микрофон ещё не отдали: разрешение доедет и само всё уберёт
+            if (!recorder)
+                return;
+            if (recorder.state === 'inactive') {
+                this.hush(this.stream);
+                this.done(null);
+            }
+            else {
+                recorder.stop();
+            }
+        }
+        /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
+        drop() {
+            this.stop();
+            this.done(null);
+        }
+        /** Итог записи. Пусто — записывать было нечего или вышло короче
+         * случайного тычка в кнопку. */
+        take() {
+            return this.result;
+        }
+    }
+    $.$bog_gram_voice = $bog_gram_voice;
 })($ || ($ = {}));
 
 ;
@@ -31221,6 +31692,13 @@ var $;
         /** Пикселей в одном rem: по нему понимаем, не мельче ли сама картинка
          * отведённой ей коробки — растягивать мелкий кадр незачем. */
         const rem_px = 16;
+        /** Как часто перерисовывается таймер записи: чаще человек всё равно не
+         * заметит, а реже секунды начинают перескакивать через одну. */
+        const clock_tick = 200;
+        /** Что показать под полем ввода, когда с записью не сложилось. Ни
+         * модалок, ни системных окон — одна строка на месте. */
+        const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
+        const voice_short = 'Слишком коротко — запись отменена';
         class $bog_gram extends $.$bog_gram {
             // ===== Подключение к мастеру =====
             baza_master() {
@@ -31536,6 +32014,7 @@ var $;
                 return this.dialog_active() === id;
             }
             dialog_select(id, next) {
+                this.sound_hush();
                 this.compose_opened(false);
                 this.settings_opened(false);
                 this.account_reset();
@@ -31573,6 +32052,7 @@ var $;
                 });
             }
             dialog_close(next) {
+                this.sound_hush();
                 this.edit_id('');
                 this.message_text('');
                 this.message_menu('');
@@ -32421,6 +32901,280 @@ var $;
                 this.message_text('');
                 return message.link().str;
             }
+            // ===== Голосовые: запись =====
+            /** Микрофон показываем, только если браузер умеет писать звук: иначе
+             * кнопка обещала бы то, чего не будет. */
+            voice_ready() {
+                return this.$.$bog_gram_voice.supported();
+            }
+            /** Живая запись между двумя событиями: нажатие её заводит, отпускание
+             * забирает результат. Это обычное поле, а не мем — фибра нажатия к
+             * моменту отпускания давно кончилась, и мем обнулился бы вместе с ней. */
+            voice_live = null;
+            /** Момент начала записи, ноль — не пишем. По нему же идёт таймер. */
+            voice_start(next) {
+                return next ?? 0;
+            }
+            voice_on() {
+                return Boolean(this.voice_start());
+            }
+            voice_hint(next) {
+                return next ?? '';
+            }
+            /** Растущий таймер. Пока не пишем, время не читаем вовсе: иначе вся
+             * страница пересчитывалась бы пять раз в секунду впустую. */
+            voice_clock() {
+                const start = this.voice_start();
+                if (!start)
+                    return '';
+                const now = this.$.$mol_state_time.now(clock_tick);
+                return this.$.$bog_gram_voice.stamp((now - start) / 1000);
+            }
+            /** Нажали микрофон. Разрешение и кодировщик умеют ждать, поэтому
+             * уходим в фибру: держать обработчик события нельзя, mol перезапускает
+             * его на каждом ожидании. */
+            voice_press(next) {
+                if (this.voice_live)
+                    return null;
+                if (!this.voice_ready())
+                    return null;
+                const take = this.$.$bog_gram_voice.make({
+                    filled: () => this.voice_finish(),
+                });
+                this.voice_live = take;
+                this.voice_hint('');
+                this.voice_start(Date.now());
+                this.voice_grab(next);
+                $mol_wire_async(this).voice_open(take);
+                return null;
+            }
+            /** Палец может съехать с кнопки, а мышь — уйти вообще со страницы:
+             * без захвата указателя отпускание пришло бы другому элементу, и
+             * запись осталась бы висеть включённой. */
+            voice_grab(next) {
+                try {
+                    const event = next;
+                    if (event?.pointerId === undefined)
+                        return;
+                    this.Chat_page().Voice().dom_node().setPointerCapture(event.pointerId);
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        return;
+                    $mol_fail_log(error);
+                }
+            }
+            /** Разрешение спрашивает браузер, и ответа можно ждать сколько угодно.
+             * Отказ объясняем строкой над полем ввода, ничего не отправляя. */
+            voice_open(take) {
+                try {
+                    $mol_wire_sync(take).open();
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                    if (this.voice_live === take) {
+                        this.voice_live = null;
+                        this.voice_start(0);
+                    }
+                    this.voice_hint(voice_denied);
+                    return false;
+                }
+                return true;
+            }
+            /** Отпустили палец. На крестике это отмена: во время удержания все
+             * события указателя захвачены самим микрофоном, и дотянуться до
+             * крестика можно только отпустив палец над ним. */
+            voice_release(next) {
+                if (!this.voice_live)
+                    return null;
+                if (this.voice_on_cancel(next))
+                    return this.voice_cancel();
+                return this.voice_finish();
+            }
+            /** Смотрим точку отпускания, а не цель события: цель захвачена кнопкой
+             * микрофона и на всё время жеста остаётся ею же. */
+            voice_on_cancel(next) {
+                const event = next;
+                if (!event)
+                    return false;
+                const spot = this.$.$mol_dom_context.document.elementFromPoint(event.clientX, event.clientY);
+                if (!spot)
+                    return false;
+                return Boolean(spot.closest('[bog_gram_chat_voice_cancel]'));
+            }
+            /** Конец записи: останавливаем её прямо здесь, синхронно. Уйди
+             * остановка в фибру — микрофон писал бы всё время, пока та ждёт
+             * права собеседника, и в сообщение попала бы лишняя тишина. */
+            voice_finish(next) {
+                const take = this.voice_live;
+                if (!take)
+                    return null;
+                this.voice_live = null;
+                this.voice_start(0);
+                take.stop();
+                $mol_wire_async(this).voice_send(take);
+                return null;
+            }
+            /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
+            voice_cancel(next) {
+                const take = this.voice_live;
+                this.voice_live = null;
+                this.voice_start(0);
+                take?.drop();
+                return null;
+            }
+            /** Жест прервала система — входящий звонок, переключение окна. */
+            voice_abort(next) {
+                return this.voice_cancel();
+            }
+            /** Долгое нажатие на тач-экране — это ещё и вызов системного меню,
+             * а на мыши правый клик. Здесь и то, и другое только мешает. */
+            voice_menu(next) {
+                next?.preventDefault();
+                return null;
+            }
+            /** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
+             * читать выдаём одному собеседнику, для всех остальных — включая
+             * мастера — там шифрованный мусор. В избранном выдавать право некому,
+             * ленд просто остаётся закрытым.
+             *
+             * Порядок тот же, что и у кадра, и по той же причине: всё, что умеет
+             * ждать, стоит до создания сообщения — фибра перезапускается с начала
+             * на каждом ожидании, и созданное раньше сообщение она завела бы
+             * заново, оставив в переписке копии. */
+            voice_send(take) {
+                const id = this.dialog_active();
+                if (!id)
+                    return '';
+                const session = this.session_store_of(id);
+                if (!session)
+                    return '';
+                const glob = this.$.$giper_baza_glob;
+                const peer = this.saved_is(id) ? '' : this.dialog_peer(id);
+                // Права собеседника приезжают вместе с его лендом. Пока их нет,
+                // не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
+                const pass = peer ? glob.Land(new $giper_baza_link(peer)).king_pass() : null;
+                if (peer && !pass)
+                    return '';
+                const sound = $mol_wire_sync(take).take();
+                if (!sound) {
+                    this.voice_hint(voice_short);
+                    return '';
+                }
+                const land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+                const store = land.Data($giper_baza_file);
+                store.buffer(sound.bytes);
+                store.type(sound.type);
+                if (pass)
+                    land.give(pass, $giper_baza_rank_read);
+                // Ленд записи лежит в стороне от переписки, поэтому пуш на мастер
+                // зовём сами — сам он туда не поедет
+                land.sync();
+                const message = session.Messages('auto').make(null);
+                message.Voice('auto').remote(store);
+                message.Voice_span('auto')?.val(sound.span);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.voice_hint('');
+                return message.link().str;
+            }
+            // ===== Голосовые: воспроизведение =====
+            /** Голос есть, если у сообщения есть ссылка на его ленд. Сам звук при
+             * этом может быть ещё в пути: строку с кнопкой и длиной рисуем всё
+             * равно, иначе лента дёрнется при её появлении. */
+            message_sound(id) {
+                return Boolean(this.message_pawn(id)?.Voice()?.val());
+            }
+            Message_sound(id) {
+                return this.message_sound(id) ? super.Message_sound(id) : null;
+            }
+            /** Длина приезжает вместе с сообщением, до самой записи: пузырь
+             * сообщает её сразу, ещё до того, как звук можно включить. */
+            message_sound_span(id) {
+                return Number(this.message_pawn(id)?.Voice_span()?.val() ?? 0);
+            }
+            /** Ленд записи приезжает отдельно от переписки: пока буфер пуст,
+             * отдаём пустую ссылку — подписка на приход ленда сохраняется, и
+             * звук включится сам, как только доедет. */
+            message_sound_uri(id) {
+                try {
+                    const file = this.message_pawn(id)?.Voice()?.remote();
+                    if (!file)
+                        return '';
+                    if (!file.buffer().byteLength)
+                        return '';
+                    return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            /** Звучит ровно одно сообщение на всё приложение. */
+            voice_playing(next) {
+                return next ?? '';
+            }
+            message_sound_playing(id) {
+                return this.voice_playing() === id;
+            }
+            /** Включение нового гасит предыдущее: два голоса разом — это шум. */
+            message_sound_toggle(id, next) {
+                const now = this.voice_playing();
+                if (now)
+                    this.sound_stop(now);
+                if (now === id) {
+                    this.voice_playing('');
+                    return null;
+                }
+                // Записи ещё нет — включать нечего, и подсвечивать паузу незачем
+                if (!this.message_sound_uri(id)) {
+                    this.voice_playing('');
+                    return null;
+                }
+                this.voice_playing(id);
+                this.sound_start(id);
+                return null;
+            }
+            /** Дослушали до конца: кнопка возвращается к треугольнику сама. */
+            message_sound_ended(id, next) {
+                if (this.voice_playing() === id)
+                    this.voice_playing('');
+                return null;
+            }
+            /** Пузырь мог уехать из ленты вместе со своим сообщением: тогда
+             * управлять уже нечем, и это не ошибка. */
+            sound_start(id) {
+                try {
+                    this.Message_sound(id)?.start();
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        return;
+                    $mol_fail_log(error);
+                }
+            }
+            sound_stop(id) {
+                try {
+                    this.Message_sound(id)?.stop();
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        return;
+                    $mol_fail_log(error);
+                }
+            }
+            /** Смена диалога не должна оставлять голос звучать из закрытой
+             * переписки. Зовётся только из действий, поэтому обычный метод. */
+            sound_hush() {
+                const now = this.voice_playing();
+                if (!now)
+                    return;
+                this.sound_stop(now);
+                this.voice_playing('');
+            }
             // ===== Прочтения =====
             read_moment_of(id, lord) {
                 const session = this.session_store_of(id);
@@ -32476,16 +33230,18 @@ var $;
                 return this.unread_count(id) ? super.Unread_badge(id) : null;
             }
             // ===== Превью в списке диалогов =====
-            /** Картинку в строке списка называем словом: сам кадр там показывать
-             * негде, а подпись под ним, если она есть, идёт следом. */
+            /** Вложение в строке списка называем словом: ни кадра, ни звука там
+             * показать негде, а подпись под ними, если она есть, идёт следом. */
             dialog_preview(id) {
                 const messages = this.messages_alive_of(id);
                 const last = messages[messages.length - 1];
                 if (!last)
                     return '';
                 const text = String(last.Text()?.val() ?? '');
-                const shot = Boolean(last.Image()?.val());
-                const body = shot ? (text ? 'Фото · ' + text : 'Фото') : text;
+                const kind = last.Image()?.val() ? 'Фото'
+                    : last.Voice()?.val() ? 'Голосовое сообщение'
+                        : '';
+                const body = kind ? (text ? kind + ' · ' + text : kind) : text;
                 if (this.saved_is(id))
                     return body;
                 const mine = String(last.Author()?.val() ?? '') === this.my_lord();
@@ -33287,6 +34043,54 @@ var $;
         ], $bog_gram.prototype, "image_drop", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "voice_start", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "voice_hint", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "voice_clock", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_press", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_release", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_finish", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_cancel", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_abort", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "voice_menu", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_sound", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_sound_span", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_sound_uri", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "voice_playing", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_sound_playing", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "message_sound_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "message_sound_ended", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "read_sync", null);
         __decorate([
             $mol_mem_key
@@ -33446,6 +34250,92 @@ var $;
             }
         }
         $$.$bog_gram_photo = $bog_gram_photo;
+        /** Строка голосового в пузыре: кнопка, полоса и длина. Сам элемент
+         * звука лежит тут же, просто не показывается. */
+        class $bog_gram_sound extends $.$bog_gram_sound {
+            /** Пока запись не приехала, элемент звука не заводим: пустой адрес
+             * источника браузер честно пытается загрузить — и ругается. */
+            Node() {
+                return this.uri() ? super.Node() : null;
+            }
+            /** Сколько уже прозвучало. Ленд может быть ещё в пути, а разметка —
+             * не отрисована: тогда просто стоим в начале. */
+            moment() {
+                try {
+                    return this.Node()?.time() ?? 0;
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return 0;
+                }
+            }
+            /** Молчит — показываем общую длину, на ходу — сколько прозвучало. */
+            stamp() {
+                const span = this.playing() ? this.moment() : this.span();
+                return this.$.$bog_gram_voice.stamp(span);
+            }
+            fill_width() {
+                const span = this.span();
+                if (!span)
+                    return '0%';
+                const share = Math.max(0, Math.min(1, this.moment() / span));
+                return (share * 100).toFixed(1) + '%';
+            }
+            toggle_icons() {
+                return [this.playing() ? this.Pause_icon() : this.Play_icon()];
+            }
+            /** Играет ровно то, что решил список: решение принимается снаружи,
+             * иначе два голосовых заговорили бы разом.
+             *
+             * Управление объявлено в наследнике, а свойство отдаёт тип базы —
+             * отсюда приведение: без него сборка не видит этих методов. */
+            start() {
+                this.Node()?.start();
+            }
+            stop() {
+                this.Node()?.stop();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "moment", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "stamp", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "fill_width", null);
+        $$.$bog_gram_sound = $bog_gram_sound;
+        class $bog_gram_sound_node extends $.$bog_gram_sound_node {
+            dom_node(next) {
+                return super.dom_node(next);
+            }
+            /** Позиция звучания: событие сдвига объявляет её устаревшей, и полоса
+             * прогресса едет сама. */
+            time() {
+                this.retime();
+                return this.dom_node().currentTime;
+            }
+            /** Обещание запуска не ждём: браузер отказывает, только когда звук
+             * включают без участия человека, а тут за кнопкой стоит его нажатие.
+             * Дослушанное до конца начинаем сначала. */
+            start() {
+                const node = this.dom_node();
+                if (node.ended)
+                    node.currentTime = 0;
+                node.play().catch(error => $mol_fail_log(error));
+            }
+            stop() {
+                const node = this.dom_node();
+                if (!node.paused)
+                    node.pause();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound_node.prototype, "time", null);
+        $$.$bog_gram_sound_node = $bog_gram_sound_node;
         class $bog_gram_chat extends $.$bog_gram_chat {
             /** Заголовок чата — это подпись собеседника, поэтому он и правится
              * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
@@ -33458,6 +34348,33 @@ var $;
             }
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
+            }
+            Voice_note() {
+                return this.voice_hint() ? super.Voice_note() : null;
+            }
+            /** Микрофон стоит на месте отправки, пока писать нечего — как в телеге.
+             * В правке его нет: она про текст. Нет и там, где браузер не умеет
+             * писать звук: тогда отправка остаётся единственной кнопкой. */
+            send_is() {
+                if (this.edit_mode())
+                    return true;
+                if (!this.voice_ready())
+                    return true;
+                return Boolean(this.message_text().trim());
+            }
+            Send() {
+                return this.send_is() ? super.Send() : null;
+            }
+            Voice() {
+                return this.send_is() ? null : super.Voice();
+            }
+            /** Пока идёт запись, поле ввода со скрепкой уступают место таймеру и
+             * отмене. Сам микрофон при этом остаётся на месте и той же кнопкой:
+             * палец всё ещё лежит на ней, и отпускание должно прийти именно туда. */
+            send_tools() {
+                if (this.voice_on())
+                    return [this.Record_state(), this.Voice_cancel(), this.Voice()];
+                return [this.Attach(), this.Message_field(), this.Send(), this.Voice()];
             }
             /** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
              * в ленте он ездил бы вместе с прокруткой переписки. */
@@ -33482,6 +34399,9 @@ var $;
                 }
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "send_tools", null);
         $$.$bog_gram_chat = $bog_gram_chat;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -33490,7 +34410,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -34600,6 +35520,13 @@ var $;
                 alignSelf: 'flex-start',
                 maxWidth: '100%',
             },
+            /* Строка голосового растягивается на всю ширину пузыря: кнопка,
+            полоса и длина иначе жались бы в комок у левого края. */
+            Message_sound: {
+                alignSelf: 'stretch',
+                minWidth: 0,
+                maxWidth: '100%',
+            },
             Message_meta: {
                 alignSelf: 'flex-end',
                 align: {
@@ -35068,6 +35995,116 @@ var $;
                 width: '1.25rem',
                 height: '1.25rem',
             },
+            /* Микрофон занимает место отправки, когда писать нечего, поэтому и
+            габариты у него те же: строка ввода не должна дёргаться от того,
+            что в поле появилась буква. */
+            Voice: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '2.5rem',
+                minHeight: '2.5rem',
+                padding: 0,
+                borderRadius: '50%',
+                color: $mol_theme.shade,
+                /* запрет выделения и системного меню — в gram.view.css: долгое
+                нажатие тут жест, а не вызов лупы */
+            },
+            Voice_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
+            },
+            /* Состояние записи занимает место поля ввода: мигающая точка и
+            растущий таймер. */
+            Record_state: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.875rem',
+                    right: '0.875rem',
+                },
+            },
+            Record_dot: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '0.625rem',
+                height: '0.625rem',
+                borderRadius: '50%',
+                background: {
+                    color: alert_red,
+                },
+                /* мигание — в gram.view.css: ключевые кадры в типизированные
+                стили не входят */
+            },
+            Record_time: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    family: 'monospace',
+                },
+                whiteSpace: 'nowrap',
+            },
+            /* Крестик — цель для пальца, съехавшего с микрофона: отпускание над
+            ним отменяет запись, поэтому кнопка широкая и подписанная. */
+            Voice_cancel: {
+                flex: {
+                    shrink: 0,
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: '0.25rem',
+                minHeight: '2.5rem',
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '1rem',
+                color: alert_red,
+            },
+            Voice_cancel_icon: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+            },
+            Voice_cancel_text: {
+                whiteSpace: 'nowrap',
+            },
+            /* Отказ микрофона и промах по кнопке объясняются строкой над полем
+            ввода: ни модалок, ни системных окон. */
+            Voice_note: {
+                font: {
+                    size: '0.8rem',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+            },
             // ===== Одна страница на экран =====
             // Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
             // не помещаются, буклет листается по одной странице — и чат закрывает
@@ -35088,6 +36125,13 @@ var $;
                 '(max-width: 30rem)': {
                     Attach: {
                         minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Voice: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Voice_cancel: {
                         minHeight: '2.75rem',
                     },
                 },
@@ -35114,6 +36158,85 @@ var $;
                 height: '100%',
                 /* object-fit нет в словаре типизированных стилей — правило
                 лежит в gram.view.css */
+            },
+        });
+        /* Голосовое в пузыре: кнопка, полоса прогресса и длина одной строкой.
+        Сам элемент звука лежит тут же и не показывается — играть это ему не
+        мешает. */
+        $mol_style_define($bog_gram_sound, {
+            align: {
+                items: 'center',
+            },
+            gap: '0.5rem',
+            minWidth: 0,
+            maxWidth: '100%',
+            padding: {
+                top: '0.125rem',
+                bottom: '0.125rem',
+                left: 0,
+                right: 0,
+            },
+            Toggle: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '2rem',
+                minHeight: '2rem',
+                padding: 0,
+                borderRadius: '50%',
+                background: {
+                    color: tg_blue,
+                },
+                color: '#ffffff',
+            },
+            Play_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            Pause_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            /* Полоса тянется на всё свободное место, но не схлопывается в точку
+            на узком пузыре: у вьюх flex-shrink нулевой, поэтому и растяжение, и
+            сжатие задаются явно. */
+            Track: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: '3rem',
+                height: '0.25rem',
+                borderRadius: '0.25rem',
+                background: {
+                    color: veil,
+                },
+                overflow: 'hidden',
+            },
+            Fill: {
+                height: '100%',
+                background: {
+                    color: tg_blue,
+                },
+            },
+            Stamp: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+            },
+            Node: {
+                display: 'none',
             },
         });
         /* Развёрнутый кадр: слой на всю страницу чата, а не на весь экран —

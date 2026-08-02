@@ -7654,6 +7654,51 @@ var $;
                 $mol_assert_equal(message_of(land, links[0]).Text().val(), 'Вид с балкона');
                 $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
             },
+            async 'Голосовое: ссылка на запись и её длительность доезжают до собеседника'($) {
+                const king = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const session0 = $giper_baza_land.make({ $, auth: () => king });
+                session0.give(auth_a.pass(), $giper_baza_rank_rule);
+                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+                await $mol_wire_async(session_a).units_steal(session0);
+                // Сама запись лежит в отдельном ленде, в переписку едет только ссылка
+                const sound_land = $giper_baza_land.make({ $, auth: () => auth_a });
+                const sound = sound_land.Data($giper_baza_file);
+                sound.buffer(new Uint8Array([9, 8, 7, 6]));
+                sound.type('audio/webm');
+                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+                msg_a.Author('auto')?.val(lord_a);
+                msg_a.Moment('auto')?.val(1000);
+                msg_a.Voice('auto').remote(sound);
+                msg_a.Voice_span('auto')?.val(7.5);
+                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+                await $mol_wire_async(session_b).units_steal(session_a);
+                const links_b = session_b.Data($bog_gram_session).Messages().items();
+                $mol_assert_equal(links_b.length, 1);
+                // Ленд самой записи тут не поднимаем: он приезжает по сети отдельно,
+                // у собеседника от сообщения есть ссылка на него и длительность
+                const got = message_of(session_b, links_b[0]);
+                $mol_assert_equal(got.Voice().val().str, sound.link().str);
+                $mol_assert_equal(got.Voice_span().val(), 7.5);
+                // Подписи у голосового нет — и это норма
+                $mol_assert_equal(got.Text()?.val() ?? '', '');
+                $mol_assert_equal(got.Image()?.val() ?? null, null);
+            },
+            async 'Длительность записи показывается минутами и секундами'($) {
+                $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
+                $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
+                $mol_assert_equal($bog_gram_voice.stamp(59), '0:59');
+                $mol_assert_equal($bog_gram_voice.stamp(60), '1:00');
+                $mol_assert_equal($bog_gram_voice.stamp(125), '2:05');
+                $mol_assert_equal($bog_gram_voice.stamp(5 * 60), '5:00');
+                // Доли секунды округляются, отрицательного времени не бывает
+                $mol_assert_equal($bog_gram_voice.stamp(7.4), '0:07');
+                $mol_assert_equal($bog_gram_voice.stamp(7.6), '0:08');
+                $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
+            },
             async 'Пережатие вписывает большую сторону в предел, сохраняя пропорции'($) {
                 const wide = $bog_gram_shrink.fit(4000, 3000, 1600);
                 $mol_assert_equal(wide.width, 1600);
