@@ -615,6 +615,113 @@ namespace $.$$ {
 
 		},
 
+		async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'( $ ) {
+
+			const king = await $.$giper_baza_auth.generate()
+			const auth_a = await $.$giper_baza_auth.generate()
+			const auth_b = await $.$giper_baza_auth.generate()
+
+			const lord_a = auth_a.pass().lord().str
+
+			const session0 = $giper_baza_land.make({ $, auth: ()=> king })
+			session0.give( auth_a.pass(), $giper_baza_rank_rule )
+			session0.give( auth_b.pass(), $giper_baza_rank_post( 'just' ) )
+
+			const session_a = $giper_baza_land.make({ $, link: ()=> session0.link(), auth: ()=> auth_a })
+			await $mol_wire_async( session_a ).units_steal( session0 )
+
+			// Сам кадр лежит в отдельном ленде, в переписку едет только ссылка на него
+			const shot_land = $giper_baza_land.make({ $, auth: ()=> auth_a })
+			const shot = shot_land.Data( $giper_baza_file )
+			shot.buffer( new Uint8Array([ 1, 2, 3, 4 ]) )
+			shot.type( 'image/webp' )
+
+			const msg_a = session_a.Data( $bog_gram_session ).Messages( 'auto' )!.make( null )
+			msg_a.Author( 'auto' )?.val( lord_a )
+			msg_a.Moment( 'auto' )?.val( 1000 )
+			msg_a.Image( 'auto' )!.remote( shot )
+			msg_a.Image_width( 'auto' )?.val( 1200 )
+			msg_a.Image_height( 'auto' )?.val( 900 )
+
+			const session_b = $giper_baza_land.make({ $, link: ()=> session0.link(), auth: ()=> auth_b })
+			await $mol_wire_async( session_b ).units_steal( session_a )
+
+			const links_b = session_b.Data( $bog_gram_session ).Messages()!.items() as readonly $giper_baza_link[]
+			$mol_assert_equal( links_b.length, 1 )
+
+			// Ленд самого кадра тут не поднимаем: он приезжает по сети отдельно,
+			// у собеседника от сообщения есть ссылка на него и размеры
+			const got = message_of( session_b, links_b[0] )
+			$mol_assert_equal( got.Image()!.val()!.str, shot.link().str )
+			$mol_assert_equal( got.Image_width()!.val(), 1200 )
+			$mol_assert_equal( got.Image_height()!.val(), 900 )
+
+		},
+
+		async 'Сообщение с картинкой без текста остаётся живым и читаемым'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const session = land.Data( $bog_gram_session )
+
+			const shot_land = $giper_baza_land.make({ $ })
+			const shot = shot_land.Data( $giper_baza_file )
+			shot.buffer( new Uint8Array([ 7, 7, 7 ]) )
+			shot.type( 'image/webp' )
+
+			const message = session.Messages( 'auto' )!.make( null )
+			message.Author( 'auto' )?.val( 'LordMine' )
+			message.Moment( 'auto' )?.val( 1000 )
+			message.Image( 'auto' )!.remote( shot )
+			message.Image_width( 'auto' )?.val( 800 )
+			message.Image_height( 'auto' )?.val( 600 )
+
+			const links = session.Messages()!.items() as readonly $giper_baza_link[]
+			const found = message_of( land, links[0] )
+
+			// Подписи нет — и это норма: пустой текст сообщение не ломает
+			$mol_assert_equal( found.Text()?.val() ?? '', '' )
+			$mol_assert_equal( found.Deleted()?.val() ?? null, null )
+			$mol_assert_equal( found.Image()!.val()!.str, shot.link().str )
+			$mol_assert_equal( found.Image_width()!.val(), 800 )
+			$mol_assert_equal( found.Image_height()!.val(), 600 )
+
+			// Подпись можно дописать правкой, как и любой другой текст
+			found.Text( 'auto' )?.val( 'Вид с балкона' )
+			found.Edited( 'auto' )?.val( 1500 )
+			$mol_assert_equal( message_of( land, links[0] ).Text()!.val(), 'Вид с балкона' )
+			$mol_assert_equal( message_of( land, links[0] ).Image()!.val()!.str, shot.link().str )
+
+		},
+
+		async 'Пережатие вписывает большую сторону в предел, сохраняя пропорции'( $ ) {
+
+			const wide = $bog_gram_shrink.fit( 4000, 3000, 1600 )
+			$mol_assert_equal( wide.width, 1600 )
+			$mol_assert_equal( wide.height, 1200 )
+
+			const tall = $bog_gram_shrink.fit( 3000, 4000, 1600 )
+			$mol_assert_equal( tall.width, 1200 )
+			$mol_assert_equal( tall.height, 1600 )
+
+			const square = $bog_gram_shrink.fit( 2000, 2000, 1600 )
+			$mol_assert_equal( square.width, 1600 )
+			$mol_assert_equal( square.height, 1600 )
+
+			// Помещается — оставляем как есть: растянутый кадр только потяжелеет
+			const small = $bog_gram_shrink.fit( 320, 200, 1600 )
+			$mol_assert_equal( small.width, 320 )
+			$mol_assert_equal( small.height, 200 )
+
+			// Совсем узкая полоска не схлопывается в ноль
+			const strip = $bog_gram_shrink.fit( 4000, 1, 1600 )
+			$mol_assert_equal( strip.width, 1600 )
+			$mol_assert_equal( strip.height, 1 )
+
+			$mol_assert_equal( $bog_gram_shrink.image_is( new $mol_blob( [], { type: 'image/webp' } ) ), true )
+			$mol_assert_equal( $bog_gram_shrink.image_is( new $mol_blob( [], { type: 'text/plain' } ) ), false )
+
+		},
+
 		async 'Подпись собеседника живёт в приватном ленде и перекрывает его имя'( $ ) {
 
 			const land = $giper_baza_land.make({ $ })

@@ -133,6 +133,12 @@ $bog_gram $mol_book2
 			message_send? <=> message_send? null
 			edit_cancel? <=> edit_cancel? null
 			close? <=> dialog_close? null
+			image_files? <=> image_files? null
+			image_paste? <=> image_paste? null
+			image_over? <=> image_over? null
+			image_drop? <=> image_drop? null
+			zoom_uri <= zoom_uri \
+			zoom_close? <=> zoom_close? null
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
@@ -350,6 +356,12 @@ $bog_gram $mol_book2
 			pointercancel? <=> message_release*? null
 			contextmenu? <=> message_context*? null
 		sub /
+			<= Message_shot* $bog_gram_photo
+				hint \Открыть картинку
+				uri <= message_shot_uri* \
+				box_width <= message_shot_width* \
+				box_ratio <= message_shot_ratio* \
+				click? <=> message_zoom*? null
 			<= Message_body* $mol_paragraph
 				title <= message_body* \
 			<= Message_meta* $mol_view
@@ -393,6 +405,20 @@ $bog_gram_chat $mol_page
 	edit_cancel? null
 	close? null
 	note_editable false
+	image_files? null
+	image_paste? null
+	image_over? null
+	image_drop? null
+	zoom_uri \
+	zoom_close? null
+	event *
+		^
+		paste? <=> image_paste? null
+		dragover? <=> image_over? null
+		drop? <=> image_drop? null
+	Zoom $bog_gram_zoom
+		uri <= zoom_uri
+		close? <=> zoom_close? null
 	title_content /
 		<= Note_field $bog_gram_field
 			hint <= note_hint \
@@ -431,6 +457,12 @@ $bog_gram_chat $mol_page
 								<= Edit_cancel_icon $mol_icon_close
 				<= Send_row $mol_view
 					sub /
+						<= Attach $mol_button_open
+							hint \Отправить картинку
+							accept \image/*
+							multiple false
+							files? <=> image_files? null
+							Icon <= Attach_icon $mol_icon_paperclip
 						<= Message_field $mol_string
 							hint \Сообщение…
 							value? <=> message_text? \
@@ -447,3 +479,30 @@ $bog_gram_avatar $mol_avatar
 	attr *
 		^
 		bog_gram_tint <= tint
+
+$bog_gram_photo $mol_button
+	uri \
+	box_width \15rem
+	box_ratio \1
+	style *
+		width <= box_width
+		aspectRatio <= box_ratio
+	sub /
+		<= Image $mol_image
+			uri <= uri
+
+$bog_gram_zoom $mol_view
+	uri \
+	close? null
+	attr *
+		^
+		tabindex <= tab_index 0
+	event *
+		^
+		click? <=> close? null
+	plugins /
+		<= Hotkey $mol_hotkey
+			key * escape? <=> close? null
+	sub /
+		<= Shot $mol_image
+			uri <= uri

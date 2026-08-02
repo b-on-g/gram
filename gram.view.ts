@@ -21,6 +21,14 @@ namespace $.$$ {
 	 * ощущается как зависший интерфейс. */
 	const press_delay = 400
 
+	/** Предел большей стороны кадра в пузыре. Крупнее — и переписка
+	 * превращается в ленту плакатов, где текста уже не видно. */
+	const shot_side = 15
+
+	/** Пикселей в одном rem: по нему понимаем, не мельче ли сама картинка
+	 * отведённой ей коробки — растягивать мелкий кадр незачем. */
+	const rem_px = 16
+
 	export class $bog_gram extends $.$bog_gram {
 
 		// ===== Подключение к мастеру =====
@@ -403,6 +411,7 @@ namespace $.$$ {
 			this.edit_id( '' )
 			this.message_text( '' )
 			this.message_menu( '' )
+			this.zoom_id( '' )
 			this.delete_disarm()
 			this.dialog_current( id )
 			this.chat_bring()
@@ -436,6 +445,7 @@ namespace $.$$ {
 			this.edit_id( '' )
 			this.message_text( '' )
 			this.message_menu( '' )
+			this.zoom_id( '' )
 			this.delete_disarm()
 			this.dialog_current( '' )
 			return null
@@ -1151,6 +1161,257 @@ namespace $.$$ {
 			return null
 		}
 
+		// ===== Картинки =====
+
+		/** Кадр есть, если у сообщения есть ссылка на его ленд. Сама
+		 * картинка при этом может быть ещё в пути — коробку под неё
+		 * рисуем всё равно, иначе лента дёрнется при её появлении. */
+		@$mol_mem_key
+		message_shot( id: string ) {
+			return Boolean( this.message_pawn( id )?.Image()?.val() )
+		}
+
+		override Message_shot( id: string ) {
+			return this.message_shot( id ) ? super.Message_shot( id ) : null!
+		}
+
+		/** Картинка без подписи — обычное дело, и пустой абзац под ней
+		 * оставлял бы в пузыре лишнюю полосу. */
+		override Message_body( id: string ) {
+			return this.message_body( id ) ? super.Message_body( id ) : null!
+		}
+
+		/** Размеры кадра приезжают вместе с сообщением, до самой картинки.
+		 * Пока их нет, считаем кадр квадратным: перепрыгнуть один раз при
+		 * загрузке лучше, чем схлопнуть пузырь в ноль. */
+		@$mol_mem_key
+		message_shot_size( id: string ) {
+			const pawn = this.message_pawn( id )
+			const width = Number( pawn?.Image_width()?.val() ?? 0 )
+			const height = Number( pawn?.Image_height()?.val() ?? 0 )
+			if( !width || !height ) return { width: 1, height: 1 }
+			return { width, height }
+		}
+
+		@$mol_mem_key
+		message_shot_ratio( id: string ) {
+			const size = this.message_shot_size( id )
+			return size.width + ' / ' + size.height
+		}
+
+		/** В предел упирается большая сторона, меньшая считается от неё по
+		 * пропорциям. Кадр мельче предела показываем как есть. */
+		@$mol_mem_key
+		message_shot_width( id: string ) {
+			const size = this.message_shot_size( id )
+			const side = Math.max( size.width, size.height )
+			const limit = Math.min( shot_side, side / rem_px )
+			return ( limit * size.width / side ).toFixed( 2 ) + 'rem'
+		}
+
+		/** Ленд картинки приезжает отдельно от переписки: пока буфер пуст,
+		 * отдаём пустую ссылку — место уже занято коробкой, а подписка на
+		 * приход ленда сохраняется, и кадр проявится сам. */
+		@$mol_mem_key
+		message_shot_uri( id: string ) {
+			try {
+				const file = this.message_pawn( id )?.Image()?.remote()
+				if( !file ) return ''
+				if( !file.buffer().byteLength ) return ''
+				return this.$.$mol_dom_context.URL.createObjectURL( file.blob() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		// ===== Развёрнутый кадр =====
+
+		@$mol_mem
+		zoom_id( next?: string ) {
+			return next ?? ''
+		}
+
+		override zoom_uri() {
+			const id = this.zoom_id()
+			if( !id ) return ''
+			return this.message_shot_uri( id )
+		}
+
+		/** Долгое нажатие уже раскрыло под пузырём правку с удалением —
+		 * тот же жест не должен вдобавок разворачивать картинку. */
+		@$mol_action
+		message_zoom( id: string, next?: any ) {
+			if( this.message_menu() === id ) return null
+			if( !this.message_shot_uri( id ) ) return null
+			this.zoom_id( id )
+			this.zoom_focus()
+			return null
+		}
+
+		@$mol_action
+		zoom_close( next?: any ) {
+			this.zoom_id( '' )
+			return null
+		}
+
+		/** Слой ловит Esc, только пока на нём фокус, а в разметке он
+		 * появляется лишь следующим кадром — тогда же его и фокусируем. */
+		zoom_focus() {
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					const node = this.Chat_page().Zoom().dom_node() as HTMLElement
+					node.focus()
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) return
+					$mol_fail_log( error )
+				}
+			} )
+		}
+
+		// ===== Отправка картинки =====
+
+		/** Кнопка со скрепкой. Из выбранного берём первую картинку:
+		 * множественный выбор в поле отключён, но система может подсунуть
+		 * заодно и что-нибудь постороннее. */
+		@$mol_action
+		image_files( next?: readonly File[] ) {
+			const file = ( next ?? [] ).find( item => this.$.$bog_gram_shrink.image_is( item ) )
+			if( file ) this.image_start( file )
+			this.attach_reset()
+			return next ?? null
+		}
+
+		/** Поле выбора файла помнит прошлый выбор и о повторе того же самого
+		 * файла уже не сообщает: без сброса одну картинку нельзя было бы
+		 * отправить дважды. */
+		attach_reset() {
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					const node = this.Chat_page().Attach().Native().dom_node() as HTMLInputElement
+					node.value = ''
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) return
+					$mol_fail_log( error )
+				}
+			} )
+		}
+
+		/** Вставка из буфера. Картинку достаём синхронно, пока событие живо,
+		 * и тут же уходим в фибру: ждать прямо в обработчике нельзя — mol
+		 * перезапускает его на каждом ожидании, а каждый перезапуск доставал
+		 * бы из буфера новый файл, то есть отправлял бы копию. */
+		@$mol_action
+		image_paste( next?: Event ) {
+
+			const event = next as ClipboardEvent | undefined
+			const items = event?.clipboardData?.items
+			if( !items ) return null
+
+			for( let i = 0; i < items.length; ++ i ) {
+				const file = items[ i ].getAsFile()
+				if( !file ) continue
+				if( !this.$.$bog_gram_shrink.image_is( file ) ) continue
+				event?.preventDefault()
+				this.image_start( file )
+				break
+			}
+
+			return null
+		}
+
+		/** Без отмены умолчания браузер откроет брошенный файл вместо
+		 * страницы — и переписка просто исчезнет с экрана. */
+		@$mol_action
+		image_over( next?: Event ) {
+			next?.preventDefault()
+			return null
+		}
+
+		@$mol_action
+		image_drop( next?: Event ) {
+
+			const event = next as DragEvent | undefined
+			event?.preventDefault()
+
+			const files = event?.dataTransfer?.files
+			if( !files ) return null
+
+			const file = Array.from( files ).find( item => this.$.$bog_gram_shrink.image_is( item ) )
+			if( file ) this.image_start( file )
+
+			return null
+		}
+
+		/** Пережатие, захват ленда и подпись — это криптография с перебором
+		 * степеней: из обработчика уходим в фибру, иначе каждое ожидание
+		 * начинало бы перебор заново, а интерфейс всё это время стоял бы. */
+		image_start( file: File ) {
+
+			// Картинка — всегда новое сообщение, а начатая правка держит в поле
+			// чужой текст: подписью к кадру он стать не должен
+			if( this.edit_id() ) {
+				this.edit_id( '' )
+				this.message_text( '' )
+			}
+
+			$mol_wire_async( this ).image_send( file )
+		}
+
+		/** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
+		 * читать выдаём одному собеседнику, для всех остальных — включая
+		 * мастера — там шифрованный мусор. В избранном выдавать право некому,
+		 * ленд просто остаётся закрытым.
+		 *
+		 * Порядок здесь не косметика. Всё, что умеет ждать — пережатие,
+		 * захват ленда, выдача права, — стоит до создания сообщения: фибра
+		 * перезапускается с начала на каждом ожидании, и созданное раньше
+		 * сообщение она завела бы заново, оставив в переписке копии. */
+		image_send( file: File ) {
+
+			const id = this.dialog_active()
+			if( !id ) return ''
+
+			const session = this.session_store_of( id )
+			if( !session ) return ''
+
+			const glob = this.$.$giper_baza_glob
+			const peer = this.saved_is( id ) ? '' : this.dialog_peer( id )
+
+			// Права собеседника приезжают вместе с его лендом. Пока их нет,
+			// не пишем ничего: кадр в закрытом ленде он не прочитал бы никогда,
+			// а так отправку можно просто повторить
+			const pass = peer ? glob.Land( new $giper_baza_link( peer ) ).king_pass() : null
+			if( peer && !pass ) return ''
+
+			const shot = this.$.$bog_gram_shrink.shrink( file )
+
+			const land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+			const store = land.Data( $giper_baza_file )
+			store.buffer( shot.bytes )
+			store.type( shot.type )
+
+			if( pass ) land.give( pass, $giper_baza_rank_read )
+
+			// Ленд кадра лежит в стороне от переписки, поэтому пуш на мастер
+			// зовём сами — сам он туда не поедет
+			land.sync()
+
+			const text = this.message_text().trim()
+			const message = session.Messages( 'auto' )!.make( null )
+
+			message.Image( 'auto' )!.remote( store )
+			message.Image_width( 'auto' )?.val( shot.width )
+			message.Image_height( 'auto' )?.val( shot.height )
+			if( text ) message.Text( 'auto' )?.val( text )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
+
+			this.message_text( '' )
+
+			return message.link().str
+		}
+
 		// ===== Прочтения =====
 
 		read_moment_of( id: string, lord: string ) {
@@ -1208,15 +1469,19 @@ namespace $.$$ {
 
 		// ===== Превью в списке диалогов =====
 
+		/** Картинку в строке списка называем словом: сам кадр там показывать
+		 * негде, а подпись под ним, если она есть, идёт следом. */
 		@$mol_mem_key
 		dialog_preview( id: string ) {
 			const messages = this.messages_alive_of( id )
 			const last = messages[ messages.length - 1 ]
 			if( !last ) return ''
 			const text = String( last.Text()?.val() ?? '' )
-			if( this.saved_is( id ) ) return text
+			const shot = Boolean( last.Image()?.val() )
+			const body = shot ? ( text ? 'Фото · ' + text : 'Фото' ) : text
+			if( this.saved_is( id ) ) return body
 			const mine = String( last.Author()?.val() ?? '' ) === this.my_lord()
-			return mine ? 'Вы: ' + text : text
+			return mine ? 'Вы: ' + body : body
 		}
 
 		@$mol_mem_key
@@ -1830,6 +2095,16 @@ namespace $.$$ {
 
 	}
 
+	export class $bog_gram_photo extends $.$bog_gram_photo {
+
+		/** Пока кадр не докачался, коробка стоит пустой: картинку с пустым
+		 * адресом браузер рисует значком битой. */
+		override Image() {
+			return this.uri() ? super.Image() : null!
+		}
+
+	}
+
 	export class $bog_gram_chat extends $.$bog_gram_chat {
 
 		/** Заголовок чата — это подпись собеседника, поэтому он и правится
@@ -1845,6 +2120,13 @@ namespace $.$$ {
 
 		override Edit_banner() {
 			return this.edit_mode() ? super.Edit_banner() : null!
+		}
+
+		/** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
+		 * в ленте он ездил бы вместе с прокруткой переписки. */
+		override sub() {
+			if( !this.zoom_uri() ) return super.sub()
+			return [ ... super.sub(), this.Zoom() ]
 		}
 
 		// Лента прокручивается вниз после рендера: auto() зовётся из dom_tree,

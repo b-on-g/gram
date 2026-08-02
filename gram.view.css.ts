@@ -1209,6 +1209,14 @@ namespace $.$$ {
 			overflowWrap: 'anywhere',
 		},
 
+		/* Размеры коробки приходят из данных сообщения (style в view.tree),
+		здесь только предел по ширине пузыря: на узком экране кадр ужимается
+		вместе с ним, а не вылезает наружу. */
+		Message_shot: {
+			alignSelf: 'flex-start',
+			maxWidth: '100%',
+		},
+
 		Message_meta: {
 			alignSelf: 'flex-end',
 			align: {
@@ -1714,6 +1722,33 @@ namespace $.$$ {
 			color: '#ffffff',
 		},
 
+		/* Скрепка — такой же круглый пятачок, что и отправка, только без
+		заливки: две кнопки по краям поля ввода должны быть одного роста. */
+		Attach: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2.5rem',
+			minHeight: '2.5rem',
+			padding: 0,
+			borderRadius: '50%',
+			color: $mol_theme.shade,
+			/* Скрытое поле выбора файла вдвое выше своей кнопки и без обрезки
+			перехватывало бы клики по строке правки над ней. */
+			overflow: 'hidden',
+		},
+
+		Attach_icon: {
+			width: '1.25rem',
+			height: '1.25rem',
+		},
+
 		// ===== Одна страница на экран =====
 		// Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
 		// не помещаются, буклет листается по одной странице — и чат закрывает
@@ -1735,6 +1770,74 @@ namespace $.$$ {
 
 			},
 
+			/* Скрепка стоит вплотную к полю ввода, поэтому на телефоне ей
+			нужен тот же запас под палец, что и остальным кнопкам списка. */
+			'(max-width: 30rem)': {
+
+				Attach: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+			},
+
+		},
+
+	} )
+
+	/* Коробка кадра: размер задаётся в разметке из данных сообщения, здесь
+	только вид. Пока картинка не приехала, коробка стоит пустой заливкой —
+	лента уже разложена и от появления кадра не дёрнется. */
+	$mol_style_define( $bog_gram_photo, {
+
+		display: 'block',
+		flex: {
+			shrink: 0,
+		},
+		maxWidth: '100%',
+		padding: 0,
+		overflow: 'hidden',
+		borderRadius: '0.5rem',
+		background: {
+			color: veil,
+		},
+
+		Image: {
+			display: 'block',
+			width: '100%',
+			height: '100%',
+			/* object-fit нет в словаре типизированных стилей — правило
+			лежит в gram.view.css */
+		},
+
+	} )
+
+	/* Развёрнутый кадр: слой на всю страницу чата, а не на весь экран —
+	на широком мониторе список диалогов остаётся видимым. */
+	$mol_style_define( $bog_gram_zoom, {
+
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+		zIndex: 2,
+		justify: {
+			content: 'center',
+		},
+		align: {
+			items: 'center',
+		},
+		padding: '1rem',
+		background: {
+			color: '#000000cc',
+		},
+		outline: 'none',
+
+		Shot: {
+			maxWidth: '100%',
+			maxHeight: '100%',
+			borderRadius: '0.5rem',
 		},
 
 	} )

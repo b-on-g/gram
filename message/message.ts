@@ -9,6 +9,13 @@ namespace $.$$ {
 		Edited: $giper_baza_atom_real,
 		/** Момент удаления, отсутствует — сообщение живое. */
 		Deleted: $giper_baza_atom_real,
+		/** Картинка лежит в своём ленде: переписка синкается налегке, а
+		 * тяжёлый кадр приезжает отдельно и только когда его показывают. */
+		Image: $bog_gram_link_synced( ()=> $giper_baza_file ),
+		/** Размеры кадра в пикселях: место под него в ленте занимается
+		 * заранее, и приехавшая картинка ничего под собой не сдвигает. */
+		Image_width: $giper_baza_atom_real,
+		Image_height: $giper_baza_atom_real,
 	}) {}
 
 }
