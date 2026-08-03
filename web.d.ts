@@ -40777,6 +40777,7 @@ declare namespace $.$$ {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Peers: (auto?: any) => $giper_baza_list_str | null;
             readonly Sessions: (auto?: any) => $giper_baza_list_str | null;
+            readonly Owner: (auto?: any) => $giper_baza_atom_text | null;
             readonly Session_last: (auto?: any) => $giper_baza_atom_text | null;
             readonly Created: (auto?: any) => $giper_baza_atom_real | null;
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
@@ -40789,6 +40790,9 @@ declare namespace $.$$ {
         } & {
             readonly Peers: typeof $giper_baza_list_str;
             readonly Sessions: typeof $giper_baza_list_str;
+            /** Кто завёл переписку. Королём ленда числится служебный ключ, выданный
+             * при захвате, поэтому по ленду создателя не узнать — пишем прямо. */
+            readonly Owner: typeof $giper_baza_atom_text;
             /** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
              * а не добавлением, поэтому «последний» там — не обязательно свежий. */
             readonly Session_last: typeof $giper_baza_atom_text;
@@ -52524,6 +52528,10 @@ declare namespace $.$$ {
          * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
          * весь список из-за одной такой строки падать не должен. */
         dialog_owner(id: string): string;
+        /** Моя ли это переписка. У заведённых до появления записи о создателе
+         * спрашивать некого, поэтому смотрим на права: полное управление лендом
+         * получает тот, кто его захватил, а в старых диалогах админов не было. */
+        dialog_own(id: string): boolean;
         /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
          * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
          * подождёт снаружи списка. Подписка на приход данных сохраняется, так

@@ -8004,13 +8004,24 @@ var $;
                 // Чужой с сообщениями: от знакомого в общий список, от незнакомца в запросы
                 $mol_assert_equal(app.dialog_sort(false, true, true), 'plain');
                 $mol_assert_equal(app.dialog_sort(false, true, false), 'request');
-                // Создатель — лорд ленда диалога: по нему и решается, свой он или чужой
+                // Создателя приходится записывать прямо в ленд: королём числится
+                // служебный ключ, выданный при захвате, и по ссылке ленда автора
+                // не узнать. Без записи ответ честно пустой.
+                $mol_assert_equal(app.dialog_owner(''), '');
                 const auth = await $.$giper_baza_auth.generate();
                 const lord = auth.pass().lord().str;
-                const dialog_link = new $giper_baza_link(lord + '_KJhgFdSa').str;
-                $mol_assert_equal(app.dialog_owner(dialog_link), lord);
-                $mol_assert_equal(app.dialog_owner(lord), lord);
-                $mol_assert_equal(app.dialog_owner(''), '');
+                const land = $giper_baza_land.make({ $, auth: () => auth });
+                const ops = {
+                    write() {
+                        land.Data($bog_gram_dialog).Owner('auto')?.val(lord);
+                        return true;
+                    },
+                    read() {
+                        return String(land.Data($bog_gram_dialog).Owner()?.val() ?? '');
+                    },
+                };
+                await $mol_wire_async(ops).write();
+                $mol_assert_equal(await $mol_wire_async(ops).read(), lord);
             },
             async 'Сообщения из разных бакетов сливаются по моменту'($) {
                 const app = $bog_gram.make({ $ });

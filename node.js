@@ -23027,6 +23027,9 @@ var $;
         class $bog_gram_dialog extends $giper_baza_dict.with({
             Peers: $giper_baza_list_str,
             Sessions: $giper_baza_list_str,
+            /** Кто завёл переписку. Королём ленда числится служебный ключ, выданный
+             * при захвате, поэтому по ленду создателя не узнать — пишем прямо. */
+            Owner: $giper_baza_atom_text,
             /** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
              * а не добавлением, поэтому «последний» там — не обязательно свежий. */
             Session_last: $giper_baza_atom_text,
@@ -24210,6 +24213,8 @@ var $;
                     return false;
                 if (this.dialog_owner(id) === lord)
                     return true;
+                if (lord === this.my_lord() && this.dialog_own(id))
+                    return true;
                 return this.admin_lords(id).includes(lord);
             }
             admin_me(id) {
@@ -24218,7 +24223,7 @@ var $;
             /** Назначает админов создатель: раздавать право раздавать права — его
              * решение, а не решение назначенного. */
             owner_me(id) {
-                return Boolean(id) && this.dialog_owner(id) === this.my_lord();
+                return this.dialog_own(id);
             }
             /** Ранг участника в лендах группы. Чтобы админ мог выдать право новому
              * человеку, ему самому нужно полное управление лендом — а вместе с ним
@@ -24268,13 +24273,32 @@ var $;
                 if (!id)
                     return '';
                 try {
-                    return new $giper_baza_link(id).lord().str;
+                    return String(this.dialog_store(id).Owner()?.val() ?? '');
                 }
                 catch (error) {
                     if ($mol_promise_like(error))
                         $mol_fail_hidden(error);
                     $mol_fail_log(error);
                     return '';
+                }
+            }
+            /** Моя ли это переписка. У заведённых до появления записи о создателе
+             * спрашивать некого, поэтому смотрим на права: полное управление лендом
+             * получает тот, кто его захватил, а в старых диалогах админов не было. */
+            dialog_own(id) {
+                if (!id)
+                    return false;
+                try {
+                    const owner = this.dialog_owner(id);
+                    if (owner)
+                        return owner === this.my_lord();
+                    const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+                    return land.lord_rank(new $giper_baza_link(this.my_lord())) === $giper_baza_rank_rule;
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return false;
                 }
             }
             /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
@@ -24345,7 +24369,7 @@ var $;
                 if (this.archive_is(id))
                     return 'plain';
                 const lord = this.dialog_owner(id);
-                const own = Boolean(lord) && lord === this.my_lord();
+                const own = this.dialog_own(id);
                 const known = this.peer_known(lord) || this.mine_wrote(id);
                 return this.dialog_sort(own, this.dialog_alive(id), known);
             }
@@ -24910,6 +24934,7 @@ var $;
                 dialog.Sessions('auto').add(session_land.link().str);
                 dialog.Session_last('auto')?.val(session_land.link().str);
                 dialog.Created('auto')?.val(Date.now());
+                dialog.Owner('auto')?.val(this.my_lord());
                 const session = session_land.Data($bog_gram_session);
                 session.Dialog_land('auto')?.val(dialog_land.link().str);
                 this.dialogs_store().Dialogs('auto').add(dialog_land.link().str);
@@ -25138,6 +25163,7 @@ var $;
                 dialog.Sessions('auto').add(session_land.link().str);
                 dialog.Session_last('auto')?.val(session_land.link().str);
                 dialog.Created('auto')?.val(Date.now());
+                dialog.Owner('auto')?.val(this.my_lord());
                 if (title)
                     dialog.Title('auto')?.val(title);
                 const session = session_land.Data($bog_gram_session);
@@ -27559,6 +27585,9 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_moment", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_own", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "dialog_alive", null);
