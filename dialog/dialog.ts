@@ -4,7 +4,16 @@ namespace $.$$ {
 	export class $bog_gram_dialog extends $giper_baza_dict.with({
 		Peers: $giper_baza_list_str,
 		Sessions: $giper_baza_list_str,
+		/** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
+		 * а не добавлением, поэтому «последний» там — не обязательно свежий. */
+		Session_last: $giper_baza_atom_text,
 		Created: $giper_baza_atom_real,
+		/** Название группы. У переписки вдвоём его нет: там заголовок — это
+		 * личная подпись собеседника, и лежит она в приватном ленде. */
+		Title: $giper_baza_atom_text,
+		/** Кто может звать и убирать людей. Создатель — король ленда, и
+		 * админом остаётся всегда, даже не числясь тут. */
+		Admins: $giper_baza_list_str,
 	}) {}
 
 }

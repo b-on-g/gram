@@ -243,10 +243,14 @@ namespace $.$$ {
 
 		/** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
 		 * весь список, поэтому пока рисуем пустой кружок — подписка
-		 * сохраняется, узор и цвет проявятся сами. */
+		 * сохраняется, узор и цвет проявятся сами.
+		 *
+		 * У группы собеседника нет, зато есть свой ленд: по его ссылке узор и
+		 * рисуем — он у группы один на всех участников. */
 		@$mol_mem_key
 		dialog_avatar_id( id: string ) {
 			try {
+				if( this.group_is( id ) ) return id
 				return this.dialog_peer( id )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
@@ -257,7 +261,7 @@ namespace $.$$ {
 		@$mol_mem_key
 		dialog_tint( id: string ) {
 			try {
-				return this.avatar_tint( this.dialog_peer( id ) )
+				return this.avatar_tint( this.dialog_avatar_id( id ) )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return 0
@@ -366,8 +370,36 @@ namespace $.$$ {
 		@$mol_mem_key
 		dialog_peer( id: string ) {
 			if( this.saved_is( id ) ) return ''
-			const peers = ( this.dialog_store( id ).Peers()?.items() ?? [] ).map( String )
+			const peers = this.dialog_lords( id )
 			return peers.find( lord => lord !== this.my_lord() ) ?? peers[0] ?? ''
+		}
+
+		/** Все участники диалога, включая меня. Ленд может быть ещё не
+		 * засинкан — тогда чтение приостанавливается, и это правильно: по
+		 * этому списку выдаются права, и неполным он быть не должен. Места,
+		 * где ждать нечем, прикрываются сами. */
+		dialog_lords( id: string ) {
+			if( !id ) return [] as string[]
+			if( this.saved_is( id ) ) return [] as string[]
+			return ( this.dialog_store( id ).Peers()?.items() ?? [] ).map( String )
+		}
+
+		/** Все, кроме меня: кому выдавать права и чьи прочтения считать. */
+		dialog_mates( id: string ) {
+			const my = this.my_lord()
+			return this.dialog_lords( id ).filter( lord => lord !== my )
+		}
+
+		/** Ключи участников одним списком. Неполный список — это отказ: писать
+		 * в ленд, который часть группы никогда не откроет, незачем. Ключи
+		 * умеют ждать, поэтому зовётся только из фибры. */
+		passes_of( lords: readonly string[] ) {
+			const passes: $giper_baza_auth_pass[] = []
+			for( const lord of lords ) {
+				const pass = this.peer_pass_of( lord )
+				if( pass ) passes.push( pass )
+			}
+			return passes
 		}
 
 		/** Безымянного собеседника показываем началом и концом идентификатора:
@@ -377,9 +409,95 @@ namespace $.$$ {
 			return lord.slice( 0, 6 ) + '…' + lord.slice( -4 )
 		}
 
+		// ===== Группы =====
+
+		/** Название группы. Пустое — группу не назвали, и подписываться она
+		 * будет своими участниками. Ленд может быть ещё не засинкан: заголовок
+		 * это косметика, ждать её незачем — подписка сохраняется, название
+		 * проявится само. */
+		@$mol_mem_key
+		group_title( id: string ) {
+			if( !id ) return ''
+			if( this.saved_is( id ) ) return ''
+			try {
+				return String( this.dialog_store( id ).Title()?.val() ?? '' )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return ''
+			}
+		}
+
+		/** Группа отличается от переписки вдвоём числом участников: третий
+		 * человек делает её группой. Названная — тоже группа, даже если в ней
+		 * пока двое: название заводят осознанно, и от того, что кто-то вышел,
+		 * группа обратно в личную переписку превращаться не должна. */
+		@$mol_mem_key
+		group_is( id: string ) {
+			if( !id ) return false
+			if( this.saved_is( id ) ) return false
+			try {
+				if( this.dialog_lords( id ).length > 2 ) return true
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+			return Boolean( this.group_title( id ) )
+		}
+
+		/** Группа без названия подписывается своими участниками: список имён
+		 * говорит больше, чем «5 участников». */
+		@$mol_mem_key
+		group_name_auto( id: string ) {
+			let mates: readonly string[] = []
+			try {
+				mates = this.dialog_mates( id )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+			if( !mates.length ) return this.lord_short( id )
+			return mates.map( lord => this.peer_label( lord ) ).join( ', ' )
+		}
+
+		@$mol_mem_key
+		admin_lords( id: string ) {
+			if( !id ) return [] as string[]
+			try {
+				return ( this.dialog_store( id ).Admins()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
+			}
+		}
+
+		/** Создатель группы — король её ленда, и админом остаётся всегда:
+		 * отдельной записи для него не нужно. */
+		admin_is( id: string, lord: string ) {
+			if( !id || !lord ) return false
+			if( this.dialog_owner( id ) === lord ) return true
+			return this.admin_lords( id ).includes( lord )
+		}
+
+		admin_me( id: string ) {
+			return this.admin_is( id, this.my_lord() )
+		}
+
+		/** Назначает админов создатель: раздавать право раздавать права — его
+		 * решение, а не решение назначенного. */
+		owner_me( id: string ) {
+			return Boolean( id ) && this.dialog_owner( id ) === this.my_lord()
+		}
+
+		/** Ранг участника в лендах группы. Чтобы админ мог выдать право новому
+		 * человеку, ему самому нужно полное управление лендом — а вместе с ним
+		 * он получает и возможность менять чужие права: разделить эти
+		 * способности в Базе нечем. */
+		member_rank( id: string, lord: string ) {
+			return this.admin_is( id, lord ) ? $giper_baza_rank_rule : $giper_baza_rank_post( 'fast' )
+		}
+
 		@$mol_mem_key
 		dialog_title( id: string ) {
 			if( this.saved_is( id ) ) return saved_name
+			if( this.group_is( id ) ) return this.group_title( id ) || this.group_name_auto( id )
 			const peer = this.dialog_peer( id )
 			if( !peer ) return this.lord_short( id )
 			return this.peer_label( peer )
@@ -553,6 +671,9 @@ namespace $.$$ {
 			this.sound_hush()
 			this.compose_opened( false )
 			this.settings_opened( false )
+			this.group_opened( false )
+			this.members_opened( false )
+			this.leave_armed( false )
 			this.account_reset()
 			this.edit_id( '' )
 			this.message_text( '' )
@@ -594,6 +715,8 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.zoom_id( '' )
 			this.delete_disarm()
+			this.members_opened( false )
+			this.leave_armed( false )
 			this.dialog_current( '' )
 			return null
 		}
@@ -651,7 +774,7 @@ namespace $.$$ {
 			// Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
 			// но выкидывание из своего списка важнее — просто не чистим монитор
 			try {
-				const sessions = ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
+				const sessions = this.session_links_of( id )
 				const watch = this.monitor_store().Watch( 'auto' )!
 				for( const link of sessions ) watch.cut( link )
 			} catch( error ) {
@@ -848,25 +971,32 @@ namespace $.$$ {
 			return this.dialog_title( id )
 		}
 
-		/** Собеседник открытого диалога: у избранного его нет, поэтому и
-		 * подписывать там некого. */
+		/** Собеседник открытого диалога: ни у избранного, ни у группы его нет,
+		 * поэтому и подписывать там некого. */
 		@$mol_mem
 		chat_peer() {
 			const id = this.dialog_active()
 			if( !id ) return ''
 			if( this.saved_is( id ) ) return ''
+			if( this.group_is( id ) ) return ''
 			return this.dialog_peer( id )
 		}
 
-		/** Заголовок чата — это подпись собеседника, и правится она прямо
-		 * в шапке. У избранного заголовок фиксированный, поле там не нужно. */
+		/** Заголовок чата правится прямо в шапке. В переписке вдвоём это моя
+		 * подпись собеседника, в группе — её название, и менять его может
+		 * админ. У избранного заголовок фиксированный, поля там нет. */
 		override chat_note_editable() {
+			const id = this.dialog_active()
+			if( id && this.group_is( id ) ) return this.admin_me( id )
 			return Boolean( this.chat_peer() )
 		}
 
 		/** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
-		 * стоит то, как человек назвал себя сам. */
+		 * стоит то, как человек назвал себя сам, а у неназванной группы —
+		 * её участники. */
 		override chat_note_hint() {
+			const id = this.dialog_active()
+			if( id && this.group_is( id ) ) return this.group_name_auto( id )
 			const lord = this.chat_peer()
 			if( !lord ) return ''
 			return this.peer_name( lord ) || this.lord_short( lord )
@@ -874,10 +1004,26 @@ namespace $.$$ {
 
 		@$mol_mem
 		chat_note( next?: string ) {
+			const id = this.dialog_active()
+			if( id && this.group_is( id ) ) {
+				if( next !== undefined ) this.group_title_set( id, next )
+				return this.group_title( id )
+			}
 			const lord = this.chat_peer()
 			if( !lord ) return ''
 			if( next !== undefined ) this.peer_note_set( lord, next )
 			return this.peer_note( lord )
+		}
+
+		/** Название лежит в общем ленде группы, поэтому и видят его все.
+		 * Менять его может тот, у кого есть право писать в этот ленд, — админ;
+		 * поле у остальных и не показывается, но решение принимается тут. */
+		@$mol_action
+		group_title_set( id: string, next?: string ) {
+			if( !id ) return null
+			if( !this.admin_me( id ) ) return null
+			this.dialog_store( id ).Title( 'auto' )?.val( next ?? '' )
+			return null
 		}
 
 		// ===== Страницы буклета =====
@@ -898,6 +1044,7 @@ namespace $.$$ {
 		compose_open( next?: any ) {
 			const open = !this.compose_opened()
 			this.settings_opened( false )
+			this.group_opened( false )
 			this.compose_opened( open )
 			this.account_reset()
 			return null
@@ -913,6 +1060,7 @@ namespace $.$$ {
 		settings_open( next?: any ) {
 			const open = !this.settings_opened()
 			this.compose_opened( false )
+			this.group_opened( false )
 			this.settings_opened( open )
 			this.account_reset()
 			return null
@@ -930,7 +1078,9 @@ namespace $.$$ {
 				this.Menu(),
 				... this.settings_opened() ? [ this.Settings_page() ] : [],
 				... this.compose_opened() ? [ this.Compose_page() ] : [],
+				... this.group_opened() ? [ this.Group_page() ] : [],
 				... this.dialog_active() ? [ this.Chat_page() ] : [],
+				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
 			]
 		}
 
@@ -942,11 +1092,14 @@ namespace $.$$ {
 
 		/** Уже существующий диалог с этим собеседником — повторный старт
 		 * не должен плодить новые ленды, а должен открывать старый.
-		 * Незасинканный диалог считаем несовпадением, чтобы не виснуть. */
+		 * Незасинканный диалог считаем несовпадением, чтобы не виснуть.
+		 * Группы тут не в счёт: человек может быть в общей группе и всё равно
+		 * не иметь с тобой личной переписки. */
 		dialog_with( peer: string ) {
 			if( !peer ) return ''
 			for( const id of this.dialog_ids() ) {
 				try {
+					if( this.group_is( id ) ) continue
 					if( this.dialog_peer( id ) === peer ) return id
 				} catch( error ) {
 					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
@@ -1086,6 +1239,7 @@ namespace $.$$ {
 			dialog.Peers( 'auto' )!.add( this.my_lord() )
 			dialog.Peers( 'auto' )!.add( peer )
 			dialog.Sessions( 'auto' )!.add( session_land.link().str )
+			dialog.Session_last( 'auto' )?.val( session_land.link().str )
 			dialog.Created( 'auto' )?.val( Date.now() )
 
 			const session = session_land.Data( $bog_gram_session )
@@ -1101,6 +1255,737 @@ namespace $.$$ {
 			this.compose_opened( false )
 			this.dialog_pending( '' )
 			return dialog_land.link().str
+		}
+
+		// ===== Создание группы =====
+
+		@$mol_mem
+		group_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Кнопка в шапке работает переключателем, как и у нового диалога:
+		 * повторный клик закрывает уже открытую страницу. */
+		@$mol_action
+		group_open( next?: any ) {
+			const open = !this.group_opened()
+			this.compose_opened( false )
+			this.settings_opened( false )
+			this.group_opened( open )
+			this.account_reset()
+			return null
+		}
+
+		@$mol_action
+		group_close( next?: any ) {
+			this.group_opened( false )
+			return null
+		}
+
+		/** Кого можно позвать: собеседники своих переписок и участники
+		 * реестров. Ключи первых уже лежат в их лендах, поэтому такой список
+		 * работает и без сети. Один человек — одна строка, даже если он
+		 * встречается в обоих источниках: подписью берём переписку, она ближе.
+		 * Незасинканный диалог просто не даёт своего собеседника — весь список
+		 * из-за одного такого молчать не должен. */
+		@$mol_mem
+		group_sources() {
+
+			const sources: Record< string, string > = {}
+			const my = this.my_lord()
+
+			for( const id of this.dialog_ids() ) {
+				if( this.group_is( id ) ) continue
+				let peer = ''
+				try {
+					peer = this.dialog_peer( id )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+				if( !peer || peer === my ) continue
+				if( sources[ peer ] ) continue
+				sources[ peer ] = 'из переписки'
+			}
+
+			const registries = this.user_sources()
+			for( const lord of Object.keys( registries ) ) {
+				if( sources[ lord ] ) continue
+				sources[ lord ] = this.registry_title( registries[ lord ] )
+			}
+
+			return sources
+		}
+
+		@$mol_mem
+		group_picked( next?: readonly string[] ) {
+			return next ?? [] as readonly string[]
+		}
+
+		/** Список ненайденных ключей относился к прежнему составу: любая
+		 * правка выбора его снимает, и кнопка возвращается к обычной. */
+		@$mol_action
+		group_pick( lord: string, next?: any ) {
+			if( !lord ) return null
+			const picked = this.group_picked()
+			this.group_lost( [] )
+			this.group_picked(
+				picked.includes( lord )
+					? picked.filter( item => item !== lord )
+					: [ ... picked, lord ]
+			)
+			return null
+		}
+
+		@$mol_action
+		group_chosen_drop( lord: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !lord ) return null
+			this.group_lost( [] )
+			this.group_picked( this.group_picked().filter( item => item !== lord ) )
+			return null
+		}
+
+		@$mol_mem
+		group_id_error( next?: string ) {
+			return next ?? ''
+		}
+
+		override Group_id_error() {
+			return this.group_id_error() ? super.Group_id_error() : null!
+		}
+
+		/** Идентификатор руками. Заведомую опечатку отсеиваем сразу: группа с
+		 * несуществующим участником всё равно бы его не дождалась. */
+		@$mol_action
+		group_id_add( next?: any ) {
+
+			const lord = this.group_id().trim()
+			if( !lord ) return null
+
+			if( lord === this.my_lord() ) {
+				this.group_id_error( 'Это ваш собственный идентификатор' )
+				return null
+			}
+
+			if( !$giper_baza_link.check( lord ) ) {
+				this.group_id_error( 'Это не похоже на идентификатор' )
+				return null
+			}
+
+			this.group_id_error( '' )
+			this.group_id( '' )
+
+			if( !this.group_picked().includes( lord ) ) {
+				this.group_lost( [] )
+				this.group_picked( [ ... this.group_picked(), lord ] )
+			}
+
+			return null
+		}
+
+		@$mol_mem
+		group_pick_rows() {
+			return Object.keys( this.group_sources() ).map( lord => this.Group_pick_row( lord ) )
+		}
+
+		group_pick_lord( lord: string ) {
+			return lord
+		}
+
+		group_pick_tint( lord: string ) {
+			return this.avatar_tint( lord )
+		}
+
+		@$mol_mem_key
+		group_pick_title( lord: string ) {
+			return this.peer_label( lord )
+		}
+
+		@$mol_mem_key
+		group_pick_source( lord: string ) {
+			return this.group_sources()[ lord ] ?? ''
+		}
+
+		@$mol_mem_key
+		group_picked_is( lord: string ) {
+			return this.group_picked().includes( lord )
+		}
+
+		override Group_pick_mark( lord: string ) {
+			return this.group_picked_is( lord ) ? super.Group_pick_mark( lord ) : null!
+		}
+
+		@$mol_mem
+		group_chosen_rows() {
+			return this.group_picked().map( lord => this.Group_chosen_row( lord ) )
+		}
+
+		override group_chosen_head() {
+			const count = this.group_picked().length
+			if( !count ) return 'Пока никого не выбрали'
+			return this.people_count( count )
+		}
+
+		group_chosen_lord( lord: string ) {
+			return lord
+		}
+
+		group_chosen_tint( lord: string ) {
+			return this.avatar_tint( lord )
+		}
+
+		@$mol_mem_key
+		group_chosen_name( lord: string ) {
+			return this.peer_label( lord )
+		}
+
+		@$mol_mem
+		group_lost( next?: readonly string[] ) {
+			return next ?? [] as readonly string[]
+		}
+
+		override group_lost_note() {
+			const lost = this.group_lost()
+			if( !lost.length ) return ''
+			const names = lost.map( lord => this.peer_label( lord ) ).join( ', ' )
+			return 'Не нашли ключей: ' + names
+				+ '. Без ключа человек не прочитает переписку — группу можно создать без него.'
+		}
+
+		override Group_lost_note() {
+			return this.group_lost().length ? super.Group_lost_note() : null!
+		}
+
+		override group_make_label() {
+			return this.group_lost().length ? 'Создать без них' : 'Создать группу'
+		}
+
+		@$mol_action
+		group_make( next?: any ) {
+			const picked = this.group_picked()
+			if( !picked.length ) return null
+			$mol_wire_async( this ).group_create( this.group_name().trim(), picked, this.group_lost().length > 0 )
+			return null
+		}
+
+		/** Создание группы целиком. Порядок здесь не косметика: всё, что умеет
+		 * ждать — ключи участников, захват лендов, выдача прав, — стоит до
+		 * первой записи. Фибра перезапускается с начала на каждом ожидании, и
+		 * заведённая раньше группа завелась бы заново, оставив в списке пустые
+		 * копии. Название и состав приезжают сюда аргументами по той же
+		 * причине: очищенные поля следующий заход прочитал бы уже пустыми.
+		 *
+		 * Ключ может не найтись ни в ленде человека, ни в реестрах: без него
+		 * шифрованный ленд ему не открыть, и группа с ним вышла бы молча
+		 * кривой. Поэтому первый заход только показывает, кого не удалось
+		 * добавить, а создаёт уже второй — когда с потерей согласились. */
+		group_create( title: string, lords: readonly string[], forced: boolean ) {
+
+			const my = this.my_lord()
+
+			const known: string[] = []
+			const passes: $giper_baza_auth_pass[] = []
+			const lost: string[] = []
+
+			for( const lord of lords ) {
+				if( !lord || lord === my ) continue
+				const pass = this.peer_pass_of( lord )
+				if( pass ) {
+					known.push( lord )
+					passes.push( pass )
+				} else {
+					lost.push( lord )
+				}
+			}
+
+			if( lost.length && !forced ) {
+				this.group_lost( lost )
+				return ''
+			}
+
+			if( !known.length ) return ''
+
+			const glob = this.$.$giper_baza_glob
+
+			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+			const session_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+
+			// Ранг тот же, что и в переписке вдвоём: сотни подписей на сообщение
+			// человек не заметит, а заливать группу тысячами станет невыгодно.
+			// Создатель — король обоих лендов, полное управление у него и так
+			for( const pass of passes ) {
+				dialog_land.give( pass, $giper_baza_rank_post( 'fast' ) )
+				session_land.give( pass, $giper_baza_rank_post( 'fast' ) )
+			}
+
+			const dialog = dialog_land.Data( $bog_gram_dialog )
+			dialog.Peers( 'auto' )!.add( my )
+			for( const lord of known ) dialog.Peers( 'auto' )!.add( lord )
+			dialog.Sessions( 'auto' )!.add( session_land.link().str )
+			dialog.Session_last( 'auto' )?.val( session_land.link().str )
+			dialog.Created( 'auto' )?.val( Date.now() )
+			if( title ) dialog.Title( 'auto' )?.val( title )
+
+			const session = session_land.Data( $bog_gram_session )
+			session.Dialog_land( 'auto' )?.val( dialog_land.link().str )
+
+			const id = dialog_land.link().str
+
+			this.dialogs_store().Dialogs( 'auto' )!.add( id )
+			this.monitor_store().Watch( 'auto' )!.add( session_land.link().str )
+
+			for( const lord of known ) {
+				this.peer_accept( lord )
+				this.dialogs_store().Outbox( 'auto' )!.add( lord + '|' + id )
+			}
+
+			this.group_picked( [] )
+			this.group_lost( [] )
+			this.group_name( '' )
+			this.group_id( '' )
+			this.group_id_error( '' )
+			this.group_opened( false )
+			this.dialog_current( id )
+			this.chat_bring()
+
+			return id
+		}
+
+		// ===== Участники группы =====
+
+		@$mol_mem
+		members_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Экран участников есть только у группы: в переписке вдвоём
+		 * перечислять некого. */
+		members_shown() {
+			const id = this.dialog_active()
+			return Boolean( id ) && this.group_is( id )
+		}
+
+		override chat_members_shown() {
+			return this.members_shown()
+		}
+
+		@$mol_action
+		members_open( next?: any ) {
+			this.members_opened( !this.members_opened() )
+			this.member_error( '' )
+			this.leave_armed( false )
+			return null
+		}
+
+		@$mol_action
+		members_close( next?: any ) {
+			this.members_opened( false )
+			this.leave_armed( false )
+			return null
+		}
+
+		@$mol_mem
+		member_error( next?: string ) {
+			return next ?? ''
+		}
+
+		/** Что значит «убрать», объясняем на месте и только тому, кто может
+		 * убирать: остальным эта кнопка и не показывается. Прятать пояснение
+		 * в подсказку кнопки нельзя — на телефоне её никто не увидит, а
+		 * операция необратимая. */
+		override Members_drop_note() {
+			return this.admin_me( this.dialog_active() ) ? super.Members_drop_note() : null!
+		}
+
+		/** Ленд группы может быть ещё не засинкан: список участников тогда
+		 * пуст, а подписка на его приход сохраняется — строки дорисуются. */
+		@$mol_mem
+		member_lords() {
+			const id = this.dialog_active()
+			if( !id ) return [] as string[]
+			try {
+				return this.dialog_lords( id )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
+			}
+		}
+
+		@$mol_mem
+		member_rows() {
+			return this.member_lords().map( lord => this.Member_row( lord ) )
+		}
+
+		member_lord( lord: string ) {
+			return lord
+		}
+
+		member_tint( lord: string ) {
+			return this.avatar_tint( lord )
+		}
+
+		@$mol_mem_key
+		member_title( lord: string ) {
+			if( lord === this.my_lord() ) return 'Вы'
+			return this.peer_label( lord )
+		}
+
+		/** Создателя отмечаем отдельно от назначенных админов: его права никто
+		 * не отберёт — он король ленда. */
+		@$mol_mem_key
+		member_status( lord: string ) {
+			const id = this.dialog_active()
+			if( !id ) return ''
+			if( this.dialog_owner( id ) === lord ) return 'создатель'
+			return this.admin_is( id, lord ) ? 'админ' : ''
+		}
+
+		override Member_status( lord: string ) {
+			return this.member_status( lord ) ? super.Member_status( lord ) : null!
+		}
+
+		/** Назначает админов создатель, и только тех, кто им ещё не стал. */
+		override Member_rule( lord: string ) {
+			const id = this.dialog_active()
+			if( !this.owner_me( id ) ) return null!
+			if( lord === this.my_lord() ) return null!
+			if( this.admin_is( id, lord ) ) return null!
+			return super.Member_rule( lord )
+		}
+
+		/** Убирает людей админ. Себя убрать нельзя: для этого есть выход из
+		 * группы, он не трогает остальных. */
+		override Member_drop( lord: string ) {
+			const id = this.dialog_active()
+			if( !this.admin_me( id ) ) return null!
+			if( lord === this.my_lord() ) return null!
+			return super.Member_drop( lord )
+		}
+
+		@$mol_mem_key
+		member_armed( lord: string, next?: boolean ) {
+			return next ?? false
+		}
+
+		@$mol_mem_key
+		member_drop_hint( lord: string ) {
+			return this.member_armed( lord )
+				? 'Точно убрать? Прошлые сообщения у него останутся'
+				: 'Убрать из группы'
+		}
+
+		@$mol_action
+		member_disarm( next?: any ) {
+			for( const lord of this.member_lords() ) this.member_armed( lord, false )
+			return null
+		}
+
+		/** Первый клик взводит кнопку, второй убирает человека — как корзина в
+		 * списке диалогов. Строка участника не кликабельна, но всплытие гасим
+		 * так же: кнопка лежит внутри неё. */
+		@$mol_action
+		member_drop_click( lord: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !lord ) return null
+			if( !this.member_armed( lord ) ) {
+				this.member_disarm()
+				this.member_armed( lord, true )
+				return null
+			}
+			this.member_armed( lord, false )
+			const id = this.dialog_active()
+			if( id ) $mol_wire_async( this ).member_part( id, lord )
+			return null
+		}
+
+		@$mol_action
+		member_rule_click( lord: string, next?: Event ) {
+			next?.stopPropagation()
+			const id = this.dialog_active()
+			if( !id || !lord ) return null
+			$mol_wire_async( this ).member_promote( id, lord )
+			return null
+		}
+
+		/** Что достанется новому участнику: ключи от всех бакетов группы или
+		 * только от свежего. */
+		@$mol_mem
+		history_open( next?: boolean ) {
+			return next ?? true
+		}
+
+		history_shut() {
+			return !this.history_open()
+		}
+
+		@$mol_action
+		members_history_all( next?: any ) {
+			this.history_open( true )
+			return null
+		}
+
+		@$mol_action
+		members_history_new( next?: any ) {
+			this.history_open( false )
+			return null
+		}
+
+		override members_history_note() {
+			return this.history_open()
+				? 'Новый участник получит ключи от всех прошлых сообщений группы'
+				: 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше'
+		}
+
+		/** Кого ещё можно позвать: те же источники, что и при создании, минус
+		 * те, кто в группе уже есть. */
+		@$mol_mem
+		member_pick_lords() {
+			const inside = new Set( this.member_lords() )
+			return Object.keys( this.group_sources() ).filter( lord => !inside.has( lord ) )
+		}
+
+		@$mol_mem
+		member_pick_rows() {
+			return this.member_pick_lords().map( lord => this.Member_pick_row( lord ) )
+		}
+
+		member_pick_lord( lord: string ) {
+			return lord
+		}
+
+		member_pick_tint( lord: string ) {
+			return this.avatar_tint( lord )
+		}
+
+		@$mol_mem_key
+		member_pick_title( lord: string ) {
+			return this.peer_label( lord )
+		}
+
+		@$mol_mem_key
+		member_pick_source( lord: string ) {
+			return this.group_sources()[ lord ] ?? ''
+		}
+
+		override Member_pick_source( lord: string ) {
+			return this.member_pick_source( lord ) ? super.Member_pick_source( lord ) : null!
+		}
+
+		@$mol_action
+		member_pick( lord: string, next?: any ) {
+			const id = this.dialog_active()
+			if( !id || !lord ) return null
+			$mol_wire_async( this ).member_join( id, lord, this.history_open() )
+			return null
+		}
+
+		@$mol_action
+		member_id_add( next?: any ) {
+
+			const id = this.dialog_active()
+			const lord = this.member_id().trim()
+			if( !id || !lord ) return null
+
+			if( lord === this.my_lord() ) {
+				this.member_error( 'Это ваш собственный идентификатор' )
+				return null
+			}
+
+			if( !$giper_baza_link.check( lord ) ) {
+				this.member_error( 'Это не похоже на идентификатор' )
+				return null
+			}
+
+			this.member_error( '' )
+			this.member_id( '' )
+			$mol_wire_async( this ).member_join( id, lord, this.history_open() )
+
+			return null
+		}
+
+		/** Звать людей может админ, поэтому у остальных этого блока нет вовсе. */
+		@$mol_mem
+		members_add_rows() {
+
+			const id = this.dialog_active()
+			if( !this.admin_me( id ) ) return []
+
+			return [
+				this.Members_add_title(),
+				this.Members_history(),
+				... this.member_error() ? [ this.Members_error() ] : [],
+				this.Members_id_form(),
+				this.Members_pick_list(),
+				... this.owner_me( id ) ? [ this.Members_admin_note() ] : [],
+			]
+		}
+
+		@$mol_mem
+		leave_armed( next?: boolean ) {
+			return next ?? false
+		}
+
+		override group_leave_label() {
+			return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы'
+		}
+
+		/** Выход — то же самое, что удаление диалога из своего списка: ленд
+		 * остаётся у остальных, а свою ссылку и слежку за бакетами мы снимаем.
+		 * Из списка участников при этом не вычёркиваемся: сделать это можно
+		 * только записью в тот же ленд, а писать в группу, из которой уходишь,
+		 * — лишнее. */
+		@$mol_action
+		group_leave_click( next?: any ) {
+			if( !this.leave_armed() ) {
+				this.leave_armed( true )
+				return null
+			}
+			const id = this.dialog_active()
+			this.leave_armed( false )
+			this.members_opened( false )
+			this.dialog_delete( id )
+			return null
+		}
+
+		/** Добавление участника. Всё, что умеет ждать — ключ человека, ключи
+		 * остальных, захват свежего бакета, выдача прав, — стоит до первой
+		 * записи: фибра перезапускается с начала на каждом ожидании.
+		 *
+		 * С историей: выдаём право на все бакеты, что уже есть, и новичок
+		 * читает переписку с самого начала. Без истории: заводим свежий бакет,
+		 * открываем его нынешним участникам и новичку, а старые ему не
+		 * открываем вовсе — ключей от них у него не появится. */
+		member_join( id: string, lord: string, history: boolean ) {
+
+			if( !id || !lord ) return ''
+			if( lord === this.my_lord() ) return ''
+			if( !this.admin_me( id ) ) return ''
+
+			const pass = this.peer_pass_of( lord )
+			if( !pass ) {
+				this.member_error( 'Не нашли ключ этого человека: без ключа он не прочитает переписку' )
+				return ''
+			}
+
+			const links = this.session_links_of( id )
+			const mates = this.dialog_mates( id ).filter( mate => mate !== lord )
+
+			// Ключи остающихся нужны только свежему бакету: старым права уже
+			// выданы, и трогать их незачем
+			const stay: [ string, $giper_baza_auth_pass ][] = []
+			if( !history ) {
+				for( const mate of mates ) {
+					const mate_pass = this.peer_pass_of( mate )
+					if( mate_pass ) stay.push( [ mate, mate_pass ] )
+				}
+				if( stay.length < mates.length ) {
+					this.member_error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
+					return ''
+				}
+			}
+
+			const glob = this.$.$giper_baza_glob
+			const fresh = history ? null : glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+
+			const dialog_land = glob.Land( new $giper_baza_link( id ) )
+			dialog_land.give( pass, this.member_rank( id, lord ) )
+
+			if( fresh ) {
+				for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, this.member_rank( id, mate ) )
+				fresh.give( pass, this.member_rank( id, lord ) )
+			} else {
+				for( const link of links ) {
+					this.session_land_by( link ).give( pass, this.member_rank( id, lord ) )
+				}
+			}
+
+			const dialog = dialog_land.Data( $bog_gram_dialog )
+			dialog.Peers( 'auto' )!.add( lord )
+
+			if( fresh ) {
+				dialog.Sessions( 'auto' )!.add( fresh.link().str )
+				dialog.Session_last( 'auto' )?.val( fresh.link().str )
+				fresh.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
+				this.monitor_store().Watch( 'auto' )!.add( fresh.link().str )
+			}
+
+			this.peer_accept( lord )
+			this.dialogs_store().Outbox( 'auto' )!.add( lord + '|' + id )
+			this.member_error( '' )
+
+			return lord
+		}
+
+		/** Исключение — это свежий бакет без исключённого. Ключ от уже выданных
+		 * бакетов отобрать нельзя: прошлые сообщения у него остаются навсегда,
+		 * а новых он не увидит — права на свежий бакет ему не выдают.
+		 *
+		 * Порядок тот же: ключи остающихся и захват бакета умеют ждать и стоят
+		 * до первой записи. */
+		member_part( id: string, lord: string ) {
+
+			if( !id || !lord ) return ''
+			if( lord === this.my_lord() ) return ''
+			if( !this.admin_me( id ) ) return ''
+
+			const mates = this.dialog_mates( id ).filter( mate => mate !== lord )
+
+			const stay: [ string, $giper_baza_auth_pass ][] = []
+			for( const mate of mates ) {
+				const mate_pass = this.peer_pass_of( mate )
+				if( mate_pass ) stay.push( [ mate, mate_pass ] )
+			}
+
+			if( stay.length < mates.length ) {
+				this.member_error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
+				return ''
+			}
+
+			const glob = this.$.$giper_baza_glob
+			const fresh = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+
+			for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, this.member_rank( id, mate ) )
+
+			const dialog = glob.Land( new $giper_baza_link( id ) ).Data( $bog_gram_dialog )
+			dialog.Sessions( 'auto' )!.add( fresh.link().str )
+			dialog.Session_last( 'auto' )?.val( fresh.link().str )
+			dialog.Peers( 'auto' )!.cut( lord )
+			if( this.admin_lords( id ).includes( lord ) ) dialog.Admins( 'auto' )!.cut( lord )
+
+			fresh.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
+			this.monitor_store().Watch( 'auto' )!.add( fresh.link().str )
+			this.member_error( '' )
+
+			return lord
+		}
+
+		/** Назначение админом. Право звать людей — это право управлять лендом,
+		 * поэтому выдаётся оно и на ленд группы, и на каждый её бакет: иначе
+		 * новый админ не смог бы открыть бакет новому человеку. Вместе с ним
+		 * он получает и возможность менять чужие права — разделить эти
+		 * способности в Базе нечем, и в интерфейсе об этом сказано прямо. */
+		member_promote( id: string, lord: string ) {
+
+			if( !id || !lord ) return ''
+			if( !this.owner_me( id ) ) return ''
+
+			const pass = this.peer_pass_of( lord )
+			if( !pass ) {
+				this.member_error( 'Не нашли ключ этого человека: права ему не выдать' )
+				return ''
+			}
+
+			const glob = this.$.$giper_baza_glob
+			const links = this.session_links_of( id )
+			const dialog_land = glob.Land( new $giper_baza_link( id ) )
+
+			dialog_land.give( pass, $giper_baza_rank_rule )
+			for( const link of links ) this.session_land_by( link ).give( pass, $giper_baza_rank_rule )
+
+			dialog_land.Data( $bog_gram_dialog ).Admins( 'auto' )!.add( lord )
+			this.member_error( '' )
+
+			return lord
 		}
 
 		/** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
@@ -1123,6 +2008,18 @@ namespace $.$$ {
 			}
 		}
 
+		/** Когда приглашение можно отправлять. В переписке вдвоём — после
+		 * первого своего сообщения: пустой диалог собеседнику показывать
+		 * незачем, он мог быть и заведён по ошибке. В группе довольно любого
+		 * сообщения: человека туда позвали осознанно, и ждать, пока напишет
+		 * именно позвавший, нелепо — переписка там уже идёт. */
+		@$mol_mem_key
+		invite_ready( id: string ) {
+			if( !id ) return false
+			if( this.group_is( id ) ) return this.dialog_alive( id )
+			return this.mine_wrote( id )
+		}
+
 		// Доставка инвайтов: ретраим, пока не приедут права чужого inbox-ленда
 		@$mol_mem
 		outbox_flush() {
@@ -1131,7 +2028,7 @@ namespace $.$$ {
 			this.$.$mol_state_time.now( 3000 )
 			for( const entry of entries ) {
 				const [ peer, dialog_link ] = entry.split( '|' )
-				if( !this.mine_wrote( dialog_link ) ) continue
+				if( !this.invite_ready( dialog_link ) ) continue
 				try {
 					const inbox_link = this.peer_store( peer ).Inbox_land()?.val()
 					if( !inbox_link ) continue
@@ -1170,8 +2067,7 @@ namespace $.$$ {
 			const watch = this.monitor_store()
 			const have = new Set( ( watch.Watch()?.items() ?? [] ).map( String ) )
 			for( const id of this.dialog_ids() ) {
-				const sessions = ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
-				for( const link of sessions ) {
+				for( const link of this.session_links_of( id ) ) {
 					if( have.has( link ) ) continue
 					watch.Watch( 'auto' )!.add( link )
 				}
@@ -1179,34 +2075,91 @@ namespace $.$$ {
 			return true
 		}
 
-		// ===== Сообщения =====
+		// ===== Сессии-бакеты =====
 
-		/** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции
-		 * прочтения. У избранного делить нечего и не с кем, поэтому его ленд
-		 * сам себе сессия — остальной код от этого ничем не отличается. */
+		/** Ссылки на все бакеты диалога. Бакетов больше одного, когда кого-то
+		 * убрали из группы или добавили без истории: ключ от уже выданного
+		 * бакета отобрать нельзя, поэтому переписка продолжается в свежем.
+		 * Читаем изо всех, до каких дотягиваемся, а пишем всегда в последний.
+		 * У избранного делить нечего и не с кем, поэтому его ленд сам себе
+		 * единственный бакет — остальной код от этого ничем не отличается. */
+		session_links_of( id: string ): readonly string[] {
+			if( !id ) return []
+			if( this.saved_is( id ) ) return [ this.saved_land().link().str ]
+			return ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
+		}
+
+		session_land_by( link: string ) {
+			return this.$.$giper_baza_glob.Land( new $giper_baza_link( link ) )
+		}
+
+		session_lands_of( id: string ) {
+			return this.session_links_of( id ).map( link => this.session_land_by( link ) )
+		}
+
+		/** Свежий бакет: в него уходит вся запись — сообщения, картинки,
+		 * голосовые, отметки прочтения.
+		 *
+		 * Берём его по явному указателю, а не по хвосту списка: порядок в
+		 * списке определяется слиянием, а не тем, что добавили позже, и после
+		 * ротации запись легко ушла бы в покинутый бакет. Хвост оставлен
+		 * запасным путём для диалогов, заведённых до появления указателя. */
 		session_land_of( id: string ) {
-			if( !id ) return null
-			if( this.saved_is( id ) ) return this.saved_land()
-			const sessions = ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
-			const last = sessions[ sessions.length - 1 ]
-			if( !last ) return null
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( last ) )
+			const links = this.session_links_of( id )
+			if( !links.length ) return null
+
+			if( !this.saved_is( id ) ) {
+				const marked = String( this.dialog_store( id ).Session_last()?.val() ?? '' )
+				if( marked && links.includes( marked ) ) return this.session_land_by( marked )
+			}
+
+			return this.session_land_by( links[ links.length - 1 ] )
 		}
 
 		session_land_active() {
 			return this.session_land_of( this.dialog_active() )
 		}
 
-		session_store_of( id: string ) {
+		session_store_last( id: string ) {
 			const land = this.session_land_of( id )
 			if( !land ) return null
 			return land.Data( $bog_gram_session )
 		}
 
+		// ===== Сообщения =====
+
+		/** Склейка лент нескольких бакетов. Порядок задаётся полем момента в
+		 * самих данных, а не порядком доставки, поэтому склейка — это просто
+		 * сортировка. Совпавшие моменты разводим ссылкой: без этого два
+		 * сообщения, отправленные в одну миллисекунду, менялись бы местами от
+		 * синка к синку. */
+		messages_merge( buckets: readonly ( readonly $bog_gram_message[] )[] ) {
+			const all: $bog_gram_message[] = []
+			for( const bucket of buckets ) all.push( ... bucket )
+			return all.sort( ( a, b )=> {
+				const shift = Number( a.Moment()?.val() ?? 0 ) - Number( b.Moment()?.val() ?? 0 )
+				if( shift ) return shift
+				const left = a.link().str
+				const right = b.link().str
+				return left < right ? -1 : left > right ? 1 : 0
+			} )
+		}
+
+		/** Бакет, который не читается — не приехал, не расшифровался, прав на
+		 * него не выдавали, — молча пропускаем: один недоступный не должен
+		 * уносить с собой всю остальную переписку. Подписка на его приход при
+		 * этом сохраняется, и лента дособерётся сама. */
 		@$mol_mem_key
 		messages_of( id: string ) {
-			const list = this.session_store_of( id )?.Messages()?.remote_list() ?? []
-			return [ ... list ].sort( ( a, b )=> ( a.Moment()?.val() ?? 0 ) - ( b.Moment()?.val() ?? 0 ) )
+			const buckets: ( readonly $bog_gram_message[] )[] = []
+			for( const land of this.session_lands_of( id ) ) {
+				try {
+					buckets.push( land.Data( $bog_gram_session ).Messages()?.remote_list() ?? [] )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+			return this.messages_merge( buckets )
 		}
 
 		@$mol_mem_key
@@ -1278,21 +2231,76 @@ namespace $.$$ {
 			return this.message_edited( id ) ? super.Message_edited( id ) : null!
 		}
 
-		/** Одна галочка — доставлено, две — собеседник прочитал. Только для своих
-		 * сообщений и только там, где есть кому читать: в избранном галочек нет. */
+		/** Сколько участников успело прочитать сообщение. Автора не считаем ни
+		 * в числителе, ни в знаменателе: своё сообщение он не читает. */
+		read_tally( reads: Readonly< Record< string, number > >, mates: readonly string[], moment: number ) {
+			return mates.filter( lord => ( reads[ lord ] ?? 0 ) >= moment ).length
+		}
+
+		/** Одна галочка — доставлено, две — собеседник прочитал. В группе
+		 * галочки не годятся: прочитавших там сколько угодно, поэтому вместо
+		 * них счёт. Только для своих сообщений и только там, где есть кому
+		 * читать: в избранном отметок нет. */
 		@$mol_mem_key
 		message_checks( id: string ) {
+
 			if( !this.message_out( id ) ) return ''
+
 			const dialog = this.dialog_active()
 			if( this.saved_is( dialog ) ) return ''
+
+			const moment = Number( this.message_pawn( id )?.Moment()?.val() ?? 0 )
+
+			if( this.group_is( dialog ) ) {
+
+				let mates: readonly string[] = []
+				try {
+					mates = this.dialog_mates( dialog )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+				if( !mates.length ) return ''
+
+				const reads: Record< string, number > = {}
+				for( const lord of mates ) reads[ lord ] = this.read_moment_of( dialog, lord )
+
+				return 'Прочитали ' + this.read_tally( reads, mates, moment ) + ' из ' + mates.length
+
+			}
+
 			const peer = this.dialog_peer( dialog )
 			if( !peer ) return '✓'
-			const moment = Number( this.message_pawn( id )?.Moment()?.val() ?? 0 )
 			return this.read_moment_of( dialog, peer ) >= moment ? '✓✓' : '✓'
+
 		}
 
 		override Message_checks( id: string ) {
 			return this.message_checks( id ) ? super.Message_checks( id ) : null!
+		}
+
+		/** Имя отправителя стоит только в группе и только над чужим пузырём:
+		 * в переписке вдвоём оно ничего не добавляет — там и так двое. Порядок
+		 * тот же, что и везде: моя подпись, потом его имя, потом сокращённый
+		 * идентификатор. */
+		@$mol_mem_key
+		message_author( id: string ) {
+			if( this.message_out( id ) ) return ''
+			if( !this.group_is( this.dialog_active() ) ) return ''
+			const lord = String( this.message_pawn( id )?.Author()?.val() ?? '' )
+			if( !lord ) return ''
+			return this.peer_label( lord )
+		}
+
+		/** Цвет подписи — тот же, что у аватара автора: в длинной группе имена
+		 * различаются ещё и на глаз, не только буквами. */
+		@$mol_mem_key
+		message_author_tint( id: string ) {
+			const lord = String( this.message_pawn( id )?.Author()?.val() ?? '' )
+			return lord ? this.avatar_tint( lord ) : 0
+		}
+
+		override Message_author( id: string ) {
+			return this.message_author( id ) ? super.Message_author( id ) : null!
 		}
 
 		// ===== Действия над сообщением =====
@@ -1438,7 +2446,7 @@ namespace $.$$ {
 			}
 
 			if( !text ) return null
-			const session = this.session_store_of( this.dialog_active() )
+			const session = this.session_store_last( this.dialog_active() )
 			if( !session ) return null
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Text( 'auto' )?.val( text )
@@ -1646,7 +2654,7 @@ namespace $.$$ {
 		}
 
 		/** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
-		 * читать выдаём одному собеседнику, для всех остальных — включая
+		 * читать выдаём каждому участнику, для всех остальных — включая
 		 * мастера — там шифрованный мусор. В избранном выдавать право некому,
 		 * ленд просто остаётся закрытым.
 		 *
@@ -1659,17 +2667,17 @@ namespace $.$$ {
 			const id = this.dialog_active()
 			if( !id ) return ''
 
-			const session = this.session_store_of( id )
+			const session = this.session_store_last( id )
 			if( !session ) return ''
 
 			const glob = this.$.$giper_baza_glob
-			const peer = this.saved_is( id ) ? '' : this.dialog_peer( id )
+			const mates = this.saved_is( id ) ? [] : this.dialog_mates( id )
 
-			// Права собеседника приезжают вместе с его лендом. Пока их нет,
-			// не пишем ничего: кадр в закрытом ленде он не прочитал бы никогда,
-			// а так отправку можно просто повторить
-			const pass = peer ? glob.Land( new $giper_baza_link( peer ) ).king_pass() : null
-			if( peer && !pass ) return ''
+			// Ключи участников приезжают вместе с их лендами. Пока хоть одного
+			// нет, не пишем ничего: кадр в закрытом ленде он не прочитал бы
+			// никогда, а так отправку можно просто повторить
+			const passes = this.passes_of( mates )
+			if( passes.length < mates.length ) return ''
 
 			const shot = this.$.$bog_gram_shrink.shrink( file )
 
@@ -1678,7 +2686,7 @@ namespace $.$$ {
 			store.buffer( shot.bytes )
 			store.type( shot.type )
 
-			if( pass ) land.give( pass, $giper_baza_rank_read )
+			for( const pass of passes ) land.give( pass, $giper_baza_rank_read )
 
 			// Ленд кадра лежит в стороне от переписки, поэтому пуш на мастер
 			// зовём сами — сам он туда не поедет
@@ -1857,7 +2865,7 @@ namespace $.$$ {
 		}
 
 		/** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
-		 * читать выдаём одному собеседнику, для всех остальных — включая
+		 * читать выдаём каждому участнику, для всех остальных — включая
 		 * мастера — там шифрованный мусор. В избранном выдавать право некому,
 		 * ленд просто остаётся закрытым.
 		 *
@@ -1870,16 +2878,16 @@ namespace $.$$ {
 			const id = this.dialog_active()
 			if( !id ) return ''
 
-			const session = this.session_store_of( id )
+			const session = this.session_store_last( id )
 			if( !session ) return ''
 
 			const glob = this.$.$giper_baza_glob
-			const peer = this.saved_is( id ) ? '' : this.dialog_peer( id )
+			const mates = this.saved_is( id ) ? [] : this.dialog_mates( id )
 
-			// Права собеседника приезжают вместе с его лендом. Пока их нет,
-			// не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
-			const pass = peer ? glob.Land( new $giper_baza_link( peer ) ).king_pass() : null
-			if( peer && !pass ) return ''
+			// Ключи участников приезжают вместе с их лендами. Пока хоть одного
+			// нет, не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
+			const passes = this.passes_of( mates )
+			if( passes.length < mates.length ) return ''
 
 			const sound = $mol_wire_sync( take ).take()
 			if( !sound ) {
@@ -1892,7 +2900,7 @@ namespace $.$$ {
 			store.buffer( sound.bytes )
 			store.type( sound.type )
 
-			if( pass ) land.give( pass, $giper_baza_rank_read )
+			for( const pass of passes ) land.give( pass, $giper_baza_rank_read )
 
 			// Ленд записи лежит в стороне от переписки, поэтому пуш на мастер
 			// зовём сами — сам он туда не поедет
@@ -2020,10 +3028,21 @@ namespace $.$$ {
 
 		// ===== Прочтения =====
 
+		/** Отметка прочтения участника. Своя отметка пишется в последний бакет,
+		 * но человек читает переписку целиком, а не по отсекам: у прошлых
+		 * бакетов остались свои отметки, и дальняя из них и есть ответ.
+		 * Недоступный бакет пропускаем — он ничего не добавит. */
 		read_moment_of( id: string, lord: string ) {
-			const session = this.session_store_of( id )
-			if( !session ) return 0
-			return Number( session.Reads()?.key( lord )?.Moment()?.val() ?? 0 )
+			let last = 0
+			for( const land of this.session_lands_of( id ) ) {
+				try {
+					const moment = Number( land.Data( $bog_gram_session ).Reads()?.key( lord )?.Moment()?.val() ?? 0 )
+					if( moment > last ) last = moment
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			}
+			return last
 		}
 
 		/** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
@@ -2045,7 +3064,7 @@ namespace $.$$ {
 			const seen = this.read_moment_of( id, my )
 			if( seen >= last ) return seen
 
-			const session = this.session_store_of( id )
+			const session = this.session_store_last( id )
 			session?.Reads( 'auto' )?.key( my, 'auto' )?.Moment( 'auto' )?.val( last )
 			return last
 		}
@@ -2076,7 +3095,9 @@ namespace $.$$ {
 		// ===== Превью в списке диалогов =====
 
 		/** Вложение в строке списка называем словом: ни кадра, ни звука там
-		 * показать негде, а подпись под ними, если она есть, идёт следом. */
+		 * показать негде, а подпись под ними, если она есть, идёт следом.
+		 * В группе перед текстом стоит имя написавшего: без него непонятно,
+		 * кто из пятерых сейчас говорит. */
 		@$mol_mem_key
 		dialog_preview( id: string ) {
 			const messages = this.messages_alive_of( id )
@@ -2088,8 +3109,10 @@ namespace $.$$ {
 				: ''
 			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text
 			if( this.saved_is( id ) ) return body
-			const mine = String( last.Author()?.val() ?? '' ) === this.my_lord()
-			return mine ? 'Вы: ' + body : body
+			const author = String( last.Author()?.val() ?? '' )
+			if( author === this.my_lord() ) return 'Вы: ' + body
+			if( author && this.group_is( id ) ) return this.peer_label( author ) + ': ' + body
+			return body
 		}
 
 		@$mol_mem_key
@@ -2885,6 +3908,12 @@ namespace $.$$ {
 
 		override Title_text() {
 			return this.note_editable() ? null! : super.Title_text()
+		}
+
+		/** Список участников есть только у группы: в переписке вдвоём
+		 * перечислять некого. */
+		override Members() {
+			return this.members_shown() ? super.Members() : null!
 		}
 
 		override Edit_banner() {

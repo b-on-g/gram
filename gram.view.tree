@@ -20,6 +20,11 @@ $bog_gram $mol_book2
 					click? <=> compose_open? null
 					sub /
 						<= Compose_open_icon $mol_icon_message_plus
+				<= Group_open $mol_button_minor
+					hint \Новая группа
+					click? <=> group_open? null
+					sub /
+						<= Group_open_icon $mol_icon_account_multiple_plus
 				<= Settings_open $mol_button_minor
 					hint \Настройки
 					click? <=> settings_open? null
@@ -122,8 +127,73 @@ $bog_gram $mol_book2
 								\Вступить
 				<= Users_list $mol_list
 					rows <= user_rows /
+		<= Group_page $mol_page
+			title \Новая группа
+			tools /
+				<= Group_close $mol_button_minor
+					hint \Закрыть
+					click? <=> group_close? null
+					sub /
+						<= Group_close_icon $mol_icon_close
+			body /
+				<= Group_name_field $mol_string
+					hint \Название группы
+					value? <=> group_name? \
+				<= Group_chosen_head $mol_paragraph
+					title <= group_chosen_head \
+				<= Group_chosen_list $mol_list
+					rows <= group_chosen_rows /
+				<= Group_lost_note $mol_paragraph
+					title <= group_lost_note \
+				<= Group_make $mol_button_major
+					click? <=> group_make? null
+					sub /
+						<= group_make_label \
+				<= Group_id_form $mol_view
+					sub /
+						<= Group_id_field $mol_string
+							hint \ID участника
+							value? <=> group_id? \
+							submit? <=> group_id_add? null
+						<= Group_id_add $mol_button_major
+							click? <=> group_id_add? null
+							sub /
+								\Добавить
+				<= Group_id_error $mol_paragraph
+					title <= group_id_error \
+				<= Group_pick_head $mol_paragraph
+					title \Кого позвать
+				<= Group_pick_list $mol_list
+					rows <= group_pick_rows /
+		<= Members_page $mol_page
+			title \Участники
+			tools /
+				<= Members_close $mol_button_minor
+					hint \Закрыть
+					click? <=> members_close? null
+					sub /
+						<= Members_close_icon $mol_icon_close
+			body /
+				<= Members_list $mol_list
+					rows <= member_rows /
+				<= Members_drop_note $mol_paragraph
+					title \«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.
+				<= Members_add_block $mol_view
+					sub <= members_add_rows /
+				<= Members_leave_note $mol_paragraph
+					title \«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.
+				<= Members_leave $mol_button_minor
+					hint \Убрать группу из своего списка
+					attr *
+						^
+						bog_gram_armed <= leave_armed false
+					click? <=> group_leave_click? null
+					sub /
+						<= group_leave_label \
 		<= Chat_page $bog_gram_chat
 			title <= chat_title \
+			members_shown <= chat_members_shown false
+			members? <=> members_open? null
 			note? <=> chat_note? \
 			note_hint <= chat_note_hint \
 			note_editable <= chat_note_editable false
@@ -376,6 +446,120 @@ $bog_gram $mol_book2
 					<= User_source* $mol_view
 						sub /
 							<= user_source* \
+	Group_pick_row* $mol_button_minor
+		click? <=> group_pick*? null
+		attr *
+			^
+			bog_gram_current <= group_picked_is* false
+		sub /
+			<= Group_pick_avatar* $bog_gram_avatar
+				id <= group_pick_lord* \
+				tint <= group_pick_tint* 0
+			<= Group_pick_info* $mol_view
+				sub /
+					<= Group_pick_title* $mol_view
+						sub /
+							<= group_pick_title* \
+					<= Group_pick_source* $mol_view
+						sub /
+							<= group_pick_source* \
+			<= Group_pick_mark* $mol_icon_check
+	Group_chosen_row* $mol_view
+		sub /
+			<= Group_chosen_avatar* $bog_gram_avatar
+				id <= group_chosen_lord* \
+				tint <= group_chosen_tint* 0
+			<= Group_chosen_name* $mol_view
+				sub /
+					<= group_chosen_name* \
+			<= Group_chosen_drop* $mol_button_minor
+				hint \Убрать из списка
+				click? <=> group_chosen_drop*? null
+				sub /
+					<= Group_chosen_drop_icon* $mol_icon_close
+	Members_add_title $mol_paragraph
+		title \Добавить участника
+	Members_history $mol_view
+		sub /
+			<= Members_history_head $mol_paragraph
+				title \Что увидит новый участник
+			<= Members_history_row $mol_view
+				sub /
+					<= Members_history_all $mol_button_minor
+						hint \Выдать ключи от всех прошлых сообщений
+						attr *
+							^
+							bog_gram_current <= history_open false
+						click? <=> members_history_all? null
+						sub /
+							\Всю переписку
+					<= Members_history_new $mol_button_minor
+						hint \Завести новый отсек переписки
+						attr *
+							^
+							bog_gram_current <= history_shut false
+						click? <=> members_history_new? null
+						sub /
+							\Только новые
+			<= Members_history_note $mol_paragraph
+				title <= members_history_note \
+	Members_error $mol_paragraph
+		title <= member_error \
+	Members_id_form $mol_view
+		sub /
+			<= Members_id_field $mol_string
+				hint \ID участника
+				value? <=> member_id? \
+				submit? <=> member_id_add? null
+			<= Members_id_add $mol_button_major
+				click? <=> member_id_add? null
+				sub /
+					\Добавить
+	Members_pick_list $mol_list
+		rows <= member_pick_rows /
+	Members_admin_note $mol_paragraph
+		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
+	Member_row* $mol_view
+		sub /
+			<= Member_avatar* $bog_gram_avatar
+				id <= member_lord* \
+				tint <= member_tint* 0
+			<= Member_info* $mol_view
+				sub /
+					<= Member_title* $mol_view
+						sub /
+							<= member_title* \
+					<= Member_status* $mol_view
+						sub /
+							<= member_status* \
+			<= Member_rule* $mol_button_minor
+				hint \Назначить админом
+				click? <=> member_rule_click*? null
+				sub /
+					<= Member_rule_icon* $mol_icon_shield_crown
+			<= Member_drop* $mol_button_minor
+				hint <= member_drop_hint* \
+				attr *
+					^
+					bog_gram_armed <= member_armed* false
+				click? <=> member_drop_click*? null
+				sub /
+					<= Member_drop_icon* $mol_icon_account_remove
+	Member_pick_row* $mol_button_minor
+		click? <=> member_pick*? null
+		sub /
+			<= Member_pick_avatar* $bog_gram_avatar
+				id <= member_pick_lord* \
+				tint <= member_pick_tint* 0
+			<= Member_pick_info* $mol_view
+				sub /
+					<= Member_pick_title* $mol_view
+						sub /
+							<= member_pick_title* \
+					<= Member_pick_source* $mol_view
+						sub /
+							<= member_pick_source* \
+			<= Member_pick_mark* $mol_icon_account_plus
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view
@@ -393,6 +577,12 @@ $bog_gram $mol_book2
 			pointercancel? <=> message_release*? null
 			contextmenu? <=> message_context*? null
 		sub /
+			<= Message_author* $mol_view
+				attr *
+					^
+					bog_gram_tint <= message_author_tint* 0
+				sub /
+					<= message_author* \
 			<= Message_shot* $bog_gram_photo
 				hint \Открыть картинку
 				uri <= message_shot_uri* \
@@ -448,6 +638,8 @@ $bog_gram_chat $mol_page
 	edit_cancel? null
 	close? null
 	note_editable false
+	members_shown false
+	members? null
 	image_files? null
 	image_paste? null
 	image_over? null
@@ -487,6 +679,11 @@ $bog_gram_chat $mol_page
 		<= Title
 		<= Tools
 	tools /
+		<= Members $mol_button_minor
+			hint \Участники
+			click? <=> members? null
+			sub /
+				<= Members_icon $mol_icon_account_multiple
 		<= Close $mol_button_minor
 			hint \Закрыть
 			click? <=> close? null

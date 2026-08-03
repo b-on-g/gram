@@ -990,6 +990,266 @@ namespace $.$$ {
 
 		},
 
+		async 'Сообщения из разных бакетов сливаются по моменту'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			const early = $giper_baza_land.make({ $ })
+			const late = $giper_baza_land.make({ $ })
+
+			const write = ( land: $giper_baza_land, moment: number, text: string )=> {
+				const message = land.Data( $bog_gram_session ).Messages( 'auto' )!.make( null )
+				message.Text( 'auto' )?.val( text )
+				message.Moment( 'auto' )?.val( moment )
+			}
+
+			const list_of = ( land: $giper_baza_land )=>
+				( land.Data( $bog_gram_session ).Messages()!.items() as readonly $giper_baza_link[] )
+					.map( link => message_of( land, link ) )
+
+			// Бакеты писались вперемешку: старый не кончается там, где
+			// начинается новый — в него ещё дописывали, пока свежий уже жил
+			write( early, 1000, 'первое' )
+			write( early, 3000, 'третье' )
+			write( late, 2000, 'второе' )
+			write( late, 4000, 'четвёртое' )
+
+			const merged = app.messages_merge([ list_of( early ), list_of( late ) ])
+			$mol_assert_equal( merged.length, 4 )
+			$mol_assert_equal( merged.map( item => item.Text()!.val() ).join( ' ' ), 'первое второе третье четвёртое' )
+
+			// Порядок задают данные, а не порядок бакетов: та же склейка
+			// наоборот даёт тот же результат
+			const back = app.messages_merge([ list_of( late ), list_of( early ) ])
+			$mol_assert_equal( back.map( item => item.Text()!.val() ).join( ' ' ), 'первое второе третье четвёртое' )
+
+			// Недоступный бакет приходит сюда пустым списком и ничего не портит
+			const alone = app.messages_merge([ [], list_of( early ), [] ])
+			$mol_assert_equal( alone.map( item => item.Text()!.val() ).join( ' ' ), 'первое третье' )
+			$mol_assert_equal( app.messages_merge( [] ).length, 0 )
+
+			// Совпавшие моменты разводятся ссылкой, поэтому порядок не зависит
+			// от того, какой бакет доехал первым
+			const tie_one = $giper_baza_land.make({ $ })
+			const tie_two = $giper_baza_land.make({ $ })
+			write( tie_one, 5000, 'один' )
+			write( tie_two, 5000, 'два' )
+
+			const straight = app.messages_merge([ list_of( tie_one ), list_of( tie_two ) ])
+			const reverse = app.messages_merge([ list_of( tie_two ), list_of( tie_one ) ])
+			$mol_assert_equal(
+				straight.map( item => item.Text()!.val() ).join( ' ' ),
+				reverse.map( item => item.Text()!.val() ).join( ' ' ),
+			)
+
+		},
+
+		async 'Исключённый теряет новый бакет, но не старый'( $ ) {
+
+			// Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
+			// нужен свой: с общим ключом это был бы один и тот же ленд в трёх
+			// обёртках, и шифрование с раздачей прав уходило бы в клинч
+			const king_dialog = await $.$giper_baza_auth.generate()
+			const king_old = await $.$giper_baza_auth.generate()
+			const king_new = await $.$giper_baza_auth.generate()
+			const auth_stay = await $.$giper_baza_auth.generate()
+			const auth_out = await $.$giper_baza_auth.generate()
+
+			const lord_stay = auth_stay.pass().lord().str
+			const lord_out = auth_out.pass().lord().str
+
+			const dialog = $giper_baza_land.make({ $, auth: ()=> king_dialog })
+			const old_bucket = $giper_baza_land.make({ $, auth: ()=> king_old })
+			const new_bucket = $giper_baza_land.make({ $, auth: ()=> king_new })
+
+			// Бакеты закрыты ото всех, как и в самом приложении: без гифта
+			// такой ленд не читается вовсе
+			await $mol_wire_async( old_bucket ).encrypted( true )
+			await $mol_wire_async( new_bucket ).encrypted( true )
+
+			// Выдача прав на шифрованный ленд считает общий секрет, поэтому
+			// каждый шаг гоняем в своей фибре с ретраями
+			const ops = {
+
+				/** Пока в группе трое, права на первый бакет у всех */
+				start() {
+					old_bucket.give( auth_stay.pass(), $giper_baza_rank_post( 'just' ) )
+					old_bucket.give( auth_out.pass(), $giper_baza_rank_post( 'just' ) )
+					return true
+				},
+
+				/** Исключение: свежий бакет открывается всем, кроме уходящего */
+				part() {
+					new_bucket.give( auth_stay.pass(), $giper_baza_rank_post( 'just' ) )
+					return true
+				},
+
+				/** Записи в ленд подписываются, а подпись асинхронна: вне фибры
+				 * приостановка не переживается и прогон замирает молча. */
+				fill() {
+					const data = dialog.Data( $bog_gram_dialog )
+					data.Peers( 'auto' )!.add( king_dialog.pass().lord().str )
+					data.Peers( 'auto' )!.add( lord_stay )
+					data.Peers( 'auto' )!.add( lord_out )
+					data.Sessions( 'auto' )!.add( old_bucket.link().str )
+
+					data.Sessions( 'auto' )!.add( new_bucket.link().str )
+					data.Peers( 'auto' )!.cut( lord_out )
+					return true
+				},
+
+				/** Права шифрованного ленда тоже читаем в фибре: обращение к
+				 * ним считает секрет, а он приезжает асинхронно. */
+				read() {
+					const data = dialog.Data( $bog_gram_dialog )
+					return {
+						peers: ( data.Peers()!.items() as readonly string[] ).map( String ),
+						sessions: ( data.Sessions()!.items() as readonly string[] ).map( String ),
+						out_old: old_bucket.lord_rank( auth_out.pass().lord() ),
+						out_new: new_bucket.lord_rank( auth_out.pass().lord() ),
+						stay_new: new_bucket.lord_rank( auth_stay.pass().lord() ),
+					}
+				},
+
+			}
+
+			await $mol_wire_async( ops ).start()
+			await $mol_wire_async( ops ).part()
+			await $mol_wire_async( ops ).fill()
+
+			const state = await $mol_wire_async( ops ).read()
+			const peers = state.peers
+			$mol_assert_equal( peers.includes( lord_out ), false )
+			$mol_assert_equal( peers.includes( lord_stay ), true )
+
+			// Старый бакет никуда не делся: переписка продолжается в свежем,
+			// а прошлое остаётся там, где лежало
+			// Порядок в списке задаётся слиянием, а не добавлением, поэтому
+			// проверяем состав, а какой бакет свежий — знает отдельный указатель
+			const sessions = state.sessions
+			$mol_assert_equal( sessions.length, 2 )
+			$mol_assert_equal( sessions.includes( old_bucket.link().str ), true )
+			$mol_assert_equal( sessions.includes( new_bucket.link().str ), true )
+
+			// Прошлые сообщения у исключённого остаются: ключ от старого бакета
+			// ему уже выдали, и отобрать его нечем
+			$mol_assert_equal( state.out_old, $giper_baza_rank_post( 'just' ) )
+
+			// А свежего бакета у него нет — закрытый ленд без гифта не читается
+			$mol_assert_equal( state.out_new, $giper_baza_rank_deny )
+			$mol_assert_equal( state.stay_new, $giper_baza_rank_post( 'just' ) )
+
+		},
+
+		async 'Добавленный без истории видит только новый бакет'( $ ) {
+
+			// Каждому ленду свой король: ссылка выводится из ключа, и общий
+			// ключ склеил бы три ленда в один
+			const king_dialog = await $.$giper_baza_auth.generate()
+			const king_old = await $.$giper_baza_auth.generate()
+			const king_fresh = await $.$giper_baza_auth.generate()
+			const auth_old = await $.$giper_baza_auth.generate()
+			const auth_new = await $.$giper_baza_auth.generate()
+
+			const dialog = $giper_baza_land.make({ $, auth: ()=> king_dialog })
+			const old_bucket = $giper_baza_land.make({ $, auth: ()=> king_old })
+			const fresh = $giper_baza_land.make({ $, auth: ()=> king_fresh })
+
+			await $mol_wire_async( old_bucket ).encrypted( true )
+			await $mol_wire_async( fresh ).encrypted( true )
+
+			const ops = {
+
+				start() {
+					old_bucket.give( auth_old.pass(), $giper_baza_rank_post( 'just' ) )
+					return true
+				},
+
+				/** Новичка зовут без истории: заводится свежий бакет и
+				 * открывается нынешним участникам вместе с ним */
+				join() {
+					fresh.give( auth_old.pass(), $giper_baza_rank_post( 'just' ) )
+					fresh.give( auth_new.pass(), $giper_baza_rank_post( 'just' ) )
+					return true
+				},
+
+				/** Записи в ленд подписываются, а подпись асинхронна: вне фибры
+				 * приостановка не переживается и прогон замирает молча. */
+				fill() {
+					const data = dialog.Data( $bog_gram_dialog )
+					data.Peers( 'auto' )!.add( auth_old.pass().lord().str )
+					data.Sessions( 'auto' )!.add( old_bucket.link().str )
+
+					data.Peers( 'auto' )!.add( auth_new.pass().lord().str )
+					data.Sessions( 'auto' )!.add( fresh.link().str )
+					return true
+				},
+
+				/** И список бакетов, и права — одним чтением из фибры. */
+				read() {
+					const data = dialog.Data( $bog_gram_dialog )
+					return {
+						sessions: ( data.Sessions()!.items() as readonly string[] ).length,
+						new_old: old_bucket.lord_rank( auth_new.pass().lord() ),
+						new_fresh: fresh.lord_rank( auth_new.pass().lord() ),
+						old_old: old_bucket.lord_rank( auth_old.pass().lord() ),
+						old_fresh: fresh.lord_rank( auth_old.pass().lord() ),
+						king_old_rank: old_bucket.lord_rank( king_old.pass().lord() ),
+						king_fresh_rank: fresh.lord_rank( king_fresh.pass().lord() ),
+					}
+				},
+
+			}
+
+			await $mol_wire_async( ops ).start()
+			await $mol_wire_async( ops ).join()
+			await $mol_wire_async( ops ).fill()
+
+			const state = await $mol_wire_async( ops ).read()
+
+			// В списке бакетов новичок видит оба, а открыть может только свежий
+			$mol_assert_equal( state.sessions, 2 )
+			$mol_assert_equal( state.new_old, $giper_baza_rank_deny )
+			$mol_assert_equal( state.new_fresh, $giper_baza_rank_post( 'just' ) )
+
+			// Старожил продолжает читать и то, и другое
+			$mol_assert_equal( state.old_old, $giper_baza_rank_post( 'just' ) )
+			$mol_assert_equal( state.old_fresh, $giper_baza_rank_post( 'just' ) )
+
+			// Создатель — король обоих лендов, права у него полные и без гифта
+			$mol_assert_equal( state.king_old_rank, $giper_baza_rank_rule )
+			$mol_assert_equal( state.king_fresh_rank, $giper_baza_rank_rule )
+
+		},
+
+		async 'В группе вместо галочек — сколько человек прочитало'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			const mates = [ 'LordA', 'LordB', 'LordC' ]
+
+			// Отметка участника — момент последнего прочитанного им сообщения
+			const reads = { LordA: 3000, LordB: 1000, LordC: 0 }
+
+			// Раннее сообщение прочитали все, кто вообще заглядывал
+			$mol_assert_equal( app.read_tally( reads, mates, 1000 ), 2 )
+
+			// Позднее — только тот, кто дочитал до него
+			$mol_assert_equal( app.read_tally( reads, mates, 3000 ), 1 )
+
+			// Самое свежее не прочитал никто
+			$mol_assert_equal( app.read_tally( reads, mates, 4000 ), 0 )
+
+			// Отметки того, кого в группе уже нет, счёт не задевают: считаем
+			// по списку участников, а не по всему словарю
+			$mol_assert_equal( app.read_tally( { ... reads, LordGone: 9000 }, mates, 3000 ), 1 )
+
+			// Ни одной отметки — ноль, а не ошибка
+			$mol_assert_equal( app.read_tally( {}, mates, 1000 ), 0 )
+			$mol_assert_equal( app.read_tally( reads, [], 1000 ), 0 )
+
+		},
+
 	})
 
 }

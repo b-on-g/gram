@@ -9,6 +9,19 @@ namespace $.$$ {
 	/** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
 	const alert_red = '#e14b4b'
 
+	/** Палитра по номеру из хеша идентификатора: один и тот же лорд всегда
+	 * красится одинаково — и узором кружка в списке, и подписью над своим
+	 * пузырём в группе. */
+	const tint_rules = {
+		'0': { color: '#e17076' },
+		'1': { color: '#faa774' },
+		'2': { color: '#a695e7' },
+		'3': { color: '#7bc862' },
+		'4': { color: '#6ec9cb' },
+		'5': { color: '#65aadd' },
+		'6': { color: '#ee7aae' },
+	} as const
+
 	/** Шапка страницы прижата к верху экрана, а на айфоне там статус-бар и
 	 * вырез камеры: свой отступ складываем с системным. Вне телефона добавка
 	 * нулевая, и вёрстка остаётся ровно той же. */
@@ -70,6 +83,26 @@ namespace $.$$ {
 		},
 
 		Compose_page: {
+			width: '26rem',
+			Head: {
+				padding: head_pad,
+			},
+			Body_content: {
+				padding: body_pad,
+			},
+		},
+
+		Group_page: {
+			width: '26rem',
+			Head: {
+				padding: head_pad,
+			},
+			Body_content: {
+				padding: body_pad,
+			},
+		},
+
+		Members_page: {
 			width: '26rem',
 			Head: {
 				padding: head_pad,
@@ -817,6 +850,562 @@ namespace $.$$ {
 			},
 		},
 
+		// ===== Создание группы =====
+		// Страница устроена как «новый диалог»: сверху название и уже
+		// выбранные, снизу — откуда выбирать. Строки выбора повторяют сетку
+		// строк реестра, чтобы список людей везде выглядел одинаково.
+
+		Group_name_field: {
+			alignSelf: 'stretch',
+		},
+
+		Group_chosen_head: {
+			font: {
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+			padding: {
+				top: $mol_gap.block,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			},
+		},
+
+		Group_chosen_list: {
+			gap: '0.125rem',
+		},
+
+		Group_chosen_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.375rem',
+				bottom: '0.375rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			background: {
+				color: veil,
+			},
+			minWidth: 0,
+		},
+
+		Group_chosen_avatar: {
+			width: '2rem',
+			height: '2rem',
+		},
+
+		/* имя длинное и должно ужиматься, а не распирать колонку: у вьюх
+		flex-shrink нулевой, поэтому и растяжение, и сжатие задаются явно */
+		Group_chosen_name: {
+			display: 'block',
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Group_chosen_drop: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Group_chosen_drop_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		/* кого не удалось добавить: тревожная строка, а не молчание */
+		Group_lost_note: {
+			font: {
+				size: '0.875rem',
+			},
+			color: alert_red,
+		},
+
+		Group_make: {
+			alignSelf: 'stretch',
+			justify: {
+				content: 'center',
+			},
+		},
+
+		Group_id_form: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Group_id_error: {
+			font: {
+				size: '0.875rem',
+			},
+			color: alert_red,
+		},
+
+		Group_pick_head: {
+			font: {
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+			padding: {
+				top: $mol_gap.block,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			},
+		},
+
+		Group_pick_list: {
+			gap: '0.125rem',
+		},
+
+		Group_pick_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+			/* заливка выбранной строки — в gram.view.css: тот же атрибут, что
+			и у выбранного диалога, кастомный attr на встроенной кнопке не
+			проходит типизацию Attrs */
+		},
+
+		Group_pick_avatar: {
+			width: '2.5rem',
+			height: '2.5rem',
+		},
+
+		Group_pick_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Group_pick_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Group_pick_source: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			/* приглушаем прозрачностью, а не цветом: на выбранной строке текст белый */
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Group_pick_mark: {
+			flex: {
+				shrink: 0,
+			},
+			width: '1.25rem',
+			height: '1.25rem',
+		},
+
+		// ===== Участники группы =====
+
+		Members_list: {
+			gap: '0.125rem',
+		},
+
+		Member_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			minWidth: 0,
+		},
+
+		Member_avatar: {
+			width: '2.5rem',
+			height: '2.5rem',
+		},
+
+		Member_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Member_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Member_status: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		/* назначение админом и исключение стоят рядом и повторяют габариты
+		архива с корзиной: две соседние операции не должны прыгать в строке */
+		Member_rule: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Member_drop: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+			/* красная заливка взведённой кнопки — в gram.view.css: кастомный
+			атрибут на встроенной кнопке не проходит типизацию Attrs */
+		},
+
+		Member_rule_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Member_drop_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		/* Что на самом деле делает «убрать» и что делает «выйти». Строки
+		видны на месте, а не в подсказке кнопки: на телефоне подсказку никто
+		не покажет, а обе операции необратимы. */
+		Members_drop_note: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Members_leave_note: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+			padding: {
+				top: $mol_gap.block,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			},
+		},
+
+		Members_add_block: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			padding: {
+				top: $mol_gap.block,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			},
+		},
+
+		Members_add_title: {
+			font: {
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+		},
+
+		/* выбор истории: две кнопки-переключателя и строка о том, чем они
+		отличаются — решение необратимое, объяснять его надо на месте */
+		Members_history: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.375rem',
+			minWidth: 0,
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.75rem',
+				right: '0.75rem',
+			},
+			background: {
+				color: veil,
+			},
+			borderRadius: '0.75rem',
+		},
+
+		Members_history_head: {
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Members_history_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Members_history_all: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			justify: {
+				content: 'center',
+			},
+			minWidth: 0,
+			font: {
+				size: '0.8rem',
+			},
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
+		Members_history_new: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			justify: {
+				content: 'center',
+			},
+			minWidth: 0,
+			font: {
+				size: '0.8rem',
+			},
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
+		Members_history_note: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Members_error: {
+			font: {
+				size: '0.875rem',
+			},
+			color: alert_red,
+		},
+
+		Members_id_form: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Members_pick_list: {
+			gap: '0.125rem',
+		},
+
+		Member_pick_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			color: $mol_theme.text,
+			minWidth: 0,
+		},
+
+		Member_pick_avatar: {
+			width: '2.5rem',
+			height: '2.5rem',
+		},
+
+		Member_pick_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Member_pick_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Member_pick_source: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				size: '0.75rem',
+			},
+			opacity: .65,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Member_pick_mark: {
+			flex: {
+				shrink: 0,
+			},
+			width: '1.25rem',
+			height: '1.25rem',
+			color: $mol_theme.shade,
+		},
+
+		/* честная строка про то, что вместе с правом звать людей админ
+		получает и право менять чужие права */
+		Members_admin_note: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		/* выход из группы — не разрушительная операция для остальных, но для
+		себя окончательная: держим её внизу и отдельно от всего */
+		Members_leave: {
+			alignSelf: 'flex-start',
+			color: alert_red,
+			padding: {
+				top: '0.375rem',
+				bottom: '0.375rem',
+				left: '0.75rem',
+				right: '0.75rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
 		// ===== Список реестров в настройках =====
 
 		Registry_block: {
@@ -1362,6 +1951,28 @@ namespace $.$$ {
 
 		},
 
+		/* Имя отправителя стоит только в группе и только над чужим пузырём.
+		Цвет берётся из той же палитры, что и узор аватара: в длинной группе
+		имена различаются ещё и на глаз, а не только буквами. */
+		Message_author: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			maxWidth: '100%',
+			font: {
+				size: '0.8rem',
+				weight: 'bold',
+			},
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+
+			'@': {
+				bog_gram_tint: tint_rules,
+			},
+
+		},
+
 		Message_body: {
 			minWidth: 0,
 			whiteSpace: 'pre-wrap',
@@ -1572,6 +2183,72 @@ namespace $.$$ {
 					padding: '0.375rem',
 				},
 
+				Group_pick_list: {
+					gap: 0,
+				},
+
+				Members_pick_list: {
+					gap: 0,
+				},
+
+				Members_list: {
+					gap: 0,
+				},
+
+				Group_pick_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				Member_pick_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				Member_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				/* назначение админом и исключение стоят вплотную, поэтому
+				обеим кнопкам нужен свой запас по краям: иначе палец накрывает
+				сразу две */
+				Member_rule: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Member_drop: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Member_rule_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Member_drop_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Group_chosen_drop: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Members_history_all: {
+					minHeight: '2.75rem',
+				},
+
+				Members_history_new: {
+					minHeight: '2.75rem',
+				},
+
 				/* корзина и архив стоят вплотную, поэтому обеим нужен свой
 				запас по краям: иначе палец накрывает сразу две */
 				Dialog_archive: {
@@ -1710,15 +2387,7 @@ namespace $.$$ {
 		// Узор рисуется обводкой currentColor, поэтому цвет из палитры
 		// красит сами точки, а не подложку
 		'@': {
-			bog_gram_tint: {
-				'0': { color: '#e17076' },
-				'1': { color: '#faa774' },
-				'2': { color: '#a695e7' },
-				'3': { color: '#7bc862' },
-				'4': { color: '#6ec9cb' },
-				'5': { color: '#65aadd' },
-				'6': { color: '#ee7aae' },
-			},
+			bog_gram_tint: tint_rules,
 		},
 
 	} )
@@ -1792,6 +2461,29 @@ namespace $.$$ {
 		Back_icon: {
 			width: '1.5rem',
 			height: '1.5rem',
+		},
+
+		/* Вход в список участников: справа от заголовка, на месте крестика и
+		того же роста. У переписки вдвоём этой кнопки нет вовсе. */
+		Members: {
+			flex: {
+				shrink: 0,
+			},
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '2.5rem',
+			minHeight: '2.5rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Members_icon: {
+			width: '1.25rem',
+			height: '1.25rem',
 		},
 
 		Body: {
@@ -2087,6 +2779,11 @@ namespace $.$$ {
 			/* Скрепка стоит вплотную к полю ввода, поэтому на телефоне ей
 			нужен тот же запас под палец, что и остальным кнопкам списка. */
 			'(max-width: 30rem)': {
+
+				Members: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
 
 				Attach: {
 					minWidth: '2.75rem',
