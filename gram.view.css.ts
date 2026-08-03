@@ -155,6 +155,40 @@ namespace $.$$ {
 			},
 		},
 
+		// ===== Заявка в группу отправлена =====
+		// Строка стоит над списком диалогов, пока заявку не приняли: после
+		// перехода по ссылке экран иначе просто молчит.
+
+		Ask_plate: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.75rem',
+				right: '0.75rem',
+			},
+			background: {
+				color: veil,
+			},
+			borderRadius: '0.75rem',
+		},
+
+		Ask_plate_text: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				size: '0.875rem',
+			},
+			color: $mol_theme.shade,
+		},
+
 		// ===== Список диалогов =====
 
 		Dialogs_list: {
@@ -1392,6 +1426,228 @@ namespace $.$$ {
 			color: $mol_theme.shade,
 		},
 
+		// ===== Ссылка-приглашение в группу =====
+		// Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink и
+		// нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка иначе
+		// распирает колонку участников вместо переноса внутри неё.
+
+		Members_join: {
+			alignSelf: 'stretch',
+			flex: {
+				direction: 'column',
+				shrink: 1,
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			maxWidth: '100%',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.75rem',
+				right: '0.75rem',
+			},
+			background: {
+				color: veil,
+			},
+			borderRadius: '0.75rem',
+		},
+
+		Members_join_head: {
+			font: {
+				size: '0.875rem',
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Members_join_hint: {
+			font: {
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+		},
+
+		/* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
+		Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
+		Members_join_text: {
+			alignSelf: 'stretch',
+			flex: {
+				shrink: 1,
+			},
+			width: '100%',
+			minWidth: 0,
+			maxWidth: '100%',
+			maxHeight: '6rem',
+			overflow: {
+				y: 'auto',
+			},
+			font: {
+				family: 'monospace',
+				size: '0.75rem',
+			},
+			whiteSpace: 'pre-wrap',
+			overflowWrap: 'anywhere',
+			userSelect: 'all',
+			background: {
+				color: $mol_theme.back,
+			},
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.625rem',
+				right: '0.625rem',
+			},
+			borderRadius: '0.5rem',
+		},
+
+		Members_join_copy: {
+			alignSelf: 'flex-start',
+		},
+
+		/* Белая подложка обязательна: на тёмной теме цветной код выходит
+		светлее фона, и сканеры такой инверсный код берут не всякие. */
+		Members_join_qr_box: {
+			alignSelf: 'center',
+			maxWidth: '100%',
+			justify: {
+				content: 'center',
+			},
+			background: {
+				color: '#ffffff',
+			},
+			padding: '0.5rem',
+			borderRadius: '0.75rem',
+		},
+
+		/* свой размер вместо трёхсот пикселей по умолчанию: колонка узкая */
+		Members_join_qr: {
+			flex: {
+				shrink: 0,
+			},
+			width: '12rem',
+			height: '12rem',
+			maxWidth: '100%',
+		},
+
+		// ===== Заявки в группу =====
+		// Сетка та же, что у участника: под именем стоит сокращённый
+		// идентификатор, а согласие и отказ повторяют габариты соседних
+		// кнопок в списке участников.
+
+		Members_asks_head: {
+			font: {
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+		},
+
+		Members_asks_list: {
+			gap: '0.125rem',
+		},
+
+		Ask_row: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.75rem',
+			padding: {
+				top: '0.5rem',
+				bottom: '0.5rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '0.75rem',
+			minWidth: 0,
+		},
+
+		Ask_avatar: {
+			width: '2.5rem',
+			height: '2.5rem',
+		},
+
+		Ask_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			align: {
+				items: 'flex-start',
+			},
+			minWidth: 0,
+			gap: '0.125rem',
+		},
+
+		Ask_title: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Ask_status: {
+			display: 'block',
+			alignSelf: 'stretch',
+			minWidth: 0,
+			font: {
+				family: 'monospace',
+				size: '0.75rem',
+			},
+			color: $mol_theme.shade,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Ask_accept: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Ask_reject: {
+			flex: {
+				shrink: 0,
+			},
+			alignSelf: 'center',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			minWidth: '1.75rem',
+			minHeight: '1.75rem',
+			padding: '0.25rem',
+			borderRadius: '0.5rem',
+		},
+
+		Ask_accept_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
+		Ask_reject_icon: {
+			width: '1rem',
+			height: '1rem',
+		},
+
 		/* выход из группы — не разрушительная операция для остальных, но для
 		себя окончательная: держим её внизу и отдельно от всего */
 		Members_leave: {
@@ -2193,6 +2449,38 @@ namespace $.$$ {
 
 				Members_list: {
 					gap: 0,
+				},
+
+				Members_asks_list: {
+					gap: 0,
+				},
+
+				Ask_row: {
+					gap: '0.5rem',
+					minHeight: '2.75rem',
+					padding: '0.375rem',
+				},
+
+				/* согласие и отказ стоят вплотную, поэтому обеим кнопкам нужен
+				свой запас по краям: иначе палец накрывает сразу две */
+				Ask_accept: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Ask_reject: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+
+				Ask_accept_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
+				},
+
+				Ask_reject_icon: {
+					width: '1.125rem',
+					height: '1.125rem',
 				},
 
 				Group_pick_row: {

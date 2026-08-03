@@ -1803,17 +1803,27 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Звать людей может админ, поэтому у остальных этого блока нет вовсе. */
+		/** Звать людей может админ, поэтому у остальных этого блока нет вовсе —
+		 * вместе со ссылкой-приглашением и заявками по ней: принять заявку
+		 * всё равно некому, а ссылка без приёма бесполезна.
+		 *
+		 * Выбор истории стоит наверху блока и распространяется на все способы
+		 * добавить человека сразу: и на заявку, и на ссылку из реестра, и на
+		 * набранный руками идентификатор. */
 		@$mol_mem
 		members_add_rows() {
 
 			const id = this.dialog_active()
 			if( !this.admin_me( id ) ) return []
 
+			const asks = this.ask_entries( id )
+
 			return [
 				this.Members_add_title(),
 				this.Members_history(),
 				... this.member_error() ? [ this.Members_error() ] : [],
+				this.Members_join(),
+				... asks.length ? [ this.Members_asks_head(), this.Members_asks_list() ] : [],
 				this.Members_id_form(),
 				this.Members_pick_list(),
 				... this.owner_me( id ) ? [ this.Members_admin_note() ] : [],
@@ -1854,14 +1864,18 @@ namespace $.$$ {
 		 * С историей: выдаём право на все бакеты, что уже есть, и новичок
 		 * читает переписку с самого начала. Без истории: заводим свежий бакет,
 		 * открываем его нынешним участникам и новичку, а старые ему не
-		 * открываем вовсе — ключей от них у него не появится. */
-		member_join( id: string, lord: string, history: boolean ) {
+		 * открываем вовсе — ключей от них у него не появится.
+		 *
+		 * Готовый ключ приходит сюда из заявки: там он приезжает вместе с
+		 * просьбой, уже проверенный пересчётом, и разыскивать человека по
+		 * реестрам не нужно. Во всех остальных местах ключ ищется как прежде. */
+		member_join( id: string, lord: string, history: boolean, known?: $giper_baza_auth_pass | null ) {
 
 			if( !id || !lord ) return ''
 			if( lord === this.my_lord() ) return ''
 			if( !this.admin_me( id ) ) return ''
 
-			const pass = this.peer_pass_of( lord )
+			const pass = known ?? this.peer_pass_of( lord )
 			if( !pass ) {
 				this.member_error( 'Не нашли ключ этого человека: без ключа он не прочитает переписку' )
 				return ''
@@ -1986,6 +2000,139 @@ namespace $.$$ {
 			this.member_error( '' )
 
 			return lord
+		}
+
+		// ===== Заявки в группу: сторона админа =====
+
+		/** Все заявки, что долетели в моё лобби. Лобби открыто на запись всем,
+		 * поэтому мусор там обычное дело: разбор его отвергает, а на новом
+		 * устройстве ленд может быть ещё в пути — подписка на его приход
+		 * сохраняется, и заявки дорисуются сами. */
+		@$mol_mem
+		ask_all() {
+			try {
+				return ( this.inbox_store().Joins()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
+			}
+		}
+
+		/** Заявки в конкретную группу. Того, кто уже внутри, не показываем: его
+		 * заявку либо приняли, либо он пришёл своим путём — и принимать её
+		 * второй раз незачем. */
+		@$mol_mem_key
+		ask_entries( id: string ) {
+
+			if( !id ) return [] as string[]
+
+			let inside = new Set< string >()
+			try {
+				inside = new Set( this.dialog_lords( id ) )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+
+			return this.ask_all().filter( entry => {
+				const ask = this.ask_parse( entry )
+				if( !ask ) return false
+				if( ask.group !== id ) return false
+				return !inside.has( ask.lord )
+			} )
+		}
+
+		override members_asks_head() {
+			return 'Заявки: ' + this.ask_entries( this.dialog_active() ).length
+		}
+
+		@$mol_mem
+		members_ask_rows() {
+			return this.ask_entries( this.dialog_active() ).map( entry => this.Ask_row( entry ) )
+		}
+
+		/** Строка заявки ключуется самой записью: одна и та же запись должна
+		 * дать один и тот же ряд, а лорда из неё достаёт разбор. */
+		ask_lord( entry: string ) {
+			return this.ask_parse( entry )?.lord ?? ''
+		}
+
+		ask_tint( entry: string ) {
+			return this.avatar_tint( this.ask_lord( entry ) )
+		}
+
+		@$mol_mem_key
+		ask_title( entry: string ) {
+			return this.peer_label( this.ask_lord( entry ) )
+		}
+
+		/** Под именем стоит сокращённый идентификатор: имя человек задаёт себе
+		 * сам, и по одному только имени понять, того ли впускаешь, нельзя. */
+		@$mol_mem_key
+		ask_status( entry: string ) {
+			return this.lord_short( this.ask_lord( entry ) )
+		}
+
+		/** Выдача прав — это криптография с перебором степеней, поэтому из
+		 * обработчика уходим в фибру. */
+		@$mol_action
+		ask_accept( entry: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !entry ) return null
+			$mol_wire_async( this ).ask_apply( entry )
+			return null
+		}
+
+		/** Отказ — снятие записи из своего лобби. Повторную заявку от того же
+		 * человека это не блокирует: отказ не бан, а просто нерешение. */
+		@$mol_action
+		ask_reject( entry: string, next?: Event ) {
+			next?.stopPropagation()
+			if( !entry ) return null
+			this.ask_forget( entry )
+			return null
+		}
+
+		/** Обработанную заявку убираем из лобби, чтобы они не копились. Лобби
+		 * моё, я его король — снять из него запись есть чем. */
+		@$mol_action
+		ask_forget( entry: string ) {
+			if( !entry ) return null
+			this.inbox_store().Joins( 'auto' )!.cut( entry )
+			return null
+		}
+
+		/** Приём заявки. Ключ проверяем пересчётом до всего остального: лобби
+		 * открыто на запись всем, и свой ключ под чужим идентификатором может
+		 * положить кто угодно — тогда в группу попал бы он, а не тот, кого
+		 * туда позвали. Не сошлось — заявку отклоняем с пояснением.
+		 *
+		 * Дальше это обычное добавление участника: тем же кодом, с тем же
+		 * выбором истории, что и при добавлении руками. Ключ передаём готовым —
+		 * он приехал вместе с заявкой, и разыскивать человека по реестрам,
+		 * которых у меня может и не быть, не приходится. */
+		ask_apply( entry: string ) {
+
+			const ask = this.ask_parse( entry )
+			if( !ask ) {
+				this.ask_forget( entry )
+				return ''
+			}
+
+			if( !this.admin_me( ask.group ) ) return ''
+
+			const pass = this.pass_verified( ask.lord, ask.pass )
+			if( !pass ) {
+				this.member_error( 'Ключ в заявке не сходится со своим владельцем: заявка отклонена' )
+				this.ask_forget( entry )
+				return ''
+			}
+
+			const joined = this.member_join( ask.group, ask.lord, this.history_open(), pass )
+			if( !joined ) return ''
+
+			this.ask_forget( entry )
+
+			return joined
 		}
 
 		/** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
@@ -3518,6 +3665,236 @@ namespace $.$$ {
 			return plan
 		}
 
+		// ===== Ссылка-приглашение в группу =====
+
+		/** Приглашение в группу — адрес страницы с одной лишь ссылкой на её
+		 * ленд: остальные параметры (свой мастер, открытый реестр) чужому
+		 * человеку не нужны. Вступить по ней мгновенно нельзя — ленд группы
+		 * шифрованный, и ключ от него заворачивается на ключ конкретного
+		 * человека тем, у кого есть права. Поэтому ссылка ведёт к заявке. */
+		join_uri( id: string ) {
+			if( !id ) return ''
+			const location = this.$.$mol_dom_context.location
+			return location.origin + location.pathname + '#!join=' + id
+		}
+
+		override join_link() {
+			return this.join_uri( this.dialog_active() )
+		}
+
+		/** Группа из адреса страницы: по такой ссылке просятся в группу. */
+		join_id() {
+			return this.$.$mol_state_arg.value( 'join' ) ?? ''
+		}
+
+		/** Уже участнику показываем группу, остальным заводим заявку. Мусор
+		 * вместо ссылки отсеиваем сразу: заявка в несуществующую группу
+		 * осела бы в приватном ленде навсегда и никуда бы не уехала. */
+		join_plan( id: string, my: string, member: boolean ): 'skip' | 'open' | 'ask' {
+			if( !id ) return 'skip'
+			if( id === my ) return 'skip'
+			if( !$giper_baza_link.check( id ) ) return 'skip'
+			return member ? 'open' : 'ask'
+		}
+
+		/** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
+		 * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
+		@$mol_mem
+		join_handle() {
+			const id = this.join_id()
+			if( !id ) return ''
+			$mol_wire_async( this ).join_request( id )
+			return id
+		}
+
+		/** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+		 * страницы просилась бы в ту же группу снова и снова. */
+		join_request( id: string ) {
+
+			const plan = this.join_plan( id, this.my_lord(), this.dialog_ids().includes( id ) )
+
+			if( plan === 'open' ) this.dialog_select( id )
+			if( plan === 'ask' ) this.ask_send( id )
+
+			this.$.$mol_state_arg.value( 'join', null )
+
+			return plan
+		}
+
+		/** Запись заявки: группа, лорд просящего и его ключ. Разделитель тот
+		 * же, что в отложенной доставке приглашений. */
+		ask_entry( group: string, lord: string, pass: string ) {
+			return group + '|' + lord + '|' + pass
+		}
+
+		/** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
+		 * с заявками: разбор отвергает всё, что не сходится по числу частей
+		 * или недосчитывается любой из них. */
+		ask_parse( entry: string ) {
+			const parts = String( entry ?? '' ).split( '|' )
+			if( parts.length !== 3 ) return null
+			const [ group, lord, pass ] = parts
+			if( !group || !lord || !pass ) return null
+			return { group, lord, pass }
+		}
+
+		/** Заявка встаёт в свою очередь, а уезжает отдельным потоком: право
+		 * писать в чужое лобби приезжает не сразу, и с первого раза запись
+		 * может не пройти. Повтор ничего не задваивает — ни очередь, ни
+		 * отправленное второй ссылки не примут. */
+		@$mol_action
+		ask_send( id: string ) {
+
+			if( !id ) return null
+
+			// По ссылке приходят сами: однажды убранная из своего списка группа
+			// не должна молча отказать во второй попытке в неё попасть
+			if( this.hidden_ids().includes( id ) ) this.dialogs_store().Hidden( 'auto' )!.cut( id )
+
+			if( this.ask_queued().includes( id ) ) return null
+			if( this.ask_sent().includes( id ) ) return null
+			this.dialogs_store().Asks( 'auto' )!.add( id )
+
+			return null
+		}
+
+		/** Свой приватный ленд шифрованный и на новом устройстве приезжает не
+		 * мгновенно. Строка ожидания стоит прямо в теле страницы списка, и
+		 * suspend тут подвесил бы её целиком: пока ленда нет, заявок «нет»,
+		 * а подписка на его приход сохраняется — строка появится сама. */
+		@$mol_mem
+		ask_queued() {
+			try {
+				return ( this.dialogs_store().Asks()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
+			}
+		}
+
+		@$mol_mem
+		ask_sent() {
+			try {
+				return ( this.dialogs_store().Asked()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return [] as string[]
+			}
+		}
+
+		/** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
+		 * что уже доехали. Принятая уходит отсюда сама: группа появляется в
+		 * списке диалогов, и записи там больше нечего ждать. */
+		@$mol_mem
+		ask_pending() {
+			let have = new Set< string >()
+			try {
+				have = new Set( this.dialog_ids() )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+			const all = new Set( [ ... this.ask_queued(), ... this.ask_sent() ] )
+			return [ ... all ].filter( id => !have.has( id ) )
+		}
+
+		/** Ссылка привела к заявке, а не к группе: без этой строки экран после
+		 * перехода по ссылке просто молчал бы. */
+		override ask_plate_text() {
+			const count = this.ask_pending().length
+			if( !count ) return ''
+			if( count === 1 ) return 'Заявка отправлена — ждём, пока её примут'
+			return 'Заявок отправлено: ' + count + ' — ждём, пока их примут'
+		}
+
+		override Ask_plate() {
+			return this.ask_pending().length ? super.Ask_plate() : null!
+		}
+
+		/** Заявку приняли: права на ленд группы приехали, и в списке участников
+		 * уже стоит мой идентификатор. Ленд без выданных прав не читается
+		 * вовсе — это обычное состояние ожидания, а не ошибка. */
+		ask_taken( id: string ) {
+
+			const store = this.dialogs_store()
+
+			try {
+				if( !this.dialog_lords( id ).includes( this.my_lord() ) ) return false
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				return false
+			}
+
+			if( !this.dialog_ids().includes( id ) && !this.hidden_ids().includes( id ) ) {
+				store.Dialogs( 'auto' )!.add( id )
+			}
+
+			store.Asks( 'auto' )!.cut( id )
+			store.Asked( 'auto' )!.cut( id )
+
+			return true
+		}
+
+		/** Доставка заявок. Повторами ретраится только очередь: право писать в
+		 * чужое лобби приезжает не сразу, и с первого раза запись может не
+		 * пройти. Доехавшую заявку второй раз не шлём — отклонённую админ из
+		 * лобби убирает, и повтор возвращал бы её туда снова, сводя отказ на
+		 * нет. Отправленные при этом остаются под присмотром без всякого
+		 * таймера: чтение ленда группы подписывает на его приход, и выданные
+		 * права разбудят этот пересчёт сами. */
+		@$mol_mem
+		asks_flush() {
+
+			const queued = this.ask_queued()
+			const sent = this.ask_sent()
+			if( !queued.length && !sent.length ) return 0
+
+			for( const id of sent ) this.ask_taken( id )
+
+			if( !queued.length ) return sent.length
+
+			this.$.$mol_state_time.now( 3000 )
+
+			const my = this.my_lord()
+			const store = this.dialogs_store()
+
+			for( const id of queued ) {
+
+				if( this.ask_taken( id ) ) continue
+
+				try {
+
+					const owner = this.dialog_owner( id )
+					if( !owner ) {
+						store.Asks( 'auto' )!.cut( id )
+						continue
+					}
+
+					const inbox_link = this.peer_store( owner ).Inbox_land()?.val()
+					if( !inbox_link ) continue
+
+					const inbox = this.$.$giper_baza_glob
+						.Land( new $giper_baza_link( String( inbox_link ) ) )
+						.Data( $bog_gram_inbox )
+
+					const entry = this.ask_entry( id, my, this.my_pass_str() )
+					inbox.Joins( 'auto' )!.add( entry )
+
+					const delivered = ( inbox.Joins()?.items() ?? [] ).map( String ).includes( entry )
+					if( !delivered ) continue
+
+					store.Asked( 'auto' )!.add( id )
+					store.Asks( 'auto' )!.cut( id )
+
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+					$mol_fail_log( error )
+				}
+
+			}
+
+			return queued.length + sent.length
+		}
+
 		// ===== Уведомления =====
 
 		notify_supported() {
@@ -3747,8 +4124,10 @@ namespace $.$$ {
 			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_keys_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.invite_handle() } catch( error ) { $mol_fail_log( error ) }
+			try { this.join_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
+			try { this.asks_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }
 			try { this.monitor_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.read_sync() } catch( error ) { $mol_fail_log( error ) }
