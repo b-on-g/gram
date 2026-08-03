@@ -4,6 +4,9 @@ namespace $.$$ {
 	export class $bog_gram_dialog extends $giper_baza_dict.with({
 		Peers: $giper_baza_list_str,
 		Sessions: $giper_baza_list_str,
+		/** Кто завёл переписку. Королём ленда числится служебный ключ, выданный
+		 * при захвате, поэтому по ленду создателя не узнать — пишем прямо. */
+		Owner: $giper_baza_atom_text,
 		/** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
 		 * а не добавлением, поэтому «последний» там — не обязательно свежий. */
 		Session_last: $giper_baza_atom_text,
