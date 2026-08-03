@@ -7437,6 +7437,152 @@ var $;
                 $mol_assert_equal(app.pass_verified(lord, ''), null);
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
+            async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
+                const app = $bog_gram.make({ $ });
+                const owner = await $.$giper_baza_auth.generate();
+                const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
+                const my = 'LordMine';
+                // Ссылка — адрес страницы с одной лишь ссылкой на ленд группы
+                const location = $.$mol_dom_context.location;
+                const uri = app.join_uri(group);
+                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group);
+                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group);
+                $mol_assert_equal(app.join_uri(''), '');
+                // Уже в группе — просто открываем, ещё нет — просимся
+                $mol_assert_equal(app.join_plan(group, my, true), 'open');
+                $mol_assert_equal(app.join_plan(group, my, false), 'ask');
+                // Пустой параметр, свой же идентификатор и мусор заявку не заводят
+                $mol_assert_equal(app.join_plan('', my, false), 'skip');
+                $mol_assert_equal(app.join_plan(my, my, false), 'skip');
+                $mol_assert_equal(app.join_plan('не ссылка', my, false), 'skip');
+            },
+            async 'Заявка в группу: запись собирается и разбирается'($) {
+                const app = $bog_gram.make({ $ });
+                const guest = await $.$giper_baza_auth.generate();
+                const lord = guest.pass().lord().str;
+                const key = guest.pass().toString();
+                const group = new $giper_baza_link(lord + '_KJhgFdSa').str;
+                const entry = app.ask_entry(group, lord, key);
+                $mol_assert_equal(entry, group + '|' + lord + '|' + key);
+                const ask = app.ask_parse(entry);
+                $mol_assert_equal(ask?.group, group);
+                $mol_assert_equal(ask?.lord, lord);
+                $mol_assert_equal(ask?.pass, key);
+                // Ключ приезжает вместе с заявкой: по нему админ и выдаёт права
+                $mol_assert_equal(app.pass_verified(ask.lord, ask.pass)?.lord().str, lord);
+                // Лобби открыто на запись всем, и мусор туда долетает наравне
+                // с заявками: разбор его отвергает, а не роняет весь список
+                $mol_assert_equal(app.ask_parse(''), null);
+                $mol_assert_equal(app.ask_parse('ТолькоГруппа'), null);
+                $mol_assert_equal(app.ask_parse(group + '|' + lord), null);
+                $mol_assert_equal(app.ask_parse(group + '|' + lord + '|' + key + '|лишнее'), null);
+                $mol_assert_equal(app.ask_parse('||'), null);
+                $mol_assert_equal(app.ask_parse(group + '||' + key), null);
+                // Мусор на месте ключа разбор проходит, а проверка — нет
+                const junk = app.ask_parse(app.ask_entry(group, lord, 'не ключ'));
+                $mol_assert_equal(junk?.pass, 'не ключ');
+                $mol_assert_equal(app.pass_verified(junk.lord, junk.pass), null);
+            },
+            async 'Подложенный в заявке ключ не принимается'($) {
+                const app = $bog_gram.make({ $ });
+                const auth_a = await $.$giper_baza_auth.generate();
+                const auth_b = await $.$giper_baza_auth.generate();
+                const lord_a = auth_a.pass().lord().str;
+                const group = new $giper_baza_link(lord_a + '_KJhgFdSa').str;
+                // Своя заявка со своим ключом проходит
+                const honest = app.ask_parse(app.ask_entry(group, lord_a, auth_a.pass().toString()));
+                $mol_assert_equal(app.pass_verified(honest.lord, honest.pass)?.lord().str, lord_a);
+                // Лобби открыто на запись всем: под лордом A кто угодно кладёт свой
+                // ключ. Идентификатор это хеш ключа, пересчёт ловит подмену — иначе
+                // в группу попал бы подложивший, а не тот, кого туда звали
+                const forged = app.ask_parse(app.ask_entry(group, lord_a, auth_b.pass().toString()));
+                $mol_assert_equal(forged.lord, lord_a);
+                $mol_assert_equal(app.pass_verified(forged.lord, forged.pass), null);
+                // И наоборот: настоящий ключ A под чужим идентификатором
+                const swapped = app.ask_parse(app.ask_entry(group, auth_b.pass().lord().str, auth_a.pass().toString()));
+                $mol_assert_equal(app.pass_verified(swapped.lord, swapped.pass), null);
+            },
+            async 'Заявка ложится в свой список лобби и снимается решением'($) {
+                const owner = await $.$giper_baza_auth.generate();
+                const guest = await $.$giper_baza_auth.generate();
+                const app = $bog_gram.make({ $ });
+                const guest_lord = guest.pass().lord().str;
+                const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
+                const entry = app.ask_entry(group, guest_lord, guest.pass().toString());
+                // Саму доставку через чужое лобби проверяет тест про инвайты: она
+                // одна и та же. Здесь важно наше — что заявки живут отдельным
+                // списком и что решение их убирает.
+                const inbox = $giper_baza_land.make({ $, auth: () => owner });
+                const ops = {
+                    ask() {
+                        inbox.Data($bog_gram_inbox).Joins('auto').add(entry);
+                        return true;
+                    },
+                    drop() {
+                        inbox.Data($bog_gram_inbox).Joins('auto').cut(entry);
+                        return true;
+                    },
+                    /** Читаем отдельным заходом: в одной фибре с записью список
+                     * застаётся ещё не осевшим, и счёт скачет от прогона к прогону. */
+                    read() {
+                        const data = inbox.Data($bog_gram_inbox);
+                        return {
+                            joins: data.Joins().items().map(String),
+                            invites: (data.Invites()?.items() ?? []).length,
+                        };
+                    },
+                };
+                await $mol_wire_async(ops).ask();
+                const filled = await $mol_wire_async(ops).read();
+                $mol_assert_equal(filled.joins.includes(entry), true);
+                // Заявки не мешаются с приглашениями: это разные списки
+                $mol_assert_equal(filled.invites, 0);
+                // Из записи собирается тот самый ключ: по нему и выдаются права на
+                // ленд группы, без всяких реестров
+                const ask = app.ask_parse(entry);
+                $mol_assert_equal(ask?.group, group);
+                $mol_assert_equal(app.pass_verified(ask.lord, ask.pass)?.lord().str, guest_lord);
+                // Решение по заявке снимает её из лобби, чтобы такие не копились
+                await $mol_wire_async(ops).drop();
+                $mol_assert_equal((await $mol_wire_async(ops).read()).joins.length, 0);
+            },
+            async 'Заявка проходит очередь, отправленное и приём'($) {
+                const land = $giper_baza_land.make({ $ });
+                const store = land.Data($bog_gram_dialogs);
+                const waiting = 'AAAAAAAA_BBBBBBBB';
+                const answered = 'CCCCCCCC_DDDDDDDD';
+                // Пока никуда не просились, списков заявок нет вовсе
+                $mol_assert_equal((store.Asks()?.items() ?? []).length, 0);
+                $mol_assert_equal((store.Asked()?.items() ?? []).length, 0);
+                store.Asks('auto').add(waiting);
+                store.Asks('auto').add(answered);
+                // Повторный переход по той же ссылке ничего не задваивает
+                store.Asks('auto').add(waiting);
+                $mol_assert_equal(store.Asks().items().length, 2);
+                // Доехала до чужого лобби: уходит из очереди в отправленные, и
+                // второй раз её оттуда уже не пошлют — иначе отклонённая заявка
+                // возвращалась бы в лобби сама
+                for (const id of [waiting, answered]) {
+                    store.Asked('auto').add(id);
+                    store.Asks('auto').cut(id);
+                }
+                $mol_assert_equal(store.Asks().items().length, 0);
+                $mol_assert_equal(store.Asked().items().length, 2);
+                // Приняли: группа появилась в списке диалогов, заявка снята.
+                // Порядок в списках задаётся слиянием, поэтому проверяем состав
+                store.Dialogs('auto').add(answered);
+                store.Asked('auto').cut(answered);
+                const asked = new Set(store.Asked().items().map(String));
+                $mol_assert_equal(asked.has(waiting), true);
+                $mol_assert_equal(asked.has(answered), false);
+                // Ожидание рисуется по тем заявкам, чьих групп ещё нет в списке
+                const have = new Set(store.Dialogs().items().map(String));
+                const pending = [...asked].filter(id => !have.has(id));
+                $mol_assert_equal(pending.length, 1);
+                $mol_assert_equal(pending[0], waiting);
+                // Заявки не мешаются с отложенными приглашениями: разные списки
+                $mol_assert_equal((store.Outbox()?.items() ?? []).length, 0);
+            },
             async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
                 const land = $giper_baza_land.make({ $ });
                 const session = land.Data($bog_gram_session);

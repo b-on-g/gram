@@ -2075,6 +2075,10 @@ $bog_gram $mol_book2
 						<= Settings_open_icon $mol_icon_cog
 				<= Lights $mol_lights_toggle
 			body /
+				<= Ask_plate $mol_view
+					sub /
+						<= Ask_plate_text $mol_paragraph
+							title <= ask_plate_text \
 				<= Dialogs_list $mol_list
 					rows <= dialog_rows /
 		<= Settings_page $mol_page
@@ -2562,6 +2566,51 @@ $bog_gram $mol_book2
 		rows <= member_pick_rows /
 	Members_admin_note $mol_paragraph
 		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
+	Members_join $mol_view
+		sub /
+			<= Members_join_head $mol_paragraph
+				title \Ссылка-приглашение в группу
+			<= Members_join_hint $mol_paragraph
+				title \Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо
+			<= Members_join_text $mol_paragraph
+				title <= join_link \
+			<= Members_join_copy $mol_button_copy
+				title \Скопировать
+				text <= join_link
+			<= Members_join_qr_box $mol_view
+				sub /
+					<= Members_join_qr $bog_qr
+						uri <= join_link
+						gradient_stops /
+							\#2f9e5f
+							\#8fd14f
+	Members_asks_head $mol_paragraph
+		title <= members_asks_head \
+	Members_asks_list $mol_list
+		rows <= members_ask_rows /
+	Ask_row* $mol_view
+		sub /
+			<= Ask_avatar* $bog_gram_avatar
+				id <= ask_lord* \
+				tint <= ask_tint* 0
+			<= Ask_info* $mol_view
+				sub /
+					<= Ask_title* $mol_view
+						sub /
+							<= ask_title* \
+					<= Ask_status* $mol_view
+						sub /
+							<= ask_status* \
+			<= Ask_accept* $mol_button_minor
+				hint \Принять в группу
+				click? <=> ask_accept*? null
+				sub /
+					<= Ask_accept_icon* $mol_icon_check
+			<= Ask_reject* $mol_button_minor
+				hint \Отклонить заявку
+				click? <=> ask_reject*? null
+				sub /
+					<= Ask_reject_icon* $mol_icon_close
 	Member_row* $mol_view
 		sub /
 			<= Member_avatar* $bog_gram_avatar

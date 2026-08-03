@@ -20086,6 +20086,19 @@ var $;
 			const obj = new this.$.$mol_lights_toggle();
 			return obj;
 		}
+		ask_plate_text(){
+			return "";
+		}
+		Ask_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.ask_plate_text()));
+			return obj;
+		}
+		Ask_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Ask_plate_text())]);
+			return obj;
+		}
 		dialog_rows(){
 			return [];
 		}
@@ -20103,7 +20116,7 @@ var $;
 				(this.Settings_open()), 
 				(this.Lights())
 			]);
-			(obj.body) = () => ([(this.Dialogs_list())]);
+			(obj.body) = () => ([(this.Ask_plate()), (this.Dialogs_list())]);
 			return obj;
 		}
 		settings_close(next){
@@ -21324,6 +21337,110 @@ var $;
 		member_pick_rows(){
 			return [];
 		}
+		Members_join_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ссылка-приглашение в группу");
+			return obj;
+		}
+		Members_join_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо");
+			return obj;
+		}
+		join_link(){
+			return "";
+		}
+		Members_join_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.join_link()));
+			return obj;
+		}
+		Members_join_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.join_link()));
+			return obj;
+		}
+		Members_join_qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.join_link()));
+			(obj.gradient_stops) = () => (["#2f9e5f", "#8fd14f"]);
+			return obj;
+		}
+		Members_join_qr_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Members_join_qr())]);
+			return obj;
+		}
+		members_asks_head(){
+			return "";
+		}
+		members_ask_rows(){
+			return [];
+		}
+		ask_lord(id){
+			return "";
+		}
+		ask_tint(id){
+			return 0;
+		}
+		Ask_avatar(id){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.ask_lord(id)));
+			(obj.tint) = () => ((this.ask_tint(id)));
+			return obj;
+		}
+		ask_title(id){
+			return "";
+		}
+		Ask_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.ask_title(id))]);
+			return obj;
+		}
+		ask_status(id){
+			return "";
+		}
+		Ask_status(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.ask_status(id))]);
+			return obj;
+		}
+		Ask_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Ask_title(id)), (this.Ask_status(id))]);
+			return obj;
+		}
+		ask_accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Ask_accept_icon(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		Ask_accept(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Принять в группу");
+			(obj.click) = (next) => ((this.ask_accept(id, next)));
+			(obj.sub) = () => ([(this.Ask_accept_icon(id))]);
+			return obj;
+		}
+		ask_reject(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Ask_reject_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Ask_reject(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отклонить заявку");
+			(obj.click) = (next) => ((this.ask_reject(id, next)));
+			(obj.sub) = () => ([(this.Ask_reject_icon(id))]);
+			return obj;
+		}
 		member_lord(id){
 			return "";
 		}
@@ -21817,6 +21934,37 @@ var $;
 			(obj.title) = () => ("Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.");
 			return obj;
 		}
+		Members_join(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Members_join_head()), 
+				(this.Members_join_hint()), 
+				(this.Members_join_text()), 
+				(this.Members_join_copy()), 
+				(this.Members_join_qr_box())
+			]);
+			return obj;
+		}
+		Members_asks_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.members_asks_head()));
+			return obj;
+		}
+		Members_asks_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.members_ask_rows()));
+			return obj;
+		}
+		Ask_row(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Ask_avatar(id)), 
+				(this.Ask_info(id)), 
+				(this.Ask_accept(id)), 
+				(this.Ask_reject(id))
+			]);
+			return obj;
+		}
 		Member_row(id){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
@@ -21884,6 +22032,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Settings_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open"));
 	($mol_mem(($.$bog_gram.prototype), "Lights"));
+	($mol_mem(($.$bog_gram.prototype), "Ask_plate_text"));
+	($mol_mem(($.$bog_gram.prototype), "Ask_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_list"));
 	($mol_mem(($.$bog_gram.prototype), "Menu"));
 	($mol_mem(($.$bog_gram.prototype), "settings_close"));
@@ -22072,6 +22222,22 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "member_id_add"));
 	($mol_mem(($.$bog_gram.prototype), "Members_id_field"));
 	($mol_mem(($.$bog_gram.prototype), "Members_id_add"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_head"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_hint"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_text"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_copy"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_qr"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join_qr_box"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_avatar"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_status"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "ask_accept"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_accept_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_accept"));
+	($mol_mem_key(($.$bog_gram.prototype), "ask_reject"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_reject_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_reject"));
 	($mol_mem_key(($.$bog_gram.prototype), "Member_avatar"));
 	($mol_mem_key(($.$bog_gram.prototype), "Member_title"));
 	($mol_mem_key(($.$bog_gram.prototype), "Member_status"));
@@ -22141,6 +22307,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Members_id_form"));
 	($mol_mem(($.$bog_gram.prototype), "Members_pick_list"));
 	($mol_mem(($.$bog_gram.prototype), "Members_admin_note"));
+	($mol_mem(($.$bog_gram.prototype), "Members_join"));
+	($mol_mem(($.$bog_gram.prototype), "Members_asks_head"));
+	($mol_mem(($.$bog_gram.prototype), "Members_asks_list"));
+	($mol_mem_key(($.$bog_gram.prototype), "Ask_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Member_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
@@ -22746,6 +22916,15 @@ var $;
             Dialogs: $giper_baza_list_str,
             /** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
             Outbox: $giper_baza_list_str,
+            /** Очередь заявок в группы: ссылка на ленд группы. Отдельно от Outbox —
+             * тот ждёт первого сообщения в диалоге, а заявку шлют до всякого
+             * доступа к переписке, и общая проверка её просто заперла бы */
+            Asks: $giper_baza_list_str,
+            /** Заявки, уже доехавшие до чужого лобби. Второй раз их не шлём:
+             * отклонённую заявку админ из лобби убирает, и повтор возвращал бы её
+             * туда снова. Запись держится тут, пока не выдадут права, — по ней же
+             * рисуется «ждём подтверждения» */
+            Asked: $giper_baza_list_str,
             /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             Hidden: $giper_baza_list_str,
             /** Собеседники, с которыми владелец согласился переписываться: их диалоги
@@ -22776,6 +22955,16 @@ var $;
         /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
         class $bog_gram_inbox extends $giper_baza_dict.with({
             Invites: $giper_baza_list_str,
+            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
+             * приглашений: приглашение — это готовый доступ, а заявка только
+             * просьба его выдать, и решение по ней принимает человек.
+             *
+             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
+             * заворачивается на ключ конкретного человека, и без ключа админу
+             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
+             * под чужой идентификатор это не даёт — идентификатор его хеш, и
+             * подмена ловится пересчётом на месте. */
+            Joins: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_inbox = $bog_gram_inbox;
@@ -25176,15 +25365,24 @@ var $;
                 $mol_wire_async(this).member_join(id, lord, this.history_open());
                 return null;
             }
-            /** Звать людей может админ, поэтому у остальных этого блока нет вовсе. */
+            /** Звать людей может админ, поэтому у остальных этого блока нет вовсе —
+             * вместе со ссылкой-приглашением и заявками по ней: принять заявку
+             * всё равно некому, а ссылка без приёма бесполезна.
+             *
+             * Выбор истории стоит наверху блока и распространяется на все способы
+             * добавить человека сразу: и на заявку, и на ссылку из реестра, и на
+             * набранный руками идентификатор. */
             members_add_rows() {
                 const id = this.dialog_active();
                 if (!this.admin_me(id))
                     return [];
+                const asks = this.ask_entries(id);
                 return [
                     this.Members_add_title(),
                     this.Members_history(),
                     ...this.member_error() ? [this.Members_error()] : [],
+                    this.Members_join(),
+                    ...asks.length ? [this.Members_asks_head(), this.Members_asks_list()] : [],
                     this.Members_id_form(),
                     this.Members_pick_list(),
                     ...this.owner_me(id) ? [this.Members_admin_note()] : [],
@@ -25219,15 +25417,19 @@ var $;
              * С историей: выдаём право на все бакеты, что уже есть, и новичок
              * читает переписку с самого начала. Без истории: заводим свежий бакет,
              * открываем его нынешним участникам и новичку, а старые ему не
-             * открываем вовсе — ключей от них у него не появится. */
-            member_join(id, lord, history) {
+             * открываем вовсе — ключей от них у него не появится.
+             *
+             * Готовый ключ приходит сюда из заявки: там он приезжает вместе с
+             * просьбой, уже проверенный пересчётом, и разыскивать человека по
+             * реестрам не нужно. Во всех остальных местах ключ ищется как прежде. */
+            member_join(id, lord, history, known) {
                 if (!id || !lord)
                     return '';
                 if (lord === this.my_lord())
                     return '';
                 if (!this.admin_me(id))
                     return '';
-                const pass = this.peer_pass_of(lord);
+                const pass = known ?? this.peer_pass_of(lord);
                 if (!pass) {
                     this.member_error('Не нашли ключ этого человека: без ключа он не прочитает переписку');
                     return '';
@@ -25338,6 +25540,121 @@ var $;
                 dialog_land.Data($bog_gram_dialog).Admins('auto').add(lord);
                 this.member_error('');
                 return lord;
+            }
+            // ===== Заявки в группу: сторона админа =====
+            /** Все заявки, что долетели в моё лобби. Лобби открыто на запись всем,
+             * поэтому мусор там обычное дело: разбор его отвергает, а на новом
+             * устройстве ленд может быть ещё в пути — подписка на его приход
+             * сохраняется, и заявки дорисуются сами. */
+            ask_all() {
+                try {
+                    return (this.inbox_store().Joins()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            /** Заявки в конкретную группу. Того, кто уже внутри, не показываем: его
+             * заявку либо приняли, либо он пришёл своим путём — и принимать её
+             * второй раз незачем. */
+            ask_entries(id) {
+                if (!id)
+                    return [];
+                let inside = new Set();
+                try {
+                    inside = new Set(this.dialog_lords(id));
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                return this.ask_all().filter(entry => {
+                    const ask = this.ask_parse(entry);
+                    if (!ask)
+                        return false;
+                    if (ask.group !== id)
+                        return false;
+                    return !inside.has(ask.lord);
+                });
+            }
+            members_asks_head() {
+                return 'Заявки: ' + this.ask_entries(this.dialog_active()).length;
+            }
+            members_ask_rows() {
+                return this.ask_entries(this.dialog_active()).map(entry => this.Ask_row(entry));
+            }
+            /** Строка заявки ключуется самой записью: одна и та же запись должна
+             * дать один и тот же ряд, а лорда из неё достаёт разбор. */
+            ask_lord(entry) {
+                return this.ask_parse(entry)?.lord ?? '';
+            }
+            ask_tint(entry) {
+                return this.avatar_tint(this.ask_lord(entry));
+            }
+            ask_title(entry) {
+                return this.peer_label(this.ask_lord(entry));
+            }
+            /** Под именем стоит сокращённый идентификатор: имя человек задаёт себе
+             * сам, и по одному только имени понять, того ли впускаешь, нельзя. */
+            ask_status(entry) {
+                return this.lord_short(this.ask_lord(entry));
+            }
+            /** Выдача прав — это криптография с перебором степеней, поэтому из
+             * обработчика уходим в фибру. */
+            ask_accept(entry, next) {
+                next?.stopPropagation();
+                if (!entry)
+                    return null;
+                $mol_wire_async(this).ask_apply(entry);
+                return null;
+            }
+            /** Отказ — снятие записи из своего лобби. Повторную заявку от того же
+             * человека это не блокирует: отказ не бан, а просто нерешение. */
+            ask_reject(entry, next) {
+                next?.stopPropagation();
+                if (!entry)
+                    return null;
+                this.ask_forget(entry);
+                return null;
+            }
+            /** Обработанную заявку убираем из лобби, чтобы они не копились. Лобби
+             * моё, я его король — снять из него запись есть чем. */
+            ask_forget(entry) {
+                if (!entry)
+                    return null;
+                this.inbox_store().Joins('auto').cut(entry);
+                return null;
+            }
+            /** Приём заявки. Ключ проверяем пересчётом до всего остального: лобби
+             * открыто на запись всем, и свой ключ под чужим идентификатором может
+             * положить кто угодно — тогда в группу попал бы он, а не тот, кого
+             * туда позвали. Не сошлось — заявку отклоняем с пояснением.
+             *
+             * Дальше это обычное добавление участника: тем же кодом, с тем же
+             * выбором истории, что и при добавлении руками. Ключ передаём готовым —
+             * он приехал вместе с заявкой, и разыскивать человека по реестрам,
+             * которых у меня может и не быть, не приходится. */
+            ask_apply(entry) {
+                const ask = this.ask_parse(entry);
+                if (!ask) {
+                    this.ask_forget(entry);
+                    return '';
+                }
+                if (!this.admin_me(ask.group))
+                    return '';
+                const pass = this.pass_verified(ask.lord, ask.pass);
+                if (!pass) {
+                    this.member_error('Ключ в заявке не сходится со своим владельцем: заявка отклонена');
+                    this.ask_forget(entry);
+                    return '';
+                }
+                const joined = this.member_join(ask.group, ask.lord, this.history_open(), pass);
+                if (!joined)
+                    return '';
+                this.ask_forget(entry);
+                return joined;
             }
             /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
              * приглашение до первого своего сообщения никуда не едет, а диалог,
@@ -26695,6 +27012,215 @@ var $;
                 this.$.$mol_state_arg.value('invite', null);
                 return plan;
             }
+            // ===== Ссылка-приглашение в группу =====
+            /** Приглашение в группу — адрес страницы с одной лишь ссылкой на её
+             * ленд: остальные параметры (свой мастер, открытый реестр) чужому
+             * человеку не нужны. Вступить по ней мгновенно нельзя — ленд группы
+             * шифрованный, и ключ от него заворачивается на ключ конкретного
+             * человека тем, у кого есть права. Поэтому ссылка ведёт к заявке. */
+            join_uri(id) {
+                if (!id)
+                    return '';
+                const location = this.$.$mol_dom_context.location;
+                return location.origin + location.pathname + '#!join=' + id;
+            }
+            join_link() {
+                return this.join_uri(this.dialog_active());
+            }
+            /** Группа из адреса страницы: по такой ссылке просятся в группу. */
+            join_id() {
+                return this.$.$mol_state_arg.value('join') ?? '';
+            }
+            /** Уже участнику показываем группу, остальным заводим заявку. Мусор
+             * вместо ссылки отсеиваем сразу: заявка в несуществующую группу
+             * осела бы в приватном ленде навсегда и никуда бы не уехала. */
+            join_plan(id, my, member) {
+                if (!id)
+                    return 'skip';
+                if (id === my)
+                    return 'skip';
+                if (!$giper_baza_link.check(id))
+                    return 'skip';
+                return member ? 'open' : 'ask';
+            }
+            /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
+             * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
+            join_handle() {
+                const id = this.join_id();
+                if (!id)
+                    return '';
+                $mol_wire_async(this).join_request(id);
+                return id;
+            }
+            /** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+             * страницы просилась бы в ту же группу снова и снова. */
+            join_request(id) {
+                const plan = this.join_plan(id, this.my_lord(), this.dialog_ids().includes(id));
+                if (plan === 'open')
+                    this.dialog_select(id);
+                if (plan === 'ask')
+                    this.ask_send(id);
+                this.$.$mol_state_arg.value('join', null);
+                return plan;
+            }
+            /** Запись заявки: группа, лорд просящего и его ключ. Разделитель тот
+             * же, что в отложенной доставке приглашений. */
+            ask_entry(group, lord, pass) {
+                return group + '|' + lord + '|' + pass;
+            }
+            /** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
+             * с заявками: разбор отвергает всё, что не сходится по числу частей
+             * или недосчитывается любой из них. */
+            ask_parse(entry) {
+                const parts = String(entry ?? '').split('|');
+                if (parts.length !== 3)
+                    return null;
+                const [group, lord, pass] = parts;
+                if (!group || !lord || !pass)
+                    return null;
+                return { group, lord, pass };
+            }
+            /** Заявка встаёт в свою очередь, а уезжает отдельным потоком: право
+             * писать в чужое лобби приезжает не сразу, и с первого раза запись
+             * может не пройти. Повтор ничего не задваивает — ни очередь, ни
+             * отправленное второй ссылки не примут. */
+            ask_send(id) {
+                if (!id)
+                    return null;
+                // По ссылке приходят сами: однажды убранная из своего списка группа
+                // не должна молча отказать во второй попытке в неё попасть
+                if (this.hidden_ids().includes(id))
+                    this.dialogs_store().Hidden('auto').cut(id);
+                if (this.ask_queued().includes(id))
+                    return null;
+                if (this.ask_sent().includes(id))
+                    return null;
+                this.dialogs_store().Asks('auto').add(id);
+                return null;
+            }
+            /** Свой приватный ленд шифрованный и на новом устройстве приезжает не
+             * мгновенно. Строка ожидания стоит прямо в теле страницы списка, и
+             * suspend тут подвесил бы её целиком: пока ленда нет, заявок «нет»,
+             * а подписка на его приход сохраняется — строка появится сама. */
+            ask_queued() {
+                try {
+                    return (this.dialogs_store().Asks()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            ask_sent() {
+                try {
+                    return (this.dialogs_store().Asked()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            /** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
+             * что уже доехали. Принятая уходит отсюда сама: группа появляется в
+             * списке диалогов, и записи там больше нечего ждать. */
+            ask_pending() {
+                let have = new Set();
+                try {
+                    have = new Set(this.dialog_ids());
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                const all = new Set([...this.ask_queued(), ...this.ask_sent()]);
+                return [...all].filter(id => !have.has(id));
+            }
+            /** Ссылка привела к заявке, а не к группе: без этой строки экран после
+             * перехода по ссылке просто молчал бы. */
+            ask_plate_text() {
+                const count = this.ask_pending().length;
+                if (!count)
+                    return '';
+                if (count === 1)
+                    return 'Заявка отправлена — ждём, пока её примут';
+                return 'Заявок отправлено: ' + count + ' — ждём, пока их примут';
+            }
+            Ask_plate() {
+                return this.ask_pending().length ? super.Ask_plate() : null;
+            }
+            /** Заявку приняли: права на ленд группы приехали, и в списке участников
+             * уже стоит мой идентификатор. Ленд без выданных прав не читается
+             * вовсе — это обычное состояние ожидания, а не ошибка. */
+            ask_taken(id) {
+                const store = this.dialogs_store();
+                try {
+                    if (!this.dialog_lords(id).includes(this.my_lord()))
+                        return false;
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return false;
+                }
+                if (!this.dialog_ids().includes(id) && !this.hidden_ids().includes(id)) {
+                    store.Dialogs('auto').add(id);
+                }
+                store.Asks('auto').cut(id);
+                store.Asked('auto').cut(id);
+                return true;
+            }
+            /** Доставка заявок. Повторами ретраится только очередь: право писать в
+             * чужое лобби приезжает не сразу, и с первого раза запись может не
+             * пройти. Доехавшую заявку второй раз не шлём — отклонённую админ из
+             * лобби убирает, и повтор возвращал бы её туда снова, сводя отказ на
+             * нет. Отправленные при этом остаются под присмотром без всякого
+             * таймера: чтение ленда группы подписывает на его приход, и выданные
+             * права разбудят этот пересчёт сами. */
+            asks_flush() {
+                const queued = this.ask_queued();
+                const sent = this.ask_sent();
+                if (!queued.length && !sent.length)
+                    return 0;
+                for (const id of sent)
+                    this.ask_taken(id);
+                if (!queued.length)
+                    return sent.length;
+                this.$.$mol_state_time.now(3000);
+                const my = this.my_lord();
+                const store = this.dialogs_store();
+                for (const id of queued) {
+                    if (this.ask_taken(id))
+                        continue;
+                    try {
+                        const owner = this.dialog_owner(id);
+                        if (!owner) {
+                            store.Asks('auto').cut(id);
+                            continue;
+                        }
+                        const inbox_link = this.peer_store(owner).Inbox_land()?.val();
+                        if (!inbox_link)
+                            continue;
+                        const inbox = this.$.$giper_baza_glob
+                            .Land(new $giper_baza_link(String(inbox_link)))
+                            .Data($bog_gram_inbox);
+                        const entry = this.ask_entry(id, my, this.my_pass_str());
+                        inbox.Joins('auto').add(entry);
+                        const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
+                        if (!delivered)
+                            continue;
+                        store.Asked('auto').add(id);
+                        store.Asks('auto').cut(id);
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                        $mol_fail_log(error);
+                    }
+                }
+                return queued.length + sent.length;
+            }
             // ===== Уведомления =====
             notify_supported() {
                 return this.$.$bog_gram_notify.supported();
@@ -26903,6 +27429,12 @@ var $;
                     $mol_fail_log(error);
                 }
                 try {
+                    this.join_handle();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
                     this.dialog_autocreate();
                 }
                 catch (error) {
@@ -26910,6 +27442,12 @@ var $;
                 }
                 try {
                     this.outbox_flush();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
+                    this.asks_flush();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -27282,6 +27820,30 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "group_leave_click", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_all", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "ask_entries", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_ask_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "ask_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "ask_status", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "ask_accept", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "ask_reject", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "ask_forget", null);
+        __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "mine_wrote", null);
         __decorate([
@@ -27535,6 +28097,24 @@ var $;
         ], $bog_gram.prototype, "invite_handle", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "join_handle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "ask_send", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_queued", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_sent", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_pending", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "asks_flush", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "notify_permission", null);
         __decorate([
             $mol_action
@@ -27775,7 +28355,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: #229ED9;\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная.\n   Подпись у кнопки лежит во вложенной вьюхе со своим цветом, поэтому\n   её перекрашиваем отдельно — иначе текст сливается с красным фоном. */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -27920,6 +28500,37 @@ var $;
                 font: {
                     size: '0.875rem',
                 },
+            },
+            // ===== Заявка в группу отправлена =====
+            // Строка стоит над списком диалогов, пока заявку не приняли: после
+            // перехода по ссылке экран иначе просто молчит.
+            Ask_plate: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Ask_plate_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
             },
             // ===== Список диалогов =====
             Dialogs_list: {
@@ -29047,6 +29658,208 @@ var $;
                 },
                 color: $mol_theme.shade,
             },
+            // ===== Ссылка-приглашение в группу =====
+            // Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink и
+            // нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка иначе
+            // распирает колонку участников вместо переноса внутри неё.
+            Members_join: {
+                alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                    shrink: 1,
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                maxWidth: '100%',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Members_join_head: {
+                font: {
+                    size: '0.875rem',
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            Members_join_hint: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            /* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
+            Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
+            Members_join_text: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
+                minWidth: 0,
+                maxWidth: '100%',
+                maxHeight: '6rem',
+                overflow: {
+                    y: 'auto',
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: $mol_theme.back,
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Members_join_copy: {
+                alignSelf: 'flex-start',
+            },
+            /* Белая подложка обязательна: на тёмной теме цветной код выходит
+            светлее фона, и сканеры такой инверсный код берут не всякие. */
+            Members_join_qr_box: {
+                alignSelf: 'center',
+                maxWidth: '100%',
+                justify: {
+                    content: 'center',
+                },
+                background: {
+                    color: '#ffffff',
+                },
+                padding: '0.5rem',
+                borderRadius: '0.75rem',
+            },
+            /* свой размер вместо трёхсот пикселей по умолчанию: колонка узкая */
+            Members_join_qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '12rem',
+                height: '12rem',
+                maxWidth: '100%',
+            },
+            // ===== Заявки в группу =====
+            // Сетка та же, что у участника: под именем стоит сокращённый
+            // идентификатор, а согласие и отказ повторяют габариты соседних
+            // кнопок в списке участников.
+            Members_asks_head: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            Members_asks_list: {
+                gap: '0.125rem',
+            },
+            Ask_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                minWidth: 0,
+            },
+            Ask_avatar: {
+                width: '2.5rem',
+                height: '2.5rem',
+            },
+            Ask_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Ask_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Ask_status: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Ask_accept: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Ask_reject: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Ask_accept_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            Ask_reject_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
             /* выход из группы — не разрушительная операция для остальных, но для
             себя окончательная: держим её внизу и отдельно от всего */
             Members_leave: {
@@ -29763,6 +30576,32 @@ var $;
                     },
                     Members_list: {
                         gap: 0,
+                    },
+                    Members_asks_list: {
+                        gap: 0,
+                    },
+                    Ask_row: {
+                        gap: '0.5rem',
+                        minHeight: '2.75rem',
+                        padding: '0.375rem',
+                    },
+                    /* согласие и отказ стоят вплотную, поэтому обеим кнопкам нужен
+                    свой запас по краям: иначе палец накрывает сразу две */
+                    Ask_accept: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Ask_reject: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Ask_accept_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
+                    },
+                    Ask_reject_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
                     },
                     Group_pick_row: {
                         gap: '0.5rem',
