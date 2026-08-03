@@ -6409,6 +6409,42 @@ var $;
 
 
 ;
+	($.$mol_icon_account) = class $mol_icon_account extends ($.$mol_icon) {
+		path(){
+			return "M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_multiple) = class $mol_icon_account_multiple extends ($.$mol_icon) {
+		path(){
+			return "M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_multiple_plus) = class $mol_icon_account_multiple_plus extends ($.$mol_icon) {
+		path(){
+			return "M19 17V19H7V17S7 13 13 13 19 17 19 17M16 8A3 3 0 1 0 13 11A3 3 0 0 0 16 8M19.2 13.06A5.6 5.6 0 0 1 21 17V19H24V17S24 13.55 19.2 13.06M18 5A2.91 2.91 0 0 0 17.11 5.14A5 5 0 0 1 17.11 10.86A2.91 2.91 0 0 0 18 11A3 3 0 0 0 18 5M8 10H5V7H3V10H0V12H3V15H5V12H8Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_cog) = class $mol_icon_cog extends ($.$mol_icon) {
 		path(){
 			return "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z";
@@ -19660,18 +19696,6 @@ var $;
 
 
 ;
-	($.$mol_icon_account) = class $mol_icon_account extends ($.$mol_icon) {
-		path(){
-			return "M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$mol_icon_account_question) = class $mol_icon_account_question extends ($.$mol_icon) {
 		path(){
 			return "M13,8A4,4 0 0,1 9,12A4,4 0 0,1 5,8A4,4 0 0,1 9,4A4,4 0 0,1 13,8M17,18V20H1V18C1,15.79 4.58,14 9,14C13.42,14 17,15.79 17,18M20.5,14.5V16H19V14.5H20.5M18.5,9.5H17V9A3,3 0 0,1 20,6A3,3 0 0,1 23,9C23,9.97 22.5,10.88 21.71,11.41L21.41,11.6C20.84,12 20.5,12.61 20.5,13.3V13.5H19V13.3C19,12.11 19.6,11 20.59,10.35L20.88,10.16C21.27,9.9 21.5,9.47 21.5,9A1.5,1.5 0 0,0 20,7.5A1.5,1.5 0 0,0 18.5,9V9.5Z";
@@ -19687,6 +19711,54 @@ var $;
 	($.$mol_icon_check) = class $mol_icon_check extends ($.$mol_icon) {
 		path(){
 			return "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_shield) = class $mol_icon_shield extends ($.$mol_icon) {
+		path(){
+			return "M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_shield_crown) = class $mol_icon_shield_crown extends ($.$mol_icon) {
+		path(){
+			return "M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_remove) = class $mol_icon_account_remove extends ($.$mol_icon) {
+		path(){
+			return "M15,14C17.67,14 23,15.33 23,18V20H7V18C7,15.33 12.33,14 15,14M15,12A4,4 0 0,1 11,8A4,4 0 0,1 15,4A4,4 0 0,1 19,8A4,4 0 0,1 15,12M5,9.59L7.12,7.46L8.54,8.88L6.41,11L8.54,13.12L7.12,14.54L5,12.41L2.88,14.54L1.46,13.12L3.59,11L1.46,8.88L2.88,7.46L5,9.59Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_plus) = class $mol_icon_account_plus extends ($.$mol_icon) {
+		path(){
+			return "M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z";
 		}
 	};
 
@@ -19971,6 +20043,21 @@ var $;
 			(obj.sub) = () => ([(this.Compose_open_icon())]);
 			return obj;
 		}
+		group_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Group_open_icon(){
+			const obj = new this.$.$mol_icon_account_multiple_plus();
+			return obj;
+		}
+		Group_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Новая группа");
+			(obj.click) = (next) => ((this.group_open(next)));
+			(obj.sub) = () => ([(this.Group_open_icon())]);
+			return obj;
+		}
 		settings_open(next){
 			if(next !== undefined) return next;
 			return null;
@@ -20003,6 +20090,7 @@ var $;
 			(obj.title) = () => ("Gram");
 			(obj.tools) = () => ([
 				(this.Compose_open()), 
+				(this.Group_open()), 
 				(this.Settings_open()), 
 				(this.Lights())
 			]);
@@ -20266,8 +20354,213 @@ var $;
 			]);
 			return obj;
 		}
+		group_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Group_close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Group_close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.group_close(next)));
+			(obj.sub) = () => ([(this.Group_close_icon())]);
+			return obj;
+		}
+		group_name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Group_name_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название группы");
+			(obj.value) = (next) => ((this.group_name(next)));
+			return obj;
+		}
+		group_chosen_head(){
+			return "";
+		}
+		Group_chosen_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.group_chosen_head()));
+			return obj;
+		}
+		group_chosen_rows(){
+			return [];
+		}
+		Group_chosen_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.group_chosen_rows()));
+			return obj;
+		}
+		group_lost_note(){
+			return "";
+		}
+		Group_lost_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.group_lost_note()));
+			return obj;
+		}
+		group_make(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_make_label(){
+			return "";
+		}
+		Group_make(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.group_make(next)));
+			(obj.sub) = () => ([(this.group_make_label())]);
+			return obj;
+		}
+		group_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		group_id_add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Group_id_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("ID участника");
+			(obj.value) = (next) => ((this.group_id(next)));
+			(obj.submit) = (next) => ((this.group_id_add(next)));
+			return obj;
+		}
+		Group_id_add(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.group_id_add(next)));
+			(obj.sub) = () => (["Добавить"]);
+			return obj;
+		}
+		Group_id_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Group_id_field()), (this.Group_id_add())]);
+			return obj;
+		}
+		group_id_error(){
+			return "";
+		}
+		Group_id_error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.group_id_error()));
+			return obj;
+		}
+		Group_pick_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Кого позвать");
+			return obj;
+		}
+		group_pick_rows(){
+			return [];
+		}
+		Group_pick_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.group_pick_rows()));
+			return obj;
+		}
+		Group_page(){
+			const obj = new this.$.$mol_page();
+			(obj.title) = () => ("Новая группа");
+			(obj.tools) = () => ([(this.Group_close())]);
+			(obj.body) = () => ([
+				(this.Group_name_field()), 
+				(this.Group_chosen_head()), 
+				(this.Group_chosen_list()), 
+				(this.Group_lost_note()), 
+				(this.Group_make()), 
+				(this.Group_id_form()), 
+				(this.Group_id_error()), 
+				(this.Group_pick_head()), 
+				(this.Group_pick_list())
+			]);
+			return obj;
+		}
+		members_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Members_close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.members_close(next)));
+			(obj.sub) = () => ([(this.Members_close_icon())]);
+			return obj;
+		}
+		member_rows(){
+			return [];
+		}
+		Members_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.member_rows()));
+			return obj;
+		}
+		Members_drop_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.");
+			return obj;
+		}
+		members_add_rows(){
+			return [];
+		}
+		Members_add_block(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.members_add_rows()));
+			return obj;
+		}
+		Members_leave_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.");
+			return obj;
+		}
+		leave_armed(){
+			return false;
+		}
+		group_leave_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_leave_label(){
+			return "";
+		}
+		Members_leave(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать группу из своего списка");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.leave_armed())});
+			(obj.click) = (next) => ((this.group_leave_click(next)));
+			(obj.sub) = () => ([(this.group_leave_label())]);
+			return obj;
+		}
+		Members_page(){
+			const obj = new this.$.$mol_page();
+			(obj.title) = () => ("Участники");
+			(obj.tools) = () => ([(this.Members_close())]);
+			(obj.body) = () => ([
+				(this.Members_list()), 
+				(this.Members_drop_note()), 
+				(this.Members_add_block()), 
+				(this.Members_leave_note()), 
+				(this.Members_leave())
+			]);
+			return obj;
+		}
 		chat_title(){
 			return "";
+		}
+		chat_members_shown(){
+			return false;
+		}
+		members_open(next){
+			if(next !== undefined) return next;
+			return null;
 		}
 		chat_note(next){
 			if(next !== undefined) return next;
@@ -20359,6 +20652,8 @@ var $;
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
+			(obj.members_shown) = () => ((this.chat_members_shown()));
+			(obj.members) = (next) => ((this.members_open(next)));
 			(obj.note) = (next) => ((this.chat_note(next)));
 			(obj.note_hint) = () => ((this.chat_note_hint()));
 			(obj.note_editable) = () => ((this.chat_note_editable()));
@@ -20866,6 +21161,271 @@ var $;
 			(obj.sub) = () => ([(this.User_title(id)), (this.User_source(id))]);
 			return obj;
 		}
+		group_pick(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_picked_is(id){
+			return false;
+		}
+		group_pick_lord(id){
+			return "";
+		}
+		group_pick_tint(id){
+			return 0;
+		}
+		Group_pick_avatar(id){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.group_pick_lord(id)));
+			(obj.tint) = () => ((this.group_pick_tint(id)));
+			return obj;
+		}
+		group_pick_title(id){
+			return "";
+		}
+		Group_pick_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.group_pick_title(id))]);
+			return obj;
+		}
+		group_pick_source(id){
+			return "";
+		}
+		Group_pick_source(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.group_pick_source(id))]);
+			return obj;
+		}
+		Group_pick_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Group_pick_title(id)), (this.Group_pick_source(id))]);
+			return obj;
+		}
+		Group_pick_mark(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		group_chosen_lord(id){
+			return "";
+		}
+		group_chosen_tint(id){
+			return 0;
+		}
+		Group_chosen_avatar(id){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.group_chosen_lord(id)));
+			(obj.tint) = () => ((this.group_chosen_tint(id)));
+			return obj;
+		}
+		group_chosen_name(id){
+			return "";
+		}
+		Group_chosen_name(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.group_chosen_name(id))]);
+			return obj;
+		}
+		group_chosen_drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Group_chosen_drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Group_chosen_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать из списка");
+			(obj.click) = (next) => ((this.group_chosen_drop(id, next)));
+			(obj.sub) = () => ([(this.Group_chosen_drop_icon(id))]);
+			return obj;
+		}
+		Members_history_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Что увидит новый участник");
+			return obj;
+		}
+		history_open(){
+			return false;
+		}
+		members_history_all(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_history_all(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Выдать ключи от всех прошлых сообщений");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_open())});
+			(obj.click) = (next) => ((this.members_history_all(next)));
+			(obj.sub) = () => (["Всю переписку"]);
+			return obj;
+		}
+		history_shut(){
+			return false;
+		}
+		members_history_new(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_history_new(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Завести новый отсек переписки");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_shut())});
+			(obj.click) = (next) => ((this.members_history_new(next)));
+			(obj.sub) = () => (["Только новые"]);
+			return obj;
+		}
+		Members_history_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Members_history_all()), (this.Members_history_new())]);
+			return obj;
+		}
+		members_history_note(){
+			return "";
+		}
+		Members_history_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.members_history_note()));
+			return obj;
+		}
+		member_error(){
+			return "";
+		}
+		member_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		member_id_add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_id_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("ID участника");
+			(obj.value) = (next) => ((this.member_id(next)));
+			(obj.submit) = (next) => ((this.member_id_add(next)));
+			return obj;
+		}
+		Members_id_add(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.member_id_add(next)));
+			(obj.sub) = () => (["Добавить"]);
+			return obj;
+		}
+		member_pick_rows(){
+			return [];
+		}
+		member_lord(id){
+			return "";
+		}
+		member_tint(id){
+			return 0;
+		}
+		Member_avatar(id){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.member_lord(id)));
+			(obj.tint) = () => ((this.member_tint(id)));
+			return obj;
+		}
+		member_title(id){
+			return "";
+		}
+		Member_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.member_title(id))]);
+			return obj;
+		}
+		member_status(id){
+			return "";
+		}
+		Member_status(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.member_status(id))]);
+			return obj;
+		}
+		Member_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Member_title(id)), (this.Member_status(id))]);
+			return obj;
+		}
+		member_rule_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Member_rule_icon(id){
+			const obj = new this.$.$mol_icon_shield_crown();
+			return obj;
+		}
+		Member_rule(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Назначить админом");
+			(obj.click) = (next) => ((this.member_rule_click(id, next)));
+			(obj.sub) = () => ([(this.Member_rule_icon(id))]);
+			return obj;
+		}
+		member_drop_hint(id){
+			return "";
+		}
+		member_armed(id){
+			return false;
+		}
+		member_drop_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Member_drop_icon(id){
+			const obj = new this.$.$mol_icon_account_remove();
+			return obj;
+		}
+		Member_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.member_drop_hint(id)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.member_armed(id))});
+			(obj.click) = (next) => ((this.member_drop_click(id, next)));
+			(obj.sub) = () => ([(this.Member_drop_icon(id))]);
+			return obj;
+		}
+		member_pick(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		member_pick_lord(id){
+			return "";
+		}
+		member_pick_tint(id){
+			return 0;
+		}
+		Member_pick_avatar(id){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.member_pick_lord(id)));
+			(obj.tint) = () => ((this.member_pick_tint(id)));
+			return obj;
+		}
+		member_pick_title(id){
+			return "";
+		}
+		Member_pick_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.member_pick_title(id))]);
+			return obj;
+		}
+		member_pick_source(id){
+			return "";
+		}
+		Member_pick_source(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.member_pick_source(id))]);
+			return obj;
+		}
+		Member_pick_info(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Member_pick_title(id)), (this.Member_pick_source(id))]);
+			return obj;
+		}
+		Member_pick_mark(id){
+			const obj = new this.$.$mol_icon_account_plus();
+			return obj;
+		}
 		day_title(id){
 			return "";
 		}
@@ -20891,6 +21451,18 @@ var $;
 		message_context(id, next){
 			if(next !== undefined) return next;
 			return null;
+		}
+		message_author_tint(id){
+			return 0;
+		}
+		message_author(id){
+			return "";
+		}
+		Message_author(id){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_gram_tint": (this.message_author_tint(id))});
+			(obj.sub) = () => ([(this.message_author(id))]);
+			return obj;
 		}
 		message_shot_uri(id){
 			return "";
@@ -21024,6 +21596,8 @@ var $;
 				(this.Menu()), 
 				(this.Settings_page()), 
 				(this.Compose_page()), 
+				(this.Group_page()), 
+				(this.Members_page()), 
 				(this.Chat_page())
 			];
 		}
@@ -21180,6 +21754,80 @@ var $;
 			(obj.sub) = () => ([(this.User_avatar(id)), (this.User_info(id))]);
 			return obj;
 		}
+		Group_pick_row(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.group_pick(id, next)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.group_picked_is(id))});
+			(obj.sub) = () => ([
+				(this.Group_pick_avatar(id)), 
+				(this.Group_pick_info(id)), 
+				(this.Group_pick_mark(id))
+			]);
+			return obj;
+		}
+		Group_chosen_row(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Group_chosen_avatar(id)), 
+				(this.Group_chosen_name(id)), 
+				(this.Group_chosen_drop(id))
+			]);
+			return obj;
+		}
+		Members_add_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Добавить участника");
+			return obj;
+		}
+		Members_history(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Members_history_head()), 
+				(this.Members_history_row()), 
+				(this.Members_history_note())
+			]);
+			return obj;
+		}
+		Members_error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.member_error()));
+			return obj;
+		}
+		Members_id_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Members_id_field()), (this.Members_id_add())]);
+			return obj;
+		}
+		Members_pick_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.member_pick_rows()));
+			return obj;
+		}
+		Members_admin_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.");
+			return obj;
+		}
+		Member_row(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Member_avatar(id)), 
+				(this.Member_info(id)), 
+				(this.Member_rule(id)), 
+				(this.Member_drop(id))
+			]);
+			return obj;
+		}
+		Member_pick_row(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.member_pick(id, next)));
+			(obj.sub) = () => ([
+				(this.Member_pick_avatar(id)), 
+				(this.Member_pick_info(id)), 
+				(this.Member_pick_mark(id))
+			]);
+			return obj;
+		}
 		Day_row(id){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.Day_chip(id))]);
@@ -21200,6 +21848,7 @@ var $;
 				"contextmenu": (next) => (this.message_context(id, next))
 			});
 			(obj.sub) = () => ([
+				(this.Message_author(id)), 
 				(this.Message_shot(id)), 
 				(this.Message_sound(id)), 
 				(this.Message_body(id)), 
@@ -21219,6 +21868,9 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "compose_open"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_open"));
+	($mol_mem(($.$bog_gram.prototype), "group_open"));
+	($mol_mem(($.$bog_gram.prototype), "Group_open_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Group_open"));
 	($mol_mem(($.$bog_gram.prototype), "settings_open"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open"));
@@ -21266,6 +21918,36 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Join_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Users_list"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
+	($mol_mem(($.$bog_gram.prototype), "group_close"));
+	($mol_mem(($.$bog_gram.prototype), "Group_close_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Group_close"));
+	($mol_mem(($.$bog_gram.prototype), "group_name"));
+	($mol_mem(($.$bog_gram.prototype), "Group_name_field"));
+	($mol_mem(($.$bog_gram.prototype), "Group_chosen_head"));
+	($mol_mem(($.$bog_gram.prototype), "Group_chosen_list"));
+	($mol_mem(($.$bog_gram.prototype), "Group_lost_note"));
+	($mol_mem(($.$bog_gram.prototype), "group_make"));
+	($mol_mem(($.$bog_gram.prototype), "Group_make"));
+	($mol_mem(($.$bog_gram.prototype), "group_id"));
+	($mol_mem(($.$bog_gram.prototype), "group_id_add"));
+	($mol_mem(($.$bog_gram.prototype), "Group_id_field"));
+	($mol_mem(($.$bog_gram.prototype), "Group_id_add"));
+	($mol_mem(($.$bog_gram.prototype), "Group_id_form"));
+	($mol_mem(($.$bog_gram.prototype), "Group_id_error"));
+	($mol_mem(($.$bog_gram.prototype), "Group_pick_head"));
+	($mol_mem(($.$bog_gram.prototype), "Group_pick_list"));
+	($mol_mem(($.$bog_gram.prototype), "Group_page"));
+	($mol_mem(($.$bog_gram.prototype), "members_close"));
+	($mol_mem(($.$bog_gram.prototype), "Members_close_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Members_close"));
+	($mol_mem(($.$bog_gram.prototype), "Members_list"));
+	($mol_mem(($.$bog_gram.prototype), "Members_drop_note"));
+	($mol_mem(($.$bog_gram.prototype), "Members_add_block"));
+	($mol_mem(($.$bog_gram.prototype), "Members_leave_note"));
+	($mol_mem(($.$bog_gram.prototype), "group_leave_click"));
+	($mol_mem(($.$bog_gram.prototype), "Members_leave"));
+	($mol_mem(($.$bog_gram.prototype), "Members_page"));
+	($mol_mem(($.$bog_gram.prototype), "members_open"));
 	($mol_mem(($.$bog_gram.prototype), "chat_note"));
 	($mol_mem(($.$bog_gram.prototype), "message_text"));
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
@@ -21359,10 +22041,49 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_source"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "group_pick"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_avatar"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_source"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_mark"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_avatar"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_name"));
+	($mol_mem_key(($.$bog_gram.prototype), "group_chosen_drop"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_drop_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_drop"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history_head"));
+	($mol_mem(($.$bog_gram.prototype), "members_history_all"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history_all"));
+	($mol_mem(($.$bog_gram.prototype), "members_history_new"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history_new"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history_row"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history_note"));
+	($mol_mem(($.$bog_gram.prototype), "member_id"));
+	($mol_mem(($.$bog_gram.prototype), "member_id_add"));
+	($mol_mem(($.$bog_gram.prototype), "Members_id_field"));
+	($mol_mem(($.$bog_gram.prototype), "Members_id_add"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_avatar"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_status"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_rule_click"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_rule_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_rule"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_drop_click"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_drop_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_drop"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_pick"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_avatar"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_title"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_source"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_info"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_mark"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_chip"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_press"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_release"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_context"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_author"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_zoom"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_shot"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_sound_toggle"));
@@ -21403,6 +22124,16 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "Request_accept"));
 	($mol_mem_key(($.$bog_gram.prototype), "Request_reject"));
 	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_row"));
+	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_row"));
+	($mol_mem(($.$bog_gram.prototype), "Members_add_title"));
+	($mol_mem(($.$bog_gram.prototype), "Members_history"));
+	($mol_mem(($.$bog_gram.prototype), "Members_error"));
+	($mol_mem(($.$bog_gram.prototype), "Members_id_form"));
+	($mol_mem(($.$bog_gram.prototype), "Members_pick_list"));
+	($mol_mem(($.$bog_gram.prototype), "Members_admin_note"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_row"));
+	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
 	($.$bog_gram_field) = class $bog_gram_field extends ($.$mol_view) {
@@ -21478,6 +22209,21 @@ var $;
 			(obj.hint) = () => ("Назад");
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Back_icon())]);
+			return obj;
+		}
+		members(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_icon(){
+			const obj = new this.$.$mol_icon_account_multiple();
+			return obj;
+		}
+		Members(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Участники");
+			(obj.click) = (next) => ((this.members(next)));
+			(obj.sub) = () => ([(this.Members_icon())]);
 			return obj;
 		}
 		Close_icon(){
@@ -21614,6 +22360,9 @@ var $;
 		note_editable(){
 			return false;
 		}
+		members_shown(){
+			return false;
+		}
 		zoom_uri(){
 			return "";
 		}
@@ -21654,7 +22403,7 @@ var $;
 			];
 		}
 		tools(){
-			return [(this.Close())];
+			return [(this.Members()), (this.Close())];
 		}
 		body(){
 			return [(this.Messages())];
@@ -21721,6 +22470,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back"));
+	($mol_mem(($.$bog_gram_chat.prototype), "members"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Members_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
@@ -22077,7 +22829,16 @@ var $;
         class $bog_gram_dialog extends $giper_baza_dict.with({
             Peers: $giper_baza_list_str,
             Sessions: $giper_baza_list_str,
+            /** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
+             * а не добавлением, поэтому «последний» там — не обязательно свежий. */
+            Session_last: $giper_baza_atom_text,
             Created: $giper_baza_atom_real,
+            /** Название группы. У переписки вдвоём его нет: там заголовок — это
+             * личная подпись собеседника, и лежит она в приватном ленде. */
+            Title: $giper_baza_atom_text,
+            /** Кто может звать и убирать людей. Создатель — король ленда, и
+             * админом остаётся всегда, даже не числясь тут. */
+            Admins: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_dialog = $bog_gram_dialog;
@@ -23030,9 +23791,14 @@ var $;
             }
             /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
              * весь список, поэтому пока рисуем пустой кружок — подписка
-             * сохраняется, узор и цвет проявятся сами. */
+             * сохраняется, узор и цвет проявятся сами.
+             *
+             * У группы собеседника нет, зато есть свой ленд: по его ссылке узор и
+             * рисуем — он у группы один на всех участников. */
             dialog_avatar_id(id) {
                 try {
+                    if (this.group_is(id))
+                        return id;
                     return this.dialog_peer(id);
                 }
                 catch (error) {
@@ -23043,7 +23809,7 @@ var $;
             }
             dialog_tint(id) {
                 try {
-                    return this.avatar_tint(this.dialog_peer(id));
+                    return this.avatar_tint(this.dialog_avatar_id(id));
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -23136,8 +23902,36 @@ var $;
             dialog_peer(id) {
                 if (this.saved_is(id))
                     return '';
-                const peers = (this.dialog_store(id).Peers()?.items() ?? []).map(String);
+                const peers = this.dialog_lords(id);
                 return peers.find(lord => lord !== this.my_lord()) ?? peers[0] ?? '';
+            }
+            /** Все участники диалога, включая меня. Ленд может быть ещё не
+             * засинкан — тогда чтение приостанавливается, и это правильно: по
+             * этому списку выдаются права, и неполным он быть не должен. Места,
+             * где ждать нечем, прикрываются сами. */
+            dialog_lords(id) {
+                if (!id)
+                    return [];
+                if (this.saved_is(id))
+                    return [];
+                return (this.dialog_store(id).Peers()?.items() ?? []).map(String);
+            }
+            /** Все, кроме меня: кому выдавать права и чьи прочтения считать. */
+            dialog_mates(id) {
+                const my = this.my_lord();
+                return this.dialog_lords(id).filter(lord => lord !== my);
+            }
+            /** Ключи участников одним списком. Неполный список — это отказ: писать
+             * в ленд, который часть группы никогда не откроет, незачем. Ключи
+             * умеют ждать, поэтому зовётся только из фибры. */
+            passes_of(lords) {
+                const passes = [];
+                for (const lord of lords) {
+                    const pass = this.peer_pass_of(lord);
+                    if (pass)
+                        passes.push(pass);
+                }
+                return passes;
             }
             /** Безымянного собеседника показываем началом и концом идентификатора:
              * у одного только начала первые символы у разных людей совпадают глазом. */
@@ -23146,9 +23940,100 @@ var $;
                     return lord;
                 return lord.slice(0, 6) + '…' + lord.slice(-4);
             }
+            // ===== Группы =====
+            /** Название группы. Пустое — группу не назвали, и подписываться она
+             * будет своими участниками. Ленд может быть ещё не засинкан: заголовок
+             * это косметика, ждать её незачем — подписка сохраняется, название
+             * проявится само. */
+            group_title(id) {
+                if (!id)
+                    return '';
+                if (this.saved_is(id))
+                    return '';
+                try {
+                    return String(this.dialog_store(id).Title()?.val() ?? '');
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return '';
+                }
+            }
+            /** Группа отличается от переписки вдвоём числом участников: третий
+             * человек делает её группой. Названная — тоже группа, даже если в ней
+             * пока двое: название заводят осознанно, и от того, что кто-то вышел,
+             * группа обратно в личную переписку превращаться не должна. */
+            group_is(id) {
+                if (!id)
+                    return false;
+                if (this.saved_is(id))
+                    return false;
+                try {
+                    if (this.dialog_lords(id).length > 2)
+                        return true;
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                return Boolean(this.group_title(id));
+            }
+            /** Группа без названия подписывается своими участниками: список имён
+             * говорит больше, чем «5 участников». */
+            group_name_auto(id) {
+                let mates = [];
+                try {
+                    mates = this.dialog_mates(id);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                if (!mates.length)
+                    return this.lord_short(id);
+                return mates.map(lord => this.peer_label(lord)).join(', ');
+            }
+            admin_lords(id) {
+                if (!id)
+                    return [];
+                try {
+                    return (this.dialog_store(id).Admins()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            /** Создатель группы — король её ленда, и админом остаётся всегда:
+             * отдельной записи для него не нужно. */
+            admin_is(id, lord) {
+                if (!id || !lord)
+                    return false;
+                if (this.dialog_owner(id) === lord)
+                    return true;
+                return this.admin_lords(id).includes(lord);
+            }
+            admin_me(id) {
+                return this.admin_is(id, this.my_lord());
+            }
+            /** Назначает админов создатель: раздавать право раздавать права — его
+             * решение, а не решение назначенного. */
+            owner_me(id) {
+                return Boolean(id) && this.dialog_owner(id) === this.my_lord();
+            }
+            /** Ранг участника в лендах группы. Чтобы админ мог выдать право новому
+             * человеку, ему самому нужно полное управление лендом — а вместе с ним
+             * он получает и возможность менять чужие права: разделить эти
+             * способности в Базе нечем. */
+            member_rank(id, lord) {
+                return this.admin_is(id, lord) ? $giper_baza_rank_rule : $giper_baza_rank_post('fast');
+            }
             dialog_title(id) {
                 if (this.saved_is(id))
                     return saved_name;
+                if (this.group_is(id))
+                    return this.group_title(id) || this.group_name_auto(id);
                 const peer = this.dialog_peer(id);
                 if (!peer)
                     return this.lord_short(id);
@@ -23313,6 +24198,9 @@ var $;
                 this.sound_hush();
                 this.compose_opened(false);
                 this.settings_opened(false);
+                this.group_opened(false);
+                this.members_opened(false);
+                this.leave_armed(false);
                 this.account_reset();
                 this.edit_id('');
                 this.message_text('');
@@ -23354,6 +24242,8 @@ var $;
                 this.message_menu('');
                 this.zoom_id('');
                 this.delete_disarm();
+                this.members_opened(false);
+                this.leave_armed(false);
                 this.dialog_current('');
                 return null;
             }
@@ -23403,7 +24293,7 @@ var $;
                 // Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
                 // но выкидывание из своего списка важнее — просто не чистим монитор
                 try {
-                    const sessions = (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
+                    const sessions = this.session_links_of(id);
                     const watch = this.monitor_store().Watch('auto');
                     for (const link of sessions)
                         watch.cut(link);
@@ -23574,36 +24464,63 @@ var $;
                     return 'Выберите диалог';
                 return this.dialog_title(id);
             }
-            /** Собеседник открытого диалога: у избранного его нет, поэтому и
-             * подписывать там некого. */
+            /** Собеседник открытого диалога: ни у избранного, ни у группы его нет,
+             * поэтому и подписывать там некого. */
             chat_peer() {
                 const id = this.dialog_active();
                 if (!id)
                     return '';
                 if (this.saved_is(id))
                     return '';
+                if (this.group_is(id))
+                    return '';
                 return this.dialog_peer(id);
             }
-            /** Заголовок чата — это подпись собеседника, и правится она прямо
-             * в шапке. У избранного заголовок фиксированный, поле там не нужно. */
+            /** Заголовок чата правится прямо в шапке. В переписке вдвоём это моя
+             * подпись собеседника, в группе — её название, и менять его может
+             * админ. У избранного заголовок фиксированный, поля там нет. */
             chat_note_editable() {
+                const id = this.dialog_active();
+                if (id && this.group_is(id))
+                    return this.admin_me(id);
                 return Boolean(this.chat_peer());
             }
             /** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
-             * стоит то, как человек назвал себя сам. */
+             * стоит то, как человек назвал себя сам, а у неназванной группы —
+             * её участники. */
             chat_note_hint() {
+                const id = this.dialog_active();
+                if (id && this.group_is(id))
+                    return this.group_name_auto(id);
                 const lord = this.chat_peer();
                 if (!lord)
                     return '';
                 return this.peer_name(lord) || this.lord_short(lord);
             }
             chat_note(next) {
+                const id = this.dialog_active();
+                if (id && this.group_is(id)) {
+                    if (next !== undefined)
+                        this.group_title_set(id, next);
+                    return this.group_title(id);
+                }
                 const lord = this.chat_peer();
                 if (!lord)
                     return '';
                 if (next !== undefined)
                     this.peer_note_set(lord, next);
                 return this.peer_note(lord);
+            }
+            /** Название лежит в общем ленде группы, поэтому и видят его все.
+             * Менять его может тот, у кого есть право писать в этот ленд, — админ;
+             * поле у остальных и не показывается, но решение принимается тут. */
+            group_title_set(id, next) {
+                if (!id)
+                    return null;
+                if (!this.admin_me(id))
+                    return null;
+                this.dialog_store(id).Title('auto')?.val(next ?? '');
+                return null;
             }
             // ===== Страницы буклета =====
             compose_opened(next) {
@@ -23617,6 +24534,7 @@ var $;
             compose_open(next) {
                 const open = !this.compose_opened();
                 this.settings_opened(false);
+                this.group_opened(false);
                 this.compose_opened(open);
                 this.account_reset();
                 return null;
@@ -23628,6 +24546,7 @@ var $;
             settings_open(next) {
                 const open = !this.settings_opened();
                 this.compose_opened(false);
+                this.group_opened(false);
                 this.settings_opened(open);
                 this.account_reset();
                 return null;
@@ -23642,7 +24561,9 @@ var $;
                     this.Menu(),
                     ...this.settings_opened() ? [this.Settings_page()] : [],
                     ...this.compose_opened() ? [this.Compose_page()] : [],
+                    ...this.group_opened() ? [this.Group_page()] : [],
                     ...this.dialog_active() ? [this.Chat_page()] : [],
+                    ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
                 ];
             }
             Placeholder() {
@@ -23651,12 +24572,16 @@ var $;
             // ===== Создание диалога =====
             /** Уже существующий диалог с этим собеседником — повторный старт
              * не должен плодить новые ленды, а должен открывать старый.
-             * Незасинканный диалог считаем несовпадением, чтобы не виснуть. */
+             * Незасинканный диалог считаем несовпадением, чтобы не виснуть.
+             * Группы тут не в счёт: человек может быть в общей группе и всё равно
+             * не иметь с тобой личной переписки. */
             dialog_with(peer) {
                 if (!peer)
                     return '';
                 for (const id of this.dialog_ids()) {
                     try {
+                        if (this.group_is(id))
+                            continue;
                         if (this.dialog_peer(id) === peer)
                             return id;
                     }
@@ -23785,6 +24710,7 @@ var $;
                 dialog.Peers('auto').add(this.my_lord());
                 dialog.Peers('auto').add(peer);
                 dialog.Sessions('auto').add(session_land.link().str);
+                dialog.Session_last('auto')?.val(session_land.link().str);
                 dialog.Created('auto')?.val(Date.now());
                 const session = session_land.Data($bog_gram_session);
                 session.Dialog_land('auto')?.val(dialog_land.link().str);
@@ -23796,6 +24722,613 @@ var $;
                 this.compose_opened(false);
                 this.dialog_pending('');
                 return dialog_land.link().str;
+            }
+            // ===== Создание группы =====
+            group_opened(next) {
+                return next ?? false;
+            }
+            /** Кнопка в шапке работает переключателем, как и у нового диалога:
+             * повторный клик закрывает уже открытую страницу. */
+            group_open(next) {
+                const open = !this.group_opened();
+                this.compose_opened(false);
+                this.settings_opened(false);
+                this.group_opened(open);
+                this.account_reset();
+                return null;
+            }
+            group_close(next) {
+                this.group_opened(false);
+                return null;
+            }
+            /** Кого можно позвать: собеседники своих переписок и участники
+             * реестров. Ключи первых уже лежат в их лендах, поэтому такой список
+             * работает и без сети. Один человек — одна строка, даже если он
+             * встречается в обоих источниках: подписью берём переписку, она ближе.
+             * Незасинканный диалог просто не даёт своего собеседника — весь список
+             * из-за одного такого молчать не должен. */
+            group_sources() {
+                const sources = {};
+                const my = this.my_lord();
+                for (const id of this.dialog_ids()) {
+                    if (this.group_is(id))
+                        continue;
+                    let peer = '';
+                    try {
+                        peer = this.dialog_peer(id);
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                    if (!peer || peer === my)
+                        continue;
+                    if (sources[peer])
+                        continue;
+                    sources[peer] = 'из переписки';
+                }
+                const registries = this.user_sources();
+                for (const lord of Object.keys(registries)) {
+                    if (sources[lord])
+                        continue;
+                    sources[lord] = this.registry_title(registries[lord]);
+                }
+                return sources;
+            }
+            group_picked(next) {
+                return next ?? [];
+            }
+            /** Список ненайденных ключей относился к прежнему составу: любая
+             * правка выбора его снимает, и кнопка возвращается к обычной. */
+            group_pick(lord, next) {
+                if (!lord)
+                    return null;
+                const picked = this.group_picked();
+                this.group_lost([]);
+                this.group_picked(picked.includes(lord)
+                    ? picked.filter(item => item !== lord)
+                    : [...picked, lord]);
+                return null;
+            }
+            group_chosen_drop(lord, next) {
+                next?.stopPropagation();
+                if (!lord)
+                    return null;
+                this.group_lost([]);
+                this.group_picked(this.group_picked().filter(item => item !== lord));
+                return null;
+            }
+            group_id_error(next) {
+                return next ?? '';
+            }
+            Group_id_error() {
+                return this.group_id_error() ? super.Group_id_error() : null;
+            }
+            /** Идентификатор руками. Заведомую опечатку отсеиваем сразу: группа с
+             * несуществующим участником всё равно бы его не дождалась. */
+            group_id_add(next) {
+                const lord = this.group_id().trim();
+                if (!lord)
+                    return null;
+                if (lord === this.my_lord()) {
+                    this.group_id_error('Это ваш собственный идентификатор');
+                    return null;
+                }
+                if (!$giper_baza_link.check(lord)) {
+                    this.group_id_error('Это не похоже на идентификатор');
+                    return null;
+                }
+                this.group_id_error('');
+                this.group_id('');
+                if (!this.group_picked().includes(lord)) {
+                    this.group_lost([]);
+                    this.group_picked([...this.group_picked(), lord]);
+                }
+                return null;
+            }
+            group_pick_rows() {
+                return Object.keys(this.group_sources()).map(lord => this.Group_pick_row(lord));
+            }
+            group_pick_lord(lord) {
+                return lord;
+            }
+            group_pick_tint(lord) {
+                return this.avatar_tint(lord);
+            }
+            group_pick_title(lord) {
+                return this.peer_label(lord);
+            }
+            group_pick_source(lord) {
+                return this.group_sources()[lord] ?? '';
+            }
+            group_picked_is(lord) {
+                return this.group_picked().includes(lord);
+            }
+            Group_pick_mark(lord) {
+                return this.group_picked_is(lord) ? super.Group_pick_mark(lord) : null;
+            }
+            group_chosen_rows() {
+                return this.group_picked().map(lord => this.Group_chosen_row(lord));
+            }
+            group_chosen_head() {
+                const count = this.group_picked().length;
+                if (!count)
+                    return 'Пока никого не выбрали';
+                return this.people_count(count);
+            }
+            group_chosen_lord(lord) {
+                return lord;
+            }
+            group_chosen_tint(lord) {
+                return this.avatar_tint(lord);
+            }
+            group_chosen_name(lord) {
+                return this.peer_label(lord);
+            }
+            group_lost(next) {
+                return next ?? [];
+            }
+            group_lost_note() {
+                const lost = this.group_lost();
+                if (!lost.length)
+                    return '';
+                const names = lost.map(lord => this.peer_label(lord)).join(', ');
+                return 'Не нашли ключей: ' + names
+                    + '. Без ключа человек не прочитает переписку — группу можно создать без него.';
+            }
+            Group_lost_note() {
+                return this.group_lost().length ? super.Group_lost_note() : null;
+            }
+            group_make_label() {
+                return this.group_lost().length ? 'Создать без них' : 'Создать группу';
+            }
+            group_make(next) {
+                const picked = this.group_picked();
+                if (!picked.length)
+                    return null;
+                $mol_wire_async(this).group_create(this.group_name().trim(), picked, this.group_lost().length > 0);
+                return null;
+            }
+            /** Создание группы целиком. Порядок здесь не косметика: всё, что умеет
+             * ждать — ключи участников, захват лендов, выдача прав, — стоит до
+             * первой записи. Фибра перезапускается с начала на каждом ожидании, и
+             * заведённая раньше группа завелась бы заново, оставив в списке пустые
+             * копии. Название и состав приезжают сюда аргументами по той же
+             * причине: очищенные поля следующий заход прочитал бы уже пустыми.
+             *
+             * Ключ может не найтись ни в ленде человека, ни в реестрах: без него
+             * шифрованный ленд ему не открыть, и группа с ним вышла бы молча
+             * кривой. Поэтому первый заход только показывает, кого не удалось
+             * добавить, а создаёт уже второй — когда с потерей согласились. */
+            group_create(title, lords, forced) {
+                const my = this.my_lord();
+                const known = [];
+                const passes = [];
+                const lost = [];
+                for (const lord of lords) {
+                    if (!lord || lord === my)
+                        continue;
+                    const pass = this.peer_pass_of(lord);
+                    if (pass) {
+                        known.push(lord);
+                        passes.push(pass);
+                    }
+                    else {
+                        lost.push(lord);
+                    }
+                }
+                if (lost.length && !forced) {
+                    this.group_lost(lost);
+                    return '';
+                }
+                if (!known.length)
+                    return '';
+                const glob = this.$.$giper_baza_glob;
+                const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+                const session_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+                // Ранг тот же, что и в переписке вдвоём: сотни подписей на сообщение
+                // человек не заметит, а заливать группу тысячами станет невыгодно.
+                // Создатель — король обоих лендов, полное управление у него и так
+                for (const pass of passes) {
+                    dialog_land.give(pass, $giper_baza_rank_post('fast'));
+                    session_land.give(pass, $giper_baza_rank_post('fast'));
+                }
+                const dialog = dialog_land.Data($bog_gram_dialog);
+                dialog.Peers('auto').add(my);
+                for (const lord of known)
+                    dialog.Peers('auto').add(lord);
+                dialog.Sessions('auto').add(session_land.link().str);
+                dialog.Session_last('auto')?.val(session_land.link().str);
+                dialog.Created('auto')?.val(Date.now());
+                if (title)
+                    dialog.Title('auto')?.val(title);
+                const session = session_land.Data($bog_gram_session);
+                session.Dialog_land('auto')?.val(dialog_land.link().str);
+                const id = dialog_land.link().str;
+                this.dialogs_store().Dialogs('auto').add(id);
+                this.monitor_store().Watch('auto').add(session_land.link().str);
+                for (const lord of known) {
+                    this.peer_accept(lord);
+                    this.dialogs_store().Outbox('auto').add(lord + '|' + id);
+                }
+                this.group_picked([]);
+                this.group_lost([]);
+                this.group_name('');
+                this.group_id('');
+                this.group_id_error('');
+                this.group_opened(false);
+                this.dialog_current(id);
+                this.chat_bring();
+                return id;
+            }
+            // ===== Участники группы =====
+            members_opened(next) {
+                return next ?? false;
+            }
+            /** Экран участников есть только у группы: в переписке вдвоём
+             * перечислять некого. */
+            members_shown() {
+                const id = this.dialog_active();
+                return Boolean(id) && this.group_is(id);
+            }
+            chat_members_shown() {
+                return this.members_shown();
+            }
+            members_open(next) {
+                this.members_opened(!this.members_opened());
+                this.member_error('');
+                this.leave_armed(false);
+                return null;
+            }
+            members_close(next) {
+                this.members_opened(false);
+                this.leave_armed(false);
+                return null;
+            }
+            member_error(next) {
+                return next ?? '';
+            }
+            /** Что значит «убрать», объясняем на месте и только тому, кто может
+             * убирать: остальным эта кнопка и не показывается. Прятать пояснение
+             * в подсказку кнопки нельзя — на телефоне её никто не увидит, а
+             * операция необратимая. */
+            Members_drop_note() {
+                return this.admin_me(this.dialog_active()) ? super.Members_drop_note() : null;
+            }
+            /** Ленд группы может быть ещё не засинкан: список участников тогда
+             * пуст, а подписка на его приход сохраняется — строки дорисуются. */
+            member_lords() {
+                const id = this.dialog_active();
+                if (!id)
+                    return [];
+                try {
+                    return this.dialog_lords(id);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            member_rows() {
+                return this.member_lords().map(lord => this.Member_row(lord));
+            }
+            member_lord(lord) {
+                return lord;
+            }
+            member_tint(lord) {
+                return this.avatar_tint(lord);
+            }
+            member_title(lord) {
+                if (lord === this.my_lord())
+                    return 'Вы';
+                return this.peer_label(lord);
+            }
+            /** Создателя отмечаем отдельно от назначенных админов: его права никто
+             * не отберёт — он король ленда. */
+            member_status(lord) {
+                const id = this.dialog_active();
+                if (!id)
+                    return '';
+                if (this.dialog_owner(id) === lord)
+                    return 'создатель';
+                return this.admin_is(id, lord) ? 'админ' : '';
+            }
+            Member_status(lord) {
+                return this.member_status(lord) ? super.Member_status(lord) : null;
+            }
+            /** Назначает админов создатель, и только тех, кто им ещё не стал. */
+            Member_rule(lord) {
+                const id = this.dialog_active();
+                if (!this.owner_me(id))
+                    return null;
+                if (lord === this.my_lord())
+                    return null;
+                if (this.admin_is(id, lord))
+                    return null;
+                return super.Member_rule(lord);
+            }
+            /** Убирает людей админ. Себя убрать нельзя: для этого есть выход из
+             * группы, он не трогает остальных. */
+            Member_drop(lord) {
+                const id = this.dialog_active();
+                if (!this.admin_me(id))
+                    return null;
+                if (lord === this.my_lord())
+                    return null;
+                return super.Member_drop(lord);
+            }
+            member_armed(lord, next) {
+                return next ?? false;
+            }
+            member_drop_hint(lord) {
+                return this.member_armed(lord)
+                    ? 'Точно убрать? Прошлые сообщения у него останутся'
+                    : 'Убрать из группы';
+            }
+            member_disarm(next) {
+                for (const lord of this.member_lords())
+                    this.member_armed(lord, false);
+                return null;
+            }
+            /** Первый клик взводит кнопку, второй убирает человека — как корзина в
+             * списке диалогов. Строка участника не кликабельна, но всплытие гасим
+             * так же: кнопка лежит внутри неё. */
+            member_drop_click(lord, next) {
+                next?.stopPropagation();
+                if (!lord)
+                    return null;
+                if (!this.member_armed(lord)) {
+                    this.member_disarm();
+                    this.member_armed(lord, true);
+                    return null;
+                }
+                this.member_armed(lord, false);
+                const id = this.dialog_active();
+                if (id)
+                    $mol_wire_async(this).member_part(id, lord);
+                return null;
+            }
+            member_rule_click(lord, next) {
+                next?.stopPropagation();
+                const id = this.dialog_active();
+                if (!id || !lord)
+                    return null;
+                $mol_wire_async(this).member_promote(id, lord);
+                return null;
+            }
+            /** Что достанется новому участнику: ключи от всех бакетов группы или
+             * только от свежего. */
+            history_open(next) {
+                return next ?? true;
+            }
+            history_shut() {
+                return !this.history_open();
+            }
+            members_history_all(next) {
+                this.history_open(true);
+                return null;
+            }
+            members_history_new(next) {
+                this.history_open(false);
+                return null;
+            }
+            members_history_note() {
+                return this.history_open()
+                    ? 'Новый участник получит ключи от всех прошлых сообщений группы'
+                    : 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше';
+            }
+            /** Кого ещё можно позвать: те же источники, что и при создании, минус
+             * те, кто в группе уже есть. */
+            member_pick_lords() {
+                const inside = new Set(this.member_lords());
+                return Object.keys(this.group_sources()).filter(lord => !inside.has(lord));
+            }
+            member_pick_rows() {
+                return this.member_pick_lords().map(lord => this.Member_pick_row(lord));
+            }
+            member_pick_lord(lord) {
+                return lord;
+            }
+            member_pick_tint(lord) {
+                return this.avatar_tint(lord);
+            }
+            member_pick_title(lord) {
+                return this.peer_label(lord);
+            }
+            member_pick_source(lord) {
+                return this.group_sources()[lord] ?? '';
+            }
+            Member_pick_source(lord) {
+                return this.member_pick_source(lord) ? super.Member_pick_source(lord) : null;
+            }
+            member_pick(lord, next) {
+                const id = this.dialog_active();
+                if (!id || !lord)
+                    return null;
+                $mol_wire_async(this).member_join(id, lord, this.history_open());
+                return null;
+            }
+            member_id_add(next) {
+                const id = this.dialog_active();
+                const lord = this.member_id().trim();
+                if (!id || !lord)
+                    return null;
+                if (lord === this.my_lord()) {
+                    this.member_error('Это ваш собственный идентификатор');
+                    return null;
+                }
+                if (!$giper_baza_link.check(lord)) {
+                    this.member_error('Это не похоже на идентификатор');
+                    return null;
+                }
+                this.member_error('');
+                this.member_id('');
+                $mol_wire_async(this).member_join(id, lord, this.history_open());
+                return null;
+            }
+            /** Звать людей может админ, поэтому у остальных этого блока нет вовсе. */
+            members_add_rows() {
+                const id = this.dialog_active();
+                if (!this.admin_me(id))
+                    return [];
+                return [
+                    this.Members_add_title(),
+                    this.Members_history(),
+                    ...this.member_error() ? [this.Members_error()] : [],
+                    this.Members_id_form(),
+                    this.Members_pick_list(),
+                    ...this.owner_me(id) ? [this.Members_admin_note()] : [],
+                ];
+            }
+            leave_armed(next) {
+                return next ?? false;
+            }
+            group_leave_label() {
+                return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы';
+            }
+            /** Выход — то же самое, что удаление диалога из своего списка: ленд
+             * остаётся у остальных, а свою ссылку и слежку за бакетами мы снимаем.
+             * Из списка участников при этом не вычёркиваемся: сделать это можно
+             * только записью в тот же ленд, а писать в группу, из которой уходишь,
+             * — лишнее. */
+            group_leave_click(next) {
+                if (!this.leave_armed()) {
+                    this.leave_armed(true);
+                    return null;
+                }
+                const id = this.dialog_active();
+                this.leave_armed(false);
+                this.members_opened(false);
+                this.dialog_delete(id);
+                return null;
+            }
+            /** Добавление участника. Всё, что умеет ждать — ключ человека, ключи
+             * остальных, захват свежего бакета, выдача прав, — стоит до первой
+             * записи: фибра перезапускается с начала на каждом ожидании.
+             *
+             * С историей: выдаём право на все бакеты, что уже есть, и новичок
+             * читает переписку с самого начала. Без истории: заводим свежий бакет,
+             * открываем его нынешним участникам и новичку, а старые ему не
+             * открываем вовсе — ключей от них у него не появится. */
+            member_join(id, lord, history) {
+                if (!id || !lord)
+                    return '';
+                if (lord === this.my_lord())
+                    return '';
+                if (!this.admin_me(id))
+                    return '';
+                const pass = this.peer_pass_of(lord);
+                if (!pass) {
+                    this.member_error('Не нашли ключ этого человека: без ключа он не прочитает переписку');
+                    return '';
+                }
+                const links = this.session_links_of(id);
+                const mates = this.dialog_mates(id).filter(mate => mate !== lord);
+                // Ключи остающихся нужны только свежему бакету: старым права уже
+                // выданы, и трогать их незачем
+                const stay = [];
+                if (!history) {
+                    for (const mate of mates) {
+                        const mate_pass = this.peer_pass_of(mate);
+                        if (mate_pass)
+                            stay.push([mate, mate_pass]);
+                    }
+                    if (stay.length < mates.length) {
+                        this.member_error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                        return '';
+                    }
+                }
+                const glob = this.$.$giper_baza_glob;
+                const fresh = history ? null : glob.land_grab([[null, $giper_baza_rank_deny]]);
+                const dialog_land = glob.Land(new $giper_baza_link(id));
+                dialog_land.give(pass, this.member_rank(id, lord));
+                if (fresh) {
+                    for (const [mate, mate_pass] of stay)
+                        fresh.give(mate_pass, this.member_rank(id, mate));
+                    fresh.give(pass, this.member_rank(id, lord));
+                }
+                else {
+                    for (const link of links) {
+                        this.session_land_by(link).give(pass, this.member_rank(id, lord));
+                    }
+                }
+                const dialog = dialog_land.Data($bog_gram_dialog);
+                dialog.Peers('auto').add(lord);
+                if (fresh) {
+                    dialog.Sessions('auto').add(fresh.link().str);
+                    dialog.Session_last('auto')?.val(fresh.link().str);
+                    fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+                    this.monitor_store().Watch('auto').add(fresh.link().str);
+                }
+                this.peer_accept(lord);
+                this.dialogs_store().Outbox('auto').add(lord + '|' + id);
+                this.member_error('');
+                return lord;
+            }
+            /** Исключение — это свежий бакет без исключённого. Ключ от уже выданных
+             * бакетов отобрать нельзя: прошлые сообщения у него остаются навсегда,
+             * а новых он не увидит — права на свежий бакет ему не выдают.
+             *
+             * Порядок тот же: ключи остающихся и захват бакета умеют ждать и стоят
+             * до первой записи. */
+            member_part(id, lord) {
+                if (!id || !lord)
+                    return '';
+                if (lord === this.my_lord())
+                    return '';
+                if (!this.admin_me(id))
+                    return '';
+                const mates = this.dialog_mates(id).filter(mate => mate !== lord);
+                const stay = [];
+                for (const mate of mates) {
+                    const mate_pass = this.peer_pass_of(mate);
+                    if (mate_pass)
+                        stay.push([mate, mate_pass]);
+                }
+                if (stay.length < mates.length) {
+                    this.member_error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                    return '';
+                }
+                const glob = this.$.$giper_baza_glob;
+                const fresh = glob.land_grab([[null, $giper_baza_rank_deny]]);
+                for (const [mate, mate_pass] of stay)
+                    fresh.give(mate_pass, this.member_rank(id, mate));
+                const dialog = glob.Land(new $giper_baza_link(id)).Data($bog_gram_dialog);
+                dialog.Sessions('auto').add(fresh.link().str);
+                dialog.Session_last('auto')?.val(fresh.link().str);
+                dialog.Peers('auto').cut(lord);
+                if (this.admin_lords(id).includes(lord))
+                    dialog.Admins('auto').cut(lord);
+                fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+                this.monitor_store().Watch('auto').add(fresh.link().str);
+                this.member_error('');
+                return lord;
+            }
+            /** Назначение админом. Право звать людей — это право управлять лендом,
+             * поэтому выдаётся оно и на ленд группы, и на каждый её бакет: иначе
+             * новый админ не смог бы открыть бакет новому человеку. Вместе с ним
+             * он получает и возможность менять чужие права — разделить эти
+             * способности в Базе нечем, и в интерфейсе об этом сказано прямо. */
+            member_promote(id, lord) {
+                if (!id || !lord)
+                    return '';
+                if (!this.owner_me(id))
+                    return '';
+                const pass = this.peer_pass_of(lord);
+                if (!pass) {
+                    this.member_error('Не нашли ключ этого человека: права ему не выдать');
+                    return '';
+                }
+                const glob = this.$.$giper_baza_glob;
+                const links = this.session_links_of(id);
+                const dialog_land = glob.Land(new $giper_baza_link(id));
+                dialog_land.give(pass, $giper_baza_rank_rule);
+                for (const link of links)
+                    this.session_land_by(link).give(pass, $giper_baza_rank_rule);
+                dialog_land.Data($bog_gram_dialog).Admins('auto').add(lord);
+                this.member_error('');
+                return lord;
             }
             /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
              * приглашение до первого своего сообщения никуда не едет, а диалог,
@@ -23816,6 +25349,18 @@ var $;
                     return false;
                 }
             }
+            /** Когда приглашение можно отправлять. В переписке вдвоём — после
+             * первого своего сообщения: пустой диалог собеседнику показывать
+             * незачем, он мог быть и заведён по ошибке. В группе довольно любого
+             * сообщения: человека туда позвали осознанно, и ждать, пока напишет
+             * именно позвавший, нелепо — переписка там уже идёт. */
+            invite_ready(id) {
+                if (!id)
+                    return false;
+                if (this.group_is(id))
+                    return this.dialog_alive(id);
+                return this.mine_wrote(id);
+            }
             // Доставка инвайтов: ретраим, пока не приедут права чужого inbox-ленда
             outbox_flush() {
                 const entries = (this.dialogs_store().Outbox()?.items() ?? []).map(String);
@@ -23824,7 +25369,7 @@ var $;
                 this.$.$mol_state_time.now(3000);
                 for (const entry of entries) {
                     const [peer, dialog_link] = entry.split('|');
-                    if (!this.mine_wrote(dialog_link))
+                    if (!this.invite_ready(dialog_link))
                         continue;
                     try {
                         const inbox_link = this.peer_store(peer).Inbox_land()?.val();
@@ -23866,8 +25411,7 @@ var $;
                 const watch = this.monitor_store();
                 const have = new Set((watch.Watch()?.items() ?? []).map(String));
                 for (const id of this.dialog_ids()) {
-                    const sessions = (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
-                    for (const link of sessions) {
+                    for (const link of this.session_links_of(id)) {
                         if (have.has(link))
                             continue;
                         watch.Watch('auto').add(link);
@@ -23875,33 +25419,88 @@ var $;
                 }
                 return true;
             }
-            // ===== Сообщения =====
-            /** Последняя сессия-бакет диалога: в ней живут и сообщения, и позиции
-             * прочтения. У избранного делить нечего и не с кем, поэтому его ленд
-             * сам себе сессия — остальной код от этого ничем не отличается. */
-            session_land_of(id) {
+            // ===== Сессии-бакеты =====
+            /** Ссылки на все бакеты диалога. Бакетов больше одного, когда кого-то
+             * убрали из группы или добавили без истории: ключ от уже выданного
+             * бакета отобрать нельзя, поэтому переписка продолжается в свежем.
+             * Читаем изо всех, до каких дотягиваемся, а пишем всегда в последний.
+             * У избранного делить нечего и не с кем, поэтому его ленд сам себе
+             * единственный бакет — остальной код от этого ничем не отличается. */
+            session_links_of(id) {
                 if (!id)
-                    return null;
+                    return [];
                 if (this.saved_is(id))
-                    return this.saved_land();
-                const sessions = (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
-                const last = sessions[sessions.length - 1];
-                if (!last)
+                    return [this.saved_land().link().str];
+                return (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
+            }
+            session_land_by(link) {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(link));
+            }
+            session_lands_of(id) {
+                return this.session_links_of(id).map(link => this.session_land_by(link));
+            }
+            /** Свежий бакет: в него уходит вся запись — сообщения, картинки,
+             * голосовые, отметки прочтения.
+             *
+             * Берём его по явному указателю, а не по хвосту списка: порядок в
+             * списке определяется слиянием, а не тем, что добавили позже, и после
+             * ротации запись легко ушла бы в покинутый бакет. Хвост оставлен
+             * запасным путём для диалогов, заведённых до появления указателя. */
+            session_land_of(id) {
+                const links = this.session_links_of(id);
+                if (!links.length)
                     return null;
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(last));
+                if (!this.saved_is(id)) {
+                    const marked = String(this.dialog_store(id).Session_last()?.val() ?? '');
+                    if (marked && links.includes(marked))
+                        return this.session_land_by(marked);
+                }
+                return this.session_land_by(links[links.length - 1]);
             }
             session_land_active() {
                 return this.session_land_of(this.dialog_active());
             }
-            session_store_of(id) {
+            session_store_last(id) {
                 const land = this.session_land_of(id);
                 if (!land)
                     return null;
                 return land.Data($bog_gram_session);
             }
+            // ===== Сообщения =====
+            /** Склейка лент нескольких бакетов. Порядок задаётся полем момента в
+             * самих данных, а не порядком доставки, поэтому склейка — это просто
+             * сортировка. Совпавшие моменты разводим ссылкой: без этого два
+             * сообщения, отправленные в одну миллисекунду, менялись бы местами от
+             * синка к синку. */
+            messages_merge(buckets) {
+                const all = [];
+                for (const bucket of buckets)
+                    all.push(...bucket);
+                return all.sort((a, b) => {
+                    const shift = Number(a.Moment()?.val() ?? 0) - Number(b.Moment()?.val() ?? 0);
+                    if (shift)
+                        return shift;
+                    const left = a.link().str;
+                    const right = b.link().str;
+                    return left < right ? -1 : left > right ? 1 : 0;
+                });
+            }
+            /** Бакет, который не читается — не приехал, не расшифровался, прав на
+             * него не выдавали, — молча пропускаем: один недоступный не должен
+             * уносить с собой всю остальную переписку. Подписка на его приход при
+             * этом сохраняется, и лента дособерётся сама. */
             messages_of(id) {
-                const list = this.session_store_of(id)?.Messages()?.remote_list() ?? [];
-                return [...list].sort((a, b) => (a.Moment()?.val() ?? 0) - (b.Moment()?.val() ?? 0));
+                const buckets = [];
+                for (const land of this.session_lands_of(id)) {
+                    try {
+                        buckets.push(land.Data($bog_gram_session).Messages()?.remote_list() ?? []);
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return this.messages_merge(buckets);
             }
             messages_alive_of(id) {
                 return this.messages_of(id).filter(message => !message.Deleted()?.val());
@@ -23957,22 +25556,68 @@ var $;
             Message_edited(id) {
                 return this.message_edited(id) ? super.Message_edited(id) : null;
             }
-            /** Одна галочка — доставлено, две — собеседник прочитал. Только для своих
-             * сообщений и только там, где есть кому читать: в избранном галочек нет. */
+            /** Сколько участников успело прочитать сообщение. Автора не считаем ни
+             * в числителе, ни в знаменателе: своё сообщение он не читает. */
+            read_tally(reads, mates, moment) {
+                return mates.filter(lord => (reads[lord] ?? 0) >= moment).length;
+            }
+            /** Одна галочка — доставлено, две — собеседник прочитал. В группе
+             * галочки не годятся: прочитавших там сколько угодно, поэтому вместо
+             * них счёт. Только для своих сообщений и только там, где есть кому
+             * читать: в избранном отметок нет. */
             message_checks(id) {
                 if (!this.message_out(id))
                     return '';
                 const dialog = this.dialog_active();
                 if (this.saved_is(dialog))
                     return '';
+                const moment = Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
+                if (this.group_is(dialog)) {
+                    let mates = [];
+                    try {
+                        mates = this.dialog_mates(dialog);
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                    if (!mates.length)
+                        return '';
+                    const reads = {};
+                    for (const lord of mates)
+                        reads[lord] = this.read_moment_of(dialog, lord);
+                    return 'Прочитали ' + this.read_tally(reads, mates, moment) + ' из ' + mates.length;
+                }
                 const peer = this.dialog_peer(dialog);
                 if (!peer)
                     return '✓';
-                const moment = Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
                 return this.read_moment_of(dialog, peer) >= moment ? '✓✓' : '✓';
             }
             Message_checks(id) {
                 return this.message_checks(id) ? super.Message_checks(id) : null;
+            }
+            /** Имя отправителя стоит только в группе и только над чужим пузырём:
+             * в переписке вдвоём оно ничего не добавляет — там и так двое. Порядок
+             * тот же, что и везде: моя подпись, потом его имя, потом сокращённый
+             * идентификатор. */
+            message_author(id) {
+                if (this.message_out(id))
+                    return '';
+                if (!this.group_is(this.dialog_active()))
+                    return '';
+                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
+                if (!lord)
+                    return '';
+                return this.peer_label(lord);
+            }
+            /** Цвет подписи — тот же, что у аватара автора: в длинной группе имена
+             * различаются ещё и на глаз, не только буквами. */
+            message_author_tint(id) {
+                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
+                return lord ? this.avatar_tint(lord) : 0;
+            }
+            Message_author(id) {
+                return this.message_author(id) ? super.Message_author(id) : null;
             }
             // ===== Действия над сообщением =====
             /** Чужое сообщение править и удалять нечем: панель есть только у своих. */
@@ -24097,7 +25742,7 @@ var $;
                 }
                 if (!text)
                     return null;
-                const session = this.session_store_of(this.dialog_active());
+                const session = this.session_store_last(this.dialog_active());
                 if (!session)
                     return null;
                 const message = session.Messages('auto').make(null);
@@ -24281,7 +25926,7 @@ var $;
                 $mol_wire_async(this).image_send(file);
             }
             /** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
-             * читать выдаём одному собеседнику, для всех остальных — включая
+             * читать выдаём каждому участнику, для всех остальных — включая
              * мастера — там шифрованный мусор. В избранном выдавать право некому,
              * ленд просто остаётся закрытым.
              *
@@ -24293,23 +25938,23 @@ var $;
                 const id = this.dialog_active();
                 if (!id)
                     return '';
-                const session = this.session_store_of(id);
+                const session = this.session_store_last(id);
                 if (!session)
                     return '';
                 const glob = this.$.$giper_baza_glob;
-                const peer = this.saved_is(id) ? '' : this.dialog_peer(id);
-                // Права собеседника приезжают вместе с его лендом. Пока их нет,
-                // не пишем ничего: кадр в закрытом ленде он не прочитал бы никогда,
-                // а так отправку можно просто повторить
-                const pass = peer ? glob.Land(new $giper_baza_link(peer)).king_pass() : null;
-                if (peer && !pass)
+                const mates = this.saved_is(id) ? [] : this.dialog_mates(id);
+                // Ключи участников приезжают вместе с их лендами. Пока хоть одного
+                // нет, не пишем ничего: кадр в закрытом ленде он не прочитал бы
+                // никогда, а так отправку можно просто повторить
+                const passes = this.passes_of(mates);
+                if (passes.length < mates.length)
                     return '';
                 const shot = this.$.$bog_gram_shrink.shrink(file);
                 const land = glob.land_grab([[null, $giper_baza_rank_deny]]);
                 const store = land.Data($giper_baza_file);
                 store.buffer(shot.bytes);
                 store.type(shot.type);
-                if (pass)
+                for (const pass of passes)
                     land.give(pass, $giper_baza_rank_read);
                 // Ленд кадра лежит в стороне от переписки, поэтому пуш на мастер
                 // зовём сами — сам он туда не поедет
@@ -24461,7 +26106,7 @@ var $;
                 return null;
             }
             /** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
-             * читать выдаём одному собеседнику, для всех остальных — включая
+             * читать выдаём каждому участнику, для всех остальных — включая
              * мастера — там шифрованный мусор. В избранном выдавать право некому,
              * ленд просто остаётся закрытым.
              *
@@ -24473,15 +26118,15 @@ var $;
                 const id = this.dialog_active();
                 if (!id)
                     return '';
-                const session = this.session_store_of(id);
+                const session = this.session_store_last(id);
                 if (!session)
                     return '';
                 const glob = this.$.$giper_baza_glob;
-                const peer = this.saved_is(id) ? '' : this.dialog_peer(id);
-                // Права собеседника приезжают вместе с его лендом. Пока их нет,
-                // не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
-                const pass = peer ? glob.Land(new $giper_baza_link(peer)).king_pass() : null;
-                if (peer && !pass)
+                const mates = this.saved_is(id) ? [] : this.dialog_mates(id);
+                // Ключи участников приезжают вместе с их лендами. Пока хоть одного
+                // нет, не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
+                const passes = this.passes_of(mates);
+                if (passes.length < mates.length)
                     return '';
                 const sound = $mol_wire_sync(take).take();
                 if (!sound) {
@@ -24492,7 +26137,7 @@ var $;
                 const store = land.Data($giper_baza_file);
                 store.buffer(sound.bytes);
                 store.type(sound.type);
-                if (pass)
+                for (const pass of passes)
                     land.give(pass, $giper_baza_rank_read);
                 // Ленд записи лежит в стороне от переписки, поэтому пуш на мастер
                 // зовём сами — сам он туда не поедет
@@ -24601,11 +26246,24 @@ var $;
                 this.voice_playing('');
             }
             // ===== Прочтения =====
+            /** Отметка прочтения участника. Своя отметка пишется в последний бакет,
+             * но человек читает переписку целиком, а не по отсекам: у прошлых
+             * бакетов остались свои отметки, и дальняя из них и есть ответ.
+             * Недоступный бакет пропускаем — он ничего не добавит. */
             read_moment_of(id, lord) {
-                const session = this.session_store_of(id);
-                if (!session)
-                    return 0;
-                return Number(session.Reads()?.key(lord)?.Moment()?.val() ?? 0);
+                let last = 0;
+                for (const land of this.session_lands_of(id)) {
+                    try {
+                        const moment = Number(land.Data($bog_gram_session).Reads()?.key(lord)?.Moment()?.val() ?? 0);
+                        if (moment > last)
+                            last = moment;
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                }
+                return last;
             }
             /** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
             read_sync() {
@@ -24628,7 +26286,7 @@ var $;
                 const seen = this.read_moment_of(id, my);
                 if (seen >= last)
                     return seen;
-                const session = this.session_store_of(id);
+                const session = this.session_store_last(id);
                 session?.Reads('auto')?.key(my, 'auto')?.Moment('auto')?.val(last);
                 return last;
             }
@@ -24656,7 +26314,9 @@ var $;
             }
             // ===== Превью в списке диалогов =====
             /** Вложение в строке списка называем словом: ни кадра, ни звука там
-             * показать негде, а подпись под ними, если она есть, идёт следом. */
+             * показать негде, а подпись под ними, если она есть, идёт следом.
+             * В группе перед текстом стоит имя написавшего: без него непонятно,
+             * кто из пятерых сейчас говорит. */
             dialog_preview(id) {
                 const messages = this.messages_alive_of(id);
                 const last = messages[messages.length - 1];
@@ -24669,8 +26329,12 @@ var $;
                 const body = kind ? (text ? kind + ' · ' + text : kind) : text;
                 if (this.saved_is(id))
                     return body;
-                const mine = String(last.Author()?.val() ?? '') === this.my_lord();
-                return mine ? 'Вы: ' + body : body;
+                const author = String(last.Author()?.val() ?? '');
+                if (author === this.my_lord())
+                    return 'Вы: ' + body;
+                if (author && this.group_is(id))
+                    return this.peer_label(author) + ': ' + body;
+                return body;
             }
             dialog_time(id) {
                 const messages = this.messages_alive_of(id);
@@ -25332,6 +26996,18 @@ var $;
         ], $bog_gram.prototype, "dialog_peer", null);
         __decorate([
             $mol_mem_key
+        ], $bog_gram.prototype, "group_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_is", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_name_auto", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "admin_lords", null);
+        __decorate([
+            $mol_mem_key
         ], $bog_gram.prototype, "dialog_title", null);
         __decorate([
             $mol_mem_key
@@ -25439,6 +27115,9 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "chat_note", null);
         __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_title_set", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "compose_opened", null);
         __decorate([
@@ -25468,8 +27147,137 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "dialog_autocreate", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_sources", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_picked", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_pick", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_chosen_drop", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_id_error", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_id_add", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_pick_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_pick_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_pick_source", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_picked_is", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_chosen_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "group_chosen_name", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_lost", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_make", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "member_error", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "member_lords", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "member_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_status", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_armed", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_drop_hint", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "member_disarm", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "member_drop_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "member_rule_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "history_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_history_all", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_history_new", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "member_pick_lords", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "member_pick_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_pick_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "member_pick_source", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "member_pick", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "member_id_add", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_add_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "leave_armed", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_leave_click", null);
+        __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "mine_wrote", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "invite_ready", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "outbox_flush", null);
@@ -25506,6 +27314,12 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "message_checks", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_author", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "message_author_tint", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "message_menu", null);
@@ -25883,6 +27697,11 @@ var $;
             Title_text() {
                 return this.note_editable() ? null : super.Title_text();
             }
+            /** Список участников есть только у группы: в переписке вдвоём
+             * перечислять некого. */
+            Members() {
+                return this.members_shown() ? super.Members() : null;
+            }
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
             }
@@ -25962,6 +27781,18 @@ var $;
         const veil = '#8888881a';
         /** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
         const alert_red = '#e14b4b';
+        /** Палитра по номеру из хеша идентификатора: один и тот же лорд всегда
+         * красится одинаково — и узором кружка в списке, и подписью над своим
+         * пузырём в группе. */
+        const tint_rules = {
+            '0': { color: '#e17076' },
+            '1': { color: '#faa774' },
+            '2': { color: '#a695e7' },
+            '3': { color: '#7bc862' },
+            '4': { color: '#6ec9cb' },
+            '5': { color: '#65aadd' },
+            '6': { color: '#ee7aae' },
+        };
         /** Шапка страницы прижата к верху экрана, а на айфоне там статус-бар и
          * вырез камеры: свой отступ складываем с системным. Вне телефона добавка
          * нулевая, и вёрстка остаётся ровно той же. */
@@ -26016,6 +27847,24 @@ var $;
                 },
             },
             Compose_page: {
+                width: '26rem',
+                Head: {
+                    padding: head_pad,
+                },
+                Body_content: {
+                    padding: body_pad,
+                },
+            },
+            Group_page: {
+                width: '26rem',
+                Head: {
+                    padding: head_pad,
+                },
+                Body_content: {
+                    padding: body_pad,
+                },
+            },
+            Members_page: {
                 width: '26rem',
                 Head: {
                     padding: head_pad,
@@ -26699,6 +28548,509 @@ var $;
                     shrink: 0,
                 },
             },
+            // ===== Создание группы =====
+            // Страница устроена как «новый диалог»: сверху название и уже
+            // выбранные, снизу — откуда выбирать. Строки выбора повторяют сетку
+            // строк реестра, чтобы список людей везде выглядел одинаково.
+            Group_name_field: {
+                alignSelf: 'stretch',
+            },
+            Group_chosen_head: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Group_chosen_list: {
+                gap: '0.125rem',
+            },
+            Group_chosen_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.375rem',
+                    bottom: '0.375rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                background: {
+                    color: veil,
+                },
+                minWidth: 0,
+            },
+            Group_chosen_avatar: {
+                width: '2rem',
+                height: '2rem',
+            },
+            /* имя длинное и должно ужиматься, а не распирать колонку: у вьюх
+            flex-shrink нулевой, поэтому и растяжение, и сжатие задаются явно */
+            Group_chosen_name: {
+                display: 'block',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Group_chosen_drop: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Group_chosen_drop_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            /* кого не удалось добавить: тревожная строка, а не молчание */
+            Group_lost_note: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: alert_red,
+            },
+            Group_make: {
+                alignSelf: 'stretch',
+                justify: {
+                    content: 'center',
+                },
+            },
+            Group_id_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Group_id_error: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: alert_red,
+            },
+            Group_pick_head: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Group_pick_list: {
+                gap: '0.125rem',
+            },
+            Group_pick_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+                /* заливка выбранной строки — в gram.view.css: тот же атрибут, что
+                и у выбранного диалога, кастомный attr на встроенной кнопке не
+                проходит типизацию Attrs */
+            },
+            Group_pick_avatar: {
+                width: '2.5rem',
+                height: '2.5rem',
+            },
+            Group_pick_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Group_pick_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Group_pick_source: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                /* приглушаем прозрачностью, а не цветом: на выбранной строке текст белый */
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Group_pick_mark: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1.25rem',
+                height: '1.25rem',
+            },
+            // ===== Участники группы =====
+            Members_list: {
+                gap: '0.125rem',
+            },
+            Member_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                minWidth: 0,
+            },
+            Member_avatar: {
+                width: '2.5rem',
+                height: '2.5rem',
+            },
+            Member_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Member_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Member_status: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            /* назначение админом и исключение стоят рядом и повторяют габариты
+            архива с корзиной: две соседние операции не должны прыгать в строке */
+            Member_rule: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Member_drop: {
+                flex: {
+                    shrink: 0,
+                },
+                alignSelf: 'center',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '1.75rem',
+                minHeight: '1.75rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+                /* красная заливка взведённой кнопки — в gram.view.css: кастомный
+                атрибут на встроенной кнопке не проходит типизацию Attrs */
+            },
+            Member_rule_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            Member_drop_icon: {
+                width: '1rem',
+                height: '1rem',
+            },
+            /* Что на самом деле делает «убрать» и что делает «выйти». Строки
+            видны на месте, а не в подсказке кнопки: на телефоне подсказку никто
+            не покажет, а обе операции необратимы. */
+            Members_drop_note: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Members_leave_note: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Members_add_block: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Members_add_title: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            /* выбор истории: две кнопки-переключателя и строка о том, чем они
+            отличаются — решение необратимое, объяснять его надо на месте */
+            Members_history: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.375rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Members_history_head: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Members_history_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Members_history_all: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                justify: {
+                    content: 'center',
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                },
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Members_history_new: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                justify: {
+                    content: 'center',
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                },
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Members_history_note: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Members_error: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: alert_red,
+            },
+            Members_id_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Members_pick_list: {
+                gap: '0.125rem',
+            },
+            Member_pick_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '0.75rem',
+                color: $mol_theme.text,
+                minWidth: 0,
+            },
+            Member_pick_avatar: {
+                width: '2.5rem',
+                height: '2.5rem',
+            },
+            Member_pick_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Member_pick_title: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Member_pick_source: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Member_pick_mark: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1.25rem',
+                height: '1.25rem',
+                color: $mol_theme.shade,
+            },
+            /* честная строка про то, что вместе с правом звать людей админ
+            получает и право менять чужие права */
+            Members_admin_note: {
+                font: {
+                    size: '0.75rem',
+                },
+                color: $mol_theme.shade,
+            },
+            /* выход из группы — не разрушительная операция для остальных, но для
+            себя окончательная: держим её внизу и отдельно от всего */
+            Members_leave: {
+                alignSelf: 'flex-start',
+                color: alert_red,
+                padding: {
+                    top: '0.375rem',
+                    bottom: '0.375rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                borderRadius: '0.5rem',
+            },
             // ===== Список реестров в настройках =====
             Registry_block: {
                 Content: {
@@ -27192,6 +29544,25 @@ var $;
                     },
                 },
             },
+            /* Имя отправителя стоит только в группе и только над чужим пузырём.
+            Цвет берётся из той же палитры, что и узор аватара: в длинной группе
+            имена различаются ещё и на глаз, а не только буквами. */
+            Message_author: {
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                maxWidth: '100%',
+                font: {
+                    size: '0.8rem',
+                    weight: 'bold',
+                },
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                '@': {
+                    bog_gram_tint: tint_rules,
+                },
+            },
             Message_body: {
                 minWidth: 0,
                 whiteSpace: 'pre-wrap',
@@ -27375,6 +29746,59 @@ var $;
                         minHeight: '2.75rem',
                         padding: '0.375rem',
                     },
+                    Group_pick_list: {
+                        gap: 0,
+                    },
+                    Members_pick_list: {
+                        gap: 0,
+                    },
+                    Members_list: {
+                        gap: 0,
+                    },
+                    Group_pick_row: {
+                        gap: '0.5rem',
+                        minHeight: '2.75rem',
+                        padding: '0.375rem',
+                    },
+                    Member_pick_row: {
+                        gap: '0.5rem',
+                        minHeight: '2.75rem',
+                        padding: '0.375rem',
+                    },
+                    Member_row: {
+                        gap: '0.5rem',
+                        minHeight: '2.75rem',
+                        padding: '0.375rem',
+                    },
+                    /* назначение админом и исключение стоят вплотную, поэтому
+                    обеим кнопкам нужен свой запас по краям: иначе палец накрывает
+                    сразу две */
+                    Member_rule: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Member_drop: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Member_rule_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
+                    },
+                    Member_drop_icon: {
+                        width: '1.125rem',
+                        height: '1.125rem',
+                    },
+                    Group_chosen_drop: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Members_history_all: {
+                        minHeight: '2.75rem',
+                    },
+                    Members_history_new: {
+                        minHeight: '2.75rem',
+                    },
                     /* корзина и архив стоят вплотную, поэтому обеим нужен свой
                     запас по краям: иначе палец накрывает сразу две */
                     Dialog_archive: {
@@ -27488,15 +29912,7 @@ var $;
             // Узор рисуется обводкой currentColor, поэтому цвет из палитры
             // красит сами точки, а не подложку
             '@': {
-                bog_gram_tint: {
-                    '0': { color: '#e17076' },
-                    '1': { color: '#faa774' },
-                    '2': { color: '#a695e7' },
-                    '3': { color: '#7bc862' },
-                    '4': { color: '#6ec9cb' },
-                    '5': { color: '#65aadd' },
-                    '6': { color: '#ee7aae' },
-                },
+                bog_gram_tint: tint_rules,
             },
         });
         $mol_style_define($bog_gram_chat, {
@@ -27562,6 +29978,27 @@ var $;
             Back_icon: {
                 width: '1.5rem',
                 height: '1.5rem',
+            },
+            /* Вход в список участников: справа от заголовка, на месте крестика и
+            того же роста. У переписки вдвоём этой кнопки нет вовсе. */
+            Members: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '2.5rem',
+                minHeight: '2.5rem',
+                padding: '0.25rem',
+                borderRadius: '0.5rem',
+            },
+            Members_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
             },
             Body: {
                 background: {
@@ -27830,6 +30267,10 @@ var $;
                 /* Скрепка стоит вплотную к полю ввода, поэтому на телефоне ей
                 нужен тот же запас под палец, что и остальным кнопкам списка. */
                 '(max-width: 30rem)': {
+                    Members: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
                     Attach: {
                         minWidth: '2.75rem',
                         minHeight: '2.75rem',
@@ -35474,6 +37915,205 @@ var $;
                 $mol_assert_equal(app.dialog_owner(dialog_link), lord);
                 $mol_assert_equal(app.dialog_owner(lord), lord);
                 $mol_assert_equal(app.dialog_owner(''), '');
+            },
+            async 'Сообщения из разных бакетов сливаются по моменту'($) {
+                const app = $bog_gram.make({ $ });
+                const early = $giper_baza_land.make({ $ });
+                const late = $giper_baza_land.make({ $ });
+                const write = (land, moment, text) => {
+                    const message = land.Data($bog_gram_session).Messages('auto').make(null);
+                    message.Text('auto')?.val(text);
+                    message.Moment('auto')?.val(moment);
+                };
+                const list_of = (land) => land.Data($bog_gram_session).Messages().items()
+                    .map(link => message_of(land, link));
+                // Бакеты писались вперемешку: старый не кончается там, где
+                // начинается новый — в него ещё дописывали, пока свежий уже жил
+                write(early, 1000, 'первое');
+                write(early, 3000, 'третье');
+                write(late, 2000, 'второе');
+                write(late, 4000, 'четвёртое');
+                const merged = app.messages_merge([list_of(early), list_of(late)]);
+                $mol_assert_equal(merged.length, 4);
+                $mol_assert_equal(merged.map(item => item.Text().val()).join(' '), 'первое второе третье четвёртое');
+                // Порядок задают данные, а не порядок бакетов: та же склейка
+                // наоборот даёт тот же результат
+                const back = app.messages_merge([list_of(late), list_of(early)]);
+                $mol_assert_equal(back.map(item => item.Text().val()).join(' '), 'первое второе третье четвёртое');
+                // Недоступный бакет приходит сюда пустым списком и ничего не портит
+                const alone = app.messages_merge([[], list_of(early), []]);
+                $mol_assert_equal(alone.map(item => item.Text().val()).join(' '), 'первое третье');
+                $mol_assert_equal(app.messages_merge([]).length, 0);
+                // Совпавшие моменты разводятся ссылкой, поэтому порядок не зависит
+                // от того, какой бакет доехал первым
+                const tie_one = $giper_baza_land.make({ $ });
+                const tie_two = $giper_baza_land.make({ $ });
+                write(tie_one, 5000, 'один');
+                write(tie_two, 5000, 'два');
+                const straight = app.messages_merge([list_of(tie_one), list_of(tie_two)]);
+                const reverse = app.messages_merge([list_of(tie_two), list_of(tie_one)]);
+                $mol_assert_equal(straight.map(item => item.Text().val()).join(' '), reverse.map(item => item.Text().val()).join(' '));
+            },
+            async 'Исключённый теряет новый бакет, но не старый'($) {
+                // Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
+                // нужен свой: с общим ключом это был бы один и тот же ленд в трёх
+                // обёртках, и шифрование с раздачей прав уходило бы в клинч
+                const king_dialog = await $.$giper_baza_auth.generate();
+                const king_old = await $.$giper_baza_auth.generate();
+                const king_new = await $.$giper_baza_auth.generate();
+                const auth_stay = await $.$giper_baza_auth.generate();
+                const auth_out = await $.$giper_baza_auth.generate();
+                const lord_stay = auth_stay.pass().lord().str;
+                const lord_out = auth_out.pass().lord().str;
+                const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+                const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
+                const new_bucket = $giper_baza_land.make({ $, auth: () => king_new });
+                // Бакеты закрыты ото всех, как и в самом приложении: без гифта
+                // такой ленд не читается вовсе
+                await $mol_wire_async(old_bucket).encrypted(true);
+                await $mol_wire_async(new_bucket).encrypted(true);
+                // Выдача прав на шифрованный ленд считает общий секрет, поэтому
+                // каждый шаг гоняем в своей фибре с ретраями
+                const ops = {
+                    /** Пока в группе трое, права на первый бакет у всех */
+                    start() {
+                        old_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
+                        old_bucket.give(auth_out.pass(), $giper_baza_rank_post('just'));
+                        return true;
+                    },
+                    /** Исключение: свежий бакет открывается всем, кроме уходящего */
+                    part() {
+                        new_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
+                        return true;
+                    },
+                    /** Записи в ленд подписываются, а подпись асинхронна: вне фибры
+                     * приостановка не переживается и прогон замирает молча. */
+                    fill() {
+                        const data = dialog.Data($bog_gram_dialog);
+                        data.Peers('auto').add(king_dialog.pass().lord().str);
+                        data.Peers('auto').add(lord_stay);
+                        data.Peers('auto').add(lord_out);
+                        data.Sessions('auto').add(old_bucket.link().str);
+                        data.Sessions('auto').add(new_bucket.link().str);
+                        data.Peers('auto').cut(lord_out);
+                        return true;
+                    },
+                    /** Права шифрованного ленда тоже читаем в фибре: обращение к
+                     * ним считает секрет, а он приезжает асинхронно. */
+                    read() {
+                        const data = dialog.Data($bog_gram_dialog);
+                        return {
+                            peers: data.Peers().items().map(String),
+                            sessions: data.Sessions().items().map(String),
+                            out_old: old_bucket.lord_rank(auth_out.pass().lord()),
+                            out_new: new_bucket.lord_rank(auth_out.pass().lord()),
+                            stay_new: new_bucket.lord_rank(auth_stay.pass().lord()),
+                        };
+                    },
+                };
+                await $mol_wire_async(ops).start();
+                await $mol_wire_async(ops).part();
+                await $mol_wire_async(ops).fill();
+                const state = await $mol_wire_async(ops).read();
+                const peers = state.peers;
+                $mol_assert_equal(peers.includes(lord_out), false);
+                $mol_assert_equal(peers.includes(lord_stay), true);
+                // Старый бакет никуда не делся: переписка продолжается в свежем,
+                // а прошлое остаётся там, где лежало
+                // Порядок в списке задаётся слиянием, а не добавлением, поэтому
+                // проверяем состав, а какой бакет свежий — знает отдельный указатель
+                const sessions = state.sessions;
+                $mol_assert_equal(sessions.length, 2);
+                $mol_assert_equal(sessions.includes(old_bucket.link().str), true);
+                $mol_assert_equal(sessions.includes(new_bucket.link().str), true);
+                // Прошлые сообщения у исключённого остаются: ключ от старого бакета
+                // ему уже выдали, и отобрать его нечем
+                $mol_assert_equal(state.out_old, $giper_baza_rank_post('just'));
+                // А свежего бакета у него нет — закрытый ленд без гифта не читается
+                $mol_assert_equal(state.out_new, $giper_baza_rank_deny);
+                $mol_assert_equal(state.stay_new, $giper_baza_rank_post('just'));
+            },
+            async 'Добавленный без истории видит только новый бакет'($) {
+                // Каждому ленду свой король: ссылка выводится из ключа, и общий
+                // ключ склеил бы три ленда в один
+                const king_dialog = await $.$giper_baza_auth.generate();
+                const king_old = await $.$giper_baza_auth.generate();
+                const king_fresh = await $.$giper_baza_auth.generate();
+                const auth_old = await $.$giper_baza_auth.generate();
+                const auth_new = await $.$giper_baza_auth.generate();
+                const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+                const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
+                const fresh = $giper_baza_land.make({ $, auth: () => king_fresh });
+                await $mol_wire_async(old_bucket).encrypted(true);
+                await $mol_wire_async(fresh).encrypted(true);
+                const ops = {
+                    start() {
+                        old_bucket.give(auth_old.pass(), $giper_baza_rank_post('just'));
+                        return true;
+                    },
+                    /** Новичка зовут без истории: заводится свежий бакет и
+                     * открывается нынешним участникам вместе с ним */
+                    join() {
+                        fresh.give(auth_old.pass(), $giper_baza_rank_post('just'));
+                        fresh.give(auth_new.pass(), $giper_baza_rank_post('just'));
+                        return true;
+                    },
+                    /** Записи в ленд подписываются, а подпись асинхронна: вне фибры
+                     * приостановка не переживается и прогон замирает молча. */
+                    fill() {
+                        const data = dialog.Data($bog_gram_dialog);
+                        data.Peers('auto').add(auth_old.pass().lord().str);
+                        data.Sessions('auto').add(old_bucket.link().str);
+                        data.Peers('auto').add(auth_new.pass().lord().str);
+                        data.Sessions('auto').add(fresh.link().str);
+                        return true;
+                    },
+                    /** И список бакетов, и права — одним чтением из фибры. */
+                    read() {
+                        const data = dialog.Data($bog_gram_dialog);
+                        return {
+                            sessions: data.Sessions().items().length,
+                            new_old: old_bucket.lord_rank(auth_new.pass().lord()),
+                            new_fresh: fresh.lord_rank(auth_new.pass().lord()),
+                            old_old: old_bucket.lord_rank(auth_old.pass().lord()),
+                            old_fresh: fresh.lord_rank(auth_old.pass().lord()),
+                            king_old_rank: old_bucket.lord_rank(king_old.pass().lord()),
+                            king_fresh_rank: fresh.lord_rank(king_fresh.pass().lord()),
+                        };
+                    },
+                };
+                await $mol_wire_async(ops).start();
+                await $mol_wire_async(ops).join();
+                await $mol_wire_async(ops).fill();
+                const state = await $mol_wire_async(ops).read();
+                // В списке бакетов новичок видит оба, а открыть может только свежий
+                $mol_assert_equal(state.sessions, 2);
+                $mol_assert_equal(state.new_old, $giper_baza_rank_deny);
+                $mol_assert_equal(state.new_fresh, $giper_baza_rank_post('just'));
+                // Старожил продолжает читать и то, и другое
+                $mol_assert_equal(state.old_old, $giper_baza_rank_post('just'));
+                $mol_assert_equal(state.old_fresh, $giper_baza_rank_post('just'));
+                // Создатель — король обоих лендов, права у него полные и без гифта
+                $mol_assert_equal(state.king_old_rank, $giper_baza_rank_rule);
+                $mol_assert_equal(state.king_fresh_rank, $giper_baza_rank_rule);
+            },
+            async 'В группе вместо галочек — сколько человек прочитало'($) {
+                const app = $bog_gram.make({ $ });
+                const mates = ['LordA', 'LordB', 'LordC'];
+                // Отметка участника — момент последнего прочитанного им сообщения
+                const reads = { LordA: 3000, LordB: 1000, LordC: 0 };
+                // Раннее сообщение прочитали все, кто вообще заглядывал
+                $mol_assert_equal(app.read_tally(reads, mates, 1000), 2);
+                // Позднее — только тот, кто дочитал до него
+                $mol_assert_equal(app.read_tally(reads, mates, 3000), 1);
+                // Самое свежее не прочитал никто
+                $mol_assert_equal(app.read_tally(reads, mates, 4000), 0);
+                // Отметки того, кого в группе уже нет, счёт не задевают: считаем
+                // по списку участников, а не по всему словарю
+                $mol_assert_equal(app.read_tally({ ...reads, LordGone: 9000 }, mates, 3000), 1);
+                // Ни одной отметки — ноль, а не ошибка
+                $mol_assert_equal(app.read_tally({}, mates, 1000), 0);
+                $mol_assert_equal(app.read_tally(reads, [], 1000), 0);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

@@ -96,6 +96,12 @@ $mol_button_typed $mol_button
 
 $mol_button_minor $mol_button_typed
 
+$mol_icon_account $mol_icon path \M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z
+
+$mol_icon_account_multiple $mol_icon path \M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z
+
+$mol_icon_account_multiple_plus $mol_icon path \M19 17V19H7V17S7 13 13 13 19 17 19 17M16 8A3 3 0 1 0 13 11A3 3 0 0 0 16 8M19.2 13.06A5.6 5.6 0 0 1 21 17V19H24V17S24 13.55 19.2 13.06M18 5A2.91 2.91 0 0 0 17.11 5.14A5 5 0 0 1 17.11 10.86A2.91 2.91 0 0 0 18 11A3 3 0 0 0 18 5M8 10H5V7H3V10H0V12H3V15H5V12H8Z
+
 $mol_icon_cog $mol_icon path \M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z
 
 $mol_check $mol_button_minor
@@ -543,11 +549,17 @@ $mol_icon_bookmark $mol_icon path \M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.8
 
 $mol_icon_archive $mol_icon path \M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z
 
-$mol_icon_account $mol_icon path \M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z
-
 $mol_icon_account_question $mol_icon path \M13,8A4,4 0 0,1 9,12A4,4 0 0,1 5,8A4,4 0 0,1 9,4A4,4 0 0,1 13,8M17,18V20H1V18C1,15.79 4.58,14 9,14C13.42,14 17,15.79 17,18M20.5,14.5V16H19V14.5H20.5M18.5,9.5H17V9A3,3 0 0,1 20,6A3,3 0 0,1 23,9C23,9.97 22.5,10.88 21.71,11.41L21.41,11.6C20.84,12 20.5,12.61 20.5,13.3V13.5H19V13.3C19,12.11 19.6,11 20.59,10.35L20.88,10.16C21.27,9.9 21.5,9.47 21.5,9A1.5,1.5 0 0,0 20,7.5A1.5,1.5 0 0,0 18.5,9V9.5Z
 
 $mol_icon_check $mol_icon path \M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z
+
+$mol_icon_shield $mol_icon path \M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z
+
+$mol_icon_shield_crown $mol_icon path \M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z
+
+$mol_icon_account_remove $mol_icon path \M15,14C17.67,14 23,15.33 23,18V20H7V18C7,15.33 12.33,14 15,14M15,12A4,4 0 0,1 11,8A4,4 0 0,1 15,4A4,4 0 0,1 19,8A4,4 0 0,1 15,12M5,9.59L7.12,7.46L8.54,8.88L6.41,11L8.54,13.12L7.12,14.54L5,12.41L2.88,14.54L1.46,13.12L3.59,11L1.46,8.88L2.88,7.46L5,9.59Z
+
+$mol_icon_account_plus $mol_icon path \M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z
 
 $mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
 
@@ -608,6 +620,11 @@ $bog_gram $mol_book2
 					click? <=> compose_open? null
 					sub /
 						<= Compose_open_icon $mol_icon_message_plus
+				<= Group_open $mol_button_minor
+					hint \Новая группа
+					click? <=> group_open? null
+					sub /
+						<= Group_open_icon $mol_icon_account_multiple_plus
 				<= Settings_open $mol_button_minor
 					hint \Настройки
 					click? <=> settings_open? null
@@ -710,8 +727,73 @@ $bog_gram $mol_book2
 								\Вступить
 				<= Users_list $mol_list
 					rows <= user_rows /
+		<= Group_page $mol_page
+			title \Новая группа
+			tools /
+				<= Group_close $mol_button_minor
+					hint \Закрыть
+					click? <=> group_close? null
+					sub /
+						<= Group_close_icon $mol_icon_close
+			body /
+				<= Group_name_field $mol_string
+					hint \Название группы
+					value? <=> group_name? \
+				<= Group_chosen_head $mol_paragraph
+					title <= group_chosen_head \
+				<= Group_chosen_list $mol_list
+					rows <= group_chosen_rows /
+				<= Group_lost_note $mol_paragraph
+					title <= group_lost_note \
+				<= Group_make $mol_button_major
+					click? <=> group_make? null
+					sub /
+						<= group_make_label \
+				<= Group_id_form $mol_view
+					sub /
+						<= Group_id_field $mol_string
+							hint \ID участника
+							value? <=> group_id? \
+							submit? <=> group_id_add? null
+						<= Group_id_add $mol_button_major
+							click? <=> group_id_add? null
+							sub /
+								\Добавить
+				<= Group_id_error $mol_paragraph
+					title <= group_id_error \
+				<= Group_pick_head $mol_paragraph
+					title \Кого позвать
+				<= Group_pick_list $mol_list
+					rows <= group_pick_rows /
+		<= Members_page $mol_page
+			title \Участники
+			tools /
+				<= Members_close $mol_button_minor
+					hint \Закрыть
+					click? <=> members_close? null
+					sub /
+						<= Members_close_icon $mol_icon_close
+			body /
+				<= Members_list $mol_list
+					rows <= member_rows /
+				<= Members_drop_note $mol_paragraph
+					title \«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.
+				<= Members_add_block $mol_view
+					sub <= members_add_rows /
+				<= Members_leave_note $mol_paragraph
+					title \«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.
+				<= Members_leave $mol_button_minor
+					hint \Убрать группу из своего списка
+					attr *
+						^
+						bog_gram_armed <= leave_armed false
+					click? <=> group_leave_click? null
+					sub /
+						<= group_leave_label \
 		<= Chat_page $bog_gram_chat
 			title <= chat_title \
+			members_shown <= chat_members_shown false
+			members? <=> members_open? null
 			note? <=> chat_note? \
 			note_hint <= chat_note_hint \
 			note_editable <= chat_note_editable false
@@ -964,6 +1046,120 @@ $bog_gram $mol_book2
 					<= User_source* $mol_view
 						sub /
 							<= user_source* \
+	Group_pick_row* $mol_button_minor
+		click? <=> group_pick*? null
+		attr *
+			^
+			bog_gram_current <= group_picked_is* false
+		sub /
+			<= Group_pick_avatar* $bog_gram_avatar
+				id <= group_pick_lord* \
+				tint <= group_pick_tint* 0
+			<= Group_pick_info* $mol_view
+				sub /
+					<= Group_pick_title* $mol_view
+						sub /
+							<= group_pick_title* \
+					<= Group_pick_source* $mol_view
+						sub /
+							<= group_pick_source* \
+			<= Group_pick_mark* $mol_icon_check
+	Group_chosen_row* $mol_view
+		sub /
+			<= Group_chosen_avatar* $bog_gram_avatar
+				id <= group_chosen_lord* \
+				tint <= group_chosen_tint* 0
+			<= Group_chosen_name* $mol_view
+				sub /
+					<= group_chosen_name* \
+			<= Group_chosen_drop* $mol_button_minor
+				hint \Убрать из списка
+				click? <=> group_chosen_drop*? null
+				sub /
+					<= Group_chosen_drop_icon* $mol_icon_close
+	Members_add_title $mol_paragraph
+		title \Добавить участника
+	Members_history $mol_view
+		sub /
+			<= Members_history_head $mol_paragraph
+				title \Что увидит новый участник
+			<= Members_history_row $mol_view
+				sub /
+					<= Members_history_all $mol_button_minor
+						hint \Выдать ключи от всех прошлых сообщений
+						attr *
+							^
+							bog_gram_current <= history_open false
+						click? <=> members_history_all? null
+						sub /
+							\Всю переписку
+					<= Members_history_new $mol_button_minor
+						hint \Завести новый отсек переписки
+						attr *
+							^
+							bog_gram_current <= history_shut false
+						click? <=> members_history_new? null
+						sub /
+							\Только новые
+			<= Members_history_note $mol_paragraph
+				title <= members_history_note \
+	Members_error $mol_paragraph
+		title <= member_error \
+	Members_id_form $mol_view
+		sub /
+			<= Members_id_field $mol_string
+				hint \ID участника
+				value? <=> member_id? \
+				submit? <=> member_id_add? null
+			<= Members_id_add $mol_button_major
+				click? <=> member_id_add? null
+				sub /
+					\Добавить
+	Members_pick_list $mol_list
+		rows <= member_pick_rows /
+	Members_admin_note $mol_paragraph
+		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
+	Member_row* $mol_view
+		sub /
+			<= Member_avatar* $bog_gram_avatar
+				id <= member_lord* \
+				tint <= member_tint* 0
+			<= Member_info* $mol_view
+				sub /
+					<= Member_title* $mol_view
+						sub /
+							<= member_title* \
+					<= Member_status* $mol_view
+						sub /
+							<= member_status* \
+			<= Member_rule* $mol_button_minor
+				hint \Назначить админом
+				click? <=> member_rule_click*? null
+				sub /
+					<= Member_rule_icon* $mol_icon_shield_crown
+			<= Member_drop* $mol_button_minor
+				hint <= member_drop_hint* \
+				attr *
+					^
+					bog_gram_armed <= member_armed* false
+				click? <=> member_drop_click*? null
+				sub /
+					<= Member_drop_icon* $mol_icon_account_remove
+	Member_pick_row* $mol_button_minor
+		click? <=> member_pick*? null
+		sub /
+			<= Member_pick_avatar* $bog_gram_avatar
+				id <= member_pick_lord* \
+				tint <= member_pick_tint* 0
+			<= Member_pick_info* $mol_view
+				sub /
+					<= Member_pick_title* $mol_view
+						sub /
+							<= member_pick_title* \
+					<= Member_pick_source* $mol_view
+						sub /
+							<= member_pick_source* \
+			<= Member_pick_mark* $mol_icon_account_plus
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view
@@ -981,6 +1177,12 @@ $bog_gram $mol_book2
 			pointercancel? <=> message_release*? null
 			contextmenu? <=> message_context*? null
 		sub /
+			<= Message_author* $mol_view
+				attr *
+					^
+					bog_gram_tint <= message_author_tint* 0
+				sub /
+					<= message_author* \
 			<= Message_shot* $bog_gram_photo
 				hint \Открыть картинку
 				uri <= message_shot_uri* \
@@ -1036,6 +1238,8 @@ $bog_gram_chat $mol_page
 	edit_cancel? null
 	close? null
 	note_editable false
+	members_shown false
+	members? null
 	image_files? null
 	image_paste? null
 	image_over? null
@@ -1075,6 +1279,11 @@ $bog_gram_chat $mol_page
 		<= Title
 		<= Tools
 	tools /
+		<= Members $mol_button_minor
+			hint \Участники
+			click? <=> members? null
+			sub /
+				<= Members_icon $mol_icon_account_multiple
 		<= Close $mol_button_minor
 			hint \Закрыть
 			click? <=> close? null
