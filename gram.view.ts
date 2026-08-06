@@ -277,15 +277,26 @@ namespace $.$$ {
 		/** Заметки для себя лежат в приватном шифрованном ленде, как и список
 		 * диалогов: ссылка на него хранится там же, а не в открытом профиле.
 		 * Захват небыстрый, и клик по строке может позвать сюда второй раз —
-		 * поэтому уже записанная ссылка всегда важнее только что захваченной. */
+		 * поэтому уже записанная ссылка всегда важнее только что захваченной.
+		 *
+		 * Заводим ленд только отсюда, то есть по явному клику: список диалогов
+		 * приезжает не мгновенно, и на свежем устройстве пустая ссылка какое-то
+		 * время выглядит как «ленда ещё нет». Захват на старте приложения
+		 * попадал в это окно всегда. */
 		@$mol_action
 		saved_land_make() {
+
 			const land = this.$.$giper_baza_glob.land_grab([
 				[ null, $giper_baza_rank_deny ],
 			])
+
 			const str = this.dialogs_store().Saved_land()?.val()
 			if( str ) return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
-			this.dialogs_store().Saved_land( 'auto' )?.val( land.link().str )
+
+			const link = land.link().str
+			this.dialogs_store().Saved_land( 'auto' )?.val( link )
+			this.dialogs_store().Saved_lands( 'auto' )!.add( link )
+
 			return land
 		}
 
@@ -302,12 +313,34 @@ namespace $.$$ {
 			return String( this.dialogs_store().Saved_land()?.val() ?? '' )
 		}
 
+		/** Все ленды заметок, какие про этот аккаунт известны, и указанный
+		 * последним. Их больше одного, если избранное успело завестись на двух
+		 * устройствах сразу: заметки при этом разъезжаются по разным лендам, и
+		 * терять один из них только потому, что ссылка указывает на другой,
+		 * незачем — читаем изо всех, а пишем всегда в указанный. */
+		@$mol_mem
+		saved_links() {
+			const current = this.saved_id()
+			let all: string[] = []
+			try {
+				all = ( this.dialogs_store().Saved_lands()?.items() ?? [] ).map( String )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+			const rest = all.filter( link => link && link !== current )
+			return current ? [ ... rest, current ] : rest
+		}
+
 		/** Единственная развилка на всё приложение: у избранного нет собеседника,
 		 * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
-		 * в превью ему не полагается. */
+		 * в превью ему не полагается.
+		 *
+		 * Заброшенный ленд заметок остаётся избранным наравне с указанным:
+		 * иначе открытая с него страница схлопывалась бы сама, а отправка с
+		 * неё молча ничего не делала. */
 		saved_is( id: string ) {
-			const saved = this.saved_id()
-			return Boolean( saved ) && id === saved
+			if( !id ) return false
+			return this.saved_links().includes( id )
 		}
 
 		override saved_title() {
@@ -318,8 +351,10 @@ namespace $.$$ {
 		 * в пути, строка стоит с пустым превью, а не вешает весь список. */
 		@$mol_mem
 		saved_preview() {
+			const id = this.saved_id()
+			if( !id ) return ''
 			try {
-				return this.dialog_preview( this.saved_id() )
+				return this.dialog_preview( id )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return ''
@@ -328,8 +363,10 @@ namespace $.$$ {
 
 		@$mol_mem
 		saved_time() {
+			const id = this.saved_id()
+			if( !id ) return ''
 			try {
-				return this.dialog_time( this.saved_id() )
+				return this.dialog_time( id )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return ''
@@ -2255,7 +2292,7 @@ namespace $.$$ {
 		 * единственный бакет — остальной код от этого ничем не отличается. */
 		session_links_of( id: string ): readonly string[] {
 			if( !id ) return []
-			if( this.saved_is( id ) ) return [ this.saved_land().link().str ]
+			if( this.saved_is( id ) ) return this.saved_links()
 			return ( this.dialog_store( id ).Sessions()?.items() ?? [] ).map( String )
 		}
 
@@ -3690,15 +3727,31 @@ namespace $.$$ {
 
 		// ===== Ссылка-приглашение в группу =====
 
-		/** Приглашение в группу — адрес страницы с одной лишь ссылкой на её
-		 * ленд: остальные параметры (свой мастер, открытый реестр) чужому
-		 * человеку не нужны. Вступить по ней мгновенно нельзя — ленд группы
-		 * шифрованный, и ключ от него заворачивается на ключ конкретного
-		 * человека тем, у кого есть права. Поэтому ссылка ведёт к заявке. */
+		/** Приглашение в группу — адрес страницы со ссылкой на её ленд и лордом
+		 * создателя. Вступить по ней мгновенно нельзя: ленд группы шифрованный,
+		 * и ключ от него заворачивается на ключ конкретного человека тем, у
+		 * кого есть права. Поэтому ссылка ведёт к заявке.
+		 *
+		 * Создатель едет вторым параметром, и без него ссылка бесполезна:
+		 * заявку несут в его лобби, а взять его из ленда группы просящему
+		 * неоткуда — прав на неё у него ещё нет, и ленд ему не читается вовсе.
+		 * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны. */
 		join_uri( id: string ) {
 			if( !id ) return ''
 			const location = this.$.$mol_dom_context.location
-			return location.origin + location.pathname + '#!join=' + id
+			const owner = this.join_owner_of( id )
+			const tail = owner ? '/by=' + owner : ''
+			return location.origin + location.pathname + '#!join=' + id + tail
+		}
+
+		/** Создателя берём из ленда группы: у того, кто копирует ссылку, права
+		 * на неё есть. У групп, заведённых до появления явной записи о
+		 * создателе, её нет — там на него указывает полное управление лендом,
+		 * и такую ссылку может дать только он сам. */
+		join_owner_of( id: string ) {
+			const owner = this.dialog_owner( id )
+			if( owner ) return owner
+			return this.dialog_own( id ) ? this.my_lord() : ''
 		}
 
 		override join_link() {
@@ -3708,6 +3761,18 @@ namespace $.$$ {
 		/** Группа из адреса страницы: по такой ссылке просятся в группу. */
 		join_id() {
 			return this.$.$mol_state_arg.value( 'join' ) ?? ''
+		}
+
+		/** Создатель группы из адреса страницы. */
+		join_by() {
+			return this.$.$mol_state_arg.value( 'by' ) ?? ''
+		}
+
+		/** Ссылка без создателя: нести заявку некому, и молчать об этом нельзя —
+		 * иначе переход по ссылке выглядит как будто ничего не произошло. */
+		@$mol_mem
+		join_lost( next?: string ) {
+			return next ?? ''
 		}
 
 		/** Уже участнику показываем группу, остальным заводим заявку. Мусор
@@ -3726,20 +3791,28 @@ namespace $.$$ {
 		join_handle() {
 			const id = this.join_id()
 			if( !id ) return ''
-			$mol_wire_async( this ).join_request( id )
+			$mol_wire_async( this ).join_request( id, this.join_by() )
 			return id
 		}
 
-		/** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+		/** Параметры из адреса снимаем в любом случае: иначе перезагрузка
 		 * страницы просилась бы в ту же группу снова и снова. */
-		join_request( id: string ) {
+		join_request( id: string, by: string ) {
 
 			const plan = this.join_plan( id, this.my_lord(), this.dialog_ids().includes( id ) )
 
 			if( plan === 'open' ) this.dialog_select( id )
-			if( plan === 'ask' ) this.ask_send( id )
+
+			if( plan === 'ask' ) {
+				// Своими правами создателя пользуемся, только если ссылка о нём
+				// умолчала: в ней он приезжает от того, у кого права уже есть
+				const owner = by || this.join_owner_of( id )
+				this.join_lost( owner ? '' : id )
+				if( owner ) this.ask_send( id, owner )
+			}
 
 			this.$.$mol_state_arg.value( 'join', null )
+			this.$.$mol_state_arg.value( 'by', null )
 
 			return plan
 		}
@@ -3748,6 +3821,25 @@ namespace $.$$ {
 		 * же, что в отложенной доставке приглашений. */
 		ask_entry( group: string, lord: string, pass: string ) {
 			return group + '|' + lord + '|' + pass
+		}
+
+		/** Запись очереди: группа и лорд её создателя. Лорд оседает тут же,
+		 * потому что взять его больше неоткуда — ленд группы просящему не
+		 * читается, а очередь переживает перезагрузку страницы, после которой
+		 * от ссылки-приглашения уже ничего не остаётся. */
+		ask_task( group: string, owner: string ) {
+			return owner ? group + '|' + owner : group
+		}
+
+		ask_task_group( entry: string ) {
+			return String( entry ?? '' ).split( '|' )[ 0 ] ?? ''
+		}
+
+		/** У заявок, заведённых до появления лорда в записи, его нет: для них
+		 * остаётся прежний путь — прочитать создателя из ленда группы, если
+		 * права на неё за это время всё же выдали. */
+		ask_task_owner( entry: string ) {
+			return String( entry ?? '' ).split( '|' )[ 1 ] ?? ''
 		}
 
 		/** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
@@ -3766,17 +3858,16 @@ namespace $.$$ {
 		 * может не пройти. Повтор ничего не задваивает — ни очередь, ни
 		 * отправленное второй ссылки не примут. */
 		@$mol_action
-		ask_send( id: string ) {
+		ask_send( id: string, owner: string ) {
 
-			if( !id ) return null
+			if( !id || !owner ) return null
 
 			// По ссылке приходят сами: однажды убранная из своего списка группа
 			// не должна молча отказать во второй попытке в неё попасть
 			if( this.hidden_ids().includes( id ) ) this.dialogs_store().Hidden( 'auto' )!.cut( id )
 
-			if( this.ask_queued().includes( id ) ) return null
-			if( this.ask_sent().includes( id ) ) return null
-			this.dialogs_store().Asks( 'auto' )!.add( id )
+			if( this.ask_groups().includes( id ) ) return null
+			this.dialogs_store().Asks( 'auto' )!.add( this.ask_task( id, owner ) )
 
 			return null
 		}
@@ -3805,6 +3896,15 @@ namespace $.$$ {
 			}
 		}
 
+		/** Группы, в которые уже просимся — и те, что ждут отправки, и те, что
+		 * уже доехали. Записи очереди несут ещё и лорда, поэтому сравнивать с
+		 * ссылками на группы можно только их первую половину. */
+		@$mol_mem
+		ask_groups() {
+			const all = [ ... this.ask_queued(), ... this.ask_sent() ]
+			return all.map( entry => this.ask_task_group( entry ) )
+		}
+
 		/** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
 		 * что уже доехали. Принятая уходит отсюда сама: группа появляется в
 		 * списке диалогов, и записи там больше нечего ждать. */
@@ -3816,13 +3916,15 @@ namespace $.$$ {
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 			}
-			const all = new Set( [ ... this.ask_queued(), ... this.ask_sent() ] )
+			const all = new Set( this.ask_groups() )
 			return [ ... all ].filter( id => !have.has( id ) )
 		}
 
 		/** Ссылка привела к заявке, а не к группе: без этой строки экран после
-		 * перехода по ссылке просто молчал бы. */
+		 * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
+		 * так же, поэтому и о ней говорим прямо. */
 		override ask_plate_text() {
+			if( this.join_lost() ) return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую'
 			const count = this.ask_pending().length
 			if( !count ) return ''
 			if( count === 1 ) return 'Заявка отправлена — ждём, пока её примут'
@@ -3830,15 +3932,16 @@ namespace $.$$ {
 		}
 
 		override Ask_plate() {
-			return this.ask_pending().length ? super.Ask_plate() : null!
+			return this.ask_plate_text() ? super.Ask_plate() : null!
 		}
 
 		/** Заявку приняли: права на ленд группы приехали, и в списке участников
 		 * уже стоит мой идентификатор. Ленд без выданных прав не читается
 		 * вовсе — это обычное состояние ожидания, а не ошибка. */
-		ask_taken( id: string ) {
+		ask_taken( entry: string ) {
 
 			const store = this.dialogs_store()
+			const id = this.ask_task_group( entry )
 
 			try {
 				if( !this.dialog_lords( id ).includes( this.my_lord() ) ) return false
@@ -3851,8 +3954,8 @@ namespace $.$$ {
 				store.Dialogs( 'auto' )!.add( id )
 			}
 
-			store.Asks( 'auto' )!.cut( id )
-			store.Asked( 'auto' )!.cut( id )
+			store.Asks( 'auto' )!.cut( entry )
+			store.Asked( 'auto' )!.cut( entry )
 
 			return true
 		}
@@ -3871,7 +3974,7 @@ namespace $.$$ {
 			const sent = this.ask_sent()
 			if( !queued.length && !sent.length ) return 0
 
-			for( const id of sent ) this.ask_taken( id )
+			for( const task of sent ) this.ask_taken( task )
 
 			if( !queued.length ) return sent.length
 
@@ -3880,15 +3983,21 @@ namespace $.$$ {
 			const my = this.my_lord()
 			const store = this.dialogs_store()
 
-			for( const id of queued ) {
+			for( const task of queued ) {
 
-				if( this.ask_taken( id ) ) continue
+				if( this.ask_taken( task ) ) continue
 
 				try {
 
-					const owner = this.dialog_owner( id )
+					const id = this.ask_task_group( task )
+
+					// Записанный лорд важнее ленда группы: пока прав нет, ленд
+					// не читается, и спрашивать его о создателе бесполезно.
+					// Прочитать его удаётся только у старых записей — там лорда
+					// нет, зато права к этому времени могли и выдать
+					const owner = this.ask_task_owner( task ) || this.dialog_owner( id )
 					if( !owner ) {
-						store.Asks( 'auto' )!.cut( id )
+						store.Asks( 'auto' )!.cut( task )
 						continue
 					}
 
@@ -3905,8 +4014,8 @@ namespace $.$$ {
 					const delivered = ( inbox.Joins()?.items() ?? [] ).map( String ).includes( entry )
 					if( !delivered ) continue
 
-					store.Asked( 'auto' )!.add( id )
-					store.Asks( 'auto' )!.cut( id )
+					store.Asked( 'auto' )!.add( task )
+					store.Asks( 'auto' )!.cut( task )
 
 				} catch( error ) {
 					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
@@ -4129,12 +4238,14 @@ namespace $.$$ {
 
 		// ===== Автозапуск =====
 
+		/** Ленд заметок тут не заводим: он нужен не раньше первого клика по
+		 * строке избранного, а на старте список диалогов ещё в пути, и захват
+		 * попадал бы в окно, когда своей ссылки на него как бы нет. */
 		@$mol_mem
 		setup_ready() {
 			this.user_store()
 			this.inbox_land()
 			this.dialogs_land()
-			this.saved_land()
 			this.monitor_land()
 			this.device_ready()
 			return true

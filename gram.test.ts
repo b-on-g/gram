@@ -398,18 +398,25 @@ namespace $.$$ {
 
 		async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'( $ ) {
 
-			const app = $bog_gram.make({ $ })
-
 			const owner = await $.$giper_baza_auth.generate()
-			const group = new $giper_baza_link( owner.pass().lord().str + '_KJhgFdSa' ).str
+			const owner_lord = owner.pass().lord().str
+			const group = new $giper_baza_link( owner_lord + '_KJhgFdSa' ).str
 			const my = 'LordMine'
 
-			// Ссылка — адрес страницы с одной лишь ссылкой на ленд группы
+			const app = $bog_gram.make({ $, join_owner_of: ()=> owner_lord })
+
+			// В ссылке едут и ленд группы, и её создатель: заявку несут в его
+			// лобби, а из шифрованного ленда группы просящий его не узнает —
+			// прав на неё у него ещё нет, и ленд ему не читается вовсе
 			const location = $.$mol_dom_context.location
 			const uri = app.join_uri( group )
-			$mol_assert_equal( uri, location.origin + location.pathname + '#!join=' + group )
-			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!join=' + group )
+			$mol_assert_equal( uri, location.origin + location.pathname + '#!join=' + group + '/by=' + owner_lord )
+			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!join=' + group + '/by=' + owner_lord )
 			$mol_assert_equal( app.join_uri( '' ), '' )
+
+			// Создателя взять неоткуда — ссылка выходит прежней, куцей
+			const blind = $bog_gram.make({ $, join_owner_of: ()=> '' })
+			$mol_assert_equal( blind.join_uri( group ), location.origin + location.pathname + '#!join=' + group )
 
 			// Уже в группе — просто открываем, ещё нет — просимся
 			$mol_assert_equal( app.join_plan( group, my, true ), 'open' )
@@ -419,6 +426,28 @@ namespace $.$$ {
 			$mol_assert_equal( app.join_plan( '', my, false ), 'skip' )
 			$mol_assert_equal( app.join_plan( my, my, false ), 'skip' )
 			$mol_assert_equal( app.join_plan( 'не ссылка', my, false ), 'skip' )
+
+		},
+
+		async 'Запись очереди заявок помнит создателя группы'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			const group = 'AAAAAAAA_BBBBBBBB'
+			const owner = 'CCCCCCCC_DDDDDDDD'
+
+			// Очередь переживает перезагрузку страницы, а ссылка-приглашение
+			// нет: лорд создателя оседает в самой записи, иначе нести заявку
+			// станет некуда — ленд группы просящему не читается
+			const task = app.ask_task( group, owner )
+			$mol_assert_equal( task, group + '|' + owner )
+			$mol_assert_equal( app.ask_task_group( task ), group )
+			$mol_assert_equal( app.ask_task_owner( task ), owner )
+
+			// Заявки, заведённые до появления лорда в записи, читаются по-прежнему
+			$mol_assert_equal( app.ask_task( group, '' ), group )
+			$mol_assert_equal( app.ask_task_group( group ), group )
+			$mol_assert_equal( app.ask_task_owner( group ), '' )
 
 		},
 
@@ -884,6 +913,44 @@ namespace $.$$ {
 
 			// Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
 			$mol_assert_equal( session.Reads()?.key( 'LordMine' )?.Moment()?.val() ?? 0, 0 )
+
+		},
+
+		async 'Избранное собирается изо всех своих лендов'( $ ) {
+
+			const owner = $giper_baza_land.make({ $ })
+			const store = owner.Data( $bog_gram_dialogs )
+			const app = $bog_gram.make({ $, dialogs_store: ()=> store })
+
+			const first = 'AAAAAAAA_BBBBBBBB'
+			const second = 'CCCCCCCC_DDDDDDDD'
+
+			// Ленда заметок ещё нет: избранного нет ни у одной ссылки
+			$mol_assert_equal( app.saved_links().length, 0 )
+			$mol_assert_equal( app.saved_is( first ), false )
+
+			store.Saved_land( 'auto' )?.val( first )
+			store.Saved_lands( 'auto' )!.add( first )
+			$mol_assert_equal( app.saved_links().join(), first )
+
+			// Второе устройство успело завести своё избранное, пока список
+			// диалогов был в пути: ссылка указывает на него, но заброшенный
+			// ленд остаётся своим — иначе заметки из него пропали бы
+			store.Saved_lands( 'auto' )!.add( second )
+			store.Saved_land( 'auto' )?.val( second )
+
+			$mol_assert_equal( app.saved_is( first ), true )
+			$mol_assert_equal( app.saved_is( second ), true )
+			$mol_assert_equal( app.saved_is( 'DialogPlain' ), false )
+			$mol_assert_equal( app.saved_is( '' ), false )
+
+			// Читаем изо всех, а пишем в указанный — он идёт последним, и
+			// запись всегда уходит в последний отсек
+			const links = app.saved_links()
+			$mol_assert_equal( links.length, 2 )
+			$mol_assert_equal( links[ links.length - 1 ], second )
+			$mol_assert_equal( app.session_links_of( second ).join(), links.join() )
+			$mol_assert_equal( app.session_links_of( first ).join(), links.join() )
 
 		},
 
