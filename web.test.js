@@ -3542,7 +3542,7 @@ var $;
                 check('hi', [0x68, 0x69]);
             },
             "1B ASCII with diacritic"($) {
-                check('allo\u0302', [0x61, 0x6C, 0x6C, 0x6F, 0xEA]);
+                check('allo\u0300', [0x61, 0x6C, 0x6C, 0x6F, 0xE2]);
             },
             "1B Cyrillic"($) {
                 check('мир', [0x88, 0x3C, 0xE2, 0x40, 0xF8]);
@@ -3588,6 +3588,18 @@ var $;
                 const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Wrong byte');
                 $mol_assert_equal(error.cause.pos, 4);
                 $mol_assert_equal(error.cause.text, '🏴');
+            },
+            "Wrong 2B sequence length"($) {
+                const bin = new Uint8Array([0x78, 0xF9, 0x0E]);
+                const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Expected 2 bytes');
+                $mol_assert_equal(error.cause.pos, 2);
+                $mol_assert_equal(error.cause.text, 'x');
+            },
+            "Wrong 3B sequence length"($) {
+                const bin = new Uint8Array([0x78, 0xF7, 0x2F, 0x47]);
+                const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Expected 3 bytes');
+                $mol_assert_equal(error.cause.pos, 2);
+                $mol_assert_equal(error.cause.text, 'x');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
@@ -3802,9 +3814,9 @@ var $;
             },
             "vary pack Date"($) {
                 const date1 = new Date('2025-01-02T03:04:05');
-                check([date1], [tupl | 1, list | 1, text | 9, ...str('unix_time'), uint | L4, ...new Uint8Array(new Uint32Array([date1.valueOf() / 1000]).buffer)]);
+                check([date1], [tupl | 1, list | 1, text | $mol_vary_len.L1, 9, ...str('unix_time'), uint | L4, ...new Uint8Array(new Uint32Array([date1.valueOf() / 1000]).buffer)]);
                 const date2 = new Date('2025-01-02T03:04:05.678');
-                check([date2], [tupl | 1, list | 1, text | 9, ...str('unix_time'), fp64, ...new Uint8Array(new Float64Array([date2.valueOf() / 1000]).buffer)]);
+                check([date2], [tupl | 1, list | 1, text | $mol_vary_len.L1, 9, ...str('unix_time'), fp64, ...new Uint8Array(new Float64Array([date2.valueOf() / 1000]).buffer)]);
             },
             "vary pack DOM Element"($) {
                 $mol_assert_equal($mol_dom_serialize($mol_jsx("div", null,
@@ -7438,16 +7450,22 @@ var $;
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
             async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
-                const app = $bog_gram.make({ $ });
                 const owner = await $.$giper_baza_auth.generate();
-                const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
+                const owner_lord = owner.pass().lord().str;
+                const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
                 const my = 'LordMine';
-                // Ссылка — адрес страницы с одной лишь ссылкой на ленд группы
+                const app = $bog_gram.make({ $, join_owner_of: () => owner_lord });
+                // В ссылке едут и ленд группы, и её создатель: заявку несут в его
+                // лобби, а из шифрованного ленда группы просящий его не узнает —
+                // прав на неё у него ещё нет, и ленд ему не читается вовсе
                 const location = $.$mol_dom_context.location;
                 const uri = app.join_uri(group);
-                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group);
-                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group);
+                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group + '/by=' + owner_lord);
+                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group + '/by=' + owner_lord);
                 $mol_assert_equal(app.join_uri(''), '');
+                // Создателя взять неоткуда — ссылка выходит прежней, куцей
+                const blind = $bog_gram.make({ $, join_owner_of: () => '' });
+                $mol_assert_equal(blind.join_uri(group), location.origin + location.pathname + '#!join=' + group);
                 // Уже в группе — просто открываем, ещё нет — просимся
                 $mol_assert_equal(app.join_plan(group, my, true), 'open');
                 $mol_assert_equal(app.join_plan(group, my, false), 'ask');
@@ -7455,6 +7473,22 @@ var $;
                 $mol_assert_equal(app.join_plan('', my, false), 'skip');
                 $mol_assert_equal(app.join_plan(my, my, false), 'skip');
                 $mol_assert_equal(app.join_plan('не ссылка', my, false), 'skip');
+            },
+            async 'Запись очереди заявок помнит создателя группы'($) {
+                const app = $bog_gram.make({ $ });
+                const group = 'AAAAAAAA_BBBBBBBB';
+                const owner = 'CCCCCCCC_DDDDDDDD';
+                // Очередь переживает перезагрузку страницы, а ссылка-приглашение
+                // нет: лорд создателя оседает в самой записи, иначе нести заявку
+                // станет некуда — ленд группы просящему не читается
+                const task = app.ask_task(group, owner);
+                $mol_assert_equal(task, group + '|' + owner);
+                $mol_assert_equal(app.ask_task_group(task), group);
+                $mol_assert_equal(app.ask_task_owner(task), owner);
+                // Заявки, заведённые до появления лорда в записи, читаются по-прежнему
+                $mol_assert_equal(app.ask_task(group, ''), group);
+                $mol_assert_equal(app.ask_task_group(group), group);
+                $mol_assert_equal(app.ask_task_owner(group), '');
             },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
@@ -7791,6 +7825,35 @@ var $;
                 $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
                 // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
                 $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+            },
+            async 'Избранное собирается изо всех своих лендов'($) {
+                const owner = $giper_baza_land.make({ $ });
+                const store = owner.Data($bog_gram_dialogs);
+                const app = $bog_gram.make({ $, dialogs_store: () => store });
+                const first = 'AAAAAAAA_BBBBBBBB';
+                const second = 'CCCCCCCC_DDDDDDDD';
+                // Ленда заметок ещё нет: избранного нет ни у одной ссылки
+                $mol_assert_equal(app.saved_links().length, 0);
+                $mol_assert_equal(app.saved_is(first), false);
+                store.Saved_land('auto')?.val(first);
+                store.Saved_lands('auto').add(first);
+                $mol_assert_equal(app.saved_links().join(), first);
+                // Второе устройство успело завести своё избранное, пока список
+                // диалогов был в пути: ссылка указывает на него, но заброшенный
+                // ленд остаётся своим — иначе заметки из него пропали бы
+                store.Saved_lands('auto').add(second);
+                store.Saved_land('auto')?.val(second);
+                $mol_assert_equal(app.saved_is(first), true);
+                $mol_assert_equal(app.saved_is(second), true);
+                $mol_assert_equal(app.saved_is('DialogPlain'), false);
+                $mol_assert_equal(app.saved_is(''), false);
+                // Читаем изо всех, а пишем в указанный — он идёт последним, и
+                // запись всегда уходит в последний отсек
+                const links = app.saved_links();
+                $mol_assert_equal(links.length, 2);
+                $mol_assert_equal(links[links.length - 1], second);
+                $mol_assert_equal(app.session_links_of(second).join(), links.join());
+                $mol_assert_equal(app.session_links_of(first).join(), links.join());
             },
             async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
                 const king = await $.$giper_baza_auth.generate();

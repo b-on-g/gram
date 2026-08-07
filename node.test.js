@@ -13296,7 +13296,7 @@ var $;
         let page_offset = 0;
         const read_code = () => {
             let code = buffer[pos++];
-            if (code > 0x80)
+            if (code >= 0x80)
                 code = ((mode + code) & 0x7F) | 0x80;
             return code;
         };
@@ -13312,17 +13312,23 @@ var $;
             let code = read_code();
             if (code < full_mode) { // Char Code
                 if (mode === tiny_mode) {
-                    if (code > 0x80) {
+                    if (code >= 0x80) {
                         code = diacr_set[code - 0x080] | (6 << 7);
                     }
                 }
                 else if (!ascii_map[code]) {
                     if (code >= 0x80)
                         code = ascii_set[code - 0x80];
-                    if (mode < tiny_mode)
+                    if (mode < tiny_mode) {
+                        if (pos === buffer.length)
+                            $mol_fail(new Error('Expected 2 bytes', { cause: { text, pos: pos - 1 } }));
                         code |= read_remap() << 7;
-                    if (mode === full_mode)
+                    }
+                    if (mode === full_mode) {
+                        if (pos === buffer.length)
+                            $mol_fail(new Error('Expected 3 bytes', { cause: { text, pos: pos - 2 } }));
                         code |= read_remap() << 14;
+                    }
                     code += page_offset;
                 }
                 text += String.fromCodePoint(code);
@@ -13567,7 +13573,7 @@ var $;
                 const offset = offsets.get(val);
                 if (offset !== undefined)
                     return dump_unum($mol_vary_tip.link, offset);
-                const len_max = val.length * 3;
+                const len_max = val.length * 3 + 2;
                 const len_size = calc_size(len_max);
                 acquire(len_max);
                 const len = $mol_charset_ucf_encode_to(val, this.array, pos + len_size);
@@ -22926,6 +22932,13 @@ var $;
             Registries: $giper_baza_list_str,
             /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
             Saved_land: $giper_baza_atom_text,
+            /** Все заведённые ленды заметок. Ссылка выше — одна, и в ней побеждает
+             * та запись, что легла позже: два устройства, заведя избранное каждое
+             * своё (список диалогов приезжает не мгновенно, и пустая ссылка на нём
+             * выглядит как «ленда ещё нет»), проигравшую ссылку потеряли бы вместе
+             * со всеми заметками. Список же сливается, а не перетирается —
+             * читаем изо всех лендов, пишем в тот, на который указывает ссылка */
+            Saved_lands: $giper_baza_list_str,
             /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
             Archived: $giper_baza_list_str,
             /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
@@ -24016,7 +24029,12 @@ var $;
             /** Заметки для себя лежат в приватном шифрованном ленде, как и список
              * диалогов: ссылка на него хранится там же, а не в открытом профиле.
              * Захват небыстрый, и клик по строке может позвать сюда второй раз —
-             * поэтому уже записанная ссылка всегда важнее только что захваченной. */
+             * поэтому уже записанная ссылка всегда важнее только что захваченной.
+             *
+             * Заводим ленд только отсюда, то есть по явному клику: список диалогов
+             * приезжает не мгновенно, и на свежем устройстве пустая ссылка какое-то
+             * время выглядит как «ленда ещё нет». Захват на старте приложения
+             * попадал в это окно всегда. */
             saved_land_make() {
                 const land = this.$.$giper_baza_glob.land_grab([
                     [null, $giper_baza_rank_deny],
@@ -24024,7 +24042,9 @@ var $;
                 const str = this.dialogs_store().Saved_land()?.val();
                 if (str)
                     return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-                this.dialogs_store().Saved_land('auto')?.val(land.link().str);
+                const link = land.link().str;
+                this.dialogs_store().Saved_land('auto')?.val(link);
+                this.dialogs_store().Saved_lands('auto').add(link);
                 return land;
             }
             saved_land() {
@@ -24038,12 +24058,35 @@ var $;
             saved_id() {
                 return String(this.dialogs_store().Saved_land()?.val() ?? '');
             }
+            /** Все ленды заметок, какие про этот аккаунт известны, и указанный
+             * последним. Их больше одного, если избранное успело завестись на двух
+             * устройствах сразу: заметки при этом разъезжаются по разным лендам, и
+             * терять один из них только потому, что ссылка указывает на другой,
+             * незачем — читаем изо всех, а пишем всегда в указанный. */
+            saved_links() {
+                const current = this.saved_id();
+                let all = [];
+                try {
+                    all = (this.dialogs_store().Saved_lands()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                const rest = all.filter(link => link && link !== current);
+                return current ? [...rest, current] : rest;
+            }
             /** Единственная развилка на всё приложение: у избранного нет собеседника,
              * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
-             * в превью ему не полагается. */
+             * в превью ему не полагается.
+             *
+             * Заброшенный ленд заметок остаётся избранным наравне с указанным:
+             * иначе открытая с него страница схлопывалась бы сама, а отправка с
+             * неё молча ничего не делала. */
             saved_is(id) {
-                const saved = this.saved_id();
-                return Boolean(saved) && id === saved;
+                if (!id)
+                    return false;
+                return this.saved_links().includes(id);
             }
             saved_title() {
                 return saved_name;
@@ -24051,8 +24094,11 @@ var $;
             /** На новом устройстве ленд избранного приезжает не мгновенно: пока он
              * в пути, строка стоит с пустым превью, а не вешает весь список. */
             saved_preview() {
+                const id = this.saved_id();
+                if (!id)
+                    return '';
                 try {
-                    return this.dialog_preview(this.saved_id());
+                    return this.dialog_preview(id);
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -24061,8 +24107,11 @@ var $;
                 }
             }
             saved_time() {
+                const id = this.saved_id();
+                if (!id)
+                    return '';
                 try {
-                    return this.dialog_time(this.saved_id());
+                    return this.dialog_time(id);
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -25773,7 +25822,7 @@ var $;
                 if (!id)
                     return [];
                 if (this.saved_is(id))
-                    return [this.saved_land().link().str];
+                    return this.saved_links();
                 return (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
             }
             session_land_by(link) {
@@ -27030,16 +27079,32 @@ var $;
                 return plan;
             }
             // ===== Ссылка-приглашение в группу =====
-            /** Приглашение в группу — адрес страницы с одной лишь ссылкой на её
-             * ленд: остальные параметры (свой мастер, открытый реестр) чужому
-             * человеку не нужны. Вступить по ней мгновенно нельзя — ленд группы
-             * шифрованный, и ключ от него заворачивается на ключ конкретного
-             * человека тем, у кого есть права. Поэтому ссылка ведёт к заявке. */
+            /** Приглашение в группу — адрес страницы со ссылкой на её ленд и лордом
+             * создателя. Вступить по ней мгновенно нельзя: ленд группы шифрованный,
+             * и ключ от него заворачивается на ключ конкретного человека тем, у
+             * кого есть права. Поэтому ссылка ведёт к заявке.
+             *
+             * Создатель едет вторым параметром, и без него ссылка бесполезна:
+             * заявку несут в его лобби, а взять его из ленда группы просящему
+             * неоткуда — прав на неё у него ещё нет, и ленд ему не читается вовсе.
+             * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны. */
             join_uri(id) {
                 if (!id)
                     return '';
                 const location = this.$.$mol_dom_context.location;
-                return location.origin + location.pathname + '#!join=' + id;
+                const owner = this.join_owner_of(id);
+                const tail = owner ? '/by=' + owner : '';
+                return location.origin + location.pathname + '#!join=' + id + tail;
+            }
+            /** Создателя берём из ленда группы: у того, кто копирует ссылку, права
+             * на неё есть. У групп, заведённых до появления явной записи о
+             * создателе, её нет — там на него указывает полное управление лендом,
+             * и такую ссылку может дать только он сам. */
+            join_owner_of(id) {
+                const owner = this.dialog_owner(id);
+                if (owner)
+                    return owner;
+                return this.dialog_own(id) ? this.my_lord() : '';
             }
             join_link() {
                 return this.join_uri(this.dialog_active());
@@ -27047,6 +27112,15 @@ var $;
             /** Группа из адреса страницы: по такой ссылке просятся в группу. */
             join_id() {
                 return this.$.$mol_state_arg.value('join') ?? '';
+            }
+            /** Создатель группы из адреса страницы. */
+            join_by() {
+                return this.$.$mol_state_arg.value('by') ?? '';
+            }
+            /** Ссылка без создателя: нести заявку некому, и молчать об этом нельзя —
+             * иначе переход по ссылке выглядит как будто ничего не произошло. */
+            join_lost(next) {
+                return next ?? '';
             }
             /** Уже участнику показываем группу, остальным заводим заявку. Мусор
              * вместо ссылки отсеиваем сразу: заявка в несуществующую группу
@@ -27066,24 +27140,47 @@ var $;
                 const id = this.join_id();
                 if (!id)
                     return '';
-                $mol_wire_async(this).join_request(id);
+                $mol_wire_async(this).join_request(id, this.join_by());
                 return id;
             }
-            /** Параметр из адреса снимаем в любом случае: иначе перезагрузка
+            /** Параметры из адреса снимаем в любом случае: иначе перезагрузка
              * страницы просилась бы в ту же группу снова и снова. */
-            join_request(id) {
+            join_request(id, by) {
                 const plan = this.join_plan(id, this.my_lord(), this.dialog_ids().includes(id));
                 if (plan === 'open')
                     this.dialog_select(id);
-                if (plan === 'ask')
-                    this.ask_send(id);
+                if (plan === 'ask') {
+                    // Своими правами создателя пользуемся, только если ссылка о нём
+                    // умолчала: в ней он приезжает от того, у кого права уже есть
+                    const owner = by || this.join_owner_of(id);
+                    this.join_lost(owner ? '' : id);
+                    if (owner)
+                        this.ask_send(id, owner);
+                }
                 this.$.$mol_state_arg.value('join', null);
+                this.$.$mol_state_arg.value('by', null);
                 return plan;
             }
             /** Запись заявки: группа, лорд просящего и его ключ. Разделитель тот
              * же, что в отложенной доставке приглашений. */
             ask_entry(group, lord, pass) {
                 return group + '|' + lord + '|' + pass;
+            }
+            /** Запись очереди: группа и лорд её создателя. Лорд оседает тут же,
+             * потому что взять его больше неоткуда — ленд группы просящему не
+             * читается, а очередь переживает перезагрузку страницы, после которой
+             * от ссылки-приглашения уже ничего не остаётся. */
+            ask_task(group, owner) {
+                return owner ? group + '|' + owner : group;
+            }
+            ask_task_group(entry) {
+                return String(entry ?? '').split('|')[0] ?? '';
+            }
+            /** У заявок, заведённых до появления лорда в записи, его нет: для них
+             * остаётся прежний путь — прочитать создателя из ленда группы, если
+             * права на неё за это время всё же выдали. */
+            ask_task_owner(entry) {
+                return String(entry ?? '').split('|')[1] ?? '';
             }
             /** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
              * с заявками: разбор отвергает всё, что не сходится по числу частей
@@ -27101,18 +27198,16 @@ var $;
              * писать в чужое лобби приезжает не сразу, и с первого раза запись
              * может не пройти. Повтор ничего не задваивает — ни очередь, ни
              * отправленное второй ссылки не примут. */
-            ask_send(id) {
-                if (!id)
+            ask_send(id, owner) {
+                if (!id || !owner)
                     return null;
                 // По ссылке приходят сами: однажды убранная из своего списка группа
                 // не должна молча отказать во второй попытке в неё попасть
                 if (this.hidden_ids().includes(id))
                     this.dialogs_store().Hidden('auto').cut(id);
-                if (this.ask_queued().includes(id))
+                if (this.ask_groups().includes(id))
                     return null;
-                if (this.ask_sent().includes(id))
-                    return null;
-                this.dialogs_store().Asks('auto').add(id);
+                this.dialogs_store().Asks('auto').add(this.ask_task(id, owner));
                 return null;
             }
             /** Свой приватный ленд шифрованный и на новом устройстве приезжает не
@@ -27139,6 +27234,13 @@ var $;
                     return [];
                 }
             }
+            /** Группы, в которые уже просимся — и те, что ждут отправки, и те, что
+             * уже доехали. Записи очереди несут ещё и лорда, поэтому сравнивать с
+             * ссылками на группы можно только их первую половину. */
+            ask_groups() {
+                const all = [...this.ask_queued(), ...this.ask_sent()];
+                return all.map(entry => this.ask_task_group(entry));
+            }
             /** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
              * что уже доехали. Принятая уходит отсюда сама: группа появляется в
              * списке диалогов, и записи там больше нечего ждать. */
@@ -27151,12 +27253,15 @@ var $;
                     if (!$mol_promise_like(error))
                         $mol_fail_log(error);
                 }
-                const all = new Set([...this.ask_queued(), ...this.ask_sent()]);
+                const all = new Set(this.ask_groups());
                 return [...all].filter(id => !have.has(id));
             }
             /** Ссылка привела к заявке, а не к группе: без этой строки экран после
-             * перехода по ссылке просто молчал бы. */
+             * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
+             * так же, поэтому и о ней говорим прямо. */
             ask_plate_text() {
+                if (this.join_lost())
+                    return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
                 const count = this.ask_pending().length;
                 if (!count)
                     return '';
@@ -27165,13 +27270,14 @@ var $;
                 return 'Заявок отправлено: ' + count + ' — ждём, пока их примут';
             }
             Ask_plate() {
-                return this.ask_pending().length ? super.Ask_plate() : null;
+                return this.ask_plate_text() ? super.Ask_plate() : null;
             }
             /** Заявку приняли: права на ленд группы приехали, и в списке участников
              * уже стоит мой идентификатор. Ленд без выданных прав не читается
              * вовсе — это обычное состояние ожидания, а не ошибка. */
-            ask_taken(id) {
+            ask_taken(entry) {
                 const store = this.dialogs_store();
+                const id = this.ask_task_group(entry);
                 try {
                     if (!this.dialog_lords(id).includes(this.my_lord()))
                         return false;
@@ -27184,8 +27290,8 @@ var $;
                 if (!this.dialog_ids().includes(id) && !this.hidden_ids().includes(id)) {
                     store.Dialogs('auto').add(id);
                 }
-                store.Asks('auto').cut(id);
-                store.Asked('auto').cut(id);
+                store.Asks('auto').cut(entry);
+                store.Asked('auto').cut(entry);
                 return true;
             }
             /** Доставка заявок. Повторами ретраится только очередь: право писать в
@@ -27200,20 +27306,25 @@ var $;
                 const sent = this.ask_sent();
                 if (!queued.length && !sent.length)
                     return 0;
-                for (const id of sent)
-                    this.ask_taken(id);
+                for (const task of sent)
+                    this.ask_taken(task);
                 if (!queued.length)
                     return sent.length;
                 this.$.$mol_state_time.now(3000);
                 const my = this.my_lord();
                 const store = this.dialogs_store();
-                for (const id of queued) {
-                    if (this.ask_taken(id))
+                for (const task of queued) {
+                    if (this.ask_taken(task))
                         continue;
                     try {
-                        const owner = this.dialog_owner(id);
+                        const id = this.ask_task_group(task);
+                        // Записанный лорд важнее ленда группы: пока прав нет, ленд
+                        // не читается, и спрашивать его о создателе бесполезно.
+                        // Прочитать его удаётся только у старых записей — там лорда
+                        // нет, зато права к этому времени могли и выдать
+                        const owner = this.ask_task_owner(task) || this.dialog_owner(id);
                         if (!owner) {
-                            store.Asks('auto').cut(id);
+                            store.Asks('auto').cut(task);
                             continue;
                         }
                         const inbox_link = this.peer_store(owner).Inbox_land()?.val();
@@ -27227,8 +27338,8 @@ var $;
                         const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
                         if (!delivered)
                             continue;
-                        store.Asked('auto').add(id);
-                        store.Asks('auto').cut(id);
+                        store.Asked('auto').add(task);
+                        store.Asks('auto').cut(task);
                     }
                     catch (error) {
                         if ($mol_promise_like(error))
@@ -27404,11 +27515,13 @@ var $;
                 return true;
             }
             // ===== Автозапуск =====
+            /** Ленд заметок тут не заводим: он нужен не раньше первого клика по
+             * строке избранного, а на старте список диалогов ещё в пути, и захват
+             * попадал бы в окно, когда своей ссылки на него как бы нет. */
             setup_ready() {
                 this.user_store();
                 this.inbox_land();
                 this.dialogs_land();
-                this.saved_land();
                 this.monitor_land();
                 this.device_ready();
                 return true;
@@ -27537,6 +27650,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "saved_id", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "saved_links", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "saved_preview", null);
@@ -28117,6 +28233,9 @@ var $;
         ], $bog_gram.prototype, "invite_handle", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "join_lost", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "join_handle", null);
         __decorate([
             $mol_action
@@ -28127,6 +28246,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "ask_sent", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_groups", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "ask_pending", null);
@@ -35025,7 +35147,7 @@ var $;
                 check('hi', [0x68, 0x69]);
             },
             "1B ASCII with diacritic"($) {
-                check('allo\u0302', [0x61, 0x6C, 0x6C, 0x6F, 0xEA]);
+                check('allo\u0300', [0x61, 0x6C, 0x6C, 0x6F, 0xE2]);
             },
             "1B Cyrillic"($) {
                 check('мир', [0x88, 0x3C, 0xE2, 0x40, 0xF8]);
@@ -35071,6 +35193,18 @@ var $;
                 const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Wrong byte');
                 $mol_assert_equal(error.cause.pos, 4);
                 $mol_assert_equal(error.cause.text, '🏴');
+            },
+            "Wrong 2B sequence length"($) {
+                const bin = new Uint8Array([0x78, 0xF9, 0x0E]);
+                const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Expected 2 bytes');
+                $mol_assert_equal(error.cause.pos, 2);
+                $mol_assert_equal(error.cause.text, 'x');
+            },
+            "Wrong 3B sequence length"($) {
+                const bin = new Uint8Array([0x78, 0xF7, 0x2F, 0x47]);
+                const error = $mol_assert_fail(() => $mol_charset_ucf_decode(bin), 'Expected 3 bytes');
+                $mol_assert_equal(error.cause.pos, 2);
+                $mol_assert_equal(error.cause.text, 'x');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
@@ -35285,9 +35419,9 @@ var $;
             },
             "vary pack Date"($) {
                 const date1 = new Date('2025-01-02T03:04:05');
-                check([date1], [tupl | 1, list | 1, text | 9, ...str('unix_time'), uint | L4, ...new Uint8Array(new Uint32Array([date1.valueOf() / 1000]).buffer)]);
+                check([date1], [tupl | 1, list | 1, text | $mol_vary_len.L1, 9, ...str('unix_time'), uint | L4, ...new Uint8Array(new Uint32Array([date1.valueOf() / 1000]).buffer)]);
                 const date2 = new Date('2025-01-02T03:04:05.678');
-                check([date2], [tupl | 1, list | 1, text | 9, ...str('unix_time'), fp64, ...new Uint8Array(new Float64Array([date2.valueOf() / 1000]).buffer)]);
+                check([date2], [tupl | 1, list | 1, text | $mol_vary_len.L1, 9, ...str('unix_time'), fp64, ...new Uint8Array(new Float64Array([date2.valueOf() / 1000]).buffer)]);
             },
             "vary pack DOM Element"($) {
                 $mol_assert_equal($mol_dom_serialize($mol_jsx("div", null,
@@ -38356,16 +38490,22 @@ var $;
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
             async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
-                const app = $bog_gram.make({ $ });
                 const owner = await $.$giper_baza_auth.generate();
-                const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
+                const owner_lord = owner.pass().lord().str;
+                const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
                 const my = 'LordMine';
-                // Ссылка — адрес страницы с одной лишь ссылкой на ленд группы
+                const app = $bog_gram.make({ $, join_owner_of: () => owner_lord });
+                // В ссылке едут и ленд группы, и её создатель: заявку несут в его
+                // лобби, а из шифрованного ленда группы просящий его не узнает —
+                // прав на неё у него ещё нет, и ленд ему не читается вовсе
                 const location = $.$mol_dom_context.location;
                 const uri = app.join_uri(group);
-                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group);
-                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group);
+                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group + '/by=' + owner_lord);
+                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group + '/by=' + owner_lord);
                 $mol_assert_equal(app.join_uri(''), '');
+                // Создателя взять неоткуда — ссылка выходит прежней, куцей
+                const blind = $bog_gram.make({ $, join_owner_of: () => '' });
+                $mol_assert_equal(blind.join_uri(group), location.origin + location.pathname + '#!join=' + group);
                 // Уже в группе — просто открываем, ещё нет — просимся
                 $mol_assert_equal(app.join_plan(group, my, true), 'open');
                 $mol_assert_equal(app.join_plan(group, my, false), 'ask');
@@ -38373,6 +38513,22 @@ var $;
                 $mol_assert_equal(app.join_plan('', my, false), 'skip');
                 $mol_assert_equal(app.join_plan(my, my, false), 'skip');
                 $mol_assert_equal(app.join_plan('не ссылка', my, false), 'skip');
+            },
+            async 'Запись очереди заявок помнит создателя группы'($) {
+                const app = $bog_gram.make({ $ });
+                const group = 'AAAAAAAA_BBBBBBBB';
+                const owner = 'CCCCCCCC_DDDDDDDD';
+                // Очередь переживает перезагрузку страницы, а ссылка-приглашение
+                // нет: лорд создателя оседает в самой записи, иначе нести заявку
+                // станет некуда — ленд группы просящему не читается
+                const task = app.ask_task(group, owner);
+                $mol_assert_equal(task, group + '|' + owner);
+                $mol_assert_equal(app.ask_task_group(task), group);
+                $mol_assert_equal(app.ask_task_owner(task), owner);
+                // Заявки, заведённые до появления лорда в записи, читаются по-прежнему
+                $mol_assert_equal(app.ask_task(group, ''), group);
+                $mol_assert_equal(app.ask_task_group(group), group);
+                $mol_assert_equal(app.ask_task_owner(group), '');
             },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
@@ -38709,6 +38865,35 @@ var $;
                 $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
                 // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
                 $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+            },
+            async 'Избранное собирается изо всех своих лендов'($) {
+                const owner = $giper_baza_land.make({ $ });
+                const store = owner.Data($bog_gram_dialogs);
+                const app = $bog_gram.make({ $, dialogs_store: () => store });
+                const first = 'AAAAAAAA_BBBBBBBB';
+                const second = 'CCCCCCCC_DDDDDDDD';
+                // Ленда заметок ещё нет: избранного нет ни у одной ссылки
+                $mol_assert_equal(app.saved_links().length, 0);
+                $mol_assert_equal(app.saved_is(first), false);
+                store.Saved_land('auto')?.val(first);
+                store.Saved_lands('auto').add(first);
+                $mol_assert_equal(app.saved_links().join(), first);
+                // Второе устройство успело завести своё избранное, пока список
+                // диалогов был в пути: ссылка указывает на него, но заброшенный
+                // ленд остаётся своим — иначе заметки из него пропали бы
+                store.Saved_lands('auto').add(second);
+                store.Saved_land('auto')?.val(second);
+                $mol_assert_equal(app.saved_is(first), true);
+                $mol_assert_equal(app.saved_is(second), true);
+                $mol_assert_equal(app.saved_is('DialogPlain'), false);
+                $mol_assert_equal(app.saved_is(''), false);
+                // Читаем изо всех, а пишем в указанный — он идёт последним, и
+                // запись всегда уходит в последний отсек
+                const links = app.saved_links();
+                $mol_assert_equal(links.length, 2);
+                $mol_assert_equal(links[links.length - 1], second);
+                $mol_assert_equal(app.session_links_of(second).join(), links.join());
+                $mol_assert_equal(app.session_links_of(first).join(), links.join());
             },
             async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
                 const king = await $.$giper_baza_auth.generate();
