@@ -3905,30 +3905,53 @@ namespace $.$$ {
 			return all.map( entry => this.ask_task_group( entry ) )
 		}
 
-		/** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
-		 * что уже доехали. Принятая уходит отсюда сама: группа появляется в
-		 * списке диалогов, и записи там больше нечего ждать. */
-		@$mol_mem
-		ask_pending() {
+		/** Заявки, на которые ещё не ответили. Принятая уходит отсюда сама:
+		 * группа появляется в списке диалогов, и записи там больше нечего
+		 * ждать. */
+		ask_waiting( entries: readonly string[] ) {
+
 			let have = new Set< string >()
 			try {
 				have = new Set( this.dialog_ids() )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 			}
-			const all = new Set( this.ask_groups() )
+
+			const all = new Set( entries.map( entry => this.ask_task_group( entry ) ) )
 			return [ ... all ].filter( id => !have.has( id ) )
+		}
+
+		@$mol_mem
+		ask_pending_queued() {
+			return this.ask_waiting( this.ask_queued() )
+		}
+
+		@$mol_mem
+		ask_pending_sent() {
+			return this.ask_waiting( this.ask_sent() )
 		}
 
 		/** Ссылка привела к заявке, а не к группе: без этой строки экран после
 		 * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
-		 * так же, поэтому и о ней говорим прямо. */
+		 * так же, поэтому и о ней говорим прямо.
+		 *
+		 * Отправку и отправленное разводим: запись в чужое лобби идёт с
+		 * перебором подписей и занимает время. Пока она не доехала, обещать
+		 * «отправлена» нельзя — человек пойдёт спрашивать у владельца группы,
+		 * а у того ещё пусто, и оба решат, что сломалось. */
 		override ask_plate_text() {
+
 			if( this.join_lost() ) return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую'
-			const count = this.ask_pending().length
-			if( !count ) return ''
-			if( count === 1 ) return 'Заявка отправлена — ждём, пока её примут'
-			return 'Заявок отправлено: ' + count + ' — ждём, пока их примут'
+
+			const queued = this.ask_pending_queued().length
+			if( queued === 1 ) return 'Заявка отправляется — это не мгновенно'
+			if( queued ) return 'Отправляется заявок: ' + queued
+
+			const sent = this.ask_pending_sent().length
+			if( sent === 1 ) return 'Заявка отправлена — ждём, пока её примут'
+			if( sent ) return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут'
+
+			return ''
 		}
 
 		override Ask_plate() {
