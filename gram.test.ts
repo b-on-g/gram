@@ -475,6 +475,67 @@ namespace $.$$ {
 
 		},
 
+		async 'Отказ доезжает до просящего и снимает заявку'( $ ) {
+
+			const lobby = $giper_baza_land.make({ $ })
+			const private_land = $giper_baza_land.make({ $ })
+
+			const inbox = lobby.Data( $bog_gram_inbox )
+			const store = private_land.Data( $bog_gram_dialogs )
+
+			const app = $bog_gram.make({ $, inbox_store: ()=> inbox, dialogs_store: ()=> store })
+
+			const group = 'AAAAAAAA_BBBBBBBB'
+			const owner = 'CCCCCCCC_DDDDDDDD'
+			const task = app.ask_task( group, owner )
+
+			store.Asked( 'auto' )!.add( task )
+			$mol_assert_equal( app.ask_plate_text(), 'Заявка отправлена — ждём, пока её примут' )
+
+			// Решение приезжает в лобби просящего: снятая у себя запись ему
+			// никакого следа не оставляет, и заявка висела бы вечно
+			inbox.Denies( 'auto' )!.add( group )
+			app.denies_merge()
+
+			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 0 )
+			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).length, 0 )
+			$mol_assert_equal( app.ask_denied().join(), group )
+			$mol_assert_equal( app.ask_plate_text(), 'Заявку отклонили — попроситься снова можно по той же ссылке' )
+
+			// Отказ не бан: по той же ссылке просимся снова, отметка снимается
+			app.ask_send( group, owner )
+			$mol_assert_equal( app.ask_denied().length, 0 )
+			$mol_assert_equal( ( store.Asks()!.items() as readonly string[] ).map( String ).join(), task )
+			$mol_assert_equal( app.ask_plate_text(), 'Заявка отправляется — это не мгновенно' )
+
+		},
+
+		async 'Чужой отказ снимает только свою заявку'( $ ) {
+
+			const lobby = $giper_baza_land.make({ $ })
+			const private_land = $giper_baza_land.make({ $ })
+
+			const inbox = lobby.Data( $bog_gram_inbox )
+			const store = private_land.Data( $bog_gram_dialogs )
+
+			const app = $bog_gram.make({ $, inbox_store: ()=> inbox, dialogs_store: ()=> store })
+
+			const mine = app.ask_task( 'AAAAAAAA_BBBBBBBB', 'CCCCCCCC_DDDDDDDD' )
+			store.Asked( 'auto' )!.add( mine )
+
+			// Лобби открыто на запись всем, поэтому туда кладут что попало:
+			// заявку снимаем только по той группе, куда сами просились
+			inbox.Denies( 'auto' )!.add( 'EEEEEEEE_FFFFFFFF' )
+			app.denies_merge()
+
+			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 1 )
+			$mol_assert_equal( app.ask_denied().length, 0 )
+
+			// Мусор в лобби всё равно убираем: иначе он копился бы там навсегда
+			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).length, 0 )
+
+		},
+
 		async 'Заявка в группу: запись собирается и разбирается'( $ ) {
 
 			const app = $bog_gram.make({ $ })
