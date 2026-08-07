@@ -22931,6 +22931,11 @@ var $;
              * туда снова. Запись держится тут, пока не выдадут права, — по ней же
              * рисуется «ждём подтверждения» */
             Asked: $giper_baza_list_str,
+            /** Группы, по заявкам в которые пришёл отказ. Держим их тут, а не в
+             * лобби: запись из лобби снимается сразу, а сказать о решении надо —
+             * иначе заявка просто исчезнет с экрана без объяснений. Повторный
+             * переход по ссылке эту отметку снимает: отказ не бан */
+            Denied: $giper_baza_list_str,
             /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             Hidden: $giper_baza_list_str,
             /** Собеседники, с которыми владелец согласился переписываться: их диалоги
@@ -22978,6 +22983,14 @@ var $;
              * под чужой идентификатор это не даёт — идентификатор его хеш, и
              * подмена ловится пересчётом на месте. */
             Joins: $giper_baza_list_str,
+            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
+             * не оставляет просившему никакого следа, и она висела бы у него
+             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
+             * писать в чужое лобби есть у всех, им и пользуемся.
+             *
+             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
+             * по той же ссылке можно попроситься снова. */
+            Denies: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_inbox = $bog_gram_inbox;
@@ -25685,14 +25698,47 @@ var $;
                 $mol_wire_async(this).ask_apply(entry);
                 return null;
             }
-            /** Отказ — снятие записи из своего лобби. Повторную заявку от того же
-             * человека это не блокирует: отказ не бан, а просто нерешение. */
+            /** Отказ — тоже криптография с перебором степеней: решение уезжает в
+             * лобби просящего, а туда пишут с работой. Поэтому в фибру. */
             ask_reject(entry, next) {
                 next?.stopPropagation();
                 if (!entry)
                     return null;
-                this.ask_forget(entry);
+                $mol_wire_async(this).ask_deny(entry);
                 return null;
+            }
+            /** Снять запись из своего лобби мало: у просившего заявка так и висела
+             * бы «ждём, пока примут» — отказ не оставляет никакого следа, а
+             * отсутствие записи в лобби и «лобби ещё не приехало» с его стороны
+             * неотличимы. Поэтому решение кладём ему прямо в лобби, открытое на
+             * запись всем. Своё чистим уже после доставки: пока она идёт, строка
+             * заявки остаётся на экране.
+             *
+             * Повторную заявку это не блокирует: отказ не бан, а нерешение. */
+            ask_deny(entry) {
+                const ask = this.ask_parse(entry);
+                if (!ask) {
+                    this.ask_forget(entry);
+                    return '';
+                }
+                try {
+                    const inbox_link = this.peer_store(ask.lord).Inbox_land()?.val();
+                    // Лобби у просящего может быть ещё не заведено — сказать ему
+                    // нечем, но и держать заявку у себя из-за этого незачем
+                    if (inbox_link) {
+                        this.$.$giper_baza_glob
+                            .Land(new $giper_baza_link(String(inbox_link)))
+                            .Data($bog_gram_inbox)
+                            .Denies('auto').add(ask.group);
+                    }
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+                this.ask_forget(entry);
+                return ask.group;
             }
             /** Обработанную заявку убираем из лобби, чтобы они не копились. Лобби
              * моё, я его король — снять из него запись есть чем. */
@@ -27214,6 +27260,10 @@ var $;
                 // не должна молча отказать во второй попытке в неё попасть
                 if (this.hidden_ids().includes(id))
                     this.dialogs_store().Hidden('auto').cut(id);
+                // Отказ не бан: пришли по ссылке снова — снимаем прошлое решение,
+                // иначе плашка так и говорила бы про отклонённую заявку
+                if (this.ask_denied().includes(id))
+                    this.dialogs_store().Denied('auto').cut(id);
                 if (this.ask_groups().includes(id))
                     return null;
                 this.dialogs_store().Asks('auto').add(this.ask_task(id, owner));
@@ -27271,6 +27321,50 @@ var $;
             ask_pending_sent() {
                 return this.ask_waiting(this.ask_sent());
             }
+            ask_denied() {
+                try {
+                    return (this.dialogs_store().Denied()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return [];
+                }
+            }
+            /** Отказы, доехавшие в моё лобби. Лобби открыто на запись всем, поэтому
+             * запись туда может положить кто угодно: заявку снимаем только если
+             * сами в эту группу просились. Худшее, что даёт подлог — чужая заявка
+             * снимется раньше времени, и человек попросится по ссылке заново.
+             *
+             * Саму запись из лобби убираем в любом случае, иначе отказы копились бы
+             * там навсегда: лобби моё, я его король. */
+            denies_merge() {
+                let entries = [];
+                try {
+                    entries = (this.inbox_store().Denies()?.items() ?? []).map(String);
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return 0;
+                }
+                if (!entries.length)
+                    return 0;
+                const store = this.dialogs_store();
+                const mine = [...this.ask_queued(), ...this.ask_sent()];
+                for (const group of entries) {
+                    for (const task of mine) {
+                        if (this.ask_task_group(task) !== group)
+                            continue;
+                        store.Asks('auto').cut(task);
+                        store.Asked('auto').cut(task);
+                        if (!this.ask_denied().includes(group))
+                            store.Denied('auto').add(group);
+                    }
+                    this.inbox_store().Denies('auto').cut(group);
+                }
+                return entries.length;
+            }
             /** Ссылка привела к заявке, а не к группе: без этой строки экран после
              * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
              * так же, поэтому и о ней говорим прямо.
@@ -27282,6 +27376,11 @@ var $;
             ask_plate_text() {
                 if (this.join_lost())
                     return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
+                const denied = this.ask_denied().length;
+                if (denied === 1)
+                    return 'Заявку отклонили — попроситься снова можно по той же ссылке';
+                if (denied)
+                    return 'Заявок отклонено: ' + denied + ' — попроситься снова можно по тем же ссылкам';
                 const queued = this.ask_pending_queued().length;
                 if (queued === 1)
                     return 'Заявка отправляется — это не мгновенно';
@@ -27603,6 +27702,12 @@ var $;
                 }
                 try {
                     this.asks_flush();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
+                    this.denies_merge();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -28280,6 +28385,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "ask_pending_sent", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_denied", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "denies_merge", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "asks_flush", null);
