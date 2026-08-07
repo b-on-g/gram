@@ -7490,6 +7490,23 @@ var $;
                 $mol_assert_equal(app.ask_task_group(group), group);
                 $mol_assert_equal(app.ask_task_owner(group), '');
             },
+            async 'Плашка заявок не обещает отправку раньше времени'($) {
+                const group = 'AAAAAAAA_BBBBBBBB';
+                const task = group + '|' + 'CCCCCCCC_DDDDDDDD';
+                // Пока запись лежит в своей очереди, она никуда не доехала: в
+                // чужое лобби пишут с перебором подписей, и это занимает время
+                const queued = $bog_gram.make({ $, ask_queued: () => [task], ask_sent: () => [], dialog_ids: () => [] });
+                $mol_assert_equal(queued.ask_plate_text(), 'Заявка отправляется — это не мгновенно');
+                const sent = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [] });
+                $mol_assert_equal(sent.ask_plate_text(), 'Заявка отправлена — ждём, пока её примут');
+                // Приняли — группа появилась в списке диалогов, и плашке нечего сказать
+                const taken = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [group] });
+                $mol_assert_equal(taken.ask_plate_text(), '');
+                // Ссылка без создателя не притворяется отправленной заявкой
+                const lost = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [], dialog_ids: () => [] });
+                lost.join_lost(group);
+                $mol_assert_equal(lost.ask_plate_text(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
+            },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
                 const guest = await $.$giper_baza_auth.generate();

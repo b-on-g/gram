@@ -27241,10 +27241,10 @@ var $;
                 const all = [...this.ask_queued(), ...this.ask_sent()];
                 return all.map(entry => this.ask_task_group(entry));
             }
-            /** Заявки, на которые ещё не ответили — и те, что ждут отправки, и те,
-             * что уже доехали. Принятая уходит отсюда сама: группа появляется в
-             * списке диалогов, и записи там больше нечего ждать. */
-            ask_pending() {
+            /** Заявки, на которые ещё не ответили. Принятая уходит отсюда сама:
+             * группа появляется в списке диалогов, и записи там больше нечего
+             * ждать. */
+            ask_waiting(entries) {
                 let have = new Set();
                 try {
                     have = new Set(this.dialog_ids());
@@ -27253,21 +27253,37 @@ var $;
                     if (!$mol_promise_like(error))
                         $mol_fail_log(error);
                 }
-                const all = new Set(this.ask_groups());
+                const all = new Set(entries.map(entry => this.ask_task_group(entry)));
                 return [...all].filter(id => !have.has(id));
+            }
+            ask_pending_queued() {
+                return this.ask_waiting(this.ask_queued());
+            }
+            ask_pending_sent() {
+                return this.ask_waiting(this.ask_sent());
             }
             /** Ссылка привела к заявке, а не к группе: без этой строки экран после
              * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
-             * так же, поэтому и о ней говорим прямо. */
+             * так же, поэтому и о ней говорим прямо.
+             *
+             * Отправку и отправленное разводим: запись в чужое лобби идёт с
+             * перебором подписей и занимает время. Пока она не доехала, обещать
+             * «отправлена» нельзя — человек пойдёт спрашивать у владельца группы,
+             * а у того ещё пусто, и оба решат, что сломалось. */
             ask_plate_text() {
                 if (this.join_lost())
                     return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
-                const count = this.ask_pending().length;
-                if (!count)
-                    return '';
-                if (count === 1)
+                const queued = this.ask_pending_queued().length;
+                if (queued === 1)
+                    return 'Заявка отправляется — это не мгновенно';
+                if (queued)
+                    return 'Отправляется заявок: ' + queued;
+                const sent = this.ask_pending_sent().length;
+                if (sent === 1)
                     return 'Заявка отправлена — ждём, пока её примут';
-                return 'Заявок отправлено: ' + count + ' — ждём, пока их примут';
+                if (sent)
+                    return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут';
+                return '';
             }
             Ask_plate() {
                 return this.ask_plate_text() ? super.Ask_plate() : null;
@@ -28251,7 +28267,10 @@ var $;
         ], $bog_gram.prototype, "ask_groups", null);
         __decorate([
             $mol_mem
-        ], $bog_gram.prototype, "ask_pending", null);
+        ], $bog_gram.prototype, "ask_pending_queued", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "ask_pending_sent", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "asks_flush", null);
@@ -38529,6 +38548,23 @@ var $;
                 $mol_assert_equal(app.ask_task(group, ''), group);
                 $mol_assert_equal(app.ask_task_group(group), group);
                 $mol_assert_equal(app.ask_task_owner(group), '');
+            },
+            async 'Плашка заявок не обещает отправку раньше времени'($) {
+                const group = 'AAAAAAAA_BBBBBBBB';
+                const task = group + '|' + 'CCCCCCCC_DDDDDDDD';
+                // Пока запись лежит в своей очереди, она никуда не доехала: в
+                // чужое лобби пишут с перебором подписей, и это занимает время
+                const queued = $bog_gram.make({ $, ask_queued: () => [task], ask_sent: () => [], dialog_ids: () => [] });
+                $mol_assert_equal(queued.ask_plate_text(), 'Заявка отправляется — это не мгновенно');
+                const sent = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [] });
+                $mol_assert_equal(sent.ask_plate_text(), 'Заявка отправлена — ждём, пока её примут');
+                // Приняли — группа появилась в списке диалогов, и плашке нечего сказать
+                const taken = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [group] });
+                $mol_assert_equal(taken.ask_plate_text(), '');
+                // Ссылка без создателя не притворяется отправленной заявкой
+                const lost = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [], dialog_ids: () => [] });
+                lost.join_lost(group);
+                $mol_assert_equal(lost.ask_plate_text(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
             },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
