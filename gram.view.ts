@@ -1191,9 +1191,10 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Разбор ключа из реестра с проверкой подлинности. Реестр открыт на
-		 * запись всем, поэтому положить туда свой ключ под чужой записью может
-		 * кто угодно — и тогда диалог, заведённый для одного человека,
+		/** Разбор ключа из недоверенного источника с проверкой подлинности:
+		 * так приезжают ключи из реестра, из заявки в группу и из ссылки-
+		 * приглашения. Реестр открыт на запись всем, ссылку по дороге тоже
+		 * могли подменить — и тогда диалог, заведённый для одного человека,
 		 * открылся бы совсем другому. Идентификатор это хеш ключа, так что
 		 * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
 		 * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
@@ -1212,7 +1213,7 @@ namespace $.$$ {
 
 				if( pass.lord().str === lord ) return pass
 
-				$mol_fail_log( new Error( 'Ключ в реестре не сходится со своим владельцем', { cause: lord } ) )
+				$mol_fail_log( new Error( 'Ключ не сходится со своим владельцем', { cause: lord } ) )
 				return null
 
 			} catch( error ) {
@@ -1231,6 +1232,12 @@ namespace $.$$ {
 		peer_pass_of( lord: string ): $giper_baza_auth_pass | null {
 
 			if( !lord ) return null
+
+			// Ключ из ссылки-приглашения уже проверен пересчётом лорда, так
+			// что сеть ради него дёргать незачем: диалог заводится сразу и
+			// даже офлайн, а домашний ленд собеседника подъедет потом сам
+			const given = this.peer_pass_given( lord )
+			if( given ) return given
 
 			const land = this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) )
 
@@ -3715,21 +3722,42 @@ namespace $.$$ {
 
 		// ===== Личная ссылка-приглашение =====
 
-		/** Приглашение — адрес страницы с одним лишь лордом: остальные
-		 * параметры (свой мастер, открытый реестр) чужому человеку не нужны. */
-		invite_uri( lord: string ) {
+		/** Свой публичный ключ строкой — тот же вид, в котором он лежит в
+		 * реестрах и уезжает в заявке в группу. */
+		@$mol_mem
+		my_pass() {
+			return this.$.$giper_baza_auth.current().pass().toString()
+		}
+
+		/** Приглашение — адрес страницы с лордом и публичным ключом хозяина.
+		 * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны,
+		 * а вот ключ нужен: без него диалог не завести, и приложение уходит
+		 * ждать, пока домашний ленд приглашающего доедет по сети. С ключом в
+		 * ссылке ждать нечего — диалог открывается сразу и даже офлайн.
+		 *
+		 * Класть ключ в ссылку безопасно: он публичный, лежит в открытом
+		 * ленде и в реестрах. Подменить его в ссылке нельзя — лорд рядом
+		 * это хеш ключа, и `pass_verified` пересчитывает его. */
+		invite_uri( lord: string, key: string ) {
 			if( !lord ) return ''
 			const location = this.$.$mol_dom_context.location
-			return location.origin + location.pathname + '#!invite=' + lord
+			const tail = key ? '/key=' + key : ''
+			return location.origin + location.pathname + '#!invite=' + lord + tail
 		}
 
 		override invite_link() {
-			return this.invite_uri( this.my_lord() )
+			return this.invite_uri( this.my_lord(), this.my_pass() )
 		}
 
 		/** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
 		invite_lord() {
 			return this.$.$mol_state_arg.value( 'invite' ) ?? ''
+		}
+
+		/** Ключ приглашающего из адреса страницы. У ссылок, выданных до его
+		 * появления, его нет — для них остаётся прежний путь через сеть. */
+		invite_key() {
+			return this.$.$mol_state_arg.value( 'key' ) ?? ''
 		}
 
 		/** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
@@ -3764,8 +3792,30 @@ namespace $.$$ {
 		invite_handle() {
 			const lord = this.invite_lord()
 			if( !lord ) return ''
-			$mol_wire_async( this ).invite_accept( lord )
+			$mol_wire_async( this ).invite_accept( lord, this.invite_key() )
 			return lord
+		}
+
+		/** Ключ, приехавший в ссылке. Проверка та же, что у ключа из реестра:
+		 * лорд это хеш ключа, поэтому подмена ловится пересчётом. Не сошлось —
+		 * считаем, что ключа в ссылке не было, и дальше работает обычный путь
+		 * через домашний ленд приглашающего.
+		 *
+		 * Разобранный ключ `pass_verified` отдаёт из своего кэша одним и тем
+		 * же объектом, так что повторный заход перезапущенной фибры пишет в
+		 * ячейку то же значение и никого не будит. */
+		peer_pass_learn( lord: string, key: string ) {
+			if( !lord || !key ) return null
+			const pass = this.pass_verified( lord, key )
+			if( !pass ) return null
+			this.peer_pass_given( lord, pass )
+			return pass
+		}
+
+		/** Ключи, добытые не из сети: пока их источник — только ссылка. */
+		@$mol_mem_key
+		peer_pass_given( lord: string, next?: $giper_baza_auth_pass | null ) {
+			return next ?? null
 		}
 
 		/** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
@@ -3773,7 +3823,7 @@ namespace $.$$ {
 		 * снятый заранее параметр означал бы, что перезагрузка страницы в
 		 * этот момент теряет приглашение насовсем, и экран после неё молчит.
 		 * Снимет его `invite_done`, когда диалог действительно заведён. */
-		invite_accept( lord: string ) {
+		invite_accept( lord: string, key: string ) {
 
 			if( !lord ) return 'skip'
 
@@ -3784,21 +3834,25 @@ namespace $.$$ {
 
 			/** По ссылке приходят сами: человек, чьё приглашение я открыл,
 			 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
-			if( plan === 'open' || plan === 'start' ) this.peer_accept( lord )
+			if( plan === 'open' || plan === 'start' ) {
+				this.peer_pass_learn( lord, key )
+				this.peer_accept( lord )
+			}
 
 			if( plan === 'open' ) this.dialog_select( exist )
 			if( plan === 'start' ) this.dialog_pending( lord )
 
-			if( plan !== 'start' ) this.$.$mol_state_arg.value( 'invite', null )
+			if( plan !== 'start' ) this.invite_done()
 
 			return plan
 		}
 
-		/** Приглашение отработало: снимаем и параметр из адреса, и метку
+		/** Приглашение отработало: снимаем параметры из адреса и метку
 		 * долгого ожидания. */
 		invite_done() {
 			this.pending_late( '' )
 			this.$.$mol_state_arg.value( 'invite', null )
+			this.$.$mol_state_arg.value( 'key', null )
 		}
 
 		/** Ключ собеседника приезжает не мгновенно, а иногда не приезжает

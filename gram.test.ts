@@ -910,12 +910,12 @@ namespace $.$$ {
 			const my = 'LordMine'
 			const other = 'LordOthr_Bbbbbbbb'
 
-			// Ссылка — адрес страницы с одним лишь лордом приглашающего
+			// Ссылка — адрес страницы с лордом приглашающего
 			const location = $.$mol_dom_context.location
-			const uri = app.invite_uri( my )
+			const uri = app.invite_uri( my, '' )
 			$mol_assert_equal( uri, location.origin + location.pathname + '#!invite=' + my )
 			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!invite=LordMine' )
-			$mol_assert_equal( app.invite_uri( '' ), '' )
+			$mol_assert_equal( app.invite_uri( '', '' ), '' )
 
 			// Свою же ссылку и пустой параметр пропускаем мимо
 			$mol_assert_equal( app.invite_plan( my, my, '' ), 'skip' )
@@ -924,6 +924,38 @@ namespace $.$$ {
 			// Чужую: знакомого собеседника открываем, незнакомому заводим диалог
 			$mol_assert_equal( app.invite_plan( other, my, 'DialogLink' ), 'open' )
 			$mol_assert_equal( app.invite_plan( other, my, '' ), 'start' )
+
+		},
+
+		async 'Ключ в ссылке-приглашении избавляет от ожидания сети'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			const auth = await $.$giper_baza_auth.generate()
+			const pass = auth.pass()
+			const lord = pass.lord().str
+			const key = pass.toString()
+
+			// Лорд и ключ едут в ссылке рядом, ключ URL не ломает
+			const uri = app.invite_uri( lord, key )
+			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!invite=' + lord + '/key=' + key )
+			$mol_assert_equal( encodeURIComponent( key ), key )
+
+			// Лорд — хеш ключа, поэтому ключ из ссылки проверяется пересчётом
+			const learned = app.peer_pass_learn( lord, key )
+			$mol_assert_equal( learned?.lord().str, lord )
+
+			// И дальше берётся как есть: домашний ленд собеседника ждать нечего
+			$mol_assert_equal( app.peer_pass_of( lord ), learned )
+
+			// Подложенный чужой ключ и мусор не принимаются
+			const other = await $.$giper_baza_auth.generate()
+			$mol_assert_equal( app.peer_pass_learn( lord, other.pass().toString() ), null )
+			$mol_assert_equal( app.peer_pass_learn( lord, 'мусор' ), null )
+			$mol_assert_equal( app.peer_pass_learn( lord, '' ), null )
+
+			// Старая ссылка без ключа по-прежнему работает — через сеть
+			$mol_assert_equal( app.invite_plan( lord, 'LordMine', '' ), 'start' )
 
 		},
 
