@@ -12,6 +12,16 @@ namespace $.$$ {
 	/** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
 	const notify_key = 'bog_gram_notify'
 
+	/** Явное «выключить» из настроек. Без отдельной отметки «выключено»
+	 * неотличимо от «ещё не включали», и автоподписка возвращала бы то,
+	 * что человек только что выключил руками. */
+	const notify_off_key = 'bog_gram_notify_off'
+
+	/** Разрешение в этом браузере уже спрашивали. Отвергнутый запрос
+	 * оставляет разрешение в состоянии «default», так что без отметки мы
+	 * лезли бы с ним при каждом открытии диалога. */
+	const notify_asked_key = 'bog_gram_notify_asked'
+
 	/** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
 	const auth_size = 128
 
@@ -731,6 +741,10 @@ namespace $.$$ {
 
 		@$mol_action
 		dialog_select( id: string, next?: any ) {
+			// Открыл переписку — самое время спросить про уведомления. Метод
+			// зовут и фибры со ссылки-приглашения, но там жеста нет, и
+			// предложение само себя пропустит
+			this.notify_offer()
 			this.sound_hush()
 			this.compose_opened( false )
 			this.settings_opened( false )
@@ -2689,6 +2703,7 @@ namespace $.$$ {
 
 		@$mol_action
 		message_send( next?: any ) {
+			this.notify_offer()
 			this.message_menu( '' )
 			const text = this.message_text().trim()
 			const editing = this.edit_id()
@@ -4309,6 +4324,101 @@ namespace $.$$ {
 			return this.$.$mol_state_local.value< boolean >( notify_key, next ) ?? false
 		}
 
+		/** Уведомления выключены руками: сами больше не включаются. */
+		notify_off( next?: boolean ) {
+			return this.$.$mol_state_local.value< boolean >( notify_off_key, next ) ?? false
+		}
+
+		/** Разрешение в этом браузере уже спрашивали. */
+		notify_asked( next?: boolean ) {
+			return this.$.$mol_state_local.value< boolean >( notify_asked_key, next ) ?? false
+		}
+
+		/** Что делать с уведомлениями при заходе. Решение тут не про браузер,
+		 * а про то, чего человек хотел, поэтому и живёт отдельно от возни с
+		 * разрешениями и подписками.
+		 *
+		 * Явное «выключить» бьёт всё остальное: без этого автоподписка
+		 * возвращала бы уведомления на следующем же открытии страницы. */
+		notify_plan(
+			supported: boolean,
+			permission: NotificationPermission,
+			on: boolean,
+			off: boolean,
+			asked: boolean,
+		): 'skip' | 'subscribe' | 'ask' {
+			if( !supported ) return 'skip'
+			if( off ) return 'skip'
+			if( on ) return 'skip'
+			if( permission === 'granted' ) return 'subscribe'
+			if( permission === 'denied' ) return 'skip'
+			return asked ? 'skip' : 'ask'
+		}
+
+		notify_plan_now() {
+			return this.notify_plan(
+				this.notify_supported(),
+				this.notify_permission(),
+				this.notify_on(),
+				this.notify_off(),
+				this.notify_asked(),
+			)
+		}
+
+		/** Разрешение уже выдано — значит уведомления человек хотел, и гонять
+		 * его за ними в настройки незачем: подписываемся сами. Так же ведёт
+		 * себя переустановка приложения и вход другим ключом: разрешение у
+		 * браузера остаётся, подписка поднимается заново без единого клика. */
+		@$mol_mem
+		notify_auto() {
+
+			if( this.notify_plan_now() !== 'subscribe' ) return false
+
+			// Ленд монитора нужен самой подписке: демон следит именно за ним.
+			// До его приезда лезть в браузер незачем — подписка уехала бы
+			// демону с пустой ссылкой, и следить ему было бы не за чем
+			const monitor = this.monitor_land().link().str
+			if( !monitor ) return false
+
+			$mol_wire_async( this ).notify_apply( true )
+			return true
+		}
+
+		/** Разрешения ещё нет. Просить его на старте нельзя: без живого жеста
+		 * Safari и Firefox запрос отклоняют молча, а Chrome прячет его в тихую
+		 * плашку. Поэтому спрашиваем ровно тогда, когда человек сам что-то
+		 * сделал — открыл диалог или отправил сообщение.
+		 *
+		 * Один раз на браузер: отказ переспрашивать невежливо, а для
+		 * передумавших остаётся тумблер в настройках. */
+		@$mol_action
+		notify_offer() {
+
+			if( this.notify_plan_now() !== 'ask' ) return false
+
+			// Тот же метод зовут и фибры приглашения со ссылки, у которых
+			// никакого жеста за спиной нет: там запрос только сжёг бы
+			// единственную попытку, ничего не показав
+			if( !this.$.$bog_gram_notify.activated() ) return false
+
+			this.notify_asked( true )
+			$mol_wire_async( this ).notify_grant()
+			return true
+		}
+
+		/** Запрос разрешения — ПЕРВЫМ делом, до любого подвисающего чтения:
+		 * иначе фибра перезапустится в микрозадаче, и жест пользователя к
+		 * моменту запроса протухнет.
+		 *
+		 * Подписку отсюда не заводим, хотя руки чешутся: выданное разрешение
+		 * увидит `notify_auto` и сделает всё сам. Делали бы оба — на одно
+		 * согласие уходило бы две подписки сразу. */
+		notify_grant() {
+			const answer = this.$.$bog_gram_notify.permission_request()
+			this.notify_permission( answer )
+			return answer === 'granted'
+		}
+
 		notify_label() {
 			return this.notify_on() ? 'Выключить' : 'Включить уведомления'
 		}
@@ -4316,7 +4426,9 @@ namespace $.$$ {
 		notify_status() {
 			if( !this.notify_supported() ) return 'Не поддерживается этим браузером'
 			if( this.notify_permission() === 'denied' ) return 'Запрещены в браузере'
-			return this.notify_on() ? 'Уведомления включены' : 'Выключены'
+			if( this.notify_on() ) return 'Уведомления включены'
+			if( this.notify_off() ) return 'Выключены'
+			return 'Спросим разрешение, когда откроете диалог'
 		}
 
 		@$mol_action
@@ -4334,12 +4446,17 @@ namespace $.$$ {
 			if( !on ) {
 				notify.unsubscribe( this.my_lord() )
 				this.notify_on( false )
+				// Решение человека, а не стечение обстоятельств: без этой
+				// отметки автоподписка включила бы всё обратно на следующем
+				// же открытии страницы
+				this.notify_off( true )
 				return false
 			}
 
 			const ok = notify.subscribe( this.my_lord(), this.monitor_land().link().str )
 			this.notify_permission( notify.permission() )
 			this.notify_on( ok )
+			if( ok ) this.notify_off( false )
 			return ok
 		}
 
@@ -4520,6 +4637,7 @@ namespace $.$$ {
 			try { this.join_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
 			try { this.pending_timer() } catch( error ) { $mol_fail_log( error ) }
+			try { this.notify_auto() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.asks_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.denies_merge() } catch( error ) { $mol_fail_log( error ) }

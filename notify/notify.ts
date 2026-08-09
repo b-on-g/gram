@@ -61,6 +61,33 @@ namespace $ {
 			return Notification.permission
 		}
 
+		/** Живой жест пользователя. Без него Safari и Firefox запрос разрешения
+		 * отклоняют не спрашивая, а Chrome показывает тихую плашку, которую
+		 * почти никто не замечает — и всё это выглядит как «нажал, и ничего».
+		 * Где свойства нет, полагаемся на сам браузер и не мешаем. */
+		static activated() {
+			if( typeof navigator === 'undefined' ) return false
+			const activation = ( navigator as any ).userActivation
+			if( !activation ) return true
+			return Boolean( activation.isActive )
+		}
+
+		/** Только запрос разрешения, без подписки. Отдельно от `subscribe`,
+		 * потому что успеть его надо ПЕРВЫМ действием фибры: любое подвисшее
+		 * чтение до него перезапустит фибру уже в микрозадаче, а жест
+		 * пользователя к тому моменту протухнет. */
+		@ $mol_action
+		static permission_request() {
+			try {
+				if( !this.supported() ) return 'denied' as NotificationPermission
+				return $mol_wire_sync( api ).permission_ask()
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+				return 'default' as NotificationPermission
+			}
+		}
+
 		/** Тело POST-ов шлём без заголовка типа: строка уходит как text/plain,
 		 * это простой CORS-запрос без preflight, а демон всё равно парсит JSON. */
 		static send( path: string, body: object ) {
