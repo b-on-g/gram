@@ -1,0 +1,43 @@
+{
+	"name": "Gram — мессенджер на Гипер Базе",
+	"short_name": "Gram",
+	"description": "Local-first мессенджер без регистрации: аккаунт — ключи в браузере, диалоги шифруются, сообщения синхронизируются через сеть узлов Гипер Базы.",
+	"lang": "ru",
+	"dir": "ltr",
+	"categories": [ "social", "communication" ],
+	"scope": "./",
+	"start_url": "./",
+	"display": "standalone",
+	"background_color": "#229ED9",
+	"theme_color": "#229ED9",
+	"handle_links": "preferred",
+	"launch_handler": {
+		"client_mode": "navigate-existing"
+	},
+	"icons": [
+		{
+			"src": "bog/gram/logo/logo-192.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "any"
+		},
+		{
+			"src": "bog/gram/logo/logo-512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any"
+		},
+		{
+			"src": "bog/gram/logo/mask-512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "maskable"
+		},
+		{
+			"src": "bog/gram/logo/logo.svg",
+			"type": "image/svg+xml",
+			"sizes": "any",
+			"purpose": "any"
+		}
+	]
+}
