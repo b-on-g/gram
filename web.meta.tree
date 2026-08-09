@@ -163,3 +163,4 @@
 	include \/bog/gram/nozoom
 	include \/bog/gram/notify
 	include \/mol/offline/install
+	deploy \/bog/gram/logo
