@@ -15,6 +15,7 @@ $bog_gram $mol_book2
 		<= Menu $mol_page
 			title \Gram
 			tools /
+				<= Status $giper_baza_status
 				<= Compose_open $mol_button_minor
 					hint \Новый диалог
 					click? <=> compose_open? null
@@ -86,10 +87,6 @@ $bog_gram $mol_book2
 											gradient_stops /
 												\#229ED9
 												\#5ED0F5
-				<= Sync $mol_labeler
-					title \Синхронизация
-					content /
-						<= Status $giper_baza_status
 				<= Notify $mol_labeler
 					title \Уведомления
 					content /
