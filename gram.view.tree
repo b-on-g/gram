@@ -32,6 +32,15 @@ $bog_gram $mol_book2
 						<= Settings_open_icon $mol_icon_cog
 				<= Lights $mol_lights_toggle
 			body /
+				<= Invite_plate $mol_view
+					sub /
+						<= Invite_plate_text $mol_paragraph
+							title <= invite_plate_text \
+						<= Invite_drop $mol_button_minor
+							hint \Отменить
+							click? <=> invite_drop? null
+							sub /
+								<= Invite_drop_icon $mol_icon_close
 				<= Ask_plate $mol_view
 					sub /
 						<= Ask_plate_text $mol_paragraph

@@ -4,6 +4,11 @@ namespace $.$$ {
 
 	const day_ms = 24 * 60 * 60 * 1000
 
+	/** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
+	 * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
+	 * с перебором подписей — на слабом телефоне это заметные секунды. */
+	const pending_wait = 15000
+
 	/** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
 	const notify_key = 'bog_gram_notify'
 
@@ -1273,6 +1278,7 @@ namespace $.$$ {
 				this.dialog_current( exist )
 				this.compose_opened( false )
 				this.dialog_pending( '' )
+				this.invite_done()
 				this.chat_bring()
 				return exist
 			}
@@ -1313,6 +1319,7 @@ namespace $.$$ {
 			this.chat_bring()
 			this.compose_opened( false )
 			this.dialog_pending( '' )
+			this.invite_done()
 			return dialog_land.link().str
 		}
 
@@ -3725,12 +3732,30 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'invite' ) ?? ''
 		}
 
+		/** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
+		 * Лордом считаем только полный идентификатор владельца — ссылка на
+		 * чей-то ленд личным диалогом не открывается, и ждать по ней нечего.
+		 * Проверка формата тут ровно та же, что у ссылки в группу. */
+		invite_lord_ok( lord: string ) {
+			if( !$giper_baza_link.check( lord ) ) return false
+			const link = new $giper_baza_link( lord )
+			return link.lord().str === link.str
+		}
+
 		/** Своя же ссылка диалога не заводит, знакомый собеседник просто
 		 * открывается, а незнакомый уходит обычным путём — через ожидание. */
-		invite_plan( lord: string, my: string, exist: string ): 'skip' | 'open' | 'start' {
+		invite_plan( lord: string, my: string, exist: string ): 'skip' | 'bad' | 'open' | 'start' {
 			if( !lord ) return 'skip'
 			if( lord === my ) return 'skip'
+			if( !this.invite_lord_ok( lord ) ) return 'bad'
 			return exist ? 'open' : 'start'
+		}
+
+		/** Битая ссылка: как и у групп, говорим об этом на экране. Молчание
+		 * тут неотличимо от «ничего не произошло». */
+		@$mol_mem
+		invite_lost( next?: string ) {
+			return next ?? ''
 		}
 
 		/** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
@@ -3743,8 +3768,11 @@ namespace $.$$ {
 			return lord
 		}
 
-		/** Параметр из адреса снимаем в любом случае: иначе перезагрузка
-		 * страницы принимала бы то же приглашение снова и снова. */
+		/** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
+		 * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
+		 * снятый заранее параметр означал бы, что перезагрузка страницы в
+		 * этот момент теряет приглашение насовсем, и экран после неё молчит.
+		 * Снимет его `invite_done`, когда диалог действительно заведён. */
 		invite_accept( lord: string ) {
 
 			if( !lord ) return 'skip'
@@ -3752,16 +3780,75 @@ namespace $.$$ {
 			const exist = this.dialog_with( lord )
 			const plan = this.invite_plan( lord, this.my_lord(), exist )
 
+			this.invite_lost( plan === 'bad' ? lord : '' )
+
 			/** По ссылке приходят сами: человек, чьё приглашение я открыл,
 			 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
-			if( plan !== 'skip' ) this.peer_accept( lord )
+			if( plan === 'open' || plan === 'start' ) this.peer_accept( lord )
 
 			if( plan === 'open' ) this.dialog_select( exist )
 			if( plan === 'start' ) this.dialog_pending( lord )
 
-			this.$.$mol_state_arg.value( 'invite', null )
+			if( plan !== 'start' ) this.$.$mol_state_arg.value( 'invite', null )
 
 			return plan
+		}
+
+		/** Приглашение отработало: снимаем и параметр из адреса, и метку
+		 * долгого ожидания. */
+		invite_done() {
+			this.pending_late( '' )
+			this.$.$mol_state_arg.value( 'invite', null )
+		}
+
+		/** Ключ собеседника приезжает не мгновенно, а иногда не приезжает
+		 * вовсе: человек мог не заходить в приложение или сидеть на другом
+		 * мастере. Через `pending_wait` молчание превращаем в объяснение.
+		 *
+		 * Таймер ВОЗВРАЩАЕМ из ячейки: объект, созданный внутри @$mol_mem и
+		 * не отданный наружу, уборка уничтожает сразу, и он не сработает. */
+		@$mol_mem
+		pending_timer() {
+			const peer = this.dialog_pending()
+			if( !peer ) return null
+			return new this.$.$mol_after_timeout( pending_wait, ()=> this.pending_late( peer ) )
+		}
+
+		/** Собеседник, ключ которого ждём непозволительно долго. Держим тут
+		 * именно лорда, а не флаг: следующее приглашение начинает ожидание
+		 * заново, и старая метка не должна на него налипать. */
+		@$mol_mem
+		pending_late( next?: string ) {
+			return next ?? ''
+		}
+
+		/** Ждать человека, который в приложение не заходил, можно вечно,
+		 * поэтому ожидание должно сниматься руками. */
+		@$mol_action
+		invite_drop( next?: any ) {
+			this.dialog_pending( '' )
+			this.invite_lost( '' )
+			this.invite_done()
+			return null
+		}
+
+		/** Строка над списком диалогов, пока диалога по ссылке ещё нет. Без
+		 * неё переход по приглашению выглядит как будто ничего не произошло:
+		 * список пустой, ошибки нет, ждать непонятно чего. */
+		override invite_plate_text() {
+
+			if( this.invite_lost() ) return 'Ссылка на диалог битая — попросите свежую'
+
+			const peer = this.dialog_pending()
+			if( !peer ) return ''
+
+			if( this.pending_late() !== peer ) return 'Открываем диалог — ищем ключ собеседника'
+
+			return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку'
+		}
+
+		override Invite_plate() {
+			return this.invite_plate_text() ? super.Invite_plate() : null!
 		}
 
 		// ===== Ссылка-приглашение в группу =====
@@ -4378,6 +4465,7 @@ namespace $.$$ {
 			try { this.invite_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.join_handle() } catch( error ) { $mol_fail_log( error ) }
 			try { this.dialog_autocreate() } catch( error ) { $mol_fail_log( error ) }
+			try { this.pending_timer() } catch( error ) { $mol_fail_log( error ) }
 			try { this.outbox_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.asks_flush() } catch( error ) { $mol_fail_log( error ) }
 			try { this.denies_merge() } catch( error ) { $mol_fail_log( error ) }
