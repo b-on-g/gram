@@ -6717,6 +6717,18 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
+		path(){
+			return "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_list) = class $mol_list extends ($.$mol_view) {
 		gap_before(){
 			return 0;
@@ -7206,18 +7218,6 @@ var $;
         });
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-
-;
-	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
-		path(){
-			return "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
-		}
-	};
-
-
-;
-"use strict";
-
 
 ;
 "use strict";
@@ -20083,6 +20083,34 @@ var $;
 			const obj = new this.$.$mol_lights_toggle();
 			return obj;
 		}
+		invite_plate_text(){
+			return "";
+		}
+		Invite_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.invite_plate_text()));
+			return obj;
+		}
+		invite_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Invite_drop_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Invite_drop(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отменить");
+			(obj.click) = (next) => ((this.invite_drop(next)));
+			(obj.sub) = () => ([(this.Invite_drop_icon())]);
+			return obj;
+		}
+		Invite_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Invite_plate_text()), (this.Invite_drop())]);
+			return obj;
+		}
 		ask_plate_text(){
 			return "";
 		}
@@ -20113,7 +20141,11 @@ var $;
 				(this.Settings_open()), 
 				(this.Lights())
 			]);
-			(obj.body) = () => ([(this.Ask_plate()), (this.Dialogs_list())]);
+			(obj.body) = () => ([
+				(this.Invite_plate()), 
+				(this.Ask_plate()), 
+				(this.Dialogs_list())
+			]);
 			return obj;
 		}
 		settings_close(next){
@@ -22029,6 +22061,11 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Settings_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open"));
 	($mol_mem(($.$bog_gram.prototype), "Lights"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_plate_text"));
+	($mol_mem(($.$bog_gram.prototype), "invite_drop"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_drop_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_drop"));
+	($mol_mem(($.$bog_gram.prototype), "Invite_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Ask_plate_text"));
 	($mol_mem(($.$bog_gram.prototype), "Ask_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_list"));
@@ -23814,6 +23851,10 @@ var $;
     (function ($$) {
         const prod_master = 'https://baza.87.120.36.150.ip.giper.dev/';
         const day_ms = 24 * 60 * 60 * 1000;
+        /** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
+         * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
+         * с перебором подписей — на слабом телефоне это заметные секунды. */
+        const pending_wait = 15000;
         /** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
         const notify_key = 'bog_gram_notify';
         /** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
@@ -24964,6 +25005,7 @@ var $;
                     this.dialog_current(exist);
                     this.compose_opened(false);
                     this.dialog_pending('');
+                    this.invite_done();
                     this.chat_bring();
                     return exist;
                 }
@@ -24997,6 +25039,7 @@ var $;
                 this.chat_bring();
                 this.compose_opened(false);
                 this.dialog_pending('');
+                this.invite_done();
                 return dialog_land.link().str;
             }
             // ===== Создание группы =====
@@ -27088,6 +27131,16 @@ var $;
             invite_lord() {
                 return this.$.$mol_state_arg.value('invite') ?? '';
             }
+            /** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
+             * Лордом считаем только полный идентификатор владельца — ссылка на
+             * чей-то ленд личным диалогом не открывается, и ждать по ней нечего.
+             * Проверка формата тут ровно та же, что у ссылки в группу. */
+            invite_lord_ok(lord) {
+                if (!$giper_baza_link.check(lord))
+                    return false;
+                const link = new $giper_baza_link(lord);
+                return link.lord().str === link.str;
+            }
             /** Своя же ссылка диалога не заводит, знакомый собеседник просто
              * открывается, а незнакомый уходит обычным путём — через ожидание. */
             invite_plan(lord, my, exist) {
@@ -27095,7 +27148,14 @@ var $;
                     return 'skip';
                 if (lord === my)
                     return 'skip';
+                if (!this.invite_lord_ok(lord))
+                    return 'bad';
                 return exist ? 'open' : 'start';
+            }
+            /** Битая ссылка: как и у групп, говорим об этом на экране. Молчание
+             * тут неотличимо от «ничего не произошло». */
+            invite_lost(next) {
+                return next ?? '';
             }
             /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
              * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
@@ -27106,23 +27166,76 @@ var $;
                 $mol_wire_async(this).invite_accept(lord);
                 return lord;
             }
-            /** Параметр из адреса снимаем в любом случае: иначе перезагрузка
-             * страницы принимала бы то же приглашение снова и снова. */
+            /** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
+             * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
+             * снятый заранее параметр означал бы, что перезагрузка страницы в
+             * этот момент теряет приглашение насовсем, и экран после неё молчит.
+             * Снимет его `invite_done`, когда диалог действительно заведён. */
             invite_accept(lord) {
                 if (!lord)
                     return 'skip';
                 const exist = this.dialog_with(lord);
                 const plan = this.invite_plan(lord, this.my_lord(), exist);
+                this.invite_lost(plan === 'bad' ? lord : '');
                 /** По ссылке приходят сами: человек, чьё приглашение я открыл,
                  * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
-                if (plan !== 'skip')
+                if (plan === 'open' || plan === 'start')
                     this.peer_accept(lord);
                 if (plan === 'open')
                     this.dialog_select(exist);
                 if (plan === 'start')
                     this.dialog_pending(lord);
-                this.$.$mol_state_arg.value('invite', null);
+                if (plan !== 'start')
+                    this.$.$mol_state_arg.value('invite', null);
                 return plan;
+            }
+            /** Приглашение отработало: снимаем и параметр из адреса, и метку
+             * долгого ожидания. */
+            invite_done() {
+                this.pending_late('');
+                this.$.$mol_state_arg.value('invite', null);
+            }
+            /** Ключ собеседника приезжает не мгновенно, а иногда не приезжает
+             * вовсе: человек мог не заходить в приложение или сидеть на другом
+             * мастере. Через `pending_wait` молчание превращаем в объяснение.
+             *
+             * Таймер ВОЗВРАЩАЕМ из ячейки: объект, созданный внутри @$mol_mem и
+             * не отданный наружу, уборка уничтожает сразу, и он не сработает. */
+            pending_timer() {
+                const peer = this.dialog_pending();
+                if (!peer)
+                    return null;
+                return new this.$.$mol_after_timeout(pending_wait, () => this.pending_late(peer));
+            }
+            /** Собеседник, ключ которого ждём непозволительно долго. Держим тут
+             * именно лорда, а не флаг: следующее приглашение начинает ожидание
+             * заново, и старая метка не должна на него налипать. */
+            pending_late(next) {
+                return next ?? '';
+            }
+            /** Ждать человека, который в приложение не заходил, можно вечно,
+             * поэтому ожидание должно сниматься руками. */
+            invite_drop(next) {
+                this.dialog_pending('');
+                this.invite_lost('');
+                this.invite_done();
+                return null;
+            }
+            /** Строка над списком диалогов, пока диалога по ссылке ещё нет. Без
+             * неё переход по приглашению выглядит как будто ничего не произошло:
+             * список пустой, ошибки нет, ждать непонятно чего. */
+            invite_plate_text() {
+                if (this.invite_lost())
+                    return 'Ссылка на диалог битая — попросите свежую';
+                const peer = this.dialog_pending();
+                if (!peer)
+                    return '';
+                if (this.pending_late() !== peer)
+                    return 'Открываем диалог — ищем ключ собеседника';
+                return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку';
+            }
+            Invite_plate() {
+                return this.invite_plate_text() ? super.Invite_plate() : null;
             }
             // ===== Ссылка-приглашение в группу =====
             /** Приглашение в группу — адрес страницы со ссылкой на её ленд и лордом
@@ -27681,6 +27794,12 @@ var $;
                 }
                 try {
                     this.dialog_autocreate();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
+                    this.pending_timer();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -28351,7 +28470,19 @@ var $;
         ], $bog_gram.prototype, "user_pick", null);
         __decorate([
             $mol_mem
+        ], $bog_gram.prototype, "invite_lost", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram.prototype, "invite_handle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "pending_timer", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "pending_late", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "invite_drop", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "join_lost", null);
@@ -28772,6 +28903,37 @@ var $;
                 font: {
                     size: '0.875rem',
                 },
+            },
+            // ===== Диалог по ссылке ещё не заведён =====
+            // Ключ собеседника едет по сети, и до его приезда списку диалогов
+            // показать нечего. Плитка тут же объясняет, чего ждём.
+            Invite_plate: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Invite_plate_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
             },
             // ===== Заявка в группу отправлена =====
             // Строка стоит над списком диалогов, пока заявку не приняли: после
@@ -38986,7 +39148,7 @@ var $;
             async 'Приглашение не заводит диалог с самим собой'($) {
                 const app = $bog_gram.make({ $ });
                 const my = 'LordMine';
-                const other = 'LordOther';
+                const other = 'LordOthr_Bbbbbbbb';
                 // Ссылка — адрес страницы с одним лишь лордом приглашающего
                 const location = $.$mol_dom_context.location;
                 const uri = app.invite_uri(my);
@@ -38999,6 +39161,37 @@ var $;
                 // Чужую: знакомого собеседника открываем, незнакомому заводим диалог
                 $mol_assert_equal(app.invite_plan(other, my, 'DialogLink'), 'open');
                 $mol_assert_equal(app.invite_plan(other, my, ''), 'start');
+            },
+            async 'Битая ссылка-приглашение не уходит в молчаливое ожидание'($) {
+                const app = $bog_gram.make({ $ });
+                const my = 'LordMine';
+                // Обрезанный при пересылке идентификатор форматом не проходит
+                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_WufmHhGH'), true);
+                $mol_assert_equal(app.invite_lord_ok('не ссылка'), false);
+                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_Wufm'), false);
+                // Ссылка на ленд — не лорд: личный диалог по ней не открывается
+                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_WufmHhGH_Aaaaaaaa'), false);
+                // Мусор отсекается до ожидания, а не уходит в него молча
+                $mol_assert_equal(app.invite_plan('не ссылка', my, ''), 'bad');
+            },
+            async 'Ожидание ключа собеседника объясняется на экране'($) {
+                const app = $bog_gram.make({ $ });
+                const other = 'LordOthr_Bbbbbbbb';
+                // Пока ждать нечего, плитки нет вовсе
+                $mol_assert_equal(app.invite_plate_text(), '');
+                $mol_assert_equal(app.Invite_plate(), null);
+                // Ожидание ключа объясняем сразу, а не после таймаута
+                app.dialog_pending(other);
+                $mol_assert_equal(app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника');
+                // Ключ не доехал: молчание превращается в объяснение
+                app.pending_late(other);
+                $mol_assert_equal(app.invite_plate_text().startsWith('Ключ собеседника не нашёлся'), true);
+                // Метка от прошлого приглашения на новое не налипает
+                app.dialog_pending('LordThrd_Cccccccc');
+                $mol_assert_equal(app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника');
+                // Битая ссылка говорит о себе отдельно
+                app.invite_lost('мусор');
+                $mol_assert_equal(app.invite_plate_text(), 'Ссылка на диалог битая — попросите свежую');
             },
             async 'Архив прячет диалог из списка, но не удаляет'($) {
                 const land = $giper_baza_land.make({ $ });
