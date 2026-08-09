@@ -23755,6 +23755,35 @@ var $;
                 return 'default';
             return Notification.permission;
         }
+        /** Живой жест пользователя. Без него Safari и Firefox запрос разрешения
+         * отклоняют не спрашивая, а Chrome показывает тихую плашку, которую
+         * почти никто не замечает — и всё это выглядит как «нажал, и ничего».
+         * Где свойства нет, полагаемся на сам браузер и не мешаем. */
+        static activated() {
+            if (typeof navigator === 'undefined')
+                return false;
+            const activation = navigator.userActivation;
+            if (!activation)
+                return true;
+            return Boolean(activation.isActive);
+        }
+        /** Только запрос разрешения, без подписки. Отдельно от `subscribe`,
+         * потому что успеть его надо ПЕРВЫМ действием фибры: любое подвисшее
+         * чтение до него перезапустит фибру уже в микрозадаче, а жест
+         * пользователя к тому моменту протухнет. */
+        static permission_request() {
+            try {
+                if (!this.supported())
+                    return 'denied';
+                return $mol_wire_sync(api).permission_ask();
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return 'default';
+            }
+        }
         /** Тело POST-ов шлём без заголовка типа: строка уходит как text/plain,
          * это простой CORS-запрос без preflight, а демон всё равно парсит JSON. */
         static send(path, body) {
@@ -23825,6 +23854,9 @@ var $;
     }
     __decorate([
         $mol_action
+    ], $bog_gram_notify, "permission_request", null);
+    __decorate([
+        $mol_action
     ], $bog_gram_notify, "subscribe", null);
     __decorate([
         $mol_action
@@ -23850,6 +23882,14 @@ var $;
         const pending_wait = 15000;
         /** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
         const notify_key = 'bog_gram_notify';
+        /** Явное «выключить» из настроек. Без отдельной отметки «выключено»
+         * неотличимо от «ещё не включали», и автоподписка возвращала бы то,
+         * что человек только что выключил руками. */
+        const notify_off_key = 'bog_gram_notify_off';
+        /** Разрешение в этом браузере уже спрашивали. Отвергнутый запрос
+         * оставляет разрешение в состоянии «default», так что без отметки мы
+         * лезли бы с ним при каждом открытии диалога. */
+        const notify_asked_key = 'bog_gram_notify_asked';
         /** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
         const auth_size = 128;
         /** Имя файла, в который сохраняется ключ аккаунта. */
@@ -24504,6 +24544,10 @@ var $;
                 return this.dialog_active() === id;
             }
             dialog_select(id, next) {
+                // Открыл переписку — самое время спросить про уведомления. Метод
+                // зовут и фибры со ссылки-приглашения, но там жеста нет, и
+                // предложение само себя пропустит
+                this.notify_offer();
                 this.sound_hush();
                 this.compose_opened(false);
                 this.settings_opened(false);
@@ -26206,6 +26250,7 @@ var $;
                 return null;
             }
             message_send(next) {
+                this.notify_offer();
                 this.message_menu('');
                 const text = this.message_text().trim();
                 const editing = this.edit_id();
@@ -27636,6 +27681,83 @@ var $;
             notify_on(next) {
                 return this.$.$mol_state_local.value(notify_key, next) ?? false;
             }
+            /** Уведомления выключены руками: сами больше не включаются. */
+            notify_off(next) {
+                return this.$.$mol_state_local.value(notify_off_key, next) ?? false;
+            }
+            /** Разрешение в этом браузере уже спрашивали. */
+            notify_asked(next) {
+                return this.$.$mol_state_local.value(notify_asked_key, next) ?? false;
+            }
+            /** Что делать с уведомлениями при заходе. Решение тут не про браузер,
+             * а про то, чего человек хотел, поэтому и живёт отдельно от возни с
+             * разрешениями и подписками.
+             *
+             * Явное «выключить» бьёт всё остальное: без этого автоподписка
+             * возвращала бы уведомления на следующем же открытии страницы. */
+            notify_plan(supported, permission, on, off, asked) {
+                if (!supported)
+                    return 'skip';
+                if (off)
+                    return 'skip';
+                if (on)
+                    return 'skip';
+                if (permission === 'granted')
+                    return 'subscribe';
+                if (permission === 'denied')
+                    return 'skip';
+                return asked ? 'skip' : 'ask';
+            }
+            notify_plan_now() {
+                return this.notify_plan(this.notify_supported(), this.notify_permission(), this.notify_on(), this.notify_off(), this.notify_asked());
+            }
+            /** Разрешение уже выдано — значит уведомления человек хотел, и гонять
+             * его за ними в настройки незачем: подписываемся сами. Так же ведёт
+             * себя переустановка приложения и вход другим ключом: разрешение у
+             * браузера остаётся, подписка поднимается заново без единого клика. */
+            notify_auto() {
+                if (this.notify_plan_now() !== 'subscribe')
+                    return false;
+                // Ленд монитора нужен самой подписке: демон следит именно за ним.
+                // До его приезда лезть в браузер незачем — подписка уехала бы
+                // демону с пустой ссылкой, и следить ему было бы не за чем
+                const monitor = this.monitor_land().link().str;
+                if (!monitor)
+                    return false;
+                $mol_wire_async(this).notify_apply(true);
+                return true;
+            }
+            /** Разрешения ещё нет. Просить его на старте нельзя: без живого жеста
+             * Safari и Firefox запрос отклоняют молча, а Chrome прячет его в тихую
+             * плашку. Поэтому спрашиваем ровно тогда, когда человек сам что-то
+             * сделал — открыл диалог или отправил сообщение.
+             *
+             * Один раз на браузер: отказ переспрашивать невежливо, а для
+             * передумавших остаётся тумблер в настройках. */
+            notify_offer() {
+                if (this.notify_plan_now() !== 'ask')
+                    return false;
+                // Тот же метод зовут и фибры приглашения со ссылки, у которых
+                // никакого жеста за спиной нет: там запрос только сжёг бы
+                // единственную попытку, ничего не показав
+                if (!this.$.$bog_gram_notify.activated())
+                    return false;
+                this.notify_asked(true);
+                $mol_wire_async(this).notify_grant();
+                return true;
+            }
+            /** Запрос разрешения — ПЕРВЫМ делом, до любого подвисающего чтения:
+             * иначе фибра перезапустится в микрозадаче, и жест пользователя к
+             * моменту запроса протухнет.
+             *
+             * Подписку отсюда не заводим, хотя руки чешутся: выданное разрешение
+             * увидит `notify_auto` и сделает всё сам. Делали бы оба — на одно
+             * согласие уходило бы две подписки сразу. */
+            notify_grant() {
+                const answer = this.$.$bog_gram_notify.permission_request();
+                this.notify_permission(answer);
+                return answer === 'granted';
+            }
             notify_label() {
                 return this.notify_on() ? 'Выключить' : 'Включить уведомления';
             }
@@ -27644,7 +27766,11 @@ var $;
                     return 'Не поддерживается этим браузером';
                 if (this.notify_permission() === 'denied')
                     return 'Запрещены в браузере';
-                return this.notify_on() ? 'Уведомления включены' : 'Выключены';
+                if (this.notify_on())
+                    return 'Уведомления включены';
+                if (this.notify_off())
+                    return 'Выключены';
+                return 'Спросим разрешение, когда откроете диалог';
             }
             notify_toggle(next) {
                 $mol_wire_async(this).notify_apply(!this.notify_on());
@@ -27657,11 +27783,17 @@ var $;
                 if (!on) {
                     notify.unsubscribe(this.my_lord());
                     this.notify_on(false);
+                    // Решение человека, а не стечение обстоятельств: без этой
+                    // отметки автоподписка включила бы всё обратно на следующем
+                    // же открытии страницы
+                    this.notify_off(true);
                     return false;
                 }
                 const ok = notify.subscribe(this.my_lord(), this.monitor_land().link().str);
                 this.notify_permission(notify.permission());
                 this.notify_on(ok);
+                if (ok)
+                    this.notify_off(false);
                 return ok;
             }
             // ===== Ключ аккаунта: показ и экспорт =====
@@ -27842,6 +27974,12 @@ var $;
                 }
                 try {
                     this.pending_timer();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
+                try {
+                    this.notify_auto();
                 }
                 catch (error) {
                     $mol_fail_log(error);
@@ -28567,6 +28705,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "notify_permission", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "notify_auto", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "notify_offer", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "notify_toggle", null);
@@ -39211,6 +39355,23 @@ var $;
                 // Чужую: знакомого собеседника открываем, незнакомому заводим диалог
                 $mol_assert_equal(app.invite_plan(other, my, 'DialogLink'), 'open');
                 $mol_assert_equal(app.invite_plan(other, my, ''), 'start');
+            },
+            async 'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
+                const app = $bog_gram.make({ $ });
+                const plan = (permission, on, off, asked) => app.notify_plan(true, permission, on, off, asked);
+                // Разрешение уже есть — подписываемся молча, без похода в настройки
+                $mol_assert_equal(plan('granted', false, false, false), 'subscribe');
+                // Разрешения нет — спрашиваем, но ровно один раз на браузер
+                $mol_assert_equal(plan('default', false, false, false), 'ask');
+                $mol_assert_equal(plan('default', false, false, true), 'skip');
+                // Запрет браузера и живая подписка одинаково не требуют ничего
+                $mol_assert_equal(plan('denied', false, false, false), 'skip');
+                $mol_assert_equal(plan('granted', true, false, false), 'skip');
+                // Выключенное руками не включается обратно ни при каком разрешении
+                $mol_assert_equal(plan('granted', false, true, false), 'skip');
+                $mol_assert_equal(plan('default', false, true, false), 'skip');
+                // Без поддержки в браузере не делаем вообще ничего
+                $mol_assert_equal(app.notify_plan(false, 'granted', false, false, false), 'skip');
             },
             async 'Ключ в ссылке-приглашении избавляет от ожидания сети'($) {
                 const app = $bog_gram.make({ $ });
