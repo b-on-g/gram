@@ -47408,7 +47408,7 @@ declare namespace $ {
 //# sourceMappingURL=gram.view.tree.d.ts.map
 declare namespace $.$$ {
     class $bog_gram extends $.$bog_gram {
-        baza_master(): string;
+        baza_master(): string | undefined;
         user_store(): $bog_gram_user;
         my_lord(): string;
         /** Публичная часть своего ключа строкой. Приватная сюда не попадает:

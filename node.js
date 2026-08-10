@@ -23883,7 +23883,6 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const prod_master = 'https://baza.87.120.36.150.ip.giper.dev/';
         const day_ms = 24 * 60 * 60 * 1000;
         /** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
          * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
@@ -23932,7 +23931,9 @@ var $;
             // ===== Подключение к мастеру =====
             baza_master() {
                 const custom = this.$.$mol_state_arg.value('baza') ?? '';
-                const url = custom || prod_master;
+                if (!custom)
+                    return;
+                const url = custom;
                 const masters = this.$.$giper_baza_yard.masters_default;
                 if (!masters.includes(url))
                     masters.unshift(url);
