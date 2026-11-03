@@ -2186,14 +2186,15 @@ namespace $.$$ {
 			try {
 
 				const inbox_link = this.peer_store( ask.lord ).Inbox_land()?.val()
+				const pass = this.pass_verified( ask.lord, ask.pass )
 
 				// Лобби у просящего может быть ещё не заведено — сказать ему
 				// нечем, но и держать заявку у себя из-за этого незачем
-				if( inbox_link ) {
+				if( inbox_link && pass ) {
 					this.$.$giper_baza_glob
 						.Land( new $giper_baza_link( String( inbox_link ) ) )
 						.Data( $bog_gram_inbox )
-						.Denies( 'auto' )!.add( ask.group )
+						.Denies( 'auto' )!.add( this.sealed_close([ 'deny', pass.toString(), ask.group ]) )
 				}
 
 			} catch( error ) {
@@ -2293,11 +2294,14 @@ namespace $.$$ {
 				try {
 					const inbox_link = this.peer_store( peer ).Inbox_land()?.val()
 					if( !inbox_link ) continue
+					const pass = this.peer_pass_of( peer )
+					if( !pass ) continue
+					const sealed = this.sealed_close([ 'invite', pass.toString(), dialog_link ])
 					const inbox = this.$.$giper_baza_glob
 						.Land( new $giper_baza_link( String( inbox_link ) ) )
 						.Data( $bog_gram_inbox )
-					inbox.Invites( 'auto' )!.add( dialog_link )
-					const sent = ( inbox.Invites()?.items() ?? [] ).map( String ).includes( dialog_link )
+					inbox.Invites( 'auto' )!.add( sealed )
+					const sent = ( inbox.Invites()?.items() ?? [] ).map( String ).includes( sealed )
 					if( sent ) this.dialogs_store().Outbox( 'auto' )!.cut( entry )
 				} catch( error ) {
 					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
@@ -2309,13 +2313,30 @@ namespace $.$$ {
 
 		// ===== Входящие инвайты =====
 
+		@$mol_mem_key
+		sealed_close( [ kind, pass, open ]: readonly [ string, string, string ] ) {
+			return $bog_gram_seal.close( this.$.$giper_baza_auth.current(), $bog_gram_seal.pass( pass ), kind, open )
+		}
+
+		@$mol_mem_key
+		sealed_open( [ kind, entry ]: readonly [ string, string ] ) {
+			return $bog_gram_seal.open( this.$.$giper_baza_auth.current(), kind, entry )
+		}
+
+		invite_open( entry: string ) {
+			if( !$bog_gram_seal.is( entry ) ) return entry
+			return this.sealed_open([ 'invite', entry ])?.open ?? ''
+		}
+
 		@$mol_mem
 		inbox_merge() {
 			const invites = ( this.inbox_store().Invites()?.items() ?? [] ).map( String )
 			if( !invites.length ) return 0
 			const have = new Set( this.dialog_ids() )
 			const hidden = new Set( this.hidden_ids() )
-			for( const link of invites ) {
+			for( const entry of invites ) {
+				const link = this.invite_open( entry )
+				if( !link ) continue
 				if( have.has( link ) ) continue
 				if( hidden.has( link ) ) continue
 				this.dialogs_store().Dialogs( 'auto' )!.add( link )
@@ -4028,6 +4049,11 @@ namespace $.$$ {
 		 * с заявками: разбор отвергает всё, что не сходится по числу частей
 		 * или недосчитывается любой из них. */
 		ask_parse( entry: string ) {
+			if( $bog_gram_seal.is( entry ) ) {
+				const sealed = this.sealed_open([ 'join', entry ])
+				if( !sealed?.open ) return null
+				return { group: sealed.open, lord: sealed.lord, pass: sealed.pass }
+			}
 			const parts = String( entry ?? '' ).split( '|' )
 			if( parts.length !== 3 ) return null
 			const [ group, lord, pass ] = parts
@@ -4150,16 +4176,21 @@ namespace $.$$ {
 			const store = this.dialogs_store()
 			const mine = [ ... this.ask_queued(), ... this.ask_sent() ]
 
-			for( const group of entries ) {
+			for( const entry of entries ) {
+
+				const group = $bog_gram_seal.is( entry )
+					? this.sealed_open([ 'deny', entry ])?.open ?? ''
+					: entry
 
 				for( const task of mine ) {
+					if( !group ) break
 					if( this.ask_task_group( task ) !== group ) continue
 					store.Asks( 'auto' )!.cut( task )
 					store.Asked( 'auto' )!.cut( task )
 					if( !this.ask_denied().includes( group ) ) store.Denied( 'auto' )!.add( group )
 				}
 
-				this.inbox_store().Denies( 'auto' )!.cut( group )
+				this.inbox_store().Denies( 'auto' )!.cut( entry )
 			}
 
 			return entries.length
@@ -4241,7 +4272,6 @@ namespace $.$$ {
 
 			this.$.$mol_state_time.now( 3000 )
 
-			const my = this.my_lord()
 			const store = this.dialogs_store()
 
 			for( const task of queued ) {
@@ -4269,7 +4299,10 @@ namespace $.$$ {
 						.Land( new $giper_baza_link( String( inbox_link ) ) )
 						.Data( $bog_gram_inbox )
 
-					const entry = this.ask_entry( id, my, this.my_pass_str() )
+					const owner_pass = this.peer_pass_of( owner )
+					if( !owner_pass ) continue
+
+					const entry = this.sealed_close([ 'join', owner_pass.toString(), id ])
 					inbox.Joins( 'auto' )!.add( entry )
 
 					const delivered = ( inbox.Joins()?.items() ?? [] ).map( String ).includes( entry )
