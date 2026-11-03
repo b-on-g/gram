@@ -4624,6 +4624,15 @@ namespace $.$$ {
 			return next ?? null
 		}
 
+		override key_scanned( next?: string ) {
+			if( next === undefined ) return ''
+			const str = next.trim()
+			this.key_input( str )
+			this.import_armed( false )
+			this.key_error( this.auth_from( str ) ? '' : 'В QR не ключ аккаунта' )
+			return str
+		}
+
 		key_file_read( file: File ) {
 			const text = $mol_wire_sync( file ).text()
 			this.key_input( text.trim() )

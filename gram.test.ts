@@ -396,6 +396,26 @@ namespace $.$$ {
 
 		},
 
+		async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'( $ ) {
+
+			const auth = await $.$giper_baza_auth._generate()
+			const key = auth.toString() + auth.toStringPrivate()
+			const app = $bog_gram.make({ $ })
+
+			app.import_armed( true )
+			app.Key_scan().found( key )
+
+			$mol_assert_equal( app.key_input(), key )
+			$mol_assert_equal( app.key_error(), '' )
+			$mol_assert_equal( app.import_armed(), false )
+
+			app.Key_scan().found( 'https://example.org/' )
+
+			$mol_assert_equal( app.key_input(), 'https://example.org/' )
+			$mol_assert_equal( app.key_error(), 'В QR не ключ аккаунта' )
+
+		},
+
 		async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'( $ ) {
 
 			const owner = await $.$giper_baza_auth._generate()

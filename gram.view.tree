@@ -321,6 +321,8 @@ $bog_gram $mol_book2
 						accept \.key,text/plain
 						multiple false
 						files? <=> key_file? null
+			<= Key_scan $bog_gram_scan
+				found? <=> key_scanned? \
 			<= Key_import $mol_button_major
 				attr *
 					^
