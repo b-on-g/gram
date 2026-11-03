@@ -51801,6 +51801,21 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $bog_gram_seal extends $mol_object {
+        static prefix: string;
+        static pass(str: string): $giper_baza_auth_pass;
+        static nonce(kind: string, open: string): Uint8Array<ArrayBuffer>;
+        static is(entry: string): boolean;
+        static close(auth: $giper_baza_auth, mate: $giper_baza_auth_pass, kind: string, open: string): string;
+        static open(auth: $giper_baza_auth, kind: string, entry: string): {
+            open: string;
+            pass: string;
+            lord: string;
+        } | null;
+    }
+}
+
+declare namespace $ {
     /** Кадр, готовый к записи в ленд. */
     type $bog_gram_shrink_shot = {
         bytes: Uint8Array<ArrayBuffer>;
@@ -55557,6 +55572,13 @@ declare namespace $.$$ {
          * именно позвавший, нелепо — переписка там уже идёт. */
         invite_ready(id: string): boolean;
         outbox_flush(): number;
+        sealed_close([kind, pass, open]: readonly [string, string, string]): string;
+        sealed_open([kind, entry]: readonly [string, string]): {
+            open: string;
+            pass: string;
+            lord: string;
+        } | null;
+        invite_open(entry: string): string;
         inbox_merge(): number;
         monitor_fill(): boolean;
         /** Ссылки на все бакеты диалога. Бакетов больше одного, когда кого-то
