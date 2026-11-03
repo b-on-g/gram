@@ -20120,6 +20120,436 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_video_player) = class $mol_video_player extends ($.$mol_view) {
+		uri(){
+			return "";
+		}
+		controls(){
+			return true;
+		}
+		autoplay(){
+			return true;
+		}
+		inline(){
+			return true;
+		}
+		loop(){
+			return false;
+		}
+		muted(){
+			return false;
+		}
+		poster(){
+			return "";
+		}
+		stream(){
+			return null;
+		}
+		revolume(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		retime(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		redurate(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		playing_event(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		play_event(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		pause_event(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "video";
+		}
+		playing(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		play(){
+			return null;
+		}
+		pause(){
+			return null;
+		}
+		volume(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		time(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		duration(){
+			return 0;
+		}
+		attr(){
+			return {
+				"src": (this.uri()), 
+				"controls": (this.controls()), 
+				"autoplay": (this.autoplay()), 
+				"playsinline": (this.inline()), 
+				"loop": (this.loop()), 
+				"muted": (this.muted()), 
+				"poster": (this.poster())
+			};
+		}
+		field(){
+			return {"srcObject": (this.stream())};
+		}
+		event(){
+			return {
+				"volumechange": (next) => (this.revolume(next)), 
+				"timeupdate": (next) => (this.retime(next)), 
+				"durationchange": (next) => (this.redurate(next)), 
+				"playing": (next) => (this.playing_event(next)), 
+				"play": (next) => (this.play_event(next)), 
+				"pause": (next) => (this.pause_event(next))
+			};
+		}
+	};
+	($mol_mem(($.$mol_video_player.prototype), "revolume"));
+	($mol_mem(($.$mol_video_player.prototype), "retime"));
+	($mol_mem(($.$mol_video_player.prototype), "redurate"));
+	($mol_mem(($.$mol_video_player.prototype), "playing_event"));
+	($mol_mem(($.$mol_video_player.prototype), "play_event"));
+	($mol_mem(($.$mol_video_player.prototype), "pause_event"));
+	($mol_mem(($.$mol_video_player.prototype), "playing"));
+	($mol_mem(($.$mol_video_player.prototype), "volume"));
+	($mol_mem(($.$mol_video_player.prototype), "time"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Video player component
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_video_player_demo
+         */
+        class $mol_video_player extends $.$mol_video_player {
+            dom_node() {
+                return super.dom_node();
+            }
+            volume(next) {
+                this.revolume();
+                if (next === undefined) {
+                    return this.dom_node().volume;
+                }
+                else {
+                    return this.dom_node().volume = Math.max(0, Math.min(next, 1));
+                }
+            }
+            time(next) {
+                this.retime();
+                if (next === undefined) {
+                    return this.dom_node().currentTime;
+                }
+                else {
+                    return this.dom_node().currentTime = Math.max(0, Math.min(next, this.duration()));
+                }
+            }
+            duration() {
+                this.redurate();
+                return this.dom_node().duration;
+            }
+            playing(next) {
+                const node = this.dom_node();
+                this.playing_event();
+                this.play_event();
+                if (next === undefined)
+                    return !node.paused;
+                if (next && node.paused)
+                    $mol_wire_sync(node).play();
+                if (!next && !node.paused)
+                    node.pause();
+                return !node.paused;
+            }
+            play() {
+                this.playing(true);
+            }
+            pause() {
+                this.playing(false);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_video_player.prototype, "volume", null);
+        __decorate([
+            $mol_mem
+        ], $mol_video_player.prototype, "time", null);
+        __decorate([
+            $mol_mem
+        ], $mol_video_player.prototype, "duration", null);
+        __decorate([
+            $mol_mem
+        ], $mol_video_player.prototype, "playing", null);
+        $$.$mol_video_player = $mol_video_player;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/video/player/player.view.css", "[mol_video_player] {\n\tflex: 1 1 auto;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_video_camera) = class $mol_video_camera extends ($.$mol_video_player) {
+		transform(){
+			return "";
+		}
+		facing(){
+			return "user";
+		}
+		aspect(){
+			return 1;
+		}
+		size(){
+			return 720;
+		}
+		width(){
+			return (this.size());
+		}
+		height(){
+			return (this.size());
+		}
+		brightness(){
+			return 128;
+		}
+		sharpness(){
+			return 2;
+		}
+		contrast(){
+			return 32;
+		}
+		saturation(){
+			return 64;
+		}
+		temperature(){
+			return 4000;
+		}
+		torch(){
+			return false;
+		}
+		controls(){
+			return false;
+		}
+		style(){
+			return {"transform": (this.transform())};
+		}
+		video_constraints(){
+			return {
+				"facingMode": (this.facing()), 
+				"aspectRatio": (this.aspect()), 
+				"width": {"ideal": (this.width())}, 
+				"height": {"ideal": (this.height())}
+			};
+		}
+		video_settings(){
+			return {
+				"brightness": (this.brightness()), 
+				"sharpness": (this.sharpness()), 
+				"contrast": (this.contrast()), 
+				"saturation": (this.saturation()), 
+				"advanced": [{"colorTemperature": (this.temperature())}, {"torch": (this.torch())}]
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_video_camera extends $.$mol_video_camera {
+            stream_raw() {
+                const stream = $mol_wire_sync(navigator.mediaDevices).getUserMedia({
+                    video: this.video_constraints(),
+                });
+                return Object.assign(stream, {
+                    destructor: () => stream.getTracks().forEach(track => track.stop())
+                });
+            }
+            stream() {
+                const settings = this.video_settings();
+                const stream = this.stream_raw();
+                for (const track of stream.getVideoTracks()) {
+                    for (const param in settings) {
+                        if (param === 'advanced') {
+                            for (const constraint of settings.advanced) {
+                                try {
+                                    track.applyConstraints({ advanced: [constraint] });
+                                }
+                                catch (error) {
+                                    $mol_fail_log(error);
+                                }
+                            }
+                        }
+                        else if (settings[param] !== null) {
+                            try {
+                                track.applyConstraints({ [param]: settings[param] });
+                            }
+                            catch (error) {
+                                $mol_fail_log(error);
+                            }
+                        }
+                    }
+                }
+                return stream;
+            }
+            dom_node_actual() {
+                return super.dom_node_actual();
+            }
+            transform() {
+                return this.facing() === 'user' ? 'scaleX(-1)' : '';
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_video_camera.prototype, "stream_raw", null);
+        __decorate([
+            $mol_mem
+        ], $mol_video_camera.prototype, "stream", null);
+        $$.$mol_video_camera = $mol_video_camera;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_scan) = class $bog_gram_scan extends ($.$mol_view) {
+		Toggle(){
+			const obj = new this.$.$mol_check();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_scan_Toggle_title")));
+			(obj.checked) = (next) => ((this.scanning(next)));
+			return obj;
+		}
+		Camera(){
+			const obj = new this.$.$mol_video_camera();
+			(obj.facing) = () => ("environment");
+			(obj.muted) = () => (true);
+			return obj;
+		}
+		scanning(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		prefix(){
+			return "";
+		}
+		found(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		sub(){
+			return [(this.Toggle()), (this.Camera())];
+		}
+	};
+	($mol_mem(($.$bog_gram_scan.prototype), "Toggle"));
+	($mol_mem(($.$bog_gram_scan.prototype), "Camera"));
+	($mol_mem(($.$bog_gram_scan.prototype), "scanning"));
+	($mol_mem(($.$bog_gram_scan.prototype), "found"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const qr_module = require('jsqr/dist/jsQR.js');
+        const qr_read = qr_module.default ?? qr_module;
+        class $bog_gram_scan extends $.$bog_gram_scan {
+            sub() {
+                return this.scanning() ? [this.Toggle(), this.Camera()] : [this.Toggle()];
+            }
+            canvas() {
+                return $mol_dom_context.document.createElement('canvas');
+            }
+            tick() {
+                if (!this.scanning())
+                    return null;
+                $mol_state_time.now(250);
+                const video = this.Camera().dom_node();
+                const width = video.videoWidth;
+                const height = video.videoHeight;
+                if (!width || !height)
+                    return null;
+                const canvas = this.canvas();
+                canvas.width = width;
+                canvas.height = height;
+                const context = canvas.getContext('2d', { willReadFrequently: true });
+                context.drawImage(video, 0, 0, width, height);
+                const found = qr_read(context.getImageData(0, 0, width, height).data, width, height);
+                if (!found?.data.includes(this.prefix()))
+                    return null;
+                setTimeout(() => {
+                    this.scanning(false);
+                    this.found(found.data);
+                });
+                return found.data;
+            }
+            auto() {
+                this.tick();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_scan.prototype, "canvas", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_scan.prototype, "tick", null);
+        $$.$bog_gram_scan = $bog_gram_scan;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_scan, {
+            flex: { direction: 'column' },
+            gap: $mol_gap.text,
+            Camera: {
+                width: '100%',
+                maxWidth: '20rem',
+                aspectRatio: 1,
+                objectFit: 'cover',
+                border: { radius: $mol_gap.round },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
 		path(){
 			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
@@ -21347,6 +21777,15 @@ var $;
 			(obj.sub) = () => ([(this.Key_load_hint()), (this.Key_open())]);
 			return obj;
 		}
+		key_scanned(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Key_scan(){
+			const obj = new this.$.$bog_gram_scan();
+			(obj.found) = (next) => ((this.key_scanned(next)));
+			return obj;
+		}
 		import_armed(){
 			return false;
 		}
@@ -22282,6 +22721,7 @@ var $;
 			(obj.sub) = () => ([
 				(this.Key_field()), 
 				(this.Key_load_row()), 
+				(this.Key_scan()), 
 				(this.Key_import()), 
 				(this.Key_error())
 			]);
@@ -22632,6 +23072,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "key_file"));
 	($mol_mem(($.$bog_gram.prototype), "Key_open"));
 	($mol_mem(($.$bog_gram.prototype), "Key_load_row"));
+	($mol_mem(($.$bog_gram.prototype), "key_scanned"));
+	($mol_mem(($.$bog_gram.prototype), "Key_scan"));
 	($mol_mem(($.$bog_gram.prototype), "key_import"));
 	($mol_mem(($.$bog_gram.prototype), "Key_import"));
 	($mol_mem(($.$bog_gram.prototype), "Key_error"));
@@ -28444,6 +28886,15 @@ var $;
                 if (file)
                     $mol_wire_async(this).key_file_read(file);
                 return next ?? null;
+            }
+            key_scanned(next) {
+                if (next === undefined)
+                    return '';
+                const str = next.trim();
+                this.key_input(str);
+                this.import_armed(false);
+                this.key_error(this.auth_from(str) ? '' : 'В QR не ключ аккаунта');
+                return str;
             }
             key_file_read(file) {
                 const text = $mol_wire_sync(file).text();
