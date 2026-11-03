@@ -1587,7 +1587,7 @@ var $;
     (function ($$) {
         $mol_test({
             "Validation"($) {
-                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link (qwertyui_asdfghjk123)');
+                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link');
             },
             "From integer"($) {
                 $mol_assert_equal($giper_baza_link.from_int(178308648732587), new $giper_baza_link('qwertyui'));
@@ -1725,31 +1725,32 @@ var $;
 (function ($) {
     $mol_test({
         async 'Sizes'() {
-            const secret = $mol_crypto_sacred.make();
-            const key = secret.asArray();
-            $mol_assert_equal(key.byteLength, $mol_crypto_sacred.size);
+            const secret = $mol_crypto2_secret.make();
+            $mol_assert_equal(secret.asArray().byteLength, $mol_crypto2_secret.size);
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const closed = await secret.encrypt(data, salt);
-            $mol_assert_equal(closed.byteLength, $mol_crypto_sacred.size);
-            const self_closed = await secret.close(secret, salt);
-            $mol_assert_equal(self_closed.byteLength, $mol_crypto_sacred.size);
+            const nonce = $mol_crypto2_nonce();
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, data.byteLength);
+        },
+        'Wrong key size'() {
+            $mol_assert_fail(() => $mol_crypto2_secret.from(new Uint8Array(8)), 'Wrong key size');
         },
         async 'Decrypt self encrypted'() {
-            const secret = $mol_crypto_sacred.make();
+            const secret = $mol_crypto2_secret.make();
+            const nonce = $mol_crypto2_nonce();
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const closed = await secret.encrypt(data, salt);
-            const opened = await secret.decrypt(closed, salt);
-            $mol_assert_equal(data, opened);
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, 3);
+            const opened = await secret.decrypt(closed, nonce);
+            $mol_assert_equal(opened, data);
         },
         async 'Decrypt encrypted with exported key'() {
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const Alice = $mol_crypto_sacred.make();
-            const closed = await Alice.encrypt(data, salt);
-            const Bob = $mol_crypto_sacred.from(Alice.asArray());
-            const opened = await Bob.decrypt(closed, salt);
+            const nonce = $mol_crypto2_nonce();
+            const Alice = $mol_crypto2_secret.make();
+            const closed = await Alice.encrypt(data, nonce);
+            const Bob = $mol_crypto2_secret.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, nonce);
             $mol_assert_equal(data, opened);
         },
     });
@@ -4469,7 +4470,7 @@ var $;
             const list1 = land1.Pawn($giper_baza_list).Data();
             const list2 = land2.Pawn($giper_baza_list).Data();
             list1.items_vary(['foo', 'xxx']);
-            land2.faces.tick();
+            land2.tick();
             list2.items_vary(['foo', 'yyy']);
             await $mol_wire_async(land1).units_steal(land2);
             $mol_assert_equal(list1.items_vary(), ['foo', 'yyy', 'foo', 'xxx']);
@@ -4672,6 +4673,25 @@ var $;
             sync(left, right);
             $mol_assert_equal(left.Data($giper_baza_list).items_vary(), right.Data($giper_baza_list).items_vary(), [1, 4, 5, 2, 3, 7, 6]);
         }),
+        async '3 transactions in same second must keep ordering'($) {
+            const auth_left = $.$giper_baza_auth.grab();
+            const auth_right = $.$giper_baza_auth.grab();
+            const land_left = $.$giper_baza_land.make({ $, auth: () => auth_left });
+            land_left.give(auth_right.pass(), $giper_baza_rank_post('just'));
+            const land_right = $.$giper_baza_land.make({ $, auth: () => auth_right, link: () => land_left.link() });
+            const list_left = land_left.Data($giper_baza_list);
+            const list_right = land_right.Data($giper_baza_list);
+            list_left.items_vary(['a', 'b', 'c', 'd']);
+            $mol_assert_equal(list_left.items_vary(), ['a', 'b', 'c', 'd']);
+            await $mol_wire_async(land_right).units_steal(land_left);
+            $mol_assert_equal(list_right.items_vary(), ['a', 'b', 'c', 'd']);
+            list_right.splice(['x'], 0, 0);
+            $mol_assert_equal(list_right.items_vary(), ['x', 'a', 'b', 'c', 'd']);
+            await $mol_wire_async(land_left).units_steal(land_right);
+            $mol_assert_equal(list_left.items_vary(), ['x', 'a', 'b', 'c', 'd']);
+            list_left.items_vary(['d', 'x', 'a', 'b', 'c']);
+            $mol_assert_equal(list_left.items_vary(), ['d', 'x', 'a', 'b', 'c']);
+        },
     });
 })($ || ($ = {}));
 
@@ -4710,12 +4730,12 @@ var $;
                 const dict1 = land1.Pawn($giper_baza_dict).Data();
                 const dict2 = land2.Pawn($giper_baza_dict).Data();
                 dict1.dive(123, $giper_baza_atom, null).vary(666);
-                land2.faces.tick();
+                land2.tick();
                 dict2.dive(123, $giper_baza_atom, null).vary(777);
                 await $mol_wire_async(land1).units_steal(land2);
                 $mol_assert_equal(dict1.dive(123, $giper_baza_atom).vary(), 777);
                 dict1.dive('xxx', $giper_baza_list, null).items_vary(['foo']);
-                land2.faces.tick();
+                land2.tick();
                 dict2.dive('xxx', $giper_baza_list, null).items_vary(['bar']);
                 await $mol_wire_async(land1).units_steal(land2);
                 $mol_assert_equal(dict1.dive('xxx', $giper_baza_list).items_vary(), ['bar', 'foo']);
@@ -5328,9 +5348,9 @@ var $;
     });
     $mol_test({
         async 'Give rights'($) {
-            const auth0 = await $.$giper_baza_auth.generate();
-            const auth1 = await $.$giper_baza_auth.generate();
-            const auth2 = await $.$giper_baza_auth.generate();
+            const auth0 = await $.$giper_baza_auth.grab();
+            const auth1 = await $.$giper_baza_auth.grab();
+            const auth2 = await $.$giper_baza_auth.grab();
             const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
             const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
             $mol_assert_equal(land0.lord_rank(land0.link()), $giper_baza_rank_rule);
@@ -5354,8 +5374,8 @@ var $;
             land1.give(auth2.pass(), $giper_baza_rank_post('just'));
         },
         async 'Post Data and pick Delta'($) {
-            const auth1 = await $.$giper_baza_auth.generate();
-            const auth2 = await $.$giper_baza_auth.generate();
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
             const land1 = $giper_baza_land.make({ $, auth: () => auth1 });
             const land2 = $giper_baza_land.make({ $, link: () => land1.link(), auth: () => auth2 });
             $mol_assert_equal(await $mol_wire_async(land1).diff_units(), []);
@@ -5438,6 +5458,20 @@ var $;
             })();
             $mol_assert_equal(area.pass_rank(area.auth().pass()), $giper_baza_rank_rule);
             $mol_assert_equal(area.lord_rank($giper_baza_link.hole), $giper_baza_rank_post('just'));
+        },
+        async 'Gift to new Mate reaches Peer which knows Lord'($) {
+            const auth0 = $.$giper_baza_auth.grab();
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
+            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
+            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
+            land0.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
+            await $mol_wire_async(land1).units_steal(land0);
+            const face = land1.faces.clone();
+            land0.give(auth2.pass(), $giper_baza_rank_post('just'));
+            const delta = await $mol_wire_async(land0).diff_units(face);
+            await $mol_wire_async(land1).diff_apply(delta);
+            $mol_assert_equal(land1.lord_rank(auth2.pass().lord()), $giper_baza_rank_post('just'));
         },
         // async 'Merge text changes'() {
         // 	const base = new $giper_baza_land( 1n, 1 )
@@ -6391,6 +6425,27 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $mol_locale_mock extends $mol_locale {
+            lang(next = 'en') { return next; }
+            static source(lang) {
+                return {};
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_locale_mock.prototype, "lang", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_locale_mock, "source", null);
+        $.$mol_locale = $mol_locale_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     var $$;
     (function ($$) {
         $mol_test({
@@ -6770,22 +6825,29 @@ var $;
 
 ;
 "use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
 var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $mol_locale_mock extends $mol_locale {
-            lang(next = 'en') { return next; }
-            static source(lang) {
-                return {};
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_locale_mock.prototype, "lang", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_locale_mock, "source", null);
-        $.$mol_locale = $mol_locale_mock;
+(function ($) {
+    $mol_test({
+        'safe tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
+        },
+        'bad tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
+        },
+        'common attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
+        },
+        'safe attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
+        },
+        'bad attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
+        },
+        'danger attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
+        },
     });
 })($ || ($ = {}));
 
@@ -6801,10 +6863,7 @@ var $;
         }
         $.$giper_baza_yard = $giper_baza_yard_mock;
     });
-    $giper_baza_yard.masters = () => {
-        $giper_baza_glob.Seed();
-        return ['http://localhost:9090/'];
-    };
+    $giper_baza_yard.masters_override = () => ['http://localhost:9090/'];
 })($ || ($ = {}));
 
 ;
@@ -6973,6 +7032,225 @@ var $;
             $mol_assert_equal(left.Data($giper_baza_text).str(), right.Data($giper_baza_text).str(), '( [ fu ] [ foo ] )');
         },
     });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function html(dom) {
+        return dom.html().replace(/ (id|xmlns)=".+?"/g, '');
+    }
+    $mol_test({
+        'plain text'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('foo bar');
+            $mol_assert_equal(html(left), '<span>foo</span><span> bar</span>');
+        },
+        'simple tags'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('<br /><hr />');
+            $mol_assert_equal(html(left), '<br /><hr />');
+        },
+        'tags with attrs'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('<br hidden="" /><hr tabindex="-1" />');
+            $mol_assert_equal(html(left), '<br hidden="" /><hr tabindex="-1" />');
+        },
+        'nested tags'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('<p><br /></p>');
+            $mol_assert_equal(html(left), '<p><br /></p>');
+        },
+        'paragraphs'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('<p>foo bar</p><p>xxx yyy</p>');
+            $mol_assert_equal(html(left), '<p><span>foo</span><span> bar</span></p><p><span>xxx</span><span> yyy</span></p>');
+        },
+        'import exported html'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('foo<a data-xxx="yyy" href="hhh:zzz">ton</a>bar');
+            const right = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            right.html(left.html());
+            $mol_assert_equal(html(left), html(right));
+            $mol_assert_equal(left.html(), right.html());
+        },
+        'import wild spans'($) {
+            const left = $giper_baza_land.make({ $ }).Data($giper_baza_rich);
+            left.html('<span>foo bar<a href="hhh:ton"/></span>');
+            $mol_assert_equal(html(left), '<span>foo</span><span> bar</span><a href="hhh:ton"></a>');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+var $;
+(function ($) {
+    $mol_test({
+        'Attach to document'() {
+            const doc = $mol_dom_parse('<html><body id="foo"></body></html>');
+            $mol_jsx_attach(doc, () => $mol_jsx("body", { id: "foo" }, "bar"));
+            $mol_assert_equal(doc.documentElement.outerHTML, '<html><body id="foo">bar</body></html>');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Head"($) {
+                const div = $mol_jsx("div", null, "foo");
+                $mol_assert_equal($mol_dom_point.head(div), new $mol_dom_point(div, 0));
+                $mol_assert_equal($mol_dom_point.head(div).is_head(), true);
+                $mol_assert_equal(new $mol_dom_point(div.firstChild, 1).is_head(), false);
+            },
+            "Foot"($) {
+                const div = $mol_jsx("div", null, "foo");
+                $mol_assert_equal($mol_dom_point.foot(div), new $mol_dom_point(div, 1), $mol_dom_point.tail(div.firstChild));
+                $mol_assert_equal($mol_dom_point.foot(div).is_foot(), true);
+                $mol_assert_equal(new $mol_dom_point(div.firstChild, 2).is_foot(), false);
+            },
+            "Near & jump"($) {
+                const div = $mol_jsx("div", null,
+                    "123",
+                    $mol_jsx("span", null, "foo"),
+                    "456");
+                const span = div.childNodes[1];
+                $mol_assert_equal(new $mol_dom_point(div, 1), $mol_dom_point.near(span, -1), new $mol_dom_point(span, 1).jump(-1));
+                $mol_assert_equal(new $mol_dom_point(div, 2), $mol_dom_point.near(span, +1), new $mol_dom_point(span, 1).jump(+1));
+            },
+            "Lift points to common parent"($) {
+                const div = $mol_jsx("div", null,
+                    "123",
+                    $mol_jsx("p", null,
+                        $mol_jsx("span", null, "one")),
+                    "456");
+                const para = div.firstChild.nextSibling;
+                const deep = para.firstChild.firstChild;
+                $mol_assert_equal($mol_dom_point.head(deep).lifted_to(div), para);
+                $mol_assert_equal($mol_dom_point.head(div.firstChild).lifted_to(div), div.firstChild);
+            },
+            "move by steps to the end"($) {
+                const div = $mol_jsx("div", null,
+                    "1",
+                    $mol_jsx("span", null, "23"),
+                    $mol_jsx("br", null),
+                    "4");
+                const span = div.childNodes[1];
+                const br = div.childNodes[2];
+                let cursor = $mol_dom_point.head(div);
+                $mol_assert_equal([
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                    cursor = cursor.move_step(+1),
+                ], [
+                    $mol_dom_point.head(div.firstChild),
+                    $mol_dom_point.foot(div.firstChild),
+                    $mol_dom_point.tail(div.firstChild),
+                    $mol_dom_point.head(span),
+                    $mol_dom_point.head(span.firstChild),
+                    new $mol_dom_point(span.firstChild, 1),
+                    $mol_dom_point.foot(span.firstChild),
+                    $mol_dom_point.tail(span.firstChild),
+                    $mol_dom_point.tail(span),
+                    $mol_dom_point.head(br),
+                    $mol_dom_point.tail(br),
+                    $mol_dom_point.head(div.lastChild),
+                    $mol_dom_point.foot(div.lastChild),
+                    $mol_dom_point.tail(div.lastChild),
+                    null,
+                ]);
+            },
+            "move by chars to the end"($) {
+                const div = $mol_jsx("div", null,
+                    "1",
+                    $mol_jsx("span", null, "23"),
+                    $mol_jsx("br", null),
+                    "4");
+                const span = div.childNodes[1];
+                const br = div.childNodes[2];
+                let start = $mol_dom_point.head(div);
+                $mol_assert_equal([
+                    start.move_chars(div, +0),
+                    start.move_chars(div, +1),
+                    start.move_chars(div, +2),
+                    start.move_chars(div, +3),
+                    start.move_chars(div, +4),
+                    start.move_chars(div, +5),
+                ], [
+                    $mol_dom_point.head(div),
+                    $mol_dom_point.foot(div.firstChild),
+                    new $mol_dom_point(span.firstChild, 1),
+                    $mol_dom_point.foot(span.firstChild),
+                    $mol_dom_point.foot(div.lastChild),
+                    $mol_dom_point.foot(div),
+                ]);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Inside, expand & around"($) {
+                const div = $mol_jsx("div", null,
+                    "123",
+                    $mol_jsx("span", null, "foo"),
+                    "456");
+                const span = div.childNodes[1];
+                $mol_assert_equal($mol_dom_range.inside(span).expand(), $mol_dom_range.around(span));
+            },
+            "Order range points"($) {
+                const div = $mol_jsx("div", null,
+                    $mol_jsx("span", null, "one"),
+                    $mol_jsx("span", null, "two"));
+                const one = $mol_dom_point.head(div.firstChild);
+                const two = $mol_dom_point.head(div.lastChild);
+                const forward = new $mol_dom_range(one, two);
+                const backward = new $mol_dom_range(two, one);
+                $mol_assert_equal(forward.ordered(), backward.ordered(), forward);
+            },
+            "Lift to common block parent"($) {
+                const quote = $mol_jsx("blockquote", null,
+                    "123",
+                    $mol_jsx("p", null,
+                        $mol_jsx("span", null, "foo")),
+                    $mol_jsx("p", null,
+                        $mol_jsx("span", null, "bar")),
+                    "456");
+                const foo = quote.firstChild.nextSibling;
+                const bar = quote.lastChild.previousSibling.firstChild.firstChild;
+                const lifted = new $mol_dom_range($mol_dom_point.head(foo), $mol_dom_point.foot(bar)).lifted();
+                const ideal = new $mol_dom_range($mol_dom_point.tail(quote.firstChild), $mol_dom_point.nose(quote.lastChild));
+                $mol_assert_equal(lifted, ideal);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -7199,10 +7477,10 @@ var $;
                 $mol_assert_equal(found.Author().val(), 'LordA');
             },
             async 'Диалог: два пользователя обмениваются сообщениями через CRDT-синк'($) {
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_session = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_session = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const lord_b = auth_b.pass().lord().str;
                 // Инициатор (кинг ленда) раздаёт права обоим участникам
@@ -7253,8 +7531,8 @@ var $;
                 $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
             },
             async 'Шифрование: участник с гифтом читает и пишет данные диалога'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const land0 = $giper_baza_land.make({ $, auth: () => king });
                 await $mol_wire_async(land0).encrypted(true);
                 $mol_assert_equal(land0.encrypted(), true);
@@ -7288,8 +7566,8 @@ var $;
                 $mol_assert_equal(peers0.includes('SecretLordB'), true);
             },
             async 'Inbox-лобби: чужой пользователь доставляет инвайт владельцу'($) {
-                const owner = await $.$giper_baza_auth.generate();
-                const stranger = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
+                const stranger = await $.$giper_baza_auth._generate();
                 const inbox0 = $giper_baza_land.make({ $, auth: () => owner });
                 inbox0.give(null, $giper_baza_rank_post('just'));
                 const inbox_stranger = $giper_baza_land.make({ $, link: () => inbox0.link(), auth: () => stranger });
@@ -7319,9 +7597,9 @@ var $;
                 $mol_assert_equal(merged[0], 'DialogKeep');
             },
             async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
                 const registry_a = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_a });
@@ -7341,8 +7619,8 @@ var $;
                 $mol_assert_equal(lords_a.length, lords_b.length);
             },
             async 'Вступление в реестр — явное действие, чтение список не меняет'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const guest_lord = guest.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -7361,8 +7639,8 @@ var $;
                 $mol_assert_equal(owner_side.includes(guest_lord), true);
             },
             async 'Название реестра задаёт создатель, видит участник'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const king_lord = king.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -7376,8 +7654,8 @@ var $;
                 $mol_assert_equal(data_guest.Lords().items().includes(king_lord), true);
             },
             async 'Забыть реестр — локальная операция, запись в нём остаётся'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const me = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const me = await $.$giper_baza_auth._generate();
                 const my_lord = me.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -7399,9 +7677,9 @@ var $;
                 $mol_assert_equal(lords.includes(my_lord), true);
             },
             async 'Ключ участника доезжает до других через реестр'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const key_a = auth_a.pass().toString();
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
@@ -7426,8 +7704,8 @@ var $;
                 $mol_assert_equal(Boolean(data_b.Keys()?.key(auth_b.pass().lord().str)), false);
             },
             async 'Подложенный ключ не принимается: идентификатор его не подтверждает'($) {
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const app = $bog_gram.make({ $ });
                 // Свой ключ под своей записью проходит
@@ -7438,7 +7716,7 @@ var $;
                 $mol_assert_equal(app.pass_verified(auth_b.pass().lord().str, auth_a.pass().toString()), null);
             },
             async 'Мусор вместо ключа не роняет разбор'($) {
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const lord = auth.pass().lord().str;
                 const app = $bog_gram.make({ $ });
                 // Ни строки короче ключа, ни строки нужной длины из чего попало
@@ -7450,7 +7728,7 @@ var $;
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
             async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
-                const owner = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
                 const owner_lord = owner.pass().lord().str;
                 const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
                 const my = 'LordMine';
@@ -7551,7 +7829,7 @@ var $;
             },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
-                const guest = await $.$giper_baza_auth.generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const lord = guest.pass().lord().str;
                 const key = guest.pass().toString();
                 const group = new $giper_baza_link(lord + '_KJhgFdSa').str;
@@ -7578,8 +7856,8 @@ var $;
             },
             async 'Подложенный в заявке ключ не принимается'($) {
                 const app = $bog_gram.make({ $ });
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const group = new $giper_baza_link(lord_a + '_KJhgFdSa').str;
                 // Своя заявка со своим ключом проходит
@@ -7596,8 +7874,8 @@ var $;
                 $mol_assert_equal(app.pass_verified(swapped.lord, swapped.pass), null);
             },
             async 'Заявка ложится в свой список лобби и снимается решением'($) {
-                const owner = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const app = $bog_gram.make({ $ });
                 const guest_lord = guest.pass().lord().str;
                 const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
@@ -7695,9 +7973,9 @@ var $;
                 $mol_assert_equal(sorted[2].Text().val(), 'третье');
             },
             async 'Правка сообщения синхронизируется вместе с меткой Edited'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -7723,9 +8001,9 @@ var $;
                 $mol_assert_equal(edited_b.Edited().val(), 1500);
             },
             async 'Удаление — это флаг Deleted, обе стороны его видят'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -7757,9 +8035,9 @@ var $;
                 $mol_assert_equal(dead_b[0].Deleted().val(), 2500);
             },
             async 'Позиции прочтения: Reads мержатся по ключу-лорду'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const lord_b = auth_b.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
@@ -7783,9 +8061,9 @@ var $;
                 $mol_assert_equal(reads_b?.key(lord_b)?.Moment()?.val(), 2000);
             },
             async 'Отметка прочтения сдвигается вперёд и доезжает до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -7849,7 +8127,7 @@ var $;
             },
             async 'Ключ в ссылке-приглашении избавляет от ожидания сети'($) {
                 const app = $bog_gram.make({ $ });
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const pass = auth.pass();
                 const lord = pass.lord().str;
                 const key = pass.toString();
@@ -7863,7 +8141,7 @@ var $;
                 // И дальше берётся как есть: домашний ленд собеседника ждать нечего
                 $mol_assert_equal(app.peer_pass_of(lord), learned);
                 // Подложенный чужой ключ и мусор не принимаются
-                const other = await $.$giper_baza_auth.generate();
+                const other = await $.$giper_baza_auth._generate();
                 $mol_assert_equal(app.peer_pass_learn(lord, other.pass().toString()), null);
                 $mol_assert_equal(app.peer_pass_learn(lord, 'мусор'), null);
                 $mol_assert_equal(app.peer_pass_learn(lord, ''), null);
@@ -7986,9 +8264,9 @@ var $;
                 $mol_assert_equal(app.session_links_of(first).join(), links.join());
             },
             async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -8045,9 +8323,9 @@ var $;
                 $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
             },
             async 'Голосовое: ссылка на запись и её длительность доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -8201,7 +8479,7 @@ var $;
                 // служебный ключ, выданный при захвате, и по ссылке ленда автора
                 // не узнать. Без записи ответ честно пустой.
                 $mol_assert_equal(app.dialog_owner(''), '');
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const lord = auth.pass().lord().str;
                 const land = $giper_baza_land.make({ $, auth: () => auth });
                 const ops = {
@@ -8258,11 +8536,11 @@ var $;
                 // Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
                 // нужен свой: с общим ключом это был бы один и тот же ленд в трёх
                 // обёртках, и шифрование с раздачей прав уходило бы в клинч
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_old = await $.$giper_baza_auth.generate();
-                const king_new = await $.$giper_baza_auth.generate();
-                const auth_stay = await $.$giper_baza_auth.generate();
-                const auth_out = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_old = await $.$giper_baza_auth._generate();
+                const king_new = await $.$giper_baza_auth._generate();
+                const auth_stay = await $.$giper_baza_auth._generate();
+                const auth_out = await $.$giper_baza_auth._generate();
                 const lord_stay = auth_stay.pass().lord().str;
                 const lord_out = auth_out.pass().lord().str;
                 const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
@@ -8336,11 +8614,11 @@ var $;
             async 'Добавленный без истории видит только новый бакет'($) {
                 // Каждому ленду свой король: ссылка выводится из ключа, и общий
                 // ключ склеил бы три ленда в один
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_old = await $.$giper_baza_auth.generate();
-                const king_fresh = await $.$giper_baza_auth.generate();
-                const auth_old = await $.$giper_baza_auth.generate();
-                const auth_new = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_old = await $.$giper_baza_auth._generate();
+                const king_fresh = await $.$giper_baza_auth._generate();
+                const auth_old = await $.$giper_baza_auth._generate();
+                const auth_new = await $.$giper_baza_auth._generate();
                 const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
                 const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
                 const fresh = $giper_baza_land.make({ $, auth: () => king_fresh });

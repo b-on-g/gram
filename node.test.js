@@ -773,7 +773,7 @@ var $;
         'color': 'gray',
     });
     $.$mol_dev_format_indent = $.$mol_dev_format_div.bind(null, {
-        'margin-left': '13px'
+        'margin-inline-start': '13px'
     });
     class Stack extends Array {
         // [ Symbol.toPrimitive ]() {
@@ -2078,12 +2078,12 @@ var $;
                 reuse: if (existen) {
                     if (!existen.temp)
                         break reuse;
-                    if (existen.task !== task) {
-                        cause = 'task';
-                        break reuse;
-                    }
                     if (existen.host !== host) {
                         cause = 'host';
+                        break reuse;
+                    }
+                    if (existen.task !== task) {
+                        cause = 'task';
                         break reuse;
                     }
                     if (!$mol_compare_deep(existen.args, args)) {
@@ -2338,7 +2338,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_dom_context = new $node.jsdom.JSDOM('', { url: 'https://localhost/' }).window;
+    $.$mol_dom_context = new $node.jsdom.JSDOM('', { url: `http://${process.env.DOMAIN || 'localhost'}/` }).window;
 })($ || ($ = {}));
 
 ;
@@ -3401,27 +3401,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /**
-     * Disable reaping of current subscriber
-     */
-    function $mol_wire_solid() {
-        let current = $mol_wire_auto();
-        if (current.temp)
-            current = current.host;
-        if (current.reap !== nothing) {
-            current?.sub_on(sub, sub.data.length);
-        }
-        current.reap = nothing;
-    }
-    $.$mol_wire_solid = $mol_wire_solid;
-    const nothing = () => { };
-    const sub = new $mol_wire_pub_sub;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_dom_render_attributes(el, attrs) {
         for (let name in attrs) {
             let val = attrs[name];
@@ -3544,7 +3523,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/view/view/view.css", "@view-transition {\n\tnavigation: auto;\n}\n\n[mol_view] {\n\ttransition-property: height, width, min-height, min-width, max-width, max-height, transform, scale, translate, rotate;\n\ttransition-duration: .2s;\n\ttransition-timing-function: ease-out;\n\t-webkit-appearance: none;\n\tbox-sizing: border-box;\n\tdisplay: flex;\n\tflex-shrink: 0;\n\tcontain: style;\n\tscrollbar-color: var(--mol_theme_line) transparent;\n\tscrollbar-width: thin;\n\ttext-wrap-style: pretty;\n}\t\n\n[mol_view]::selection {\n\tbackground: var(--mol_theme_line);\n}\t\n\n[mol_view]::-webkit-scrollbar {\n\twidth: .25rem;\n\theight: .25rem;\n}\n\n[mol_view]::-webkit-scrollbar-corner {\n\tbackground-color: var(--mol_theme_line);\n}\n\n[mol_view]::-webkit-scrollbar-track {\n\tbackground-color: transparent;\n}\n\n[mol_view]::-webkit-scrollbar-thumb {\n\tbackground-color: var(--mol_theme_line);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_view] > * {\n\tword-break: inherit;\n}\n\n[mol_view_root] {\n\tmargin: 0;\n\tpadding: 0;\n\twidth: 100%;\n\theight: 100%;\n\tbox-sizing: border-box;\n\tfont-family: system-ui, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n\tfont-size: 1rem;\n\tline-height: 1.5rem;\n\t/* background: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text); */\n\tcontain: unset; /** Fixes bg ignoring when applied to body on Chrome */\n\ttab-size: 4;\n\t/*overscroll-behavior: contain; /** Disable navigation gestures **/\n}\n\n@media print {\n\t[mol_view_root] {\n\t\theight: auto;\n\t}\n}\n[mol_view][mol_view_error]:not([mol_view_error=\"Promise\"], [mol_view_error=\"$mol_promise_blocker\"]) {\n\tbackground-image: repeating-linear-gradient(\n\t\t-45deg,\n\t\t#f92323,\n\t\t#f92323 .5rem,\n\t\t#ff3d3d .5rem,\n\t\t#ff3d3d 1.5rem\n\t);\n\tcolor: black;\n\talign-items: center;\n\tjustify-content: center;\n}\n\n@keyframes mol_view_wait {\n\tfrom {\n\t\topacity: .25;\n\t}\n\t20% {\n\t\topacity: .75;\n\t}\n\tto {\n\t\topacity: .25;\n\t}\n}\n\n:where([mol_view][mol_view_error=\"$mol_promise_blocker\"]),\n:where([mol_view][mol_view_error=\"Promise\"]) {\n\tbackground: var(--mol_theme_hover);\n}\n\n[mol_view][mol_view_error=\"Promise\"] {\n\tanimation: mol_view_wait 1s steps(20,end) infinite;\n}\n");
+    $mol_style_attach("mol/view/view/view.css", "@view-transition {\n\tnavigation: auto;\n}\n\n[mol_view] {\n\ttransition-property: height, width, min-height, min-width, max-width, max-height, transform, scale, translate, rotate;\n\ttransition-duration: .2s;\n\ttransition-timing-function: ease-out;\n\t-webkit-appearance: none;\n\tbox-sizing: border-box;\n\tdisplay: flex;\n\tflex-shrink: 0;\n\tcontain: style;\n\tscrollbar-color: var(--mol_theme_line) transparent;\n\tscrollbar-width: thin;\n\t/* text-wrap-style: pretty; dont work in textarea */\n\tunicode-bidi: plaintext\n}\n\n[mol_view]::selection {\n\tbackground: var(--mol_theme_line);\n}\t\n\n[mol_view]::-webkit-scrollbar {\n\twidth: .25rem;\n\theight: .25rem;\n}\n\n[mol_view]::-webkit-scrollbar-corner {\n\tbackground-color: var(--mol_theme_line);\n}\n\n[mol_view]::-webkit-scrollbar-track {\n\tbackground-color: transparent;\n}\n\n[mol_view]::-webkit-scrollbar-thumb {\n\tbackground-color: var(--mol_theme_line);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_view] > * {\n\tword-break: inherit;\n}\n\n[mol_view_root] {\n\tmargin: 0;\n\tpadding: 0;\n\twidth: 100%;\n\theight: 100%;\n\tbox-sizing: border-box;\n\tfont-family: system-ui, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n\tfont-size: 1rem;\n\tline-height: 1.5rem;\n\t/* background: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text); */\n\tcontain: unset; /** Fixes bg ignoring when applied to body on Chrome */\n\ttab-size: 4;\n\t/*overscroll-behavior: contain; /** Disable navigation gestures **/\n}\n\n@media print {\n\t[mol_view_root] {\n\t\theight: auto;\n\t}\n}\n[mol_view][mol_view_error]:not([mol_view_error=\"Promise\"], [mol_view_error=\"$mol_promise_blocker\"]) {\n\tbackground-image: repeating-linear-gradient(\n\t\t-45deg,\n\t\t#f92323,\n\t\t#f92323 .5rem,\n\t\t#ff3d3d .5rem,\n\t\t#ff3d3d 1.5rem\n\t);\n\tcolor: black;\n\talign-items: center;\n\tjustify-content: center;\n}\n\n@keyframes mol_view_wait {\n\tfrom {\n\t\topacity: .25;\n\t}\n\t20% {\n\t\topacity: .75;\n\t}\n\tto {\n\t\topacity: .25;\n\t}\n}\n\n:where([mol_view][mol_view_error=\"$mol_promise_blocker\"]),\n:where([mol_view][mol_view_error=\"Promise\"]) {\n\tbackground: var(--mol_theme_hover);\n}\n\n[mol_view][mol_view_error=\"Promise\"] {\n\tanimation: mol_view_wait 1s steps(20,end) infinite;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -3708,7 +3687,7 @@ var $;
             return node;
         }
         dom_node(next) {
-            $mol_wire_solid();
+            // $mol_wire_solid()
             const node = this.dom_node_external(next);
             $mol_dom_render_attributes(node, this.attr_static());
             const events = this.event_async();
@@ -4206,7 +4185,7 @@ var $;
                         }
                     }
                 }
-                else if (key === '@media' || key === '@container') {
+                else if (key === '@media' || key === '@container' || key === '@supports') {
                     const media = config[key];
                     for (let query of Object.keys(media).reverse()) {
                         rules.push('}\n');
@@ -4329,7 +4308,7 @@ var $;
             boxSizing: 'border-box',
             willChange: 'scroll-position',
             scroll: {
-                padding: [rem(.75), 0],
+                padding: ['2.5rem', 0],
             },
             maxHeight: per(100),
             maxWidth: per(100),
@@ -4514,7 +4493,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/book2/book2.view.css", "[mol_book2] {\n\tdisplay: flex;\n\tflex-flow: row nowrap;\n\talign-items: stretch;\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tmargin: 0;\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_line); */\n\t/* transform: translateZ(0); */\n\ttransition: none;\n\tscroll-snap-type: x mandatory;\n\t/* padding: 0 1px;\n\tscroll-padding: 0 1px;\n\tgap: 1px; */\n}\n\n[mol_book2] > * {\n/* \tflex: none; */\n\tscroll-snap-stop: always;\n\tscroll-snap-align: end;\n\tposition: relative;\n\tmin-height: 100%;\n\tmax-height: 100%;\n\tmax-width: 100%;\n\tflex-shrink: 0;\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_field);\n}\n\n[mol_book2] > *:not(:first-of-type):before,\n[mol_book2] > *:not(:last-of-type)::after {\n\tcontent: '';\n\tposition: absolute;\n\ttop: 1.5rem;\n\twidth: 3px;\n\theight: 1rem;\n\tbackground: linear-gradient(\n\t\tto bottom,\n\t\tvar(--mol_theme_special) 0%,\n\t\tvar(--mol_theme_special) 14%,\n\t\ttransparent 15%,\n\t\ttransparent 42%,\n\t\tvar(--mol_theme_special) 43%,\n\t\tvar(--mol_theme_special) 57%,\n\t\ttransparent 58%,\n\t\ttransparent 85%,\n\t\tvar(--mol_theme_special) 86%,\n\t\tvar(--mol_theme_special) 100%\n\t);\n\topacity: .5;\n\tz-index: var(--mol_layer_speck);\n}\n[mol_book2] > *:not(:first-of-type):before {\n\tleft: -3px;\n}\n[mol_book2] > *:not(:last-of-type)::after {\n\tright: -3px;\n}\n\n:where([mol_book2]) > * {\n\tbackground-color: var(--mol_theme_card);\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_back); */\n}\n\n[mol_book2] > [mol_book2] {\n\tdisplay: contents;\n}\n\n[mol_book2] > *:first-child {\n\tscroll-snap-align: start;\n}\n\n[mol_book2] > [mol_view] {\n\ttransform: none; /* prevent content clipping */\n}\n\n[mol_book2_placeholder] {\n\tflex: 1 1 0;\n\tbackground: none;\n}\n\n[mol_book2_gap] {\n\tbackground: none;\n\tflex-grow: 1;\n\tscroll-snap-align: none;\n\tmargin-right: -1px;\n\tbox-shadow: none;\n}\n\n[mol_book2_gap]::before,\n[mol_book2_gap]::after {\n\tdisplay: none;\n}\n");
+    $mol_style_attach("mol/book2/book2.view.css", "[mol_book2] {\n\tdisplay: flex;\n\tflex-flow: row nowrap;\n\talign-items: stretch;\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tmargin: 0;\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_line); */\n\t/* transform: translateZ(0); */\n\ttransition: none;\n\tscroll-snap-type: x mandatory;\n\t/* padding: 0 1px;\n\tscroll-padding: 0 1px;\n\tgap: 1px; */\n}\n\n[mol_book2] > * {\n/* \tflex: none; */\n\tscroll-snap-stop: always;\n\tscroll-snap-align: end;\n\tposition: relative;\n\tmin-height: 100%;\n\tmax-height: 100%;\n\tmax-width: 100%;\n\tflex-shrink: 0;\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_field);\n}\n\n[mol_book2] > *:not(:first-of-type):before,\n[mol_book2] > *:not(:last-of-type)::after {\n\tcontent: '';\n\tposition: absolute;\n\ttop: 1.5rem;\n\twidth: 3px;\n\theight: 1rem;\n\tbackground: linear-gradient(\n\t\tto bottom,\n\t\tvar(--mol_theme_special) 0%,\n\t\tvar(--mol_theme_special) 14%,\n\t\ttransparent 15%,\n\t\ttransparent 42%,\n\t\tvar(--mol_theme_special) 43%,\n\t\tvar(--mol_theme_special) 57%,\n\t\ttransparent 58%,\n\t\ttransparent 85%,\n\t\tvar(--mol_theme_special) 86%,\n\t\tvar(--mol_theme_special) 100%\n\t);\n\topacity: .5;\n\tz-index: var(--mol_layer_speck);\n}\n[mol_book2] > *:not(:first-of-type):before {\n\tleft: -3px;\n}\n[mol_book2] > *:not(:last-of-type)::after {\n\tright: -3px;\n}\n\n:where([mol_book2]) > * {\n\tbackground-color: var(--mol_theme_card);\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_back); */\n}\n\n[mol_book2] > [mol_book2] {\n\tdisplay: contents;\n}\n\n[mol_book2] > *:first-child {\n\tscroll-snap-align: start;\n}\n\n[mol_book2] > [mol_view] {\n\ttransform: none; /* prevent content clipping */\n}\n\n[mol_book2_placeholder] {\n\tflex: 1 1 0;\n\tbackground: none;\n}\n\n[mol_book2_gap] {\n\tbackground: none;\n\tflex-grow: 1;\n\tscroll-snap-align: none;\n\tmargin-inline-end: -1px;\n\tbox-shadow: none;\n}\n\n[mol_book2_gap]::before,\n[mol_book2_gap]::after {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -4533,6 +4512,25 @@ var $;
 		}
 	};
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_media extends $mol_object2 {
+        static match(query, next) {
+            if (next !== undefined)
+                return next;
+            const res = this.$.$mol_dom_context.matchMedia?.(query) ?? {};
+            res.onchange = () => this.match(query, res.matches);
+            return res.matches;
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $mol_media, "match", null);
+    $.$mol_media = $mol_media;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -4648,90 +4646,108 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_media extends $mol_object2 {
-        static match(query, next) {
-            if (next !== undefined)
-                return next;
-            const res = this.$.$mol_dom_context.matchMedia?.(query) ?? {};
-            res.onchange = () => this.match(query, res.matches);
-            return res.matches;
+    class $mol_storage extends $mol_object2 {
+        /** Is storage a long term. */
+        static persisted(next) {
+            return false;
+        }
+        /** Total storage quota in bytes. */
+        static total() {
+            return 0;
+        }
+        /** Total storage usage in bytes. */
+        static used() {
+            return 0;
+        }
+        /** Minimum available free space in bytes. */
+        static free() {
+            return this.total() - this.used();
+        }
+        /** Fulfillness of storage. */
+        static portion() {
+            const total = this.total();
+            if (!total)
+                return 1;
+            return this.used() / total;
+        }
+        /**
+         * Fulfillness logarithmic level.
+         * `0` - empty
+         * `1` - half free
+         * `2` - quart free
+         * `Infinity` - fulfilled
+         */
+        static level() {
+            return Math.floor(-Math.log2(1 - this.portion()));
+        }
+    }
+    $.$mol_storage = $mol_storage;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** State of time moment */
+    class $mol_state_time extends $mol_object {
+        static task(precision, reset) {
+            if (precision) {
+                return new $mol_after_timeout(precision, () => this.task(precision, null));
+            }
+            else {
+                return new $mol_after_frame(() => this.task(precision, null));
+            }
+        }
+        static now(precision) {
+            this.task(precision);
+            return Date.now();
         }
     }
     __decorate([
         $mol_mem_key
-    ], $mol_media, "match", null);
-    $.$mol_media = $mol_media;
+    ], $mol_state_time, "task", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_state_time, "now", null);
+    $.$mol_state_time = $mol_state_time;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_mem_persist = $mol_wire_solid;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_wait_user_async() {
-        return new Promise(done => $mol_dom.addEventListener('click', function onclick() {
-            $mol_dom.removeEventListener('click', onclick);
-            done(null);
-        }));
-    }
-    $.$mol_wait_user_async = $mol_wait_user_async;
-    function $mol_wait_user() {
-        return this.$mol_wire_sync(this).$mol_wait_user_async();
-    }
-    $.$mol_wait_user = $mol_wait_user;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_storage extends $mol_object2 {
-        static native() {
-            return this.$.$mol_dom_context.navigator.storage ?? {
-                persisted: async () => false,
-                persist: async () => false,
-                estimate: async () => ({}),
-                getDirectory: async () => null,
-            };
+    class $mol_storage_node extends $mol_storage {
+        static persisted() {
+            return true;
         }
-        static persisted(next, cache) {
-            $mol_mem_persist();
-            if (cache)
-                return Boolean(next);
-            const native = this.native();
-            if (next && !$mol_mem_cached(() => this.persisted())) {
-                this.$.$mol_wait_user_async()
-                    .then(() => native.persist())
-                    .then(actual => {
-                    setTimeout(() => this.persisted(actual, 'cache'), 5000);
-                    if (actual)
-                        this.$.$mol_log3_done({ place: `$mol_storage`, message: `Persist: Yes` });
-                    else
-                        this.$.$mol_log3_fail({ place: `$mol_storage`, message: `Persist: No` });
-                });
-            }
-            return next ?? $mol_wire_sync(native).persisted();
+        static stats() {
+            $mol_state_time.now(1000);
+            return $node.fs.statfsSync('.');
         }
-        static estimate() {
-            return $mol_wire_sync(this.native() ?? {}).estimate();
+        static total() {
+            const { blocks, bsize } = this.stats();
+            return blocks * bsize;
         }
-        static dir() {
-            return $mol_wire_sync(this.native()).getDirectory();
+        static used() {
+            const { blocks, bfree, bsize } = this.stats();
+            return (blocks - bfree) * bsize;
+        }
+        static free() {
+            const { bfree, bsize } = this.stats();
+            return bfree * bsize;
+        }
+        static portion() {
+            const { blocks, bfree } = this.stats();
+            if (!blocks)
+                return 1;
+            return (blocks - bfree) / blocks;
         }
     }
     __decorate([
         $mol_mem
-    ], $mol_storage, "native", null);
-    __decorate([
-        $mol_mem
-    ], $mol_storage, "persisted", null);
-    $.$mol_storage = $mol_storage;
+    ], $mol_storage_node, "stats", null);
+    $.$mol_storage_node = $mol_storage_node;
+    $.$mol_storage = $.$mol_storage_node;
 })($ || ($ = {}));
 
 ;
@@ -4958,6 +4974,27 @@ var $;
         }
     }
     $.$mol_file_transaction = $mol_file_transaction;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Disable reaping of current subscriber
+     */
+    function $mol_wire_solid() {
+        let current = $mol_wire_auto();
+        if (current.temp)
+            current = current.host;
+        if (current.reap !== nothing) {
+            current?.sub_on(sub, sub.data.length);
+        }
+        current.reap = nothing;
+    }
+    $.$mol_wire_solid = $mol_wire_solid;
+    const nothing = () => { };
+    const sub = new $mol_wire_pub_sub;
 })($ || ($ = {}));
 
 ;
@@ -5676,13 +5713,14 @@ var $;
             return false;
         return null;
     }
+    // Get once because chrome switches to light on print
+    const base = $.$mol_media.match('(prefers-color-scheme: light)');
     /**
      * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
      * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
      */
     function $mol_lights(next) {
         const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        const base = this.$mol_media.match('(prefers-color-scheme: light)');
         if (next === undefined) {
             return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
         }
@@ -5741,34 +5779,6 @@ var $;
 		}
 	};
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** State of time moment */
-    class $mol_state_time extends $mol_object {
-        static task(precision, reset) {
-            if (precision) {
-                return new $mol_after_timeout(precision, () => this.task(precision, null));
-            }
-            else {
-                return new $mol_after_frame(() => this.task(precision, null));
-            }
-        }
-        static now(precision) {
-            this.task(precision);
-            return Date.now();
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $mol_state_time, "task", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_state_time, "now", null);
-    $.$mol_state_time = $mol_state_time;
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -6169,16 +6179,21 @@ var $;
                     return null;
                 const offset = this.offset();
                 const align = this.align();
-                const left = Math.floor((prev?.left ?? 0)
+                const width = self_rect?.width ?? 0;
+                const height = self_rect?.height ?? 0;
+                let left = Math.floor((prev?.left ?? 0)
                     - (self_rect?.left ?? 0)
-                    + (self_rect?.width ?? 0) * align[0]
+                    + width * align[0]
                     + (anchor_rect?.left ?? 0)
                     + offset[0] * (anchor_rect?.width ?? 0));
-                const top = Math.floor((prev?.top ?? 0)
+                let top = Math.floor((prev?.top ?? 0)
                     - (self_rect?.top ?? 0)
-                    + (self_rect?.height ?? 0) * align[1]
+                    + height * align[1]
                     + (anchor_rect?.top ?? 0)
                     + offset[1] * (anchor_rect?.height ?? 0));
+                const size = this.$.$mol_window.size();
+                left = Math.max(0, Math.min(left, size.width - width));
+                top = Math.max(0, Math.min(top, size.height - height));
                 return { left, top };
             }
             transform() {
@@ -6208,6 +6223,9 @@ var $;
 
 ;
 	($.$mol_pop) = class $mol_pop extends ($.$mol_view) {
+		align(){
+			return "bottom_center";
+		}
 		bubble(){
 			return null;
 		}
@@ -6220,6 +6238,9 @@ var $;
 		bubble_align(){
 			return [0, 0];
 		}
+		anchor_visible(){
+			return false;
+		}
 		bubble_content(){
 			return [];
 		}
@@ -6228,6 +6249,7 @@ var $;
 		}
 		Bubble(){
 			const obj = new this.$.$mol_pop_bubble();
+			(obj.visible) = () => ((this.anchor_visible()));
 			(obj.content) = () => ((this.bubble_content()));
 			(obj.height_max) = () => ((this.height_max()));
 			return obj;
@@ -6250,8 +6272,11 @@ var $;
 		align_hor(){
 			return "";
 		}
-		align(){
-			return "bottom_center";
+		direction(){
+			return "ltr";
+		}
+		align_enriched(){
+			return (this.align());
 		}
 		prefer(){
 			return "vert";
@@ -6276,6 +6301,9 @@ var $;
 		height_max(){
 			return 9999;
 		}
+		visible(){
+			return false;
+		}
 		sub(){
 			return (this.content());
 		}
@@ -6285,12 +6313,100 @@ var $;
 		attr(){
 			return {
 				...(super.attr()), 
+				"mol_pop_bubble_visible": (this.visible()), 
 				"tabindex": 0, 
 				"popover": "manual"
 			};
 		}
 	};
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Localisation in $mol framework
+     * @see https://mol.hyoo.ru/#!section=docs/=s5aqnb_odub8l
+     */
+    class $mol_locale extends $mol_object {
+        static lang_default() {
+            return 'en';
+        }
+        static lang(next) {
+            return this.$.$mol_state_local.value('locale', next) || $mol_dom_context.navigator.language.replace(/-.*/, '') || this.lang_default();
+        }
+        static langs_rtl() {
+            return ['ar', 'he', 'fa', 'ur', 'yi', 'ps', 'ug', 'sd'];
+        }
+        static direction() {
+            const lang = this.lang();
+            let direction;
+            try {
+                direction = new Intl.Locale(lang).getTextInfo().direction;
+            }
+            catch (e) {
+                $mol_fail_log(e);
+            }
+            return direction ?? (this.langs_rtl().includes(lang) ? 'rtl' : 'ltr');
+        }
+        static source(lang) {
+            return JSON.parse(this.$.$mol_file.relative(`web.locale=${lang}.json`).text().toString());
+        }
+        static texts(lang, next) {
+            if (next)
+                return next;
+            try {
+                return this.source(lang).valueOf();
+            }
+            catch (error) {
+                if ($mol_fail_catch(error)) {
+                    const def = this.lang_default();
+                    if (lang === def)
+                        throw error;
+                }
+            }
+            return {};
+        }
+        static text(key) {
+            const lang = this.lang();
+            const target = this.texts(lang)[key];
+            if (target)
+                return target;
+            this.warn(key);
+            const en = this.texts('en')[key];
+            if (!en)
+                return key;
+            return en;
+        }
+        static warn(key) {
+            console.warn(`Not translated to "${this.lang()}": ${key}`);
+            return null;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_locale, "lang_default", null);
+    __decorate([
+        $mol_mem
+    ], $mol_locale, "lang", null);
+    __decorate([
+        $mol_mem
+    ], $mol_locale, "direction", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_locale, "source", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_locale, "texts", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_locale, "text", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_locale, "warn", null);
+    $.$mol_locale = $mol_locale;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -6310,6 +6426,13 @@ var $;
             showed(next = false) {
                 this.focused();
                 return next;
+            }
+            anchor_visible() {
+                const rect = this.Anchor().view_rect();
+                if (!rect)
+                    return false;
+                const size = this.$.$mol_window.size();
+                return rect.top > 0 && rect.left > 0 && rect.bottom <= size.height && rect.right <= size.width;
             }
             sub_visible() {
                 return [
@@ -6348,8 +6471,16 @@ var $;
                 const viewport = this.$.$mol_window.size();
                 return rect_pop.left > viewport.width / 2 ? 'left' : 'right';
             }
+            direction() { return this.$.$mol_locale.direction(); }
+            align_enriched() {
+                const align = this.align();
+                const rtl = this.direction() === 'rtl';
+                const start = rtl ? 'right' : 'left';
+                const end = rtl ? 'left' : 'right';
+                return align.replace('start', start).replace('end', end);
+            }
             bubble_offset() {
-                const tags = new Set(this.align().split('_'));
+                const tags = new Set(this.align_enriched().split('_'));
                 if (tags.has('suspense'))
                     return [0, 0];
                 const hor = tags.has('right') ? 'right' : tags.has('left') ? 'left' : 'center';
@@ -6368,7 +6499,7 @@ var $;
                 }
             }
             bubble_align() {
-                const tags = new Set(this.align().split('_'));
+                const tags = new Set(this.align_enriched().split('_'));
                 if (tags.has('suspense'))
                     return [-.5, -.5];
                 const hor = tags.has('right') ? 'right' : tags.has('left') ? 'left' : 'center';
@@ -6387,6 +6518,9 @@ var $;
         __decorate([
             $mol_mem
         ], $mol_pop.prototype, "showed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_pop.prototype, "anchor_visible", null);
         __decorate([
             $mol_mem
         ], $mol_pop.prototype, "sub_visible", null);
@@ -6419,7 +6553,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/pop/pop.view.css", "@keyframes mol_pop_show {\n\tfrom {\n\t\topacity: 0;\n\t}\n}\n\n[mol_pop] {\n\tposition: relative;\n\tdisplay: inline-flex;\n}\n\n[mol_pop_bubble] {\n\tborder: none;\n\tpadding: 0;\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: 0 0 1rem hsla(0,0%,0%,.5);\n\tborder-radius: var(--mol_gap_round);\n\tposition: fixed;\n\tz-index: var(--mol_layer_popup);\n\tbackground: var(--mol_theme_back);\n\tmax-width: none;\n\tmax-height: none;\n\t/* overflow: hidden;\n\toverflow-y: scroll;\n\toverflow-y: overlay; */\n\tword-break: normal;\n\twidth: max-content;\n\t/* height: max-content; */\n\tflex-direction: column;\n\tmax-width: calc( 100vw - var(--mol_gap_page) );\n\tmax-height: 80vw;\n\tcontain: paint;\n\ttransition-property: opacity;\n\t/* Safari ios layer fix, https://t.me/mam_mol/170017 */\n\ttransform: translateZ(0);\n\tanimation: mol_pop_show .1s ease-in;\n}\n\n:where( [mol_pop_bubble] > * ) {\n\tbackground: var(--mol_theme_card);\n}\n\n[mol_pop_bubble][mol_scroll] {\n\tbackground: var(--mol_theme_back);\n}\n\n[mol_pop_bubble]:focus {\n\toutline: none;\n}\n");
+    $mol_style_attach("mol/pop/pop.view.css", "@keyframes mol_pop_show {\n\tfrom {\n\t\topacity: 0;\n\t}\n}\n\n[mol_pop] {\n\tposition: relative;\n\tdisplay: inline-flex;\n}\n\n[mol_pop_bubble] {\n\tborder: none;\n\tpadding: 0;\n\tmargin: 0;\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: 0 0 1rem hsla(0,0%,0%,.5);\n\tborder-radius: var(--mol_gap_round);\n\tposition: fixed;\n\tz-index: var(--mol_layer_popup);\n\tbackground: var(--mol_theme_back);\n\t/* overflow: hidden;\n\toverflow-y: scroll;\n\toverflow-y: overlay; */\n\tword-break: normal;\n\twidth: max-content;\n\t/* height: max-content; */\n\tflex-direction: column;\n\tmax-width: 100vw;\n\tmax-height: 80vw;\n\tcontain: paint;\n\ttransition-property: opacity;\n\t/* Safari ios layer fix, https://t.me/mam_mol/170017 */\n\ttransform: translateZ(0);\n\tanimation: mol_pop_show .1s ease-in;\n}\n\n[mol_pop_bubble]:where(:not([mol_pop_bubble_visible])) {\n\tvisibility: hidden;\n}\n\n:where( [mol_pop_bubble] > * ) {\n\tbackground: var(--mol_theme_card);\n}\n\n[mol_pop_bubble][mol_scroll] {\n\tbackground: var(--mol_theme_back);\n}\n\n[mol_pop_bubble]:focus {\n\toutline: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -6806,8 +6940,40 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_dom_transfer extends $mol_object {
+        native;
+        static wrap(native) {
+            return new this(native);
+        }
+        constructor(native) {
+            super();
+            this.native = native;
+        }
+        get(type) {
+            return this.native.getData(type);
+        }
+        files() {
+            return $mol_wire_sync(this.native.files);
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_dom_transfer.prototype, "files", null);
+    __decorate([
+        $mol_action
+    ], $mol_dom_transfer, "wrap", null);
+    $.$mol_dom_transfer = $mol_dom_transfer;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_dom_event extends $mol_object {
         native;
+        static wrap(event) {
+            return new this(event);
+        }
         constructor(native) {
             super();
             this.native = native;
@@ -6817,13 +6983,19 @@ var $;
                 this.native.preventDefault();
             return this.native.defaultPrevented;
         }
-        static wrap(event) {
-            return new this.$.$mol_dom_event(event);
+        transfer() {
+            const transfer = this.native instanceof ClipboardEvent ? this.native.clipboardData
+                : this.native instanceof DragEvent ? this.native.dataTransfer
+                    : null;
+            return transfer && $mol_dom_transfer.wrap(transfer);
         }
     }
     __decorate([
         $mol_action
     ], $mol_dom_event.prototype, "prevented", null);
+    __decorate([
+        $mol_action
+    ], $mol_dom_event.prototype, "transfer", null);
     __decorate([
         $mol_action
     ], $mol_dom_event, "wrap", null);
@@ -6834,7 +7006,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/check/check.css", "[mol_check] {\n\tflex: 0 0 auto;\n\tjustify-content: flex-start;\n\talign-content: center;\n\t/* align-items: flex-start; */\n\tborder: none;\n\tfont-weight: inherit;\n\tbox-shadow: none;\n\ttext-align: left;\n\tdisplay: inline-flex;\n\tflex-wrap: nowrap;\n}\n\n[mol_check_title] {\n\tflex-shrink: 1;\n}\n");
+    $mol_style_attach("mol/check/check.css", "[mol_check] {\n\tflex: 0 0 auto;\n\tjustify-content: flex-start;\n\talign-content: center;\n\t/* align-items: flex-start; */\n\tborder: none;\n\tfont-weight: inherit;\n\tbox-shadow: none;\n\ttext-align: start;\n\tdisplay: inline-flex;\n\tflex-wrap: nowrap;\n}\n\n[mol_check_title] {\n\tflex-shrink: 1;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -7358,76 +7530,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Localisation in $mol framework
-     * @see https://mol.hyoo.ru/#!section=docs/=s5aqnb_odub8l
-     */
-    class $mol_locale extends $mol_object {
-        static lang_default() {
-            return 'en';
-        }
-        static lang(next) {
-            return this.$.$mol_state_local.value('locale', next) || $mol_dom_context.navigator.language.replace(/-.*/, '') || this.lang_default();
-        }
-        static source(lang) {
-            return JSON.parse(this.$.$mol_file.relative(`web.locale=${lang}.json`).text().toString());
-        }
-        static texts(lang, next) {
-            if (next)
-                return next;
-            try {
-                return this.source(lang).valueOf();
-            }
-            catch (error) {
-                if ($mol_fail_catch(error)) {
-                    const def = this.lang_default();
-                    if (lang === def)
-                        throw error;
-                }
-            }
-            return {};
-        }
-        static text(key) {
-            const lang = this.lang();
-            const target = this.texts(lang)[key];
-            if (target)
-                return target;
-            this.warn(key);
-            const en = this.texts('en')[key];
-            if (!en)
-                return key;
-            return en;
-        }
-        static warn(key) {
-            console.warn(`Not translated to "${this.lang()}": ${key}`);
-            return null;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_locale, "lang_default", null);
-    __decorate([
-        $mol_mem
-    ], $mol_locale, "lang", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_locale, "source", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_locale, "texts", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_locale, "text", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_locale, "warn", null);
-    $.$mol_locale = $mol_locale;
-})($ || ($ = {}));
-
-;
 	($.$mol_nav) = class $mol_nav extends ($.$mol_plugin) {
 		event_key(next){
 			if(next !== undefined) return next;
@@ -7866,11 +7968,11 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/list/list.view.css", "[mol_list] {\n\twill-change: contents;\n\tdisplay: flex;\n\tflex-direction: column;\n\tflex-shrink: 0;\n\tmax-width: 100%;\n\t/* display: flex;\n\talign-items: stretch;\n\talign-content: stretch; */\n\ttransition: none;\n\tmin-height: 1.5rem;\n\t/* will-change: contents; */\n}\n\n[mol_list_gap_before] ,\n[mol_list_gap_after] {\n\tdisplay: block !important;\n\tflex: none;\n\ttransition: none;\n\toverflow-anchor: none;\n}\n");
+    $mol_style_attach("mol/list/list.view.css", "[mol_list] {\n\twill-change: contents;\n\tdisplay: flex;\n\tflex-direction: column;\n\tflex-shrink: 0;\n\tmax-width: 100%;\n\t/* display: flex;\n\talign-items: stretch;\n\talign-content: stretch; */\n\ttransition: none;\n\t/* will-change: contents; */\n}\n\n[mol_list]:where([mol_view_error]) {\n\tmin-height: 1.5rem;\n}\n\n[mol_list_gap_before] ,\n[mol_list_gap_after] {\n\tdisplay: block !important;\n\tflex: none;\n\ttransition: none;\n\toverflow-anchor: none;\n}\n");
 })($ || ($ = {}));
 
 ;
-	($.$mol_hotkey) = class $mol_hotkey extends ($.$mol_plugin) {
+	($.$mol_hotkey2) = class $mol_hotkey2 extends ($.$mol_plugin) {
 		keydown(next){
 			if(next !== undefined) return next;
 			return null;
@@ -7878,20 +7980,11 @@ var $;
 		event(){
 			return {...(super.event()), "keydown": (next) => (this.keydown(next))};
 		}
-		key(){
+		action(){
 			return {};
 		}
-		mod_ctrl(){
-			return false;
-		}
-		mod_alt(){
-			return false;
-		}
-		mod_shift(){
-			return false;
-		}
 	};
-	($mol_mem(($.$mol_hotkey.prototype), "keydown"));
+	($mol_mem(($.$mol_hotkey2.prototype), "keydown"));
 
 
 ;
@@ -7908,27 +8001,71 @@ var $;
          * Plugin which adds handlers for keyboard keys.
          * @see [mol_keyboard_code](../keyboard/code/code.ts)
          */
-        class $mol_hotkey extends $.$mol_hotkey {
-            key() {
-                return super.key();
-            }
+        class $mol_hotkey2 extends $.$mol_hotkey2 {
             keydown(event) {
                 if (!event)
                     return;
                 if (event.defaultPrevented)
                     return;
-                let name = $mol_keyboard_code[event.keyCode];
-                if (this.mod_ctrl() !== (event.ctrlKey || event.metaKey))
-                    return;
-                if (this.mod_alt() !== event.altKey)
-                    return;
-                if (this.mod_shift() !== event.shiftKey)
-                    return;
-                const handle = this.key()[name];
-                if (handle)
-                    handle(event);
+                const key = [...new Set([
+                        ...(event.ctrlKey || event.metaKey) ? ['ctrl'] : [],
+                        ...event.altKey ? ['alt'] : [],
+                        ...event.shiftKey ? ['shift'] : [],
+                        $mol_keyboard_code[event.keyCode] ?? '?',
+                    ])].join('_');
+                this.action()[key]?.(event);
             }
         }
+        $$.$mol_hotkey2 = $mol_hotkey2;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_hotkey) = class $mol_hotkey extends ($.$mol_hotkey2) {
+		key(){
+			return {};
+		}
+		mod_ctrl(){
+			return false;
+		}
+		mod_alt(){
+			return false;
+		}
+		mod_shift(){
+			return false;
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Plugin which adds handlers for keyboard keys.
+         * @deprecated Use $mol_hotkey2
+         * @see [mol_keyboard_code](../keyboard/code/code.ts)
+         */
+        class $mol_hotkey extends $.$mol_hotkey {
+            action() {
+                const prefix = [...new Set([
+                        ...this.mod_ctrl() ? ['ctrl_'] : [],
+                        ...this.mod_alt() ? ['alt_'] : [],
+                        ...this.mod_shift() ? ['shift_'] : [],
+                    ])].join('');
+                return Object.fromEntries(Object.entries(this.key())
+                    .map(([key, val]) => [prefix + key, val]));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_hotkey.prototype, "action", null);
         $$.$mol_hotkey = $mol_hotkey;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -8075,22 +8212,27 @@ var $;
                 const el = this.dom_node();
                 const from = el.selectionStart;
                 const to = el.selectionEnd;
-                try {
-                    el.value = this.value_changed(el.value);
-                }
-                catch (error) {
-                    const el = this.dom_node();
-                    if (error instanceof Error) {
-                        el.setCustomValidity(error.message);
-                        el.reportValidity();
-                    }
-                    $mol_fail_hidden(error);
-                }
+                el.value = this.value_changed(el.value);
                 if (to === null)
                     return;
                 el.selectionEnd = to;
                 el.selectionStart = from;
                 this.selection_change(next);
+            }
+            value_changed(next) {
+                const el = this.dom_node();
+                try {
+                    el.setCustomValidity('');
+                    return this.value(next);
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    if (error instanceof Error) {
+                        el.setCustomValidity(error.message);
+                        el.reportValidity();
+                    }
+                    return next ?? $mol_mem_cached(() => this.value_changed()) ?? '';
+                }
             }
             error_report() {
                 try {
@@ -8153,6 +8295,9 @@ var $;
         ], $mol_string.prototype, "event_change", null);
         __decorate([
             $mol_mem
+        ], $mol_string.prototype, "value_changed", null);
+        __decorate([
+            $mol_mem
         ], $mol_string.prototype, "error_report", null);
         __decorate([
             $mol_mem
@@ -8165,7 +8310,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/string/string.view.css", "[mol_string] {\n\tbox-sizing: border-box;\n\toutline-offset: 0;\n\tborder: none;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpadding: var(--mol_gap_text);\n\ttext-align: left;\n\tposition: relative;\n\tfont: inherit;\n\tflex: 1 1 auto;\n\tbackground: transparent;\n\tmin-width: 0;\n\tcolor: inherit;\n\tbackground: var(--mol_theme_field);\n}\n\n[mol_string]:disabled:not(:placeholder-shown) {\n\tbackground-color: transparent;\n\tcolor: var(--mol_theme_text);\n}\n\n[mol_string]:where(:not(:disabled)) {\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_string]:where(:not(:disabled)):hover {\n\tbox-shadow: inset 0 0 0 2px var(--mol_theme_line);\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_string]:focus {\n\toutline: none;\n\tz-index: var(--mol_layer_focus);\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_focus);\n}\n\n[mol_string]::placeholder {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_string]::-ms-clear {\n\tdisplay: none;\n}\n");
+    $mol_style_attach("mol/string/string.view.css", "[mol_string] {\n\tbox-sizing: border-box;\n\toutline-offset: 0;\n\tborder: none;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpadding: var(--mol_gap_text);\n\ttext-align: start;\n\tposition: relative;\n\tfont: inherit;\n\tflex: 1 1 auto;\n\tbackground: transparent;\n\tmin-width: 0;\n\tcolor: inherit;\n\tbackground: var(--mol_theme_field);\n}\n\n[mol_string]:disabled:not(:placeholder-shown) {\n\tbackground-color: transparent;\n\tcolor: var(--mol_theme_text);\n}\n\n[mol_string]:where(:not(:disabled)) {\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_string]:where(:not(:disabled)):hover {\n\tbox-shadow: inset 0 0 0 2px var(--mol_theme_line);\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_string]:focus {\n\toutline: none;\n\tz-index: var(--mol_layer_focus);\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_focus);\n}\n\n[mol_string]::placeholder {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_string]::-ms-clear {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -8424,7 +8569,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: left;\n}\n\n[mol_search_suggest_label_high] {\n\tcolor: var(--mol_theme_shade);\n\ttext-shadow: none;\n}\n");
+    $mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: start;\n}\n\n[mol_search_suggest_label_high] {\n\tcolor: var(--mol_theme_shade);\n\ttext-shadow: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -8446,6 +8591,9 @@ var $;
 		}
 		event_select(id, next){
 			if(next !== undefined) return next;
+			return null;
+		}
+		option_hint(id){
 			return null;
 		}
 		option_label(id){
@@ -8523,6 +8671,7 @@ var $;
 			const obj = new this.$.$mol_button_minor();
 			(obj.enabled) = () => ((this.enabled()));
 			(obj.event_click) = (next) => ((this.event_select(id, next)));
+			(obj.hint) = () => ((this.option_hint(id)));
 			(obj.sub) = () => ((this.option_content(id)));
 			return obj;
 		}
@@ -8626,6 +8775,9 @@ var $;
                 const value = this.dictionary()[id];
                 return (value == null ? id : value) || this.option_label_default();
             }
+            option_hint(id) {
+                return id;
+            }
             option_rows() {
                 return this.options_filtered().map((option) => this.Option_row(option));
             }
@@ -8688,7 +8840,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/select/select.view.css", "[mol_select] {\n\tdisplay: flex;\n\tword-break: normal;\n\talign-self: flex-start;\n}\n\n[mol_select_option_row] {\n\tmin-width: 100%;\n\tpadding: 0;\n\tjustify-content: flex-start;\n}\n\n[mol_select_filter] {\n\tflex: 1 0 auto;\n\talign-self: stretch;\n}\n\n[mol_select_option_label] {\n\tpadding: var(--mol_gap_text);\n\ttext-align: left;\n\tmin-height: 1.5em;\n\tdisplay: block;\n\twhite-space: nowrap;\n}\n\n[mol_select_clear_option_content] {\n\tpadding: .5em 1rem .5rem 0;\n\ttext-align: left;\n\tbox-shadow: var(--mol_theme_line);\n\tflex: 1 0 auto;\n}\n\n[mol_select_no_options] {\n\tpadding: var(--mol_gap_text);\n\ttext-align: left;\n\tdisplay: block;\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_select_trigger] {\n\tpadding: 0;\n\tflex: 1 1 auto;\n\tdisplay: flex;\n}\n\n[mol_select_trigger] > * {\n\tmargin-right: -1rem;\n}\n\n[mol_select_trigger] > *:last-child {\n\tmargin-right: 0;\n}\n\n[mol_select_menu] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n");
+    $mol_style_attach("mol/select/select.view.css", "[mol_select] {\n\tdisplay: flex;\n\tword-break: normal;\n\talign-self: flex-start;\n}\n\n[mol_select_option_row] {\n\tmin-width: 100%;\n\tpadding: 0;\n\tjustify-content: flex-start;\n}\n\n[mol_select_filter] {\n\tflex: 1 0 auto;\n\talign-self: stretch;\n}\n\n[mol_select_option_label] {\n\tpadding: var(--mol_gap_text);\n\ttext-align: start;\n\tmin-height: 1.5em;\n\tdisplay: block;\n\twhite-space: nowrap;\n}\n\n[mol_select_clear_option_content] {\n\tpadding: .5em 1rem .5rem 0;\n\ttext-align: start;\n\tbox-shadow: var(--mol_theme_line);\n\tflex: 1 0 auto;\n}\n\n[mol_select_no_options] {\n\tpadding: var(--mol_gap_text);\n\ttext-align: start;\n\tdisplay: block;\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_select_trigger] {\n\tpadding: 0;\n\tflex: 1 1 auto;\n\tdisplay: flex;\n}\n\n[mol_select_trigger] > * {\n\tmargin-inline-end: -1rem;\n}\n\n[mol_select_trigger] > *:last-child {\n\tmargin-inline-end: 0;\n}\n\n[mol_select_menu] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n");
 })($ || ($ = {}));
 
 ;
@@ -8820,6 +8972,9 @@ var $;
 		uri_toggle(){
 			return "";
 		}
+		uri_unsafe(){
+			return (this.uri_toggle());
+		}
 		hint(){
 			return "";
 		}
@@ -8863,7 +9018,7 @@ var $;
 		attr(){
 			return {
 				...(super.attr()), 
-				"href": (this.uri_toggle()), 
+				"href": (this.uri_unsafe()), 
 				"title": (this.hint_safe()), 
 				"target": (this.target()), 
 				"download": (this.file_name()), 
@@ -8883,6 +9038,90 @@ var $;
 	};
 	($mol_mem(($.$mol_link.prototype), "event_click"));
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_dom_safe_uri(uri) {
+        return uri.replace(/^(?=\w+script+:)/, 'about:blank#');
+    }
+    $.$mol_dom_safe_uri = $mol_dom_safe_uri;
+    function $mol_dom_safe_attr(val) {
+        return val;
+    }
+    $.$mol_dom_safe_attr = $mol_dom_safe_attr;
+    $.$mol_dom_safe_rules = {
+        // defaults
+        '': { id: $mol_dom_safe_attr },
+        // special
+        a: { href: $mol_dom_safe_uri },
+        img: {
+            src: $mol_dom_safe_uri,
+            width: $mol_dom_safe_attr,
+            height: $mol_dom_safe_attr,
+        },
+        object: { src: $mol_dom_safe_uri },
+        // blocks
+        div: {},
+        p: {},
+        h1: {},
+        h2: {},
+        h3: {},
+        h4: {},
+        h5: {},
+        h6: {},
+        blockquote: {},
+        pre: {},
+        ul: {},
+        ol: {},
+        li: {},
+        details: {},
+        section: {},
+        summary: {},
+        hr: {},
+        table: {},
+        tr: {},
+        td: {},
+        // inlines
+        span: {},
+        strong: {},
+        em: {},
+        br: {},
+        ins: {},
+        del: {},
+        code: {},
+    };
+    function $mol_dom_safe(nodes) {
+        const res = [];
+        for (const node of nodes) {
+            if (node.nodeType === node.TEXT_NODE) {
+                res.push(node);
+                continue;
+            }
+            if (node.nodeType === node.ELEMENT_NODE) {
+                const kids = this.$mol_dom_safe([...node.childNodes]);
+                const allowed = this.$mol_dom_safe_rules[node.localName];
+                if (!allowed) {
+                    res.push(...kids);
+                    continue;
+                }
+                for (const attr of [...node.attributes]) {
+                    const proc = allowed[attr.localName] ?? this.$mol_dom_safe_rules[''][attr.localName];
+                    if (proc)
+                        attr.nodeValue = proc(attr.nodeValue);
+                    else
+                        node.removeAttribute(attr.nodeName);
+                }
+                $mol_dom_render_children(node, kids);
+                res.push(node);
+                continue;
+            }
+        }
+        return res;
+    }
+    $.$mol_dom_safe = $mol_dom_safe;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -8953,6 +9192,9 @@ var $;
                     return '';
                 }
             }
+            uri_unsafe() {
+                return $mol_dom_safe_uri(super.uri_unsafe());
+            }
         }
         __decorate([
             $mol_mem
@@ -8981,7 +9223,7 @@ var $;
     $mol_style_define($mol_link, {
         textDecoration: 'none',
         color: $mol_theme.control,
-        stroke: 'currentcolor',
+        stroke: 'currentColor',
         cursor: 'pointer',
         padding: $mol_gap.text,
         boxSizing: 'border-box',
@@ -9236,6 +9478,10 @@ var $;
     class $mol_rest_port extends $mol_object {
         send_code(code) { }
         send_type(mime) { }
+        send_name(name) { }
+        send_prop(name, value) { }
+        origin() { return 'unknown'; }
+        address() { return 'unknown'; }
         send_data(data) {
             if (data === null)
                 return this.send_nil();
@@ -9487,6 +9733,12 @@ var $;
             if (next !== undefined)
                 this.setFloat64(offset, next, true);
             return this.getFloat64(offset, true);
+        }
+        mix(mixin) {
+            const arr = this.asArray();
+            for (let i = 0; i < mixin.length; ++i)
+                arr[i % arr.byteLength] ^= mixin[i];
+            return this;
         }
         /** A Uint8Array view for the same buffer. */
         asArray() {
@@ -9791,14 +10043,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /** @deprecated Use $mol_crypto2_hash */
-    $.$mol_crypto_hash = $mol_crypto2_hash;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_memo_key extends $mol_wrapper {
         static wrap(task) {
             const store = new WeakMap();
@@ -9925,21 +10169,28 @@ var $;
         return (right.str > left.str ? 1 : right.str < left.str ? -1 : 0);
     }
     $.$giper_baza_link_compare = $giper_baza_link_compare;
+    const regexp = /(?<![\p{L}_])(?:(?:[a-zæA-ZÆ0-9]{8})?_){0,3}(?:[a-zæA-ZÆ0-9]{8})(?![\p{L}_])/gu;
     class $giper_baza_link extends Object {
         str;
         constructor(str) {
             super();
             this.str = str;
-            if (!/^(([a-zæA-ZÆ0-9]{8})?_){0,3}([a-zæA-ZÆ0-9]{8})?$/.test(str)) {
-                $mol_fail(new Error(`Wrong Link (${str})`));
-            }
-            this.str = str.replace(/AAAAAAAA/g, '').replace(/_+$/, '');
+            const short = str.replace(/AAAAAAAA/g, '').replace(/_+$/, '');
+            const found = short && (short.match(regexp)?.[0] ?? null);
+            if (found !== short)
+                $mol_fail(new Error('Wrong Link', { cause: str }));
+            this.str = found;
+        }
+        static [Symbol.match](str) {
+            return str.match(regexp);
+        }
+        static [Symbol.matchAll](str) {
+            return str.matchAll(regexp);
         }
         static hole = new this('');
         static check(val) {
             try {
-                new this(val);
-                return val;
+                return new this(val);
             }
             catch {
                 return null;
@@ -9993,7 +10244,7 @@ var $;
             let link = this._hash_cache.get(bin);
             if (link)
                 return link;
-            const hash = $mol_crypto_hash(bin);
+            const hash = $mol_crypto2_hash(bin);
             link = this.from_bin(new Uint8Array(hash.buffer, 0, 12));
             this._hash_cache.set(bin, link);
             return link;
@@ -10049,10 +10300,9 @@ var $;
         mix(mixin) {
             if (mixin instanceof $giper_baza_link)
                 mixin = mixin.toBin();
-            const mix = this.toBin().slice();
-            for (let i = 0; i < mix.length; ++i)
-                mix[i] ^= mixin[i];
-            return mix;
+            const mixout = $mol_buffer.from(this.toBin().slice());
+            mixout.mix(mixin);
+            return mixout.asArray();
         }
     }
     $.$giper_baza_link = $giper_baza_link;
@@ -10139,99 +10389,56 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /** @deprecated Use $mol_crypto2_nonce */
-    $.$mol_crypto_salt = $mol_crypto2_nonce;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Symmetric cipher with shortest payload. */
-    class $mol_crypto_sacred extends $mol_buffer {
-        /** Key size in bytes. */
+    /** Symmetric AES-CTR secret. */
+    class $mol_crypto2_secret extends $mol_buffer {
         static size = 16;
         /** Makes new random secret. */
         static make() {
-            return this.from($mol_crypto_salt());
+            return this.from($mol_crypto2_nonce());
         }
-        /** Makes from string of buffer view. */
+        /** Makes from string or buffer view. */
         static from(serial) {
-            if (typeof serial === 'string') {
-                serial = new Uint8Array([
-                    ...$mol_base64_url_decode(serial),
-                ]);
+            if (typeof serial === 'string')
+                serial = $mol_base64_url_decode(serial);
+            if (serial.byteLength !== $mol_crypto2_secret.size) {
+                return $mol_fail(new RangeError('Wrong key size', { cause: { size: serial.byteLength } }));
             }
             if (!(serial instanceof Uint8Array)) {
                 serial = new Uint8Array(serial.buffer, serial.byteOffset, serial.byteLength);
             }
-            ;
-            serial[0] = 0xFF;
-            const sacred = super.from(serial);
-            return sacred;
+            return super.from(serial);
         }
         static async from_native(native) {
-            const buf = await $mol_crypto_native.subtle.exportKey('raw', native).catch($mol_crypto_restack);
-            const sacred = this.from(new Uint8Array(buf));
-            sacred._native = native;
-            return sacred;
-        }
-        constructor(buffer, byteOffset, byteLength) {
-            super(buffer, byteOffset, byteLength);
-            if (this.getUint8(0) !== 0xFF)
-                $mol_fail(new Error('Buffer should starts with 0xFF byte'));
+            const buffer = await $mol_crypto_native.subtle.exportKey('raw', native).catch($mol_crypto_restack);
+            const secret = this.from(new Uint8Array(buffer));
+            secret._native = native;
+            return secret;
         }
         toString() {
             return $mol_base64_url_encode(this.asArray());
         }
         _native;
-        /** Native crypto secret */
+        /** Native crypto secret. */
         async native() {
-            return this._native ?? (this._native = await $mol_crypto_native.subtle.importKey('raw', this, {
-                name: 'AES-CBC',
-                length: 128,
-            }, true, ['encrypt', 'decrypt']).catch($mol_crypto_restack));
+            return this._native ?? (this._native = await $mol_crypto_native.subtle.importKey('raw', // format
+            this, // buffer source
+            'AES-CTR', // algorithm
+            true, // extractable
+            ['encrypt', 'decrypt']).catch($mol_crypto_restack));
         }
-        /** Encrypt any binary message. 16n bytes */
-        async encrypt(open, salt) {
-            return new Uint8Array(await $mol_crypto_native.subtle.encrypt({
-                name: 'AES-CBC',
-                length: 128,
-                tagLength: 32,
-                iv: salt,
-            }, await this.native(), open).catch($mol_crypto_restack));
+        /** Encrypts data without changing its length. */
+        async encrypt(open, nonce) {
+            return new Uint8Array(await $mol_crypto_native.subtle.encrypt({ name: 'AES-CTR', counter: nonce, length: 64 }, await this.native(), open).catch($mol_crypto_restack));
         }
-        /** Decrypt any binary message. */
-        async decrypt(closed, salt) {
-            return new Uint8Array(await $mol_crypto_native.subtle.decrypt({
-                name: 'AES-CBC',
-                length: 128,
-                tagLength: 32,
-                iv: salt,
-            }, await this.native(), closed).catch($mol_crypto_restack));
-        }
-        /** Encrypts 0xFF prefixed buffer. 16 bytes */
-        async close(opened, salt) {
-            if (opened.getUint8(0) !== 0xFF)
-                throw new Error('Closable buffer should starts with 0xFF');
-            const trimed = new Uint8Array(opened.buffer, opened.byteOffset + 1, opened.byteLength - 1);
-            return this.encrypt(trimed, salt);
-        }
-        /** Decrypts 0xFF prefixed buffer. 16 bytes */
-        async open(closed, salt) {
-            const trimed = await this.decrypt(closed, salt);
-            if (trimed.byteLength !== closed.byteLength - 1)
-                throw new Error('Length of opened buffer should be ' + (closed.byteLength - 1));
-            const opened = new Uint8Array(closed.byteLength);
-            opened[0] = 0xFF;
-            opened.set(trimed, 1);
-            return opened;
+        /** Decrypts data without changing its length. */
+        async decrypt(closed, nonce) {
+            return new Uint8Array(await $mol_crypto_native.subtle.decrypt({ name: 'AES-CTR', counter: nonce, length: 64 }, await this.native(), closed).catch($mol_crypto_restack));
         }
     }
     __decorate([
         $mol_memo.method
-    ], $mol_crypto_sacred.prototype, "toString", null);
-    $.$mol_crypto_sacred = $mol_crypto_sacred;
+    ], $mol_crypto2_secret.prototype, "toString", null);
+    $.$mol_crypto2_secret = $mol_crypto2_secret;
 })($ || ($ = {}));
 
 ;
@@ -10270,12 +10477,12 @@ var $;
         socket() {
             return $mol_crypto2_socket.from(this.asArray());
         }
-        /** Makes shared secret for combination of Chiper and Soacket. */
+        /** Makes shared secret for combination of Chiper and Socket. */
         async secret(pub) {
-            return $mol_crypto_sacred.from(new Uint8Array(await $mol_crypto_native.subtle.deriveBits({
+            return $mol_crypto2_secret.from(new Uint8Array(await $mol_crypto_native.subtle.deriveBits({
                 name: "X25519",
                 public: await pub.native(),
-            }, await this.nativePrivate(), $mol_crypto_sacred.size * 8).catch($mol_crypto_restack)));
+            }, await this.nativePrivate(), $mol_crypto2_secret.size * 8).catch($mol_crypto_restack)));
         }
     }
     __decorate([
@@ -10426,9 +10633,9 @@ var $;
         static grab() {
             if (this.embryos.length)
                 return this.from(this.embryos.pop());
-            return $mol_wire_sync(this).generate();
+            return $mol_wire_sync(this)._generate();
         }
-        static async generate() {
+        static async _generate() {
             for (let i = 0; i < 4096; ++i) {
                 const auth = this.from(await super.generate());
                 if (auth.uint8(0) !== 0xFF)
@@ -10471,6 +10678,202 @@ var $;
     class $mol_rest_port_ws extends $mol_rest_port {
     }
     $.$mol_rest_port_ws = $mol_rest_port_ws;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_rest_message extends $mol_object {
+        port;
+        method() {
+            return 'POST';
+        }
+        uri() {
+            return new URL(`rest://localhost/`);
+        }
+        type() {
+            return 'application/octet-stream';
+        }
+        origin() {
+            return 'unknown';
+        }
+        address() {
+            return 'unknown';
+        }
+        protocols() {
+            return [];
+        }
+        data() {
+            return null;
+        }
+        bin() {
+            let data = this.data();
+            if (data instanceof Uint8Array)
+                return data;
+            if (data instanceof $mol_dom_context.Element)
+                data = $mol_dom_serialize(data);
+            if (typeof data !== 'string')
+                data = JSON.stringify(data);
+            return $mol_charset_encode(data);
+        }
+        text() {
+            const data = this.data();
+            if (typeof data === 'string')
+                return data;
+            if (data instanceof Uint8Array)
+                return $mol_charset_decode(data);
+            if (data instanceof $mol_dom_context.Element)
+                return $mol_dom_serialize(data);
+            return JSON.stringify(data);
+        }
+        reply(data, meta) {
+            if (meta?.code)
+                this.port.send_code(meta.code);
+            if (meta?.type)
+                this.port.send_type(meta.type);
+            this.port.send_data(data);
+        }
+        route(uri) {
+            return $mol_rest_message.make({
+                port: this.port,
+                method: () => this.method(),
+                uri: $mol_const(uri),
+                protocols: () => this.protocols(),
+                type: () => this.type(),
+                origin: () => this.origin(),
+                data: () => this.data(),
+            });
+        }
+        derive(method, data, type = this.type()) {
+            return $mol_rest_message.make({
+                port: this.port,
+                method: $mol_const(method),
+                uri: () => this.uri(),
+                protocols: () => this.protocols(),
+                type: $mol_const(type),
+                origin: () => this.origin(),
+                data: $mol_const(data),
+            });
+        }
+        static make(config) {
+            return super.make(config);
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message.prototype, "uri", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message.prototype, "bin", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message.prototype, "text", null);
+    __decorate([
+        $mol_action
+    ], $mol_rest_message.prototype, "route", null);
+    __decorate([
+        $mol_action
+    ], $mol_rest_message.prototype, "derive", null);
+    __decorate([
+        ($mol_action)
+    ], $mol_rest_message, "make", null);
+    $.$mol_rest_message = $mol_rest_message;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_dom_parse(text, type = 'application/xhtml+xml') {
+        const parser = new $mol_dom_context.DOMParser();
+        const doc = parser.parseFromString(text, type);
+        const error = doc.getElementsByTagName('parsererror');
+        if (error.length)
+            throw new Error(error[0].textContent);
+        return doc;
+    }
+    $.$mol_dom_parse = $mol_dom_parse;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_rest_message_http extends $mol_rest_message {
+        input;
+        method() {
+            return this.input.method ?? super.method();
+        }
+        uri() {
+            const addr = this.input.socket?.localAddress ?? '::1';
+            const port = this.input.socket?.localPort ?? '80';
+            return new URL(this.input.url, `http://[${addr}]:${port}/`);
+        }
+        type() {
+            return (this.input.headers['content-type'] ?? 'application/octet-stream');
+        }
+        origin() {
+            return this.input.headers['origin'] ?? super.origin();
+        }
+        address() {
+            return String(this.input.headers['x-forwarded-for'] ?? '') || this.input.socket?.remoteAddress || super.address();
+        }
+        protocols() {
+            return String(this.input.headers['sec-websocket-protocol'] ?? '').split(',').map(p => p.trim()).filter(Boolean);
+        }
+        data() {
+            const consume = $mol_wire_sync($node['stream/consumers']);
+            if (this.type().startsWith('text/')) {
+                const text = consume.text(this.input);
+                if (this.type() === 'text/html') {
+                    return $mol_dom_parse(text, 'application/xhtml+xml').documentElement;
+                }
+                return text;
+            }
+            else {
+                if (this.type() === 'application/json') {
+                    return consume.json(this.input);
+                }
+                else {
+                    return new Uint8Array(consume.arrayBuffer(this.input));
+                }
+            }
+        }
+        route(uri) {
+            return $mol_rest_message_http.make({
+                port: this.port,
+                input: this.input,
+                uri: $mol_const(uri),
+                data: () => this.data(),
+            });
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "method", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "uri", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "type", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "origin", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "address", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "protocols", null);
+    __decorate([
+        $mol_mem
+    ], $mol_rest_message_http.prototype, "data", null);
+    __decorate([
+        $mol_action
+    ], $mol_rest_message_http.prototype, "route", null);
+    $.$mol_rest_message_http = $mol_rest_message_http;
 })($ || ($ = {}));
 
 ;
@@ -10568,6 +10971,9 @@ var $;
 (function ($) {
     class $mol_rest_port_ws_std extends $mol_rest_port_ws {
         socket;
+        origin() {
+            return this.socket.url;
+        }
         send_nil() {
             if (this.socket.readyState !== this.socket.OPEN)
                 return;
@@ -10602,7 +11008,17 @@ var $;
 var $;
 (function ($) {
     class $mol_rest_port_ws_node extends $mol_rest_port_ws {
+        prolog;
         socket;
+        upgrade() {
+            return $mol_rest_message_http.make({ port: this, input: this.prolog });
+        }
+        origin() {
+            return this.upgrade().origin();
+        }
+        address() {
+            return this.upgrade().address();
+        }
         send_nil() {
             if (this.socket.writableEnded)
                 return;
@@ -10623,6 +11039,9 @@ var $;
         }
     }
     __decorate([
+        $mol_mem
+    ], $mol_rest_port_ws_node.prototype, "upgrade", null);
+    __decorate([
         $mol_action
     ], $mol_rest_port_ws_node.prototype, "send_nil", null);
     __decorate([
@@ -10633,6 +11052,16 @@ var $;
     ], $mol_rest_port_ws_node.prototype, "send_text", null);
     $.$mol_rest_port_ws_node = $mol_rest_port_ws_node;
     $.$mol_rest_port_ws = $mol_rest_port_ws_node;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $giper_baza_log() {
+        return this.$mol_state_arg.value('giper_baza_log') !== null;
+    }
+    $.$giper_baza_log = $giper_baza_log;
 })($ || ($ = {}));
 
 ;
@@ -10859,14 +11288,14 @@ var $;
                     funcs.push(this.patterns[token]);
                 return str;
             });
-            return this.patterns[pattern] = (arg) => {
-                return funcs.reduce((res, func) => res + func(arg), '');
+            return this.patterns[pattern] = (arg, lang) => {
+                return funcs.reduce((res, func) => res + func(arg, lang), '');
             };
         }
-        toString(pattern) {
+        toString(pattern, lang) {
             const Base = this.constructor;
             const formatter = Base.formatter(pattern);
-            return formatter(this);
+            return formatter(this, lang);
         }
     }
     $.$mol_time_base = $mol_time_base;
@@ -11274,8 +11703,8 @@ var $;
         }
         valueOf() { return this.native.getTime(); }
         toJSON() { return this.toString(); }
-        toString(pattern = 'YYYY-MM-DDThh:mm:ss.sssZ') {
-            return super.toString(pattern);
+        toString(pattern = 'YYYY-MM-DDThh:mm:ss.sssZ', lang) {
+            return super.toString(pattern, lang);
         }
         toArray() {
             return [this.year, this.month, this.day, this.hour, this.minute, this.second, this.offset?.count('PT1m')];
@@ -11285,6 +11714,12 @@ var $;
         }
         [$mol_dev_format_head]() {
             return $mol_dev_format_span({}, $mol_dev_format_native(this), ' ', $mol_dev_format_accent(this.toString('YYYY-MM-DD hh:mm:ss.sss Z')));
+        }
+        static formatters = {};
+        static intl(lang, pattern, options) {
+            const group = this.formatters[lang ?? ''] ?? (this.formatters[lang ?? ''] = {});
+            group[pattern] = group[pattern] ?? new Intl.DateTimeFormat(lang, options);
+            return group[pattern];
         }
         /// Mnemonics:
         ///  * single letter for numbers: M - month number, D - day of month.
@@ -11308,12 +11743,12 @@ var $;
                     return '';
                 return String(moment.year % 100);
             },
-            'Month': (pattern => (moment) => {
+            'Month': (moment, lang) => {
                 if (moment.month == null)
                     return '';
-                return pattern.format(moment.native);
-            })(new Intl.DateTimeFormat(undefined, { month: 'long' })),
-            'DD Month': (pattern => (moment) => {
+                return $mol_time_moment.intl(lang, 'Month', { month: 'long' }).format(moment.native);
+            },
+            'DD Month': (moment, lang) => {
                 if (moment.month == null) {
                     if (moment.day == null) {
                         return '';
@@ -11324,14 +11759,14 @@ var $;
                 }
                 else {
                     if (moment.day == null) {
-                        return $mol_time_moment.patterns['Month'](moment);
+                        return $mol_time_moment.patterns['Month'](moment, lang);
                     }
                     else {
-                        return pattern.format(moment.native);
+                        return $mol_time_moment.intl(lang, 'DD Month', { day: '2-digit', month: 'long' }).format(moment.native);
                     }
                 }
-            })(new Intl.DateTimeFormat(undefined, { day: '2-digit', month: 'long' })),
-            'D Month': (pattern => (moment) => {
+            },
+            'D Month': (moment, lang) => {
                 if (moment.month == null) {
                     if (moment.day == null) {
                         return '';
@@ -11345,16 +11780,16 @@ var $;
                         return $mol_time_moment.patterns['Month'](moment);
                     }
                     else {
-                        return pattern.format(moment.native);
+                        return $mol_time_moment.intl(lang, 'D Month', { day: 'numeric', month: 'long' }).format(moment.native);
                     }
                 }
-            })(new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'long' })),
-            'Mon': (pattern => (moment) => {
+            },
+            'Mon': (moment, lang) => {
                 if (moment.month == null)
                     return '';
-                return pattern.format(moment.native);
-            })(new Intl.DateTimeFormat(undefined, { month: 'short' })),
-            'DD Mon': (pattern => (moment) => {
+                return $mol_time_moment.intl(lang, 'Mon', { month: 'short' }).format(moment.native);
+            },
+            'DD Mon': (moment, lang) => {
                 if (moment.month == null) {
                     if (moment.day == null) {
                         return '';
@@ -11365,14 +11800,14 @@ var $;
                 }
                 else {
                     if (moment.day == null) {
-                        return $mol_time_moment.patterns['Mon'](moment);
+                        return $mol_time_moment.patterns['Mon'](moment, lang);
                     }
                     else {
-                        return pattern.format(moment.native);
+                        return $mol_time_moment.intl(lang, 'DD Mon', { day: '2-digit', month: 'short' }).format(moment.native);
                     }
                 }
-            })(new Intl.DateTimeFormat(undefined, { day: '2-digit', month: 'short' })),
-            'D Mon': (pattern => (moment) => {
+            },
+            'D Mon': (moment, lang) => {
                 if (moment.month == null) {
                     if (moment.day == null) {
                         return '';
@@ -11383,13 +11818,13 @@ var $;
                 }
                 else {
                     if (moment.day == null) {
-                        return $mol_time_moment.patterns['Mon'](moment);
+                        return $mol_time_moment.patterns['Mon'](moment, lang);
                     }
                     else {
-                        return pattern.format(moment.native);
+                        return $mol_time_moment.intl(lang, 'D Mon', { day: 'numeric', month: 'short' }).format(moment.native);
                     }
                 }
-            })(new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' })),
+            },
             '-MM': (moment) => {
                 if (moment.month == null)
                     return '';
@@ -11405,24 +11840,24 @@ var $;
                     return '';
                 return String(moment.month + 1);
             },
-            'WeekDay': (pattern => (moment) => {
+            'WeekDay': (moment, lang) => {
                 if (moment.day == null)
                     return '';
                 if (moment.month == null)
                     return '';
                 if (moment.year == null)
                     return '';
-                return pattern.format(moment.native);
-            })(new Intl.DateTimeFormat(undefined, { weekday: 'long' })),
-            'WD': (pattern => (moment) => {
+                return $mol_time_moment.intl(lang, 'WeekDay', { weekday: 'long' }).format(moment.native);
+            },
+            'WD': (moment, lang) => {
                 if (moment.day == null)
                     return '';
                 if (moment.month == null)
                     return '';
                 if (moment.year == null)
                     return '';
-                return pattern.format(moment.native);
-            })(new Intl.DateTimeFormat(undefined, { weekday: 'short' })),
+                return $mol_time_moment.intl(lang, 'WD', { weekday: 'short' }).format(moment.native);
+            },
             '-DD': (moment) => {
                 if (moment.day == null)
                     return '';
@@ -11765,9 +12200,14 @@ var $;
             if (this.time < time) {
                 this.time = time;
                 this.tick = tick;
+                return true;
             }
             else if (this.time === time && this.tick < tick) {
                 this.tick = tick;
+                return true;
+            }
+            else {
+                return false;
             }
         }
         sync_summ(summ) {
@@ -11794,6 +12234,7 @@ var $;
     class $giper_baza_face_map extends Map {
         /** Cumulative face for all peers. */
         stat = new $giper_baza_face;
+        _peer_last = '';
         constructor(entries) {
             super();
             if (entries)
@@ -11804,8 +12245,7 @@ var $;
         }
         /** Synchronize this clock with another. */
         sync(right) {
-            if (right instanceof $giper_baza_face_map)
-                this.stat = right.stat.clone();
+            // if( right instanceof $giper_baza_face_map ) this.stat = right.stat.clone()
             for (const [peer, face] of right) {
                 this.peer_time(peer, face.time, face.tick);
                 this.peer_summ(peer, face.summ);
@@ -11813,7 +12253,9 @@ var $;
         }
         /** Update last time for peer. */
         peer_time(peer, time, tick) {
-            this.stat.sync_time(time, tick);
+            if (this.stat.sync_time(time, tick)) {
+                this._peer_last = peer;
+            }
             let prev = this.get(peer);
             if (prev)
                 prev.sync_time(time, tick);
@@ -11822,10 +12264,12 @@ var $;
         }
         /** Update Summ for Peer. */
         peer_summ(peer, summ) {
-            this.stat.sync_summ(summ);
-            let prev = this.get(peer);
+            const prev = this.get(peer);
+            this.stat.summ = (this.stat.summ ?? 0) + summ - (prev?.summ ?? 0);
+            if (this.stat.summ < 0)
+                $mol_fail(new Error('Negative summ'));
             if (prev)
-                prev.sync_summ(summ);
+                prev.summ = summ;
             else
                 this.set(peer, new $giper_baza_face(0, 0, summ));
         }
@@ -11833,15 +12277,19 @@ var $;
             this.peer_summ(peer, (this.get(peer)?.summ ?? 0) + diff);
         }
         /** Generates new time for peer that greater then other seen. */
-        tick() {
+        tick(peer) {
             const now = $giper_baza_time_now();
             if (this.stat.time < now) {
                 this.stat.time = now;
                 this.stat.tick = 0;
             }
+            else if (this._peer_last !== peer.str) {
+                this.stat.time += 1;
+                this.stat.tick = 0;
+                this._peer_last = peer.str;
+            }
             else {
-                this.stat.tick += 1;
-                this.stat.tick %= 2 ** 16;
+                this.stat.tick = (this.stat.tick + 1) % 2 ** 16;
                 if (!this.stat.tick)
                     ++this.stat.time;
             }
@@ -12297,6 +12745,13 @@ var $;
         let text = '';
         let pos = 0;
         let page_offset = 0;
+        /** Char by char concatenation builds a rope with ~32 bytes per char, kept until flattened. */
+        const codes = [];
+        const flush = () => {
+            text += String.fromCodePoint(...codes);
+            codes.length = 0;
+            return text;
+        };
         const read_code = () => {
             let code = buffer[pos++];
             if (code >= 0x80)
@@ -12308,7 +12763,7 @@ var $;
             if (code >= 0x80)
                 code = ascii_set[code - 0x80];
             if (code === undefined)
-                $mol_fail(new Error('Wrong byte', { cause: { text, pos: pos - 1 } }));
+                $mol_fail(new Error('Wrong byte', { cause: { text: flush(), pos: pos - 1 } }));
             return code;
         };
         while (pos < buffer.length) {
@@ -12324,17 +12779,19 @@ var $;
                         code = ascii_set[code - 0x80];
                     if (mode < tiny_mode) {
                         if (pos === buffer.length)
-                            $mol_fail(new Error('Expected 2 bytes', { cause: { text, pos: pos - 1 } }));
+                            $mol_fail(new Error('Expected 2 bytes', { cause: { text: flush(), pos: pos - 1 } }));
                         code |= read_remap() << 7;
                     }
                     if (mode === full_mode) {
                         if (pos === buffer.length)
-                            $mol_fail(new Error('Expected 3 bytes', { cause: { text, pos: pos - 2 } }));
+                            $mol_fail(new Error('Expected 3 bytes', { cause: { text: flush(), pos: pos - 2 } }));
                         code |= read_remap() << 14;
                     }
                     code += page_offset;
                 }
-                text += String.fromCodePoint(code);
+                codes.push(code);
+                if (codes.length === 1024)
+                    flush();
             }
             else if (code >= tiny_mode) { // Tiny Set
                 mode = code;
@@ -12350,9 +12807,9 @@ var $;
             }
         }
         if (mode !== tiny_mode) {
-            return $mol_fail(new Error('Wrong ending', { cause: { text, mode } }));
+            return $mol_fail(new Error('Wrong ending', { cause: { text: flush(), mode } }));
         }
-        return text;
+        return flush();
     }
     $.$mol_charset_ucf_decode = $mol_charset_ucf_decode;
 })($ || ($ = {}));
@@ -12381,21 +12838,6 @@ var $;
         return result;
     }
     $.$mol_bigint_decode = $mol_bigint_decode;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_dom_parse(text, type = 'application/xhtml+xml') {
-        const parser = new $mol_dom_context.DOMParser();
-        const doc = parser.parseFromString(text, type);
-        const error = doc.getElementsByTagName('parsererror');
-        if (error.length)
-            throw new Error(error[0].textContent);
-        return doc;
-    }
-    $.$mol_dom_parse = $mol_dom_parse;
 })($ || ($ = {}));
 
 ;
@@ -12840,11 +13282,7 @@ var $;
                 const vals = new Array(len);
                 for (let i = 0; i < len; ++i)
                     vals[i] = read_vary();
-                const node = this.rich_node(keys);
-                let rich = node.get(null);
-                if (!rich)
-                    node.set(null, rich = pojo_maker(keys));
-                const obj = rich(vals);
+                const obj = this.rich(keys, vals);
                 stream.push(obj);
                 return obj;
             };
@@ -12917,6 +13355,13 @@ var $;
             room.rich_index = index_clone(this.rich_index);
             return room;
         }
+        rich(keys, vals) {
+            const node = this.rich_node(keys);
+            let rich = node.get(null);
+            if (!rich)
+                node.set(null, rich = pojo_maker(keys));
+            return rich(vals);
+        }
         rich_node(keys) {
             let node = this.rich_index;
             for (let i = 0; i < keys.length; ++i) {
@@ -12927,6 +13372,9 @@ var $;
                     node.set(keys[i], node = new Map);
             }
             return node;
+        }
+        lean(obj) {
+            return this.lean_find(obj)?.(obj) ?? [Object.keys(obj), Object.values(obj)];
         }
         lean_find(val) {
             const lean = val[this.lean_symbol];
@@ -12950,7 +13398,7 @@ var $;
         type: Map,
         keys: ['keys', 'vals'],
         lean: obj => [[...obj.keys()], [...obj.values()]],
-        rich: ([keys, vals]) => new Map(keys.map((k, i) => [k, vals[i]])),
+        rich: ([keys, vals]) => new Map((keys ?? []).map((k, i) => [k, vals?.[i]])),
     });
     /** Native Set support */
     $.$mol_vary.type({
@@ -13058,16 +13506,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $giper_baza_log() {
-        return this.$mol_state_arg.value('giper_baza_log') !== null;
-    }
-    $.$giper_baza_log = $giper_baza_log;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     function batch(host, items, task) {
         items.call(host); // track deps
         const skip = new Set();
@@ -13096,11 +13534,15 @@ var $;
             return this.$.$giper_baza_auth.current();
         }
         faces = new $giper_baza_face_map;
+        tick() {
+            return this.faces.tick(this.auth().pass().peer());
+        }
         _pass = new $mol_wire_dict();
-        _seal_item = new $mol_wire_dict();
-        _seal_shot = new $mol_wire_dict();
+        _seal_item = new Map();
+        _seal_shot = new Map();
         _gift = new $mol_wire_dict();
         _sand = new $mol_wire_dict();
+        _unit_hash = new Map();
         pass_add(pass) {
             if (this._pass.has(pass.lord().str))
                 return;
@@ -13111,21 +13553,18 @@ var $;
             if (prev)
                 return;
             for (const hash of seal.hash_list()) {
-                const prev = this._seal_item.get(hash.str);
+                const prev = this.seal_item_get(seal.lord(), hash);
                 if ($giper_baza_unit_seal.compare(prev, seal) <= 0)
                     continue;
                 if (prev?.alive_items.has(hash.str)) {
-                    seal.alive_items.add(hash.str);
                     prev.alive_items.delete(hash.str);
                     if (!prev.alive_items.size)
                         this.seal_del(prev);
+                    seal.alive_items.add(hash.str);
                 }
-                this._seal_item.set(hash.str, seal);
+                this.seal_item_set(seal, hash);
             }
-            const peer = seal.lord().peer();
-            this.faces.peer_time(peer.str, seal.time(), seal.tick());
             this._seal_shot.set(seal.shot().str, seal);
-            this.faces.peer_summ_shift(peer.str, +1);
         }
         gift_add(gift) {
             const mate = gift.mate();
@@ -13157,9 +13596,9 @@ var $;
                 this.sand_del(prev);
             this.faces.peer_summ_shift(peer.str, +1);
             sands.set(sand.self().str, sand);
+            this._self_all.set(sand.self().str, !sand.dead());
             this.faces.peer_time(peer.str, sand.time(), sand.tick());
-            if (sand.encoded())
-                this.unit_seal_inc(sand);
+            this.unit_seal_inc(sand);
         }
         units_reaping = new Set();
         unit_reap(unit) {
@@ -13168,12 +13607,20 @@ var $;
             this.units_reaping.add(unit);
         }
         unit_seal_inc(unit) {
+            unit._alive = true;
+            if (!unit.encoded())
+                return;
+            this._unit_hash.set(unit.hash().str, unit);
             const seal = this.unit_seal(unit);
             if (!seal)
                 return;
             seal.alive_items.add(unit.hash().str);
         }
         unit_seal_dec(unit) {
+            unit._alive = false;
+            if (!unit.encoded())
+                return;
+            this._unit_hash.delete(unit.hash().str);
             const seal = this.unit_seal(unit);
             if (!seal)
                 return;
@@ -13186,10 +13633,9 @@ var $;
             if (!this._seal_shot.has(shot.str))
                 return;
             this._seal_shot.delete(shot.str);
-            this.faces.peer_summ_shift(seal.lord().peer().str, -1);
             for (const hash of seal.hash_list()) {
-                if (this._seal_item.get(hash.str) === seal) {
-                    this._seal_item.delete(hash.str);
+                if (this.seal_item_get(seal.lord(), hash) === seal) {
+                    this.seal_item_del(seal.lord(), hash);
                 }
             }
             this.unit_reap(seal);
@@ -13216,8 +13662,7 @@ var $;
             sands.delete(sand.self().str);
             this.faces.peer_summ_shift(sand.lord().peer().str, -1);
             this.unit_reap(sand);
-            if (sand.encoded())
-                this.unit_seal_dec(sand);
+            this.unit_seal_dec(sand);
         }
         lord_pass(lord) {
             return this._pass.get(lord.str) ?? null;
@@ -13225,17 +13670,24 @@ var $;
         unit_seal(unit) {
             if (!unit.encoded())
                 return null;
-            const seal = this._seal_item.get(unit.hash().str);
-            if (!seal)
-                return null;
-            if (seal.lord().str != unit.lord().str)
-                return null;
-            return seal;
+            return this.seal_item_get(unit.lord(), unit.hash()) ?? null;
+        }
+        seal_item_get(lord, hash) {
+            return this._seal_item.get(lord.str)?.get(hash.str);
+        }
+        seal_item_del(lord, hash) {
+            this._seal_item.get(lord.str)?.delete(hash.str);
+        }
+        seal_item_set(seal, hash) {
+            let seals = this._seal_item.get(seal.lord().str);
+            if (!seals)
+                this._seal_item.set(seal.lord().str, seals = new Map);
+            seals.set(hash.str, seal);
         }
         sand_get(head, lord, self) {
             return this._sand.get(head.str)?.get(lord.str)?.get(self.str) ?? null;
         }
-        _self_all = new $mol_wire_dict();
+        _self_all = new Map();
         /** Generates unique local id base on optional idea number or random. */
         self_make(idea = Math.floor(Math.random() * 2 ** 48)) {
             const auth = this.auth();
@@ -13251,7 +13703,7 @@ var $;
                     continue;
                 if (this._self_all.has(idea_link.str))
                     continue;
-                this._self_all.set(idea_link.str, null);
+                this._self_all.set(idea_link.str, false);
                 return idea_link;
             }
             $mol_fail(new Error(`Too long self generation`));
@@ -13326,7 +13778,7 @@ var $;
         }
         /** Total count of Units inside Land. */
         total() {
-            let total = this._gift.size + this._seal_item.size;
+            let total = this._gift.size + this._seal_shot.size;
             for (const peers of this._sand.values()) {
                 for (const units of peers.values()) {
                     total += units.size;
@@ -13372,6 +13824,7 @@ var $;
             const skipped = new Map();
             const delta = new Set();
             const passes = new Set();
+            const seals = new Set();
             function collect(unit) {
                 const peer = unit.lord().peer().str;
                 const face_limit = skip_faces.get(peer)?.time_tick ?? 0;
@@ -13383,19 +13836,15 @@ var $;
                 else
                     skipped.set(peer, new Set([unit]));
             }
-            for (const seal of this._seal_item.values()) {
-                if (!seal.alive_items.size)
-                    continue;
-                collect(seal);
-            }
             for (const gift of this._gift.values()) {
                 collect(gift);
                 if (gift.mate().str) {
-                    if (skip_faces.has(gift.lord().peer().str))
+                    if (skip_faces.has(gift.mate().peer().str))
                         continue;
                     const mate_pass = this.lord_pass(gift.mate());
-                    if (mate_pass)
-                        passes.add(mate_pass);
+                    if (!mate_pass)
+                        return $mol_fail(new Error('No pass for mate'));
+                    passes.add(mate_pass);
                 }
             }
             for (const kids of this._sand.values()) {
@@ -13421,9 +13870,15 @@ var $;
                     peer_face: face,
                     self_face: this.faces.get(peer),
                 });
-                if (skipped_units)
-                    for (const unit of skipped_units)
-                        delta.add(unit);
+                for (const unit of skipped_units)
+                    delta.add(unit);
+            }
+            for (const unit of delta) {
+                const seal = this.seal_item_get(unit.lord(), unit.hash());
+                if (seal)
+                    seals.add(seal);
+                else
+                    delta.delete(unit);
             }
             for (const unit of delta) {
                 if (skip_faces.has(unit.lord().peer().str))
@@ -13433,7 +13888,7 @@ var $;
                     return $mol_fail(new Error('No pass for lord'));
                 passes.add(pass);
             }
-            return [...passes, ...delta];
+            return [...passes, ...seals, ...delta];
         }
         /** Picks units between Face and current state and make Part. */
         // @ $mol_action
@@ -13699,7 +14154,7 @@ var $;
             gift._land = this;
             gift.lord(lord_pass.lord());
             gift.rank(rank);
-            gift.time_tick(this.faces.tick().time_tick);
+            gift.time_tick(this.tick().time_tick);
             if (mate_pass)
                 gift.mate(mate_pass.lord());
             if (rank >= $giper_baza_rank_read) {
@@ -13709,7 +14164,8 @@ var $;
                         return $mol_fail(new Error(`Encrypted land can't be shared to everyone`));
                     const secret_mutual = this.auth().secret_mutual(mate_pass);
                     if (secret_mutual) {
-                        const code = $mol_wire_sync(secret_mutual).close(secret_land, gift.salt());
+                        const salt = $mol_buffer.from(gift.salt().slice()).mix(this.link().lord().toBin());
+                        const code = $mol_wire_sync(secret_mutual).encrypt(secret_land, salt);
                         gift.code().set(code);
                     }
                 }
@@ -13729,17 +14185,24 @@ var $;
             const lord_pass = this.auth().pass();
             const encrypted = vary === null ? false : this.encrypted();
             let open = $giper_baza_link_base(this.link(), () => $giper_baza_vary.pack([vary]));
-            const length = encrypted ? Math.ceil((open.byteLength + 1) / 16) * 16 : open.byteLength;
-            const sand = $giper_baza_unit_sand.make(length, tag);
+            if (encrypted && (open.byteLength < 16)) {
+                const padded = new Uint8Array(16);
+                padded.set(open);
+                for (let i = open.byteLength; i < 16; ++i) {
+                    padded[i] = Math.floor(Math.random() * 55 - 27); // [ -27; 27 ]
+                }
+                open = padded;
+            }
+            const sand = $giper_baza_unit_sand.make(open.byteLength, tag);
             sand._open = open;
             sand._land = this;
             $giper_baza_unit_trusted_grant(sand);
-            sand.time_tick(this.faces.tick().time_tick);
+            sand.time_tick(this.tick().time_tick);
             sand.lord(lord_pass.lord());
             sand.lead(lead);
             sand.head(head);
             sand._vary = vary;
-            sand.self(self ?? this.self_make($mol_hash_numbers(open, sand.idea_seed())));
+            sand.self(self ?? this.self_make(encrypted ? undefined : $mol_hash_numbers(open, sand.idea_seed())));
             this.diff_apply([lord_pass, sand]);
             this.broadcast();
             return sand;
@@ -13777,6 +14240,7 @@ var $;
             return this.post(seat ? units[seat - 1].self() : $giper_baza_link.hole, head, sand.self(), null, 'term');
         }
         broadcast() {
+            this.persisted(true);
             this.$.$giper_baza_glob.yard().lands_news.add(this.link().str);
         }
         sync() {
@@ -13818,6 +14282,8 @@ var $;
         loading() {
             $mol_wire_solid();
             let units = $mol_wire_sync(this.mine()).units_load();
+            if (units.length)
+                this.persisted(true);
             if (this.$.$giper_baza_log())
                 $mol_wire_sync(this.$).$mol_log3_rise({
                     place: this,
@@ -13826,24 +14292,24 @@ var $;
                 });
             $mol_wire_sync(this).diff_apply(units, 'skip_load');
         }
-        sand_encoding() {
-            this.loading();
+        sands_unencoded() {
             const sands = [];
             for (const kids of this._sand.values()) {
                 for (const units of kids.values()) {
                     for (const sand of units.values()) {
-                        const sync_sand = $mol_wire_sync(sand);
-                        if (sync_sand._vary === undefined)
+                        if (sand._vary === undefined)
                             continue;
-                        if (sync_sand._ball)
+                        if (sand._ball)
                             continue;
                         sands.push(sand);
                     }
                 }
             }
-            if (!sands.length)
-                return;
-            $mol_wire_sync(this).sands_encode(sands);
+            return sands;
+        }
+        sand_encoding() {
+            this.loading();
+            batch(this, this.sands_unencoded, this.sands_encode);
         }
         units_unsigned() {
             const signing = [];
@@ -13881,6 +14347,8 @@ var $;
             for (const gift of this._gift.values()) {
                 if (mine.units_persisted.has(gift))
                     continue;
+                if (!this.unit_seal(gift))
+                    continue;
                 persisting.add(gift);
                 check_lord(gift.lord());
                 check_lord(gift.mate());
@@ -13889,6 +14357,8 @@ var $;
                 for (const units of kids.values()) {
                     for (const sand of units.values()) {
                         if ($mol_wire_sync(mine.units_persisted).has(sand))
+                            continue;
+                        if (!this.unit_seal(sand))
                             continue;
                         persisting.add(sand);
                         check_lord(sand.lord());
@@ -13906,6 +14376,8 @@ var $;
         }
         units_saving() {
             this.units_signing();
+            if (!this.persisted())
+                return;
             batch(this, this.units_unsaved, this.units_save);
         }
         async units_save(units) {
@@ -13923,6 +14395,20 @@ var $;
                     ins: units,
                     del: reaping,
                 });
+        }
+        persisted(next) {
+            $mol_wire_solid();
+            if (next !== undefined)
+                return next;
+            const level = $mol_wire_sync(this.$.$mol_storage).level();
+            if (level <= 0)
+                return true;
+            if (level > 6)
+                return false;
+            const crop = 8 - level;
+            const self = this.auth().pass().lord().toBin().at(-1);
+            const land = this.link().toBin().at(-1);
+            return (self >>> crop) === (land >>> crop);
         }
         async units_sign(units) {
             await Promise.resolve(); // prevent deps
@@ -13953,14 +14439,14 @@ var $;
             const threads = [...lands.entries()].flatMap(([land, hashes]) => {
                 const auth = land.auth();
                 const rate = $giper_baza_rank_rate_of(land.pass_rank(auth.pass()));
-                const wide = Boolean(land.link().area().str);
+                const wide = !land.link().area().str;
                 return $mol_array_chunks(hashes, $giper_baza_unit_seal_limit).map(async (hashes) => {
                     const seal = $giper_baza_unit_seal.make(hashes.length, wide);
                     seal.lord(auth.pass().lord());
                     seal.hash_list(hashes);
                     seal._land = this;
                     do {
-                        seal.time_tick(this.faces.tick().time_tick);
+                        seal.time_tick(this.tick().time_tick);
                         const sens = seal.shot().mix(this.link());
                         const sign = await auth.signer().sign(sens);
                         seal.sign(sign);
@@ -13970,9 +14456,13 @@ var $;
             });
             const seals = await Promise.all(threads);
             for (const seal of seals) {
-                for (const hash of seal.hash_list())
-                    seal.alive_items.add(hash.str);
-                this.seal_add(seal);
+                for (const hash of seal.hash_list()) {
+                    if (this._unit_hash.has(hash.str)) {
+                        seal.alive_items.add(hash.str);
+                    }
+                }
+                if (seal.alive_items.size)
+                    this.seal_add(seal);
             }
             return seals;
         }
@@ -13983,10 +14473,14 @@ var $;
             let bin = sand._open;
             if (sand._vary !== null) {
                 const secret = sand._land.secret();
-                if (secret)
-                    bin = await secret.encrypt(bin, sand.salt());
+                if (secret) {
+                    const salt = $mol_buffer.from(sand.salt().slice()).mix(this.link().toBin());
+                    bin = await secret.encrypt(bin, salt);
+                }
             }
             sand.ball(bin);
+            if (sand._alive)
+                this._unit_hash.set(sand.hash().str, sand);
             return sand;
         }
         sand_load(sand) {
@@ -14034,7 +14528,19 @@ var $;
         // 	return sand._open!
         // }
         sands_open(sands) {
-            const closed = sands.filter(sand => !sand._open);
+            const encrypted = this.encrypted();
+            const closed = sands.filter(sand => {
+                if (sand._open)
+                    return false;
+                if (!sand._ball) {
+                    if (sand.big())
+                        return true;
+                    sand._ball = sand.data();
+                }
+                if (encrypted && !sand.dead())
+                    return true;
+                sand._open = sand._ball;
+            });
             if (!closed.length)
                 return;
             return Promise.all(closed.map(sand => this.sand_open(sand)));
@@ -14054,8 +14560,9 @@ var $;
             if (!sand._ball)
                 sand._ball = sand.big() ? await $mol_wire_async(this.mine()).ball_load(sand) : sand.data();
             if (secret && sand._ball && !sand.dead()) {
+                const salt = $mol_buffer.from(sand.salt().slice()).mix(this.link().toBin());
                 try {
-                    sand._open = await secret.decrypt(sand._ball, sand.salt());
+                    sand._open = await secret.decrypt(sand._ball, salt);
                 }
                 catch (error) {
                     if ($mol_fail_catch(error)) {
@@ -14076,6 +14583,7 @@ var $;
         }
         encrypted(next) {
             $mol_wire_solid();
+            // if( !this._gift.size ) this.loading()
             const gift = this._gift.get(this.link().str);
             const prev = gift?.code_exists() ?? false;
             if (next === undefined)
@@ -14089,14 +14597,14 @@ var $;
             const unit = $mol_wire_sync($giper_baza_unit_gift).make();
             $giper_baza_unit_trusted_grant(unit);
             unit.rank($giper_baza_rank_rule);
-            unit.time_tick(this.faces.tick().time_tick);
+            unit.time_tick(this.tick().time_tick);
             unit.lord(auth.pass().lord());
             unit.mate(auth.pass().lord());
             unit._land = this;
             if (next) {
-                const secret = $mol_wire_sync($mol_crypto_sacred).make();
+                const secret = $mol_wire_sync($mol_crypto2_secret).make();
                 const secret_mutual = auth.secret_mutual(auth.pass());
-                const secret_closed = $mol_wire_sync(secret_mutual).close(secret, unit.salt());
+                const secret_closed = $mol_wire_sync(secret_mutual).encrypt(secret, unit.salt());
                 unit.code().set(secret_closed);
             }
             this.diff_apply([auth.pass(), unit]);
@@ -14114,7 +14622,8 @@ var $;
             const secret_mutual = auth.secret_mutual(this.lord_pass(gift.lord()));
             if (!secret_mutual)
                 return $mol_fail(new Error(`Can't decrypt secret`));
-            return new $mol_crypto_sacred($mol_wire_sync(secret_mutual).open(gift.code(), gift.salt()).buffer);
+            const salt = $mol_buffer.from(gift.salt().slice()).mix(this.link().lord().toBin());
+            return new $mol_crypto2_secret($mol_wire_sync(secret_mutual).decrypt(gift.code(), salt).buffer);
         }
         dump() {
             this.units_saving();
@@ -14227,6 +14736,9 @@ var $;
     ], $giper_baza_land.prototype, "loading", null);
     __decorate([
         $mol_mem
+    ], $giper_baza_land.prototype, "sands_unencoded", null);
+    __decorate([
+        $mol_mem
     ], $giper_baza_land.prototype, "sand_encoding", null);
     __decorate([
         $mol_mem
@@ -14240,6 +14752,9 @@ var $;
     __decorate([
         $mol_mem
     ], $giper_baza_land.prototype, "units_saving", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_land.prototype, "persisted", null);
     __decorate([
         $mol_mem_key
     ], $giper_baza_land.prototype, "sand_load", null);
@@ -14324,7 +14839,10 @@ var $;
                     graph.link(seal, nodes.get(seal.lord().str) ?? null, 0); // seal -> lord
                     graph.link(seal, null, 0); // seal -> every
                     for (const hash of seal.hash_list()) {
-                        graph.link(nodes.get(hash.str) ?? null, seal, 1); // unit => seal
+                        const node = nodes.get(hash.str);
+                        if (!node)
+                            continue;
+                        graph.link(node, seal, 1); // unit => seal
                     }
                 }
             });
@@ -14443,6 +14961,7 @@ var $;
             return true;
         }
         _land = null;
+        _alive = false;
         dump() {
             return {};
         }
@@ -14846,7 +15365,7 @@ var $;
             return `${super.toString()} ${tag} ${lead}\\${head}/${self} ${vary}`;
         }
         [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 📦 ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', this.encoded() ? $mol_dev_format_auto(this.hash()) : undefined, ' ', this.lead().str || '__knot__', $mol_dev_format_shade('\\'), $mol_dev_format_accent(this.head().str || '__root__'), $mol_dev_format_shade('/'), this.self().str || '__meta__', ' ', {
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), ' 👾', $mol_dev_format_auto(this.lord()), ' 📦 ', $mol_dev_format_shade($giper_baza_time_dump(this.time(), this.tick())), ' #', this.encoded() ? $mol_dev_format_auto(this.hash()) : $mol_dev_format_shade('___incompleted___'), ' ', this.lead().str || '__knot__', $mol_dev_format_shade('\\'), $mol_dev_format_accent(this.head().str || '__root__'), $mol_dev_format_shade('/'), this.self().str || '__meta__', ' ', {
                 term: '💼',
                 solo: '1️⃣',
                 vals: '🎹',
@@ -15176,7 +15695,7 @@ var $;
             this.splice(next, 0, units.length, tag);
             return this.items_vary();
         }
-        /** Replace sublist by  new one with reconciliation. */
+        /** Replace sublist by new one with reconciliation. */
         splice(next, from = this.units().length, to = from, tag = 'term') {
             const land = this.land();
             $mol_reconcile({
@@ -15524,7 +16043,7 @@ var $;
                 const tx = this.sides[0].open('read_only');
                 const data = tx.read();
                 tx.destructor();
-                this.pool().acquire(data.byteLength);
+                this.pool().acquire(Math.ceil(data.byteLength / 8) * 8);
                 return data;
             }
             catch (error) {
@@ -15635,7 +16154,7 @@ var $;
                     return $mol_fail(new Error('Unexpected land', { cause: { expected: this.land().str, existen: land } }));
                 for (const unit of part.units) {
                     this.units_persisted.add(unit);
-                    $giper_baza_unit_trusted_grant(unit);
+                    // $giper_baza_unit_trusted_grant( unit )
                 }
                 return part.units;
             }
@@ -15952,12 +16471,22 @@ var $;
         }
         lands_news = new $mol_wire_set();
         static masters_default = [];
-        static masters() {
+        static masters_seeded() {
             const all = this.$.$giper_baza_glob.Seed().peers();
             const self = this.$.$giper_baza_auth.current().pass().lord();
             const pos = all.findLastIndex(peer => peer.link().str === self.str);
             const links = all.slice(pos + 1).flatMap(peer => peer.urls());
-            return [...this.masters_default, ...links];
+            return links.length ? links : null;
+        }
+        static masters_override() {
+            const arg = this.$.$mol_state_arg.value('giper_baza_yard_masters');
+            if (arg == null)
+                return null;
+            const links = arg.split(',').filter(Boolean);
+            return links;
+        }
+        static masters() {
+            return this.masters_override() ?? this.masters_seeded() ?? this.masters_default;
         }
         master_cursor(next = 0) {
             return next;
@@ -15976,9 +16505,10 @@ var $;
             const link = this.master_current();
             if (!link)
                 return null;
-            const socket = new $mol_dom_context.WebSocket(link.replace(/^http/, 'ws'), ['$giper_baza_yard']);
+            const socket = new $mol_dom_context.WebSocket(link.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
             socket.binaryType = 'arraybuffer';
-            const port = $mol_rest_port_ws_std.make({ socket });
+            const port = new $mol_rest_port_ws_std;
+            port.socket = socket;
             socket.onmessage = async (event) => {
                 if (event.data instanceof ArrayBuffer) {
                     if (!event.data.byteLength)
@@ -15998,13 +16528,11 @@ var $;
                 clearInterval(interval);
                 setTimeout(() => this.reconnects(null), 1000);
             };
-            Object.assign(socket, {
-                destructor: () => {
-                    socket.onclose = () => { };
-                    clearInterval(interval);
-                    socket.close();
-                }
-            });
+            port.destructor = () => {
+                socket.onclose = () => { };
+                clearInterval(interval);
+                socket.close();
+            };
             return new Promise((done, fail) => {
                 socket.onopen = () => {
                     this.$.$mol_log3_come({
@@ -16018,9 +16546,17 @@ var $;
                 };
                 socket.onerror = () => {
                     socket.onclose = event => {
-                        fail(new Error(`Master (${link}) is unavailable (${event.code})`));
+                        if (this.$.$giper_baza_log())
+                            this.$.$mol_log3_warn({
+                                place: this,
+                                message: 'Master unavailable',
+                                hint: 'Relax and wait for reconnect',
+                                link,
+                                code: event.code,
+                            });
                         clearInterval(interval);
                         interval = setTimeout(() => {
+                            // fail( new Error( `Master unavailable`, { cause: { link, code: event.code } } ) )
                             this.master_next();
                             this.reconnects(null);
                         }, 1000);
@@ -16083,6 +16619,14 @@ var $;
             if (!passives)
                 Passives.set(port, passives = new Set);
             return passives;
+        }
+        lands_alive() {
+            const ports = this.ports();
+            const actives = ports.flatMap(port => [...this.port_lands_active(port)]);
+            const passives = ports.flatMap(port => [...this.port_lands_passive(port)]);
+            const lands = new Set([...actives, ...passives]);
+            const glob = this.$.$giper_baza_glob;
+            return [...lands].map(id => glob.Land(new $giper_baza_link(id)));
         }
         port_income(port, msg) {
             const pack = $mol_wire_sync($giper_baza_pack).from(msg);
@@ -16266,6 +16810,9 @@ var $;
         $mol_mem_key
     ], $giper_baza_yard.prototype, "port_lands_active", null);
     __decorate([
+        $mol_mem
+    ], $giper_baza_yard.prototype, "lands_alive", null);
+    __decorate([
         $mol_action
     ], $giper_baza_yard.prototype, "port_income", null);
     __decorate([
@@ -16286,6 +16833,12 @@ var $;
     __decorate([
         $mol_mem_key
     ], $giper_baza_yard.prototype, "face_port_land", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_yard, "masters_seeded", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_yard, "masters_override", null);
     __decorate([
         $mol_mem
     ], $giper_baza_yard, "masters", null);
@@ -16660,7 +17213,7 @@ var $;
     }
     if ('process' in globalThis) {
         process.on('uncaughtExceptionMonitor', handler);
-        process.on('unhandledRejection', handler_promise_node);
+        // process.on('unhandledRejection', handler_promise_node) // revents process halt
     }
     const console_error = console.error;
     console.error = function console_error_custom(...args) {
@@ -16684,6 +17237,8 @@ var $;
 (function ($) {
     class $giper_baza_app_stat extends $giper_baza_dict.with({
         Uptime: $giper_baza_atom_dura,
+        Masters: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
+        Slaves: $giper_baza_atom.of($mol_schema_list($mol_schema_string)),
         /** User time in secs */
         Cpu_user: $giper_baza_stat_ranges,
         /** System time in secs */
@@ -16692,6 +17247,8 @@ var $;
         Mem_used: $giper_baza_stat_ranges,
         /** Memory in MB */
         Mem_free: $giper_baza_stat_ranges,
+        /** FS used */
+        Fs_used: $giper_baza_stat_ranges,
         /** FS free */
         Fs_free: $giper_baza_stat_ranges,
         /** FS read count */
@@ -16702,8 +17259,10 @@ var $;
         Port_slaves: $giper_baza_stat_ranges,
         /** Masters sockets count */
         Port_masters: $giper_baza_stat_ranges,
-        /** Active lands count */
-        Land_active: $giper_baza_stat_ranges,
+        /** Alive (in-memory) lands count */
+        Land_alive: $giper_baza_stat_ranges,
+        /** Ghost (non-persist) lands count */
+        Land_ghost: $giper_baza_stat_ranges,
         /** Unhandled errors */
         Errors: $giper_baza_stat_ranges,
     }) {
@@ -16719,6 +17278,12 @@ var $;
         }
         uptime(next) {
             return this.Uptime(next)?.val(next) ?? new $mol_time_duration(0);
+        }
+        masters(next) {
+            return this.Masters(next)?.val(next) ?? [];
+        }
+        slaves(next) {
+            return this.Slaves(next)?.val(next) ?? [];
         }
         init() {
             this.Errors(null).tick_instant(1); // restarts as errors
@@ -16737,24 +17302,26 @@ var $;
                 return;
             }
             this.$.$mol_state_time.now(1000);
+            const yard = this.$.$giper_baza_glob.yard();
             this.uptime(new $mol_time_duration({ second: Math.floor(process.uptime()) }).normal);
+            this.masters([...yard.masters()].map(port => port.address() + ' ' + port.origin()));
+            this.slaves([...yard.slaves].map(port => port.address() + ' ' + port.origin()));
             const res = process.resourceUsage();
             this.Cpu_user(null).tick_integral(Math.ceil(res.userCPUTime / 1e4)); // %
             this.Cpu_system(null).tick_integral(Math.ceil(res.systemCPUTime / 1e4)); // %
             this.Fs_reads(null).tick_integral(res.fsRead); // pct
             this.Fs_writes(null).tick_integral(res.fsWrite); // pct
-            const mem_total = $node.os.totalmem();
-            this.Mem_used(null).tick_instant(Math.ceil((res.maxRSS - res.sharedMemorySize) * 1024 / mem_total * 100)); // %
-            this.Mem_free(null).tick_instant(Math.floor($node.os.freemem() / mem_total * 100)); // %
-            const fs = $node.fs.statfsSync('.');
-            this.Fs_free(null).tick_instant(Math.floor(Number(fs.bfree) / Number(fs.blocks) * 100)); // %
-            const yard = $mol_wire_sync(this.$.$giper_baza_glob.yard());
-            const masters = yard.masters().length;
+            this.Mem_used(null).tick_instant(Math.ceil((res.maxRSS - res.sharedMemorySize) / 1024)); // MB
+            this.Mem_free(null).tick_instant(Math.floor($node.os.freemem() / 1024 / 1024)); // MB
+            this.Fs_used(null).tick_instant(Math.floor($mol_storage.used() / 1024 / 1024)); // MB
+            this.Fs_free(null).tick_instant(Math.floor($mol_storage.free() / 1024 / 1024)); // MB
+            const masters = yard.masters()?.length ?? 0;
             this.Port_masters(null).tick_instant(masters); // pct
-            const ports = yard.ports();
-            this.Port_slaves(null).tick_instant(ports.length - masters); // pct
-            const lands = ports.reduce((sum, port) => sum + yard.port_lands_active(port).size, 0);
-            this.Land_active(null).tick_instant(lands); // pct
+            this.Port_slaves(null).tick_instant(yard.slaves.size); // pct
+            const lands_alive = yard.lands_alive();
+            const lands_persist = yard.lands_alive().filter(land => land.persisted());
+            this.Land_alive(null).tick_instant(lands_alive.length); // pct
+            this.Land_ghost(null).tick_instant(lands_alive.length - lands_persist.length); // pct
             this.Errors(null).tick_instant(0); // pct
         }
     }
@@ -16764,6 +17331,12 @@ var $;
     __decorate([
         $mol_mem
     ], $giper_baza_app_stat.prototype, "uptime", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "masters", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_app_stat.prototype, "slaves", null);
     __decorate([
         $mol_mem
     ], $giper_baza_app_stat.prototype, "init", null);
@@ -16777,7 +17350,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$giper_baza_flex_deck_link = new $giper_baza_link('AyiXyvOr_k8TaNSel_TkJWFugO');
+    $.$giper_baza_flex_deck_link = new $giper_baza_link('6NUPZgrR_Itnhu9N1_WPsQDQWa');
     /** Subj - named entity */
     class $giper_baza_flex_subj extends $giper_baza_dict.with({
         Name: $giper_baza_atom_text,
@@ -17056,6 +17629,7 @@ var $;
             return land.Pawn(Pawn).Head(link.head());
         }
         static Seed() {
+            $mol_wire_solid();
             const link = $giper_baza_flex_deck_link.lord();
             const seed = this.Pawn(link, $giper_baza_flex_seed);
             // if( !$mol_wire_sync( seed ).meta() )
@@ -17102,107 +17676,6 @@ var $;
         $mol_action
     ], $giper_baza_glob, "apply_parts", null);
     $.$giper_baza_glob = $giper_baza_glob;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_rest_message extends $mol_object {
-        port;
-        method() {
-            return 'POST';
-        }
-        uri() {
-            return new URL(`rest://localhost/`);
-        }
-        type() {
-            return 'application/octet-stream';
-        }
-        origin() {
-            return 'unknown';
-        }
-        address() {
-            return 'unknown';
-        }
-        protocols() {
-            return [];
-        }
-        data() {
-            return null;
-        }
-        bin() {
-            let data = this.data();
-            if (data instanceof Uint8Array)
-                return data;
-            if (data instanceof $mol_dom_context.Element)
-                data = $mol_dom_serialize(data);
-            if (typeof data !== 'string')
-                data = JSON.stringify(data);
-            return $mol_charset_encode(data);
-        }
-        text() {
-            const data = this.data();
-            if (typeof data === 'string')
-                return data;
-            if (data instanceof Uint8Array)
-                return $mol_charset_decode(data);
-            if (data instanceof $mol_dom_context.Element)
-                return $mol_dom_serialize(data);
-            return JSON.stringify(data);
-        }
-        reply(data, meta) {
-            if (meta?.code)
-                this.port.send_code(meta.code);
-            if (meta?.type)
-                this.port.send_type(meta.type);
-            this.port.send_data(data);
-        }
-        route(uri) {
-            return $mol_rest_message.make({
-                port: this.port,
-                method: () => this.method(),
-                uri: $mol_const(uri),
-                protocols: () => this.protocols(),
-                type: () => this.type(),
-                origin: () => this.origin(),
-                data: () => this.data(),
-            });
-        }
-        derive(method, data) {
-            return $mol_rest_message.make({
-                port: this.port,
-                method: $mol_const(method),
-                uri: () => this.uri(),
-                protocols: () => this.protocols(),
-                type: () => this.type(),
-                origin: () => this.origin(),
-                data: $mol_const(data),
-            });
-        }
-        static make(config) {
-            return super.make(config);
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message.prototype, "uri", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message.prototype, "bin", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message.prototype, "text", null);
-    __decorate([
-        $mol_action
-    ], $mol_rest_message.prototype, "route", null);
-    __decorate([
-        $mol_action
-    ], $mol_rest_message.prototype, "derive", null);
-    __decorate([
-        ($mol_action)
-    ], $mol_rest_message, "make", null);
-    $.$mol_rest_message = $mol_rest_message;
 })($ || ($ = {}));
 
 ;
@@ -17404,6 +17877,7 @@ var $;
         'zip': 'application/zip',
         '7z': 'application/x-7z-compressed',
     };
+    $.$mol_file_extensions_mime = Object.fromEntries(Object.entries($.$mol_file_extensions).map(([ext, mime]) => [mime, ext]));
 })($ || ($ = {}));
 
 ;
@@ -17418,6 +17892,7 @@ var $;
             if (this.output.statusCode !== 400)
                 return;
             this.output.statusCode = code;
+            this.output.setHeader('x-content-type-options', 'nosniff');
         }
         send_type(mime) {
             if (this.output.writableEnded)
@@ -17425,6 +17900,20 @@ var $;
             if (this.output.getHeader('content-type'))
                 return;
             this.output.setHeader('content-type', mime);
+        }
+        send_name(name) {
+            if (this.output.writableEnded)
+                return;
+            if (this.output.getHeader('content-disposition'))
+                return;
+            const utf8 = encodeURIComponent(name)
+                .replace(/['()*]/g, char => '%' + char.charCodeAt(0).toString(16).toUpperCase());
+            this.output.setHeader('content-disposition', `inline; filename*=UTF-8''${utf8}`);
+        }
+        send_prop(name, value) {
+            if (this.output.writableEnded)
+                return;
+            this.output.setHeader(name, value);
         }
         send_bin(data) {
             if (this.output.writableEnded)
@@ -17441,88 +17930,14 @@ var $;
     ], $mol_rest_port_http.prototype, "send_type", null);
     __decorate([
         $mol_action
-    ], $mol_rest_port_http.prototype, "send_bin", null);
-    $.$mol_rest_port_http = $mol_rest_port_http;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_rest_message_http extends $mol_rest_message {
-        input;
-        method() {
-            return this.input.method ?? super.method();
-        }
-        uri() {
-            const addr = this.input.socket?.localAddress ?? '::1';
-            const port = this.input.socket?.localPort ?? '80';
-            return new URL(this.input.url, `http://[${addr}]:${port}/`);
-        }
-        type() {
-            return (this.input.headers['content-type'] ?? 'application/octet-stream');
-        }
-        origin() {
-            return this.input.headers['origin'] ?? super.origin();
-        }
-        address() {
-            return String(this.input.headers['x-forwarded-for'] ?? '') || this.input.socket?.remoteAddress || super.address();
-        }
-        protocols() {
-            return String(this.input.headers['sec-websocket-protocol'] ?? '').split(',').map(p => p.trim()).filter(Boolean);
-        }
-        data() {
-            const consume = $mol_wire_sync($node['stream/consumers']);
-            if (this.type().startsWith('text/')) {
-                const text = consume.text(this.input);
-                if (this.type() === 'text/html') {
-                    return $mol_dom_parse(text, 'application/xhtml+xml').documentElement;
-                }
-                return text;
-            }
-            else {
-                if (this.type() === 'application/json') {
-                    return consume.json(this.input);
-                }
-                else {
-                    return new Uint8Array(consume.arrayBuffer(this.input));
-                }
-            }
-        }
-        route(uri) {
-            return $mol_rest_message_http.make({
-                port: this.port,
-                input: this.input,
-                uri: $mol_const(uri),
-                data: () => this.data(),
-            });
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "method", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "uri", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "type", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "origin", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "address", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "protocols", null);
-    __decorate([
-        $mol_mem
-    ], $mol_rest_message_http.prototype, "data", null);
+    ], $mol_rest_port_http.prototype, "send_name", null);
     __decorate([
         $mol_action
-    ], $mol_rest_message_http.prototype, "route", null);
-    $.$mol_rest_message_http = $mol_rest_message_http;
+    ], $mol_rest_port_http.prototype, "send_prop", null);
+    __decorate([
+        $mol_action
+    ], $mol_rest_port_http.prototype, "send_bin", null);
+    $.$mol_rest_port_http = $mol_rest_port_http;
 })($ || ($ = {}));
 
 ;
@@ -17567,6 +17982,9 @@ var $;
                     origin: msg.origin(),
                     remote: req.socket.remoteAddress + ':' + req.socket.remotePort
                 });
+            if (Number(req.headers['content-length']) > this.message_limit) {
+                return port.send_code($mol_rest_code["Request Entity Too Large"]);
+            }
             $mol_wire_sync(res).setHeader('Access-Control-Allow-Origin', '*');
             $mol_wire_sync(res).setHeader('Access-Control-Allow-Methods', '*');
             $mol_wire_sync(res).setHeader('Access-Control-Allow-Headers', '*');
@@ -17589,8 +18007,8 @@ var $;
             res.end();
         }
         ws_upgrade(req, socket, head) {
-            const port = $mol_rest_port_ws_node.make({ socket });
-            const upgrade = $mol_rest_message_http.make({ port, input: req });
+            const port = $mol_rest_port_ws_node.make({ socket, prolog: req });
+            const upgrade = port.upgrade();
             let protocol = '';
             try {
                 protocol = $mol_wire_sync(this.root()).REQUEST(upgrade.derive('OPEN', null));
@@ -17641,13 +18059,14 @@ var $;
                     });
                     return;
                 }
+                socket.end();
             });
             socket.on('end', onclose);
             socket.on('error', onclose);
             socket.on('data', (chunk) => this.ws_income(chunk, upgrade, socket));
             const key_in = req.headers["sec-websocket-key"];
             const magic = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
-            const key_out = $mol_base64_encode($mol_crypto_hash($mol_charset_encode(key_in + magic)));
+            const key_out = $mol_base64_encode($mol_crypto2_hash($mol_charset_encode(key_in + magic)));
             socket.write('HTTP/1.1 101 WS Handshaked\r\n' +
                 'Upgrade: WebSocket\r\n' +
                 'Connection: Upgrade\r\n' +
@@ -17665,6 +18084,7 @@ var $;
         }
         _ws_income_chunks = new WeakMap;
         _ws_income_frames = new WeakMap;
+        message_limit = 16 * 1024 * 1024; // 16MiB
         async ws_income(chunk, upgrade, sock) {
             sock.pause();
             try {
@@ -17684,11 +18104,22 @@ var $;
                     if (chunk.byteLength < header_size)
                         return setTimeout(() => sock.resume()), undefined;
                 }
-                const msg_size = header_size + frame.data().size;
-                const patial_size = chunks.reduce((sum, buf) => sum + buf.byteLength, 0);
-                if (msg_size > patial_size)
+                const frame_size = frame.data().size;
+                const frames = this._ws_income_frames.get(sock) ?? [];
+                let total_size = frame_size;
+                for (const frame of frames) {
+                    total_size += typeof frame === 'string' ? frame.length : frame.byteLength;
+                }
+                if (total_size > this.message_limit)
+                    throw new Error('WebSocket message too large', { cause: {
+                            size: total_size,
+                            limit: this.message_limit,
+                        } });
+                const msg_size = header_size + frame_size;
+                const partial_size = chunks.reduce((sum, buf) => sum + buf.byteLength, 0);
+                if (msg_size > partial_size)
                     return setTimeout(() => sock.resume()), undefined;
-                chunk = Buffer.alloc(patial_size);
+                chunk = Buffer.alloc(partial_size);
                 let offset = 0;
                 for (const buf of chunks.splice(0)) {
                     chunk.set(buf, offset);
@@ -17709,10 +18140,9 @@ var $;
                 const op = frame.kind().op;
                 if (op === 'txt')
                     data = $mol_charset_decode(data);
-                let frames = this._ws_income_frames.get(sock);
-                if (!frames)
-                    this._ws_income_frames.set(sock, frames = []);
                 if (!frame.kind().fin) {
+                    if (!this._ws_income_frames.has(sock))
+                        this._ws_income_frames.set(sock, frames);
                     frames.push(data);
                     setTimeout(() => sock.resume());
                     return;
@@ -17737,7 +18167,8 @@ var $;
                     setTimeout(() => sock.resume());
                     return;
                 }
-                const message = upgrade.derive('POST', data);
+                const type = typeof data === 'string' ? 'text/plain' : 'application/octet-stream';
+                const message = upgrade.derive('POST', data, type);
                 if (data.length !== 0) {
                     if (this.log())
                         this.$.$mol_log3_rise({
@@ -18260,6 +18691,10 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$giper_baza_file_csp = [
+        'Content-Security-Policy',
+        "sandbox; default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src data:; form-action 'none'",
+    ];
     $.$giper_baza_file_query = $hyoo_harp_scheme({
         BAZA: $hyoo_harp_scheme({}),
         file: $hyoo_harp_scheme({}, $mol_data_string),
@@ -18274,15 +18709,16 @@ var $;
     }) {
         /** Persistent URI to file content */
         uri() {
-            return `?BAZA:file=${this.link()};name=${this.name()}`;
+            const time = this.last_change()?.valueOf() ?? 0;
+            return `${this.name()}?BAZA:file=${this.link()};time=${time}`;
         }
         /** File name */
         name(next) {
-            const ext = {
-                'text/plain': 'txt',
-                'application/json': 'json',
-            }[this.type()] ?? 'bin';
-            return this.Name(next)?.val(next) ?? `${this.link()}.${ext}`;
+            const name = this.Name(next)?.val(next);
+            if (name)
+                return name.replaceAll(/(\/|\.\.|:)/g, '_');
+            const ext = $mol_file_extensions_mime[this.type()] ?? 'bin';
+            return `${this.link()}.${ext}`;
         }
         /** Mime type */
         type(next) {
@@ -18338,6 +18774,9 @@ var $;
             return next;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_file.prototype, "uri", null);
     $.$giper_baza_file = $giper_baza_file;
 })($ || ($ = {}));
 
@@ -18391,7 +18830,7 @@ var $;
         link() {
             return new $giper_baza_app_node_link;
         }
-        _protocols = ['$giper_baza_yard'];
+        _protocols = ['$giper_baza_yard_2'];
         GET(msg) {
             let id;
             try {
@@ -18400,24 +18839,36 @@ var $;
             catch { }
             if (!id)
                 return super.GET(msg);
-            const link = new $giper_baza_link(id);
-            const file = this.$.$giper_baza_glob.Pawn(link, $giper_baza_file);
+            const link = $giper_baza_link.check(id);
+            if (!link)
+                return msg.port.send_code(400);
+            const land = this.$.$giper_baza_glob.Land(link.land());
+            land.loading();
+            if (land.encrypted())
+                return msg.port.send_code(403);
+            const file = land.Pawn($giper_baza_file).Head(link.head());
             msg.port.send_code(file.filled() ? 200 : 404);
+            msg.port.send_prop(...$giper_baza_file_csp);
             msg.port.send_type(file.type());
             msg.port.send_bin(file.buffer());
+        }
+        _yard() {
+            return this.$.$giper_baza_glob.yard();
         }
         OPEN(msg) {
             const protocol = super.OPEN(msg);
             if (!protocol)
                 return '';
-            this.$.$giper_baza_glob.yard().slaves.add(msg.port);
+            this._yard().slaves.add(msg.port);
             return protocol;
         }
         POST(msg) {
-            this.$.$giper_baza_glob.yard().port_income(msg.port, msg.bin());
+            if (msg.type() !== 'application/octet-stream')
+                return super.POST(msg);
+            this._yard().port_income(msg.port, msg.bin());
         }
         CLOSE(msg) {
-            this.$.$giper_baza_glob.yard().slaves.delete(msg.port);
+            this._yard().slaves.delete(msg.port);
             super.CLOSE(msg);
         }
         _auto() {
@@ -18764,14 +19215,11 @@ var $;
                 basis: 'auto',
                 direction: 'column',
             },
-            position: 'relative',
             alignSelf: 'stretch',
             maxWidth: per(100),
             maxHeight: per(100),
             boxSizing: 'border-box',
             color: $mol_theme.text,
-            // backdropFilter: blur( `3px` ), enforces layering
-            // zIndex: 0 ,
             ':focus': {
                 outline: 'none',
             },
@@ -18780,7 +19228,6 @@ var $;
                 flexWrap: 'wrap',
                 justifyContent: 'flex-end',
                 flex: 'none',
-                position: 'relative',
                 margin: 0,
                 minHeight: rem(4),
                 padding: $mol_gap.block,
@@ -18796,7 +19243,6 @@ var $;
                         [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
                     ],
                 },
-                zIndex: 2,
                 '@media': {
                     'print': {
                         box: {
@@ -18875,7 +19321,6 @@ var $;
                         [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
                     ],
                 },
-                zIndex: 1,
                 padding: $mol_gap.block,
                 ':empty': {
                     display: 'none',
@@ -19040,7 +19485,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: .5rem .75rem 0;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n\tmin-height: 2.5rem;\n}\n");
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: 0;\n\tpadding-top: .5rem;\n\tpadding-inline: .75rem;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n\tmin-height: 2.5rem;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -23638,8 +24083,9 @@ var $;
             });
         }
         response() {
+            const native = $mol_error_enriched(this, () => $mol_wire_sync(this).response_async());
             return this.$.$mol_fetch_response.make({
-                native: $mol_wire_sync(this).response_async(),
+                native,
                 request: this
             });
         }
@@ -23919,17 +24365,6 @@ var $;
         const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
         const voice_short = 'Слишком коротко — запись отменена';
         class $bog_gram extends $.$bog_gram {
-            // ===== Подключение к мастеру =====
-            baza_master() {
-                const custom = this.$.$mol_state_arg.value('baza') ?? '';
-                if (!custom)
-                    return;
-                const url = custom;
-                const masters = this.$.$giper_baza_yard.masters_default;
-                if (!masters.includes(url))
-                    masters.unshift(url);
-                return url;
-            }
             // ===== Текущий пользователь =====
             user_store() {
                 return this.$.$giper_baza_glob.home().land().Data($bog_gram_user);
@@ -27932,12 +28367,6 @@ var $;
             auto() {
                 super.auto();
                 try {
-                    this.baza_master();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
                     this.setup_ready();
                 }
                 catch (error) {
@@ -28023,9 +28452,6 @@ var $;
                 }
             }
         }
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "baza_master", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "my_lord", null);
@@ -33884,7 +34310,7 @@ var $;
     (function ($$) {
         $mol_test({
             "Validation"($) {
-                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link (qwertyui_asdfghjk123)');
+                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link');
             },
             "From integer"($) {
                 $mol_assert_equal($giper_baza_link.from_int(178308648732587), new $giper_baza_link('qwertyui'));
@@ -33996,31 +34422,32 @@ var $;
 (function ($) {
     $mol_test({
         async 'Sizes'() {
-            const secret = $mol_crypto_sacred.make();
-            const key = secret.asArray();
-            $mol_assert_equal(key.byteLength, $mol_crypto_sacred.size);
+            const secret = $mol_crypto2_secret.make();
+            $mol_assert_equal(secret.asArray().byteLength, $mol_crypto2_secret.size);
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const closed = await secret.encrypt(data, salt);
-            $mol_assert_equal(closed.byteLength, $mol_crypto_sacred.size);
-            const self_closed = await secret.close(secret, salt);
-            $mol_assert_equal(self_closed.byteLength, $mol_crypto_sacred.size);
+            const nonce = $mol_crypto2_nonce();
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, data.byteLength);
+        },
+        'Wrong key size'() {
+            $mol_assert_fail(() => $mol_crypto2_secret.from(new Uint8Array(8)), 'Wrong key size');
         },
         async 'Decrypt self encrypted'() {
-            const secret = $mol_crypto_sacred.make();
+            const secret = $mol_crypto2_secret.make();
+            const nonce = $mol_crypto2_nonce();
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const closed = await secret.encrypt(data, salt);
-            const opened = await secret.decrypt(closed, salt);
-            $mol_assert_equal(data, opened);
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, 3);
+            const opened = await secret.decrypt(closed, nonce);
+            $mol_assert_equal(opened, data);
         },
         async 'Decrypt encrypted with exported key'() {
             const data = new Uint8Array([1, 2, 3]);
-            const salt = $mol_crypto_salt();
-            const Alice = $mol_crypto_sacred.make();
-            const closed = await Alice.encrypt(data, salt);
-            const Bob = $mol_crypto_sacred.from(Alice.asArray());
-            const opened = await Bob.decrypt(closed, salt);
+            const nonce = $mol_crypto2_nonce();
+            const Alice = $mol_crypto2_secret.make();
+            const closed = await Alice.encrypt(data, nonce);
+            const Bob = $mol_crypto2_secret.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, nonce);
             $mol_assert_equal(data, opened);
         },
     });
@@ -34864,6 +35291,15 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_after_frame = $mol_after_mock_commmon;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'const returns stored value'() {
@@ -34941,15 +35377,6 @@ var $;
             $mol_mem_key
         ], $mol_state_local_mock, "value", null);
         context.$mol_state_local = $mol_state_local_mock;
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_after_frame = $mol_after_mock_commmon;
     });
 })($ || ($ = {}));
 
@@ -36561,7 +36988,7 @@ var $;
             const list1 = land1.Pawn($giper_baza_list).Data();
             const list2 = land2.Pawn($giper_baza_list).Data();
             list1.items_vary(['foo', 'xxx']);
-            land2.faces.tick();
+            land2.tick();
             list2.items_vary(['foo', 'yyy']);
             await $mol_wire_async(land1).units_steal(land2);
             $mol_assert_equal(list1.items_vary(), ['foo', 'yyy', 'foo', 'xxx']);
@@ -36764,6 +37191,25 @@ var $;
             sync(left, right);
             $mol_assert_equal(left.Data($giper_baza_list).items_vary(), right.Data($giper_baza_list).items_vary(), [1, 4, 5, 2, 3, 7, 6]);
         }),
+        async '3 transactions in same second must keep ordering'($) {
+            const auth_left = $.$giper_baza_auth.grab();
+            const auth_right = $.$giper_baza_auth.grab();
+            const land_left = $.$giper_baza_land.make({ $, auth: () => auth_left });
+            land_left.give(auth_right.pass(), $giper_baza_rank_post('just'));
+            const land_right = $.$giper_baza_land.make({ $, auth: () => auth_right, link: () => land_left.link() });
+            const list_left = land_left.Data($giper_baza_list);
+            const list_right = land_right.Data($giper_baza_list);
+            list_left.items_vary(['a', 'b', 'c', 'd']);
+            $mol_assert_equal(list_left.items_vary(), ['a', 'b', 'c', 'd']);
+            await $mol_wire_async(land_right).units_steal(land_left);
+            $mol_assert_equal(list_right.items_vary(), ['a', 'b', 'c', 'd']);
+            list_right.splice(['x'], 0, 0);
+            $mol_assert_equal(list_right.items_vary(), ['x', 'a', 'b', 'c', 'd']);
+            await $mol_wire_async(land_left).units_steal(land_right);
+            $mol_assert_equal(list_left.items_vary(), ['x', 'a', 'b', 'c', 'd']);
+            list_left.items_vary(['d', 'x', 'a', 'b', 'c']);
+            $mol_assert_equal(list_left.items_vary(), ['d', 'x', 'a', 'b', 'c']);
+        },
     });
 })($ || ($ = {}));
 
@@ -36802,12 +37248,12 @@ var $;
                 const dict1 = land1.Pawn($giper_baza_dict).Data();
                 const dict2 = land2.Pawn($giper_baza_dict).Data();
                 dict1.dive(123, $giper_baza_atom, null).vary(666);
-                land2.faces.tick();
+                land2.tick();
                 dict2.dive(123, $giper_baza_atom, null).vary(777);
                 await $mol_wire_async(land1).units_steal(land2);
                 $mol_assert_equal(dict1.dive(123, $giper_baza_atom).vary(), 777);
                 dict1.dive('xxx', $giper_baza_list, null).items_vary(['foo']);
-                land2.faces.tick();
+                land2.tick();
                 dict2.dive('xxx', $giper_baza_list, null).items_vary(['bar']);
                 await $mol_wire_async(land1).units_steal(land2);
                 $mol_assert_equal(dict1.dive('xxx', $giper_baza_list).items_vary(), ['bar', 'foo']);
@@ -37150,9 +37596,9 @@ var $;
     });
     $mol_test({
         async 'Give rights'($) {
-            const auth0 = await $.$giper_baza_auth.generate();
-            const auth1 = await $.$giper_baza_auth.generate();
-            const auth2 = await $.$giper_baza_auth.generate();
+            const auth0 = await $.$giper_baza_auth.grab();
+            const auth1 = await $.$giper_baza_auth.grab();
+            const auth2 = await $.$giper_baza_auth.grab();
             const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
             const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
             $mol_assert_equal(land0.lord_rank(land0.link()), $giper_baza_rank_rule);
@@ -37176,8 +37622,8 @@ var $;
             land1.give(auth2.pass(), $giper_baza_rank_post('just'));
         },
         async 'Post Data and pick Delta'($) {
-            const auth1 = await $.$giper_baza_auth.generate();
-            const auth2 = await $.$giper_baza_auth.generate();
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
             const land1 = $giper_baza_land.make({ $, auth: () => auth1 });
             const land2 = $giper_baza_land.make({ $, link: () => land1.link(), auth: () => auth2 });
             $mol_assert_equal(await $mol_wire_async(land1).diff_units(), []);
@@ -37260,6 +37706,20 @@ var $;
             })();
             $mol_assert_equal(area.pass_rank(area.auth().pass()), $giper_baza_rank_rule);
             $mol_assert_equal(area.lord_rank($giper_baza_link.hole), $giper_baza_rank_post('just'));
+        },
+        async 'Gift to new Mate reaches Peer which knows Lord'($) {
+            const auth0 = $.$giper_baza_auth.grab();
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
+            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
+            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
+            land0.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
+            await $mol_wire_async(land1).units_steal(land0);
+            const face = land1.faces.clone();
+            land0.give(auth2.pass(), $giper_baza_rank_post('just'));
+            const delta = await $mol_wire_async(land0).diff_units(face);
+            await $mol_wire_async(land1).diff_apply(delta);
+            $mol_assert_equal(land1.lord_rank(auth2.pass().lord()), $giper_baza_rank_post('just'));
         },
         // async 'Merge text changes'() {
         // 	const base = new $giper_baza_land( 1n, 1 )
@@ -38216,6 +38676,27 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $mol_locale_mock extends $mol_locale {
+            lang(next = 'en') { return next; }
+            static source(lang) {
+                return {};
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_locale_mock.prototype, "lang", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_locale_mock, "source", null);
+        $.$mol_locale = $mol_locale_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     var $$;
     (function ($$) {
         $mol_test({
@@ -38595,22 +39076,29 @@ var $;
 
 ;
 "use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
 var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $mol_locale_mock extends $mol_locale {
-            lang(next = 'en') { return next; }
-            static source(lang) {
-                return {};
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_locale_mock.prototype, "lang", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_locale_mock, "source", null);
-        $.$mol_locale = $mol_locale_mock;
+(function ($) {
+    $mol_test({
+        'safe tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
+        },
+        'bad tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
+        },
+        'common attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
+        },
+        'safe attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
+        },
+        'bad attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
+        },
+        'danger attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
+        },
     });
 })($ || ($ = {}));
 
@@ -38626,10 +39114,7 @@ var $;
         }
         $.$giper_baza_yard = $giper_baza_yard_mock;
     });
-    $giper_baza_yard.masters = () => {
-        $giper_baza_glob.Seed();
-        return ['http://localhost:9090/'];
-    };
+    $giper_baza_yard.masters_override = () => ['http://localhost:9090/'];
 })($ || ($ = {}));
 
 ;
@@ -38650,6 +39135,40 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test({
+        async 'Close socket on oversized fragmented WebSocket message'($) {
+            const server = $mol_rest_server.make({
+                message_limit: 5
+            });
+            let closed = false;
+            const socket = {
+                pause() { },
+                resume() { },
+                end() { closed = true; },
+            };
+            const upgrade = $mol_rest_message.make({
+                uri: () => new URL('http://localhost/'),
+            });
+            const make_frame = (op, fin) => {
+                const payload = new Uint8Array(3);
+                const head = $mol_websocket_frame.make(op, payload.byteLength, false, fin).asArray();
+                const frame = new Uint8Array(head.byteLength + payload.byteLength);
+                frame.set(head);
+                frame.set(payload, head.byteLength);
+                return frame;
+            };
+            await server.ws_income(make_frame('bin', false), upgrade, socket);
+            $mol_assert_equal(closed, false);
+            await server.ws_income(make_frame('con', true), upgrade, socket);
+            $mol_assert_equal(closed, true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     var $$;
     (function ($$) {
         $mol_test({
@@ -38663,14 +39182,20 @@ var $;
                 const res = [];
                 app.GET($mol_rest_message.make({
                     method: () => 'GET',
-                    uri: () => new URL(`http://baza.giper.dev/?BAZA:file=${file.link().str};name=hello.md`),
+                    uri: () => new URL(`http://baza.giper.dev/hello.md?BAZA:file=${file.link().str}`),
                     port: $mol_rest_port.make({
                         send_code: code => res.push(code),
                         send_type: type => res.push(type),
+                        send_prop: (name, value) => res.push([name, value]),
                         send_bin: bin => res.push(bin),
                     }),
                 }));
-                $mol_assert_equal(res, [200, 'text/markdown', content]);
+                $mol_assert_equal(res, [
+                    200,
+                    $giper_baza_file_csp,
+                    'text/markdown',
+                    content,
+                ]);
             },
             'GET ?BAZA:file=<unknown> returns 404'($) {
                 const link = new $giper_baza_link('99999999_99999999');
@@ -38678,7 +39203,7 @@ var $;
                 const res = [];
                 app.GET($mol_rest_message.make({
                     method: () => 'GET',
-                    uri: () => new URL(`http://baza.giper.dev/?BAZA:file=${link.str};name=ghost.md`),
+                    uri: () => new URL(`http://baza.giper.dev/ghost.md?BAZA:file=${link.str}`),
                     port: $mol_rest_port.make({
                         send_code: code => res.push(code),
                         send_type: type => res.push(type),
@@ -38686,6 +39211,36 @@ var $;
                     }),
                 }));
                 $mol_assert_equal(res, [404, 'application/octet-stream', new Uint8Array]);
+            },
+            'GET ?BAZA:file=invalid returns 400'($) {
+                const app = $giper_baza_app_node.make({ $ });
+                const res = [];
+                app.GET($mol_rest_message.make({
+                    method: () => 'GET',
+                    uri: () => new URL('http://baza.giper.dev/ghost.md?BAZA:file=invalid'),
+                    port: $mol_rest_port.make({
+                        send_code: code => res.push(code),
+                    }),
+                }));
+                $mol_assert_equal(res, [400]);
+            },
+            async 'GET encrypted Land file returns 403 without content'($) {
+                const land = $.$giper_baza_glob.home().land();
+                await $mol_wire_async(land).encrypted(true);
+                const file = land.Pawn($giper_baza_file).Head(new $giper_baza_link('11111111'));
+                file.buffer($mol_charset_encode('secret'));
+                const app = $giper_baza_app_node.make({ $ });
+                const res = [];
+                app.GET($mol_rest_message.make({
+                    method: () => 'GET',
+                    uri: () => new URL(`http://baza.giper.dev/secret.bin?BAZA:file=${file.link().str}`),
+                    port: $mol_rest_port.make({
+                        send_code: code => res.push(code),
+                        send_type: type => res.push(type),
+                        send_bin: bin => res.push(bin),
+                    }),
+                }));
+                $mol_assert_equal(res, [403]);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
@@ -38726,10 +39281,10 @@ var $;
                 $mol_assert_equal(found.Author().val(), 'LordA');
             },
             async 'Диалог: два пользователя обмениваются сообщениями через CRDT-синк'($) {
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_session = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_session = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const lord_b = auth_b.pass().lord().str;
                 // Инициатор (кинг ленда) раздаёт права обоим участникам
@@ -38780,8 +39335,8 @@ var $;
                 $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
             },
             async 'Шифрование: участник с гифтом читает и пишет данные диалога'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const land0 = $giper_baza_land.make({ $, auth: () => king });
                 await $mol_wire_async(land0).encrypted(true);
                 $mol_assert_equal(land0.encrypted(), true);
@@ -38815,8 +39370,8 @@ var $;
                 $mol_assert_equal(peers0.includes('SecretLordB'), true);
             },
             async 'Inbox-лобби: чужой пользователь доставляет инвайт владельцу'($) {
-                const owner = await $.$giper_baza_auth.generate();
-                const stranger = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
+                const stranger = await $.$giper_baza_auth._generate();
                 const inbox0 = $giper_baza_land.make({ $, auth: () => owner });
                 inbox0.give(null, $giper_baza_rank_post('just'));
                 const inbox_stranger = $giper_baza_land.make({ $, link: () => inbox0.link(), auth: () => stranger });
@@ -38846,9 +39401,9 @@ var $;
                 $mol_assert_equal(merged[0], 'DialogKeep');
             },
             async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
                 const registry_a = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_a });
@@ -38868,8 +39423,8 @@ var $;
                 $mol_assert_equal(lords_a.length, lords_b.length);
             },
             async 'Вступление в реестр — явное действие, чтение список не меняет'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const guest_lord = guest.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -38888,8 +39443,8 @@ var $;
                 $mol_assert_equal(owner_side.includes(guest_lord), true);
             },
             async 'Название реестра задаёт создатель, видит участник'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const king_lord = king.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -38903,8 +39458,8 @@ var $;
                 $mol_assert_equal(data_guest.Lords().items().includes(king_lord), true);
             },
             async 'Забыть реестр — локальная операция, запись в нём остаётся'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const me = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const me = await $.$giper_baza_auth._generate();
                 const my_lord = me.pass().lord().str;
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
                 registry0.give(null, $giper_baza_rank_post('just'));
@@ -38926,9 +39481,9 @@ var $;
                 $mol_assert_equal(lords.includes(my_lord), true);
             },
             async 'Ключ участника доезжает до других через реестр'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const key_a = auth_a.pass().toString();
                 const registry0 = $giper_baza_land.make({ $, auth: () => king });
@@ -38953,8 +39508,8 @@ var $;
                 $mol_assert_equal(Boolean(data_b.Keys()?.key(auth_b.pass().lord().str)), false);
             },
             async 'Подложенный ключ не принимается: идентификатор его не подтверждает'($) {
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const app = $bog_gram.make({ $ });
                 // Свой ключ под своей записью проходит
@@ -38965,7 +39520,7 @@ var $;
                 $mol_assert_equal(app.pass_verified(auth_b.pass().lord().str, auth_a.pass().toString()), null);
             },
             async 'Мусор вместо ключа не роняет разбор'($) {
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const lord = auth.pass().lord().str;
                 const app = $bog_gram.make({ $ });
                 // Ни строки короче ключа, ни строки нужной длины из чего попало
@@ -38977,7 +39532,7 @@ var $;
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
             async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
-                const owner = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
                 const owner_lord = owner.pass().lord().str;
                 const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
                 const my = 'LordMine';
@@ -39078,7 +39633,7 @@ var $;
             },
             async 'Заявка в группу: запись собирается и разбирается'($) {
                 const app = $bog_gram.make({ $ });
-                const guest = await $.$giper_baza_auth.generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const lord = guest.pass().lord().str;
                 const key = guest.pass().toString();
                 const group = new $giper_baza_link(lord + '_KJhgFdSa').str;
@@ -39105,8 +39660,8 @@ var $;
             },
             async 'Подложенный в заявке ключ не принимается'($) {
                 const app = $bog_gram.make({ $ });
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const group = new $giper_baza_link(lord_a + '_KJhgFdSa').str;
                 // Своя заявка со своим ключом проходит
@@ -39123,8 +39678,8 @@ var $;
                 $mol_assert_equal(app.pass_verified(swapped.lord, swapped.pass), null);
             },
             async 'Заявка ложится в свой список лобби и снимается решением'($) {
-                const owner = await $.$giper_baza_auth.generate();
-                const guest = await $.$giper_baza_auth.generate();
+                const owner = await $.$giper_baza_auth._generate();
+                const guest = await $.$giper_baza_auth._generate();
                 const app = $bog_gram.make({ $ });
                 const guest_lord = guest.pass().lord().str;
                 const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
@@ -39222,9 +39777,9 @@ var $;
                 $mol_assert_equal(sorted[2].Text().val(), 'третье');
             },
             async 'Правка сообщения синхронизируется вместе с меткой Edited'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -39250,9 +39805,9 @@ var $;
                 $mol_assert_equal(edited_b.Edited().val(), 1500);
             },
             async 'Удаление — это флаг Deleted, обе стороны его видят'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -39284,9 +39839,9 @@ var $;
                 $mol_assert_equal(dead_b[0].Deleted().val(), 2500);
             },
             async 'Позиции прочтения: Reads мержатся по ключу-лорду'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const lord_b = auth_b.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
@@ -39310,9 +39865,9 @@ var $;
                 $mol_assert_equal(reads_b?.key(lord_b)?.Moment()?.val(), 2000);
             },
             async 'Отметка прочтения сдвигается вперёд и доезжает до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -39376,7 +39931,7 @@ var $;
             },
             async 'Ключ в ссылке-приглашении избавляет от ожидания сети'($) {
                 const app = $bog_gram.make({ $ });
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const pass = auth.pass();
                 const lord = pass.lord().str;
                 const key = pass.toString();
@@ -39390,7 +39945,7 @@ var $;
                 // И дальше берётся как есть: домашний ленд собеседника ждать нечего
                 $mol_assert_equal(app.peer_pass_of(lord), learned);
                 // Подложенный чужой ключ и мусор не принимаются
-                const other = await $.$giper_baza_auth.generate();
+                const other = await $.$giper_baza_auth._generate();
                 $mol_assert_equal(app.peer_pass_learn(lord, other.pass().toString()), null);
                 $mol_assert_equal(app.peer_pass_learn(lord, 'мусор'), null);
                 $mol_assert_equal(app.peer_pass_learn(lord, ''), null);
@@ -39513,9 +40068,9 @@ var $;
                 $mol_assert_equal(app.session_links_of(first).join(), links.join());
             },
             async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -39572,9 +40127,9 @@ var $;
                 $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
             },
             async 'Голосовое: ссылка на запись и её длительность доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth.generate();
-                const auth_a = await $.$giper_baza_auth.generate();
-                const auth_b = await $.$giper_baza_auth.generate();
+                const king = await $.$giper_baza_auth._generate();
+                const auth_a = await $.$giper_baza_auth._generate();
+                const auth_b = await $.$giper_baza_auth._generate();
                 const lord_a = auth_a.pass().lord().str;
                 const session0 = $giper_baza_land.make({ $, auth: () => king });
                 session0.give(auth_a.pass(), $giper_baza_rank_rule);
@@ -39728,7 +40283,7 @@ var $;
                 // служебный ключ, выданный при захвате, и по ссылке ленда автора
                 // не узнать. Без записи ответ честно пустой.
                 $mol_assert_equal(app.dialog_owner(''), '');
-                const auth = await $.$giper_baza_auth.generate();
+                const auth = await $.$giper_baza_auth._generate();
                 const lord = auth.pass().lord().str;
                 const land = $giper_baza_land.make({ $, auth: () => auth });
                 const ops = {
@@ -39785,11 +40340,11 @@ var $;
                 // Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
                 // нужен свой: с общим ключом это был бы один и тот же ленд в трёх
                 // обёртках, и шифрование с раздачей прав уходило бы в клинч
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_old = await $.$giper_baza_auth.generate();
-                const king_new = await $.$giper_baza_auth.generate();
-                const auth_stay = await $.$giper_baza_auth.generate();
-                const auth_out = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_old = await $.$giper_baza_auth._generate();
+                const king_new = await $.$giper_baza_auth._generate();
+                const auth_stay = await $.$giper_baza_auth._generate();
+                const auth_out = await $.$giper_baza_auth._generate();
                 const lord_stay = auth_stay.pass().lord().str;
                 const lord_out = auth_out.pass().lord().str;
                 const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
@@ -39863,11 +40418,11 @@ var $;
             async 'Добавленный без истории видит только новый бакет'($) {
                 // Каждому ленду свой король: ссылка выводится из ключа, и общий
                 // ключ склеил бы три ленда в один
-                const king_dialog = await $.$giper_baza_auth.generate();
-                const king_old = await $.$giper_baza_auth.generate();
-                const king_fresh = await $.$giper_baza_auth.generate();
-                const auth_old = await $.$giper_baza_auth.generate();
-                const auth_new = await $.$giper_baza_auth.generate();
+                const king_dialog = await $.$giper_baza_auth._generate();
+                const king_old = await $.$giper_baza_auth._generate();
+                const king_fresh = await $.$giper_baza_auth._generate();
+                const auth_old = await $.$giper_baza_auth._generate();
+                const auth_new = await $.$giper_baza_auth._generate();
                 const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
                 const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
                 const fresh = $giper_baza_land.make({ $, auth: () => king_fresh });
