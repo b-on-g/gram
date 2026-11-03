@@ -1,10 +1,4 @@
 namespace $.$$ {
-	// Синхронизация через Гипер Базу отключена: список мастеров пустой.
-	// Чистки одного masters_default мало — masters() склеивает его с пирами
-	// из бандленного сида, где зашит публичный мастер. Глушим сам masters().
-	$giper_baza_yard.masters_default.length = 0
-	$giper_baza_yard.masters = (): string[] => []
-
 
 	const day_ms = 24 * 60 * 60 * 1000
 
@@ -65,18 +59,6 @@ namespace $.$$ {
 	const voice_short = 'Слишком коротко — запись отменена'
 
 	export class $bog_gram extends $.$bog_gram {
-
-		// ===== Подключение к мастеру =====
-
-		@$mol_mem
-		baza_master() {
-			const custom = this.$.$mol_state_arg.value( 'baza' ) ?? ''
-			if  (!custom) return
-			const url = custom 
-			const masters = this.$.$giper_baza_yard.masters_default
-			if( !masters.includes( url ) ) masters.unshift( url )
-			return url
-		}
 
 		// ===== Текущий пользователь =====
 
@@ -4634,7 +4616,6 @@ namespace $.$$ {
 
 		override auto() {
 			super.auto()
-			try { this.baza_master() } catch( error ) { $mol_fail_log( error ) }
 			try { this.setup_ready() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_keys_fill() } catch( error ) { $mol_fail_log( error ) }

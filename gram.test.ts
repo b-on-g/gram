@@ -40,10 +40,10 @@ namespace $.$$ {
 
 		async 'Диалог: два пользователя обмениваются сообщениями через CRDT-синк'( $ ) {
 
-			const king_dialog = await $.$giper_baza_auth.generate()
-			const king_session = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king_dialog = await $.$giper_baza_auth._generate()
+			const king_session = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 			const lord_b = auth_b.pass().lord().str
@@ -110,8 +110,8 @@ namespace $.$$ {
 
 		async 'Шифрование: участник с гифтом читает и пишет данные диалога'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const land0 = $giper_baza_land.make({ $, auth: ()=> king })
 			await $mol_wire_async( land0 ).encrypted( true )
@@ -159,8 +159,8 @@ namespace $.$$ {
 
 		async 'Inbox-лобби: чужой пользователь доставляет инвайт владельцу'( $ ) {
 
-			const owner = await $.$giper_baza_auth.generate()
-			const stranger = await $.$giper_baza_auth.generate()
+			const owner = await $.$giper_baza_auth._generate()
+			const stranger = await $.$giper_baza_auth._generate()
 
 			const inbox0 = $giper_baza_land.make({ $, auth: ()=> owner })
 			inbox0.give( null, $giper_baza_rank_post( 'just' ) )
@@ -206,9 +206,9 @@ namespace $.$$ {
 
 		async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const registry0 = $giper_baza_land.make({ $, auth: ()=> king })
 			registry0.give( null, $giper_baza_rank_post( 'just' ) )
@@ -237,8 +237,8 @@ namespace $.$$ {
 
 		async 'Вступление в реестр — явное действие, чтение список не меняет'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const guest = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const guest = await $.$giper_baza_auth._generate()
 
 			const guest_lord = guest.pass().lord().str
 
@@ -267,8 +267,8 @@ namespace $.$$ {
 
 		async 'Название реестра задаёт создатель, видит участник'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const guest = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const guest = await $.$giper_baza_auth._generate()
 
 			const king_lord = king.pass().lord().str
 
@@ -290,8 +290,8 @@ namespace $.$$ {
 
 		async 'Забыть реестр — локальная операция, запись в нём остаётся'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const me = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const me = await $.$giper_baza_auth._generate()
 
 			const my_lord = me.pass().lord().str
 
@@ -324,9 +324,9 @@ namespace $.$$ {
 
 		async 'Ключ участника доезжает до других через реестр'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 			const key_a = auth_a.pass().toString()
@@ -363,8 +363,8 @@ namespace $.$$ {
 
 		async 'Подложенный ключ не принимается: идентификатор его не подтверждает'( $ ) {
 
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 			const app = $bog_gram.make({ $ })
@@ -381,7 +381,7 @@ namespace $.$$ {
 
 		async 'Мусор вместо ключа не роняет разбор'( $ ) {
 
-			const auth = await $.$giper_baza_auth.generate()
+			const auth = await $.$giper_baza_auth._generate()
 			const lord = auth.pass().lord().str
 			const app = $bog_gram.make({ $ })
 
@@ -398,7 +398,7 @@ namespace $.$$ {
 
 		async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'( $ ) {
 
-			const owner = await $.$giper_baza_auth.generate()
+			const owner = await $.$giper_baza_auth._generate()
 			const owner_lord = owner.pass().lord().str
 			const group = new $giper_baza_link( owner_lord + '_KJhgFdSa' ).str
 			const my = 'LordMine'
@@ -540,7 +540,7 @@ namespace $.$$ {
 
 			const app = $bog_gram.make({ $ })
 
-			const guest = await $.$giper_baza_auth.generate()
+			const guest = await $.$giper_baza_auth._generate()
 			const lord = guest.pass().lord().str
 			const key = guest.pass().toString()
 			const group = new $giper_baza_link( lord + '_KJhgFdSa' ).str
@@ -576,8 +576,8 @@ namespace $.$$ {
 
 			const app = $bog_gram.make({ $ })
 
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 			const group = new $giper_baza_link( lord_a + '_KJhgFdSa' ).str
@@ -601,8 +601,8 @@ namespace $.$$ {
 
 		async 'Заявка ложится в свой список лобби и снимается решением'( $ ) {
 
-			const owner = await $.$giper_baza_auth.generate()
-			const guest = await $.$giper_baza_auth.generate()
+			const owner = await $.$giper_baza_auth._generate()
+			const guest = await $.$giper_baza_auth._generate()
 
 			const app = $bog_gram.make({ $ })
 
@@ -735,9 +735,9 @@ namespace $.$$ {
 
 		async 'Правка сообщения синхронизируется вместе с меткой Edited'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 
@@ -775,9 +775,9 @@ namespace $.$$ {
 
 		async 'Удаление — это флаг Deleted, обе стороны его видят'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 
@@ -823,9 +823,9 @@ namespace $.$$ {
 
 		async 'Позиции прочтения: Reads мержатся по ключу-лорду'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 			const lord_b = auth_b.pass().lord().str
@@ -859,9 +859,9 @@ namespace $.$$ {
 
 		async 'Отметка прочтения сдвигается вперёд и доезжает до собеседника'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 
@@ -962,7 +962,7 @@ namespace $.$$ {
 
 			const app = $bog_gram.make({ $ })
 
-			const auth = await $.$giper_baza_auth.generate()
+			const auth = await $.$giper_baza_auth._generate()
 			const pass = auth.pass()
 			const lord = pass.lord().str
 			const key = pass.toString()
@@ -980,7 +980,7 @@ namespace $.$$ {
 			$mol_assert_equal( app.peer_pass_of( lord ), learned )
 
 			// Подложенный чужой ключ и мусор не принимаются
-			const other = await $.$giper_baza_auth.generate()
+			const other = await $.$giper_baza_auth._generate()
 			$mol_assert_equal( app.peer_pass_learn( lord, other.pass().toString() ), null )
 			$mol_assert_equal( app.peer_pass_learn( lord, 'мусор' ), null )
 			$mol_assert_equal( app.peer_pass_learn( lord, '' ), null )
@@ -1151,9 +1151,9 @@ namespace $.$$ {
 
 		async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 
@@ -1229,9 +1229,9 @@ namespace $.$$ {
 
 		async 'Голосовое: ссылка на запись и её длительность доезжают до собеседника'( $ ) {
 
-			const king = await $.$giper_baza_auth.generate()
-			const auth_a = await $.$giper_baza_auth.generate()
-			const auth_b = await $.$giper_baza_auth.generate()
+			const king = await $.$giper_baza_auth._generate()
+			const auth_a = await $.$giper_baza_auth._generate()
+			const auth_b = await $.$giper_baza_auth._generate()
 
 			const lord_a = auth_a.pass().lord().str
 
@@ -1444,7 +1444,7 @@ namespace $.$$ {
 			// не узнать. Без записи ответ честно пустой.
 			$mol_assert_equal( app.dialog_owner( '' ), '' )
 
-			const auth = await $.$giper_baza_auth.generate()
+			const auth = await $.$giper_baza_auth._generate()
 			const lord = auth.pass().lord().str
 			const land = $giper_baza_land.make({ $, auth: ()=> auth })
 
@@ -1522,11 +1522,11 @@ namespace $.$$ {
 			// Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
 			// нужен свой: с общим ключом это был бы один и тот же ленд в трёх
 			// обёртках, и шифрование с раздачей прав уходило бы в клинч
-			const king_dialog = await $.$giper_baza_auth.generate()
-			const king_old = await $.$giper_baza_auth.generate()
-			const king_new = await $.$giper_baza_auth.generate()
-			const auth_stay = await $.$giper_baza_auth.generate()
-			const auth_out = await $.$giper_baza_auth.generate()
+			const king_dialog = await $.$giper_baza_auth._generate()
+			const king_old = await $.$giper_baza_auth._generate()
+			const king_new = await $.$giper_baza_auth._generate()
+			const auth_stay = await $.$giper_baza_auth._generate()
+			const auth_out = await $.$giper_baza_auth._generate()
 
 			const lord_stay = auth_stay.pass().lord().str
 			const lord_out = auth_out.pass().lord().str
@@ -1618,11 +1618,11 @@ namespace $.$$ {
 
 			// Каждому ленду свой король: ссылка выводится из ключа, и общий
 			// ключ склеил бы три ленда в один
-			const king_dialog = await $.$giper_baza_auth.generate()
-			const king_old = await $.$giper_baza_auth.generate()
-			const king_fresh = await $.$giper_baza_auth.generate()
-			const auth_old = await $.$giper_baza_auth.generate()
-			const auth_new = await $.$giper_baza_auth.generate()
+			const king_dialog = await $.$giper_baza_auth._generate()
+			const king_old = await $.$giper_baza_auth._generate()
+			const king_fresh = await $.$giper_baza_auth._generate()
+			const auth_old = await $.$giper_baza_auth._generate()
+			const auth_new = await $.$giper_baza_auth._generate()
 
 			const dialog = $giper_baza_land.make({ $, auth: ()=> king_dialog })
 			const old_bucket = $giper_baza_land.make({ $, auth: ()=> king_old })
