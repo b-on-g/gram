@@ -24815,6 +24815,115 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    class $bog_gram_yard extends $giper_baza_yard {
+        static stagger = 300;
+        port_make(socket, link) {
+            const port = new $mol_rest_port_ws_std;
+            port.socket = socket;
+            socket.onmessage = async (event) => {
+                if (event.data instanceof ArrayBuffer) {
+                    if (!event.data.byteLength)
+                        return;
+                    await $mol_wire_async(this).port_income(port, new Uint8Array(event.data));
+                    return;
+                }
+                this.$.$mol_log3_fail({
+                    place: this,
+                    message: 'Wrong data',
+                    data: event.data,
+                });
+            };
+            const beat = setInterval(() => socket.send(new Uint8Array), 30000);
+            socket.onclose = () => {
+                clearInterval(beat);
+                setTimeout(() => this.reconnects(null), 1000);
+            };
+            port.destructor = () => {
+                socket.onclose = () => { };
+                clearInterval(beat);
+                socket.close();
+            };
+            this.$.$mol_log3_come({
+                place: this,
+                message: 'Connected',
+                port: $mol_key(port),
+                server: link,
+            });
+            return port;
+        }
+        master() {
+            this.reconnects();
+            const links = this.$.$giper_baza_yard.masters();
+            if (!links.length)
+                return null;
+            const first = ($mol_wire_probe(() => this.master_cursor()) ?? 0) % links.length;
+            const order = links.map((_, index) => (first + index) % links.length);
+            const sockets = new Map();
+            const timers = new Set();
+            let won = false;
+            let started = 0;
+            let failed = 0;
+            const stop = (keep) => {
+                for (const timer of timers)
+                    clearTimeout(timer);
+                timers.clear();
+                for (const [index, socket] of sockets) {
+                    if (index === keep)
+                        continue;
+                    socket.onopen = null;
+                    socket.onerror = null;
+                    socket.onclose = null;
+                    socket.close();
+                }
+            };
+            const promise = new Promise(done => {
+                const next = () => {
+                    if (won || started >= order.length)
+                        return;
+                    const index = order[started++];
+                    const link = links[index];
+                    const socket = new this.$.$mol_dom_context.WebSocket(link.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
+                    socket.binaryType = 'arraybuffer';
+                    sockets.set(index, socket);
+                    socket.onopen = () => {
+                        if (won)
+                            return;
+                        won = true;
+                        stop(index);
+                        socket.onerror = null;
+                        this.master_cursor(index);
+                        done(this.port_make(socket, link));
+                    };
+                    socket.onerror = () => {
+                        socket.onopen = null;
+                        socket.onerror = null;
+                        if (won)
+                            return;
+                        if (++failed >= order.length) {
+                            timers.add(setTimeout(() => this.reconnects(null), 1000));
+                            return;
+                        }
+                        next();
+                    };
+                    if (started < order.length)
+                        timers.add(setTimeout(next, this.constructor.stagger));
+                };
+                next();
+            });
+            return Object.assign(promise, { destructor: () => { if (!won)
+                    stop(); } });
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_yard.prototype, "master", null);
+    $.$bog_gram_yard = $bog_gram_yard;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -39810,6 +39919,52 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
+            const made = [];
+            class Fake {
+                url;
+                binaryType = '';
+                closed = false;
+                onopen = null;
+                onerror = null;
+                onclose = null;
+                onmessage = null;
+                constructor(url) {
+                    this.url = url;
+                    made.push(this);
+                    if (url.includes('alive'))
+                        setTimeout(() => this.onopen?.(), 5);
+                }
+                send() { }
+                close() { this.closed = true; }
+            }
+            class Yard extends $bog_gram_yard {
+                static stagger = 10;
+                static masters() {
+                    return ['https://silent.example/', 'https://alive.example/'];
+                }
+            }
+            const context = Object.create($);
+            context.$mol_dom_context = Object.assign(Object.create($.$mol_dom_context), { WebSocket: Fake });
+            context.$giper_baza_yard = Yard;
+            const yard = Yard.make({ $: context });
+            const began = Date.now();
+            const port = await $mol_wire_async(yard).master();
+            const spent = Date.now() - began;
+            $mol_assert_equal(yard.master_cursor(), 1);
+            $mol_assert_equal(port.socket.url, 'wss://alive.example/');
+            $mol_assert_equal(made[0].closed, true);
+            $mol_assert_equal(spent < 500, true);
+            port.destructor();
+        },
+    });
 })($ || ($ = {}));
 
 ;

@@ -234,6 +234,7 @@
 	deploy \/giper/baza/diagram/jepsen.png
 \/bog/gram
 	include \/bog/gram/mine
+	include \/bog/gram/yard
 	include \/bog/gram/auth
 	include \/bog/gram/nozoom
 	include \/bog/gram/notify

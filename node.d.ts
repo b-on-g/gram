@@ -46371,6 +46371,14 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $bog_gram_yard extends $giper_baza_yard {
+        static stagger: number;
+        port_make(socket: WebSocket, link: string): $mol_rest_port_ws_std;
+        master(): $mol_rest_port | null;
+    }
+}
+
+declare namespace $ {
 
 	type $bog_favicon__Icon_bog_gram_1 = $mol_type_enforce<
 		ReturnType< $bog_gram['Favicon_icon'] >
