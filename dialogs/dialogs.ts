@@ -41,6 +41,8 @@ namespace $.$$ {
 		/** Подписи собеседников «как я его назвал», ключ — lord собеседника.
 		 * Ленд приватный, поэтому подпись видна только владельцу */
 		Notes: $giper_baza_dict_to( $bog_gram_note ),
+		Passes: $giper_baza_list_str,
+		Lobbies: $giper_baza_list_str,
 	}) {}
 
 }

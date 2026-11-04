@@ -87,19 +87,82 @@ namespace $.$$ {
 
 		// ===== Служебные ленды пользователя (ссылки хранятся в профиле) =====
 
-		@$mol_action
-		inbox_land_make() {
-			const land = this.$.$giper_baza_glob.land_grab([
-				[ null, $giper_baza_rank_post( 'slow' ) ],
-			])
-			this.user_store().Inbox_land( 'auto' )?.val( land.link().str )
-			return land
+		@$mol_mem
+		inbox_land() {
+			const home = this.$.$giper_baza_glob.Land( new $giper_baza_link( this.my_lord() ) )
+			return home.area_make( $mol_hash_string( 'bog_gram_inbox' ) )
 		}
 
-		inbox_land() {
-			const str = this.user_store().Inbox_land()?.val()
-			if( !str ) return this.inbox_land_make()
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
+		@$mol_mem
+		inbox_open() {
+			const land = this.inbox_land()
+			const rank = $giper_baza_rank_post( 'slow' )
+			if( land.lord_rank( null ) !== rank ) land.give( null, rank )
+			return true
+		}
+
+		@$mol_mem
+		inbox_publish() {
+
+			const link = this.inbox_land().link().str
+			const prev = String( this.user_store().Inbox_land()?.val() ?? '' )
+			if( prev === link ) return link
+
+			if( prev && !this.lobbies_old().includes( prev ) ) this.dialogs_store().Lobbies( 'auto' )!.add( prev )
+			this.user_store().Inbox_land( 'auto' )?.val( link )
+
+			return link
+		}
+
+		@$mol_mem
+		lobbies_old() {
+			return ( this.dialogs_store().Lobbies()?.items() ?? [] ).map( String )
+		}
+
+		@$mol_mem
+		inbox_stores() {
+
+			let old = [] as string[]
+			try {
+				old = this.lobbies_old()
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
+
+			return [
+				this.inbox_store(),
+				... old.map( link => this.$.$giper_baza_glob.Land( new $giper_baza_link( link ) ).Data( $bog_gram_inbox ) ),
+			]
+		}
+
+		inbox_items( pick: ( store: $bog_gram_inbox )=> $giper_baza_list_str | null ) {
+
+			const all = [] as string[]
+
+			for( const store of this.inbox_stores() ) {
+				try {
+					for( const item of pick( store )?.items() ?? [] ) all.push( String( item ) )
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+					$mol_fail_log( error )
+				}
+			}
+
+			return [ ... new Set( all ) ]
+		}
+
+		@$mol_action
+		inbox_cut( pick: ( store: $bog_gram_inbox, auto?: 'auto' )=> $giper_baza_list_str | null, entry: string ) {
+			for( const store of this.inbox_stores() ) {
+				try {
+					if( !( pick( store )?.items() ?? [] ).map( String ).includes( entry ) ) continue
+					pick( store, 'auto' )!.cut( entry )
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+					$mol_fail_log( error )
+				}
+			}
+			return null
 		}
 
 		@$mol_action
@@ -1240,6 +1303,14 @@ namespace $.$$ {
 			const given = this.peer_pass_given( lord )
 			if( given ) return given
 
+			try {
+				const stored = this.peer_pass_stored( lord )
+				if( stored ) return stored
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+			}
+
 			const land = this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) )
 
 			try {
@@ -2086,7 +2157,7 @@ namespace $.$$ {
 		@$mol_mem
 		ask_all() {
 			try {
-				return ( this.inbox_store().Joins()?.items() ?? [] ).map( String )
+				return this.inbox_items( store => store.Joins() )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return [] as string[]
@@ -2212,7 +2283,7 @@ namespace $.$$ {
 		@$mol_action
 		ask_forget( entry: string ) {
 			if( !entry ) return null
-			this.inbox_store().Joins( 'auto' )!.cut( entry )
+			this.inbox_cut( ( store, auto )=> store.Joins( auto ), entry )
 			return null
 		}
 
@@ -2330,7 +2401,7 @@ namespace $.$$ {
 
 		@$mol_mem
 		inbox_merge() {
-			const invites = ( this.inbox_store().Invites()?.items() ?? [] ).map( String )
+			const invites = this.inbox_items( store => store.Invites() )
 			if( !invites.length ) return 0
 			const have = new Set( this.dialog_ids() )
 			const hidden = new Set( this.hidden_ids() )
@@ -3832,10 +3903,24 @@ namespace $.$$ {
 			const pass = this.pass_verified( lord, key )
 			if( !pass ) return null
 			this.peer_pass_given( lord, pass )
+			if( !this.peer_pass_stored( lord ) ) this.dialogs_store().Passes( 'auto' )!.add( pass.toString() )
 			return pass
 		}
 
 		/** Ключи, добытые не из сети: пока их источник — только ссылка. */
+		@$mol_mem_key
+		peer_pass_stored( lord: string ) {
+			for( const str of this.dialogs_store().Passes()?.items() ?? [] ) {
+				try {
+					const pass = $bog_gram_seal.pass( String( str ) )
+					if( pass.lord().str === lord ) return pass
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				}
+			}
+			return null
+		}
+
 		@$mol_mem_key
 		peer_pass_given( lord: string, next?: $giper_baza_auth_pass | null ) {
 			return next ?? null
@@ -4165,7 +4250,7 @@ namespace $.$$ {
 
 			let entries: string[] = []
 			try {
-				entries = ( this.inbox_store().Denies()?.items() ?? [] ).map( String )
+				entries = this.inbox_items( store => store.Denies() )
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return 0
@@ -4190,7 +4275,7 @@ namespace $.$$ {
 					if( !this.ask_denied().includes( group ) ) store.Denied( 'auto' )!.add( group )
 				}
 
-				this.inbox_store().Denies( 'auto' )!.cut( entry )
+				this.inbox_cut( ( store, auto )=> store.Denies( auto ), entry )
 			}
 
 			return entries.length
@@ -4649,7 +4734,8 @@ namespace $.$$ {
 		@$mol_mem
 		setup_ready() {
 			this.user_store()
-			this.inbox_land()
+			this.inbox_open()
+			this.inbox_publish()
 			this.dialogs_land()
 			this.monitor_land()
 			this.device_ready()
