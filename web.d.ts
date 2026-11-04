@@ -45889,6 +45889,45 @@ declare namespace $.$$ {
 }
 
 declare namespace $.$$ {
+    const $bog_gram_inbox_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Invites: (auto?: any) => $giper_baza_list_str | null;
+            readonly Joins: (auto?: any) => $giper_baza_list_str | null;
+            readonly Denies: (auto?: any) => $giper_baza_list_str | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Invites: typeof $giper_baza_list_str;
+            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
+             * приглашений: приглашение — это готовый доступ, а заявка только
+             * просьба его выдать, и решение по ней принимает человек.
+             *
+             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
+             * заворачивается на ключ конкретного человека, и без ключа админу
+             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
+             * под чужой идентификатор это не даёт — идентификатор его хеш, и
+             * подмена ловится пересчётом на месте. */
+            readonly Joins: typeof $giper_baza_list_str;
+            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
+             * не оставляет просившему никакого следа, и она висела бы у него
+             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
+             * писать в чужое лобби есть у всех, им и пользуемся.
+             *
+             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
+             * по той же ссылке можно попроситься снова. */
+            readonly Denies: typeof $giper_baza_list_str;
+        };
+    };
+    /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
+    export class $bog_gram_inbox extends $bog_gram_inbox_base {
+    }
+    export {};
+}
+
+declare namespace $.$$ {
     const $bog_gram_note_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
@@ -45959,6 +45998,8 @@ declare namespace $.$$ {
                 [$mol_ambient_ref]: $;
                 [Symbol.dispose](): void;
             } | null;
+            readonly Passes: (auto?: any) => $giper_baza_list_str | null;
+            readonly Lobbies: (auto?: any) => $giper_baza_list_str | null;
         }>;
         path: string;
     } & {
@@ -46300,49 +46341,12 @@ declare namespace $.$$ {
                 [Symbol.toPrimitive](): any;
                 [$mol_key_handle](): any;
             };
+            readonly Passes: typeof $giper_baza_list_str;
+            readonly Lobbies: typeof $giper_baza_list_str;
         };
     };
     /** Приватный (шифрованный ленд) список диалогов пользователя. */
     export class $bog_gram_dialogs extends $bog_gram_dialogs_base {
-    }
-    export {};
-}
-
-declare namespace $.$$ {
-    const $bog_gram_inbox_base: Omit<typeof $giper_baza_dict, "prototype"> & {
-        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
-            readonly Invites: (auto?: any) => $giper_baza_list_str | null;
-            readonly Joins: (auto?: any) => $giper_baza_list_str | null;
-            readonly Denies: (auto?: any) => $giper_baza_list_str | null;
-        }>;
-        path: string;
-    } & {
-        schema: {
-            [x: string]: typeof $giper_baza_pawn;
-        } & {
-            readonly Invites: typeof $giper_baza_list_str;
-            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
-             * приглашений: приглашение — это готовый доступ, а заявка только
-             * просьба его выдать, и решение по ней принимает человек.
-             *
-             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
-             * заворачивается на ключ конкретного человека, и без ключа админу
-             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
-             * под чужой идентификатор это не даёт — идентификатор его хеш, и
-             * подмена ловится пересчётом на месте. */
-            readonly Joins: typeof $giper_baza_list_str;
-            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
-             * не оставляет просившему никакого следа, и она висела бы у него
-             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
-             * писать в чужое лобби есть у всех, им и пользуемся.
-             *
-             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
-             * по той же ссылке можно попроситься снова. */
-            readonly Denies: typeof $giper_baza_list_str;
-        };
-    };
-    /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
-    export class $bog_gram_inbox extends $bog_gram_inbox_base {
     }
     export {};
 }
@@ -55227,8 +55231,13 @@ declare namespace $.$$ {
          * выдадут право читать шифрованный ленд диалога. */
         my_pass_str(): string;
         user_name(next?: string): string;
-        inbox_land_make(): $giper_baza_land;
         inbox_land(): $giper_baza_land;
+        inbox_open(): boolean;
+        inbox_publish(): string;
+        lobbies_old(): string[];
+        inbox_stores(): $bog_gram_inbox[];
+        inbox_items(pick: (store: $bog_gram_inbox) => $giper_baza_list_str | null): string[];
+        inbox_cut(pick: (store: $bog_gram_inbox, auto?: 'auto') => $giper_baza_list_str | null, entry: string): null;
         dialogs_land_make(): $giper_baza_land;
         dialogs_land(): $giper_baza_land;
         monitor_land_make(): $giper_baza_land;
@@ -56129,6 +56138,7 @@ declare namespace $.$$ {
          * ячейку то же значение и никого не будит. */
         peer_pass_learn(lord: string, key: string): $giper_baza_auth_pass | null;
         /** Ключи, добытые не из сети: пока их источник — только ссылка. */
+        peer_pass_stored(lord: string): $giper_baza_auth_pass | null;
         peer_pass_given(lord: string, next?: $giper_baza_auth_pass | null): $giper_baza_auth_pass | null;
         /** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
          * Ожидание живёт только в памяти, а ключ собеседника едет по сети —

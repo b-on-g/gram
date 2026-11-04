@@ -7758,6 +7758,37 @@ var $;
                 $mol_assert_equal(app.pass_verified(lord, ''), null);
                 $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
             },
+            async 'Ключ из ссылки не теряется после ухода экрана'($) {
+                const peer = await $.$giper_baza_auth._generate();
+                const lord = peer.pass().lord().str;
+                const king = await $.$giper_baza_auth._generate();
+                const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
+                const first = $bog_gram.make({ $, dialogs_store: () => dialogs });
+                const learned = first.peer_pass_learn(lord, peer.pass().toString());
+                const next = $bog_gram.make({ $, dialogs_store: () => dialogs });
+                $mol_assert_equal(learned?.lord().str, lord);
+                $mol_assert_equal(next.peer_pass_given(lord), null);
+                $mol_assert_equal(next.peer_pass_of(lord)?.lord().str, lord);
+            },
+            async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'($) {
+                const king_lobby = await $.$giper_baza_auth._generate();
+                const king_user = await $.$giper_baza_auth._generate();
+                const king_dialogs = await $.$giper_baza_auth._generate();
+                const lobby = $giper_baza_land.make({ $, auth: () => king_lobby });
+                const profile = $giper_baza_land.make({ $, auth: () => king_user }).Data($bog_gram_user);
+                const dialogs = $giper_baza_land.make({ $, auth: () => king_dialogs }).Data($bog_gram_dialogs);
+                profile.Inbox_land('auto')?.val('OldLobbyLink');
+                const app = $bog_gram.make({ $,
+                    inbox_land: () => lobby,
+                    user_store: () => profile,
+                    dialogs_store: () => dialogs,
+                });
+                app.inbox_open();
+                app.inbox_publish();
+                $mol_assert_equal(lobby.lord_rank(null), $giper_baza_rank_post('slow'));
+                $mol_assert_equal(profile.Inbox_land()?.val(), lobby.link().str);
+                $mol_assert_equal(app.lobbies_old(), ['OldLobbyLink']);
+            },
             async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
                 const auth = await $.$giper_baza_auth._generate();
                 const key = auth.toString() + auth.toStringPrivate();
@@ -8170,7 +8201,9 @@ var $;
                 $mol_assert_equal(app.notify_plan(false, 'granted', false, false, false), 'skip');
             },
             async 'Ключ в ссылке-приглашении избавляет от ожидания сети'($) {
-                const app = $bog_gram.make({ $ });
+                const king = await $.$giper_baza_auth._generate();
+                const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
+                const app = $bog_gram.make({ $, dialogs_store: () => dialogs });
                 const auth = await $.$giper_baza_auth._generate();
                 const pass = auth.pass();
                 const lord = pass.lord().str;

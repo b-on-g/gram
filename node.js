@@ -23819,6 +23819,39 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
+        class $bog_gram_inbox extends $giper_baza_dict.with({
+            Invites: $giper_baza_list_str,
+            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
+             * приглашений: приглашение — это готовый доступ, а заявка только
+             * просьба его выдать, и решение по ней принимает человек.
+             *
+             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
+             * заворачивается на ключ конкретного человека, и без ключа админу
+             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
+             * под чужой идентификатор это не даёт — идентификатор его хеш, и
+             * подмена ловится пересчётом на месте. */
+            Joins: $giper_baza_list_str,
+            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
+             * не оставляет просившему никакого следа, и она висела бы у него
+             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
+             * писать в чужое лобби есть у всех, им и пользуемся.
+             *
+             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
+             * по той же ссылке можно попроситься снова. */
+            Denies: $giper_baza_list_str,
+        }) {
+        }
+        $$.$bog_gram_inbox = $bog_gram_inbox;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
         /** Личная подпись собеседника: как владелец назвал его для себя. */
         class $bog_gram_note extends $giper_baza_dict.with({
             Title: $giper_baza_atom_text,
@@ -23875,42 +23908,11 @@ var $;
             /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
              * Ленд приватный, поэтому подпись видна только владельцу */
             Notes: $giper_baza_dict_to($bog_gram_note),
+            Passes: $giper_baza_list_str,
+            Lobbies: $giper_baza_list_str,
         }) {
         }
         $$.$bog_gram_dialogs = $bog_gram_dialogs;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
-        class $bog_gram_inbox extends $giper_baza_dict.with({
-            Invites: $giper_baza_list_str,
-            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
-             * приглашений: приглашение — это готовый доступ, а заявка только
-             * просьба его выдать, и решение по ней принимает человек.
-             *
-             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
-             * заворачивается на ключ конкретного человека, и без ключа админу
-             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
-             * под чужой идентификатор это не даёт — идентификатор его хеш, и
-             * подмена ловится пересчётом на месте. */
-            Joins: $giper_baza_list_str,
-            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
-             * не оставляет просившему никакого следа, и она висела бы у него
-             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
-             * писать в чужое лобби есть у всех, им и пользуемся.
-             *
-             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
-             * по той же ссылке можно попроситься снова. */
-            Denies: $giper_baza_list_str,
-        }) {
-        }
-        $$.$bog_gram_inbox = $bog_gram_inbox;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -24894,18 +24896,73 @@ var $;
                 return this.user_store().Name()?.val() ?? '';
             }
             // ===== Служебные ленды пользователя (ссылки хранятся в профиле) =====
-            inbox_land_make() {
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_post('slow')],
-                ]);
-                this.user_store().Inbox_land('auto')?.val(land.link().str);
-                return land;
-            }
             inbox_land() {
-                const str = this.user_store().Inbox_land()?.val();
-                if (!str)
-                    return this.inbox_land_make();
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
+                const home = this.$.$giper_baza_glob.Land(new $giper_baza_link(this.my_lord()));
+                return home.area_make($mol_hash_string('bog_gram_inbox'));
+            }
+            inbox_open() {
+                const land = this.inbox_land();
+                const rank = $giper_baza_rank_post('slow');
+                if (land.lord_rank(null) !== rank)
+                    land.give(null, rank);
+                return true;
+            }
+            inbox_publish() {
+                const link = this.inbox_land().link().str;
+                const prev = String(this.user_store().Inbox_land()?.val() ?? '');
+                if (prev === link)
+                    return link;
+                if (prev && !this.lobbies_old().includes(prev))
+                    this.dialogs_store().Lobbies('auto').add(prev);
+                this.user_store().Inbox_land('auto')?.val(link);
+                return link;
+            }
+            lobbies_old() {
+                return (this.dialogs_store().Lobbies()?.items() ?? []).map(String);
+            }
+            inbox_stores() {
+                let old = [];
+                try {
+                    old = this.lobbies_old();
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                }
+                return [
+                    this.inbox_store(),
+                    ...old.map(link => this.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_gram_inbox)),
+                ];
+            }
+            inbox_items(pick) {
+                const all = [];
+                for (const store of this.inbox_stores()) {
+                    try {
+                        for (const item of pick(store)?.items() ?? [])
+                            all.push(String(item));
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                        $mol_fail_log(error);
+                    }
+                }
+                return [...new Set(all)];
+            }
+            inbox_cut(pick, entry) {
+                for (const store of this.inbox_stores()) {
+                    try {
+                        if (!(pick(store)?.items() ?? []).map(String).includes(entry))
+                            continue;
+                        pick(store, 'auto').cut(entry);
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                        $mol_fail_log(error);
+                    }
+                }
+                return null;
             }
             dialogs_land_make() {
                 const land = this.$.$giper_baza_glob.land_grab([
@@ -25951,6 +26008,16 @@ var $;
                 const given = this.peer_pass_given(lord);
                 if (given)
                     return given;
+                try {
+                    const stored = this.peer_pass_stored(lord);
+                    if (stored)
+                        return stored;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
                 const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
                 try {
                     land.sync();
@@ -26660,7 +26727,7 @@ var $;
              * сохраняется, и заявки дорисуются сами. */
             ask_all() {
                 try {
-                    return (this.inbox_store().Joins()?.items() ?? []).map(String);
+                    return this.inbox_items(store => store.Joins());
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -26770,7 +26837,7 @@ var $;
             ask_forget(entry) {
                 if (!entry)
                     return null;
-                this.inbox_store().Joins('auto').cut(entry);
+                this.inbox_cut((store, auto) => store.Joins(auto), entry);
                 return null;
             }
             /** Приём заявки. Ключ проверяем пересчётом до всего остального: лобби
@@ -26880,7 +26947,7 @@ var $;
                 return this.sealed_open(['invite', entry])?.open ?? '';
             }
             inbox_merge() {
-                const invites = (this.inbox_store().Invites()?.items() ?? []).map(String);
+                const invites = this.inbox_items(store => store.Invites());
                 if (!invites.length)
                     return 0;
                 const have = new Set(this.dialog_ids());
@@ -28209,9 +28276,25 @@ var $;
                 if (!pass)
                     return null;
                 this.peer_pass_given(lord, pass);
+                if (!this.peer_pass_stored(lord))
+                    this.dialogs_store().Passes('auto').add(pass.toString());
                 return pass;
             }
             /** Ключи, добытые не из сети: пока их источник — только ссылка. */
+            peer_pass_stored(lord) {
+                for (const str of this.dialogs_store().Passes()?.items() ?? []) {
+                    try {
+                        const pass = $bog_gram_seal.pass(String(str));
+                        if (pass.lord().str === lord)
+                            return pass;
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                    }
+                }
+                return null;
+            }
             peer_pass_given(lord, next) {
                 return next ?? null;
             }
@@ -28503,7 +28586,7 @@ var $;
             denies_merge() {
                 let entries = [];
                 try {
-                    entries = (this.inbox_store().Denies()?.items() ?? []).map(String);
+                    entries = this.inbox_items(store => store.Denies());
                 }
                 catch (error) {
                     if (!$mol_promise_like(error))
@@ -28528,7 +28611,7 @@ var $;
                         if (!this.ask_denied().includes(group))
                             store.Denied('auto').add(group);
                     }
-                    this.inbox_store().Denies('auto').cut(entry);
+                    this.inbox_cut((store, auto) => store.Denies(auto), entry);
                 }
                 return entries.length;
             }
@@ -28909,7 +28992,8 @@ var $;
              * попадал бы в окно, когда своей ссылки на него как бы нет. */
             setup_ready() {
                 this.user_store();
-                this.inbox_land();
+                this.inbox_open();
+                this.inbox_publish();
                 this.dialogs_land();
                 this.monitor_land();
                 this.device_ready();
@@ -29013,8 +29097,23 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "user_name", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "inbox_land", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "inbox_open", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "inbox_publish", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "lobbies_old", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "inbox_stores", null);
+        __decorate([
             $mol_action
-        ], $bog_gram.prototype, "inbox_land_make", null);
+        ], $bog_gram.prototype, "inbox_cut", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialogs_land_make", null);
@@ -29641,6 +29740,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "invite_handle", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "peer_pass_stored", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "peer_pass_given", null);
