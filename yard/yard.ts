@@ -2,7 +2,7 @@ namespace $ {
 
 	export class $bog_gram_yard extends $giper_baza_yard {
 
-		static stagger = 300
+		static stagger = 300 // ms
 
 		port_make( socket: WebSocket, link: string ) {
 
