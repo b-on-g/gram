@@ -19,7 +19,7 @@ const webpush = require('web-push')
 const $ = require('./node.js')
 
 const PORT = Number(process.env.GRAM_PUSH_PORT || 9099)
-const MASTER = process.env.GRAM_PUSH_MASTER || 'https://baza.91-188-212-151.ip.giper.dev/'
+const MASTERS = process.env.GRAM_PUSH_MASTER?.split(',').filter(Boolean)
 const DATA = process.env.GRAM_PUSH_DATA || '/data'
 const POLL = Number(process.env.GRAM_PUSH_POLL || 5000)
 const APP_URL = process.env.GRAM_PUSH_APP || 'https://b-on-g.github.io/gram/'
@@ -105,7 +105,7 @@ function client_make() {
 	if (process.env.GRAM_PUSH_BAZA_LOG) ctx.$giper_baza_log = () => true
 
 	class Yard extends $.$giper_baza_yard {}
-	Yard.masters = $.$mol_const([MASTER])
+	if (MASTERS) Yard.masters = $.$mol_const(MASTERS)
 	ctx.$giper_baza_yard = Yard
 
 	class Glob extends $.$giper_baza_glob {}
@@ -407,7 +407,7 @@ async function main() {
 	server.listen(PORT, () => log('http up on', PORT))
 
 	auth = await auth_load()
-	log('lord', auth.pass().lord().str.slice(0, 10), 'master', MASTER)
+	log('lord', auth.pass().lord().str.slice(0, 10), 'masters', MASTERS ?? 'seed')
 
 	for (;;) {
 		try {

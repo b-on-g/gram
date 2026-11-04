@@ -5,6 +5,7 @@ COPY package.json .
 RUN npm install --omit=dev
 COPY push.js .
 COPY node.js .
+COPY web.baza .
 
 ENV GRAM_PUSH_PORT=9099
 ENV GRAM_PUSH_DATA=/data

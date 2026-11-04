@@ -4,9 +4,6 @@ services:
     container_name: gram-push
     restart: unless-stopped
     environment:
-      # Тот же мастер, что прошит в приложении: смотреть надо туда, где
-      # реально лежат ленды пользователей, а не на соседний узел
-      GRAM_PUSH_MASTER: https://baza.87.120.36.150.ip.giper.dev/
       GRAM_PUSH_APP: https://b-on-g.github.io/gram/
       # Узел приложения живёт на одном ядре, а каждый обход поднимает
       # свежего клиента и пересинхронизирует ленды подписчиков. Под нагрузкой
