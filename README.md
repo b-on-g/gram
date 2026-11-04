@@ -44,3 +44,11 @@ npx mam bog/gram
 ```
 
 Локальный мастер: `node giper/baza/app/run/-/node.js port=9090`, затем `#!giper_baza_yard_masters=http%3A%2F%2Flocalhost%3A9090%2F`.
+
+## Версия
+
+Версия показывается в настройках и лежит в `version/version.ts`. Хук `pre-commit` поднимает последнее число на каждый коммит и сам кладёт файл в коммит. В свежем клоне хук включается один раз:
+
+```sh
+git config core.hooksPath .githooks
+```

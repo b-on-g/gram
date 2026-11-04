@@ -21174,6 +21174,20 @@ var $;
 			(obj.content) = () => ([(this.Account_body())]);
 			return obj;
 		}
+		version(){
+			return "";
+		}
+		Version_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.version()));
+			return obj;
+		}
+		Version(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Версия");
+			(obj.content) = () => ([(this.Version_text())]);
+			return obj;
+		}
 		Settings_page(){
 			const obj = new this.$.$mol_page();
 			(obj.title) = () => ("Настройки");
@@ -21184,7 +21198,8 @@ var $;
 				(this.Invite()), 
 				(this.Notify()), 
 				(this.Registry_block()), 
-				(this.Account())
+				(this.Account()), 
+				(this.Version())
 			]);
 			return obj;
 		}
@@ -22973,6 +22988,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Registry_block"));
 	($mol_mem(($.$bog_gram.prototype), "Account_body"));
 	($mol_mem(($.$bog_gram.prototype), "Account"));
+	($mol_mem(($.$bog_gram.prototype), "Version_text"));
+	($mol_mem(($.$bog_gram.prototype), "Version"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
 	($mol_mem(($.$bog_gram.prototype), "compose_close"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_close_icon"));
@@ -24457,6 +24474,13 @@ var $;
         }
         $$.$bog_gram_users = $bog_gram_users;
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_gram_version = '1.0.45';
 })($ || ($ = {}));
 
 ;
@@ -28313,6 +28337,9 @@ var $;
                 const location = this.$.$mol_dom_context.location;
                 const tail = key ? '/key=' + key : '';
                 return location.origin + location.pathname + '#!invite=' + lord + tail;
+            }
+            version() {
+                return $bog_gram_version;
             }
             invite_link() {
                 return this.invite_uri(this.my_lord(), this.my_pass());

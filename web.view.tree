@@ -2449,6 +2449,11 @@ $bog_gram $mol_book2
 					content /
 						<= Account_body $mol_view
 							sub <= account_rows /
+				<= Version $mol_labeler
+					title \Версия
+					content /
+						<= Version_text $mol_paragraph
+							title <= version \
 		<= Compose_page $mol_page
 			title \Новый диалог
 			tools /
