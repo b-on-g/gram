@@ -117,22 +117,35 @@ function client_make() {
 	Auth.current = () => auth
 	ctx.$giper_baza_auth = Auth
 
+	const holds = new Map()
+
+	function held(str) {
+		let atom = holds.get(str)
+		if (!atom) {
+			atom = new $.$mol_wire_atom('land_' + str, () => {
+				$.$mol_wire_solid()
+				const land = Glob.Land(new $.$giper_baza_link(str))
+				land.sync()
+				Glob.yard().sync_land(land.link())
+				return land
+			})
+			holds.set(str, atom)
+			atom.async().catch(() => {})
+		}
+		return Glob.Land(new $.$giper_baza_link(str))
+	}
+
 	const ops = {
 		/** Ссылки на session-ленды из публичного monitor-ленда подписчика. */
 		watch_list(monitor) {
-			const land = Glob.Land(new $.$giper_baza_link(monitor))
-			land.sync()
-			Glob.yard().sync_land(land.link())
+			const land = held(monitor)
 			const list = land.Data($.$bog_gram_monitor).Watch()?.items() ?? []
 			return [...list].map(String)
 		},
 		/** Счётчики юнитов по пирам: содержимое сессий зашифровано и демону
 		 * недоступно, а вот сколько юнитов чей пир добавил — видно. */
 		session_faces(session) {
-			const link = new $.$giper_baza_link(session)
-			const land = Glob.Land(link)
-			land.sync()
-			Glob.yard().sync_land(link)
+			const land = held(session)
 
 			const out = {}
 			for (const [peer, face] of land.faces) out[peer] = face.summ ?? 0
@@ -142,8 +155,7 @@ function client_make() {
 		/** Кто скрывается за пиром. Содержимое юнита зашифровано, а вот его
 		 * подпись — нет: по ней и восстанавливаем полный идентификатор автора. */
 		peer_lords(session) {
-			const link = new $.$giper_baza_link(session)
-			const land = Glob.Land(link)
+			const land = held(session)
 			const out = {}
 			for (const unit of land.diff_units()) {
 				const lord = unit.lord()
@@ -156,10 +168,7 @@ function client_make() {
 		/** Публичное имя из профиля автора: профиль лежит в открытом ленде,
 		 * так что демону он доступен, а вот сам текст сообщения — нет. */
 		lord_name(lord) {
-			const link = new $.$giper_baza_link(lord)
-			const land = Glob.Land(link)
-			land.sync()
-			Glob.yard().sync_land(link)
+			const land = held(lord)
 			return String(land.Data($.$bog_gram_user).Name()?.val() ?? '')
 		},
 	}
@@ -177,6 +186,8 @@ function client_make() {
 			return port
 		},
 		close(port) {
+			for (const atom of holds.values()) atom.destructor()
+			holds.clear()
 			try {
 				const socket = port?.socket
 				if (socket) socket.close()
