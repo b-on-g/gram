@@ -24489,7 +24489,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.47';
+    $.$bog_gram_version = '1.0.49';
 })($ || ($ = {}));
 
 ;
@@ -24851,7 +24851,7 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_yard extends $giper_baza_yard {
-        static stagger = 300;
+        static stagger = 300; // ms
         port_make(socket, link) {
             const port = new $mol_rest_port_ws_std;
             port.socket = socket;
