@@ -3839,6 +3839,10 @@ namespace $.$$ {
 			return location.origin + location.pathname + '#!invite=' + lord + tail
 		}
 
+		override version() {
+			return $bog_gram_version
+		}
+
 		override invite_link() {
 			return this.invite_uri( this.my_lord(), this.my_pass() )
 		}
