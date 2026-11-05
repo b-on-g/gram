@@ -807,6 +807,7 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.zoom_id( '' )
 			this.delete_disarm()
+			this.chat_focus( id, null )
 			this.dialog_current( id )
 			this.chat_bring()
 			return null
@@ -3399,6 +3400,50 @@ namespace $.$$ {
 			return last
 		}
 
+		/** Первое непрочитанное чужое сообщение: его номер в ленте или -1, если читать нечего. */
+		unread_first( list: readonly { moment: number, author: string }[], my: string, seen: number ) {
+			return list.findIndex( item => item.author !== my && item.moment > seen )
+		}
+
+		/** С какого сообщения открыть диалог: с первого непрочитанного, а без них
+		 * с конца (пустая строка). Решение запоминается до следующего открытия:
+		 * отметка прочтения сдвигается сразу, и без этого лента тут же уехала бы вниз.
+		 * Пока сообщений нет, решения нет (null), и запоминать нечего. */
+		@$mol_mem_key
+		chat_focus( id: string, reset?: null ): string | null {
+
+			if( reset === undefined ) {
+				const prev = $mol_wire_probe( ()=> this.chat_focus( id ) )
+				if( typeof prev === 'string' ) return prev
+			}
+
+			if( !id ) return null
+
+			const messages = this.messages_alive_of( id )
+			if( !messages.length ) return null
+			if( this.saved_is( id ) ) return ''
+
+			const my = this.my_lord()
+			const list = messages.map( message => ({
+				moment: Number( message.Moment()?.val() ?? 0 ),
+				author: String( message.Author()?.val() ?? '' ),
+			}) )
+
+			const index = this.unread_first( list, my, this.read_moment_of( id, my ) )
+			return index < 0 ? '' : messages[ index ].link().str
+		}
+
+		override chat_dialog() {
+			return this.dialog_active()
+		}
+
+		@$mol_mem
+		override chat_focus_row() {
+			const id = this.dialog_active()
+			const focus = id ? this.chat_focus( id ) : null
+			return focus ? this.Message_row( focus ) : null!
+		}
+
 		/** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
 		@$mol_mem
 		read_sync() {
@@ -4967,18 +5012,61 @@ namespace $.$$ {
 			return [ ... super.sub(), this.Zoom() ]
 		}
 
-		// Лента прокручивается вниз после рендера: auto() зовётся из dom_tree,
-		// когда DOM уже актуален. Чтение rows() подписывает на новые сообщения.
+		@$mol_mem
+		focus_done( next?: string ) {
+			return next ?? ''
+		}
+
+		@$mol_mem
+		rows_seen( next?: number ) {
+			return next ?? 0
+		}
+
+		/** Открытый диалог встаёт на первое непрочитанное, без них — на последнее
+		 * сообщение; дальше лента едет вниз только за новыми сообщениями. Список
+		 * ленивый: scrollHeight знает лишь отрисованную часть, поэтому к строке
+		 * ведёт ensure_visible, он сам дорисует окно списка до неё. */
 		override auto() {
 			super.auto()
 			try {
-				void this.rows()
-				const el = this.Body().dom_node() as HTMLElement
-				el.scrollTop = el.scrollHeight
+
+				const key = this.focus_key()
+				if( !key ) {
+					this.focus_done( '' )
+					return
+				}
+
+				const rows = this.rows()
+				if( !rows.length ) return
+
+				const last = rows[ rows.length - 1 ]
+
+				if( key !== this.focus_done() ) {
+					this.focus_done( key )
+					this.rows_seen( rows.length )
+					const focus = this.focus_row()
+					this.reveal( focus ?? last, focus ? 'start' : 'end' )
+					return
+				}
+
+				if( rows.length > this.rows_seen() ) this.reveal( last, 'end' )
+				this.rows_seen( rows.length )
+
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) return
 				$mol_fail_log( error )
 			}
+		}
+
+		reveal( row: $mol_view, align: ScrollLogicalPosition ) {
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					this.ensure_visible( row, align )
+				} catch( error ) {
+					if( $mol_promise_like( error ) ) return
+					$mol_fail_log( error )
+				}
+			} )
 		}
 
 	}
