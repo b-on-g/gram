@@ -8798,6 +8798,23 @@ var $;
                 $mol_assert_equal(state.king_old_rank, $giper_baza_rank_rule);
                 $mol_assert_equal(state.king_fresh_rank, $giper_baza_rank_rule);
             },
+            async 'Диалог открывается с первого непрочитанного чужого сообщения'($) {
+                const app = $bog_gram.make({ $ });
+                const list = [
+                    { moment: 1000, author: 'Peer' },
+                    { moment: 2000, author: 'Me' },
+                    { moment: 3000, author: 'Peer' },
+                    { moment: 4000, author: 'Peer' },
+                ];
+                // Прочитано до 2000: первое непрочитанное — третье
+                $mol_assert_equal(app.unread_first(list, 'Me', 2000), 2);
+                // Свои сообщения непрочитанными не считаются, даже позже отметки
+                $mol_assert_equal(app.unread_first(list.slice(0, 2), 'Me', 1000), -1);
+                // Всё прочитано — открываем с конца
+                $mol_assert_equal(app.unread_first(list, 'Me', 4000), -1);
+                // Отметки нет вовсе — читать с самого начала
+                $mol_assert_equal(app.unread_first(list, 'Me', 0), 0);
+            },
             async 'В группе вместо галочек — сколько человек прочитало'($) {
                 const app = $bog_gram.make({ $ });
                 const mates = ['LordA', 'LordB', 'LordC'];

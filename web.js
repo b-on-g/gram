@@ -43007,6 +43007,12 @@ var $;
 		chat_title(){
 			return "";
 		}
+		chat_dialog(){
+			return "";
+		}
+		chat_focus_row(){
+			return null;
+		}
 		chat_members_shown(){
 			return false;
 		}
@@ -43104,6 +43110,8 @@ var $;
 		Chat_page(){
 			const obj = new this.$.$bog_gram_chat();
 			(obj.title) = () => ((this.chat_title()));
+			(obj.focus_key) = () => ((this.chat_dialog()));
+			(obj.focus_row) = () => ((this.chat_focus_row()));
 			(obj.members_shown) = () => ((this.chat_members_shown()));
 			(obj.members) = (next) => ((this.members_open(next)));
 			(obj.note) = (next) => ((this.chat_note(next)));
@@ -44981,6 +44989,12 @@ var $;
 		rows(){
 			return [];
 		}
+		focus_key(){
+			return "";
+		}
+		focus_row(){
+			return null;
+		}
 		edit_mode(){
 			return false;
 		}
@@ -45997,7 +46011,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.50';
+    $.$bog_gram_version = '1.0.51';
 })($ || ($ = {}));
 
 ;
@@ -47211,6 +47225,7 @@ var $;
                 this.message_menu('');
                 this.zoom_id('');
                 this.delete_disarm();
+                this.chat_focus(id, null);
                 this.dialog_current(id);
                 this.chat_bring();
                 return null;
@@ -49471,6 +49486,43 @@ var $;
                 }
                 return last;
             }
+            /** Первое непрочитанное чужое сообщение: его номер в ленте или -1, если читать нечего. */
+            unread_first(list, my, seen) {
+                return list.findIndex(item => item.author !== my && item.moment > seen);
+            }
+            /** С какого сообщения открыть диалог: с первого непрочитанного, а без них
+             * с конца (пустая строка). Решение запоминается до следующего открытия:
+             * отметка прочтения сдвигается сразу, и без этого лента тут же уехала бы вниз.
+             * Пока сообщений нет, решения нет (null), и запоминать нечего. */
+            chat_focus(id, reset) {
+                if (reset === undefined) {
+                    const prev = $mol_wire_probe(() => this.chat_focus(id));
+                    if (typeof prev === 'string')
+                        return prev;
+                }
+                if (!id)
+                    return null;
+                const messages = this.messages_alive_of(id);
+                if (!messages.length)
+                    return null;
+                if (this.saved_is(id))
+                    return '';
+                const my = this.my_lord();
+                const list = messages.map(message => ({
+                    moment: Number(message.Moment()?.val() ?? 0),
+                    author: String(message.Author()?.val() ?? ''),
+                }));
+                const index = this.unread_first(list, my, this.read_moment_of(id, my));
+                return index < 0 ? '' : messages[index].link().str;
+            }
+            chat_dialog() {
+                return this.dialog_active();
+            }
+            chat_focus_row() {
+                const id = this.dialog_active();
+                const focus = id ? this.chat_focus(id) : null;
+                return focus ? this.Message_row(focus) : null;
+            }
             /** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
             read_sync() {
                 const id = this.dialog_active();
@@ -51299,6 +51351,12 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "message_sound_ended", null);
         __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "chat_focus", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "chat_focus_row", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "read_sync", null);
         __decorate([
@@ -51660,14 +51718,38 @@ var $;
                     return super.sub();
                 return [...super.sub(), this.Zoom()];
             }
-            // Лента прокручивается вниз после рендера: auto() зовётся из dom_tree,
-            // когда DOM уже актуален. Чтение rows() подписывает на новые сообщения.
+            focus_done(next) {
+                return next ?? '';
+            }
+            rows_seen(next) {
+                return next ?? 0;
+            }
+            /** Открытый диалог встаёт на первое непрочитанное, без них — на последнее
+             * сообщение; дальше лента едет вниз только за новыми сообщениями. Список
+             * ленивый: scrollHeight знает лишь отрисованную часть, поэтому к строке
+             * ведёт ensure_visible, он сам дорисует окно списка до неё. */
             auto() {
                 super.auto();
                 try {
-                    void this.rows();
-                    const el = this.Body().dom_node();
-                    el.scrollTop = el.scrollHeight;
+                    const key = this.focus_key();
+                    if (!key) {
+                        this.focus_done('');
+                        return;
+                    }
+                    const rows = this.rows();
+                    if (!rows.length)
+                        return;
+                    const last = rows[rows.length - 1];
+                    if (key !== this.focus_done()) {
+                        this.focus_done(key);
+                        this.rows_seen(rows.length);
+                        const focus = this.focus_row();
+                        this.reveal(focus ?? last, focus ? 'start' : 'end');
+                        return;
+                    }
+                    if (rows.length > this.rows_seen())
+                        this.reveal(last, 'end');
+                    this.rows_seen(rows.length);
                 }
                 catch (error) {
                     if ($mol_promise_like(error))
@@ -51675,10 +51757,28 @@ var $;
                     $mol_fail_log(error);
                 }
             }
+            reveal(row, align) {
+                new this.$.$mol_after_tick(() => {
+                    try {
+                        this.ensure_visible(row, align);
+                    }
+                    catch (error) {
+                        if ($mol_promise_like(error))
+                            return;
+                        $mol_fail_log(error);
+                    }
+                });
+            }
         }
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "send_tools", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "focus_done", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "rows_seen", null);
         $$.$bog_gram_chat = $bog_gram_chat;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));

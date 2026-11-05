@@ -871,6 +871,8 @@ $bog_gram $mol_book2
 						<= group_leave_label \
 		<= Chat_page $bog_gram_chat
 			title <= chat_title \
+			focus_key <= chat_dialog \
+			focus_row <= chat_focus_row null
 			members_shown <= chat_members_shown false
 			members? <=> members_open? null
 			note? <=> chat_note? \
@@ -1358,6 +1360,8 @@ $bog_gram_field $mol_view
 
 $bog_gram_chat $mol_page
 	rows /$mol_view
+	focus_key \
+	focus_row null
 	edit_mode false
 	message_text? \
 	message_send? null
