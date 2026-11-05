@@ -404,7 +404,7 @@
     "$mol_error_enriched",
     "$mol_error_fence",
     "$bog_gram_mine",
-    "$bog_gram_yard",
+    "$bog_yard",
     "$bog_gram_auth",
     "$bog_gram_nozoom"
   ],

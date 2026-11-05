@@ -52452,7 +52452,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.49";
+    const $bog_gram_version = "1.0.50";
 }
 
 declare namespace $ {
@@ -52508,7 +52508,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $bog_gram_yard extends $giper_baza_yard {
+    class $bog_yard extends $giper_baza_yard {
         static stagger: number;
         port_make(socket: WebSocket, link: string): $mol_rest_port_ws_std;
         master(): $mol_rest_port | null;

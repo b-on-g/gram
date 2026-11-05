@@ -6921,7 +6921,7 @@ var $;
                 send() { }
                 close() { this.closed = true; }
             }
-            class Yard extends $bog_gram_yard {
+            class Yard extends $bog_yard {
                 static stagger = 10;
                 static masters() {
                     return ['https://silent.example/', 'https://alive.example/'];

@@ -24480,7 +24480,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.49';
+    $.$bog_gram_version = '1.0.50';
 })($ || ($ = {}));
 
 ;
@@ -24841,7 +24841,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $bog_gram_yard extends $giper_baza_yard {
+    class $bog_yard extends $giper_baza_yard {
         static stagger = 300; // ms
         port_make(socket, link) {
             const port = new $mol_rest_port_ws_std;
@@ -24942,8 +24942,8 @@ var $;
     }
     __decorate([
         $mol_mem
-    ], $bog_gram_yard.prototype, "master", null);
-    $.$bog_gram_yard = $bog_gram_yard;
+    ], $bog_yard.prototype, "master", null);
+    $.$bog_yard = $bog_yard;
 })($ || ($ = {}));
 
 ;
@@ -39972,7 +39972,7 @@ var $;
                 send() { }
                 close() { this.closed = true; }
             }
-            class Yard extends $bog_gram_yard {
+            class Yard extends $bog_yard {
                 static stagger = 10;
                 static masters() {
                     return ['https://silent.example/', 'https://alive.example/'];
