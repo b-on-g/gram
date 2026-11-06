@@ -46063,7 +46063,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.57';
+    $.$bog_gram_version = '1.0.58';
 })($ || ($ = {}));
 
 ;
@@ -48564,7 +48564,7 @@ var $;
                         this.$.$giper_baza_glob
                             .Land(new $giper_baza_link(String(inbox_link)))
                             .Data($bog_gram_inbox)
-                            .Denies('auto').add(this.sealed_close(['deny', pass.toString(), ask.group]));
+                            .Denies('auto')?.add(this.sealed_close(['deny', pass.toString(), ask.group]));
                     }
                 }
                 catch (error) {
@@ -48664,7 +48664,10 @@ var $;
                         const inbox = this.$.$giper_baza_glob
                             .Land(new $giper_baza_link(String(inbox_link)))
                             .Data($bog_gram_inbox);
-                        inbox.Invites('auto').add(sealed);
+                        const invites = inbox.Invites('auto');
+                        if (!invites)
+                            continue;
+                        invites.add(sealed);
                         const sent = (inbox.Invites()?.items() ?? []).map(String).includes(sealed);
                         if (sent)
                             this.dialogs_store().Outbox('auto').cut(entry);
@@ -50493,7 +50496,10 @@ var $;
                         if (!owner_pass)
                             continue;
                         const entry = this.sealed_close(['join', owner_pass.toString(), id]);
-                        inbox.Joins('auto').add(entry);
+                        const joins = inbox.Joins('auto');
+                        if (!joins)
+                            continue;
+                        joins.add(entry);
                         const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
                         if (!delivered)
                             continue;
