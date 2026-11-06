@@ -24503,7 +24503,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.51';
+    $.$bog_gram_version = '1.0.52';
 })($ || ($ = {}));
 
 ;
