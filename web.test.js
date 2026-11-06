@@ -6424,6 +6424,96 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'Vector limiting'() {
+            let point = new $mol_vector_3d(7, 10, 13);
+            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
+            $mol_assert_equal(res.x, 5);
+            $mol_assert_equal(res.y, 15);
+            $mol_assert_equal(res.z, 10);
+        },
+        'Vector adding scalar'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added0(5);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 7);
+            $mol_assert_equal(res.z, 8);
+        },
+        'Vector adding vector'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added1([5, 10, 15]);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 12);
+            $mol_assert_equal(res.z, 18);
+        },
+        'Vector multiplying scalar'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed0(-1);
+            $mol_assert_equal(res.x, -2);
+            $mol_assert_equal(res.y, -3);
+            $mol_assert_equal(res.z, -4);
+        },
+        'Vector multiplying vector'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed1([5, 2, -2]);
+            $mol_assert_equal(res.x, 10);
+            $mol_assert_equal(res.y, 6);
+            $mol_assert_equal(res.z, -8);
+        },
+        'Matrix adding matrix'() {
+            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
+            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
+            $mol_assert_equal(res[0][0], 11);
+            $mol_assert_equal(res[0][1], 22);
+            $mol_assert_equal(res[1][0], 33);
+            $mol_assert_equal(res[1][1], 44);
+            $mol_assert_equal(res[2][0], 55);
+            $mol_assert_equal(res[2][1], 66);
+        },
+        'Matrix multiplying matrix'() {
+            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
+            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
+            $mol_assert_equal(res[0][0], 4);
+            $mol_assert_equal(res[0][1], 9);
+            $mol_assert_equal(res[1][0], 16);
+            $mol_assert_equal(res[1][1], 25);
+            $mol_assert_equal(res[2][0], 36);
+            $mol_assert_equal(res[2][1], 49);
+        },
+        'Range expanding'() {
+            let range = $mol_vector_range_full.inversed;
+            const expanded = range.expanded0(10).expanded0(5);
+            $mol_assert_like([...expanded], [5, 10]);
+        },
+        'Vector of range expanding by vector'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
+            $mol_assert_like([...expanded.x], [1, 3]);
+            $mol_assert_like([...expanded.y], [5, 7]);
+        },
+        'Vector of range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions
+                .expanded2([[1, 3], [7, 9]])
+                .expanded2([[2, 4], [6, 8]]);
+            $mol_assert_like([...expanded.x], [1, 4]);
+            $mol_assert_like([...expanded.y], [6, 9]);
+        },
+        'Vector of infinity range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = next
+                .expanded2(dimensions);
+            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
+            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test_mocks.push($ => {
         class $mol_locale_mock extends $mol_locale {
@@ -6821,6 +6911,159 @@ var $;
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'skin puts presets on the host node'($) {
+                class Host extends $mol_view {
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, base: () => 'stone' });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                const node = host.dom_node();
+                $mol_assert_equal(node.getAttribute('bog_builderui_base'), 'stone');
+                $mol_assert_equal(node.getAttribute('bog_builderui_lights'), 'system');
+                $mol_assert_equal(node.getAttribute('bog_builderui_theme'), 'sky');
+                $mol_assert_equal(node.getAttribute('bog_builderui_radius'), 'medium');
+                $mol_assert_equal(node.getAttribute('mol_theme'), null);
+                host.destructor();
+            },
+            'skin stops input zoom on ios only'($) {
+                const zoom_after = (agent) => {
+                    const meta = { content: 'width=device-width, initial-scale=1', getAttribute: () => meta.content, setAttribute: (_, val) => { meta.content = val; } };
+                    const document = { querySelector: () => meta };
+                    const context = { ...$.$mol_dom_context, document, navigator: { userAgent: agent, platform: '', maxTouchPoints: 0 } };
+                    const skin = $bog_builderui_skin.make({ $: $.$mol_ambient({ $mol_dom_context: context }) });
+                    skin.ios_zoom_fix();
+                    skin.ios_zoom_fix();
+                    return meta.content;
+                };
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'), 'width=device-width, initial-scale=1, maximum-scale=1');
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (Linux; Android 14)'), 'width=device-width, initial-scale=1');
+            },
+            'skin follows the host'($) {
+                class Host extends $mol_view {
+                    lights(next) {
+                        return next ?? 'dark';
+                    }
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, lights: () => this.lights() });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "lights", null);
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'dark');
+                host.lights('light');
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'light');
+                host.destructor();
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function parse(theme) {
+        if (theme === 'true')
+            return true;
+        if (theme === 'false')
+            return false;
+        return null;
+    }
+    // Get once because chrome switches to light on print
+    const base = $.$mol_media.match('(prefers-color-scheme: light)');
+    /**
+     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+     */
+    function $mol_lights(next) {
+        const arg = parse(this.$mol_state_arg.value('mol_lights'));
+        if (next === undefined) {
+            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
+        }
+        else {
+            if (arg === null) {
+                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
+            }
+            else {
+                this.$mol_state_arg.value('mol_lights', String(next));
+            }
+            return next;
+        }
+    }
+    $.$mol_lights = $mol_lights;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'null by default'() {
+            const key = String(Math.random());
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+        'storing'() {
+            const key = String(Math.random());
+            $mol_state_session.value(key, '$mol_state_session_test');
+            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
+            $mol_state_session.value(key, null);
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'system mode follows the device, not a light choice stored by another app'($) {
+            const device = (light) => {
+                const context = Object.create($);
+                context.$mol_lights = () => !light;
+                context.$mol_media = class extends $.$mol_media {
+                    static match() {
+                        return light;
+                    }
+                };
+                return $bog_theme_auto.make({ $: context });
+            };
+            const night = device(false);
+            $mol_assert_equal(night.mode(), 'system');
+            $mol_assert_equal(night.theme(), night.theme_dark());
+            $mol_assert_equal(night.is_light_now(), false);
+            const day = device(true);
+            $mol_assert_equal(day.theme(), day.theme_light());
+            $mol_assert_equal(day.is_light_now(), true);
+        },
+    });
 })($ || ($ = {}));
 
 ;
@@ -7406,115 +7649,6 @@ var $;
             const list = ['abc', 'ab', 'ac'];
             list.sort($mol_compare_text(str => str.split('').reverse().join('')));
             $mol_assert_equal(`${list}`, 'ab,ac,abc');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Vector limiting'() {
-            let point = new $mol_vector_3d(7, 10, 13);
-            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
-            $mol_assert_equal(res.x, 5);
-            $mol_assert_equal(res.y, 15);
-            $mol_assert_equal(res.z, 10);
-        },
-        'Vector adding scalar'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added0(5);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 7);
-            $mol_assert_equal(res.z, 8);
-        },
-        'Vector adding vector'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added1([5, 10, 15]);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 12);
-            $mol_assert_equal(res.z, 18);
-        },
-        'Vector multiplying scalar'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed0(-1);
-            $mol_assert_equal(res.x, -2);
-            $mol_assert_equal(res.y, -3);
-            $mol_assert_equal(res.z, -4);
-        },
-        'Vector multiplying vector'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed1([5, 2, -2]);
-            $mol_assert_equal(res.x, 10);
-            $mol_assert_equal(res.y, 6);
-            $mol_assert_equal(res.z, -8);
-        },
-        'Matrix adding matrix'() {
-            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
-            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
-            $mol_assert_equal(res[0][0], 11);
-            $mol_assert_equal(res[0][1], 22);
-            $mol_assert_equal(res[1][0], 33);
-            $mol_assert_equal(res[1][1], 44);
-            $mol_assert_equal(res[2][0], 55);
-            $mol_assert_equal(res[2][1], 66);
-        },
-        'Matrix multiplying matrix'() {
-            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
-            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
-            $mol_assert_equal(res[0][0], 4);
-            $mol_assert_equal(res[0][1], 9);
-            $mol_assert_equal(res[1][0], 16);
-            $mol_assert_equal(res[1][1], 25);
-            $mol_assert_equal(res[2][0], 36);
-            $mol_assert_equal(res[2][1], 49);
-        },
-        'Range expanding'() {
-            let range = $mol_vector_range_full.inversed;
-            const expanded = range.expanded0(10).expanded0(5);
-            $mol_assert_like([...expanded], [5, 10]);
-        },
-        'Vector of range expanding by vector'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
-            $mol_assert_like([...expanded.x], [1, 3]);
-            $mol_assert_like([...expanded.y], [5, 7]);
-        },
-        'Vector of range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions
-                .expanded2([[1, 3], [7, 9]])
-                .expanded2([[2, 4], [6, 8]]);
-            $mol_assert_like([...expanded.x], [1, 4]);
-            $mol_assert_like([...expanded.y], [6, 9]);
-        },
-        'Vector of infinity range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = next
-                .expanded2(dimensions);
-            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
-            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'null by default'() {
-            const key = String(Math.random());
-            $mol_assert_equal($mol_state_session.value(key), null);
-        },
-        'storing'() {
-            const key = String(Math.random());
-            $mol_state_session.value(key, '$mol_state_session_test');
-            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
-            $mol_state_session.value(key, null);
-            $mol_assert_equal($mol_state_session.value(key), null);
         },
     });
 })($ || ($ = {}));

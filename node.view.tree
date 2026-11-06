@@ -17,16 +17,345 @@ $mol_book2 $mol_scroll
 	minimal_width 0
 	Gap* $mol_view title \
 
-$mol_theme_auto $mol_plugin
-	light \$mol_theme_light
-	attr * mol_theme <= theme <= dark \$mol_theme_dark
+$bog_builderui_div $mol_view
 
-$mol_paragraph $mol_view
-	line_height 24
-	letter_width 7
-	width_limit +Infinity
-	row_width 0
-	sub / <= title
+$bog_builderui_card $bog_builderui_div
+
+$mol_hotkey2 $mol_plugin
+	event *
+		^
+		keydown? <=> keydown? null
+	action *
+
+$mol_hotkey $mol_hotkey2
+	key *
+	mod_ctrl false
+	mod_alt false
+	mod_shift false
+
+$mol_string $mol_view
+	dom_name \input
+	enabled true
+	minimal_height 40
+	autocomplete false
+	selection? /number
+		0
+		0
+	auto /
+		<= selection_watcher null
+		<= error_report null
+	field *
+		^
+		disabled <= disabled false
+		value <= value_changed? <=> value? \
+		placeholder <= hint_visible <= hint \
+		spellcheck <= spellcheck true
+		autocomplete <= autocomplete_native \
+		selectionEnd <= selection_end 0
+		selectionStart <= selection_start 0
+		inputMode <= keyboard \text
+		enterkeyhint <= enter \go
+	attr *
+		^
+		maxlength <= length_max +Infinity
+		type <= type? \text
+	event *
+		^
+		input? <=> event_change? null
+	plugins /
+		<= Submit $mol_hotkey
+			mod_ctrl <= submit_with_ctrl false
+			key * enter? <=> submit? null
+
+$bog_builderui_field $mol_string
+	minimal_height 36
+
+$mol_gallery $mol_view
+	sub <= items /$mol_view
+	Side* $mol_gallery
+		style *
+			flexGrow <= side_size* \1
+		items <= side_items* /$mol_view
+
+$mol_chart_legend $mol_scroll
+	graphs /$mol_plot_graph
+	graphs_front /$mol_plot_graph
+	sub /
+		<= Gallery $mol_gallery items <= graph_legends /$mol_view
+	-
+	Graph_legend* $mol_view
+		sub /
+			<= Graph_sample_box* $mol_view
+				sub /
+					<= Graph_sample* null
+			<= Graph_title* $mol_view
+				sub /
+					<= graph_title* \
+
+$mol_svg $mol_view
+	dom_name \svg
+	dom_name_space \http://www.w3.org/2000/svg
+	font_size 16
+	font_family \
+	style_size *
+
+$mol_svg_group $mol_svg
+	dom_name \g
+
+$mol_svg_title $mol_svg
+	dom_name \title
+	sub /
+		<= title
+
+$mol_plot_graph $mol_svg_group
+	series_x /number
+	series_y /number
+	-
+	attr *
+		^
+		mol_plot_graph_type <= type \solid
+	-
+	style *
+		^
+		color <= color \
+	-
+	viewport $mol_vector_2d<$mol_vector_range<number>> /
+		<= viewport_x $mol_vector_range<number> /
+			Infinity
+			-Infinity
+		<= viewport_y $mol_vector_range<number> /
+			Infinity
+			-Infinity
+	shift /number
+		0
+		0
+	scale /number
+		1
+		1
+	cursor_position $mol_vector_2d<number> /
+		NaN
+		NaN
+	dimensions_pane $mol_vector_2d<$mol_vector_range<number>> /
+		<= dimensions_pane_x $mol_vector_range<number> /
+			Infinity
+			-Infinity
+		<= dimensions_pane_y $mol_vector_range<number> /
+			Infinity
+			-Infinity
+	dimensions $mol_vector_2d<$mol_vector_range<number>> /
+		<= dimensions_x $mol_vector_range<number> /
+			Infinity
+			-Infinity
+		<= dimensions_y $mol_vector_range<number> /
+			Infinity
+			-Infinity
+	size_real $mol_vector_2d<number> /
+		0
+		0
+	gap $mol_vector_2d<$mol_vector_range<number>> /
+		<= gap_x $mol_vector_range<number> /
+			0
+			0
+		<= gap_y $mol_vector_range<number> /
+			0
+			0
+	repos_x* 0
+	repos_y* 0
+	indexes /number
+	points /readonly(number)[]
+	front /$mol_svg
+	back /$mol_svg
+	Hint $mol_svg_title
+		title <= hint <= title \
+	hue? +NaN
+	Sample null
+
+$mol_plot_graph_sample $mol_view
+	attr *
+		^
+		mol_plot_graph_type <= type \solid
+	style *
+		^
+		color <= color \black
+
+$mol_svg_root $mol_svg
+	dom_name \svg
+	attr *
+		^
+		viewBox <= view_box \0 0 100 100
+		preserveAspectRatio <= aspect \xMidYMid
+
+$mol_touch $mol_plugin
+	start_zoom? 0
+	start_distance? 0
+	zoom? 1
+	allow_draw true
+	allow_pan true
+	allow_zoom true
+	action_type? \
+	action_point? $mol_vector_2d<number> /
+		NaN
+		NaN
+	-
+	start_pan? /
+		0
+		0
+	pan? $mol_vector_2d<number> /
+		0
+		0
+	pointer_center $mol_vector_2d<number> /
+		NaN
+		NaN
+	-
+	start_pos? null
+	swipe_precision 16
+	-
+	swipe_right? null
+	swipe_bottom? null
+	swipe_left? null
+	swipe_top? null
+	-
+	swipe_from_right? null
+	swipe_from_bottom? null
+	swipe_from_left? null
+	swipe_from_top? null
+	-
+	swipe_to_right? null
+	swipe_to_bottom? null
+	swipe_to_left? null
+	swipe_to_top? null
+	-
+	draw_start? null
+	draw? null
+	draw_end? null
+	-
+	style *
+		^
+		touch-action \none
+		overscroll-behavior \none
+	-
+	event *
+		^
+		pointerdown? <=> event_start? null
+		pointermove? <=> event_move? null
+		pointerup? <=> event_end? null
+		pointerleave? <=> event_leave? null
+		wheel? <=> event_wheel? null
+
+$mol_plot_pane $mol_svg_root
+	aspect \none
+	-
+	hue_base? +NaN
+	hue_shift? 111
+	-
+	gap_hor 48
+	gap_vert 24
+	gap_left <= gap_hor
+	gap_right <= gap_hor
+	gap_top <= gap_vert
+	gap_bottom <= gap_vert
+	gap $mol_vector_2d<$mol_vector_range<number>> /
+		<= gap_x $mol_vector_range<number> /
+			<= gap_left
+			<= gap_right
+		<= gap_y $mol_vector_range<number> /
+			<= gap_bottom
+			<= gap_top
+	-
+	shift_limit $mol_vector_2d<$mol_vector_range<number>> /
+		<= shift_limit_x $mol_vector_range<number> /
+			0
+			0
+		<= shift_limit_y $mol_vector_range<number> /
+			0
+			0
+	shift_default $mol_vector_2d<number> /
+		0
+		0
+	shift? $mol_vector_2d<number> /
+		0
+		0
+	scale_limit $mol_vector_2d<$mol_vector_range<number>> /
+		<= scale_limit_x $mol_vector_range<number> /
+			0
+			Infinity
+		<= scale_limit_y $mol_vector_range<number> /
+			0
+			-Infinity
+	scale_default $mol_vector_2d<number> /
+		0
+		0
+	scale? $mol_vector_2d<number> /
+		1
+		-1
+	scale_x? 1
+	scale_y? -1
+	size $mol_vector_2d<number> /
+		0
+		0
+	size_real $mol_vector_2d<number> /
+		1
+		1
+	dimensions $mol_vector_2d<$mol_vector_range<number>> /
+		<= dimensions_x $mol_vector_range<number> /
+			Infinity
+			-Infinity
+		<= dimensions_y $mol_vector_range<number> /
+			Infinity
+			-Infinity
+	dimensions_viewport $mol_vector_2d<$mol_vector_range<number>> /
+		<= dimensions_viewport_x $mol_vector_range<number> /
+			Infinity
+			-Infinity
+		<= dimensions_viewport_y $mol_vector_range<number> /
+			Infinity
+			-Infinity
+	-
+	sub <= graphs_sorted /$mol_svg
+	graphs_colored <= graphs_visible <= graphs_positioned <= graphs /$mol_plot_graph
+	-
+	plugins /
+		^
+		<= Touch $mol_touch
+			zoom? <=> zoom? 1
+			pan? <=> shift?
+			pointer_center => cursor_position
+			allow_draw <= allow_draw true
+			allow_pan <= allow_pan true
+			allow_zoom <= allow_zoom true
+			action_type => action_type
+			action_point => action_point
+			draw_start? <=> draw_start? null
+			draw? <=> draw? null
+			draw_end? <=> draw_end? null
+	- event *
+		^
+		dblclick? <=> reset? null
+
+$mol_chart $mol_view
+	gap_hor 48
+	gap_vert 24
+	gap_left <= gap_hor
+	gap_right <= gap_hor
+	gap_bottom <= gap_vert
+	gap_top <= gap_vert
+	graphs /$mol_plot_graph
+	sub /
+		<= Legend $mol_chart_legend
+			graphs <= graphs_colored
+		<= Plot $mol_plot_pane
+			scale_x? => zoom?
+			zoom? <=> zoom?
+			gap_left <= gap_left
+			gap_right <= gap_right
+			gap_bottom <= gap_bottom
+			gap_top <= gap_top
+			graphs <= graphs
+			graphs_colored => graphs_colored
+			hue_base <= hue_base 210
+			hue_shift <= hue_shift 163
+
+$bog_builderui_chart $mol_chart
 
 $mol_ghost $mol_view
 	Sub $mol_view
@@ -139,6 +468,13 @@ $mol_pick $mol_pop
 			<= title
 		hint <= hint \
 
+$mol_paragraph $mol_view
+	line_height 24
+	letter_width 7
+	width_limit +Infinity
+	row_width 0
+	sub / <= title
+
 $mol_dimmer $mol_paragraph
 	haystack \
 	needle \
@@ -184,66 +520,6 @@ $mol_list $mol_view
 	view_window /
 		0
 		0
-
-$mol_hotkey2 $mol_plugin
-	event *
-		^
-		keydown? <=> keydown? null
-	action *
-
-$mol_hotkey $mol_hotkey2
-	key *
-	mod_ctrl false
-	mod_alt false
-	mod_shift false
-
-$mol_string $mol_view
-	dom_name \input
-	enabled true
-	minimal_height 40
-	autocomplete false
-	selection? /number
-		0
-		0
-	auto /
-		<= selection_watcher null
-		<= error_report null
-	field *
-		^
-		disabled <= disabled false
-		value <= value_changed? <=> value? \
-		placeholder <= hint_visible <= hint \
-		spellcheck <= spellcheck true
-		autocomplete <= autocomplete_native \
-		selectionEnd <= selection_end 0
-		selectionStart <= selection_start 0
-		inputMode <= keyboard \text
-		enterkeyhint <= enter \go
-	attr *
-		^
-		maxlength <= length_max +Infinity
-		type <= type? \text
-	event *
-		^
-		input? <=> event_change? null
-	plugins /
-		<= Submit $mol_hotkey
-			mod_ctrl <= submit_with_ctrl false
-			key * enter? <=> submit? null
-
-$mol_svg $mol_view
-	dom_name \svg
-	dom_name_space \http://www.w3.org/2000/svg
-	font_size 16
-	font_family \
-	style_size *
-
-$mol_svg_root $mol_svg
-	dom_name \svg
-	attr *
-		^
-		viewBox <= view_box \0 0 100 100
-		preserveAspectRatio <= aspect \xMidYMid
 
 $mol_svg_path $mol_svg
 	dom_name \path
@@ -341,6 +617,49 @@ $mol_select $mol_pick
 	Trigger_icon $mol_icon_dots_vertical
 	trigger_enabled <= enabled
 
+$bog_builderui_select $mol_select
+
+$mol_pop_over $mol_pop
+	showed <= hovered? false
+	attr *
+		^
+		tabindex 0
+	event *
+		^
+		mouseenter? <=> event_show? null
+		mouseleave? <=> event_hide? null
+
+$bog_builderui_tooltip $mol_pop_over
+
+$bog_builderui_skin $mol_plugin
+	lights \system
+	base \slate
+	accent \sky
+	chart \blue
+	radius \medium
+	font_body \inter
+	font_head \inter
+	attr *
+		bog_builderui_lights <= lights
+		bog_builderui_base <= base
+		bog_builderui_theme <= accent
+		bog_builderui_chart <= chart
+		bog_builderui_radius <= radius
+		bog_builderui_font_body <= font_body
+		bog_builderui_font_head <= font_head
+
+$bog_theme_auto $mol_plugin
+	themes <= themes_default /
+	theme_light \$mol_theme_light
+	theme_dark \$mol_theme_dark
+	mode? \system
+	mode_next? null
+	theme_next? null
+	theme_prev? null
+	theme_set? null
+	is_light_now false
+	attr * mol_theme <= theme \
+
 $mol_avatar $mol_icon
 	view_box \0 0 24 24
 	id \
@@ -402,14 +721,69 @@ $mol_icon_music $mol_icon path \M21,3V15.5A3.5,3.5 0 0,1 17.5,19A3.5,3.5 0 0,1 1
 
 $mol_icon_cog $mol_icon path \M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z
 
-$mol_check_icon $mol_check
+$bog_theme_picker_row $mol_button_minor
+	theme_name \
+	title <= theme_name
+	attr *
+		^
+		bog_theme_picker_row_focused <= focused_str \
+	event *
+		^
+		pointerenter?event <=> hover?event null
 
-$mol_icon_brightness_4 $mol_icon path \M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z
+$bog_theme_picker $mol_scroll
+	theme_auto $bog_theme_auto
+	close? null
+	query?val \
+	focused_index?val -1
+	Theme_row* $bog_theme_picker_row
+		theme_name <= theme_name* \
+		focused <= theme_focused* false
+		click?event <=> theme_select*?event null
+		hover?event <=> theme_hover*?event null
+	sub /
+		<= Content $mol_list rows /
+			<= Search $mol_string
+				value?val <=> query?val
+				hint @ \Just start typing
+			<= Theme_list $mol_list
+				rows <= theme_rows /
+	event *
+		^
+		keydown?event <=> key_down?event null
 
-$mol_lights_toggle $mol_check_icon
-	Icon <= Lights_icon $mol_icon_brightness_4
-	hint @ \Toggle lights
-	checked? <=> lights? false
+$mol_icon_white_balance_sunny $mol_icon path \M3.55 19.09L4.96 20.5L6.76 18.71L5.34 17.29M12 6C8.69 6 6 8.69 6 12S8.69 18 12 18 18 15.31 18 12C18 8.68 15.31 6 12 6M20 13H23V11H20M17.24 18.71L19.04 20.5L20.45 19.09L18.66 17.29M20.45 5L19.04 3.6L17.24 5.39L18.66 6.81M13 1H11V4H13M6.76 5.39L4.96 3.6L3.55 5L5.34 6.81L6.76 5.39M1 13H4V11H1M13 20H11V23H13
+
+$mol_icon_weather_night $mol_icon path \M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z
+
+$mol_icon_monitor $mol_icon path \M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z
+
+$bog_theme_toggle $mol_pop
+	theme_auto $bog_theme_auto
+	showed?val false
+	align \bottom_right
+	Anchor $mol_button_minor
+		sub /
+			<= Icon $mol_view
+		hint <= anchor_hint \Переключить тему
+		click?event <=> clicked?event null
+		event *
+			^
+			pointerdown?event <=> press_start?event null
+			pointermove?event <=> press_move?event null
+			pointerup?event <=> press_end?event null
+			pointercancel?event <=> press_cancel?event null
+			lostpointercapture?event <=> press_lost?event null
+	Icon_light $mol_icon_white_balance_sunny
+	Icon_dark $mol_icon_weather_night
+	Icon_system $mol_icon_monitor
+	bubble_content /
+		<= Backdrop $mol_view
+			event *
+				click?event <=> backdrop_click?event null
+		<= Picker $bog_theme_picker
+			theme_auto <= theme_auto
+			close? <=> picker_close? null
 
 $mol_page $mol_view
 	dom_name \article
@@ -707,7 +1081,11 @@ $mol_icon_pause $mol_icon path \M14,19H18V5H14M6,19H10V5H6V19Z
 
 $bog_gram $mol_book2
 	plugins /
-		<= Theme $mol_theme_auto
+		<= Skin $bog_builderui_skin
+			lights <= lights \system
+			base \zinc
+			font_head \eb-garamond
+		<= Theme $bog_theme_auto
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -741,7 +1119,8 @@ $bog_gram $mol_book2
 					click? <=> settings_open? null
 					sub /
 						<= Settings_open_icon $mol_icon_cog
-				<= Lights $mol_lights_toggle
+				<= Lights $bog_theme_toggle
+					theme_auto <= Theme
 			body /
 				<= Invite_plate $mol_view
 					sub /
