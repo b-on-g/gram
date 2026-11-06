@@ -146,12 +146,6 @@
 	pack web git \https://github.com/giper-dev/web.git
 \/giper/baza/glob
 	deploy \giper/baza/glob/glob.baza
-\/bog/music/boot
-	include \/bog/music/stream
-\/bog/music/app
-	include \/bog/yard
-	include \/mol/offline/install
-	deploy \/bog/music/app/favicon.svg
 \/hyoo
 	pack about git \https://github.com/hyoo-ru/about.hyoo.ru.git
 	pack artist git \https://github.com/hyoo-ru/artist.hyoo.ru.git
