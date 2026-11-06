@@ -102,6 +102,10 @@ namespace $.$$ {
 			},
 		},
 
+		Music_page: {
+			width: '30rem',
+		},
+
 		Members_page: {
 			width: '26rem',
 			Head: {

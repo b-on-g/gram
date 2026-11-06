@@ -1209,11 +1209,42 @@ namespace $.$$ {
 				... this.group_opened() ? [ this.Group_page() ] : [],
 				... this.dialog_active() ? [ this.Chat_page() ] : [],
 				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
+				... this.music_opened() ? [ this.Music_page() ] : [],
 			]
 		}
 
 		override Placeholder() {
-			return this.dialog_active() ? null! : super.Placeholder()
+			return this.dialog_active() || this.music_opened() ? null! : super.Placeholder()
+		}
+
+		@$mol_mem
+		music_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Закрытая страница музыки только сворачивается: плеер живёт до конца
+		 * сессии, иначе его аудио доигрывало бы без хозяина, а новое открытие
+		 * заводило бы второй плеер поверх первого. */
+		@$mol_mem
+		music_alive( next?: boolean ) {
+			return next ?? false
+		}
+
+		music_keep() {
+			if( this.music_alive() ) this.Music_page()
+		}
+
+		@$mol_action
+		music_open( next?: any ) {
+			this.music_alive( true )
+			this.music_opened( !this.music_opened() )
+			return null
+		}
+
+		@$mol_action
+		music_close( next?: any ) {
+			this.music_opened( false )
+			return null
 		}
 
 		// ===== Создание диалога =====
@@ -4807,6 +4838,7 @@ namespace $.$$ {
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }
 			try { this.monitor_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.read_sync() } catch( error ) { $mol_fail_log( error ) }
+			try { this.music_keep() } catch( error ) { $mol_fail_log( error ) }
 		}
 
 	}
