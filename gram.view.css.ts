@@ -51,10 +51,17 @@ namespace $.$$ {
 		Menu: {
 			width: '24rem',
 			background: {
-				color: $mol_theme.card,
+				color: $mol_theme.back,
 			},
 			Head: {
 				padding: head_pad,
+			},
+			Title: {
+				font: {
+					family: $bog_builderui_tokens.font_head,
+					size: '1.5rem',
+					weight: 500,
+				},
 			},
 			Body_content: {
 				padding: body_pad,

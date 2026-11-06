@@ -45,13 +45,19 @@
 	--mol_theme_special: var(--bog_builderui_special);
 }
 
+[bog_gram] [mol_page_head] {
+	background-color: var(--mol_theme_back);
+	border-radius: 0;
+	border-bottom: 1px solid var(--mol_theme_line);
+	box-shadow: none;
+}
+
 [bog_gram_message_row] {
-	background-color: var(--mol_theme_card);
-	box-shadow: 0 0 0 1px var(--mol_theme_line);
+	background-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );
 }
 
 [bog_gram_message_row][bog_gram_out="true"] {
-	background-color: color-mix( in srgb, var(--mol_theme_control) 14%, var(--mol_theme_card) );
+	background-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );
 }
 
 /* Выбранный диалог и активный реестр помечаются одинаково */
