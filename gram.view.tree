@@ -52,6 +52,7 @@ $bog_gram $mol_book2
 				<= Dialogs_list $mol_list
 					rows <= dialog_rows /
 		<= Music_page $bog_gram_music
+			hidden <= music_hidden false
 			close? <=> music_close? null
 		<= Settings_page $mol_page
 			title \Настройки

@@ -819,10 +819,14 @@ namespace $.$$ {
 		 * оставался на списке и дальше листал руками. Досылаем прокрутку
 		 * после отрисовки, когда размеры страницы уже известны. */
 		chat_bring() {
+			this.page_bring( ()=> this.Chat_page() )
+		}
+
+		page_bring( target: ()=> $mol_view ) {
 			new this.$.$mol_after_tick( ()=> {
 				try {
 					const book = this.dom_node() as HTMLElement
-					const page = this.Chat_page().dom_node() as HTMLElement
+					const page = target().dom_node() as HTMLElement
 					if( !book || !page ) return
 					book.scroll({
 						left: page.offsetLeft + page.offsetWidth - book.offsetWidth,
@@ -1209,7 +1213,7 @@ namespace $.$$ {
 				... this.group_opened() ? [ this.Group_page() ] : [],
 				... this.dialog_active() ? [ this.Chat_page() ] : [],
 				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
-				... this.music_opened() ? [ this.Music_page() ] : [],
+				... this.music_alive() ? [ this.Music_page() ] : [],
 			]
 		}
 
@@ -1222,22 +1226,24 @@ namespace $.$$ {
 			return next ?? false
 		}
 
-		/** Закрытая страница музыки только сворачивается: плеер живёт до конца
-		 * сессии, иначе его аудио доигрывало бы без хозяина, а новое открытие
-		 * заводило бы второй плеер поверх первого. */
+		/** Фрейм музыки, убранный из документа, выгружается вместе с плеером,
+		 * поэтому после первого открытия страница остаётся в книге и при
+		 * закрытии только прячется: музыка играет дальше. */
 		@$mol_mem
 		music_alive( next?: boolean ) {
 			return next ?? false
 		}
 
-		music_keep() {
-			if( this.music_alive() ) this.Music_page()
+		override music_hidden() {
+			return !this.music_opened()
 		}
 
 		@$mol_action
 		music_open( next?: any ) {
+			const open = !this.music_opened()
 			this.music_alive( true )
-			this.music_opened( !this.music_opened() )
+			this.music_opened( open )
+			if( open ) this.page_bring( ()=> this.Music_page() )
 			return null
 		}
 
@@ -4838,7 +4844,6 @@ namespace $.$$ {
 			try { this.inbox_merge() } catch( error ) { $mol_fail_log( error ) }
 			try { this.monitor_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.read_sync() } catch( error ) { $mol_fail_log( error ) }
-			try { this.music_keep() } catch( error ) { $mol_fail_log( error ) }
 		}
 
 	}
