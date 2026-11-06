@@ -6869,30 +6869,733 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'Vector limiting'() {
+            let point = new $mol_vector_3d(7, 10, 13);
+            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
+            $mol_assert_equal(res.x, 5);
+            $mol_assert_equal(res.y, 15);
+            $mol_assert_equal(res.z, 10);
+        },
+        'Vector adding scalar'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added0(5);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 7);
+            $mol_assert_equal(res.z, 8);
+        },
+        'Vector adding vector'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added1([5, 10, 15]);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 12);
+            $mol_assert_equal(res.z, 18);
+        },
+        'Vector multiplying scalar'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed0(-1);
+            $mol_assert_equal(res.x, -2);
+            $mol_assert_equal(res.y, -3);
+            $mol_assert_equal(res.z, -4);
+        },
+        'Vector multiplying vector'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed1([5, 2, -2]);
+            $mol_assert_equal(res.x, 10);
+            $mol_assert_equal(res.y, 6);
+            $mol_assert_equal(res.z, -8);
+        },
+        'Matrix adding matrix'() {
+            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
+            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
+            $mol_assert_equal(res[0][0], 11);
+            $mol_assert_equal(res[0][1], 22);
+            $mol_assert_equal(res[1][0], 33);
+            $mol_assert_equal(res[1][1], 44);
+            $mol_assert_equal(res[2][0], 55);
+            $mol_assert_equal(res[2][1], 66);
+        },
+        'Matrix multiplying matrix'() {
+            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
+            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
+            $mol_assert_equal(res[0][0], 4);
+            $mol_assert_equal(res[0][1], 9);
+            $mol_assert_equal(res[1][0], 16);
+            $mol_assert_equal(res[1][1], 25);
+            $mol_assert_equal(res[2][0], 36);
+            $mol_assert_equal(res[2][1], 49);
+        },
+        'Range expanding'() {
+            let range = $mol_vector_range_full.inversed;
+            const expanded = range.expanded0(10).expanded0(5);
+            $mol_assert_like([...expanded], [5, 10]);
+        },
+        'Vector of range expanding by vector'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
+            $mol_assert_like([...expanded.x], [1, 3]);
+            $mol_assert_like([...expanded.y], [5, 7]);
+        },
+        'Vector of range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions
+                .expanded2([[1, 3], [7, 9]])
+                .expanded2([[2, 4], [6, 8]]);
+            $mol_assert_like([...expanded.x], [1, 4]);
+            $mol_assert_like([...expanded.y], [6, 9]);
+        },
+        'Vector of infinity range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = next
+                .expanded2(dimensions);
+            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
+            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'skin puts presets on the host node'($) {
+                class Host extends $mol_view {
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, base: () => 'stone' });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                const node = host.dom_node();
+                $mol_assert_equal(node.getAttribute('bog_builderui_base'), 'stone');
+                $mol_assert_equal(node.getAttribute('bog_builderui_lights'), 'system');
+                $mol_assert_equal(node.getAttribute('bog_builderui_theme'), 'sky');
+                $mol_assert_equal(node.getAttribute('bog_builderui_radius'), 'medium');
+                $mol_assert_equal(node.getAttribute('mol_theme'), null);
+                host.destructor();
+            },
+            'skin stops input zoom on ios only'($) {
+                const zoom_after = (agent) => {
+                    const meta = { content: 'width=device-width, initial-scale=1', getAttribute: () => meta.content, setAttribute: (_, val) => { meta.content = val; } };
+                    const document = { querySelector: () => meta };
+                    const context = { ...$.$mol_dom_context, document, navigator: { userAgent: agent, platform: '', maxTouchPoints: 0 } };
+                    const skin = $bog_builderui_skin.make({ $: $.$mol_ambient({ $mol_dom_context: context }) });
+                    skin.ios_zoom_fix();
+                    skin.ios_zoom_fix();
+                    return meta.content;
+                };
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'), 'width=device-width, initial-scale=1, maximum-scale=1');
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (Linux; Android 14)'), 'width=device-width, initial-scale=1');
+            },
+            'skin follows the host'($) {
+                class Host extends $mol_view {
+                    lights(next) {
+                        return next ?? 'dark';
+                    }
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, lights: () => this.lights() });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "lights", null);
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'dark');
+                host.lights('light');
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'light');
+                host.destructor();
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'null by default'() {
+            const key = String(Math.random());
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+        'storing'() {
+            const key = String(Math.random());
+            $mol_state_session.value(key, '$mol_state_session_test');
+            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
+            $mol_state_session.value(key, null);
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test({
-        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
-            const sender = await $.$giper_baza_auth._generate();
-            const target = await $.$giper_baza_auth._generate();
-            const stranger = await $.$giper_baza_auth._generate();
-            const seal = $mol_wire_async($bog_gram_seal);
-            const link = 'ABCDEFGH_IJKLMNOP';
-            const entry = await seal.close(sender, target.pass(), 'invite', link);
-            const again = await seal.close(sender, target.pass(), 'invite', link);
-            const parts = entry.split('|');
-            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
-            const forged = parts.join('|');
-            const opened = await seal.open(target, 'invite', entry);
-            const alien = await seal.open(stranger, 'invite', entry);
-            const other_kind = await seal.open(target, 'deny', entry);
-            const broken = await seal.open(target, 'invite', forged);
-            $mol_assert_equal(entry, again);
-            $mol_assert_equal(entry.includes(link), false);
-            $mol_assert_equal(opened?.open, link);
-            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
-            $mol_assert_equal(alien, null);
-            $mol_assert_equal(other_kind, null);
-            $mol_assert_equal(broken, null);
+        'system mode follows the device, not a light choice stored by another app'($) {
+            const device = (light) => {
+                const context = Object.create($);
+                context.$mol_lights = () => !light;
+                context.$mol_media = class extends $.$mol_media {
+                    static match() {
+                        return light;
+                    }
+                };
+                return $bog_theme_auto.make({ $: context });
+            };
+            const night = device(false);
+            $mol_assert_equal(night.mode(), 'system');
+            $mol_assert_equal(night.theme(), night.theme_dark());
+            $mol_assert_equal(night.is_light_now(), false);
+            const day = device(true);
+            $mol_assert_equal(day.theme(), day.theme_light());
+            $mol_assert_equal(day.is_light_now(), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function page($) {
+        const dom = $.$mol_dom_context;
+        const root = dom.document.createElement('div');
+        root.innerHTML = `
+			<button ${$bog_tooltip_hush_tip}="Первая"><span id="deep">жми</span></button>
+			<button ${$bog_tooltip_hush_tip}="Вторая"></button>
+			<button id="bare"></button>
+		`;
+        return root;
+    }
+    $mol_test({
+        'the hush marks the host of the node it was given, tip and all'($) {
+            const root = page($);
+            const deep = root.querySelector('#deep');
+            $mol_assert_equal($bog_tooltip_hush(deep), 'Первая');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 1);
+        },
+        'a node with no host above it is left alone'($) {
+            const root = page($);
+            $mol_assert_equal($bog_tooltip_hush(root.querySelector('#bare')), '');
+            $mol_assert_equal($bog_tooltip_hush(null), '');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+        },
+        'the next focus takes every mark away'($) {
+            const root = page($);
+            $bog_tooltip_hush(root.querySelector('#deep'));
+            $bog_tooltip_hush(root.querySelectorAll('button')[1]);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 2);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 2);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 0);
+            $mol_assert_equal($bog_tooltip_hush_off(null), 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'room is counted from the host center to both edges of the view'() {
+            $mol_assert_like($bog_tooltip_room({ left: 12, width: 40 }, 1280), { left: 32, right: 1248, flip: false, lift: 0 });
+            $mol_assert_like($bog_tooltip_room({ left: 1228, width: 40 }, 1280), { left: 1248, right: 32, flip: false, lift: 0 });
+        },
+        'host past the right edge leaves negative room on that side'() {
+            $mol_assert_like($bog_tooltip_room({ left: 1270, width: 40 }, 1280), { left: 1290, right: -10, flip: false, lift: 0 });
+        },
+        'a host with room below keeps the tip below it'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 200, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, false);
+            $mol_assert_equal(room.lift, 0);
+        },
+        'a host at the floor flips the tip up over its own height and the gap'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 790, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, true);
+            $mol_assert_equal(room.lift, 40 + $bog_tooltip_room_gap);
+        },
+        'a host with no room on either side keeps the tip below'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 30, height: 30 }, 1280, 40);
+            $mol_assert_equal(room.flip, false);
+        },
+        'the room below is counted up to the need, not to the last pixel'() {
+            const tight = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need + 1, height: 40 }, 1280, 800);
+            const enough = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need, height: 40 }, 1280, 800);
+            $mol_assert_equal(tight.flip, true);
+            $mol_assert_equal(enough.flip, false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function fake_dir() {
+        const files = new Map();
+        const dir = {
+            async getFileHandle(name, opts) {
+                if (!files.has(name)) {
+                    if (!opts?.create)
+                        throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+                    files.set(name, new Blob([]));
+                }
+                return {
+                    async getFile() {
+                        return new File([files.get(name)], name);
+                    },
+                    async createWritable() {
+                        const parts = [];
+                        return {
+                            async write(blob) { parts.push(blob); },
+                            async close() { files.set(name, new Blob(parts)); },
+                        };
+                    },
+                };
+            },
+            async removeEntry(name) {
+                if (!files.delete(name))
+                    throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+            },
+            async *keys() {
+                yield* files.keys();
+            },
+        };
+        return dir;
+    }
+    $mol_test({
+        async 'put, read range, list and drop'() {
+            $bog_music_disk._dir = Promise.resolve(fake_dir());
+            const bytes = new Uint8Array([0, 0, 0, 0, 102, 116, 121, 112, 1, 2, 3, 4, 5, 6]);
+            await $bog_music_disk.put('tube/x y', bytes);
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), true);
+            $mol_assert_equal(await $bog_music_disk.keys(), ['tube/x y']);
+            const range = await $bog_music_disk.bytes('tube/x y', 10, -1);
+            $mol_assert_equal(range.total, 14);
+            $mol_assert_equal(range.mime, 'audio/mp4');
+            $mol_assert_equal([...new Uint8Array(range.bytes)], [3, 4, 5, 6]);
+            await $bog_music_disk.drop('tube/x y');
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), false);
+            $mol_assert_equal(await $bog_music_disk.file('tube/x y'), null);
+            $mol_assert_equal(await $bog_music_disk.bytes('tube/x y', 0, -1), null);
+            $bog_music_disk._dir = null;
+        },
+        'mime by magic bytes'() {
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x4F, 0x67, 0x67, 0x53])), 'audio/ogg');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0xFF, 0xF1, 0x50])), 'audio/aac');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x49, 0x44, 0x33])), 'audio/mpeg');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'iPhone and iPad with desktop Safari agent are not Mac'() {
+            const agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15';
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 390), 'iPhone · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 820), 'iPad · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 0, 900), 'Mac · Safari');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Мощность 100-мс кусков постоянного сигнала с заданным средним квадратом. */
+    function power_of(hops, mean_square, hop) {
+        const power = new Float64Array(hops);
+        power.fill(mean_square * hop);
+        return power;
+    }
+    $mol_test({
+        'Множитель приводит запись к целевой громкости'() {
+            $mol_assert_equal($bog_music_gain.factor(null), 1);
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-14) * 1000), 1000);
+            // Тише цели на 6 dB — усиление вдвое.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-20) * 100), 200);
+            // Громче цели на 6 dB — вдвое тише.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-8) * 100), 50);
+        },
+        'Множитель зажат пределами'() {
+            $mol_assert_equal($bog_music_gain.factor(-100), Math.pow(10, 12 / 20));
+            $mol_assert_equal($bog_music_gain.factor(20), Math.pow(10, -20 / 20));
+        },
+        'Громкость ровного сигнала'() {
+            const hop = 4800;
+            const lufs = $bog_music_gain.integrated(power_of(20, 0.01, hop), hop);
+            // -0.691 + 10 * log10( 0.01 )
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.01);
+        },
+        'Тишина в конце записи не занижает громкость'() {
+            const hop = 4800;
+            const power = new Float64Array(40);
+            power.set(power_of(20, 0.01, hop), 0);
+            power.fill(1e-9 * hop, 20);
+            const lufs = $bog_music_gain.integrated(power, hop);
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.5);
+        },
+        'Сплошная тишина не измеряется'() {
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(20), 4800), null);
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(2), 4800), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Пресеты покрывают все полосы и лежат в диапазоне'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal(preset.gains.length, $bog_music_eq.bands.length);
+                for (const db of preset.gains) {
+                    $mol_assert_ok(Math.abs(db) <= $bog_music_eq.range_db);
+                }
+            }
+        },
+        'Пресет узнаётся по своему же набору'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal($bog_music_eq.preset_of(preset.gains), preset.id);
+            }
+        },
+        'Набор мимо пресетов — «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of([1, 2, 3, 4, 5]), '');
+        },
+        'Ровный набор — это пресет «По умолчанию», а не «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of($bog_music_eq.flat()), 'default');
+        },
+        'Чужой набор приводится к нашим полосам'() {
+            // Короче — недостающие полосы в ноль, длиннее — лишние прочь.
+            $mol_assert_equal($bog_music_eq.clamp([3]).join(), '3,0,0,0,0,0');
+            $mol_assert_equal($bog_music_eq.clamp([1, 1, 1, 1, 1, 1, 1, 1]).join(), '1,1,1,1,1,1');
+            // За пределом — в потолок, дробное — к целым dB.
+            $mol_assert_equal($bog_music_eq.clamp([99, -99, 2.4, 2.6, NaN, 5]).join(), '12,-12,2,3,0,5');
+        },
+        'Настройка от пятиполосной версии не роняет полосы'() {
+            // В baza могла остаться строка на пять значений: шестая полоса в ноль,
+            // первые пять сохраняются как были.
+            $mol_assert_equal($bog_music_eq.parse('8,4,0,0,1').join(), '8,4,0,0,1,0');
+        },
+        'Цвет едет от зелёного через жёлтый к красному'() {
+            $mol_assert_equal($bog_music_eq.color(-12), 'hsl( 120 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(0), 'hsl( 50 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(12), 'hsl( 0 80% 55% )');
+            // За пределом диапазона цвет не уезжает дальше края.
+            $mol_assert_equal($bog_music_eq.color(99), $bog_music_eq.color(12));
+        },
+        'Набор переживает запись строкой и чтение обратно'() {
+            const gains = $bog_music_eq.preset('bass');
+            $mol_assert_equal($bog_music_eq.parse($bog_music_eq.stringify(gains)).join(), gains.join());
+            // Пусто в baza (настройки ещё не сохраняли) — плоский набор.
+            $mol_assert_equal($bog_music_eq.parse('').join(), $bog_music_eq.flat().join());
+            $mol_assert_equal($bog_music_eq.parse(null).join(), $bog_music_eq.flat().join());
+        },
+        'Неизвестный пресет не выдумывается'() {
+            $mol_assert_equal($bog_music_eq.preset('nope'), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        '$mol_syntax2_md_flow'() {
+            const check = (input, right) => {
+                const tokens = [];
+                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
+                $mol_assert_equal(tokens, right);
+            };
+            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
+                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
+                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
+                ['block', 'of Love!', ['of Love!', ''], 19],
+            ]);
+            check('# Header1\n\nHello!\n\n## Header2', [
+                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
+                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
+            ]);
+            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
+                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
+                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
+                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
+            ]);
+            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
+                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
+                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
+            ]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function pair() {
+        const make = () => Object.assign(new EventTarget, {
+            readyState: 'open',
+            bufferedAmount: 0,
+            bufferedAmountLowThreshold: 0,
+            binaryType: 'arraybuffer',
+            other: null,
+            send(data) {
+                const target = this.other;
+                setTimeout(() => target.dispatchEvent(new MessageEvent('message', { data })));
+            },
+        });
+        const left = make();
+        const right = make();
+        left.other = right;
+        right.other = left;
+        return [left, right];
+    }
+    $mol_test({
+        async 'waiting for message fails when other side is silent'() {
+            const [channel] = pair();
+            const got = await $bog_music_peer.message(channel, 10).then(() => 'got', error => error.message);
+            $mol_assert_equal(got, 'Другое устройство замолчало');
+        },
+        async 'drain fails when channel closes with full buffer'() {
+            const [channel] = pair();
+            Object.assign(channel, { bufferedAmount: $bog_music_peer.buffer_high });
+            const wait = $bog_music_peer.drain(channel).then(() => 'drained', error => error.message);
+            Object.assign(channel, { readyState: 'closed' });
+            channel.dispatchEvent(new Event('close'));
+            $mol_assert_equal(await wait, 'Соединение оборвалось');
+        },
+        async 'files go through channel in chunks with meta'() {
+            const [sender, receiver] = pair();
+            const big = new Uint8Array($bog_music_peer.chunk * 2 + 5).map((_, i) => i % 251);
+            const items = [
+                { key: 'a', meta: { title: 'A', artist: 'X', duration: 1, cover: '' }, file: new Blob([big]) },
+                { key: 'b', meta: { title: 'B', artist: 'Y', duration: 2, cover: '' }, file: new Blob([new Uint8Array([7])]) },
+            ];
+            const got = [];
+            const counted = [];
+            const [count] = await Promise.all([
+                $bog_music_peer.receive(receiver, async (item) => { got.push(item); }, (done, all) => counted.push(`${done}/${all}`)),
+                $bog_music_peer.send(sender, items),
+            ]);
+            $mol_assert_equal(count, 2);
+            $mol_assert_equal(got.map(item => item.key), ['a', 'b']);
+            $mol_assert_equal(got[0].meta.title, 'A');
+            $mol_assert_equal([...got[0].bytes], [...big]);
+            $mol_assert_equal([...got[1].bytes], [7]);
+            $mol_assert_equal(counted, ['0/2', '1/2', '2/2']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'Sizes'() {
+            const secret = $mol_crypto_sacred.make();
+            const key = secret.asArray();
+            $mol_assert_equal(key.byteLength, $mol_crypto_sacred.size);
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            $mol_assert_equal(closed.byteLength, $mol_crypto_sacred.size);
+            const self_closed = await secret.close(secret, salt);
+            $mol_assert_equal(self_closed.byteLength, $mol_crypto_sacred.size);
+        },
+        async 'Decrypt self encrypted'() {
+            const secret = $mol_crypto_sacred.make();
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            const opened = await secret.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+        async 'Decrypt encrypted with exported key'() {
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const Alice = $mol_crypto_sacred.make();
+            const closed = await Alice.encrypt(data, salt);
+            const Bob = $mol_crypto_sacred.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function vec(...nums) {
+        return new Float32Array(nums);
+    }
+    let ns_seq = 0;
+    function ns(prefix) {
+        return `${prefix}_${Date.now()}_${++ns_seq}`;
+    }
+    $mol_test({
+        'empty pool returns empty result'($) {
+            const out = $.$bog_recsys.recommend([]);
+            $mol_assert_equal(out.length, 0);
+        },
+        'single-item pool always returns that item'($) {
+            $.$bog_recsys.namespace(ns('single'));
+            $.$bog_recsys.epsilon(0);
+            const only = { id: 'only', embedding: vec(1, 0) };
+            const out = $.$bog_recsys.recommend([only], { limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'only');
+        },
+        'excludes ids in exclude set'($) {
+            $.$bog_recsys.namespace(ns('exclude'));
+            $.$bog_recsys.epsilon(0);
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(1, 0) },
+                { id: 'c', embedding: vec(1, 0) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, {
+                exclude: ['a', 'b'],
+                limit: 5,
+            });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'c');
+        },
+        'exclude as Set works'($) {
+            $.$bog_recsys.namespace(ns('exclude_set'));
+            $.$bog_recsys.epsilon(0);
+            const out = $.$bog_recsys.recommend([{ id: 'a' }, { id: 'b' }], { exclude: new Set(['a']), limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'b');
+        },
+        'parallel embeddings rank above orthogonal'($) {
+            $.$bog_recsys.namespace(ns('cosine'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0, 0) };
+            const parallel = { id: 'par', embedding: vec(2, 0, 0) };
+            const orthogonal = { id: 'ort', embedding: vec(0, 1, 0) };
+            const out = $.$bog_recsys.recommend([orthogonal, parallel], {
+                seed,
+                limit: 2,
+            });
+            $mol_assert_equal(out[0].id, 'par');
+            $mol_assert_equal(out[1].id, 'ort');
+        },
+        'no seed: ranking falls back to tag rewards'($) {
+            $.$bog_recsys.namespace(ns('no_seed'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            const out = $.$bog_recsys.recommend([
+                { id: 'm', tags: ['metal'] },
+                { id: 'j', tags: ['jazz'] },
+            ], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'j');
+        },
+        'play raises tag reward, skip lowers it'($) {
+            $.$bog_recsys.namespace(ns('play_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'play');
+            const after_play = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_play > 0, true);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'skip');
+            const after_skip = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_skip < after_play, true);
+        },
+        'dislike pushes reward more negative than a single skip'($) {
+            $.$bog_recsys.namespace(ns('dislike_vs_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'skip');
+            const skipped = $.$bog_recsys.rewards().punk ?? 0;
+            $.$bog_recsys.namespace(ns('dislike_vs_skip2'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'dislike');
+            const disliked = $.$bog_recsys.rewards().punk ?? 0;
+            $mol_assert_equal(disliked < skipped, true);
+        },
+        'decay attenuates old reward when new feedback arrives'($) {
+            $.$bog_recsys.namespace(ns('decay'));
+            $.$bog_recsys.decay(0.5);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 0 * 0.5 + 1 = 1
+            const r1 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r1, 1);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 1 * 0.5 + 1 = 1.5
+            const r2 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r2, 1.5);
+            // reset decay back to default for other tests
+            $.$bog_recsys.decay(0.92);
+        },
+        'namespaces are isolated'($) {
+            const a = ns('iso_a');
+            const b = ns('iso_b');
+            $.$bog_recsys.namespace(a);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            $.$bog_recsys.namespace(b);
+            const rewards_b = $.$bog_recsys.rewards();
+            $mol_assert_equal(Object.keys(rewards_b).length, 0);
+            $.$bog_recsys.namespace(a);
+            const rewards_a = $.$bog_recsys.rewards();
+            $mol_assert_equal((rewards_a.jazz ?? 0) > 0, true);
+        },
+        'limit returns up to N distinct items'($) {
+            $.$bog_recsys.namespace(ns('limit'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0) };
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(0.9, 0.1) },
+                { id: 'c', embedding: vec(0.5, 0.5) },
+                { id: 'd', embedding: vec(0, 1) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, { seed, limit: 3 });
+            $mol_assert_equal(out.length, 3);
+            $mol_assert_equal(new Set(out.map(i => i.id)).size, 3);
+        },
+        'feedback raises tag reward and shifts ranking'($) {
+            $.$bog_recsys.namespace(ns('feedback_shift'));
+            $.$bog_recsys.epsilon(0);
+            const liked = { id: 'liked', tags: ['jazz'] };
+            const other = { id: 'other', tags: ['metal'] };
+            $.$bog_recsys.feedback(liked, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().jazz > 0, true);
+            const out = $.$bog_recsys.recommend([other, liked], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'liked');
+        },
+        'reset clears persisted state'($) {
+            $.$bog_recsys.namespace(ns('reset'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['pop'] }, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().pop > 0, true);
+            $.$bog_recsys.reset();
+            $mol_assert_equal(Object.keys($.$bog_recsys.rewards()).length, 0);
         },
     });
 })($ || ($ = {}));
@@ -6946,34 +7649,30 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
+(function ($_1) {
     $mol_test({
-        '$mol_syntax2_md_flow'() {
-            const check = (input, right) => {
-                const tokens = [];
-                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
-                $mol_assert_equal(tokens, right);
-            };
-            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
-                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
-                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
-                ['block', 'of Love!', ['of Love!', ''], 19],
-            ]);
-            check('# Header1\n\nHello!\n\n## Header2', [
-                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
-                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
-                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
-            ]);
-            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
-                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
-                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
-                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
-                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
-            ]);
-            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
-                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
-                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
-            ]);
+        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
+            const sender = await $.$giper_baza_auth._generate();
+            const target = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const seal = $mol_wire_async($bog_gram_seal);
+            const link = 'ABCDEFGH_IJKLMNOP';
+            const entry = await seal.close(sender, target.pass(), 'invite', link);
+            const again = await seal.close(sender, target.pass(), 'invite', link);
+            const parts = entry.split('|');
+            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
+            const forged = parts.join('|');
+            const opened = await seal.open(target, 'invite', entry);
+            const alien = await seal.open(stranger, 'invite', entry);
+            const other_kind = await seal.open(target, 'deny', entry);
+            const broken = await seal.open(target, 'invite', forged);
+            $mol_assert_equal(entry, again);
+            $mol_assert_equal(entry.includes(link), false);
+            $mol_assert_equal(opened?.open, link);
+            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
+            $mol_assert_equal(alien, null);
+            $mol_assert_equal(other_kind, null);
+            $mol_assert_equal(broken, null);
         },
     });
 })($ || ($ = {}));
@@ -7406,115 +8105,6 @@ var $;
             const list = ['abc', 'ab', 'ac'];
             list.sort($mol_compare_text(str => str.split('').reverse().join('')));
             $mol_assert_equal(`${list}`, 'ab,ac,abc');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Vector limiting'() {
-            let point = new $mol_vector_3d(7, 10, 13);
-            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
-            $mol_assert_equal(res.x, 5);
-            $mol_assert_equal(res.y, 15);
-            $mol_assert_equal(res.z, 10);
-        },
-        'Vector adding scalar'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added0(5);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 7);
-            $mol_assert_equal(res.z, 8);
-        },
-        'Vector adding vector'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added1([5, 10, 15]);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 12);
-            $mol_assert_equal(res.z, 18);
-        },
-        'Vector multiplying scalar'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed0(-1);
-            $mol_assert_equal(res.x, -2);
-            $mol_assert_equal(res.y, -3);
-            $mol_assert_equal(res.z, -4);
-        },
-        'Vector multiplying vector'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed1([5, 2, -2]);
-            $mol_assert_equal(res.x, 10);
-            $mol_assert_equal(res.y, 6);
-            $mol_assert_equal(res.z, -8);
-        },
-        'Matrix adding matrix'() {
-            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
-            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
-            $mol_assert_equal(res[0][0], 11);
-            $mol_assert_equal(res[0][1], 22);
-            $mol_assert_equal(res[1][0], 33);
-            $mol_assert_equal(res[1][1], 44);
-            $mol_assert_equal(res[2][0], 55);
-            $mol_assert_equal(res[2][1], 66);
-        },
-        'Matrix multiplying matrix'() {
-            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
-            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
-            $mol_assert_equal(res[0][0], 4);
-            $mol_assert_equal(res[0][1], 9);
-            $mol_assert_equal(res[1][0], 16);
-            $mol_assert_equal(res[1][1], 25);
-            $mol_assert_equal(res[2][0], 36);
-            $mol_assert_equal(res[2][1], 49);
-        },
-        'Range expanding'() {
-            let range = $mol_vector_range_full.inversed;
-            const expanded = range.expanded0(10).expanded0(5);
-            $mol_assert_like([...expanded], [5, 10]);
-        },
-        'Vector of range expanding by vector'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
-            $mol_assert_like([...expanded.x], [1, 3]);
-            $mol_assert_like([...expanded.y], [5, 7]);
-        },
-        'Vector of range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions
-                .expanded2([[1, 3], [7, 9]])
-                .expanded2([[2, 4], [6, 8]]);
-            $mol_assert_like([...expanded.x], [1, 4]);
-            $mol_assert_like([...expanded.y], [6, 9]);
-        },
-        'Vector of infinity range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = next
-                .expanded2(dimensions);
-            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
-            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'null by default'() {
-            const key = String(Math.random());
-            $mol_assert_equal($mol_state_session.value(key), null);
-        },
-        'storing'() {
-            const key = String(Math.random());
-            $mol_state_session.value(key, '$mol_state_session_test');
-            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
-            $mol_state_session.value(key, null);
-            $mol_assert_equal($mol_state_session.value(key), null);
         },
     });
 })($ || ($ = {}));

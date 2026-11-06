@@ -5761,235 +5761,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_svg) = class $mol_svg extends ($.$mol_view) {
-		dom_name(){
-			return "svg";
-		}
-		dom_name_space(){
-			return "http://www.w3.org/2000/svg";
-		}
-		font_size(){
-			return 16;
-		}
-		font_family(){
-			return "";
-		}
-		style_size(){
-			return {};
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /** Base SVG component to display SVG images or icons. */
-        class $mol_svg extends $.$mol_svg {
-            computed_style() {
-                const win = this.$.$mol_dom_context;
-                const style = win.getComputedStyle(this.dom_node());
-                if (!style['font-size'])
-                    $mol_state_time.now(0);
-                return style;
-            }
-            font_size() {
-                return parseInt(this.computed_style()['font-size']) || 16;
-            }
-            font_family() {
-                return this.computed_style()['font-family'];
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_svg.prototype, "computed_style", null);
-        __decorate([
-            $mol_mem
-        ], $mol_svg.prototype, "font_size", null);
-        __decorate([
-            $mol_mem
-        ], $mol_svg.prototype, "font_family", null);
-        $$.$mol_svg = $mol_svg;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$mol_svg_root) = class $mol_svg_root extends ($.$mol_svg) {
-		view_box(){
-			return "0 0 100 100";
-		}
-		aspect(){
-			return "xMidYMid";
-		}
-		dom_name(){
-			return "svg";
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"viewBox": (this.view_box()), 
-				"preserveAspectRatio": (this.aspect())
-			};
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/svg/root/root.view.css", "[mol_svg_root] {\n\toverflow: hidden;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_svg_path) = class $mol_svg_path extends ($.$mol_svg) {
-		geometry(){
-			return "";
-		}
-		dom_name(){
-			return "path";
-		}
-		attr(){
-			return {...(super.attr()), "d": (this.geometry())};
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon) = class $mol_icon extends ($.$mol_svg_root) {
-		path(){
-			return "";
-		}
-		Path(){
-			const obj = new this.$.$mol_svg_path();
-			(obj.geometry) = () => ((this.path()));
-			return obj;
-		}
-		view_box(){
-			return "0 0 24 24";
-		}
-		minimal_width(){
-			return 16;
-		}
-		minimal_height(){
-			return 16;
-		}
-		sub(){
-			return [(this.Path())];
-		}
-	};
-	($mol_mem(($.$mol_icon.prototype), "Path"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1.5em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\tdisplay: inline-block;\n\tfilter: drop-shadow(0px 1px 1px var(--mol_theme_back));\n\ttransform-origin: center;\n}\n\n[mol_icon_path] {\n\ttransform-origin: center;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_message) = class $mol_icon_message extends ($.$mol_icon) {
-		path(){
-			return "M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$bog_favicon) = class $bog_favicon extends ($.$mol_plugin) {
-		Icon(){
-			const obj = new this.$.$mol_view();
-			return obj;
-		}
-	};
-	($mol_mem(($.$bog_favicon.prototype), "Icon"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /** Плагин, который ставит favicon из переданного $mol_icon_* и подобных */
-        class $bog_favicon extends $.$bog_favicon {
-            // сюда передаем Icon <= icon $mol_icon_waze
-            Icon(next) {
-                if (next !== undefined)
-                    return next;
-                throw new Error('[bog_favicon] Icon is required: use `Icon <= icon $mol_icon_*` in view.tree');
-            }
-            favicon_data() {
-                const icon = this.Icon();
-                const node = icon.dom_tree();
-                if (!node.getAttribute('xmlns')) {
-                    node.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                }
-                const svg = node.outerHTML;
-                return 'data:image/svg+xml,' + encodeURIComponent(svg);
-            }
-            apply_favicon() {
-                const doc = $mol_dom_context.document;
-                if (!doc)
-                    return;
-                const href = this.favicon_data();
-                let link = doc.querySelector('link[rel="icon"]');
-                if (!link) {
-                    link = doc.createElement('link');
-                    link.rel = 'icon';
-                    doc.head.appendChild(link);
-                }
-                link.type = 'image/svg+xml';
-                if (link.href !== href)
-                    link.href = href;
-            }
-            auto() {
-                this.favicon_data();
-                this.apply_favicon();
-                return null;
-            }
-            sub() {
-                return [];
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_favicon.prototype, "Icon", null);
-        __decorate([
-            $mol_mem
-        ], $bog_favicon.prototype, "favicon_data", null);
-        $$.$bog_favicon = $bog_favicon;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
 	($.$mol_paragraph) = class $mol_paragraph extends ($.$mol_view) {
 		line_height(){
 			return 24;
@@ -8312,6 +8083,152 @@ var $;
 (function ($) {
     $mol_style_attach("mol/string/string.view.css", "[mol_string] {\n\tbox-sizing: border-box;\n\toutline-offset: 0;\n\tborder: none;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpadding: var(--mol_gap_text);\n\ttext-align: start;\n\tposition: relative;\n\tfont: inherit;\n\tflex: 1 1 auto;\n\tbackground: transparent;\n\tmin-width: 0;\n\tcolor: inherit;\n\tbackground: var(--mol_theme_field);\n}\n\n[mol_string]:disabled:not(:placeholder-shown) {\n\tbackground-color: transparent;\n\tcolor: var(--mol_theme_text);\n}\n\n[mol_string]:where(:not(:disabled)) {\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_string]:where(:not(:disabled)):hover {\n\tbox-shadow: inset 0 0 0 2px var(--mol_theme_line);\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_string]:focus {\n\toutline: none;\n\tz-index: var(--mol_layer_focus);\n\tcolor: var(--mol_theme_text);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_focus);\n}\n\n[mol_string]::placeholder {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_string]::-ms-clear {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
+
+;
+	($.$mol_svg) = class $mol_svg extends ($.$mol_view) {
+		dom_name(){
+			return "svg";
+		}
+		dom_name_space(){
+			return "http://www.w3.org/2000/svg";
+		}
+		font_size(){
+			return 16;
+		}
+		font_family(){
+			return "";
+		}
+		style_size(){
+			return {};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /** Base SVG component to display SVG images or icons. */
+        class $mol_svg extends $.$mol_svg {
+            computed_style() {
+                const win = this.$.$mol_dom_context;
+                const style = win.getComputedStyle(this.dom_node());
+                if (!style['font-size'])
+                    $mol_state_time.now(0);
+                return style;
+            }
+            font_size() {
+                return parseInt(this.computed_style()['font-size']) || 16;
+            }
+            font_family() {
+                return this.computed_style()['font-family'];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_svg.prototype, "computed_style", null);
+        __decorate([
+            $mol_mem
+        ], $mol_svg.prototype, "font_size", null);
+        __decorate([
+            $mol_mem
+        ], $mol_svg.prototype, "font_family", null);
+        $$.$mol_svg = $mol_svg;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_svg_root) = class $mol_svg_root extends ($.$mol_svg) {
+		view_box(){
+			return "0 0 100 100";
+		}
+		aspect(){
+			return "xMidYMid";
+		}
+		dom_name(){
+			return "svg";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"viewBox": (this.view_box()), 
+				"preserveAspectRatio": (this.aspect())
+			};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/svg/root/root.view.css", "[mol_svg_root] {\n\toverflow: hidden;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_svg_path) = class $mol_svg_path extends ($.$mol_svg) {
+		geometry(){
+			return "";
+		}
+		dom_name(){
+			return "path";
+		}
+		attr(){
+			return {...(super.attr()), "d": (this.geometry())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon) = class $mol_icon extends ($.$mol_svg_root) {
+		path(){
+			return "";
+		}
+		Path(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.path()));
+			return obj;
+		}
+		view_box(){
+			return "0 0 24 24";
+		}
+		minimal_width(){
+			return 16;
+		}
+		minimal_height(){
+			return 16;
+		}
+		sub(){
+			return [(this.Path())];
+		}
+	};
+	($mol_mem(($.$mol_icon.prototype), "Path"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/icon/icon.view.css", "[mol_icon] {\n\tfill: currentColor;\n\tstroke: none;\n\twidth: 1em;\n\theight: 1.5em;\n\tflex: 0 0 auto;\n\tvertical-align: top;\n\tdisplay: inline-block;\n\tfilter: drop-shadow(0px 1px 1px var(--mol_theme_back));\n\ttransform-origin: center;\n}\n\n[mol_icon_path] {\n\ttransform-origin: center;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
 
 ;
 	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
@@ -18979,6 +18896,18 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_message) = class $mol_icon_message extends ($.$mol_icon) {
+		path(){
+			return "M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_message_plus) = class $mol_icon_message_plus extends ($.$mol_icon) {
 		path(){
 			return "M20,2A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H6L2,22V4C2,2.89 2.9,2 4,2H20M11,6V9H8V11H11V14H13V11H16V9H13V6H11Z";
@@ -19018,6 +18947,18 @@ var $;
 	($.$mol_icon_account_multiple_plus) = class $mol_icon_account_multiple_plus extends ($.$mol_icon) {
 		path(){
 			return "M19 17V19H7V17S7 13 13 13 19 17 19 17M16 8A3 3 0 1 0 13 11A3 3 0 0 0 16 8M19.2 13.06A5.6 5.6 0 0 1 21 17V19H24V17S24 13.55 19.2 13.06M18 5A2.91 2.91 0 0 0 17.11 5.14A5 5 0 0 1 17.11 10.86A2.91 2.91 0 0 0 18 11A3 3 0 0 0 18 5M8 10H5V7H3V10H0V12H3V15H5V12H8Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_music) = class $mol_icon_music extends ($.$mol_icon) {
+		path(){
+			return "M21,3V15.5A3.5,3.5 0 0,1 17.5,19A3.5,3.5 0 0,1 14,15.5A3.5,3.5 0 0,1 17.5,12C18.04,12 18.55,12.12 19,12.34V6.47L9,8.6V17.5A3.5,3.5 0 0,1 5.5,21A3.5,3.5 0 0,1 2,17.5A3.5,3.5 0 0,1 5.5,14C6.04,14 6.55,14.12 7,14.34V6L21,3Z";
 		}
 	};
 
@@ -19331,84 +19272,178 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_clipboard) = class $mol_icon_clipboard extends ($.$mol_icon) {
-		path(){
-			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_clipboard_outline) = class $mol_icon_clipboard_outline extends ($.$mol_icon) {
-		path(){
-			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_button_copy) = class $mol_button_copy extends ($.$mol_button_minor) {
-		text(){
-			return (this.title());
-		}
-		text_blob(next){
-			if(next !== undefined) return next;
-			const obj = new this.$.$mol_blob([(this.text())], {"type": "text/plain"});
-			return obj;
-		}
-		html(){
-			return "";
-		}
-		html_blob(next){
-			if(next !== undefined) return next;
-			const obj = new this.$.$mol_blob([(this.html())], {"type": "text/html"});
-			return obj;
-		}
-		Icon(){
-			const obj = new this.$.$mol_icon_clipboard_outline();
-			return obj;
-		}
-		title(){
-			return "";
-		}
-		blobs(){
-			return [(this.text_blob()), (this.html_blob())];
-		}
-		data(){
-			return {};
-		}
-		sub(){
-			return [(this.Icon()), (this.title())];
-		}
-	};
-	($mol_mem(($.$mol_button_copy.prototype), "text_blob"));
-	($mol_mem(($.$mol_button_copy.prototype), "html_blob"));
-	($mol_mem(($.$mol_button_copy.prototype), "Icon"));
+	($.$bog_builderui_div) = class $bog_builderui_div extends ($.$mol_view) {};
 
 
 ;
 "use strict";
 var $;
 (function ($) {
-    const mapping = {
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        '&': '&amp;',
-    };
-    function $mol_html_encode(text) {
-        return text.replace(/[&<">]/gi, str => mapping[str]);
-    }
-    $.$mol_html_encode = $mol_html_encode;
+    /**
+     * BuilderUI design tokens — CSS variables in --bog_builderui_*.
+     * Used in .view.css.ts via $bog_builderui_tokens.text, $bog_builderui_tokens.back, etc.
+     */
+    $.$bog_builderui_tokens = $mol_style_prop('bog_builderui', [
+        'back',
+        'card',
+        'field',
+        'hover',
+        'text',
+        'shade',
+        'line',
+        'focus',
+        'control',
+        'current',
+        'special',
+        'font_body',
+        'font_head',
+        'radius',
+    ]);
 })($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @see $bog_builderui_tokens */
+var $;
+(function ($) {
+    $mol_style_define($bog_builderui_div, {
+        font: {
+            family: $bog_builderui_tokens.font_body,
+        },
+        color: $bog_builderui_tokens.text,
+        flex: {
+            direction: 'column',
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$bog_builderui_card) = class $bog_builderui_card extends ($.$bog_builderui_div) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @see $bog_builderui_tokens */
+var $;
+(function ($) {
+    $mol_style_define($bog_builderui_card, {
+        background: {
+            color: $bog_builderui_tokens.card,
+        },
+        color: $bog_builderui_tokens.text,
+        border: {
+            radius: $bog_builderui_tokens.radius,
+            width: '1px',
+            style: 'solid',
+            color: $bog_builderui_tokens.line,
+        },
+        padding: {
+            top: '1rem',
+            bottom: '1rem',
+            left: '1.25rem',
+            right: '1.25rem',
+        },
+        box: {
+            shadow: [{
+                    x: 0,
+                    y: '1px',
+                    blur: '3px',
+                    spread: 0,
+                    color: '#0000001a',
+                }],
+        },
+        gap: '0.75rem',
+        flex: {
+            direction: 'column',
+        },
+        breakInside: 'avoid',
+        margin: {
+            bottom: '1rem',
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$bog_builderui_field) = class $bog_builderui_field extends ($.$mol_string) {
+		minimal_height(){
+			return 36;
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @see $bog_builderui_tokens */
+var $;
+(function ($) {
+    $mol_style_define($bog_builderui_field, {
+        font: {
+            family: $bog_builderui_tokens.font_body,
+        },
+        color: $bog_builderui_tokens.text,
+        background: {
+            color: $bog_builderui_tokens.field,
+        },
+        border: {
+            radius: $bog_builderui_tokens.radius,
+            width: '1px',
+            style: 'solid',
+            color: $bog_builderui_tokens.line,
+        },
+        padding: {
+            top: '0.5rem',
+            bottom: '0.5rem',
+            left: '0.75rem',
+            right: '0.75rem',
+        },
+        flex: {
+            grow: 0,
+            shrink: 1,
+        },
+        align: {
+            self: 'stretch',
+        },
+        minWidth: 0,
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_gallery) = class $mol_gallery extends ($.$mol_view) {
+		items(){
+			return [];
+		}
+		side_size(id){
+			return "1";
+		}
+		side_items(id){
+			return [];
+		}
+		sub(){
+			return (this.items());
+		}
+		Side(id){
+			const obj = new this.$.$mol_gallery();
+			(obj.style) = () => ({"flexGrow": (this.side_size(id))});
+			(obj.items) = () => ((this.side_items(id)));
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_gallery.prototype), "Side"));
+
 
 ;
 "use strict";
@@ -19421,37 +19456,3288 @@ var $;
     var $$;
     (function ($$) {
         /**
-         * Button copy text() value to clipboard
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_gallery_demo
          */
-        class $mol_button_copy extends $.$mol_button_copy {
-            data() {
-                return Object.fromEntries(this.blobs().map(blob => [blob.type, blob]));
+        class $mol_gallery extends $.$mol_gallery {
+            sub() {
+                const items = this.items();
+                if (items.length <= 3)
+                    return items;
+                return [
+                    this.Side(0),
+                    this.Side(1),
+                ];
             }
-            html() {
-                return $mol_html_encode(this.text());
+            side_items(id) {
+                const items = this.items();
+                const middle = items.length % 2
+                    ? Math.ceil(items.length / 3)
+                    : items.length / 2;
+                return id
+                    ? items.slice(middle)
+                    : items.slice(0, middle);
             }
-            attachments() {
-                return [new ClipboardItem(this.data())];
+            side_size(id) {
+                return String(this.side_items(id).length);
             }
-            click(event) {
-                const cb = $mol_wire_sync(this.$.$mol_dom_context.navigator.clipboard);
-                cb.writeText?.(this.text());
-                cb.write?.(this.attachments());
-                if (cb.writeText === undefined && cb.write === undefined) {
-                    throw new Error("doesn't support copy to clipoard");
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_gallery.prototype, "sub", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_gallery.prototype, "side_items", null);
+        $$.$mol_gallery = $mol_gallery;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/gallery/gallery.view.css", "[mol_gallery] {\n\tflex-wrap: wrap;\n\tflex: 1 1 auto;\n\talign-items: stretch;\n    align-content: stretch;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_chart_legend) = class $mol_chart_legend extends ($.$mol_scroll) {
+		graph_legends(){
+			return [];
+		}
+		Gallery(){
+			const obj = new this.$.$mol_gallery();
+			(obj.items) = () => ((this.graph_legends()));
+			return obj;
+		}
+		Graph_sample(id){
+			return null;
+		}
+		Graph_sample_box(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Graph_sample(id))]);
+			return obj;
+		}
+		graph_title(id){
+			return "";
+		}
+		Graph_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.graph_title(id))]);
+			return obj;
+		}
+		graphs(){
+			return [];
+		}
+		graphs_front(){
+			return [];
+		}
+		sub(){
+			return [(this.Gallery())];
+		}
+		Graph_legend(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Graph_sample_box(id)), (this.Graph_title(id))]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_chart_legend.prototype), "Gallery"));
+	($mol_mem_key(($.$mol_chart_legend.prototype), "Graph_sample_box"));
+	($mol_mem_key(($.$mol_chart_legend.prototype), "Graph_title"));
+	($mol_mem_key(($.$mol_chart_legend.prototype), "Graph_legend"));
+
+
+;
+	($.$mol_svg_group) = class $mol_svg_group extends ($.$mol_svg) {
+		dom_name(){
+			return "g";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_vector extends Array {
+        get length() {
+            return super.length;
+        }
+        constructor(...values) { super(...values); }
+        map(convert, self) {
+            return super.map(convert, self);
+        }
+        merged(patches, combine) {
+            return this.map((value, index) => combine(value, patches[index]));
+        }
+        limited(limits) {
+            return this.merged(limits, (value, [min, max]) => (value < min) ? min : (value > max) ? max : value);
+        }
+        added0(diff) {
+            return this.map(value => value + diff);
+        }
+        added1(diff) {
+            return this.merged(diff, (a, b) => a + b);
+        }
+        substracted1(diff) {
+            return this.merged(diff, (a, b) => a - b);
+        }
+        multed0(mult) {
+            return this.map(value => value * mult);
+        }
+        multed1(mults) {
+            return this.merged(mults, (a, b) => a * b);
+        }
+        divided1(mults) {
+            return this.merged(mults, (a, b) => a / b);
+        }
+        powered0(mult) {
+            return this.map(value => value ** mult);
+        }
+        expanded1(point) {
+            return this.merged(point, (range, value) => range.expanded0(value));
+        }
+        expanded2(point) {
+            return this.merged(point, (range1, range2) => {
+                let next = range1;
+                const Range = range1.constructor;
+                if (range1[0] > range2[0])
+                    next = new Range(range2[0], next.max);
+                if (range1[1] < range2[1])
+                    next = new Range(next.min, range2[1]);
+                return next;
+            });
+        }
+        center() {
+            const Result = this[0].constructor;
+            return new Result(...this[0].map((_, i) => this.reduce((sum, point) => sum + point[i], 0) / this.length));
+        }
+        distance() {
+            let distance = 0;
+            for (let i = 1; i < this.length; ++i) {
+                distance += this[i - 1].reduce((sum, min, j) => sum + (min - this[i][j]) ** 2, 0) ** (1 / this[i].length);
+            }
+            return distance;
+        }
+        transponed() {
+            return this[0].map((_, i) => this.map(row => row[i]));
+        }
+        get x() { return this[0]; }
+        set x(next) { this[0] = next; }
+        get y() { return this[1]; }
+        set y(next) { this[1] = next; }
+        get z() { return this[2]; }
+        set z(next) { this[2] = next; }
+    }
+    $.$mol_vector = $mol_vector;
+    class $mol_vector_1d extends $mol_vector {
+    }
+    $.$mol_vector_1d = $mol_vector_1d;
+    class $mol_vector_2d extends $mol_vector {
+    }
+    $.$mol_vector_2d = $mol_vector_2d;
+    class $mol_vector_3d extends $mol_vector {
+    }
+    $.$mol_vector_3d = $mol_vector_3d;
+    class $mol_vector_range extends $mol_vector {
+        0;
+        1;
+        constructor(min, max = min) {
+            super(min, max);
+            this[0] = min;
+            this[1] = max;
+        }
+        get min() { return this[0]; }
+        set min(next) { this[0] = next; }
+        get max() { return this[1]; }
+        set max(next) { this[1] = next; }
+        get inversed() {
+            return new this.constructor(this.max, this.min);
+        }
+        expanded0(value) {
+            const Range = this.constructor;
+            let range = this;
+            if (value > range.max)
+                range = new Range(range.min, value);
+            if (value < range.min)
+                range = new Range(value, range.max);
+            return range;
+        }
+    }
+    $.$mol_vector_range = $mol_vector_range;
+    $.$mol_vector_range_full = new $mol_vector_range(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+    class $mol_vector_matrix extends $mol_vector {
+        added2(diff) {
+            return this.merged(diff, (a, b) => a.map((a2, index) => a2 + b[index]));
+        }
+        multed2(diff) {
+            return this.merged(diff, (a, b) => a.map((a2, index) => a2 * b[index]));
+        }
+    }
+    $.$mol_vector_matrix = $mol_vector_matrix;
+})($ || ($ = {}));
+
+;
+	($.$mol_svg_title) = class $mol_svg_title extends ($.$mol_svg) {
+		dom_name(){
+			return "title";
+		}
+		sub(){
+			return [(this.title())];
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_plot_graph) = class $mol_plot_graph extends ($.$mol_svg_group) {
+		type(){
+			return "solid";
+		}
+		color(){
+			return "";
+		}
+		viewport_x(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		viewport_y(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_pane_x(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_pane_y(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_x(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_y(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		gap_x(){
+			const obj = new this.$.$mol_vector_range(0, 0);
+			return obj;
+		}
+		gap_y(){
+			const obj = new this.$.$mol_vector_range(0, 0);
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		hint(){
+			return (this.title());
+		}
+		series_x(){
+			return [];
+		}
+		series_y(){
+			return [];
+		}
+		attr(){
+			return {...(super.attr()), "mol_plot_graph_type": (this.type())};
+		}
+		style(){
+			return {...(super.style()), "color": (this.color())};
+		}
+		viewport(){
+			const obj = new this.$.$mol_vector_2d((this.viewport_x()), (this.viewport_y()));
+			return obj;
+		}
+		shift(){
+			return [0, 0];
+		}
+		scale(){
+			return [1, 1];
+		}
+		cursor_position(){
+			const obj = new this.$.$mol_vector_2d(NaN, NaN);
+			return obj;
+		}
+		dimensions_pane(){
+			const obj = new this.$.$mol_vector_2d((this.dimensions_pane_x()), (this.dimensions_pane_y()));
+			return obj;
+		}
+		dimensions(){
+			const obj = new this.$.$mol_vector_2d((this.dimensions_x()), (this.dimensions_y()));
+			return obj;
+		}
+		size_real(){
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		gap(){
+			const obj = new this.$.$mol_vector_2d((this.gap_x()), (this.gap_y()));
+			return obj;
+		}
+		repos_x(id){
+			return 0;
+		}
+		repos_y(id){
+			return 0;
+		}
+		indexes(){
+			return [];
+		}
+		points(){
+			return [];
+		}
+		front(){
+			return [];
+		}
+		back(){
+			return [];
+		}
+		Hint(){
+			const obj = new this.$.$mol_svg_title();
+			(obj.title) = () => ((this.hint()));
+			return obj;
+		}
+		hue(next){
+			if(next !== undefined) return next;
+			return +NaN;
+		}
+		Sample(){
+			return null;
+		}
+	};
+	($mol_mem(($.$mol_plot_graph.prototype), "viewport_x"));
+	($mol_mem(($.$mol_plot_graph.prototype), "viewport_y"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions_pane_x"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions_pane_y"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions_x"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions_y"));
+	($mol_mem(($.$mol_plot_graph.prototype), "gap_x"));
+	($mol_mem(($.$mol_plot_graph.prototype), "gap_y"));
+	($mol_mem(($.$mol_plot_graph.prototype), "viewport"));
+	($mol_mem(($.$mol_plot_graph.prototype), "cursor_position"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions_pane"));
+	($mol_mem(($.$mol_plot_graph.prototype), "dimensions"));
+	($mol_mem(($.$mol_plot_graph.prototype), "size_real"));
+	($mol_mem(($.$mol_plot_graph.prototype), "gap"));
+	($mol_mem(($.$mol_plot_graph.prototype), "Hint"));
+	($mol_mem(($.$mol_plot_graph.prototype), "hue"));
+	($.$mol_plot_graph_sample) = class $mol_plot_graph_sample extends ($.$mol_view) {
+		type(){
+			return "solid";
+		}
+		color(){
+			return "black";
+		}
+		attr(){
+			return {...(super.attr()), "mol_plot_graph_type": (this.type())};
+		}
+		style(){
+			return {...(super.style()), "color": (this.color())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_plot_graph extends $.$mol_plot_graph {
+            viewport() {
+                const size = this.size_real();
+                return new this.$.$mol_vector_2d(new this.$.$mol_vector_range(0, size.x), new this.$.$mol_vector_range(0, size.y));
+            }
+            indexes() {
+                return this.series_x().map((_, i) => i);
+            }
+            repos_x(val) {
+                return val;
+            }
+            repos_y(val) {
+                return val;
+            }
+            points() {
+                const [shift_x, shift_y] = this.shift();
+                const [scale_x, scale_y] = this.scale();
+                const series_x = this.series_x();
+                const series_y = this.series_y();
+                return this.indexes().map(index => {
+                    let point_x = Math.round(shift_x + this.repos_x(series_x[index]) * scale_x);
+                    let point_y = Math.round(shift_y + this.repos_y(series_y[index]) * scale_y);
+                    point_x = Math.max(Number.MIN_SAFE_INTEGER, Math.min(point_x, Number.MAX_SAFE_INTEGER));
+                    point_y = Math.max(Number.MIN_SAFE_INTEGER, Math.min(point_y, Number.MAX_SAFE_INTEGER));
+                    return [point_x, point_y];
+                });
+            }
+            series_x() {
+                return this.series_y().map((val, index) => index);
+            }
+            dimensions() {
+                let next = new this.$.$mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+                const series_x = this.series_x();
+                const series_y = this.series_y();
+                for (let i = 0; i < series_x.length; i++) {
+                    if (series_x[i] > next.x.max)
+                        next.x.max = this.repos_x(series_x[i]);
+                    if (series_x[i] < next.x.min)
+                        next.x.min = this.repos_x(series_x[i]);
+                    if (series_y[i] > next.y.max)
+                        next.y.max = this.repos_y(series_y[i]);
+                    if (series_y[i] < next.y.min)
+                        next.y.min = this.repos_y(series_y[i]);
+                }
+                return next;
+            }
+            color() {
+                const hue = this.hue();
+                return hue ? `hsl( ${hue} , 100% , 35% )` : '';
+            }
+            front() {
+                return [this];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_plot_graph.prototype, "indexes", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_graph.prototype, "series_x", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_graph.prototype, "dimensions", null);
+        $$.$mol_plot_graph = $mol_plot_graph;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/plot/graph/graph.view.css", "[mol_plot_graph] {\n\tstroke: currentColor;\n}\n\n[mol_plot_graph_sample] {\n\tborder-width: 0;\n\tborder-style: solid;\n}\n\n[mol_plot_graph_type=\"dashed\"] {\n\tstroke-dasharray: 4 4;\n\tborder-style: dashed;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_chart_legend extends $.$mol_chart_legend {
+            graphs_front() {
+                return this.graphs().filter(graph => graph.Sample());
+            }
+            graph_legends() {
+                return this.graphs_front().map((graph, index) => this.Graph_legend(index));
+            }
+            graph_title(index) {
+                return this.graphs_front()[index].title();
+            }
+            Graph_sample(index) {
+                return this.graphs_front()[index].Sample();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_chart_legend.prototype, "graphs_front", null);
+        $$.$mol_chart_legend = $mol_chart_legend;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/chart/legend/legend.view.css", "[mol_chart_legend] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tflex-direction: row;\n\tflex: 0 1 auto;\n}\n\n[mol_chart_legend_graph_legend] {\n\tdisplay: flex;\n\tjustify-content: flex-start;\n\tflex: 1 1 8rem;\n\tpadding: .5rem;\n}\n\n[mol_chart_legend_graph_title] {\n\tmargin: 0 .25rem;\n\tflex: 1 1 auto;\n}\n\n[mol_chart_legend_graph_sample_box] {\n\tposition: relative;\n\twidth: 1.5rem;\n\tflex: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_touch) = class $mol_touch extends ($.$mol_plugin) {
+		event_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_wheel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		start_zoom(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		start_distance(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		zoom(next){
+			if(next !== undefined) return next;
+			return 1;
+		}
+		allow_draw(){
+			return true;
+		}
+		allow_pan(){
+			return true;
+		}
+		allow_zoom(){
+			return true;
+		}
+		action_type(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		action_point(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_vector_2d(NaN, NaN);
+			return obj;
+		}
+		start_pan(next){
+			if(next !== undefined) return next;
+			return [0, 0];
+		}
+		pan(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		pointer_center(){
+			const obj = new this.$.$mol_vector_2d(NaN, NaN);
+			return obj;
+		}
+		start_pos(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_precision(){
+			return 16;
+		}
+		swipe_right(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_bottom(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_left(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_top(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_from_right(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_from_bottom(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_from_left(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_from_top(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_to_right(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_to_bottom(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_to_left(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_to_top(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		draw_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		draw(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		draw_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		style(){
+			return {
+				...(super.style()), 
+				"touch-action": "none", 
+				"overscroll-behavior": "none"
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"pointerdown": (next) => (this.event_start(next)), 
+				"pointermove": (next) => (this.event_move(next)), 
+				"pointerup": (next) => (this.event_end(next)), 
+				"pointerleave": (next) => (this.event_leave(next)), 
+				"wheel": (next) => (this.event_wheel(next))
+			};
+		}
+	};
+	($mol_mem(($.$mol_touch.prototype), "event_start"));
+	($mol_mem(($.$mol_touch.prototype), "event_move"));
+	($mol_mem(($.$mol_touch.prototype), "event_end"));
+	($mol_mem(($.$mol_touch.prototype), "event_leave"));
+	($mol_mem(($.$mol_touch.prototype), "event_wheel"));
+	($mol_mem(($.$mol_touch.prototype), "start_zoom"));
+	($mol_mem(($.$mol_touch.prototype), "start_distance"));
+	($mol_mem(($.$mol_touch.prototype), "zoom"));
+	($mol_mem(($.$mol_touch.prototype), "action_type"));
+	($mol_mem(($.$mol_touch.prototype), "action_point"));
+	($mol_mem(($.$mol_touch.prototype), "start_pan"));
+	($mol_mem(($.$mol_touch.prototype), "pan"));
+	($mol_mem(($.$mol_touch.prototype), "pointer_center"));
+	($mol_mem(($.$mol_touch.prototype), "start_pos"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_right"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_bottom"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_left"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_top"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_from_right"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_from_bottom"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_from_left"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_from_top"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_to_right"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_to_bottom"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_to_left"));
+	($mol_mem(($.$mol_touch.prototype), "swipe_to_top"));
+	($mol_mem(($.$mol_touch.prototype), "draw_start"));
+	($mol_mem(($.$mol_touch.prototype), "draw"));
+	($mol_mem(($.$mol_touch.prototype), "draw_end"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Plugin for touch gestures.
+         * @see [mol_plugin](../plugin/readme.md)
+         */
+        class $mol_touch extends $.$mol_touch {
+            auto() {
+                this.pointer_events();
+                this.start_pan();
+                this.start_pos();
+                this.start_distance();
+                this.start_zoom();
+                this.action_type();
+                this.view_rect();
+            }
+            pointer_events(next = []) {
+                return next;
+            }
+            pointer_coords() {
+                const events = this.pointer_events();
+                const touches = events.filter(e => e.pointerType === 'touch');
+                const pens = events.filter(e => e.pointerType === 'pen');
+                const mouses = events.filter(e => !e.pointerType || e.pointerType === 'mouse');
+                const choosen = touches.length ? touches : pens.length ? pens : mouses;
+                return new $mol_vector(...choosen.map(event => this.event_coords(event)));
+            }
+            pointer_center() {
+                const coords = this.pointer_coords();
+                return coords.length ? coords.center() : new $mol_vector_2d(NaN, NaN);
+            }
+            event_coords(event) {
+                const { left, top } = this.view_rect();
+                return new $mol_vector_2d(Math.round(event.pageX - left), Math.round(event.pageY - top));
+            }
+            action_point() {
+                const coord = this.pointer_center();
+                if (!coord)
+                    return null;
+                const zoom = this.zoom();
+                const pan = this.pan();
+                return new $mol_vector_2d((coord.x - pan.x) / zoom, (coord.y - pan.y) / zoom);
+            }
+            event_eat(event) {
+                if (event instanceof PointerEvent) {
+                    const events = this.pointer_events()
+                        .filter(e => e instanceof PointerEvent)
+                        .filter(e => e.pointerId !== event.pointerId);
+                    if (event.type !== 'pointerup' && event.type !== 'pointerleave')
+                        events.push(event);
+                    this.pointer_events(events);
+                    const touch_count = events.filter(e => e.pointerType === 'touch').length;
+                    if (this.allow_zoom() && touch_count === 2) {
+                        return this.action_type('zoom');
+                    }
+                    if (this.action_type() === 'zoom' && touch_count === 1) {
+                        return this.action_type('zoom');
+                    }
+                    let button;
+                    (function (button) {
+                        button[button["left"] = 1] = "left";
+                        button[button["right"] = 2] = "right";
+                        button[button["middle"] = 4] = "middle";
+                    })(button || (button = {}));
+                    if (events.length > 0) {
+                        if (event.ctrlKey && this.allow_zoom())
+                            return this.action_type('zoom');
+                        if (event.buttons === button.left && this.allow_draw())
+                            return this.action_type('draw');
+                        if (event.buttons && this.allow_pan())
+                            return this.action_type('pan');
+                    }
+                    return this.action_type('');
+                }
+                if (event instanceof WheelEvent) {
+                    this.pointer_events([event]);
+                    if (event.shiftKey)
+                        return this.action_type('pan');
+                    return this.action_type('zoom');
+                }
+                return this.action_type('');
+            }
+            event_start(event) {
+                if (event.defaultPrevented)
+                    return;
+                this.start_pan(this.pan());
+                const action_type = this.event_eat(event);
+                if (!action_type)
+                    return;
+                const coords = this.pointer_coords();
+                this.start_pos(coords.center());
+                if (action_type === 'draw') {
+                    this.draw_start(event);
+                    return;
+                }
+                this.start_distance(coords.distance());
+                this.start_zoom(this.zoom());
+            }
+            event_move(event) {
+                if (event.defaultPrevented)
+                    return;
+                const rect = this.view_rect();
+                if (!rect)
+                    return;
+                const start_pan = this.start_pan();
+                const action_type = this.event_eat(event);
+                const start_pos = this.start_pos();
+                let pos = this.pointer_center();
+                if (!action_type)
+                    return;
+                if (!start_pos)
+                    return;
+                if (action_type === 'draw') {
+                    const distance = new $mol_vector(start_pos, pos).distance();
+                    if (distance >= 4) {
+                        this.draw(event);
+                    }
+                    return;
+                }
+                if (action_type === 'pan') {
+                    this.dom_node().setPointerCapture(event.pointerId);
+                    this.pan(new $mol_vector_2d(start_pan[0] + pos[0] - start_pos[0], start_pan[1] + pos[1] - start_pos[1]));
+                }
+                const precision = this.swipe_precision();
+                if ((this.swipe_right !== $mol_touch.prototype.swipe_right
+                    || this.swipe_from_left !== $mol_touch.prototype.swipe_from_left
+                    || this.swipe_to_right !== $mol_touch.prototype.swipe_to_right)
+                    && pos[0] - start_pos[0] > precision * 2
+                    && Math.abs(pos[1] - start_pos[1]) < precision) {
+                    this.swipe_right(event);
+                }
+                if ((this.swipe_left !== $mol_touch.prototype.swipe_left
+                    || this.swipe_from_right !== $mol_touch.prototype.swipe_from_right
+                    || this.swipe_to_left !== $mol_touch.prototype.swipe_to_left)
+                    && start_pos[0] - pos[0] > precision * 2
+                    && Math.abs(pos[1] - start_pos[1]) < precision) {
+                    this.swipe_left(event);
+                }
+                if ((this.swipe_bottom !== $mol_touch.prototype.swipe_bottom
+                    || this.swipe_from_top !== $mol_touch.prototype.swipe_from_top
+                    || this.swipe_to_bottom !== $mol_touch.prototype.swipe_to_bottom)
+                    && pos[1] - start_pos[1] > precision * 2
+                    && Math.abs(pos[0] - start_pos[0]) < precision) {
+                    this.swipe_bottom(event);
+                }
+                if ((this.swipe_top !== $mol_touch.prototype.swipe_top
+                    || this.swipe_from_bottom !== $mol_touch.prototype.swipe_from_bottom
+                    || this.swipe_to_top !== $mol_touch.prototype.swipe_to_top)
+                    && start_pos[1] - pos[1] > precision * 2
+                    && Math.abs(pos[0] - start_pos[0]) < precision) {
+                    this.swipe_top(event);
+                }
+                if (action_type === 'zoom') {
+                    const coords = this.pointer_coords();
+                    const distance = coords.distance();
+                    const start_distance = this.start_distance();
+                    const center = coords.center();
+                    const start_zoom = this.start_zoom();
+                    let mult = Math.abs(distance - start_distance) < 32 ? 1 : distance / start_distance;
+                    this.zoom(start_zoom * mult);
+                    const pan = new $mol_vector_2d((start_pan[0] - center[0] + pos[0] - start_pos[0]) * mult + center[0], (start_pan[1] - center[1] + pos[1] - start_pos[1]) * mult + center[1]);
+                    this.pan(pan);
+                }
+            }
+            event_end(event) {
+                const action = this.action_type();
+                if (action === 'draw') {
+                    this.draw_end(event);
+                }
+                this.event_leave(event);
+            }
+            event_leave(event) {
+                this.event_eat(event);
+                this.dom_node().releasePointerCapture(event.pointerId);
+                this.start_pos(null);
+            }
+            swipe_left(event) {
+                if (this.view_rect().right - this.start_pos()[0] < this.swipe_precision() * 2)
+                    this.swipe_from_right(event);
+                else
+                    this.swipe_to_left(event);
+                this.event_end(event);
+            }
+            swipe_right(event) {
+                if (this.start_pos()[0] - this.view_rect().left < this.swipe_precision() * 2)
+                    this.swipe_from_left(event);
+                else
+                    this.swipe_to_right(event);
+                this.event_end(event);
+            }
+            swipe_top(event) {
+                if (this.view_rect().bottom - this.start_pos()[1] < this.swipe_precision() * 2)
+                    this.swipe_from_bottom(event);
+                else
+                    this.swipe_to_top(event);
+                this.event_end(event);
+            }
+            swipe_bottom(event) {
+                if (this.start_pos()[1] - this.view_rect().top < this.swipe_precision() * 2)
+                    this.swipe_from_top(event);
+                else
+                    this.swipe_to_bottom(event);
+                this.event_end(event);
+            }
+            event_wheel(event) {
+                if (event.defaultPrevented)
+                    return;
+                if (this.pan === $mol_touch.prototype.pan && this.zoom === $mol_touch.prototype.zoom)
+                    return;
+                if (this.pan !== $mol_touch.prototype.pan) {
+                    event.preventDefault();
+                }
+                const action_type = this.event_eat(event);
+                if (action_type === 'zoom') {
+                    const zoom_prev = this.zoom() || 0.001;
+                    let zoom_next = zoom_prev * (1 - .001 * Math.min(event.deltaY, 100));
+                    zoom_next = this.zoom(zoom_next);
+                    const mult = zoom_next / zoom_prev;
+                    const pan_prev = this.pan();
+                    const center = this.pointer_center();
+                    const pan_next = pan_prev.multed0(mult).added1(center.multed0(1 - mult));
+                    this.pan(pan_next);
+                }
+                if (action_type === 'pan') {
+                    const pan_prev = this.pan();
+                    const pan_next = new $mol_vector_2d(pan_prev.x - event.deltaX, pan_prev.y - event.deltaY);
+                    this.pan(pan_next);
                 }
             }
         }
         __decorate([
             $mol_mem
-        ], $mol_button_copy.prototype, "html", null);
+        ], $mol_touch.prototype, "pointer_events", null);
         __decorate([
             $mol_mem
-        ], $mol_button_copy.prototype, "attachments", null);
-        $$.$mol_button_copy = $mol_button_copy;
+        ], $mol_touch.prototype, "pointer_coords", null);
+        __decorate([
+            $mol_mem
+        ], $mol_touch.prototype, "pointer_center", null);
+        __decorate([
+            $mol_mem
+        ], $mol_touch.prototype, "action_point", null);
+        $$.$mol_touch = $mol_touch;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
+
+;
+	($.$mol_plot_pane) = class $mol_plot_pane extends ($.$mol_svg_root) {
+		gap_x(){
+			const obj = new this.$.$mol_vector_range((this.gap_left()), (this.gap_right()));
+			return obj;
+		}
+		gap_y(){
+			const obj = new this.$.$mol_vector_range((this.gap_bottom()), (this.gap_top()));
+			return obj;
+		}
+		shift_limit_x(){
+			const obj = new this.$.$mol_vector_range(0, 0);
+			return obj;
+		}
+		shift_limit_y(){
+			const obj = new this.$.$mol_vector_range(0, 0);
+			return obj;
+		}
+		scale_limit_x(){
+			const obj = new this.$.$mol_vector_range(0, Infinity);
+			return obj;
+		}
+		scale_limit_y(){
+			const obj = new this.$.$mol_vector_range(0, -Infinity);
+			return obj;
+		}
+		dimensions_x(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_y(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_viewport_x(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		dimensions_viewport_y(){
+			const obj = new this.$.$mol_vector_range(Infinity, -Infinity);
+			return obj;
+		}
+		graphs_sorted(){
+			return [];
+		}
+		graphs(){
+			return [];
+		}
+		graphs_positioned(){
+			return (this.graphs());
+		}
+		graphs_visible(){
+			return (this.graphs_positioned());
+		}
+		zoom(next){
+			if(next !== undefined) return next;
+			return 1;
+		}
+		cursor_position(){
+			return (this.Touch().pointer_center());
+		}
+		allow_draw(){
+			return true;
+		}
+		allow_pan(){
+			return true;
+		}
+		allow_zoom(){
+			return true;
+		}
+		action_type(){
+			return (this.Touch().action_type());
+		}
+		action_point(){
+			return (this.Touch().action_point());
+		}
+		draw_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		draw(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		draw_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Touch(){
+			const obj = new this.$.$mol_touch();
+			(obj.zoom) = (next) => ((this.zoom(next)));
+			(obj.pan) = (next) => ((this.shift(next)));
+			(obj.allow_draw) = () => ((this.allow_draw()));
+			(obj.allow_pan) = () => ((this.allow_pan()));
+			(obj.allow_zoom) = () => ((this.allow_zoom()));
+			(obj.draw_start) = (next) => ((this.draw_start(next)));
+			(obj.draw) = (next) => ((this.draw(next)));
+			(obj.draw_end) = (next) => ((this.draw_end(next)));
+			return obj;
+		}
+		aspect(){
+			return "none";
+		}
+		hue_base(next){
+			if(next !== undefined) return next;
+			return +NaN;
+		}
+		hue_shift(next){
+			if(next !== undefined) return next;
+			return 111;
+		}
+		gap_hor(){
+			return 48;
+		}
+		gap_vert(){
+			return 24;
+		}
+		gap_left(){
+			return (this.gap_hor());
+		}
+		gap_right(){
+			return (this.gap_hor());
+		}
+		gap_top(){
+			return (this.gap_vert());
+		}
+		gap_bottom(){
+			return (this.gap_vert());
+		}
+		gap(){
+			const obj = new this.$.$mol_vector_2d((this.gap_x()), (this.gap_y()));
+			return obj;
+		}
+		shift_limit(){
+			const obj = new this.$.$mol_vector_2d((this.shift_limit_x()), (this.shift_limit_y()));
+			return obj;
+		}
+		shift_default(){
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		shift(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		scale_limit(){
+			const obj = new this.$.$mol_vector_2d((this.scale_limit_x()), (this.scale_limit_y()));
+			return obj;
+		}
+		scale_default(){
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		scale(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_vector_2d(1, -1);
+			return obj;
+		}
+		scale_x(next){
+			if(next !== undefined) return next;
+			return 1;
+		}
+		scale_y(next){
+			if(next !== undefined) return next;
+			return -1;
+		}
+		size(){
+			const obj = new this.$.$mol_vector_2d(0, 0);
+			return obj;
+		}
+		size_real(){
+			const obj = new this.$.$mol_vector_2d(1, 1);
+			return obj;
+		}
+		dimensions(){
+			const obj = new this.$.$mol_vector_2d((this.dimensions_x()), (this.dimensions_y()));
+			return obj;
+		}
+		dimensions_viewport(){
+			const obj = new this.$.$mol_vector_2d((this.dimensions_viewport_x()), (this.dimensions_viewport_y()));
+			return obj;
+		}
+		sub(){
+			return (this.graphs_sorted());
+		}
+		graphs_colored(){
+			return (this.graphs_visible());
+		}
+		plugins(){
+			return [...(super.plugins()), (this.Touch())];
+		}
+	};
+	($mol_mem(($.$mol_plot_pane.prototype), "gap_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "gap_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "shift_limit_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "shift_limit_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_limit_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_limit_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions_viewport_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions_viewport_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "zoom"));
+	($mol_mem(($.$mol_plot_pane.prototype), "draw_start"));
+	($mol_mem(($.$mol_plot_pane.prototype), "draw"));
+	($mol_mem(($.$mol_plot_pane.prototype), "draw_end"));
+	($mol_mem(($.$mol_plot_pane.prototype), "Touch"));
+	($mol_mem(($.$mol_plot_pane.prototype), "hue_base"));
+	($mol_mem(($.$mol_plot_pane.prototype), "hue_shift"));
+	($mol_mem(($.$mol_plot_pane.prototype), "gap"));
+	($mol_mem(($.$mol_plot_pane.prototype), "shift_limit"));
+	($mol_mem(($.$mol_plot_pane.prototype), "shift_default"));
+	($mol_mem(($.$mol_plot_pane.prototype), "shift"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_limit"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_default"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_x"));
+	($mol_mem(($.$mol_plot_pane.prototype), "scale_y"));
+	($mol_mem(($.$mol_plot_pane.prototype), "size"));
+	($mol_mem(($.$mol_plot_pane.prototype), "size_real"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions"));
+	($mol_mem(($.$mol_plot_pane.prototype), "dimensions_viewport"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Fastest plot lib for vector graphics.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_plot_demo
+         */
+        class $mol_plot_pane extends $.$mol_plot_pane {
+            dimensions() {
+                const graphs = this.graphs();
+                let next = new this.$.$mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+                for (let graph of graphs) {
+                    next = next.expanded2(graph.dimensions());
+                }
+                return next;
+            }
+            size() {
+                const dims = this.dimensions();
+                return new this.$.$mol_vector_2d((dims.x.max - dims.x.min) || 1, (dims.y.max - dims.y.min) || 1);
+            }
+            graph_hue(index) {
+                return (360 + (this.hue_base() + this.hue_shift() * index) % 360) % 360;
+            }
+            graphs_colored() {
+                const graphs = this.graphs_visible();
+                for (let index = 0; index < graphs.length; index++) {
+                    graphs[index].hue(this.graph_hue(index));
+                }
+                return graphs;
+            }
+            size_real() {
+                const rect = this.view_rect();
+                if (!rect)
+                    return new this.$.$mol_vector_2d(1, 1);
+                return new this.$.$mol_vector_2d(rect.width, rect.height);
+            }
+            view_box() {
+                const size = this.size_real();
+                return `0 0 ${size.x} ${size.y}`;
+            }
+            scale_limit() {
+                const { x: { max: right }, y: { max: top } } = super.scale_limit();
+                const gap = this.gap();
+                const size = this.size();
+                const real = this.size_real();
+                const left = +(real.x - gap.x.min - gap.x.max) / size.x;
+                const bottom = -(real.y - gap.y.max - gap.y.min) / size.y;
+                return new this.$.$mol_vector_2d(new this.$.$mol_vector_range(left, right), new this.$.$mol_vector_range(top, bottom));
+            }
+            scale_default() {
+                const limits = this.scale_limit();
+                return new $mol_vector_2d(limits.x.min, limits.y.max);
+            }
+            scale(next) {
+                if (next === undefined) {
+                    if (!this.graph_touched)
+                        return this.scale_default();
+                    next = $mol_mem_cached(() => this.scale()) ?? this.scale_default();
+                }
+                this.graph_touched = true;
+                return next.limited(this.scale_limit());
+            }
+            scale_x(next) {
+                return this.scale(next === undefined
+                    ? undefined
+                    : new $mol_vector_2d(next, this.scale().y)).x;
+            }
+            scale_y(next) {
+                return this.scale(next === undefined
+                    ? undefined
+                    : new $mol_vector_2d(this.scale().x, next)).y;
+            }
+            shift_limit() {
+                const dims = this.dimensions();
+                const [scale_x, scale_y] = this.scale();
+                const size = this.size_real();
+                const gap = this.gap();
+                const left = gap.x.min - dims.x.min * scale_x;
+                const right = size.x - gap.x.max - dims.x.max * scale_x;
+                const top = gap.y.max - dims.y.max * scale_y;
+                const bottom = size.y - gap.y.min - dims.y.min * scale_y;
+                return new this.$.$mol_vector_2d(new this.$.$mol_vector_range(right, left), new this.$.$mol_vector_range(bottom, top));
+            }
+            shift_default() {
+                const limits = this.shift_limit();
+                return new $mol_vector_2d(limits.x.min, limits.y.min);
+            }
+            graph_touched = false;
+            shift(next) {
+                if (next === undefined) {
+                    if (!this.graph_touched)
+                        return this.shift_default();
+                    next = $mol_mem_cached(() => this.shift()) ?? this.shift_default();
+                }
+                this.graph_touched = true;
+                return next.limited(this.shift_limit());
+            }
+            reset(event) {
+                this.graph_touched = false;
+                this.scale(this.scale_default());
+                this.shift(this.shift_default());
+            }
+            graphs_visible() {
+                const viewport = this.dimensions_viewport();
+                const size_real = this.size_real();
+                const max_x = (viewport.x.max - viewport.x.min) / size_real.x;
+                const max_y = (viewport.y.max - viewport.y.min) / size_real.y;
+                return this.graphs_positioned().filter(graph => {
+                    const dims = graph.dimensions();
+                    if (dims.x.min > dims.x.max)
+                        return true;
+                    if (dims.y.min > dims.y.max)
+                        return true;
+                    const size_x = dims.x.max - dims.x.min;
+                    const size_y = dims.y.max - dims.y.min;
+                    if ((size_x || size_y) && size_x < max_x && size_y < max_y)
+                        return false;
+                    if (dims.x.min > viewport.x.max)
+                        return false;
+                    if (dims.x.max < viewport.x.min)
+                        return false;
+                    if (dims.y.min > viewport.y.max)
+                        return false;
+                    if (dims.y.max < viewport.y.min)
+                        return false;
+                    return true;
+                });
+            }
+            graphs_positioned() {
+                const graphs = this.graphs();
+                for (let graph of graphs) {
+                    graph.shift = () => this.shift();
+                    graph.scale = () => this.scale();
+                    graph.dimensions_pane = () => this.dimensions_viewport();
+                    graph.viewport = () => this.viewport();
+                    graph.size_real = () => this.size_real();
+                    graph.cursor_position = () => this.cursor_position();
+                    graph.gap = () => this.gap();
+                }
+                return graphs;
+            }
+            dimensions_viewport() {
+                const shift = this.shift().multed0(-1);
+                const scale = this.scale().powered0(-1);
+                return this.viewport().map((range, i) => range.added0(shift[i]).multed0(scale[i]).sort((a, b) => a - b));
+            }
+            viewport() {
+                const size = this.size_real();
+                return new this.$.$mol_vector_2d(new this.$.$mol_vector_range(0, size.x), new this.$.$mol_vector_range(0, size.y));
+            }
+            graphs_sorted() {
+                const graphs = this.graphs_colored();
+                const sorted = [];
+                for (let graph of graphs)
+                    sorted.push(...graph.back());
+                for (let graph of graphs)
+                    sorted.push(...graph.front());
+                return sorted;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "dimensions", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "size", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "graphs_colored", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "scale_limit", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "scale", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "shift_limit", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "shift_default", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "shift", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "graphs_visible", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "graphs_positioned", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "dimensions_viewport", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "viewport", null);
+        __decorate([
+            $mol_mem
+        ], $mol_plot_pane.prototype, "graphs_sorted", null);
+        $$.$mol_plot_pane = $mol_plot_pane;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/plot/pane/pane.view.css", "[mol_plot_pane] {\n\tcolor: var(--mol_theme_control);\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tstroke-width: 2px;\n\tuser-select: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_chart) = class $mol_chart extends ($.$mol_view) {
+		Legend(){
+			const obj = new this.$.$mol_chart_legend();
+			(obj.graphs) = () => ((this.graphs_colored()));
+			return obj;
+		}
+		zoom(next){
+			return (this.Plot().scale_x(next));
+		}
+		graphs_colored(){
+			return (this.Plot().graphs_colored());
+		}
+		hue_base(){
+			return 210;
+		}
+		hue_shift(){
+			return 163;
+		}
+		Plot(){
+			const obj = new this.$.$mol_plot_pane();
+			(obj.zoom) = (next) => ((this.zoom(next)));
+			(obj.gap_left) = () => ((this.gap_left()));
+			(obj.gap_right) = () => ((this.gap_right()));
+			(obj.gap_bottom) = () => ((this.gap_bottom()));
+			(obj.gap_top) = () => ((this.gap_top()));
+			(obj.graphs) = () => ((this.graphs()));
+			(obj.hue_base) = () => ((this.hue_base()));
+			(obj.hue_shift) = () => ((this.hue_shift()));
+			return obj;
+		}
+		gap_hor(){
+			return 48;
+		}
+		gap_vert(){
+			return 24;
+		}
+		gap_left(){
+			return (this.gap_hor());
+		}
+		gap_right(){
+			return (this.gap_hor());
+		}
+		gap_bottom(){
+			return (this.gap_vert());
+		}
+		gap_top(){
+			return (this.gap_vert());
+		}
+		graphs(){
+			return [];
+		}
+		sub(){
+			return [(this.Legend()), (this.Plot())];
+		}
+	};
+	($mol_mem(($.$mol_chart.prototype), "Legend"));
+	($mol_mem(($.$mol_chart.prototype), "Plot"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/chart/chart.view.css", "[mol_chart] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-self: stretch;\n\tflex: 1 1 auto;\n\tmin-height: 0;\n}\n\n[mol_chart_plot] {\n\tflex: 1 0 50%;\n\tmargin: .5rem;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_builderui_chart) = class $bog_builderui_chart extends ($.$mol_chart) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @see $bog_builderui_tokens */
+var $;
+(function ($) {
+    $mol_style_define($bog_builderui_chart, {
+        font: {
+            family: $bog_builderui_tokens.font_body,
+        },
+        color: $bog_builderui_tokens.text,
+    });
+})($ || ($ = {}));
+
+;
+	($.$bog_builderui_select) = class $bog_builderui_select extends ($.$mol_select) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @see $bog_builderui_tokens */
+var $;
+(function ($) {
+    $mol_style_define($bog_builderui_select, {
+        font: {
+            family: $bog_builderui_tokens.font_body,
+        },
+        color: $bog_builderui_tokens.text,
+        background: {
+            color: $bog_builderui_tokens.field,
+        },
+        border: {
+            radius: $bog_builderui_tokens.radius,
+            width: '1px',
+            style: 'solid',
+            color: $bog_builderui_tokens.line,
+        },
+        padding: {
+            left: '0.75rem',
+            right: '0.75rem',
+        },
+        cursor: 'pointer',
+        transition: 'background-color 120ms, border-color 120ms',
+        ':hover': {
+            background: {
+                color: $bog_builderui_tokens.hover,
+            },
+            border: {
+                color: $bog_builderui_tokens.focus,
+            },
+        },
+        $mol_check: {
+            background: { color: 'transparent' },
+            boxShadow: 'none',
+            outline: 'none',
+            color: 'inherit',
+            ':hover': {
+                background: { color: 'transparent' },
+                boxShadow: 'none',
+            },
+            ':focus': {
+                background: { color: 'transparent' },
+                boxShadow: 'none',
+                outline: 'none',
+            },
+            ':focus-visible': {
+                background: { color: 'transparent' },
+                boxShadow: 'none',
+                outline: 'none',
+            },
+        },
+        $mol_pop_bubble: {
+            background: {
+                color: $bog_builderui_tokens.card,
+            },
+            color: $bog_builderui_tokens.text,
+            border: {
+                width: '1px',
+                style: 'solid',
+                color: $bog_builderui_tokens.line,
+                radius: $bog_builderui_tokens.radius,
+            },
+            padding: {
+                top: '0.25rem',
+                right: '0.25rem',
+                bottom: '0.25rem',
+                left: '0.25rem',
+            },
+            box: {
+                shadow: [{ x: 0, y: '4px', blur: '12px', spread: 0, color: '#00000026' }],
+            },
+            overflow: 'hidden',
+            $mol_scroll: {
+                background: { color: 'transparent' },
+                border: { radius: $bog_builderui_tokens.radius },
+            },
+            $mol_button_minor: {
+                border: { radius: $bog_builderui_tokens.radius },
+                color: $bog_builderui_tokens.text,
+                background: { color: 'transparent' },
+                boxShadow: 'none',
+                ':hover': {
+                    background: { color: $bog_builderui_tokens.hover },
+                    boxShadow: 'none',
+                },
+                ':focus': {
+                    background: { color: 'transparent' },
+                    boxShadow: 'none',
+                },
+                ':focus-visible': {
+                    background: { color: 'transparent' },
+                    boxShadow: 'none',
+                },
+            },
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_pop_over) = class $mol_pop_over extends ($.$mol_pop) {
+		hovered(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		event_show(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_hide(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		showed(){
+			return (this.hovered());
+		}
+		attr(){
+			return {...(super.attr()), "tabindex": 0};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"mouseenter": (next) => (this.event_show(next)), 
+				"mouseleave": (next) => (this.event_hide(next))
+			};
+		}
+	};
+	($mol_mem(($.$mol_pop_over.prototype), "hovered"));
+	($mol_mem(($.$mol_pop_over.prototype), "event_show"));
+	($mol_mem(($.$mol_pop_over.prototype), "event_hide"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Bubble that can be shown anchored to Anchor element.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_pop_over_demo
+         */
+        class $mol_pop_over extends $.$mol_pop_over {
+            event_show(event) {
+                this.hovered(true);
+            }
+            event_hide(event) {
+                this.hovered(false);
+            }
+            showed() {
+                return this.focused() || this.hovered();
+            }
+        }
+        $$.$mol_pop_over = $mol_pop_over;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/pop/over/over.view.css", "[mol_pop_over]:focus {\r\n\toutline: none;\r\n}");
+})($ || ($ = {}));
+
+;
+	($.$bog_builderui_tooltip) = class $bog_builderui_tooltip extends ($.$mol_pop_over) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/builderui/theme.css", "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');\n\n:root {\n\t--bog_builderui_font_body: 'Inter', system-ui, sans-serif;\n\t--bog_builderui_font_head: 'Inter', system-ui, sans-serif;\n\t--bog_builderui_radius: 0.5rem;\n}\n\n/* ============================================================\n   RADIUS PRESETS\n   ============================================================ */\n[bog_builderui_radius=\"none\"] { --bog_builderui_radius: 0; }\n[bog_builderui_radius=\"small\"] { --bog_builderui_radius: 0.25rem; }\n[bog_builderui_radius=\"medium\"] { --bog_builderui_radius: 0.5rem; }\n[bog_builderui_radius=\"large\"] { --bog_builderui_radius: 1rem; }\n\n/* ============================================================\n   BODY FONT\n   ============================================================ */\n[bog_builderui_font_body=\"inter\"] { --bog_builderui_font_body: 'Inter', system-ui, sans-serif; }\n[bog_builderui_font_body=\"manrope\"] { --bog_builderui_font_body: 'Manrope', system-ui, sans-serif; }\n[bog_builderui_font_body=\"dm-sans\"] { --bog_builderui_font_body: 'DM Sans', system-ui, sans-serif; }\n[bog_builderui_font_body=\"eb-garamond\"] { --bog_builderui_font_body: 'EB Garamond', Georgia, serif; }\n\n/* ============================================================\n   HEADING FONT\n   ============================================================ */\n[bog_builderui_font_head=\"inter\"] { --bog_builderui_font_head: 'Inter', system-ui, sans-serif; }\n[bog_builderui_font_head=\"manrope\"] { --bog_builderui_font_head: 'Manrope', system-ui, sans-serif; }\n[bog_builderui_font_head=\"dm-sans\"] { --bog_builderui_font_head: 'DM Sans', system-ui, sans-serif; }\n[bog_builderui_font_head=\"eb-garamond\"] { --bog_builderui_font_head: 'EB Garamond', Georgia, serif; }\n\n/* ============================================================\n   BASE COLORS (neutral palette)\n   Vars: back, card, field, text, shade, line, hover\n   ============================================================ */\n\n/* === Slate (default) === */\n:root,\n[bog_builderui_base=\"slate\"][bog_builderui_lights=\"dark\"],\n[bog_builderui_base=\"slate\"][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_back: #020817;\n\t--bog_builderui_card: #0f172a;\n\t--bog_builderui_field: #1e293b;\n\t--bog_builderui_text: #f8fafc;\n\t--bog_builderui_shade: #94a3b8;\n\t--bog_builderui_line: #1e293b;\n\t--bog_builderui_hover: #ffffff0d;\n}\n[bog_builderui_base=\"slate\"][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_back: #ffffff;\n\t--bog_builderui_card: #f8fafc;\n\t--bog_builderui_field: #f1f5f9;\n\t--bog_builderui_text: #0f172a;\n\t--bog_builderui_shade: #64748b;\n\t--bog_builderui_line: #e2e8f0;\n\t--bog_builderui_hover: #0000000a;\n}\n\n/* === Stone === */\n[bog_builderui_base=\"stone\"][bog_builderui_lights=\"dark\"],\n[bog_builderui_base=\"stone\"][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_back: #0c0a09;\n\t--bog_builderui_card: #1c1917;\n\t--bog_builderui_field: #292524;\n\t--bog_builderui_text: #fafaf9;\n\t--bog_builderui_shade: #a8a29e;\n\t--bog_builderui_line: #292524;\n\t--bog_builderui_hover: #ffffff0d;\n}\n[bog_builderui_base=\"stone\"][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_back: #fafaf9;\n\t--bog_builderui_card: #ffffff;\n\t--bog_builderui_field: #f5f5f4;\n\t--bog_builderui_text: #0c0a09;\n\t--bog_builderui_shade: #78716c;\n\t--bog_builderui_line: #e7e5e4;\n\t--bog_builderui_hover: #0000000a;\n}\n\n/* === Zinc === */\n[bog_builderui_base=\"zinc\"][bog_builderui_lights=\"dark\"],\n[bog_builderui_base=\"zinc\"][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_back: #09090b;\n\t--bog_builderui_card: #18181b;\n\t--bog_builderui_field: #27272a;\n\t--bog_builderui_text: #fafafa;\n\t--bog_builderui_shade: #a1a1aa;\n\t--bog_builderui_line: #27272a;\n\t--bog_builderui_hover: #ffffff0d;\n}\n[bog_builderui_base=\"zinc\"][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_back: #ffffff;\n\t--bog_builderui_card: #fafafa;\n\t--bog_builderui_field: #f4f4f5;\n\t--bog_builderui_text: #09090b;\n\t--bog_builderui_shade: #71717a;\n\t--bog_builderui_line: #e4e4e7;\n\t--bog_builderui_hover: #0000000a;\n}\n\n/* === Gray === */\n[bog_builderui_base=\"gray\"][bog_builderui_lights=\"dark\"],\n[bog_builderui_base=\"gray\"][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_back: #030712;\n\t--bog_builderui_card: #111827;\n\t--bog_builderui_field: #1f2937;\n\t--bog_builderui_text: #f9fafb;\n\t--bog_builderui_shade: #9ca3af;\n\t--bog_builderui_line: #1f2937;\n\t--bog_builderui_hover: #ffffff0d;\n}\n[bog_builderui_base=\"gray\"][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_back: #ffffff;\n\t--bog_builderui_card: #f9fafb;\n\t--bog_builderui_field: #f3f4f6;\n\t--bog_builderui_text: #030712;\n\t--bog_builderui_shade: #6b7280;\n\t--bog_builderui_line: #e5e7eb;\n\t--bog_builderui_hover: #0000000a;\n}\n\n/* ============================================================\n   SYSTEM MODE — the reader has picked no theme, so the OS decides.\n\n   Without this, a page can only be light or dark once JavaScript has\n   run and set `lights`. A prerendered page therefore ships whatever\n   the snapshot was taken in, and a reader whose system is dark gets a\n   bright flash on every cold load. With `lights=\"system\"` in the\n   markup, CSS alone paints the first frame correctly.\n\n   The rules above already give system mode the dark palette; this\n   block flips it to light when the OS asks for light. An explicit\n   `lights=\"light\"` / `lights=\"dark\"` carries the same specificity and\n   a different attribute value, so a deliberate choice is untouched.\n   ============================================================ */\n@media (prefers-color-scheme: light) {\n\t[bog_builderui_base=\"slate\"][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_back: #ffffff;\n\t\t--bog_builderui_card: #f8fafc;\n\t\t--bog_builderui_field: #f1f5f9;\n\t\t--bog_builderui_text: #0f172a;\n\t\t--bog_builderui_shade: #64748b;\n\t\t--bog_builderui_line: #e2e8f0;\n\t\t--bog_builderui_hover: #0000000a;\n\t}\n\t[bog_builderui_base=\"stone\"][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_back: #fafaf9;\n\t\t--bog_builderui_card: #ffffff;\n\t\t--bog_builderui_field: #f5f5f4;\n\t\t--bog_builderui_text: #0c0a09;\n\t\t--bog_builderui_shade: #78716c;\n\t\t--bog_builderui_line: #e7e5e4;\n\t\t--bog_builderui_hover: #0000000a;\n\t}\n\t[bog_builderui_base=\"zinc\"][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_back: #ffffff;\n\t\t--bog_builderui_card: #fafafa;\n\t\t--bog_builderui_field: #f4f4f5;\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_shade: #71717a;\n\t\t--bog_builderui_line: #e4e4e7;\n\t\t--bog_builderui_hover: #0000000a;\n\t}\n\t[bog_builderui_base=\"gray\"][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_back: #ffffff;\n\t\t--bog_builderui_card: #f9fafb;\n\t\t--bog_builderui_field: #f3f4f6;\n\t\t--bog_builderui_text: #030712;\n\t\t--bog_builderui_shade: #6b7280;\n\t\t--bog_builderui_line: #e5e7eb;\n\t\t--bog_builderui_hover: #0000000a;\n\t}\n}\n\n/* ============================================================\n   ACCENT THEMES (vars: control, focus, current, special)\n   ============================================================ */\n\n:root,\n[bog_builderui_theme=\"sky\"] {\n\t--bog_builderui_control: #0ea5e9;\n\t--bog_builderui_focus: #38bdf8;\n\t--bog_builderui_current: #06b6d4;\n\t--bog_builderui_special: #6366f1;\n}\n[bog_builderui_theme=\"rose\"] {\n\t--bog_builderui_control: #f43f5e;\n\t--bog_builderui_focus: #fb7185;\n\t--bog_builderui_current: #ec4899;\n\t--bog_builderui_special: #f97316;\n}\n[bog_builderui_theme=\"violet\"] {\n\t--bog_builderui_control: #8b5cf6;\n\t--bog_builderui_focus: #a78bfa;\n\t--bog_builderui_current: #6366f1;\n\t--bog_builderui_special: #d946ef;\n}\n[bog_builderui_theme=\"emerald\"] {\n\t--bog_builderui_control: #10b981;\n\t--bog_builderui_focus: #34d399;\n\t--bog_builderui_current: #14b8a6;\n\t--bog_builderui_special: #84cc16;\n}\n[bog_builderui_theme=\"amber\"] {\n\t--bog_builderui_control: #f59e0b;\n\t--bog_builderui_focus: #fbbf24;\n\t--bog_builderui_current: #f97316;\n\t--bog_builderui_special: #eab308;\n}\n\n/* ============================================================\n   Bridge to --mol_theme_* so stock $mol components ($mol_chart,\n   $mol_button, $mol_string) pick up our palette automatically.\n   ============================================================ */\n:where([bog_builderui_lights]) {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n/* ============================================================\n   CHART COLOR — independent accent for the chart bar/line\n   ============================================================ */\n:root,\n[bog_builderui_chart=\"blue\"] { --bog_builderui_chart: #3b82f6; }\n[bog_builderui_chart=\"green\"] { --bog_builderui_chart: #10b981; }\n[bog_builderui_chart=\"red\"] { --bog_builderui_chart: #ef4444; }\n[bog_builderui_chart=\"yellow\"] { --bog_builderui_chart: #eab308; }\n[bog_builderui_chart=\"purple\"] { --bog_builderui_chart: #a855f7; }\n\n/* ============================================================\n   Popover for $bog_builderui_select (style the $mol_pop bubble\n   when it sits inside our scope or carries our marker)\n   ============================================================ */\n[bog_builderui_lights] [mol_pop_bubble],\n[bog_builderui_pop] {\n\tbackground-color: var(--bog_builderui_card);\n\tborder: 1px solid var(--bog_builderui_line);\n\tborder-radius: var(--bog_builderui_radius);\n\tbox-shadow: 0 10px 30px #00000059;\n\tpadding: 0.375rem;\n\tgap: 0.125rem;\n\tmin-width: 14rem;\n\toverflow: hidden;\n}\n\n[bog_builderui_lights] [mol_select_filter] {\n\tdisplay: none;\n}\n\n[bog_builderui_lights] [mol_select_option_row] {\n\tborder-radius: calc(var(--bog_builderui_radius) - 2px);\n\tpadding: 0.5rem 0.75rem;\n\tcolor: var(--bog_builderui_text);\n\tfont-family: var(--bog_builderui_font_body);\n\tfont-size: 0.9rem;\n\tbackground-color: transparent;\n}\n\n[bog_builderui_lights] [mol_select_option_row]:hover {\n\tbackground-color: var(--bog_builderui_hover);\n}\n\n[bog_builderui_lights] [mol_select_option_label] {\n\tpadding: 0;\n\tcolor: inherit;\n}\n\n[bog_builderui_lights] [mol_select_no_options] {\n\tcolor: var(--bog_builderui_shade);\n\tpadding: 0.5rem 0.75rem;\n}\n\n[bog_builderui_lights] [bog_builderui_select] [mol_select_trigger] {\n\tgap: 0.5rem;\n\tpadding: 0 0.25rem 0 0;\n}\n[bog_builderui_lights] [bog_builderui_select] [mol_select_trigger] > * {\n\tmargin-right: 0;\n}\n\n/* ============================================================\n   Skeleton — any $mol_view in pending state gets a pulsing surface\n   ============================================================ */\n@keyframes bog_builderui_skeleton_pulse {\n\t0%, 100% { opacity: 1; }\n\t50% { opacity: 0.5; }\n}\n\n[bog_builderui_lights] [mol_view][mol_view_error=\"Promise\"],\n[bog_builderui_lights] [mol_view][mol_view_error=\"$mol_promise_blocker\"] {\n\tborder-radius: var(--bog_builderui_radius);\n\tbackground-color: var(--bog_builderui_field);\n\tcolor: transparent;\n\tanimation: bog_builderui_skeleton_pulse 1.6s ease-in-out infinite;\n}\n\n/* ============================================================\n   Tooltip surface\n   ============================================================ */\n[bog_builderui_lights] [bog_builderui_tooltip] [mol_pop_bubble] {\n\tbackground-color: var(--bog_builderui_text);\n\tcolor: var(--bog_builderui_back);\n\tborder: none;\n\tborder-radius: calc(var(--bog_builderui_radius) - 2px);\n\tpadding: 0.375rem 0.625rem;\n\tfont-family: var(--bog_builderui_font_body);\n\tfont-size: 0.8rem;\n\tbox-shadow: 0 4px 12px #0000004d;\n\tmin-width: 0;\n}\n\n\n[bog_builderui_lights] input,\n[bog_builderui_lights] textarea,\n[bog_builderui_lights] select {\n\tfont-size: max( 16px, 1rem );\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_builderui_skin) = class $bog_builderui_skin extends ($.$mol_plugin) {
+		lights(){
+			return "system";
+		}
+		base(){
+			return "slate";
+		}
+		accent(){
+			return "sky";
+		}
+		chart(){
+			return "blue";
+		}
+		radius(){
+			return "medium";
+		}
+		font_body(){
+			return "inter";
+		}
+		font_head(){
+			return "inter";
+		}
+		attr(){
+			return {
+				"bog_builderui_lights": (this.lights()), 
+				"bog_builderui_base": (this.base()), 
+				"bog_builderui_theme": (this.accent()), 
+				"bog_builderui_chart": (this.chart()), 
+				"bog_builderui_radius": (this.radius()), 
+				"bog_builderui_font_body": (this.font_body()), 
+				"bog_builderui_font_head": (this.font_head())
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_builderui_skin extends $.$bog_builderui_skin {
+            static ios_zoom_fixed = new WeakSet();
+            ios_zoom_fix() {
+                const context = this.$.$mol_dom_context;
+                const doc = context.document;
+                if (!doc || $bog_builderui_skin.ios_zoom_fixed.has(doc))
+                    return;
+                $bog_builderui_skin.ios_zoom_fixed.add(doc);
+                const nav = context.navigator;
+                const ios = /iPad|iPhone|iPod/.test(nav?.userAgent ?? '') || (nav?.platform === 'MacIntel' && nav.maxTouchPoints > 1);
+                if (!ios)
+                    return;
+                const meta = doc.querySelector('meta[name="viewport"]');
+                if (!meta)
+                    return;
+                const content = meta.getAttribute('content') ?? '';
+                if (content.includes('maximum-scale'))
+                    return;
+                meta.setAttribute('content', content + ', maximum-scale=1');
+            }
+            auto() {
+                this.ios_zoom_fix();
+                return super.auto();
+            }
+        }
+        $$.$bog_builderui_skin = $bog_builderui_skin;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Theme css variables
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
+     */
+    $.$bog_theme = $mol_style_prop('mol_theme', [
+        'back',
+        'background',
+        'hover',
+        'card',
+        'current',
+        'special',
+        'text',
+        'control',
+        'shade',
+        'line',
+        'focus',
+        'field',
+        'image',
+        'spirit',
+    ]);
+    /**
+     * Available theme names.
+     * Add new theme to theme.css and add its name here.
+     */
+    $.$bog_theme_names = [
+        '$mol_theme_giper_smash_dark',
+        '$mol_theme_giper_smash_light',
+        '$mol_theme_light',
+        '$mol_theme_dark',
+        '$mol_theme_monefro_light',
+        '$mol_theme_monefro_dark',
+        '$mol_theme_homerent_light',
+        '$mol_theme_homerent_dark',
+        '$mol_theme_upwork',
+        '$mol_theme_ainews_light',
+        '$mol_theme_ainews_dark',
+        '$mol_theme_calm_dark',
+        '$mol_theme_calm_light',
+    ];
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/theme/theme.css", ":root {\n\t--mol_theme_hue: 645deg;\n\t--mol_theme_hue_spread: 90deg;\n\t--mol_theme_background: var(--mol_theme_back);\n\n\t/* Bog theme semantic aliases */\n\t--mol_theme_primary_hue: var(--mol_theme_hue);\n\t--mol_theme_secondary_hue: calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread));\n\t--mol_theme_tertiary_hue: calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread));\n\t--mol_theme_accent_hue: calc(var(--mol_theme_hue) + 180deg);\n}\n\n:where([mol_theme]) {\n\tcolor: var(--mol_theme_text);\n\tfill: var(--mol_theme_text);\n\tbackground-color: var(--mol_theme_back);\n}\n\n:root,\n[mol_theme='$mol_theme_dark'],\n:where([mol_theme='$mol_theme_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\t--mol_theme_spirit: hsl(0deg, 0%, 0%, 0.75);\n\n\t--bog_theme_back: hsl(var(--bog_theme_hue), 8%, 12%);\n\t--bog_theme_card: hsl(var(--bog_theme_hue), 15%, 18%, 0.25);\n\t--bog_theme_field: hsl(var(--bog_theme_hue), 12%, 10%, 0.25);\n\t--bog_theme_hover: hsl(var(--bog_theme_hue), 0%, 50%, 0.1);\n\n\t--bog_theme_text: hsl(var(--bog_theme_hue), 8%, 85%);\n\t--bog_theme_shade: hsl(var(--bog_theme_hue), 12%, 65%, 1);\n\t--bog_theme_line: hsl(var(--bog_theme_hue), 8%, 50%, 0.25);\n\t--bog_theme_focus: hsl(calc(var(--bog_theme_hue) + 180deg), 60%, 65%);\n\n\t--bog_theme_control: hsl(var(--bog_theme_hue), 25%, 70%);\n\t--bog_theme_current: hsl(calc(var(--bog_theme_hue) - var(--bog_theme_hue_spread)), 25%, 70%);\n\t--bog_theme_special: hsl(calc(var(--bog_theme_hue) + var(--bog_theme_hue_spread)), 25%, 70%);\n}\n@supports (color: oklch(0% 0 0deg)) {\n\t:root,\n\t[mol_theme='$mol_theme_dark'],\n\t:where([mol_theme='$mol_theme_dark']) [mol_theme] {\n\t\t--bog_theme_back: oklch(12% 0.02 var(--bog_theme_hue));\n\t\t--bog_theme_card: oklch(18% 0.03 var(--bog_theme_hue) / 0.25);\n\t\t--bog_theme_field: oklch(10% 0.015 var(--bog_theme_hue) / 0.25);\n\t\t--bog_theme_hover: oklch(70% 0 var(--bog_theme_hue) / 0.1);\n\n\t\t--bog_theme_text: oklch(85% 0.025 var(--bog_theme_hue));\n\t\t--bog_theme_shade: oklch(65% 0.035 var(--bog_theme_hue));\n\t\t--bog_theme_line: oklch(50% 0.025 var(--bog_theme_hue) / 0.25);\n\t\t--bog_theme_focus: oklch(75% 0.15 calc(var(--bog_theme_hue) + 180deg));\n\n\t\t--bog_theme_control: oklch(70% 0.06 var(--bog_theme_hue));\n\t\t--bog_theme_current: oklch(70% 0.08 calc(var(--bog_theme_hue) - var(--bog_theme_hue_spread)));\n\t\t--bog_theme_special: oklch(70% 0.08 calc(var(--bog_theme_hue) + var(--bog_theme_hue_spread)));\n\t}\n}\n\n[mol_theme='$mol_theme_light'],\n:where([mol_theme='$mol_theme_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: hsl(0deg, 0%, 100%, 0.75);\n\n\t--mol_theme_back: hsl(var(--mol_theme_hue), 0%, 100%);\n\t--mol_theme_card: hsl(var(--mol_theme_hue), 50%, 100%, 0.5);\n\t--mol_theme_field: hsl(var(--mol_theme_hue), 50%, 100%, 0.75);\n\t--mol_theme_hover: hsl(var(--mol_theme_hue), 0%, 50%, 0.1);\n\n\t--mol_theme_text: hsl(var(--mol_theme_hue), 0%, 0%);\n\t--mol_theme_shade: hsl(var(--mol_theme_hue), 0%, 40%, 1);\n\t--mol_theme_line: hsl(var(--mol_theme_hue), 0%, 50%, 0.25);\n\t--mol_theme_focus: hsl(calc(var(--mol_theme_hue) + 180deg), 100%, 40%);\n\n\t--mol_theme_control: hsl(var(--mol_theme_hue), 80%, 30%);\n\t--mol_theme_current: hsl(calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)), 80%, 30%);\n\t--mol_theme_special: hsl(calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)), 80%, 30%);\n}\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_light'],\n\t:where([mol_theme='$mol_theme_light']) [mol_theme] {\n\t\t--mol_theme_back: oklch(100% 0 var(--mol_theme_hue));\n\t\t--mol_theme_card: oklch(99% 0.01 var(--mol_theme_hue) / 0.5);\n\t\t--mol_theme_field: oklch(100% 0 var(--mol_theme_hue) / 0.5);\n\t\t--mol_theme_hover: oklch(70% 0 var(--mol_theme_hue) / 0.1);\n\n\t\t--mol_theme_text: oklch(20% 0 var(--mol_theme_hue));\n\t\t--mol_theme_shade: oklch(60% 0 var(--mol_theme_hue));\n\t\t--mol_theme_line: oklch(50% 0 var(--mol_theme_hue) / 0.25);\n\t\t--mol_theme_focus: oklch(60% 0.2 calc(var(--mol_theme_hue) + 180deg));\n\n\t\t--mol_theme_control: oklch(40% 0.15 var(--mol_theme_hue));\n\t\t--mol_theme_current: oklch(50% 0.2 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)));\n\t\t--mol_theme_special: oklch(50% 0.2 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)));\n\t}\n}\n\n:where(:root, [mol_theme='$mol_theme_dark']) [mol_theme='$mol_theme_base'] {\n\t--mol_theme_back: oklch(25% 0.075 var(--mol_theme_hue));\n\t--mol_theme_card: oklch(35% 0.1 var(--mol_theme_hue) / 0.25);\n}\n:where([mol_theme='$mol_theme_light']) [mol_theme='$mol_theme_base'] {\n\t--mol_theme_back: oklch(85% 0.075 var(--mol_theme_hue));\n\t--mol_theme_card: oklch(98% 0.03 var(--mol_theme_hue) / 0.25);\n}\n\n:where(:root, [mol_theme='$mol_theme_dark']) [mol_theme='$mol_theme_current'] {\n\t--mol_theme_back: oklch(25% 0.05 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(35% 0.1 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)) / 0.25);\n}\n:where([mol_theme='$mol_theme_light']) [mol_theme='$mol_theme_current'] {\n\t--mol_theme_back: oklch(85% 0.05 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)) / 0.25);\n}\n\n:where(:root, [mol_theme='$mol_theme_dark']) [mol_theme='$mol_theme_special'] {\n\t--mol_theme_back: oklch(25% 0.05 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(35% 0.1 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)) / 0.25);\n}\n:where([mol_theme='$mol_theme_light']) [mol_theme='$mol_theme_special'] {\n\t--mol_theme_back: oklch(85% 0.05 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)) / 0.25);\n}\n\n:where(:root, [mol_theme='$mol_theme_dark']) [mol_theme='$mol_theme_accent'] {\n\t--mol_theme_back: oklch(35% 0.1 calc(var(--mol_theme_hue) + 180deg));\n\t--mol_theme_card: oklch(45% 0.15 calc(var(--mol_theme_hue) + 180deg) / 0.25);\n}\n:where([mol_theme='$mol_theme_light']) [mol_theme='$mol_theme_accent'] {\n\t--mol_theme_back: oklch(83% 0.1 calc(var(--mol_theme_hue) + 180deg));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) + 180deg) / 0.25);\n}\n\n/* Upwork theme - based on Upwork brand colors */\n[mol_theme='$mol_theme_upwork'],\n:where([mol_theme='$mol_theme_upwork']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: rgba(255, 255, 255, 0.75);\n\n\t/* Upwork brand colors: #73bb44 (primary green), #4fab4a (medium green), #385925 (dark green), #b5deb1 (light green) */\n\t--mol_theme_back: #ffffff;\n\t--mol_theme_card: #f9fcf7;\n\t--mol_theme_field: #ffffff;\n\t--mol_theme_hover: rgba(115, 187, 68, 0.1);\n\n\t--mol_theme_text: #4c4444;\n\t--mol_theme_shade: #6e6d7a;\n\t--mol_theme_line: rgba(115, 187, 68, 0.25);\n\t--mol_theme_focus: #73bb44;\n\n\t--mol_theme_control: #73bb44;\n\t--mol_theme_current: #4fab4a;\n\t--mol_theme_special: #385925;\n}\n\n/* Ainews dark theme - based on Ainews brand palette */\n[mol_theme='$mol_theme_ainews_dark'],\n:where([mol_theme='$mol_theme_ainews_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\n\t/* ВАЖНО: mol_* — именно их читает демка */\n\t--mol_theme_back: #3e3e3e; /* paper dark */\n\t--mol_theme_card: #4a4a4a40; /* paper-2 dark 25% */\n\t--mol_theme_field: #4c4c4c40; /* chip dark 25% */\n\t--mol_theme_hover: #5a5a5a1a; /* edge dark 10% */\n\n\t--mol_theme_text: #bcbcbc; /* ink dark */\n\t--mol_theme_shade: #909090; /* ink-muted dark */\n\t--mol_theme_line: #5a5a5a40; /* edge dark 25% */\n\t--mol_theme_focus: #a8bcff; /* accent dark */\n\n\t--mol_theme_control: #a8bcff; /* accent dark */\n\t--mol_theme_current: #c7b18c; /* accent-2 dark */\n\t--mol_theme_special: #d4bf9d; /* accent-2 lighter */\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_ainews_dark'],\n\t:where([mol_theme='$mol_theme_ainews_dark']) [mol_theme] {\n\t\t--mol_theme_back: #3e3e3e;\n\t\t--mol_theme_card: #4a4a4a40;\n\t\t--mol_theme_field: #4c4c4c40;\n\t\t--mol_theme_hover: #5a5a5a1a;\n\n\t\t--mol_theme_text: #bcbcbc;\n\t\t--mol_theme_shade: #909090;\n\t\t--mol_theme_line: #5a5a5a40;\n\t\t--mol_theme_focus: #a8bcff;\n\n\t\t--mol_theme_control: #a8bcff;\n\t\t--mol_theme_current: #c7b18c;\n\t\t--mol_theme_special: #d4bf9d;\n\t}\n}\n\n/* Ainews light theme */\n[mol_theme='$mol_theme_ainews_light'],\n:where([mol_theme='$mol_theme_ainews_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: #fbf8f1bf; /* 75% */\n\n\t--mol_theme_back: #f7f3e9; /* paper */\n\t--mol_theme_card: #fbf8f180; /* paper-2 50% */\n\t--mol_theme_field: #efe8d8bf; /* chip 75% */\n\t--mol_theme_hover: #ded7c81a; /* edge 10% */\n\n\t--mol_theme_text: #22211f; /* ink */\n\t--mol_theme_shade: #6e6a62; /* ink-muted */\n\t--mol_theme_line: #ded7c840; /* edge 25% */\n\t--mol_theme_focus: #3b5aad; /* accent */\n\n\t--mol_theme_control: #3b5aad; /* accent */\n\t--mol_theme_current: #92734b; /* accent-2 */\n\t--mol_theme_special: #c7b18c; /* accent-2 lighter */\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_ainews_light'],\n\t:where([mol_theme='$mol_theme_ainews_light']) [mol_theme] {\n\t\t--mol_theme_back: #f7f3e9;\n\t\t--mol_theme_card: #fbf8f180;\n\t\t--mol_theme_field: #efe8d8bf;\n\t\t--mol_theme_hover: #ded7c81a;\n\n\t\t--mol_theme_text: #22211f;\n\t\t--mol_theme_shade: #6e6a62;\n\t\t--mol_theme_line: #ded7c840;\n\t\t--mol_theme_focus: #3b5aad;\n\n\t\t--mol_theme_control: #3b5aad;\n\t\t--mol_theme_current: #92734b;\n\t\t--mol_theme_special: #c7b18c;\n\t}\n}\n\n/* HomeRent dark theme */\n[mol_theme='$mol_theme_homerent_dark'],\n:where([mol_theme='$mol_theme_homerent_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\t--mol_theme_spirit: rgba(0, 0, 0, 0.6);\n\n\t--mol_theme_back: #2f2f2f;\n\t--mol_theme_background: #f5f5f5;\n\t--mol_theme_card: #3a3a3a;\n\t--mol_theme_field: #3a3a3a;\n\t--mol_theme_hover: rgba(255, 255, 255, 0.06);\n\n\t--mol_theme_text: #f5f5f5;\n\t--mol_theme_shade: #c7c7c7;\n\t--mol_theme_line: #ffffff26;\n\t--mol_theme_focus: #8fc32b;\n\n\t--mol_theme_control: #dbe05b;\n\t--mol_theme_current: #8fc32b;\n\t--mol_theme_special: #8fc32b;\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_homerent_dark'],\n\t:where([mol_theme='$mol_theme_homerent_dark']) [mol_theme] {\n\t\t--mol_theme_back: #2f2f2f;\n\t\t--mol_theme_background: #f5f5f5;\n\t\t--mol_theme_card: #3a3a3a;\n\t\t--mol_theme_field: #3a3a3a;\n\t\t--mol_theme_hover: rgba(255, 255, 255, 0.06);\n\n\t\t--mol_theme_text: #f5f5f5;\n\t\t--mol_theme_shade: #c7c7c7;\n\t\t--mol_theme_line: #ffffff26;\n\t\t--mol_theme_focus: #8fc32b;\n\n\t\t--mol_theme_control: #dbe05b;\n\t\t--mol_theme_current: #8fc32b;\n\t\t--mol_theme_special: #8fc32b;\n\t}\n}\n\n/* HomeRent light theme */\n[mol_theme='$mol_theme_homerent_light'],\n:where([mol_theme='$mol_theme_homerent_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: rgba(245, 245, 245, 0.75);\n\n\t--mol_theme_back: #ffffff;\n\t--mol_theme_background: #f5f5f5;\n\t--mol_theme_card: #ffffff;\n\t--mol_theme_field: #ffffff;\n\t--mol_theme_hover: #8fc32b1a;\n\n\t--mol_theme_text: #4c4c4c;\n\t--mol_theme_shade: #707070;\n\t--mol_theme_line: #4c4c4c26;\n\t--mol_theme_focus: #8fc32b;\n\n\t--mol_theme_control: #dbe05b;\n\t--mol_theme_current: #8fc32b;\n\t--mol_theme_special: #8fc32b;\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_homerent_light'],\n\t:where([mol_theme='$mol_theme_homerent_light']) [mol_theme] {\n\t\t--mol_theme_back: #ffffff;\n\t\t--mol_theme_background: #f5f5f5;\n\t\t--mol_theme_card: #ffffff;\n\t\t--mol_theme_field: #ffffff;\n\t\t--mol_theme_hover: #8fc32b1a;\n\n\t\t--mol_theme_text: #4c4c4c;\n\t\t--mol_theme_shade: #707070;\n\t\t--mol_theme_line: #4c4c4c26;\n\t\t--mol_theme_focus: #8fc32b;\n\n\t\t--mol_theme_control: #dbe05b;\n\t\t--mol_theme_current: #8fc32b;\n\t\t--mol_theme_special: #8fc32b;\n\t}\n}\n\n/* Giper Smash dark theme - original game palette */\n[mol_theme='$mol_theme_giper_smash_dark'],\n:where([mol_theme='$mol_theme_giper_smash_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\t--mol_theme_spirit: rgba(0, 0, 0, 0.85);\n\n\t--mol_theme_back: #1a1a2e;\n\t--mol_theme_card: #2d2d44;\n\t--mol_theme_field: #16213e;\n\t--mol_theme_hover: rgba(118, 75, 162, 0.15);\n\n\t--mol_theme_text: #ffffff;\n\t--mol_theme_shade: #b0b0cc;\n\t--mol_theme_line: rgba(255, 255, 255, 0.12);\n\t--mol_theme_focus: #f5b041;\n\n\t--mol_theme_control: #44a08d;\n\t--mol_theme_current: #0088cc;\n\t--mol_theme_special: #764ba2;\n}\n\n/* Giper Smash light theme - bright game palette */\n[mol_theme='$mol_theme_giper_smash_light'],\n:where([mol_theme='$mol_theme_giper_smash_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: rgba(255, 255, 255, 0.85);\n\n\t--mol_theme_back: #f0eef5;\n\t--mol_theme_card: #ffffff;\n\t--mol_theme_field: #e8e5f0;\n\t--mol_theme_hover: rgba(118, 75, 162, 0.08);\n\n\t--mol_theme_text: #1a1a2e;\n\t--mol_theme_shade: #5c5c7a;\n\t--mol_theme_line: rgba(26, 26, 46, 0.12);\n\t--mol_theme_focus: #d4941a;\n\n\t--mol_theme_control: #2e8b73;\n\t--mol_theme_current: #0077b3;\n\t--mol_theme_special: #6a3d99;\n}\n\n/* Monefro dark theme - inspired by Monefy */\n[mol_theme='$mol_theme_monefro_dark'],\n:where([mol_theme='$mol_theme_monefro_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\t--mol_theme_spirit: rgba(0, 0, 0, 0.6);\n\n\t--mol_theme_back: #24201c;\n\t--mol_theme_card: #2c2722;\n\t--mol_theme_field: #29241f;\n\t--mol_theme_hover: rgba(255, 255, 255, 0.04);\n\n\t--mol_theme_text: #f0e7dc;\n\t--mol_theme_shade: #b5a99c;\n\t--mol_theme_line: rgba(255, 255, 255, 0.12);\n\t--mol_theme_focus: #56c78a;\n\n\t--mol_theme_control: #56c78a;\n\t--mol_theme_current: #f2776e;\n\t--mol_theme_special: #f6b04a;\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_monefro_dark'],\n\t:where([mol_theme='$mol_theme_monefro_dark']) [mol_theme] {\n\t\t--mol_theme_back: #24201c;\n\t\t--mol_theme_card: #2c2722;\n\t\t--mol_theme_field: #29241f;\n\t\t--mol_theme_hover: rgba(255, 255, 255, 0.04);\n\n\t\t--mol_theme_text: #f0e7dc;\n\t\t--mol_theme_shade: #b5a99c;\n\t\t--mol_theme_line: rgba(255, 255, 255, 0.12);\n\t\t--mol_theme_focus: #56c78a;\n\n\t\t--mol_theme_control: #56c78a;\n\t\t--mol_theme_current: #f2776e;\n\t\t--mol_theme_special: #f6b04a;\n\t}\n}\n\n/* Monefro light theme - inspired by Monefy */\n[mol_theme='$mol_theme_monefro_light'],\n:where([mol_theme='$mol_theme_monefro_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: rgba(255, 255, 255, 0.75);\n\n\t--mol_theme_back: #f6f2ea;\n\t--mol_theme_card: #ffffff;\n\t--mol_theme_field: #fff8ef;\n\t--mol_theme_hover: rgba(0, 0, 0, 0.04);\n\n\t--mol_theme_text: #3f3b36;\n\t--mol_theme_shade: #8b8278;\n\t--mol_theme_line: rgba(64, 55, 46, 0.15);\n\t--mol_theme_focus: #2f9a6a;\n\n\t--mol_theme_control: #2f9a6a;\n\t--mol_theme_current: #e85b54;\n\t--mol_theme_special: #f3a43b;\n}\n\n@supports (color: oklch(0% 0 0deg)) {\n\t[mol_theme='$mol_theme_monefro_light'],\n\t:where([mol_theme='$mol_theme_monefro_light']) [mol_theme] {\n\t\t--mol_theme_back: #f6f2ea;\n\t\t--mol_theme_card: #ffffff;\n\t\t--mol_theme_field: #fff8ef;\n\t\t--mol_theme_hover: rgba(0, 0, 0, 0.04);\n\n\t\t--mol_theme_text: #3f3b36;\n\t\t--mol_theme_shade: #8b8278;\n\t\t--mol_theme_line: rgba(64, 55, 46, 0.15);\n\t\t--mol_theme_focus: #2f9a6a;\n\n\t\t--mol_theme_control: #2f9a6a;\n\t\t--mol_theme_current: #e85b54;\n\t\t--mol_theme_special: #f3a43b;\n\t}\n}\n\n/* ═══════════════════════════════════════════════════════════════\n   Calm theme — universal working theme (draft for review)\n   Base hue: 230° (blue-gray), spread: 90°\n   Style: quiet, professional, no noise\n   ═══════════════════════════════════════════════════════════════ */\n\n/* Calm dark theme */\n[mol_theme='$mol_theme_calm_dark'],\n:where([mol_theme='$mol_theme_calm_dark']) [mol_theme] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n\t--mol_theme_spirit: #000000bf;\n\t--mol_theme_hue: 230deg;\n\t--mol_theme_hue_spread: 90deg;\n\n\t--mol_theme_back: #0d1117;\n\t--mol_theme_card: #161b2240;\n\t--mol_theme_field: #0a0e1440;\n\t--mol_theme_hover: #ffffff0c;\n\n\t--mol_theme_text: #e6edf3;\n\t--mol_theme_shade: #8b949e;\n\t--mol_theme_line: #30363d;\n\t--mol_theme_focus: #d29922;\n\n\t--mol_theme_control: #2f81f7;\n\t--mol_theme_current: #3fb950;\n\t--mol_theme_special: #a371f7;\n}\n\n/* Calm light theme */\n[mol_theme='$mol_theme_calm_light'],\n:where([mol_theme='$mol_theme_calm_light']) [mol_theme] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t--mol_theme_spirit: #f7f8fabf;\n\t--mol_theme_hue: 230deg;\n\t--mol_theme_hue_spread: 90deg;\n\n\t--mol_theme_back: #f7f8fa;\n\t--mol_theme_card: #ffffff80;\n\t--mol_theme_field: #e8eaf0bf;\n\t--mol_theme_hover: #0000000a;\n\n\t--mol_theme_text: #1a1c23;\n\t--mol_theme_shade: #656a80;\n\t--mol_theme_line: #3a3e5026;\n\t--mol_theme_focus: #b87518;\n\n\t--mol_theme_control: #3560b8;\n\t--mol_theme_current: #28856e;\n\t--mol_theme_special: #8a4aad;\n}\n\n/* Calm dark sub-themes */\n:where([mol_theme='$mol_theme_calm_dark']) [mol_theme='$mol_theme_base'] {\n\t--mol_theme_back: #1a2840;\n\t--mol_theme_card: #243450;\n}\n:where([mol_theme='$mol_theme_calm_dark']) [mol_theme='$mol_theme_current'] {\n\t--mol_theme_back: #143028;\n\t--mol_theme_card: #1c3e3450;\n}\n:where([mol_theme='$mol_theme_calm_dark']) [mol_theme='$mol_theme_special'] {\n\t--mol_theme_back: #2a1c48;\n\t--mol_theme_card: #3a2a5c50;\n}\n:where([mol_theme='$mol_theme_calm_dark']) [mol_theme='$mol_theme_accent'] {\n\t--mol_theme_back: #3a1c2a;\n\t--mol_theme_card: #4c283a50;\n}\n\n:where([mol_theme='$mol_theme_calm_light']) [mol_theme='$mol_theme_base'] {\n\t--mol_theme_back: oklch(85% 0.075 var(--mol_theme_hue));\n\t--mol_theme_card: oklch(98% 0.03 var(--mol_theme_hue) / 0.25);\n}\n:where([mol_theme='$mol_theme_calm_light']) [mol_theme='$mol_theme_current'] {\n\t--mol_theme_back: oklch(85% 0.05 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) - var(--mol_theme_hue_spread)) / 0.25);\n}\n:where([mol_theme='$mol_theme_calm_light']) [mol_theme='$mol_theme_special'] {\n\t--mol_theme_back: oklch(85% 0.05 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) + var(--mol_theme_hue_spread)) / 0.25);\n}\n:where([mol_theme='$mol_theme_calm_light']) [mol_theme='$mol_theme_accent'] {\n\t--mol_theme_back: oklch(83% 0.1 calc(var(--mol_theme_hue) + 180deg));\n\t--mol_theme_card: oklch(98% 0.03 calc(var(--mol_theme_hue) + 180deg) / 0.25);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_theme_auto) = class $bog_theme_auto extends ($.$mol_plugin) {
+		themes_default(){
+			return [];
+		}
+		theme(){
+			return "";
+		}
+		themes(){
+			return (this.themes_default());
+		}
+		theme_light(){
+			return "$mol_theme_light";
+		}
+		theme_dark(){
+			return "$mol_theme_dark";
+		}
+		mode(next){
+			if(next !== undefined) return next;
+			return "system";
+		}
+		mode_next(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_next(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_prev(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_set(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		is_light_now(){
+			return false;
+		}
+		attr(){
+			return {"mol_theme": (this.theme())};
+		}
+	};
+	($mol_mem(($.$bog_theme_auto.prototype), "mode"));
+	($mol_mem(($.$bog_theme_auto.prototype), "mode_next"));
+	($mol_mem(($.$bog_theme_auto.prototype), "theme_next"));
+	($mol_mem(($.$bog_theme_auto.prototype), "theme_prev"));
+	($mol_mem(($.$bog_theme_auto.prototype), "theme_set"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_state_session extends $mol_object {
+        static 'native()';
+        static native() {
+            if (this['native()'])
+                return this['native()'];
+            check: try {
+                const native = $mol_dom_context.sessionStorage;
+                if (!native)
+                    break check;
+                native.setItem('', '');
+                native.removeItem('');
+                return this['native()'] = native;
+            }
+            catch (error) {
+                console.warn(error);
+            }
+            return this['native()'] = {
+                getItem(key) {
+                    return this[':' + key];
+                },
+                setItem(key, value) {
+                    this[':' + key] = value;
+                },
+                removeItem(key) {
+                    this[':' + key] = void 0;
+                }
+            };
+        }
+        static value(key, next) {
+            if (next === void 0)
+                return JSON.parse(this.native().getItem(key) || 'null');
+            if (next === null)
+                this.native().removeItem(key);
+            else
+                this.native().setItem(key, JSON.stringify(next));
+            return next;
+        }
+        prefix() { return ''; }
+        value(key, next) {
+            return $mol_state_session.value(this.prefix() + '.' + key, next);
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $mol_state_session, "value", null);
+    $.$mol_state_session = $mol_state_session;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_theme_auto extends $.$bog_theme_auto {
+            themes_default() {
+                return this.$.$bog_theme_names;
+            }
+            /** Stores current mode in localStorage. Defaults to 'system'.
+             *  При записи дёргает класс `.bog_theme_switching` на `<html>` —
+             *  это активирует CSS-transition'ы на цветах темы.
+             */
+            mode(next) {
+                if (next !== undefined && typeof document !== 'undefined') {
+                    const root = document.documentElement;
+                    root.classList.add('bog_theme_switching');
+                    setTimeout(() => root.classList.remove('bog_theme_switching'), 350);
+                }
+                return this.$.$mol_state_local.value(`${this}.mode()`, next) ?? 'system';
+            }
+            click_step(next) {
+                return this.$.$mol_state_session.value(`${this}.click_step()`, next) ?? 0;
+            }
+            /** 3-click cycle: opposite → back → system. */
+            mode_next() {
+                const step = (this.click_step() + 1) % 3;
+                this.click_step(step);
+                if (step === 0)
+                    this.mode('system');
+                else
+                    this.mode(this.is_light_now() ? 'dark' : 'light');
+            }
+            system_light() {
+                return this.$.$mol_media.match('(prefers-color-scheme: light)');
+            }
+            is_light_now() {
+                const mode = this.mode();
+                if (mode === 'light')
+                    return true;
+                if (mode === 'dark')
+                    return false;
+                if (mode === 'system')
+                    return this.system_light();
+                return this.theme().toLowerCase().includes('light');
+            }
+            theme_index(next) {
+                const stored = this.$.$mol_state_local.value(`${this}.theme_index()`, next);
+                if (stored === null && next === undefined) {
+                    return this.system_theme_index();
+                }
+                return stored ?? 0;
+            }
+            system_theme_index() {
+                const themes = this.themes();
+                const preferredTheme = this.system_light() ? this.theme_light() : this.theme_dark();
+                const index = themes.indexOf(preferredTheme);
+                return index !== -1 ? index : 0;
+            }
+            theme() {
+                const mode = this.mode();
+                if (mode === 'light')
+                    return this.theme_light();
+                if (mode === 'dark')
+                    return this.theme_dark();
+                if (mode === 'custom') {
+                    const themes = this.themes();
+                    const index = this.theme_index();
+                    if (themes.length === 0)
+                        return this.theme_light();
+                    return themes[index % themes.length];
+                }
+                return this.system_light() ? this.theme_light() : this.theme_dark();
+            }
+            theme_next() {
+                this.mode_next();
+            }
+            theme_prev() {
+                const cycle = ['system', 'light', 'dark'];
+                const i = cycle.indexOf(this.mode());
+                this.mode(cycle[i <= 0 ? cycle.length - 1 : i - 1]);
+            }
+            /** Called by picker. Sets mode to light/dark or custom for themed palettes. */
+            theme_set(index) {
+                const themes = this.themes();
+                if (themes.length === 0)
+                    return;
+                const theme = themes[index % themes.length];
+                if (theme === this.theme_light()) {
+                    this.mode('light');
+                }
+                else if (theme === this.theme_dark()) {
+                    this.mode('dark');
+                }
+                else {
+                    this.mode('custom');
+                    this.theme_index(index % themes.length);
+                }
+                this.click_step(0);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "mode", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "click_step", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_auto.prototype, "mode_next", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "system_light", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "is_light_now", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "theme_index", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "system_theme_index", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_auto.prototype, "theme", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_auto.prototype, "theme_next", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_auto.prototype, "theme_prev", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_auto.prototype, "theme_set", null);
+        $$.$bog_theme_auto = $bog_theme_auto;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/theme/auto/auto.view.css", ".bog_theme_switching,\n.bog_theme_switching * {\n\ttransition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, fill 300ms ease !important;\n}\n\n@media (prefers-reduced-motion: reduce) {\n\t.bog_theme_switching,\n\t.bog_theme_switching * {\n\t\ttransition: none !important;\n\t}\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_popup_plugin) = class $bog_popup_plugin extends ($.$mol_plugin) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        // В Chrome popup/iframe `html` и `body` стартуют с `width: auto`, что для
+        // flex-column root равно 0px — UI схлопывается. Распираем глобально.
+        $mol_style_attach('bog/popup/popup.view.css', `
+		html, body {
+			min-width: 20rem;
+			min-height: 32rem;
+		}
+	`);
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_tooltip_plugin) = class $bog_tooltip_plugin extends ($.$mol_plugin) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_tooltip_hush_mark = 'data-mol-tip-off';
+    $.$bog_tooltip_hush_tip = 'data-mol-tip';
+    function $bog_tooltip_hush(node) {
+        const host = node?.closest(`[${$.$bog_tooltip_hush_tip}]`) ?? null;
+        if (!host)
+            return '';
+        host.setAttribute($.$bog_tooltip_hush_mark, '');
+        return host.getAttribute($.$bog_tooltip_hush_tip) ?? '';
+    }
+    $.$bog_tooltip_hush = $bog_tooltip_hush;
+    function $bog_tooltip_hush_off(root) {
+        const held = [...root?.querySelectorAll(`[${$.$bog_tooltip_hush_mark}]`) ?? []];
+        for (const host of held)
+            host.removeAttribute($.$bog_tooltip_hush_mark);
+        return held.length;
+    }
+    $.$bog_tooltip_hush_off = $bog_tooltip_hush_off;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_tooltip_room_gap = 8;
+    $.$bog_tooltip_room_need = 45;
+    function $bog_tooltip_room(box, view, view_height = 0) {
+        const center = box.left + box.width / 2;
+        const side = { left: center, right: view - center };
+        if (!view_height || box.bottom === undefined || box.height === undefined) {
+            return { ...side, flip: false, lift: 0 };
+        }
+        const below = view_height - box.bottom;
+        const above = box.bottom - box.height;
+        if (below >= $.$bog_tooltip_room_need)
+            return { ...side, flip: false, lift: 0 };
+        if (above <= below)
+            return { ...side, flip: false, lift: 0 };
+        return { ...side, flip: true, lift: box.height + $.$bog_tooltip_room_gap };
+    }
+    $.$bog_tooltip_room = $bog_tooltip_room;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        if (typeof $mol_dom_context !== 'undefined' && $mol_dom_context.document) {
+            const doc = $mol_dom_context.document;
+            const capture = (event) => {
+                $bog_tooltip_hush_off(doc);
+                const tips = [];
+                let node = event.target instanceof $mol_dom_context.Element ? event.target : null;
+                for (; node; node = node.parentElement) {
+                    const title = node.getAttribute('title');
+                    if (title) {
+                        node.setAttribute('data-mol-tip', title);
+                        node.removeAttribute('title');
+                    }
+                    if (node instanceof $mol_dom_context.HTMLElement && node.hasAttribute('data-mol-tip'))
+                        tips.push(node);
+                }
+                const view = doc.documentElement.clientWidth;
+                const view_height = doc.documentElement.clientHeight;
+                const placed = tips.map(tip => [tip, $bog_tooltip_room(tip.getBoundingClientRect(), view, view_height)]);
+                for (const [tip, room] of placed) {
+                    tip.style.setProperty('--bog_tooltip_left', `${room.left}px`);
+                    tip.style.setProperty('--bog_tooltip_right', `${room.right}px`);
+                    tip.style.setProperty('--bog_tooltip_up', room.flip ? `calc( -100% - ${room.lift}px )` : '0px');
+                }
+            };
+            const hush = (event) => {
+                if (event.key !== 'Escape')
+                    return;
+                $bog_tooltip_hush(doc.activeElement);
+            };
+            doc.addEventListener('mouseover', capture, true);
+            doc.addEventListener('focusin', capture, true);
+            doc.addEventListener('keydown', hush, true);
+        }
+        const shown = (selector) => `
+		${selector}::after {
+			content: attr(data-mol-tip);
+			position: absolute;
+			z-index: 1000;
+			top: calc(100% + 4px);
+			left: 50%;
+			width: max-content;
+			max-width: min(80vw, 24rem);
+			white-space: normal;
+			overflow-wrap: anywhere;
+			transform: translate(
+				clamp(calc(8px - var(--bog_tooltip_left, 100vw)), -50%, calc(var(--bog_tooltip_right, 100vw) - 8px - 100%)),
+				var(--bog_tooltip_up, 0px)
+			);
+			background: var(--mol_theme_card);
+			color: var(--mol_theme_text);
+			padding: 0.25rem 0.5rem;
+			border-radius: 0.25rem;
+			font-size: 0.75rem;
+			line-height: 1.2;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+			pointer-events: none;
+			animation: bog-tooltip-in 0.08s ease-out;
+		}
+	`;
+        $mol_style_attach('bog/tooltip/tooltip.view.css', `
+		[data-mol-tip] {
+			position: relative;
+		}
+		@media (hover: hover) and (pointer: fine) {
+			${shown('[data-mol-tip]:hover')}
+		}
+		${shown('[data-mol-tip]:focus-visible:not([data-mol-tip-off])')}
+		@keyframes bog-tooltip-in {
+			from { opacity: 0; translate: 0 -2px; }
+			to   { opacity: 1; translate: 0 0; }
+		}
+	`);
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_image) = class $mol_image extends ($.$mol_view) {
+		uri(){
+			return "";
+		}
+		title(){
+			return "";
+		}
+		loading(){
+			return "lazy";
+		}
+		decoding(){
+			return "async";
+		}
+		cors(){
+			return null;
+		}
+		natural_width(){
+			return 0;
+		}
+		natural_height(){
+			return 0;
+		}
+		load(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "img";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"src": (this.uri()), 
+				"title": (this.hint()), 
+				"alt": (this.title()), 
+				"loading": (this.loading()), 
+				"decoding": (this.decoding()), 
+				"crossOrigin": (this.cors()), 
+				"width": (this.natural_width()), 
+				"height": (this.natural_height())
+			};
+		}
+		event(){
+			return {"load": (next) => (this.load(next))};
+		}
+		minimal_width(){
+			return 16;
+		}
+		minimal_height(){
+			return 16;
+		}
+	};
+	($mol_mem(($.$mol_image.prototype), "load"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_image extends $.$mol_image {
+            natural_width(next) {
+                const dom = this.dom_node();
+                if (dom.naturalWidth)
+                    return dom.naturalWidth;
+                const found = this.uri().match(/\bwidth=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            natural_height(next) {
+                const dom = this.dom_node();
+                if (dom.naturalHeight)
+                    return dom.naturalHeight;
+                const found = this.uri().match(/\bheight=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            load() {
+                this.natural_width(null);
+                this.natural_height(null);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_width", null);
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_height", null);
+        $$.$mol_image = $mol_image;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_chart_timeline) = class $mol_icon_chart_timeline extends ($.$mol_icon) {
+		path(){
+			return "M2,2H4V20H22V22H2V2M7,10H17V13H7V10M11,15H21V18H11V15M6,4H22V8H20V6H8V8H6V4Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_chart_timeline_variant) = class $mol_icon_chart_timeline_variant extends ($.$mol_icon) {
+		path(){
+			return "M3,14L3.5,14.07L8.07,9.5C7.89,8.85 8.06,8.11 8.59,7.59C9.37,6.8 10.63,6.8 11.41,7.59C11.94,8.11 12.11,8.85 11.93,9.5L14.5,12.07L15,12C15.18,12 15.35,12 15.5,12.07L19.07,8.5C19,8.35 19,8.18 19,8A2,2 0 0,1 21,6A2,2 0 0,1 23,8A2,2 0 0,1 21,10C20.82,10 20.65,10 20.5,9.93L16.93,13.5C17,13.65 17,13.82 17,14A2,2 0 0,1 15,16A2,2 0 0,1 13,14L13.07,13.5L10.5,10.93C10.18,11 9.82,11 9.5,10.93L4.93,15.5L5,16A2,2 0 0,1 3,18A2,2 0 0,1 1,16A2,2 0 0,1 3,14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
+		path(){
+			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_upload();
+			return obj;
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		files_handled(next){
+			return (this.files(next));
+		}
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		Native(){
+			const obj = new this.$.$mol_button_open_native();
+			(obj.files) = (next) => ((this.files_handled(next)));
+			(obj.accept) = () => ((this.accept()));
+			(obj.multiple) = () => ((this.multiple()));
+			return obj;
+		}
+		sub(){
+			return [(this.Icon()), (this.Native())];
+		}
+	};
+	($mol_mem(($.$mol_button_open.prototype), "Icon"));
+	($mol_mem(($.$mol_button_open.prototype), "files"));
+	($mol_mem(($.$mol_button_open.prototype), "Native"));
+	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		picked(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "input";
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		attr(){
+			return {
+				"type": "file", 
+				"accept": (this.accept()), 
+				"multiple": (this.multiple())
+			};
+		}
+		event(){
+			return {"change": (next) => (this.picked(next))};
+		}
+	};
+	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
+	($mol_mem(($.$mol_button_open_native.prototype), "files"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_button_open extends $.$mol_button_open {
+            files_handled(next) {
+                try {
+                    const files = this.files(next);
+                    this.status([null]);
+                    return files;
+                }
+                catch (error) {
+                    // Calling actions from catch section, if throwing promise breaks idempotency
+                    Promise.resolve().then(() => this.status([error]));
+                    $mol_fail_hidden(error);
+                }
+            }
+        }
+        $$.$mol_button_open = $mol_button_open;
+        /**
+         * File open button
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_open_native extends $.$mol_button_open_native {
+            dom_node() {
+                return super.dom_node();
+            }
+            picked() {
+                const files = this.dom_node().files;
+                if (!files || !files.length)
+                    return;
+                this.files([...files]);
+            }
+        }
+        $$.$mol_button_open_native = $mol_button_open_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_theme_picker_row) = class $bog_theme_picker_row extends ($.$mol_button_minor) {
+		focused_str(){
+			return "";
+		}
+		hover(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_name(){
+			return "";
+		}
+		title(){
+			return (this.theme_name());
+		}
+		attr(){
+			return {...(super.attr()), "bog_theme_picker_row_focused": (this.focused_str())};
+		}
+		event(){
+			return {...(super.event()), "pointerenter": (next) => (this.hover(next))};
+		}
+	};
+	($mol_mem(($.$bog_theme_picker_row.prototype), "hover"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_theme_picker_row extends $.$bog_theme_picker_row {
+            focused_str() {
+                return this.focused() ? 'true' : '';
+            }
+        }
+        $$.$bog_theme_picker_row = $bog_theme_picker_row;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_theme_picker_row, {
+            '@': {
+                bog_theme_picker_row_focused: {
+                    true: {
+                        background: {
+                            color: $mol_theme.hover,
+                        },
+                        boxShadow: `inset 0 0 0 1px #000, inset 0 0 0 2px #fff`,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_theme_picker) = class $bog_theme_picker extends ($.$mol_scroll) {
+		theme_name(id){
+			return "";
+		}
+		theme_focused(id){
+			return false;
+		}
+		theme_select(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_hover(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Search(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.query(next)));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_theme_picker_Search_hint")));
+			return obj;
+		}
+		theme_rows(){
+			return [];
+		}
+		Theme_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.theme_rows()));
+			return obj;
+		}
+		Content(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([(this.Search()), (this.Theme_list())]);
+			return obj;
+		}
+		key_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		theme_auto(){
+			const obj = new this.$.$bog_theme_auto();
+			return obj;
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		query(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		focused_index(next){
+			if(next !== undefined) return next;
+			return -1;
+		}
+		Theme_row(id){
+			const obj = new this.$.$bog_theme_picker_row();
+			(obj.theme_name) = () => ((this.theme_name(id)));
+			(obj.focused) = () => ((this.theme_focused(id)));
+			(obj.click) = (next) => ((this.theme_select(id, next)));
+			(obj.hover) = (next) => ((this.theme_hover(id, next)));
+			return obj;
+		}
+		sub(){
+			return [(this.Content())];
+		}
+		event(){
+			return {...(super.event()), "keydown": (next) => (this.key_down(next))};
+		}
+	};
+	($mol_mem_key(($.$bog_theme_picker.prototype), "theme_select"));
+	($mol_mem_key(($.$bog_theme_picker.prototype), "theme_hover"));
+	($mol_mem(($.$bog_theme_picker.prototype), "Search"));
+	($mol_mem(($.$bog_theme_picker.prototype), "Theme_list"));
+	($mol_mem(($.$bog_theme_picker.prototype), "Content"));
+	($mol_mem(($.$bog_theme_picker.prototype), "key_down"));
+	($mol_mem(($.$bog_theme_picker.prototype), "theme_auto"));
+	($mol_mem(($.$bog_theme_picker.prototype), "close"));
+	($mol_mem(($.$bog_theme_picker.prototype), "query"));
+	($mol_mem(($.$bog_theme_picker.prototype), "focused_index"));
+	($mol_mem_key(($.$bog_theme_picker.prototype), "Theme_row"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Theme picker popup with search and list
+         */
+        class $bog_theme_picker extends $.$bog_theme_picker {
+            theme_rows() {
+                const themes = this.filtered_themes();
+                return themes.map((_, index) => this.Theme_row(index));
+            }
+            filtered_themes() {
+                const query = this.query().toLowerCase().trim();
+                const themes = this.$.$bog_theme_names;
+                const filtered = query ? themes.filter(name => name.toLowerCase().includes(query)) : [...themes];
+                // Reset focused index when filter changes
+                const current = this.focused_index();
+                if (current >= filtered.length) {
+                    this.focused_index(-1);
+                }
+                return filtered;
+            }
+            theme_name(index) {
+                return this.filtered_themes()[index] || '';
+            }
+            theme_focused(index) {
+                return this.focused_index() === index;
+            }
+            theme_select(index, event) {
+                if (!event)
+                    return null;
+                const themes = this.filtered_themes();
+                const theme_name = themes[index];
+                const global_index = this.$.$bog_theme_names.indexOf(theme_name);
+                if (global_index !== -1) {
+                    this.theme_auto().theme_set(global_index);
+                }
+                // Close popup
+                this.close();
+                return null;
+            }
+            theme_hover(index, event) {
+                if (!event)
+                    return null;
+                // Update focused index on hover (this will apply preview via theme_focused)
+                this.focused_index(index);
+                const themes = this.filtered_themes();
+                const theme_name = themes[index];
+                const global_index = this.$.$bog_theme_names.indexOf(theme_name);
+                if (global_index !== -1) {
+                    this.theme_auto().theme_set(global_index);
+                }
+                return null;
+            }
+            key_down(event) {
+                if (!event)
+                    return null;
+                const themes = this.filtered_themes();
+                let current = this.focused_index();
+                switch (event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        event.stopPropagation();
+                        // If focus is on search (-1), start from first item
+                        if (current === -1) {
+                            current = 0;
+                        }
+                        else {
+                            current = current < themes.length - 1 ? current + 1 : 0;
+                        }
+                        this.focused_index(current);
+                        this.preview_theme(current);
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        event.stopPropagation();
+                        // If focus is on search (-1), start from last item
+                        if (current === -1) {
+                            current = themes.length - 1;
+                        }
+                        else {
+                            current = current > 0 ? current - 1 : themes.length - 1;
+                        }
+                        this.focused_index(current);
+                        this.preview_theme(current);
+                        break;
+                    case 'Enter':
+                        event.preventDefault();
+                        if (current >= 0 && current < themes.length) {
+                            this.select_theme(current);
+                        }
+                        break;
+                    case 'Escape':
+                        event.preventDefault();
+                        this.close();
+                        break;
+                }
+                return null;
+            }
+            select_theme(index) {
+                const themes = this.filtered_themes();
+                const theme_name = themes[index];
+                const global_index = this.$.$bog_theme_names.indexOf(theme_name);
+                if (global_index !== -1) {
+                    this.theme_auto().theme_set(global_index);
+                }
+                // Close popup
+                this.close();
+            }
+            preview_theme(index) {
+                const themes = this.filtered_themes();
+                const theme_name = themes[index];
+                const global_index = this.$.$bog_theme_names.indexOf(theme_name);
+                if (global_index !== -1) {
+                    this.theme_auto().theme_set(global_index);
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_theme_picker.prototype, "theme_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_theme_picker.prototype, "filtered_themes", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_picker.prototype, "select_theme", null);
+        __decorate([
+            $mol_action
+        ], $bog_theme_picker.prototype, "preview_theme", null);
+        $$.$bog_theme_picker = $bog_theme_picker;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_theme_picker, {
+            background: {
+                color: $mol_theme.back,
+            },
+            borderRadius: '8px',
+            overflow: 'hidden',
+            opacity: 1,
+            Search: {
+                borderRadius: '8px',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_white_balance_sunny) = class $mol_icon_white_balance_sunny extends ($.$mol_icon) {
+		path(){
+			return "M3.55 19.09L4.96 20.5L6.76 18.71L5.34 17.29M12 6C8.69 6 6 8.69 6 12S8.69 18 12 18 18 15.31 18 12C18 8.68 15.31 6 12 6M20 13H23V11H20M17.24 18.71L19.04 20.5L20.45 19.09L18.66 17.29M20.45 5L19.04 3.6L17.24 5.39L18.66 6.81M13 1H11V4H13M6.76 5.39L4.96 3.6L3.55 5L5.34 6.81L6.76 5.39M1 13H4V11H1M13 20H11V23H13";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_weather_night) = class $mol_icon_weather_night extends ($.$mol_icon) {
+		path(){
+			return "M17.75,4.09L15.22,6.03L16.13,9.09L13.5,7.28L10.87,9.09L11.78,6.03L9.25,4.09L12.44,4L13.5,1L14.56,4L17.75,4.09M21.25,11L19.61,12.25L20.2,14.23L18.5,13.06L16.8,14.23L17.39,12.25L15.75,11L17.81,10.95L18.5,9L19.19,10.95L21.25,11M18.97,15.95C19.8,15.87 20.69,17.05 20.16,17.8C19.84,18.25 19.5,18.67 19.08,19.07C15.17,23 8.84,23 4.94,19.07C1.03,15.17 1.03,8.83 4.94,4.93C5.34,4.53 5.76,4.17 6.21,3.85C6.96,3.32 8.14,4.21 8.06,5.04C7.79,7.9 8.75,10.87 10.95,13.06C13.14,15.26 16.1,16.22 18.97,15.95M17.33,17.97C14.5,17.81 11.7,16.64 9.53,14.5C7.36,12.31 6.2,9.5 6.04,6.68C3.23,9.82 3.34,14.64 6.35,17.66C9.37,20.67 14.19,20.78 17.33,17.97Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_monitor) = class $mol_icon_monitor extends ($.$mol_icon) {
+		path(){
+			return "M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_theme_toggle) = class $bog_theme_toggle extends ($.$mol_pop) {
+		Icon(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		anchor_hint(){
+			return "Переключить тему";
+		}
+		clicked(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press_lost(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		backdrop_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Backdrop(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.backdrop_click(next))});
+			return obj;
+		}
+		picker_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Picker(){
+			const obj = new this.$.$bog_theme_picker();
+			(obj.theme_auto) = () => ((this.theme_auto()));
+			(obj.close) = (next) => ((this.picker_close(next)));
+			return obj;
+		}
+		theme_auto(){
+			const obj = new this.$.$bog_theme_auto();
+			return obj;
+		}
+		showed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		align(){
+			return "bottom_right";
+		}
+		Anchor(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.sub) = () => ([(this.Icon())]);
+			(obj.hint) = () => ((this.anchor_hint()));
+			(obj.click) = (next) => ((this.clicked(next)));
+			(obj.event) = () => ({
+				...(this.$.$mol_button_minor.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.press_start(next)), 
+				"pointermove": (next) => (this.press_move(next)), 
+				"pointerup": (next) => (this.press_end(next)), 
+				"pointercancel": (next) => (this.press_cancel(next)), 
+				"lostpointercapture": (next) => (this.press_lost(next))
+			});
+			return obj;
+		}
+		Icon_light(){
+			const obj = new this.$.$mol_icon_white_balance_sunny();
+			return obj;
+		}
+		Icon_dark(){
+			const obj = new this.$.$mol_icon_weather_night();
+			return obj;
+		}
+		Icon_system(){
+			const obj = new this.$.$mol_icon_monitor();
+			return obj;
+		}
+		bubble_content(){
+			return [(this.Backdrop()), (this.Picker())];
+		}
+	};
+	($mol_mem(($.$bog_theme_toggle.prototype), "Icon"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "clicked"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "press_start"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "press_move"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "press_end"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "press_cancel"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "press_lost"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "backdrop_click"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Backdrop"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "picker_close"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Picker"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "theme_auto"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "showed"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Anchor"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Icon_light"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Icon_dark"));
+	($mol_mem(($.$bog_theme_toggle.prototype), "Icon_system"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_theme_toggle extends $.$bog_theme_toggle {
+            long_press_delay = 300;
+            move_threshold = 8;
+            press_timer = null;
+            press_start_x = 0;
+            press_start_y = 0;
+            is_long_press = false;
+            Icon() {
+                const mode = this.theme_auto().mode();
+                if (mode === 'light')
+                    return this.Icon_light();
+                if (mode === 'dark')
+                    return this.Icon_dark();
+                if (mode === 'custom') {
+                    const theme = this.theme_auto().theme();
+                    return theme.includes('light') ? this.Icon_light() : this.Icon_dark();
+                }
+                return this.Icon_system();
+            }
+            anchor_hint() {
+                const mode = this.theme_auto().mode();
+                if (mode === 'light')
+                    return 'Светлая тема';
+                if (mode === 'dark')
+                    return 'Тёмная тема';
+                if (mode === 'custom')
+                    return 'Пользовательская тема';
+                return 'Как в системе';
+            }
+            clicked(event) {
+                if (!event)
+                    return null;
+                if (this.is_long_press) {
+                    this.is_long_press = false;
+                    return null;
+                }
+                this.theme_auto().mode_next();
+                return null;
+            }
+            press_start(event) {
+                if (!event)
+                    return null;
+                this.clear_press_timer();
+                this.press_start_x = event.clientX;
+                this.press_start_y = event.clientY;
+                this.is_long_press = false;
+                this.press_timer = setTimeout(() => {
+                    this.is_long_press = true;
+                    this.on_long_press();
+                }, this.long_press_delay);
+                return null;
+            }
+            press_move(event) {
+                if (!event || !this.press_timer)
+                    return null;
+                const dx = Math.abs(event.clientX - this.press_start_x);
+                const dy = Math.abs(event.clientY - this.press_start_y);
+                if (dx > this.move_threshold || dy > this.move_threshold) {
+                    this.clear_press_timer();
+                }
+                return null;
+            }
+            press_end(event) {
+                if (!event)
+                    return null;
+                this.clear_press_timer();
+                return null;
+            }
+            press_cancel(event) {
+                if (!event)
+                    return null;
+                this.clear_press_timer();
+                return null;
+            }
+            press_lost(event) {
+                if (!event)
+                    return null;
+                this.clear_press_timer();
+                return null;
+            }
+            clear_press_timer() {
+                if (this.press_timer) {
+                    clearTimeout(this.press_timer);
+                    this.press_timer = null;
+                }
+            }
+            on_long_press() {
+                this.showed(true);
+                setTimeout(() => {
+                    try {
+                        const search = this.Picker().Search();
+                        search.focused(true);
+                    }
+                    catch (e) {
+                        // Ignore focus errors
+                    }
+                }, 100);
+            }
+            picker_close() {
+                this.showed(false);
+            }
+            backdrop_click(event) {
+                if (!event)
+                    return null;
+                this.showed(false);
+                return null;
+            }
+        }
+        $$.$bog_theme_toggle = $bog_theme_toggle;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_theme_toggle, {
+            Bubble: {
+                position: 'fixed !important',
+                left: '0 !important',
+                top: '0 !important',
+                transform: 'none !important',
+                width: '100vw !important',
+                height: '100vh !important',
+                maxWidth: 'none !important',
+                maxHeight: 'none !important',
+                padding: '0 !important',
+                boxShadow: 'none',
+                background: 'transparent !important',
+            },
+            Backdrop: {
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                zIndex: 1,
+                opacity: 0,
+            },
+            Picker: {
+                position: 'fixed',
+                left: '50%',
+                top: '15vh',
+                transform: 'translateX(-50%)',
+                maxWidth: '400px',
+                width: '90vw',
+                maxHeight: '70vh',
+                zIndex: 2,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_check_list) = class $mol_check_list extends ($.$mol_view) {
+		option_checked(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		option_title(id){
+			return "";
+		}
+		option_label(id){
+			return [(this.option_title(id))];
+		}
+		enabled(){
+			return true;
+		}
+		option_enabled(id){
+			return (this.enabled());
+		}
+		option_hint(id){
+			return "";
+		}
+		items(){
+			return [];
+		}
+		dictionary(){
+			return {};
+		}
+		Option(id){
+			const obj = new this.$.$mol_check();
+			(obj.checked) = (next) => ((this.option_checked(id, next)));
+			(obj.label) = () => ((this.option_label(id)));
+			(obj.enabled) = () => ((this.option_enabled(id)));
+			(obj.hint) = () => ((this.option_hint(id)));
+			(obj.minimal_height) = () => (24);
+			return obj;
+		}
+		options(){
+			return {};
+		}
+		keys(){
+			return [];
+		}
+		sub(){
+			return (this.items());
+		}
+	};
+	($mol_mem_key(($.$mol_check_list.prototype), "option_checked"));
+	($mol_mem_key(($.$mol_check_list.prototype), "Option"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * List of checkboxes
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_check_list_demo
+         */
+        class $mol_check_list extends $.$mol_check_list {
+            options() {
+                return {};
+            }
+            dictionary(next) {
+                return next ?? {};
+            }
+            option_checked(id, next) {
+                const prev = this.dictionary();
+                if (next === undefined)
+                    return prev[id] ?? null;
+                const next_rec = { ...prev, [id]: next };
+                if (next === null)
+                    delete next_rec[id];
+                return this.dictionary(next_rec)[id] ?? null;
+            }
+            keys() {
+                return Object.keys(this.options());
+            }
+            items() {
+                return this.keys().map(key => this.Option(key));
+            }
+            option_title(key) {
+                return this.options()[key] || key;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_check_list.prototype, "keys", null);
+        __decorate([
+            $mol_mem
+        ], $mol_check_list.prototype, "items", null);
+        $$.$mol_check_list = $mol_check_list;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/list/list.view.css", "[mol_check_list] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tflex: 1 1 auto;\n\tborder-radius: var(--mol_gap_round);\n\tgap: 1px;\n}\n\n[mol_check_list_option] {\n\tflex: 0 1 auto;\n}\n\n[mol_check_list_option]:where([mol_check_checked=\"true\"]) {\n\ttext-shadow: 0 0;\n\tcolor: var(--mol_theme_current);\n}\n\n[mol_check_list_option]:where([mol_check_checked=\"true\"][disabled]) {\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_switch) = class $mol_switch extends ($.$mol_check_list) {
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+	};
+	($mol_mem(($.$mol_switch.prototype), "value"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Buttons which switching the state
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_switch_demo
+         */
+        class $mol_switch extends $.$mol_switch {
+            value(next) {
+                return $mol_state_session.value(`${this}.value()`, next) ?? '';
+            }
+            option_checked(key, next) {
+                if (next === undefined)
+                    return this.value() == key;
+                this.value(next ? key : '');
+                return next;
+            }
+        }
+        $$.$mol_switch = $mol_switch;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_tick) = class $mol_icon_tick extends ($.$mol_icon) {
+		path(){
+			return "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_check_box) = class $mol_check_box extends ($.$mol_check) {
+		Icon(){
+			const obj = new this.$.$mol_icon_tick();
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_check_box.prototype), "Icon"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/box/box.view.css", "[mol_check_box_icon] {\n\tborder-radius: var(--mol_gap_round);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n\tcolor: var(--mol_theme_shade);\n\theight: 1rem;\n\talign-self: center;\n}\n\n[mol_check]:not([mol_check_checked]) > [mol_check_box_icon] {\n\tfill: transparent;\n}\n\n[mol_check]:not([disabled]) > [mol_check_box_icon] {\n\tbackground: var(--mol_theme_field);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_download) = class $mol_icon_download extends ($.$mol_icon) {
+		path(){
+			return "M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
 
 ;
 	($.$mol_labeler) = class $mol_labeler extends ($.$mol_list) {
@@ -19491,6 +22777,76 @@ var $;
 ;
 "use strict";
 
+
+;
+	($.$mol_form_field) = class $mol_form_field extends ($.$mol_labeler) {
+		state(){
+			return null;
+		}
+		name(){
+			return "";
+		}
+		bid(){
+			return "";
+		}
+		Bid(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.bid())]);
+			return obj;
+		}
+		control(){
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "mol_form_field_state": (this.state())};
+		}
+		bids(){
+			return [];
+		}
+		label(){
+			return [(this.name()), (this.Bid())];
+		}
+		content(){
+			return [(this.control())];
+		}
+	};
+	($mol_mem(($.$mol_form_field.prototype), "Bid"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_form_demo
+         */
+        class $mol_form_field extends $.$mol_form_field {
+            state() {
+                return this.bid() ? 'bid' : null;
+            }
+            bid() {
+                return this.bids().filter(Boolean)[0] ?? '';
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_form_field.prototype, "bid", null);
+        $$.$mol_form_field = $mol_form_field;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/form/field/field.view.css", "[mol_form_field] {\n\talign-items: stretch;\n}\n\n[mol_form_field_bid] {\n\tcolor: var(--mol_theme_focus);\n\tdisplay: inline-block;\n\ttext-shadow: 0 0;\n}\n\n[mol_form_field_content] {\n\tborder-radius: var(--mol_gap_round);\n}\n");
+})($ || ($ = {}));
 
 ;
 	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
@@ -19963,154 +23319,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
-		theme(){
-			return "$mol_theme_base";
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
-		path(){
-			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
-		Icon(){
-			const obj = new this.$.$mol_icon_upload();
-			return obj;
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		files_handled(next){
-			return (this.files(next));
-		}
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		Native(){
-			const obj = new this.$.$mol_button_open_native();
-			(obj.files) = (next) => ((this.files_handled(next)));
-			(obj.accept) = () => ((this.accept()));
-			(obj.multiple) = () => ((this.multiple()));
-			return obj;
-		}
-		sub(){
-			return [(this.Icon()), (this.Native())];
-		}
-	};
-	($mol_mem(($.$mol_button_open.prototype), "Icon"));
-	($mol_mem(($.$mol_button_open.prototype), "files"));
-	($mol_mem(($.$mol_button_open.prototype), "Native"));
-	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		picked(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dom_name(){
-			return "input";
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		attr(){
-			return {
-				"type": "file", 
-				"accept": (this.accept()), 
-				"multiple": (this.multiple())
-			};
-		}
-		event(){
-			return {"change": (next) => (this.picked(next))};
-		}
-	};
-	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
-	($mol_mem(($.$mol_button_open_native.prototype), "files"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_button_open extends $.$mol_button_open {
-            files_handled(next) {
-                try {
-                    const files = this.files(next);
-                    this.status([null]);
-                    return files;
-                }
-                catch (error) {
-                    // Calling actions from catch section, if throwing promise breaks idempotency
-                    Promise.resolve().then(() => this.status([error]));
-                    $mol_fail_hidden(error);
-                }
-            }
-        }
-        $$.$mol_button_open = $mol_button_open;
-        /**
-         * File open button
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-         */
-        class $mol_button_open_native extends $.$mol_button_open_native {
-            dom_node() {
-                return super.dom_node();
-            }
-            picked() {
-                const files = this.dom_node().files;
-                if (!files || !files.length)
-                    return;
-                this.files([...files]);
-            }
-        }
-        $$.$mol_button_open_native = $mol_button_open_native;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
-})($ || ($ = {}));
-
-;
 	($.$mol_video_player) = class $mol_video_player extends ($.$mol_view) {
 		uri(){
 			return "";
@@ -20430,6 +23638,15234 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_music_qrscan) = class $bog_music_qrscan extends ($.$mol_view) {
+		Toggle(){
+			const obj = new this.$.$mol_check();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_music_qrscan_Toggle_title")));
+			(obj.checked) = (next) => ((this.scanning(next)));
+			return obj;
+		}
+		Camera(){
+			const obj = new this.$.$mol_video_camera();
+			(obj.facing) = () => ("environment");
+			(obj.muted) = () => (true);
+			return obj;
+		}
+		scanning(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		prefix(){
+			return "";
+		}
+		found(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		sub(){
+			return [(this.Toggle()), (this.Camera())];
+		}
+	};
+	($mol_mem(($.$bog_music_qrscan.prototype), "Toggle"));
+	($mol_mem(($.$bog_music_qrscan.prototype), "Camera"));
+	($mol_mem(($.$bog_music_qrscan.prototype), "scanning"));
+	($mol_mem(($.$bog_music_qrscan.prototype), "found"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const qr_module = require('jsqr/dist/jsQR.js');
+        const qr_read = qr_module.default ?? qr_module;
+        class $bog_music_qrscan extends $.$bog_music_qrscan {
+            sub() {
+                return this.scanning() ? [this.Toggle(), this.Camera()] : [this.Toggle()];
+            }
+            canvas() {
+                return $mol_dom_context.document.createElement('canvas');
+            }
+            tick() {
+                if (!this.scanning())
+                    return null;
+                $mol_state_time.now(250);
+                const video = this.Camera().dom_node();
+                const width = video.videoWidth;
+                const height = video.videoHeight;
+                if (!width || !height)
+                    return null;
+                const canvas = this.canvas();
+                canvas.width = width;
+                canvas.height = height;
+                const context = canvas.getContext('2d', { willReadFrequently: true });
+                context.drawImage(video, 0, 0, width, height);
+                const found = qr_read(context.getImageData(0, 0, width, height).data, width, height);
+                if (!found?.data.includes(this.prefix()))
+                    return null;
+                setTimeout(() => {
+                    this.scanning(false);
+                    this.found(found.data);
+                });
+                return found.data;
+            }
+            auto() {
+                this.tick();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_music_qrscan.prototype, "canvas", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_qrscan.prototype, "tick", null);
+        $$.$bog_music_qrscan = $bog_music_qrscan;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_music_qrscan, {
+            flex: { direction: 'column' },
+            gap: $mol_gap.text,
+            Camera: {
+                width: '100%',
+                maxWidth: '20rem',
+                aspectRatio: 1,
+                objectFit: 'cover',
+                border: { radius: $mol_gap.round },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
+		theme(){
+			return "$mol_theme_base";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_status) = class $mol_status extends ($.$mol_view) {
+		message(){
+			return "";
+		}
+		status(){
+			return (this.title());
+		}
+		minimal_height(){
+			return 24;
+		}
+		minimal_width(){
+			return 0;
+		}
+		sub(){
+			return [(this.message())];
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_status extends $.$mol_status {
+            message() {
+                try {
+                    return this.status() ?? null;
+                }
+                catch (error) {
+                    if (error instanceof Promise)
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                    return error.message;
+                }
+            }
+        }
+        $$.$mol_status = $mol_status;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/status/status.view.css", "[mol_status] {\n\tpadding: var(--mol_gap_text);\n\tborder-radius: var(--mol_gap_round);\n\tdisplay: block;\n\tflex-shrink: 1;\n\tword-wrap: break-word;\n}\n\n[mol_status]:not([mol_view_error=\"Promise\"]) {\n\tcolor: var(--mol_theme_focus);\n}\n\n[mol_status]:not([mol_view_error=\"Promise\"]):empty {\n\tdisplay: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_row) = class $mol_row extends ($.$mol_view) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: var(--mol_gap_block);\n\tgap: var(--mol_gap_block);\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmax-width: 100%;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_form) = class $mol_form extends ($.$mol_list) {
+		keydown(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		form_invalid(){
+			return (this.$.$mol_locale.text("$mol_form_form_invalid"));
+		}
+		form_fields(){
+			return [];
+		}
+		body(){
+			return (this.form_fields());
+		}
+		Body(){
+			const obj = new this.$.$mol_list();
+			(obj.sub) = () => ((this.body()));
+			return obj;
+		}
+		submit_title(){
+			return (this.$.$mol_locale.text("$mol_form_submit_title"));
+		}
+		submit_hint(){
+			return "";
+		}
+		submit_activate(next){
+			return (this.Submit().activate(next));
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Submit(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.submit_title()));
+			(obj.hint) = () => ((this.submit_hint()));
+			(obj.click) = (next) => ((this.submit(next)));
+			return obj;
+		}
+		result(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Result(){
+			const obj = new this.$.$mol_status();
+			(obj.message) = () => ((this.result()));
+			return obj;
+		}
+		buttons(){
+			return [(this.Submit()), (this.Result())];
+		}
+		foot(){
+			return (this.buttons());
+		}
+		Foot(){
+			const obj = new this.$.$mol_row();
+			(obj.sub) = () => ((this.foot()));
+			return obj;
+		}
+		submit_allowed(){
+			return true;
+		}
+		submit_blocked(){
+			return false;
+		}
+		event(){
+			return {...(super.event()), "keydown": (next) => (this.keydown(next))};
+		}
+		save(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_done(){
+			return (this.$.$mol_locale.text("$mol_form_message_done"));
+		}
+		errors(){
+			return {"Form invalid": (this.form_invalid())};
+		}
+		rows(){
+			return [(this.Body()), (this.Foot())];
+		}
+	};
+	($mol_mem(($.$mol_form.prototype), "keydown"));
+	($mol_mem(($.$mol_form.prototype), "Body"));
+	($mol_mem(($.$mol_form.prototype), "submit"));
+	($mol_mem(($.$mol_form.prototype), "Submit"));
+	($mol_mem(($.$mol_form.prototype), "result"));
+	($mol_mem(($.$mol_form.prototype), "Result"));
+	($mol_mem(($.$mol_form.prototype), "Foot"));
+	($mol_mem(($.$mol_form.prototype), "save"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/form/form.view.css", "[mol_form] {\r\n\tgap: var(--mol_gap_block);\r\n}\r\n\r\n[mol_form_body] {\r\n\tgap: var(--mol_gap_block);\r\n}");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Form, that contains form fields and action buttons.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_form_demo
+         */
+        class $mol_form extends $.$mol_form {
+            form_fields() {
+                return [...this.view_find(view => view instanceof $mol_form_field)]
+                    .map(path => path[path.length - 1]);
+            }
+            submit_allowed() {
+                return this.form_fields().every(field => !field.bid());
+            }
+            submit_blocked() {
+                return !this.submit_allowed();
+            }
+            keydown(next) {
+                if (next.ctrlKey && next.keyCode === $mol_keyboard_code.enter && !this.submit_blocked())
+                    this.submit(next);
+            }
+            result(next) {
+                if (next instanceof Error)
+                    next = this.errors()[next.message] || next.message || this.form_invalid();
+                return next ?? '';
+            }
+            buttons() {
+                return [
+                    this.Submit(),
+                    ...this.result() ? [this.Result()] : [],
+                ];
+            }
+            submit(next) {
+                try {
+                    if (!this.submit_allowed()) {
+                        throw new Error('Form invalid');
+                    }
+                    this.save(next);
+                }
+                catch (e) {
+                    if ($mol_promise_like(e))
+                        $mol_fail_hidden(e);
+                    $mol_fail_log(e);
+                    this.result(e);
+                    return false;
+                }
+                this.result(this.message_done());
+                return true;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "form_fields", null);
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "submit_allowed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "result", null);
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "buttons", null);
+        __decorate([
+            $mol_action
+        ], $mol_form.prototype, "submit", null);
+        $$.$mol_form = $mol_form;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_music_account) = class $bog_music_account extends ($.$mol_view) {
+		Font_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Размер шрифта"]);
+			return obj;
+		}
+		Font_size(){
+			const obj = new this.$.$mol_switch();
+			(obj.value) = (next) => ((this.font_size(next)));
+			(obj.options) = () => ({
+				"normal": "Обычный", 
+				"large": "Крупный", 
+				"huge": "Огромный"
+			});
+			return obj;
+		}
+		Font_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Font_label()), (this.Font_size())]);
+			return obj;
+		}
+		Dev(){
+			const obj = new this.$.$mol_check_box();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_music_account_Dev_title")));
+			(obj.checked) = (next) => ((this.dev(next)));
+			return obj;
+		}
+		download_playlist(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Download_playlist_icon(){
+			const obj = new this.$.$mol_icon_download();
+			return obj;
+		}
+		Download_playlist_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Скачать плейлист zip-архивом"]);
+			return obj;
+		}
+		Download_playlist(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_music_account_Download_playlist_hint")));
+			(obj.click) = (next) => ((this.download_playlist(next)));
+			(obj.sub) = () => ([(this.Download_playlist_icon()), (this.Download_playlist_label())]);
+			return obj;
+		}
+		download_playlist_status(){
+			return "";
+		}
+		Download_playlist_status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.download_playlist_status())]);
+			return obj;
+		}
+		Sync_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Download_playlist()), (this.Download_playlist_status())]);
+			return obj;
+		}
+		nickname(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Nickname_input(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.nickname(next)));
+			(obj.hint) = () => ("Как тебя зовут?");
+			return obj;
+		}
+		Nickname_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ("Имя");
+			(obj.Content) = () => ((this.Nickname_input()));
+			return obj;
+		}
+		lord_text(){
+			return "";
+		}
+		Lord_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.lord_text())]);
+			return obj;
+		}
+		Lord(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["ЛК:", (this.Lord_text())]);
+			return obj;
+		}
+		Profile(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Nickname_field()), (this.Lord())]);
+			return obj;
+		}
+		Tg_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Музыка из Телеграма");
+			return obj;
+		}
+		tg_hint(){
+			return "";
+		}
+		Tg_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.tg_hint()));
+			return obj;
+		}
+		tg_button(){
+			return "";
+		}
+		tg_link(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tg_connect(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.tg_button()));
+			(obj.click) = (next) => ((this.tg_link(next)));
+			return obj;
+		}
+		tg_status(){
+			return "";
+		}
+		Tg_status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.tg_status())]);
+			return obj;
+		}
+		Telegram(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Tg_title()), 
+				(this.Tg_hint()), 
+				(this.Tg_connect()), 
+				(this.Tg_status())
+			]);
+			return obj;
+		}
+		Fm_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Last.fm");
+			return obj;
+		}
+		fm_hint(){
+			return "";
+		}
+		Fm_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.fm_hint()));
+			return obj;
+		}
+		fm_button(){
+			return "";
+		}
+		fm_link(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Fm_connect(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.fm_button()));
+			(obj.click) = (next) => ((this.fm_link(next)));
+			return obj;
+		}
+		fm_status(){
+			return "";
+		}
+		Fm_status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.fm_status())]);
+			return obj;
+		}
+		Lastfm(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Fm_title()), 
+				(this.Fm_hint()), 
+				(this.Fm_connect()), 
+				(this.Fm_status())
+			]);
+			return obj;
+		}
+		Warning(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ссылка ниже — СЕКРЕТ. Не делись ей публично.");
+			return obj;
+		}
+		copy(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Скопировать ссылку для переноса");
+			(obj.click) = (next) => ((this.copy(next)));
+			return obj;
+		}
+		copy_status(){
+			return "";
+		}
+		Copy_status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.copy_status())]);
+			return obj;
+		}
+		qr_showed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Qr_show(){
+			const obj = new this.$.$mol_check();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_music_account_Qr_show_title")));
+			(obj.checked) = (next) => ((this.qr_showed(next)));
+			return obj;
+		}
+		account_link(){
+			return "";
+		}
+		Qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.account_link()));
+			(obj.error_correction) = () => ("L");
+			(obj.gradient_stops) = () => (["#111827", "#1e3a8a"]);
+			return obj;
+		}
+		Export(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Warning()), 
+				(this.Copy()), 
+				(this.Copy_status()), 
+				(this.Qr_show()), 
+				(this.Qr())
+			]);
+			return obj;
+		}
+		Import_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Перенести с другого устройства — вставь ссылку:");
+			return obj;
+		}
+		import_link(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Import_input(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("https://.../music/#account=...");
+			(obj.value) = (next) => ((this.import_link(next)));
+			return obj;
+		}
+		apply_import(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Import_apply(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Применить");
+			(obj.click) = (next) => ((this.apply_import(next)));
+			return obj;
+		}
+		qr_found(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Import_scan(){
+			const obj = new this.$.$bog_music_qrscan();
+			(obj.prefix) = () => ("#account=");
+			(obj.found) = (next) => ((this.qr_found(next)));
+			return obj;
+		}
+		import_status(){
+			return "";
+		}
+		Import_status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.import_status())]);
+			return obj;
+		}
+		Import(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Import_hint()), 
+				(this.Import_input()), 
+				(this.Import_apply()), 
+				(this.Import_scan()), 
+				(this.Import_status())
+			]);
+			return obj;
+		}
+		Reset_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Сбросить состояние и сгенерировать новый аккаунт. Текущие треки в Giper Baza останутся orphan.");
+			return obj;
+		}
+		reset_account(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Reset_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Сбросить локальный аккаунт");
+			(obj.click) = (next) => ((this.reset_account(next)));
+			return obj;
+		}
+		Reset(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Reset_hint()), (this.Reset_button())]);
+			return obj;
+		}
+		Cards(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Profile()), 
+				(this.Telegram()), 
+				(this.Lastfm()), 
+				(this.Export()), 
+				(this.Import()), 
+				(this.Reset())
+			]);
+			return obj;
+		}
+		font_size(next){
+			if(next !== undefined) return next;
+			return "normal";
+		}
+		dev(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		sub(){
+			return [
+				(this.Font_row()), 
+				(this.Dev()), 
+				(this.Sync_row()), 
+				(this.Cards())
+			];
+		}
+	};
+	($mol_mem(($.$bog_music_account.prototype), "Font_label"));
+	($mol_mem(($.$bog_music_account.prototype), "Font_size"));
+	($mol_mem(($.$bog_music_account.prototype), "Font_row"));
+	($mol_mem(($.$bog_music_account.prototype), "Dev"));
+	($mol_mem(($.$bog_music_account.prototype), "download_playlist"));
+	($mol_mem(($.$bog_music_account.prototype), "Download_playlist_icon"));
+	($mol_mem(($.$bog_music_account.prototype), "Download_playlist_label"));
+	($mol_mem(($.$bog_music_account.prototype), "Download_playlist"));
+	($mol_mem(($.$bog_music_account.prototype), "Download_playlist_status"));
+	($mol_mem(($.$bog_music_account.prototype), "Sync_row"));
+	($mol_mem(($.$bog_music_account.prototype), "nickname"));
+	($mol_mem(($.$bog_music_account.prototype), "Nickname_input"));
+	($mol_mem(($.$bog_music_account.prototype), "Nickname_field"));
+	($mol_mem(($.$bog_music_account.prototype), "Lord_text"));
+	($mol_mem(($.$bog_music_account.prototype), "Lord"));
+	($mol_mem(($.$bog_music_account.prototype), "Profile"));
+	($mol_mem(($.$bog_music_account.prototype), "Tg_title"));
+	($mol_mem(($.$bog_music_account.prototype), "Tg_hint"));
+	($mol_mem(($.$bog_music_account.prototype), "tg_link"));
+	($mol_mem(($.$bog_music_account.prototype), "Tg_connect"));
+	($mol_mem(($.$bog_music_account.prototype), "Tg_status"));
+	($mol_mem(($.$bog_music_account.prototype), "Telegram"));
+	($mol_mem(($.$bog_music_account.prototype), "Fm_title"));
+	($mol_mem(($.$bog_music_account.prototype), "Fm_hint"));
+	($mol_mem(($.$bog_music_account.prototype), "fm_link"));
+	($mol_mem(($.$bog_music_account.prototype), "Fm_connect"));
+	($mol_mem(($.$bog_music_account.prototype), "Fm_status"));
+	($mol_mem(($.$bog_music_account.prototype), "Lastfm"));
+	($mol_mem(($.$bog_music_account.prototype), "Warning"));
+	($mol_mem(($.$bog_music_account.prototype), "copy"));
+	($mol_mem(($.$bog_music_account.prototype), "Copy"));
+	($mol_mem(($.$bog_music_account.prototype), "Copy_status"));
+	($mol_mem(($.$bog_music_account.prototype), "qr_showed"));
+	($mol_mem(($.$bog_music_account.prototype), "Qr_show"));
+	($mol_mem(($.$bog_music_account.prototype), "Qr"));
+	($mol_mem(($.$bog_music_account.prototype), "Export"));
+	($mol_mem(($.$bog_music_account.prototype), "Import_hint"));
+	($mol_mem(($.$bog_music_account.prototype), "import_link"));
+	($mol_mem(($.$bog_music_account.prototype), "Import_input"));
+	($mol_mem(($.$bog_music_account.prototype), "apply_import"));
+	($mol_mem(($.$bog_music_account.prototype), "Import_apply"));
+	($mol_mem(($.$bog_music_account.prototype), "qr_found"));
+	($mol_mem(($.$bog_music_account.prototype), "Import_scan"));
+	($mol_mem(($.$bog_music_account.prototype), "Import_status"));
+	($mol_mem(($.$bog_music_account.prototype), "Import"));
+	($mol_mem(($.$bog_music_account.prototype), "Reset_hint"));
+	($mol_mem(($.$bog_music_account.prototype), "reset_account"));
+	($mol_mem(($.$bog_music_account.prototype), "Reset_button"));
+	($mol_mem(($.$bog_music_account.prototype), "Reset"));
+	($mol_mem(($.$bog_music_account.prototype), "Cards"));
+	($mol_mem(($.$bog_music_account.prototype), "font_size"));
+	($mol_mem(($.$bog_music_account.prototype), "dev"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_disk extends $mol_object {
+        static folder = 'bog_music';
+        static supported() {
+            return typeof navigator !== 'undefined' && typeof navigator.storage?.getDirectory === 'function';
+        }
+        static _dir = null;
+        static dir() {
+            if (this._dir)
+                return this._dir;
+            return this._dir = navigator.storage.getDirectory()
+                .then(root => root.getDirectoryHandle(this.folder, { create: true }));
+        }
+        static name_of(key) {
+            return encodeURIComponent(key);
+        }
+        static key_of(name) {
+            return decodeURIComponent(name);
+        }
+        static async file(key) {
+            const dir = await this.dir();
+            try {
+                const handle = await dir.getFileHandle(this.name_of(key));
+                const file = await handle.getFile();
+                return file.size ? file : null;
+            }
+            catch (error) {
+                if (error?.name === 'NotFoundError')
+                    return null;
+                throw error;
+            }
+        }
+        static async put(key, data) {
+            const dir = await this.dir();
+            const handle = await dir.getFileHandle(this.name_of(key), { create: true });
+            const blob = data instanceof Blob ? data : new Blob([data]);
+            if ('createWritable' in handle) {
+                const stream = await handle.createWritable();
+                await stream.write(blob);
+                await stream.close();
+            }
+            else {
+                await this.put_worker(this.name_of(key), blob);
+            }
+            this.has(key, true);
+        }
+        static async drop(key) {
+            const dir = await this.dir();
+            try {
+                await dir.removeEntry(this.name_of(key));
+            }
+            catch (error) {
+                if (error?.name !== 'NotFoundError')
+                    throw error;
+            }
+            this.has(key, false);
+        }
+        static async keys() {
+            const dir = await this.dir();
+            const keys = [];
+            for await (const name of dir.keys())
+                keys.push(this.key_of(name));
+            return keys;
+        }
+        static async probe(key) {
+            return Boolean(await this.file(key));
+        }
+        static has(key, next) {
+            if (next !== undefined)
+                return next;
+            if (!this.supported())
+                return false;
+            return $mol_wire_sync(this).probe(key);
+        }
+        static async bytes(key, start, end) {
+            const file = await this.file(key);
+            if (!file)
+                return null;
+            const from = Math.max(0, Math.min(file.size, start));
+            const to = end < 0 ? file.size : Math.max(from, Math.min(file.size, end));
+            const head = await file.slice(0, 12).arrayBuffer();
+            return {
+                bytes: await file.slice(from, to).arrayBuffer(),
+                total: file.size,
+                mime: this.mime(new Uint8Array(head)),
+                start: from,
+                end: to,
+            };
+        }
+        static mime(head) {
+            const text = String.fromCharCode(...head);
+            if (text.slice(4, 8) === 'ftyp')
+                return 'audio/mp4';
+            if (text.startsWith('OggS'))
+                return 'audio/ogg';
+            if (text.startsWith('fLaC'))
+                return 'audio/flac';
+            if (text.startsWith('RIFF'))
+                return 'audio/wav';
+            if (head[0] === 0xFF && (head[1] & 0xF6) === 0xF0)
+                return 'audio/aac';
+            return 'audio/mpeg';
+        }
+        static worker_source = `
+			onmessage = async event => {
+				const { folder, name, blob } = event.data
+				try {
+					const root = await navigator.storage.getDirectory()
+					const dir = await root.getDirectoryHandle( folder, { create: true } )
+					const handle = await dir.getFileHandle( name, { create: true } )
+					const access = await handle.createSyncAccessHandle()
+					const bytes = new Uint8Array( await blob.arrayBuffer() )
+					access.truncate( 0 )
+					access.write( bytes, { at: 0 } )
+					access.flush()
+					access.close()
+					postMessage({ ok: true })
+				} catch( error ) {
+					postMessage({ ok: false, error: String( error?.message ?? error ) })
+				}
+			}
+		`;
+        static put_worker(name, blob) {
+            const url = URL.createObjectURL(new Blob([this.worker_source], { type: 'text/javascript' }));
+            const worker = new Worker(url);
+            return new Promise((done, fail) => {
+                worker.onmessage = event => {
+                    worker.terminate();
+                    URL.revokeObjectURL(url);
+                    if (event.data.ok)
+                        done();
+                    else
+                        fail(new Error(event.data.error));
+                };
+                worker.postMessage({ folder: this.folder, name, blob });
+            });
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $bog_music_disk, "has", null);
+    $.$bog_music_disk = $bog_music_disk;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_track_baza extends $giper_baza_dict.with({
+        Title: $giper_baza_atom.of($mol_schema_string),
+        Artist: $giper_baza_atom.of($mol_schema_string),
+        Duration: $giper_baza_atom.of($mol_schema_float),
+        Added: $giper_baza_atom.of($mol_schema_float),
+        Order: $giper_baza_atom.of($mol_schema_float),
+        Playlist: $giper_baza_atom.of($mol_schema_string),
+        Holders: $giper_baza_list_str,
+        Trim_start: $giper_baza_atom.of($mol_schema_float),
+        Trim_end: $giper_baza_atom.of($mol_schema_float),
+        Lufs: $giper_baza_atom.of($mol_schema_float),
+        Cover: $giper_baza_atom.of($mol_schema_string),
+    }) {
+        info() {
+            const title = this.Title()?.val();
+            if (title == null)
+                return null;
+            return {
+                title,
+                artist: this.Artist()?.val() ?? '',
+                duration: this.Duration()?.val() ?? 0,
+                cover: this.cover(),
+            };
+        }
+        cover() {
+            return String(this.Cover()?.val() ?? '');
+        }
+        playlist() {
+            return this.Playlist()?.val() ?? '';
+        }
+        added() {
+            return Number(this.Added()?.val() ?? 0);
+        }
+        order() {
+            const raw = this.Order()?.val();
+            return raw == null ? this.added() : Number(raw);
+        }
+        order_set(next) {
+            this.Order('auto').val(next);
+        }
+        holders() {
+            return (this.Holders()?.items() ?? []);
+        }
+        holder_add(device) {
+            if (this.holders().includes(device))
+                return;
+            this.Holders('auto').add(device);
+        }
+        holder_cut(device) {
+            if (!this.holders().includes(device))
+                return;
+            this.Holders('auto').cut(device);
+        }
+        lufs(next) {
+            if (next !== undefined)
+                this.Lufs('auto').val(next);
+            const v = this.Lufs()?.val();
+            return v == null ? null : Number(v);
+        }
+        trim_start(next) {
+            if (next !== undefined)
+                this.Trim_start('auto').val(Math.max(0, next));
+            const v = Number(this.Trim_start()?.val() ?? 0);
+            return Number.isFinite(v) && v > 0 ? v : 0;
+        }
+        trim_end(fallback, next) {
+            if (next !== undefined)
+                this.Trim_end('auto').val(Math.max(0, next));
+            const raw = this.Trim_end()?.val();
+            if (raw == null)
+                return fallback;
+            const v = Number(raw);
+            return Number.isFinite(v) && v > 0 ? v : fallback;
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_music_track_baza.prototype, "holder_add", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_track_baza.prototype, "holder_cut", null);
+    $.$bog_music_track_baza = $bog_music_track_baza;
+    class $bog_music_track_baza_dict extends $giper_baza_dict_to($bog_music_track_baza) {
+    }
+    $.$bog_music_track_baza_dict = $bog_music_track_baza_dict;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_device extends $mol_object {
+        static id() {
+            const stored = this.$.$mol_state_local.value('bog_music_device');
+            if (stored)
+                return stored;
+            const id = $mol_guid(12);
+            this.$.$mol_state_local.value('bog_music_device', id);
+            return id;
+        }
+        static title_of(agent, touch = 0, side = 0) {
+            const mac = /Mac OS X/.test(agent) && !/iPhone|iPad/.test(agent);
+            const os = /iPhone/.test(agent) ? 'iPhone'
+                : /iPad/.test(agent) ? 'iPad'
+                    : mac && touch > 1 ? (side && side < 600 ? 'iPhone' : 'iPad')
+                        : /Android/.test(agent) ? 'Android'
+                            : mac ? 'Mac'
+                                : /Windows/.test(agent) ? 'Windows'
+                                    : /Linux/.test(agent) ? 'Linux'
+                                        : 'Устройство';
+            const browser = /Edg\//.test(agent) ? 'Edge'
+                : /Firefox\//.test(agent) ? 'Firefox'
+                    : /Chrome\//.test(agent) ? 'Chrome'
+                        : /Safari\//.test(agent) ? 'Safari'
+                            : '';
+            return browser ? `${os} · ${browser}` : os;
+        }
+        static title() {
+            if (typeof navigator === 'undefined')
+                return this.title_of('');
+            const side = typeof screen === 'undefined' ? 0 : Math.min(screen.width, screen.height);
+            return this.title_of(navigator.userAgent, navigator.maxTouchPoints ?? 0, side);
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_music_device, "id", null);
+    $.$bog_music_device = $bog_music_device;
+    class $bog_music_device_baza extends $giper_baza_dict.with({
+        Name: $giper_baza_atom.of($mol_schema_string),
+        Beat: $giper_baza_atom.of($mol_schema_float),
+    }) {
+        name() {
+            return this.Name()?.val() ?? 'Устройство';
+        }
+        beat() {
+            return Number(this.Beat()?.val() ?? 0);
+        }
+    }
+    $.$bog_music_device_baza = $bog_music_device_baza;
+    class $bog_music_device_dict extends $giper_baza_dict_to($bog_music_device_baza) {
+    }
+    $.$bog_music_device_dict = $bog_music_device_dict;
+    class $bog_music_device_signals extends $giper_baza_dict_to($giper_baza_atom_text) {
+    }
+    $.$bog_music_device_signals = $bog_music_device_signals;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Журнал действий и ошибок для разбора багов с телефона, где консоли нет.
+     *
+     * Записи держатся в обычном массиве, а не в реактивной ячейке: писать в
+     * журнал приходится из любых мест, включая тела реактивных вычислений, а
+     * запись в ячейку оттуда роняет пересчёт. Страница вместо подписки на
+     * данные перечитывает их по таймеру.
+     */
+    class $bog_music_log extends $mol_object {
+        /** Сколько записей держим. Дальше вытесняются старые. */
+        static limit = 2000;
+        static records = [];
+        static add(kind, text, land = '') {
+            this.records.push({ time: Date.now(), kind, text: String(text).slice(0, 500), land });
+            if (this.records.length > this.limit)
+                this.records.splice(0, this.records.length - this.limit);
+        }
+        /** Действие пользователя или приложения. */
+        static act(text, land = '') {
+            this.add('act', text, land);
+        }
+        /** Событие обмена с Гипер Базой. */
+        static sync(text, land = '') {
+            this.add('sync', text, land);
+        }
+        /** Ошибка. Пишется и руками, и автоматически из общего обработчика. */
+        static err(text, land = '') {
+            this.add('err', text, land);
+        }
+        // =====================================================================
+        // Логи Гипер Базы
+        // =====================================================================
+        /**
+         * Baza пишет события через `$mol_log3_*`, но только когда взведён
+         * URL-аргумент `giper_baza_log` — его же читает `$giper_baza_log()`.
+         * Гейт общий, поэтому переключатель в журнале дёргает именно его.
+         */
+        static sync_logging(next) {
+            if (next === undefined)
+                return $mol_state_arg.value('giper_baza_log') !== null;
+            $mol_state_arg.value('giper_baza_log', next ? '1' : null);
+            return next;
+        }
+        /**
+         * Ленд из `place` события. Baza подписывает события местом вида
+         * `$giper_baza_mine_fs.land<24q6G0lY_q0azSzlh>.store<>` — вытаскиваем
+         * оттуда идентификатор, чтобы журнал можно было отфильтровать по ленду.
+         */
+        static land_of(place) {
+            return String(place ?? '').match(/land<([^>]*)>/)?.[1] ?? '';
+        }
+        /** Событие baza одной строкой: сообщение плюс осмысленные поля. */
+        static event_text(event) {
+            const parts = [String(event.message)];
+            for (const key of Object.keys(event)) {
+                if (key === 'message' || key === 'place' || key === 'time')
+                    continue;
+                parts.push(`${key}=${String(event[key]).slice(0, 80)}`);
+            }
+            const place = String(event.place ?? '');
+            if (place)
+                parts.push(`@ ${place.slice(0, 120)}`);
+            return parts.join(' ');
+        }
+        /**
+         * Зеркалит события baza в журнал. Консольные логгеры — обычные `let` на
+         * `$`, поэтому оборачиваем их, сохраняя возврат: у `$mol_log3_area` это
+         * функция закрытия группы, потерять её нельзя.
+         */
+        static hook_baza() {
+            const mirror = (kind, event) => {
+                this.add(kind, this.event_text(event), this.land_of(event.place));
+            };
+            const rise = $.$mol_log3_rise;
+            $.$mol_log3_rise = function (event) { mirror('sync', event); return rise.call(this, event); };
+            const done = $.$mol_log3_done;
+            $.$mol_log3_done = function (event) { mirror('sync', event); return done.call(this, event); };
+            const come = $.$mol_log3_come;
+            $.$mol_log3_come = function (event) { mirror('sync', event); return come.call(this, event); };
+            const warn = $.$mol_log3_warn;
+            $.$mol_log3_warn = function (event) { mirror('sync', event); return warn.call(this, event); };
+            const fail = $.$mol_log3_fail;
+            $.$mol_log3_fail = function (event) { mirror('err', event); return fail.call(this, event); };
+        }
+        /** Перехват необработанных ошибок. Вызывается один раз при старте. */
+        static init() {
+            const handler = (report) => {
+                const text = report?.message ?? report?.error?.message ?? String(report);
+                const place = report?.place ? ` @ ${report.place}` : '';
+                this.add('err', text + place, this.land_of(report?.place));
+            };
+            $mol_report_handler_all.add(handler);
+            this.hook_baza();
+            return { destructor: () => $mol_report_handler_all.delete(handler) };
+        }
+        static clear() {
+            this.records = [];
+        }
+        /** Журнал текстом — чтобы переслать себе или приложить к багу. */
+        static dump() {
+            return this.records.map(rec => {
+                const time = new Date(rec.time).toISOString().slice(11, 23);
+                const kind = rec.kind === 'err' ? 'ОШИБКА' : rec.kind === 'sync' ? 'синк' : 'действие';
+                const land = rec.land ? ` [${rec.land}]` : '';
+                return `${time} ${kind}${land} ${rec.text}`;
+            }).join('\n');
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_music_log, "init", null);
+    $.$bog_music_log = $bog_music_log;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Выравнивание громкости треков по EBU R128 (ITU-R BS.1770): интегральная
+     * громкость записи в LUFS меряется один раз, при добавлении файла,
+     * и хранится в baza; при воспроизведении все треки приводятся к
+     * target_lufs.
+     *
+     * Раньше мерили обычный RMS. Он не совпадает с восприятием: басовитая
+     * запись по RMS громче, чем звучит, и после «выравнивания» оказывалась
+     * тише соседней. R128 сначала прогоняет сигнал через K-взвешивание
+     * (подъём верха + обрез низа), потом усредняет по 400-мс блокам с
+     * отсечкой тишины — по этому же стандарту нормализуют Spotify и YouTube.
+     */
+    class $bog_music_gain extends $mol_object {
+        /** Целевая громкость (LUFS). -14 — как у Spotify/YouTube Music. */
+        static target_lufs = -14;
+        /** Потолок усиления (dB): выше вытащим шум и дыхание зала. */
+        static gain_max_db = 12;
+        /** Предел приглушения (dB). */
+        static gain_min_db = -20;
+        /** Абсолютный гейт: блоки тише этого — тишина, в среднее не идут. */
+        static gate_abs = -70;
+        /** Считаем на 48 кГц — частота, для которой BS.1770 задаёт фильтры. */
+        static rate = 48000;
+        /**
+         * Коэффициенты K-взвешивания из BS.1770 для 48 кГц.
+         * Первый каскад — шельф +4 dB от ~1.5 кГц (голова и ушная раковина
+         * подчёркивают верх), второй — обрез ниже ~40 Гц (низы весят по
+         * энергии больше, чем слышны).
+         */
+        static shelf = [1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585];
+        static cut = [1.0, -2.0, 1.0, -1.99004745483398, 0.99007225036621];
+        /**
+         * Интегральная громкость записи в LUFS. null — мерить нечего:
+         * запись короче 400 мс или сплошная тишина.
+         */
+        static async measure_lufs(buf) {
+            const audio = await this.decode(buf);
+            const hop = Math.round(audio.sampleRate / 10); // 100 мс
+            const hops = Math.floor(audio.length / hop);
+            if (hops < 4)
+                return null;
+            // Сумма квадратов по каждому 100-мс куску, взвешенная по каналам.
+            const power = new Float64Array(hops);
+            for (let ch = 0; ch < audio.numberOfChannels; ch++) {
+                // Фильтруем на месте: копия целого трека на телефоне лишняя,
+                // декодированный буфер всё равно выбрасываем сразу после замера.
+                const data = audio.getChannelData(ch);
+                // Между проходами отпускаем поток: каждый — это десятки
+                // миллионов операций, и без пауз отрисовка встала бы колом.
+                this.biquad(data, this.shelf);
+                await this.breathe();
+                this.biquad(data, this.cut);
+                await this.breathe();
+                const weight = ch < 3 ? 1 : 1.41; // тыловые каналы весят больше
+                for (let h = 0; h < hops; h++) {
+                    let sum = 0;
+                    const end = (h + 1) * hop;
+                    for (let i = h * hop; i < end; i++)
+                        sum += data[i] * data[i];
+                    power[h] += weight * sum;
+                }
+                await this.breathe();
+            }
+            return this.integrated(power, hop);
+        }
+        /**
+         * Интегральная громкость по мощности 100-мс кусков. Блок — 400 мс
+         * (4 куска) с шагом в один кусок, дальше двойной гейт: сначала
+         * выкидываем тишину, потом всё, что на 10 LU тише среднего по
+         * оставшемуся — иначе долгие тихие проигрыши тянут оценку вниз.
+         */
+        static integrated(power, hop) {
+            const size = hop * 4;
+            const blocks = [];
+            for (let h = 0; h + 4 <= power.length; h++) {
+                const mean = (power[h] + power[h + 1] + power[h + 2] + power[h + 3]) / size;
+                if (mean > 0)
+                    blocks.push(mean);
+            }
+            if (!blocks.length)
+                return null;
+            const loud = (mean) => -0.691 + 10 * Math.log10(mean);
+            const mean_of = (list) => list.reduce((sum, mean) => sum + mean, 0) / list.length;
+            const heard = blocks.filter(mean => loud(mean) > this.gate_abs);
+            if (!heard.length)
+                return null;
+            const gate_rel = loud(mean_of(heard)) - 10;
+            const rest = heard.filter(mean => loud(mean) > gate_rel);
+            if (!rest.length)
+                return null;
+            return loud(mean_of(rest));
+        }
+        /**
+         * Выше этого размера не декодируем в PCM: decodeAudioData раздувает
+         * сжатый файл в сотни МБ float'ов и добивает OOM на телефоне.
+         */
+        static max_bytes = 40 * 1024 * 1024;
+        /** Замеры идут по одному: декодированный трек занимает десятки мегабайт. */
+        static queue = Promise.resolve();
+        /** Поставить файл в очередь на замер, результат отдать в done. */
+        static measure_later(buffer, done) {
+            if (buffer.byteLength > this.max_bytes)
+                return;
+            this.queue = this.queue.then(async () => {
+                // decodeAudioData отбирает буфер, а этот же байтовый массив лежит в baza.
+                const lufs = await this.measure_lufs(buffer.slice().buffer);
+                if (lufs != null)
+                    await done(lufs);
+            }).catch(error => console.warn('[gain] loudness measure failed:', error?.message ?? error));
+        }
+        /** Линейный множитель приведения записи к target_lufs. */
+        static factor(lufs) {
+            if (lufs == null || !Number.isFinite(lufs))
+                return 1;
+            const db = Math.max(this.gain_min_db, Math.min(this.gain_max_db, this.target_lufs - lufs));
+            return Math.pow(10, db / 20);
+        }
+        /** Отпустить поток, чтобы браузер успел отрисовать кадр. */
+        static breathe() {
+            return new Promise(done => setTimeout(done, 0));
+        }
+        /** Каскад БИХ-фильтра (direct form I) по сэмплам, на месте. */
+        static biquad(data, c) {
+            let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+            for (let i = 0; i < data.length; i++) {
+                const x = data[i];
+                const y = c[0] * x + c[1] * x1 + c[2] * x2 - c[3] * y1 - c[4] * y2;
+                x2 = x1;
+                x1 = x;
+                y2 = y1;
+                y1 = y;
+                data[i] = y;
+            }
+        }
+        /**
+         * Декод в 48 кГц: decodeAudioData отдаёт сэмплы на частоте контекста,
+         * так что коэффициенты фильтров подходят без пересчёта. Safari отдаёт
+         * результат колбэком, остальные — промисом.
+         */
+        static decode(buf) {
+            const OAC = globalThis.OfflineAudioContext ?? globalThis.webkitOfflineAudioContext;
+            const ctx = new OAC(1, 1, this.rate);
+            return new Promise((done, fail) => {
+                const ret = ctx.decodeAudioData(buf, done, fail);
+                if (ret && typeof ret.then === 'function')
+                    ret.then(done, fail);
+            });
+        }
+    }
+    $.$bog_music_gain = $bog_music_gain;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Шестиполосный эквалайзер. Раскладка и названия пресетов — как в Я.Музыке
+     * на Android: 60 / 150 / 400 / 1.0k / 2.4k / 15k Гц.
+     *
+     * Крайние полосы — шельфы: низ и верх двигают целиком, а колокол цепляет
+     * только свою метку и спадает по обе стороны от неё. Средние четыре —
+     * колокола с Q=1.4, около октавы на полосу: полосы стоят в 1.3 октавы друг
+     * от друга, и при более широком колоколе они бы заметно складывались.
+     *
+     * У шельфа `frequency` — середина перехода, где набрана ПОЛОВИНА усиления,
+     * а не начало полки, поэтому углы стоят выше своих меток. Замерено
+     * (getFrequencyResponse, +12 на одну полосу, остальные в нуле):
+     *
+     *   полоса 60    → +9.7 на 60 Гц,  +1.7 на 150 Гц
+     *   полоса 150   → +12  на 150 Гц, +1.5 на 60 и +1.3 на 400
+     *   полоса 15000 → +11  на 15 кГц, 0 на 2.4 кГц
+     *
+     * То есть каждый ползунок делает то, что написано на его метке, а соседу
+     * достаётся полтора децибела — нарисованная кривая совпадает со слышимым.
+     */
+    class $bog_music_eq extends $mol_object {
+        static bands = [
+            { freq: 90, type: 'lowshelf', title: '60 Hz' },
+            { freq: 150, type: 'peaking', title: '150 Hz' },
+            { freq: 400, type: 'peaking', title: '400 Hz' },
+            { freq: 1000, type: 'peaking', title: '1.0 kHz' },
+            { freq: 2400, type: 'peaking', title: '2.4 kHz' },
+            { freq: 10000, type: 'highshelf', title: '15 kHz' },
+        ];
+        /** Добротность колоколов. */
+        static q = 1.4;
+        /**
+         * Потолок полосы (dB). Тот же, что gain_max_db у автогромкости: выше
+         * лимитер на плотных миксах начинает дышать слышимо.
+         */
+        static range_db = 12;
+        /**
+         * Пресеты. Названия и порядок — как в Я.Музыке; формы подобраны под нашу
+         * сетку полос по смыслу названия, а не скопированы из чужих таблиц.
+         * `default` первым: ровная кривая, она же состояние «ничего не трогали».
+         */
+        static presets = [
+            { id: 'default', title: 'По умолчанию', gains: [0, 0, 0, 0, 0, 0] },
+            { id: 'classic', title: 'Классическая музыка', gains: [4, 2, 0, -1, -3, 4] },
+            { id: 'club', title: 'Клубная музыка', gains: [0, 2, 5, 5, 3, 0] },
+            { id: 'dance', title: 'Танцевальная музыка', gains: [7, 5, 0, -2, 2, 5] },
+            { id: 'bass', title: 'Усиление НЧ', gains: [10, 7, 3, 0, 0, 0] },
+            { id: 'bass_treble', title: 'Усиление НЧ и ВЧ', gains: [9, 6, 1, -2, 3, 8] },
+            { id: 'treble', title: 'Усиление ВЧ', gains: [0, 0, 0, 2, 5, 10] },
+        ];
+        /** Подпись состояния, которое ни одному пресету не соответствует. */
+        static custom_title = 'Своя настройка';
+        /** Все полосы в нуле — сигнал проходит нетронутым. */
+        static flat() {
+            return this.bands.map(() => 0);
+        }
+        static preset(id) {
+            const found = this.presets.find(preset => preset.id === id);
+            return found ? found.gains.slice() : null;
+        }
+        /** Пресет, совпадающий с набором, или '' — значит «Свой». */
+        static preset_of(gains) {
+            const norm = this.clamp(gains);
+            const found = this.presets.find(preset => preset.gains.every((db, i) => db === norm[i]));
+            return found ? found.id : '';
+        }
+        /**
+         * Привести чужой набор к нашему: длина по числу полос, целые dB в
+         * пределах диапазона. Набор приезжает из baza и мог быть записан
+         * версией с другим числом полос — недостающие в ноль, лишние прочь.
+         */
+        static clamp(gains) {
+            return this.bands.map((_, i) => {
+                const db = Number(gains?.[i]);
+                if (!Number.isFinite(db))
+                    return 0;
+                return Math.round(Math.max(-this.range_db, Math.min(this.range_db, db)));
+            });
+        }
+        /**
+         * Цвет точки по её усилению, как на графике в Я.Музыке: красный наверху,
+         * жёлтый в нуле, зелёный внизу.
+         */
+        static color(db) {
+            const part = Math.max(-1, Math.min(1, db / this.range_db));
+            const hue = part >= 0 ? 50 - part * 50 : 50 - part * 70;
+            return `hsl( ${hue.toFixed(0)} 80% 55% )`;
+        }
+        /** Подпись усиления над точкой. */
+        static db_text(db) {
+            return `${db} dB`;
+        }
+        /** Набор одной строкой — так он и лежит в baza. */
+        static stringify(gains) {
+            return this.clamp(gains).join(',');
+        }
+        static parse(text) {
+            if (!text)
+                return this.flat();
+            return this.clamp(text.split(',').map(Number));
+        }
+    }
+    $.$bog_music_eq = $bog_music_eq;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_account extends $.$bog_music_account {
+            account() {
+                return $bog_music_account_baza.home();
+            }
+            nickname(next) {
+                return this.account().nickname(next);
+            }
+            lord_text() {
+                const auth = this.$.$giper_baza_auth.current();
+                if (!auth)
+                    return '—';
+                return auth.pass().lord().str;
+            }
+            account_key() {
+                return String(this.$.$mol_state_local.value('$giper_baza_auth') ?? '');
+            }
+            account_link() {
+                const key = this.account_key();
+                if (!key)
+                    return '';
+                return location.origin + location.pathname + location.search + '#account=' + encodeURIComponent(key);
+            }
+            Qr() {
+                return this.qr_showed() ? super.Qr() : null;
+            }
+            qr_found(next) {
+                if (next) {
+                    this.import_link(next);
+                    this.apply_import();
+                }
+                return next ?? '';
+            }
+            copy_status(next) {
+                return next ?? '';
+            }
+            copy() {
+                const link = this.account_link();
+                if (!link) {
+                    this.copy_status('Ключ не найден');
+                    return;
+                }
+                try {
+                    navigator.clipboard.writeText(link);
+                    this.copy_status('Скопировано. Не делись публично!');
+                }
+                catch (e) {
+                    console.warn('[account] clipboard failed:', e?.message);
+                    this.copy_status('Не удалось — скопируй из адресной строки: ' + link);
+                }
+            }
+            import_link(next) {
+                return next ?? '';
+            }
+            import_status(next) {
+                return next ?? '';
+            }
+            apply_import() {
+                const raw = this.import_link().trim();
+                if (!raw) {
+                    this.import_status('Вставь ссылку с #account=…');
+                    return;
+                }
+                const match = raw.match(/[#&]account=([^&\s]+)/);
+                const key = match ? decodeURIComponent(match[1]) : raw;
+                if (key.length < 172) {
+                    this.import_status('Ключ слишком короткий');
+                    return;
+                }
+                const current = this.$.$mol_state_local.value('$giper_baza_auth');
+                if (current !== key)
+                    this.$.$mol_state_local.value('$giper_baza_auth', key);
+                this.import_status(current === key ? 'Перезапуск…' : 'Применено, перезагрузка…');
+                location.reload();
+            }
+            reset_account() {
+                if (typeof window === 'undefined')
+                    return;
+                try {
+                    window.localStorage.clear();
+                }
+                catch { }
+                try {
+                    indexedDB.deleteDatabase('$giper_baza_mine');
+                }
+                catch { }
+                const drop = $bog_music_disk.supported()
+                    ? navigator.storage.getDirectory().then(root => root.removeEntry($bog_music_disk.folder, { recursive: true }))
+                    : Promise.resolve();
+                drop.catch(() => { }).finally(() => location.reload());
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_music_account.prototype, "lord_text", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_account.prototype, "qr_found", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_account.prototype, "copy_status", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_account.prototype, "copy", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_account.prototype, "import_link", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_account.prototype, "import_status", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_account.prototype, "apply_import", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_account.prototype, "reset_account", null);
+        $$.$bog_music_account = $bog_music_account;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_account_baza_playlists extends $giper_baza_dict_to($giper_baza_atom_text) {
+    }
+    $.$bog_music_account_baza_playlists = $bog_music_account_baza_playlists;
+    class $bog_music_account_baza_lists extends $giper_baza_dict_to($giper_baza_list_str) {
+    }
+    $.$bog_music_account_baza_lists = $bog_music_account_baza_lists;
+    class $bog_music_account_baza extends $giper_baza_dict.with({
+        Nickname: $giper_baza_atom.of($mol_schema_string),
+        Last_track_key: $giper_baza_atom.of($mol_schema_string),
+        Last_position: $giper_baza_atom.of($mol_schema_float),
+        Eq_on: $giper_baza_atom.of($mol_schema_boolean),
+        Eq_gains: $giper_baza_atom.of($mol_schema_string),
+        Tracks: $bog_music_track_baza_dict,
+        Playlists: $bog_music_account_baza_playlists,
+        Lists: $bog_music_account_baza_lists,
+        Devices: $bog_music_device_dict,
+        Signals: $bog_music_device_signals,
+    }) {
+        static home() {
+            return $giper_baza_glob.home().land().Data($bog_music_account_baza);
+        }
+        static key_make(source) {
+            return `0_${this.hash_str(source)}`;
+        }
+        land_id() {
+            try {
+                return this.land().link().str;
+            }
+            catch {
+                return '';
+            }
+        }
+        tracks() {
+            return this.Tracks(null);
+        }
+        track(key) {
+            return this.tracks().key(key);
+        }
+        info(key) {
+            return this.track(key)?.info() ?? null;
+        }
+        nickname(next) {
+            if (next !== undefined)
+                this.Nickname('auto').val(next);
+            return this.Nickname()?.val() ?? '';
+        }
+        keys_in(playlist) {
+            const dict = this.tracks();
+            const rows = [];
+            for (const key of (dict.keys() ?? [])) {
+                const track = dict.key(key);
+                if (!track)
+                    continue;
+                if (track.playlist() !== playlist)
+                    continue;
+                if (!track.info())
+                    continue;
+                rows.push({ key, order: track.order(), added: track.added() });
+            }
+            rows.sort((a, b) => a.order !== b.order ? a.order - b.order : b.added - a.added);
+            return rows.map(r => r.key);
+        }
+        shared_playlists() {
+            const dict = this.tracks();
+            const map = new Map();
+            for (const key of (dict.keys() ?? [])) {
+                const pl = dict.key(key)?.playlist() ?? '';
+                if (!pl.startsWith('shared:'))
+                    continue;
+                map.set(pl, (map.get(pl) ?? 0) + 1);
+            }
+            return Array.from(map.entries()).map(([id, count]) => ({
+                id,
+                sender: id.slice('shared:'.length),
+                count,
+            }));
+        }
+        min_order() {
+            let min = Infinity;
+            const dict = this.tracks();
+            for (const key of (dict.keys() ?? [])) {
+                const track = dict.key(key);
+                if (!track)
+                    continue;
+                min = Math.min(min, track.order());
+            }
+            return Number.isFinite(min) ? min : 1;
+        }
+        max_order(playlist) {
+            let max = -Infinity;
+            const dict = this.tracks();
+            for (const key of (dict.keys() ?? [])) {
+                const track = dict.key(key);
+                if (!track)
+                    continue;
+                if (track.playlist() !== playlist)
+                    continue;
+                max = Math.max(max, track.order());
+            }
+            return Number.isFinite(max) ? max : 0;
+        }
+        move_to_bottom(key) {
+            const track = this.track(key);
+            if (!track)
+                return;
+            track.order_set(this.max_order(track.playlist()) + 1);
+        }
+        save_track(key, meta) {
+            const track = this.tracks().key(key, 'auto');
+            if (track.Title()?.val() !== meta.title)
+                track.Title('auto').val(meta.title);
+            if (track.Artist()?.val() !== meta.artist)
+                track.Artist('auto').val(meta.artist);
+            if (track.Duration()?.val() !== meta.duration)
+                track.Duration('auto').val(meta.duration);
+            if (meta.cover && track.Cover()?.val() !== meta.cover)
+                track.Cover('auto').val(meta.cover);
+            if (track.Added()?.val() == null)
+                track.Added('auto').val(Date.now());
+            if (track.Order()?.val() == null)
+                track.Order('auto').val(this.min_order() - 1);
+        }
+        holder_add(key) {
+            this.track(key)?.holder_add($bog_music_device.id());
+        }
+        holder_cut(key) {
+            this.track(key)?.holder_cut($bog_music_device.id());
+        }
+        async import_audio(key, meta, bytes, playlist = '') {
+            $bog_music_log.act(`импорт трека ${meta.artist} — ${meta.title}${playlist ? ` в «${playlist}»` : ''}`, this.land_id());
+            await $bog_music_disk.put(key, bytes);
+            const self = $mol_wire_async(this);
+            await self.save_track(key, meta);
+            if (playlist)
+                await self.move_to_playlist(key, playlist);
+            await self.holder_add(key);
+            this.lufs_measure(key, bytes);
+        }
+        async save_local_track(file, order) {
+            const { artist, title, order: parsed_order } = $bog_music_account_baza.parse_filename(file.name);
+            const key = $bog_music_account_baza.key_make(`${file.name}|${file.size}|${file.lastModified}`);
+            $bog_music_log.act(`файл с устройства: ${file.name}, ${file.size} байт → ${artist} — ${title}`, this.land_id());
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            await this.import_audio(key, { artist, title, duration: 0, cover: '' }, bytes);
+            const want = parsed_order ?? order;
+            if (want != null)
+                await $mol_wire_async(this).order_set(key, want);
+        }
+        order_set(key, order) {
+            this.track(key)?.order_set(order);
+        }
+        place(key) {
+            if ($bog_music_disk.has(key))
+                return 'disk';
+            const track = this.track(key);
+            if (!track)
+                return 'lost';
+            const me = $bog_music_device.id();
+            if (track.holders().some(id => id !== me))
+                return 'remote';
+            return 'lost';
+        }
+        holders_other(key) {
+            const me = $bog_music_device.id();
+            return (this.track(key)?.holders() ?? []).filter(id => id !== me);
+        }
+        swap_order(key_a, key_b) {
+            const ta = this.tracks().key(key_a, 'auto');
+            const tb = this.tracks().key(key_b, 'auto');
+            if (!ta || !tb)
+                return;
+            const oa = ta.order();
+            const ob = tb.order();
+            ta.order_set(ob === oa ? oa + 1 : ob);
+            tb.order_set(oa);
+        }
+        move_to_playlist(key, playlist) {
+            const track = this.track(key);
+            if (!track)
+                return;
+            $bog_music_log.act(`${key} → плейлист «${playlist || 'Моя музыка'}»`, this.land_id());
+            track.Playlist('auto').val(playlist);
+        }
+        playlists_dict() {
+            return this.Playlists(null);
+        }
+        playlists() {
+            const dict = this.playlists_dict();
+            const rows = [];
+            for (const id of (dict.keys() ?? [])) {
+                const title = dict.key(id)?.val();
+                if (title == null)
+                    continue;
+                rows.push({ id, title });
+            }
+            return rows.sort((a, b) => a.title.localeCompare(b.title, 'ru', { numeric: true }));
+        }
+        playlist_title(id) {
+            return this.playlists_dict().key(id)?.val() ?? '';
+        }
+        playlist_create(title) {
+            const id = 'list:' + $mol_guid(8, id => this.playlists_dict().has(id));
+            $bog_music_log.act(`новый плейлист «${title}»`, this.land_id());
+            this.playlists_dict().key(id, 'auto').val(title);
+            return id;
+        }
+        playlist_rename(id, title) {
+            this.playlists_dict().key(id, 'auto').val(title);
+        }
+        playlist_delete(id) {
+            $bog_music_log.act(`удалён плейлист ${id}`, this.land_id());
+            for (const key of this.keys_in(id))
+                this.move_to_playlist(key, '');
+            this.Lists(null).cut(id);
+            this.playlists_dict().cut(id);
+        }
+        list(id, auto) {
+            return this.Lists(null).key(id, auto);
+        }
+        list_raw(id) {
+            return (this.list(id)?.items() ?? []);
+        }
+        list_keys(id) {
+            const keys = [];
+            for (const key of this.list_raw(id)) {
+                const track = this.track(key);
+                if (!track?.info())
+                    continue;
+                if (track.playlist() === 'archive')
+                    continue;
+                keys.push(key);
+            }
+            return keys;
+        }
+        list_has(id, key) {
+            return this.list(id)?.has(key) ?? false;
+        }
+        list_add(id, key) {
+            $bog_music_log.act(`${key} → в «${this.playlist_title(id)}»`, this.land_id());
+            this.list(id, 'auto').add(key);
+        }
+        list_cut(id, key) {
+            $bog_music_log.act(`${key} ← из «${this.playlist_title(id)}»`, this.land_id());
+            this.list(id)?.cut(key);
+        }
+        list_move(id, key, to_key) {
+            const raw = this.list_raw(id);
+            const from = raw.indexOf(key);
+            const to = raw.indexOf(to_key);
+            if (from < 0 || to < 0 || from === to)
+                return;
+            this.list(id, 'auto').move(from, to > from ? to + 1 : to);
+        }
+        migrate_lists() {
+            const dict = this.tracks();
+            for (const key of (dict.keys() ?? [])) {
+                const track = dict.key(key);
+                const id = track?.playlist() ?? '';
+                if (!id.startsWith('list:'))
+                    continue;
+                this.list(id, 'auto').add(key);
+                track.Playlist('auto').val('');
+            }
+        }
+        async delete_track(key) {
+            $bog_music_log.act(`трек вырезан из фонотеки: ${key}`, this.land_id());
+            await $bog_music_disk.drop(key);
+            await $mol_wire_async(this.tracks()).cut(key);
+        }
+        async drop_file(key) {
+            $bog_music_log.act(`файл удалён с устройства, метаданные оставлены: ${key}`, this.land_id());
+            await $bog_music_disk.drop(key);
+            await $mol_wire_async(this).holder_cut(key);
+        }
+        save_lufs(key, lufs) {
+            this.track(key)?.lufs(lufs);
+        }
+        lufs_measure(key, buffer) {
+            $bog_music_gain.measure_later(buffer, lufs => $mol_wire_async(this).save_lufs(key, lufs));
+        }
+        last_session() {
+            const key = this.Last_track_key()?.val() ?? '';
+            if (!key)
+                return null;
+            if (!this.track(key))
+                return null;
+            const position = Number(this.Last_position()?.val() ?? 0) || 0;
+            return { key, position };
+        }
+        save_last_session(key, position) {
+            this.Last_track_key('auto').val(key);
+            this.Last_position('auto').val(Math.max(0, position || 0));
+        }
+        eq_gains() {
+            return $bog_music_eq.parse(this.Eq_gains()?.val() ?? '');
+        }
+        eq_on() {
+            return this.Eq_on()?.val() ?? false;
+        }
+        save_eq_on(on) {
+            this.Eq_on('auto').val(on);
+        }
+        save_eq_gains(gains) {
+            this.Eq_gains('auto').val($bog_music_eq.stringify(gains));
+        }
+        devices() {
+            return this.Devices(null);
+        }
+        static online_span = 90_000;
+        device_beat() {
+            const device = this.devices().key($bog_music_device.id(), 'auto');
+            const name = $bog_music_device.title();
+            if (device.Name()?.val() !== name)
+                device.Name('auto').val(name);
+            device.Beat('auto').val(Date.now());
+        }
+        device_name(id) {
+            return this.devices().key(id)?.name() ?? 'другое устройство';
+        }
+        device_online(id, now = Date.now()) {
+            const beat = this.devices().key(id)?.beat() ?? 0;
+            return now - beat < $bog_music_account_baza.online_span;
+        }
+        signals() {
+            return this.Signals(null);
+        }
+        static parse_filename(name) {
+            let base = name.replace(/\.[^.]+$/, '').trim();
+            let order = null;
+            const numbered = base.match(/^(\d{1,4})\s*[-–—]\s*(.+)$/);
+            if (numbered) {
+                order = Number(numbered[1]);
+                base = numbered[2].trim();
+            }
+            const m = base.match(/^(.+?)\s*[-–—]\s*(.+)$/);
+            if (m)
+                return { artist: m[1].trim(), title: m[2].trim(), order };
+            return { artist: '', title: base, order };
+        }
+        static hash_str(s) {
+            let h = 2166136261;
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            return h >>> 0;
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "move_to_bottom", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "save_track", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "holder_add", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "holder_cut", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "order_set", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "swap_order", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "move_to_playlist", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "playlist_create", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "playlist_rename", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "playlist_delete", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "list_add", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "list_cut", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "list_move", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "migrate_lists", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "save_lufs", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "save_last_session", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "save_eq_on", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "save_eq_gains", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_account_baza.prototype, "device_beat", null);
+    $.$bog_music_account_baza = $bog_music_account_baza;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_music_account, {
+            flex: { direction: 'column' },
+            width: '100%',
+            boxSizing: 'border-box',
+            padding: {
+                top: '0.5rem',
+                bottom: '0.5rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            gap: '0.75rem',
+            Font_row: {
+                alignItems: 'center',
+                flex: { wrap: 'wrap' },
+                gap: '0.5rem',
+                padding: { left: '0.25rem', right: '0.25rem' },
+            },
+            Font_label: {
+                color: $mol_theme.shade,
+            },
+            Font_size: {
+                flex: { direction: 'row', wrap: 'wrap' },
+            },
+            Sync_row: {
+                alignItems: 'center',
+                flex: { wrap: 'wrap' },
+                gap: '0.5rem',
+                padding: { left: '0.25rem', right: '0.25rem' },
+            },
+            Download_playlist: {
+                gap: '0.375rem',
+                alignItems: 'center',
+            },
+            Download_playlist_label: {
+                font: { size: '0.875rem' },
+            },
+            Download_playlist_status: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                flex: { grow: 1 },
+            },
+            Cards: {
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))',
+                gap: '0.75rem',
+                alignItems: 'start',
+            },
+            Profile: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Lord: {
+                font: {
+                    family: 'monospace',
+                    size: '0.875rem',
+                },
+                alignItems: 'baseline',
+                padding: { top: '0.25rem', bottom: '0.25rem' },
+                gap: '0.5rem',
+            },
+            // Идентификатор печатается целиком, поэтому строке нужно разрешить
+            // перенос: без minWidth флекс-элемент не сжимается и вылезает за край.
+            Lord_text: {
+                minWidth: 0,
+                overflowWrap: 'anywhere',
+                userSelect: 'text',
+            },
+            Telegram: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Tg_title: {
+                font: { weight: 'bold' },
+            },
+            Tg_hint: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+            },
+            Tg_status: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                minHeight: '1rem',
+            },
+            Lastfm: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Fm_title: {
+                font: { weight: 'bold' },
+            },
+            Fm_hint: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+            },
+            Fm_status: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                minHeight: '1rem',
+            },
+            Export: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Warning: {
+                font: { size: '0.8125rem' },
+                color: '#d33',
+            },
+            Copy_status: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                minHeight: '1rem',
+            },
+            Qr: {
+                width: '16rem',
+                maxWidth: '100%',
+                aspectRatio: 1,
+                alignSelf: 'center',
+                background: { color: 'white' },
+                border: { radius: $mol_gap.round },
+            },
+            Import: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Import_hint: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+            },
+            Import_status: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                minHeight: '1rem',
+            },
+            Reset: {
+                flex: { direction: 'column' },
+                background: { color: $mol_theme.card },
+                border: { radius: $mol_gap.round },
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: '0.5rem',
+            },
+            Reset_hint: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_music_log_view) = class $bog_music_log_view extends ($.$mol_list) {
+		log_rows(){
+			return [];
+		}
+		count_label(){
+			return "";
+		}
+		Count(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.count_label())]);
+			return obj;
+		}
+		version(){
+			return "";
+		}
+		Version(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.version())]);
+			return obj;
+		}
+		sync_logging(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Sync(){
+			const obj = new this.$.$mol_check_box();
+			(obj.title) = () => ("Логи синка");
+			(obj.checked) = (next) => ((this.sync_logging(next)));
+			return obj;
+		}
+		copy(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Скопировать");
+			(obj.click) = (next) => ((this.copy(next)));
+			return obj;
+		}
+		clear(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Clear(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Очистить");
+			(obj.click) = (next) => ((this.clear(next)));
+			return obj;
+		}
+		Tools(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Sync()), 
+				(this.Copy()), 
+				(this.Clear())
+			]);
+			return obj;
+		}
+		filter(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		row_theme(id){
+			return "";
+		}
+		kind_id(id){
+			return "";
+		}
+		time(id){
+			return "";
+		}
+		Time(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.time(id))]);
+			return obj;
+		}
+		kind(id){
+			return "";
+		}
+		Kind(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.kind(id))]);
+			return obj;
+		}
+		land(id){
+			return "";
+		}
+		Land(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.land(id))]);
+			return obj;
+		}
+		Meta(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Time(id)), 
+				(this.Kind(id)), 
+				(this.Land(id))
+			]);
+			return obj;
+		}
+		text(id){
+			return "";
+		}
+		Text(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.text(id))]);
+			return obj;
+		}
+		empty_label(){
+			return "";
+		}
+		rows(){
+			return (this.log_rows());
+		}
+		Head(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Count()), 
+				(this.Version()), 
+				(this.Tools())
+			]);
+			return obj;
+		}
+		Filter(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.filter(next)));
+			(obj.hint) = () => ("Фильтр: ленд, действие или текст ошибки");
+			return obj;
+		}
+		Row(id){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({"mol_theme": (this.row_theme(id)), "bog_music_log_kind": (this.kind_id(id))});
+			(obj.sub) = () => ([(this.Meta(id)), (this.Text(id))]);
+			return obj;
+		}
+		Empty(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.empty_label())]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_music_log_view.prototype), "Count"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Version"));
+	($mol_mem(($.$bog_music_log_view.prototype), "sync_logging"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Sync"));
+	($mol_mem(($.$bog_music_log_view.prototype), "copy"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Copy"));
+	($mol_mem(($.$bog_music_log_view.prototype), "clear"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Clear"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Tools"));
+	($mol_mem(($.$bog_music_log_view.prototype), "filter"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Time"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Kind"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Land"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Meta"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Text"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Head"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Filter"));
+	($mol_mem_key(($.$bog_music_log_view.prototype), "Row"));
+	($mol_mem(($.$bog_music_log_view.prototype), "Empty"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_log_view extends $.$bog_music_log_view {
+            /**
+             * Свежие записи сверху. Данные лежат в обычном массиве, поэтому
+             * подписаться на них нельзя — перечитываем раз в секунду по таймеру.
+             */
+            records() {
+                this.$.$mol_state_time.now(1000);
+                return [...$bog_music_log.records].reverse();
+            }
+            /**
+             * Фильтр живёт в URL, поэтому журнал по конкретному ленду открывается
+             * ссылкой: `#!log_filter=24q6G0lY_q0azSzlh`. Совпадение ищем и в ленде,
+             * и в тексте — по идентификатору, по слову из действия, по тексту ошибки.
+             */
+            filter(next) {
+                return this.$.$mol_state_arg.value('log_filter', next) ?? '';
+            }
+            filtered() {
+                const query = this.filter().trim().toLowerCase();
+                const records = this.records();
+                if (!query)
+                    return records;
+                return records.filter(rec => rec.land.toLowerCase().includes(query)
+                    || rec.text.toLowerCase().includes(query));
+            }
+            /** Гейт логов baza общий с самим движком — см. $bog_music_log. */
+            sync_logging(next) {
+                return $bog_music_log.sync_logging(next);
+            }
+            log_rows() {
+                const rows = this.filtered().map((_, index) => this.Row(index));
+                if (!rows.length)
+                    return [this.Head(), this.Filter(), this.Empty()];
+                return [this.Head(), this.Filter(), ...rows];
+            }
+            count_label() {
+                const all = this.records();
+                const shown = this.filtered();
+                const errors = shown.filter(rec => rec.kind === 'err').length;
+                const head = shown.length === all.length
+                    ? `${all.length} записей`
+                    : `${shown.length} из ${all.length} записей`;
+                return errors ? `${head}, ошибок ${errors}` : head;
+            }
+            empty_label() {
+                if (this.filter().trim())
+                    return 'Под фильтр ничего не подошло. Очисти поле, чтобы увидеть весь журнал.';
+                return 'Пока пусто. Понажимай в приложении — записи появятся здесь.';
+            }
+            record(index) {
+                return this.filtered()[index];
+            }
+            time(index) {
+                const rec = this.record(index);
+                return rec ? new Date(rec.time).toISOString().slice(11, 19) : '';
+            }
+            kind_id(index) {
+                return this.record(index)?.kind ?? '';
+            }
+            kind(index) {
+                const kind = this.kind_id(index);
+                if (kind === 'err')
+                    return 'ошибка';
+                if (kind === 'sync')
+                    return 'синк';
+                return 'действие';
+            }
+            land(index) {
+                return this.record(index)?.land ?? '';
+            }
+            text(index) {
+                return this.record(index)?.text ?? '';
+            }
+            /** Ошибки подсвечиваем темой, чтобы находить их взглядом. */
+            row_theme(index) {
+                return this.kind_id(index) === 'err' ? '$mol_theme_special' : '$mol_theme_base';
+            }
+            copy() {
+                this.$.$mol_dom_context.navigator.clipboard.writeText($bog_music_log.dump());
+                $bog_music_log.act('журнал скопирован');
+                return null;
+            }
+            clear() {
+                $bog_music_log.clear();
+                $bog_music_log.act('журнал очищен');
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_music_log_view.prototype, "copy", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_log_view.prototype, "clear", null);
+        $$.$bog_music_log_view = $bog_music_log_view;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * `$mol_view` по умолчанию — `display: flex` в строку, поэтому каждому
+         * блоку, который должен идти сверху вниз, направление задаётся явно.
+         */
+        $mol_style_define($bog_music_log_view, {
+            flex: { direction: 'column' },
+            padding: {
+                top: '0.5rem',
+                bottom: '0.5rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            gap: '0.25rem',
+            Head: {
+                flex: {
+                    direction: 'row',
+                    wrap: 'wrap',
+                },
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.5rem',
+                    left: '0.25rem',
+                    right: '0.25rem',
+                },
+            },
+            Count: {
+                font: { size: '0.8125rem' },
+                color: $mol_theme.shade,
+                // Счётчик уступает место кнопкам, но не режется в ноль.
+                flex: { shrink: 1 },
+                minWidth: 0,
+            },
+            Version: {
+                font: { size: '0.8125rem', family: 'monospace' },
+                color: $mol_theme.shade,
+                flex: { shrink: 0 },
+            },
+            Tools: {
+                flex: {
+                    direction: 'row',
+                    wrap: 'wrap',
+                    shrink: 0,
+                },
+                alignItems: 'center',
+                gap: '0.25rem',
+            },
+            Filter: {
+                margin: { bottom: '0.5rem' },
+            },
+            Row: {
+                flex: { direction: 'column' },
+                gap: '0.125rem',
+                padding: {
+                    top: '0.375rem',
+                    bottom: '0.375rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                background: { color: $mol_theme.card },
+                '@': {
+                    bog_music_log_kind: {
+                        sync: {
+                            color: $mol_theme.shade,
+                        },
+                    },
+                },
+            },
+            Meta: {
+                flex: {
+                    direction: 'row',
+                    wrap: 'wrap',
+                },
+                alignItems: 'baseline',
+                gap: '0.5rem',
+                font: {
+                    size: '0.6875rem',
+                    family: 'monospace',
+                },
+                color: $mol_theme.shade,
+            },
+            Time: {
+                flex: { shrink: 0 },
+            },
+            Kind: {
+                flex: { shrink: 0 },
+                textTransform: 'uppercase',
+                letterSpacing: '0.03em',
+            },
+            Land: {
+                // Идентификатор ленда длинный: пусть переносится, а не растягивает
+                // строку и не выдавливает время с видом записи.
+                minWidth: 0,
+                overflowWrap: 'anywhere',
+                opacity: 0.8,
+            },
+            Text: {
+                font: {
+                    size: '0.8125rem',
+                    family: 'monospace',
+                },
+                // Логи — длинные строки без пробелов (ссылки, id). Без minWidth: 0
+                // flex-элемент не сжимается и уезжает за край экрана.
+                minWidth: 0,
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                color: $mol_theme.text,
+            },
+            Empty: {
+                padding: {
+                    top: '1rem',
+                    bottom: '1rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                color: $mol_theme.shade,
+                font: { size: '0.8125rem' },
+                textAlign: 'center',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Ленд-реестр: feedback_id → ссылка на ленд с отзывами этого проекта.
+     * Пресет `[null, post('just')]` — ленд нового проекта заводит первый
+     * отправитель отзыва, заход владельца не нужен.
+     */
+    $.$bog_feedback2_registry = 'c0FEYfG8_tUFJEKfo';
+    /** Отдельный отзыв пользователя. Ключ в dict — lord string. */
+    class $bog_feedback2_entry extends $giper_baza_dict.with({
+        Text: $giper_baza_atom_text,
+        Contact: $giper_baza_atom_text,
+        Reply: $giper_baza_atom_text,
+        Reply_author: $giper_baza_atom_text,
+        Reply_created: $giper_baza_atom_real,
+    }) {
+    }
+    $.$bog_feedback2_entry = $bog_feedback2_entry;
+})($ || ($ = {}));
+
+;
+	($.$mol_stack) = class $mol_stack extends ($.$mol_view) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/stack/stack.view.css", "[mol_stack] {\n\tdisplay: grid;\n\t/* width: max-content; */\n\t/* height: max-content; */\n\talign-items: flex-start;\n\tjustify-items: flex-start;\n}\n\n[mol_stack] > * {\n\tgrid-area: 1/1;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_text_code_token) = class $mol_text_code_token extends ($.$mol_dimmer) {
+		type(){
+			return "";
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_token_type": (this.type())};
+		}
+	};
+	($.$mol_text_code_token_link) = class $mol_text_code_token_link extends ($.$mol_text_code_token) {
+		uri(){
+			return "";
+		}
+		dom_name(){
+			return "a";
+		}
+		type(){
+			return "code-link";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"href": (this.uri()), 
+				"target": "_blank"
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { hsla } = $mol_style_func;
+        $mol_style_define($mol_text_code_token, {
+            display: 'inline',
+            textDecoration: 'none',
+            '@': {
+                mol_text_code_token_type: {
+                    'code-keyword': {
+                        color: hsla(0, 70, 60, 1),
+                    },
+                    'code-field': {
+                        color: hsla(300, 70, 50, 1),
+                    },
+                    'code-tag': {
+                        color: hsla(330, 70, 50, 1),
+                    },
+                    'code-global': {
+                        color: hsla(30, 80, 50, 1),
+                    },
+                    'code-decorator': {
+                        color: hsla(180, 40, 50, 1),
+                    },
+                    'code-punctuation': {
+                        color: hsla(0, 0, 50, 1),
+                    },
+                    'code-string': {
+                        color: hsla(90, 40, 50, 1),
+                    },
+                    'code-number': {
+                        color: hsla(55, 65, 45, 1),
+                    },
+                    'code-call': {
+                        color: hsla(270, 60, 50, 1),
+                    },
+                    'code-link': {
+                        color: hsla(210, 60, 50, 1),
+                    },
+                    'code-comment-inline': {
+                        opacity: .5,
+                    },
+                    'code-comment-block': {
+                        opacity: .5,
+                    },
+                    'code-docs': {
+                        opacity: .75,
+                    },
+                },
+            }
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code_line) = class $mol_text_code_line extends ($.$mol_paragraph) {
+		numb(){
+			return 0;
+		}
+		token_type(id){
+			return "";
+		}
+		token_text(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		token_uri(id){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		minimal_height(){
+			return 24;
+		}
+		numb_showed(){
+			return true;
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		Numb(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.numb())]);
+			return obj;
+		}
+		Token(id){
+			const obj = new this.$.$mol_text_code_token();
+			(obj.type) = () => ((this.token_type(id)));
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			return obj;
+		}
+		Token_link(id){
+			const obj = new this.$.$mol_text_code_token_link();
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			(obj.uri) = () => ((this.token_uri(id)));
+			return obj;
+		}
+		find_pos(id){
+			return null;
+		}
+	};
+	($mol_mem(($.$mol_text_code_line.prototype), "Numb"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token_link"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_syntax2_md_flow = new $mol_syntax2({
+        'quote': /^((?:(?:[>"] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'spoiler': /^((?:(?:[\?] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'header': /^([#=]+)(\s+)(.*?)$([\n\r]*)/,
+        'list': /^((?:(?: ?([*+-])|(?:\d+[\.\)])+) +(?:[^]*?)$(?:\r?\n?)(?:  (?:[^]*?)$(?:\r?\n?))*)+)((?:\r?\n)*)/,
+        'code': /^(```)([\w.-]*)[\r\n]+([^]*?)^(```)$([\n\r]*)/,
+        'code-indent': /^((?:(?: |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
+        'table': /((?:^\|.+?$\r?\n?)+)([\n\r]*)/,
+        'grid': /((?:^ *! .*?$\r?\n?)+)([\n\r]*)/,
+        'cut': /^--+$((?:\r?\n)*)/,
+        'block': /^(.*?)$((?:\r?\n)*)/,
+    });
+    $.$mol_syntax2_md_line = new $mol_syntax2({
+        'strong': /\*\*(.+?)\*\*/,
+        'emphasis': /\*(?!\s)(.+?)\*|\/\/(?!\s)(.+?)\/\//,
+        'code': /```(.+?)```|;;(.+?);;|`(.+?)`/,
+        'insert': /\+\+(.+?)\+\+/,
+        'delete': /~~(.+?)~~|--(.+?)--/,
+        // 'remark' : /(\()(.+?)(\))/ ,
+        // 'quote' : /(")(.+?)(")/ ,
+        'embed': /""(?:(.*?)\\)?(.*?)""/,
+        'link': /\\\\(?:(.*?)\\)?(.*?)\\\\/,
+        'image-link': /!\[([^\[\]]*?)\]\((.*?)\)/,
+        'text-link': /\[(.*?(?:\[[^\[\]]*?\][^\[\]]*?)*)\]\((.*?)\)/,
+        'text-link-http': /\b(https?:\/\/[^\s,.;:!?")]+(?:[,.;:!?")][^\s,.;:!?")]+)+)/,
+    });
+    $.$mol_syntax2_md_code = new $mol_syntax2({
+        'code-indent': /\t+/,
+        'code-docs': /\/\/\/.*?$/,
+        'code-comment-block': /(?:\/\*[^]*?\*\/|\/\+[^]*?\+\/|<![^]*?>)/,
+        'code-link': /(?:\w+:\/\/|#)\S+?(?=\s|\\\\|""|$)/,
+        'code-comment-inline': /\/\/.*?(?:$|\/\/)|- \\(?!\\).*|(?<=^| )#!? .*/,
+        'code-string': /(?:".*?"|'.*?'|`.*?`| ?\\\\.+?\\\\|\/.+?\/[dygimsu]*(?!\p{Letter})|[ \t]*\\[^\n]*)/u,
+        'code-number': /[+-]?(?:\d*\.)?\d+(\uFE0F.|\w*)/,
+        'code-call': /\.?\w+(?=\()/,
+        'code-sexpr': /\((\w+ )/,
+        'code-field': /(?:(?<=\.|::|->)[a-z][\w-]*|(?<=[, \t] |\t)[\w-]+\??:(?!\/\/|:))/,
+        'code-keyword': /(?<=^|\t|[ )(}{=] )((throw|readonly|unknown|keyof|typeof|never|from|class|struct|interface|type|function|extends|implements|module|namespace|import|export|include|require|var|val|let|const|for|do|while|until|in|out|of|new|if|then|else|switch|case|return|async|await|yield|try|catch|break|continue|get|set|public|private|protected|void|int|float|ref)( |$|;))+/,
+        'code-global': /[$]+\w*|\b[A-Z][a-z0-9]+[A-Z]\w*/,
+        'code-word': /\w+/,
+        'code-decorator': /(?<=^|  |\t)@\s*\S+/,
+        'code-tag': /<\/?[\w-]+\/?>?|&\w+;/,
+        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+?/,
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_text_code_line extends $.$mol_text_code_line {
+            maximal_width() {
+                return this.text().length * this.letter_width();
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            tokens(path) {
+                const tokens = [];
+                const text = (path.length > 0)
+                    // @FIXME: this logic compatible only with `string`
+                    ? this.tokens(path.slice(0, path.length - 1))[path[path.length - 1]].found.slice(1, -1)
+                    : this.text();
+                this.syntax().tokenize(text, (name, found, chunks) => {
+                    if (name === 'code-sexpr') {
+                        tokens.push({ name: 'code-punctuation', found: '(', chunks: [] });
+                        tokens.push({ name: 'code-call', found: chunks[0], chunks: [] });
+                    }
+                    else {
+                        tokens.push({ name, found, chunks });
+                    }
+                });
+                return tokens;
+            }
+            sub() {
+                return [
+                    ...this.numb_showed() ? [this.Numb()] : [],
+                    ...this.row_content([])
+                ];
+            }
+            row_content(path) {
+                const content = this.tokens(path).map((t, i) => this.Token([...path, i]));
+                return content.length ? content : ['\n'];
+            }
+            Token(path) {
+                return this.token_type(path) === 'code-link' ? this.Token_link(path) : super.Token(path);
+            }
+            token_type(path) {
+                return this.tokens([...path.slice(0, path.length - 1)])[path[path.length - 1]].name;
+            }
+            token_content(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                switch (token.name) {
+                    case 'code-string': return [
+                        token.found[0],
+                        ...this.row_content(path),
+                        token.found[token.found.length - 1],
+                    ];
+                    default: return [token.found];
+                }
+            }
+            token_text(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                return token.found;
+            }
+            token_uri(path) {
+                const uri = this.token_text(path);
+                return this.uri_resolve(uri);
+            }
+            *view_find(check, path = []) {
+                if (check(this, this.text())) {
+                    yield [...path, this];
+                }
+            }
+            find_pos(offset) {
+                return this.find_token_pos([offset]);
+            }
+            find_token_pos([offset, ...path]) {
+                for (const [index, token] of this.tokens(path).entries()) {
+                    if (token.found.length >= offset) {
+                        const token = this.Token([...path, index]);
+                        return { token, offset };
+                    }
+                    else {
+                        offset -= token.found.length;
+                    }
+                }
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "row_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_type", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_token_pos", null);
+        $$.$mol_text_code_line = $mol_text_code_line;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        $mol_style_define($mol_text_code_line, {
+            display: 'block',
+            position: 'relative',
+            font: {
+                family: 'monospace',
+            },
+            Numb: {
+                textAlign: 'end',
+                color: $mol_theme.shade,
+                width: rem(3),
+                margin: {
+                    inlineStart: '-4rem',
+                },
+                display: 'inline-block',
+                whiteSpace: 'nowrap',
+                userSelect: 'none',
+                position: 'absolute',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_clipboard) = class $mol_icon_clipboard extends ($.$mol_icon) {
+		path(){
+			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_clipboard_outline) = class $mol_icon_clipboard_outline extends ($.$mol_icon) {
+		path(){
+			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_copy) = class $mol_button_copy extends ($.$mol_button_minor) {
+		text(){
+			return (this.title());
+		}
+		text_blob(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_blob([(this.text())], {"type": "text/plain"});
+			return obj;
+		}
+		html(){
+			return "";
+		}
+		html_blob(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$mol_blob([(this.html())], {"type": "text/html"});
+			return obj;
+		}
+		Icon(){
+			const obj = new this.$.$mol_icon_clipboard_outline();
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		blobs(){
+			return [(this.text_blob()), (this.html_blob())];
+		}
+		data(){
+			return {};
+		}
+		sub(){
+			return [(this.Icon()), (this.title())];
+		}
+	};
+	($mol_mem(($.$mol_button_copy.prototype), "text_blob"));
+	($mol_mem(($.$mol_button_copy.prototype), "html_blob"));
+	($mol_mem(($.$mol_button_copy.prototype), "Icon"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const mapping = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        '&': '&amp;',
+    };
+    function $mol_html_encode(text) {
+        return text.replace(/[&<">]/gi, str => mapping[str]);
+    }
+    $.$mol_html_encode = $mol_html_encode;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Button copy text() value to clipboard
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_copy extends $.$mol_button_copy {
+            data() {
+                return Object.fromEntries(this.blobs().map(blob => [blob.type, blob]));
+            }
+            html() {
+                return $mol_html_encode(this.text());
+            }
+            attachments() {
+                return [new ClipboardItem(this.data())];
+            }
+            click(event) {
+                const cb = $mol_wire_sync(this.$.$mol_dom_context.navigator.clipboard);
+                cb.writeText?.(this.text());
+                cb.write?.(this.attachments());
+                if (cb.writeText === undefined && cb.write === undefined) {
+                    throw new Error("doesn't support copy to clipoard");
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_button_copy.prototype, "html", null);
+        __decorate([
+            $mol_mem
+        ], $mol_button_copy.prototype, "attachments", null);
+        $$.$mol_button_copy = $mol_button_copy;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code) = class $mol_text_code extends ($.$mol_stack) {
+		sidebar_showed(){
+			return false;
+		}
+		render_visible_only(){
+			return false;
+		}
+		row_numb(id){
+			return 0;
+		}
+		row_theme(id){
+			return "";
+		}
+		row_text(id){
+			return "";
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		Row(id){
+			const obj = new this.$.$mol_text_code_line();
+			(obj.numb_showed) = () => ((this.sidebar_showed()));
+			(obj.numb) = () => ((this.row_numb(id)));
+			(obj.theme) = () => ((this.row_theme(id)));
+			(obj.text) = () => ((this.row_text(id)));
+			(obj.syntax) = () => ((this.syntax()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			return obj;
+		}
+		rows(){
+			return [(this.Row("0"))];
+		}
+		Rows(){
+			const obj = new this.$.$mol_list();
+			(obj.render_visible_only) = () => ((this.render_visible_only()));
+			(obj.rows) = () => ((this.rows()));
+			return obj;
+		}
+		text_export(){
+			return "";
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_code_Copy_hint")));
+			(obj.text) = () => ((this.text_export()));
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_sidebar_showed": (this.sidebar_showed())};
+		}
+		text(){
+			return "";
+		}
+		text_lines(){
+			return [];
+		}
+		find_pos(id){
+			return null;
+		}
+		uri_base(){
+			return "";
+		}
+		row_themes(){
+			return [];
+		}
+		sub(){
+			return [(this.Rows()), (this.Copy())];
+		}
+	};
+	($mol_mem_key(($.$mol_text_code.prototype), "Row"));
+	($mol_mem(($.$mol_text_code.prototype), "Rows"));
+	($mol_mem(($.$mol_text_code.prototype), "Copy"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Code visualizer.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_code_demo
+         */
+        class $mol_text_code extends $.$mol_text_code {
+            render_visible_only() {
+                return this.$.$mol_support_css_overflow_anchor();
+            }
+            text_lines() {
+                return (this.text() ?? '').split('\n');
+            }
+            rows() {
+                return this.text_lines().map((_, index) => this.Row(index + 1));
+            }
+            row_text(index) {
+                return this.text_lines()[index - 1];
+            }
+            row_numb(index) {
+                return index;
+            }
+            find_pos(offset) {
+                for (const [index, line] of this.text_lines().entries()) {
+                    if (line.length >= offset) {
+                        return this.Row(index + 1).find_pos(offset);
+                    }
+                    else {
+                        offset -= line.length + 1;
+                    }
+                }
+                return null;
+            }
+            sub() {
+                return [
+                    this.Rows(),
+                    ...this.sidebar_showed() ? [this.Copy()] : []
+                ];
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            uri_base() {
+                return $mol_dom_context.document.location.href;
+            }
+            uri_resolve(uri) {
+                if (/^(\w+script+:)+/.test(uri))
+                    return null;
+                try {
+                    const url = new URL(uri, this.uri_base());
+                    return url.toString();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            text_export() {
+                return this.text() + '\n';
+            }
+            row_theme(row) {
+                return this.row_themes()[row - 1];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "text_lines", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "row_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "sub", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "uri_resolve", null);
+        $$.$mol_text_code = $mol_text_code;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem, px } = $mol_style_unit;
+        $mol_style_define($mol_text_code, {
+            whiteSpace: 'pre-wrap',
+            font: {
+                family: 'monospace',
+            },
+            Rows: {
+                padding: $mol_gap.text,
+                minWidth: 0,
+            },
+            Row: {
+                font: {
+                    family: 'inherit',
+                },
+            },
+            Copy: {
+                alignSelf: 'flex-start',
+                justifySelf: 'flex-start',
+            },
+            '@': {
+                'mol_text_code_sidebar_showed': {
+                    true: {
+                        $mol_text_code_line: {
+                            margin: {
+                                inlineStart: '1.75rem',
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_float) = class $mol_float extends ($.$mol_view) {
+		style(){
+			return {...(super.style()), "minHeight": "auto"};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/float/float.view.css", "[mol_float] {\n\tposition: sticky;\n\ttop: 0;\n\tleft: 0;\n\tz-index: var(--mol_layer_float);\n\topacity: 1;\n\ttransition: opacity .25s ease-in;\n\tdisplay: block;\n\tbackground: linear-gradient( var(--mol_theme_card), var(--mol_theme_card) ), var(--mol_theme_back);\n\tbox-shadow: 0 0 .5rem hsla(0,0%,0%,.25);\n}\n\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_chevron) = class $mol_icon_chevron extends ($.$mol_icon) {
+		path(){
+			return "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_check_expand) = class $mol_check_expand extends ($.$mol_check) {
+		level_style(){
+			return "0px";
+		}
+		expanded(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		expandable(){
+			return false;
+		}
+		Icon(){
+			const obj = new this.$.$mol_icon_chevron();
+			return obj;
+		}
+		level(){
+			return 0;
+		}
+		style(){
+			return {...(super.style()), "paddingLeft": (this.level_style())};
+		}
+		checked(next){
+			return (this.expanded(next));
+		}
+		enabled(){
+			return (this.expandable());
+		}
+	};
+	($mol_mem(($.$mol_check_expand.prototype), "expanded"));
+	($mol_mem(($.$mol_check_expand.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Expander for trees, lists, etc
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_check_expand_demo
+         */
+        class $mol_check_expand extends $.$mol_check_expand {
+            level_style() {
+                return `${this.level() * 1 - 1}rem`;
+            }
+            expandable() {
+                return this.expanded() !== null;
+            }
+        }
+        $$.$mol_check_expand = $mol_check_expand;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/expand/expand.view.css", "[mol_check_expand] {\n\tmin-width: 20px;\n}\n\n:where([mol_check_expand][disabled]) [mol_check_expand_icon] {\n\tvisibility: hidden;\n}\n\n[mol_check_expand_icon] {\n\tbox-shadow: none;\n\tmargin-inline-start: -0.375rem;\n}\n[mol_check_expand_icon] {\n\ttransform: rotateZ(0deg);\n}\n\n:where([mol_check_checked]) [mol_check_expand_icon] {\n\ttransform: rotateZ(90deg);\n}\n\n[mol_check_expand_icon] {\n\tvertical-align: text-top;\n}\n\n[mol_check_expand_label] {\n\tmargin-inline-start: 0;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_grid) = class $mol_grid extends ($.$mol_view) {
+		rows(){
+			return [];
+		}
+		Table(){
+			const obj = new this.$.$mol_grid_table();
+			(obj.sub) = () => ((this.rows()));
+			return obj;
+		}
+		head_cells(){
+			return [];
+		}
+		cells(id){
+			return [];
+		}
+		cell_content(id){
+			return [];
+		}
+		cell_content_text(id){
+			return (this.cell_content(id));
+		}
+		cell_content_number(id){
+			return (this.cell_content(id));
+		}
+		col_head_content(id){
+			return [];
+		}
+		cell_level(id){
+			return 0;
+		}
+		cell_expanded(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		needle(){
+			return "";
+		}
+		cell_value(id){
+			return "";
+		}
+		Cell_dimmer(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.needle) = () => ((this.needle()));
+			(obj.haystack) = () => ((this.cell_value(id)));
+			return obj;
+		}
+		row_height(){
+			return 32;
+		}
+		row_ids(){
+			return [];
+		}
+		row_id(id){
+			return null;
+		}
+		col_ids(){
+			return [];
+		}
+		records(){
+			return {};
+		}
+		record(id){
+			return null;
+		}
+		hierarchy(){
+			return null;
+		}
+		hierarchy_col(){
+			return "";
+		}
+		minimal_width(){
+			return 0;
+		}
+		sub(){
+			return [(this.Head()), (this.Table())];
+		}
+		Head(){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.head_cells()));
+			return obj;
+		}
+		Row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.minimal_height) = () => ((this.row_height()));
+			(obj.minimal_width) = () => ((this.minimal_width()));
+			(obj.cells) = () => ((this.cells(id)));
+			return obj;
+		}
+		Cell(id){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		cell(id){
+			return null;
+		}
+		Cell_text(id){
+			const obj = new this.$.$mol_grid_cell();
+			(obj.sub) = () => ((this.cell_content_text(id)));
+			return obj;
+		}
+		Cell_number(id){
+			const obj = new this.$.$mol_grid_number();
+			(obj.sub) = () => ((this.cell_content_number(id)));
+			return obj;
+		}
+		Col_head(id){
+			const obj = new this.$.$mol_float();
+			(obj.dom_name) = () => ("th");
+			(obj.sub) = () => ((this.col_head_content(id)));
+			return obj;
+		}
+		Cell_branch(id){
+			const obj = new this.$.$mol_check_expand();
+			(obj.level) = () => ((this.cell_level(id)));
+			(obj.label) = () => ((this.cell_content(id)));
+			(obj.expanded) = (next) => ((this.cell_expanded(id, next)));
+			return obj;
+		}
+		Cell_content(id){
+			return [(this.Cell_dimmer(id))];
+		}
+	};
+	($mol_mem(($.$mol_grid.prototype), "Table"));
+	($mol_mem_key(($.$mol_grid.prototype), "cell_expanded"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_dimmer"));
+	($mol_mem(($.$mol_grid.prototype), "Head"));
+	($mol_mem_key(($.$mol_grid.prototype), "Row"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_text"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_number"));
+	($mol_mem_key(($.$mol_grid.prototype), "Col_head"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_branch"));
+	($.$mol_grid_table) = class $mol_grid_table extends ($.$mol_list) {};
+	($.$mol_grid_row) = class $mol_grid_row extends ($.$mol_view) {
+		cells(){
+			return [];
+		}
+		sub(){
+			return (this.cells());
+		}
+	};
+	($.$mol_grid_cell) = class $mol_grid_cell extends ($.$mol_view) {
+		minimal_height(){
+			return 40;
+		}
+	};
+	($.$mol_grid_number) = class $mol_grid_number extends ($.$mol_grid_cell) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_grid extends $.$mol_grid {
+            head_cells() {
+                return this.col_ids().map(colId => this.Col_head(colId));
+            }
+            col_head_content(colId) {
+                return [colId];
+            }
+            rows() {
+                return this.row_ids().map(id => this.Row(id));
+            }
+            cells(row_id) {
+                return this.col_ids().map(col_id => this.Cell({ row: row_id, col: col_id }));
+            }
+            col_type(col_id) {
+                if (col_id === this.hierarchy_col())
+                    return 'branch';
+                const rowFirst = this.row_id(0);
+                const val = this.record(rowFirst[rowFirst.length - 1])[col_id];
+                if (typeof val === 'number')
+                    return 'number';
+                return 'text';
+            }
+            Cell(id) {
+                switch (this.col_type(id.col).valueOf()) {
+                    case 'branch': return this.Cell_branch(id);
+                    case 'number': return this.Cell_number(id);
+                }
+                return this.Cell_text(id);
+            }
+            cell_content(id) {
+                return [this.record(id.row[id.row.length - 1])[id.col]];
+            }
+            cell_content_text(id) {
+                return this.cell_content(id).map(val => typeof val === 'object' ? JSON.stringify(val) : val);
+            }
+            records() {
+                return [];
+            }
+            record(id) {
+                return this.records()[id];
+            }
+            record_ids() {
+                return Object.keys(this.records());
+            }
+            row_id(index) {
+                return this.row_ids().slice(index, index + 1).valueOf()[0];
+            }
+            col_ids() {
+                const rowFirst = this.row_id(0);
+                if (rowFirst === void 0)
+                    return [];
+                const record = this.record(rowFirst[rowFirst.length - 1]);
+                if (!record)
+                    return [];
+                return Object.keys(record);
+            }
+            hierarchy() {
+                const hierarchy = {};
+                const root = hierarchy[''] = {
+                    id: '',
+                    parent: null,
+                    sub: [],
+                };
+                this.record_ids().map(id => {
+                    root.sub.push(hierarchy[id] = {
+                        id,
+                        parent: root,
+                        sub: [],
+                    });
+                });
+                return hierarchy;
+            }
+            row_sub_ids(row) {
+                return this.hierarchy()[row[row.length - 1]].sub.map(child => row.concat(child.id));
+            }
+            row_root_id() {
+                return [''];
+            }
+            cell_level(id) {
+                return id.row.length - 1;
+            }
+            row_ids() {
+                const next = [];
+                const add = (row) => {
+                    next.push(row);
+                    if (this.row_expanded(row)) {
+                        this.row_sub_ids(row).forEach(child => add(child));
+                    }
+                };
+                this.row_sub_ids(this.row_root_id()).forEach(child => add(child));
+                return next;
+            }
+            row_expanded(row_id, next) {
+                if (!this.row_sub_ids(row_id).length)
+                    return null;
+                const key = `row_expanded(${JSON.stringify(row_id)})`;
+                const next2 = $mol_state_session.value(key, next);
+                return (next2 == null) ? this.row_expanded_default(row_id) : next2;
+            }
+            row_expanded_default(row_id) {
+                return true;
+            }
+            cell_expanded(id, next) {
+                return this.row_expanded(id.row, next);
+            }
+            sub() {
+                this.head_cells();
+                this.rows();
+                return super.sub();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "head_cells", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_grid.prototype, "col_type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "record_ids", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "hierarchy", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "row_ids", null);
+        $$.$mol_grid = $mol_grid;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/grid/grid.view.css", "[mol_grid] {\n\tdisplay: block;\n\tflex: 0 1 auto;\n\tposition: relative;\n\toverflow-x: auto;\n}\n\n[mol_grid_gap] {\n\tposition: absolute;\n\tpadding: .1px;\n\ttop: 0;\n\ttransform: translateZ(0);\n}\n\n[mol_grid_table] {\n\tborder-spacing: 0;\n\tdisplay: table-row-group;\n\tposition: relative;\n}\n\n[mol_grid_table] > * {\n\tdisplay: table-row;\n\ttransition: none;\n}\n\n[mol_grid_head] > *,\n[mol_grid_table] > * > * {\n\tdisplay: table-cell;\n\tpadding: var(--mol_gap_text);\n\twhite-space: nowrap;\n\tvertical-align: middle;\n\tbox-shadow: inset 2px 2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_row]:where(:first-child) > * {\n\tbox-shadow: inset 2px 0 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_table] > * > *:where(:first-child) {\n\tbox-shadow: inset 0px 2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_head] > * {\n\tbox-shadow: inset 2px -2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_head] > *:where(:first-child) {\n\tbox-shadow: inset 0px -2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_table] > [mol_grid_row]:where(:first-child) > *:where(:first-child) {\n\tbox-shadow: none;\n}\t\n\n[mol_grid_head] {\n\tdisplay: table-row;\n\ttransform: none !important;\n}\n\n/* [mol_grid_cell_number] {\n\ttext-align: end;\n} */\n\n[mol_grid_col_head] {\n\tfont-weight: inherit;\n\ttext-align: inherit;\n\tdisplay: table-cell;\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_grid_cell_dimmer] {\n\tdisplay: inline-block;\n\tvertical-align: inherit;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_link_iconed) = class $mol_link_iconed extends ($.$mol_link) {
+		icon(){
+			return "";
+		}
+		Icon(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.icon()));
+			(obj.title) = () => ("");
+			return obj;
+		}
+		title(){
+			return (this.uri());
+		}
+		sub(){
+			return [(this.Icon())];
+		}
+		content(){
+			return [(this.title())];
+		}
+		host(){
+			return "";
+		}
+	};
+	($mol_mem(($.$mol_link_iconed.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_link_iconed extends $.$mol_link_iconed {
+            icon() {
+                return `https://favicon.yandex.net/favicon/${this.host()}?color=0,0,0,0&size=32&stub=1`;
+                // return `https://api.faviconkit.com/${ this.host() }/16`
+            }
+            host() {
+                const base = this.$.$mol_state_arg.href();
+                const url = new URL(this.uri(), base);
+                return url.hostname;
+            }
+            title() {
+                const uri = this.uri();
+                const host = this.host();
+                const suffix = (host ? uri.split(this.host(), 2)[1] : uri)?.replace(/^[\/\?#!]+/, '');
+                return decodeURIComponent(suffix || host).replace(/^\//, ' ');
+            }
+            sub() {
+                return [
+                    ...this.host() ? [this.Icon()] : [],
+                    ...this.content() ? [' ', ...this.content()] : [],
+                ];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "icon", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "host", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "title", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "sub", null);
+        $$.$mol_link_iconed = $mol_link_iconed;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: baseline;\n\tdisplay: inline-flex;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1.5em;\n\twidth: 1em;\n\tflex: 0 0 auto;\n\tdisplay: inline-block;\n\talign-self: normal;\n\tvertical-align: top;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n\topacity: .75;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: var(--mol_theme_image);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_native) = class $mol_embed_native extends ($.$mol_scroll) {
+		uri(next){
+			if(next !== undefined) return next;
+			return "about:config";
+		}
+		title(){
+			return "";
+		}
+		Fallback(){
+			const obj = new this.$.$mol_link();
+			(obj.uri) = () => ((this.uri()));
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
+		uri_change(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "iframe";
+		}
+		window(){
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "src": (this.uri())};
+		}
+		sub(){
+			return [(this.Fallback())];
+		}
+		message(){
+			return {"hashchange": (next) => (this.uri_change(next))};
+		}
+	};
+	($mol_mem(($.$mol_embed_native.prototype), "uri"));
+	($mol_mem(($.$mol_embed_native.prototype), "Fallback"));
+	($mol_mem(($.$mol_embed_native.prototype), "uri_change"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_wait_timeout_async(timeout) {
+        const promise = new $mol_promise();
+        const task = new this.$mol_after_timeout(timeout, () => promise.done());
+        return Object.assign(promise, {
+            destructor: () => task.destructor()
+        });
+    }
+    $.$mol_wait_timeout_async = $mol_wait_timeout_async;
+    function $mol_wait_timeout(timeout) {
+        return this.$mol_wire_sync(this).$mol_wait_timeout_async(timeout);
+    }
+    $.$mol_wait_timeout = $mol_wait_timeout;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_native extends $.$mol_embed_native {
+            window() {
+                $mol_wire_solid();
+                this.uri_resource();
+                return $mol_wire_sync(this).load(this.dom_node_actual());
+            }
+            load(frame) {
+                return new Promise((done, fail) => {
+                    frame.onload = () => {
+                        try {
+                            if (frame.contentWindow.location.href === 'about:blank') {
+                                return;
+                            }
+                        }
+                        catch { }
+                        done(frame.contentWindow);
+                    };
+                    frame.onerror = (event) => {
+                        fail(typeof event === 'string' ? new Error(event) : event.error || event);
+                    };
+                });
+            }
+            uri_resource() {
+                return this.uri().replace(/#.*/, '');
+            }
+            message_listener() {
+                return new $mol_dom_listener($mol_dom_context, 'message', $mol_wire_async(this).message_receive);
+            }
+            sub_visible() {
+                this.window();
+                return super.sub_visible();
+            }
+            message_receive(event) {
+                if (!event)
+                    return;
+                if (event.source !== this.window())
+                    return;
+                if (!Array.isArray(event.data))
+                    return;
+                this.message()[event.data[0]]?.(event);
+            }
+            uri_change(event) {
+                this.$.$mol_wait_timeout(1000);
+                this.uri(event.data[1]);
+            }
+            auto() {
+                return [
+                    this.message_listener(),
+                    this.window(),
+                ];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_native.prototype, "window", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_native.prototype, "uri_resource", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_native.prototype, "message_listener", null);
+        $$.$mol_embed_native = $mol_embed_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/embed/native/native.view.css", "[mol_embed_native] {\n\tmin-width: 0;\n\tmin-height: 0;\n\tmax-width: 100%;\n\tmax-height: 100vh;\n\tobject-fit: cover;\n\tdisplay: flex;\n\tflex: 1 1 auto;\n\tobject-position: top left;\n\tborder-radius: var(--mol_gap_round);\n\taspect-ratio: 4/3;\n\tborder: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_youtube) = class $mol_icon_youtube extends ($.$mol_icon) {
+		path(){
+			return "M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_frame) = class $mol_frame extends ($.$mol_embed_native) {
+		allow(){
+			return "";
+		}
+		html(){
+			return null;
+		}
+		attr(){
+			return {
+				"tabindex": (this.tabindex()), 
+				"allow": (this.allow()), 
+				"src": (this.uri()), 
+				"srcdoc": (this.html())
+			};
+		}
+		fullscreen(){
+			return true;
+		}
+		accelerometer(){
+			return true;
+		}
+		autoplay(){
+			return true;
+		}
+		encription(){
+			return true;
+		}
+		gyroscope(){
+			return true;
+		}
+		pip(){
+			return true;
+		}
+		clipboard_read(){
+			return true;
+		}
+		clipboard_write(){
+			return true;
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_frame_demo
+         */
+        class $mol_frame extends $.$mol_frame {
+            window() {
+                // if( this.html() ) return ( this.dom_node() as HTMLIFrameElement ).contentWindow!
+                return super.window();
+            }
+            allow() {
+                return [
+                    ...this.fullscreen() ? ['fullscreen'] : [],
+                    ...this.accelerometer() ? ['accelerometer'] : [],
+                    ...this.autoplay() ? ['autoplay'] : [],
+                    ...this.encription() ? ['encrypted-media'] : [],
+                    ...this.gyroscope() ? ['gyroscope'] : [],
+                    ...this.pip() ? ['picture-in-picture'] : [],
+                    ...this.clipboard_read() ? [`clipboard-read ${this.uri()}`] : [],
+                    ...this.clipboard_write() ? [`clipboard-write ${this.uri()}`] : [],
+                ].join('; ');
+            }
+        }
+        $$.$mol_frame = $mol_frame;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_define($mol_frame, {
+        border: {
+            style: 'none',
+        },
+        maxHeight: $mol_style_unit.vh(100),
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_service) = class $mol_embed_service extends ($.$mol_check) {
+		active(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		title(){
+			return "";
+		}
+		video_preview(){
+			return "";
+		}
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.video_preview()));
+			return obj;
+		}
+		Hint(){
+			const obj = new this.$.$mol_icon_youtube();
+			return obj;
+		}
+		video_embed(){
+			return "";
+		}
+		Frame(){
+			const obj = new this.$.$mol_frame();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.video_embed()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		video_id(){
+			return "";
+		}
+		checked(next){
+			return (this.active(next));
+		}
+		sub(){
+			return [
+				(this.Image()), 
+				(this.Hint()), 
+				(this.Frame())
+			];
+		}
+	};
+	($mol_mem(($.$mol_embed_service.prototype), "active"));
+	($mol_mem(($.$mol_embed_service.prototype), "Image"));
+	($mol_mem(($.$mol_embed_service.prototype), "Hint"));
+	($mol_mem(($.$mol_embed_service.prototype), "Frame"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_service extends $.$mol_embed_service {
+            sub() {
+                return this.active()
+                    ? [this.Frame()]
+                    : [this.Image(), this.Hint()];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_service.prototype, "sub", null);
+        $$.$mol_embed_service = $mol_embed_service;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/embed/service/service.view.css", "[mol_embed_service] {\n\tpadding: 0;\n\tmax-width: 100%;\n}\n\n[mol_embed_service_image] {\n\tflex: auto 1 1;\n\twidth: 100vw;\n}\n\n[mol_embed_service_frame] {\n\twidth: 100vw;\n}\n\n[mol_embed_service_hint] {\n\tposition: absolute;\n    left: 50%;\n    top: 50%;\n    width: 50%;\n    height: 50%;\n    opacity: 0.3;\n    transform: translate(-50%, -50%);\n}\n\n[mol_embed_service]:hover [mol_embed_service_hint] {\n\topacity: .6;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_youtube) = class $mol_embed_youtube extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_youtube extends $.$mol_embed_youtube {
+            video_embed() {
+                return `https://www.youtube.com/embed/${encodeURIComponent(this.video_id())}?autoplay=1&loop=1`;
+            }
+            video_id() {
+                return this.uri().match(/^https\:\/\/www\.youtube\.com\/(?:embed\/|shorts\/|watch\?v=)([^\/&?#]+)/)?.[1]
+                    ?? this.uri().match(/^https\:\/\/youtu\.be\/([^\/&?#]+)/)?.[1]
+                    ?? 'about:blank';
+            }
+            video_preview() {
+                return `https://i.ytimg.com/vi/${this.video_id()}/sddefault.jpg`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_preview", null);
+        $$.$mol_embed_youtube = $mol_embed_youtube;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_rutube) = class $mol_embed_rutube extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_rutube extends $.$mol_embed_rutube {
+            video_embed() {
+                return `https://rutube.ru/play/embed/${encodeURIComponent(this.video_id())}`;
+            }
+            video_id() {
+                return this.uri().match(/^https:\/\/rutube.ru\/video\/([^\/&?#]+)/)?.[1] ?? 'about:blank';
+            }
+            video_preview() {
+                return `https://rutube.ru/api/video/${this.video_id()}/thumbnail/?redirect=1`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_preview", null);
+        $$.$mol_embed_rutube = $mol_embed_rutube;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_vklive) = class $mol_embed_vklive extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_vklive extends $.$mol_embed_vklive {
+            video_embed() {
+                return `https://live.vkvideo.ru/app/embed/${this.channel_id()}/${this.video_id()}`;
+            }
+            channel_id() {
+                return this.uri().match(/^https:\/\/live\.vkvideo\.ru\/([^\/&?#]+)/)?.[1] ?? '';
+            }
+            video_id() {
+                return this.uri().match(/^https:\/\/live\.vkvideo\.ru\/[^\/&?#]+\/record\/([^\/&?#]+)/)?.[1] ?? '';
+            }
+            video_preview() {
+                return `https://images.live.vkvideo.ru/public_video_stream/record/${this.video_id()}/preview`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "channel_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_preview", null);
+        $$.$mol_embed_vklive = $mol_embed_vklive;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_any) = class $mol_embed_any extends ($.$mol_view) {
+		title(){
+			return "";
+		}
+		uri(){
+			return "";
+		}
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Object(){
+			const obj = new this.$.$mol_embed_native();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Youtube(){
+			const obj = new this.$.$mol_embed_youtube();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Rutube(){
+			const obj = new this.$.$mol_embed_rutube();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Vklive(){
+			const obj = new this.$.$mol_embed_vklive();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_embed_any.prototype), "Image"));
+	($mol_mem(($.$mol_embed_any.prototype), "Object"));
+	($mol_mem(($.$mol_embed_any.prototype), "Youtube"));
+	($mol_mem(($.$mol_embed_any.prototype), "Rutube"));
+	($mol_mem(($.$mol_embed_any.prototype), "Vklive"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_any extends $.$mol_embed_any {
+            type() {
+                try {
+                    const uri = this.uri();
+                    if (/\b(png|gif|jpg|jpeg|jfif|webp|svg)\b/.test(uri))
+                        return 'image';
+                    if (/^https:\/\/www\.youtube\.com\//.test(uri))
+                        return 'youtube';
+                    if (/^https:\/\/youtu\.be\//.test(uri))
+                        return 'youtube';
+                    if (/^https:\/\/rutube\.ru\//.test(uri))
+                        return 'rutube';
+                    if (/^https:\/\/live\.vkvideo\.ru\//.test(uri))
+                        return 'vklive';
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return 'image';
+                }
+                return 'object';
+            }
+            sub() {
+                switch (this.type()) {
+                    case 'image': return [this.Image()];
+                    case 'youtube': return [this.Youtube()];
+                    case 'rutube': return [this.Rutube()];
+                    case 'vklive': return [this.Vklive()];
+                    default: return [this.Object()];
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_any.prototype, "type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_any.prototype, "sub", null);
+        $$.$mol_embed_any = $mol_embed_any;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_expander) = class $mol_expander extends ($.$mol_list) {
+		expanded(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		expandable(){
+			return true;
+		}
+		label(){
+			return [(this.title())];
+		}
+		Trigger(){
+			const obj = new this.$.$mol_check_expand();
+			(obj.checked) = (next) => ((this.expanded(next)));
+			(obj.expandable) = () => ((this.expandable()));
+			(obj.label) = () => ((this.label()));
+			return obj;
+		}
+		Tools(){
+			return null;
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Trigger()), (this.Tools())]);
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content()));
+			return obj;
+		}
+		rows(){
+			return [(this.Label()), (this.Content())];
+		}
+	};
+	($mol_mem(($.$mol_expander.prototype), "expanded"));
+	($mol_mem(($.$mol_expander.prototype), "Trigger"));
+	($mol_mem(($.$mol_expander.prototype), "Label"));
+	($mol_mem(($.$mol_expander.prototype), "Content"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Component which expands any content on title click.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_expander_demo
+         */
+        class $mol_expander extends $.$mol_expander {
+            rows() {
+                return [
+                    this.Label(),
+                    ...this.expanded() ? [this.Content()] : []
+                ];
+            }
+            expandable() {
+                return this.content().length > 0;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_expander.prototype, "rows", null);
+        $$.$mol_expander = $mol_expander;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/expander/expander.view.css", "[mol_expander] {\n\tflex-direction: column;\n}\n\n[mol_expander_label] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_expander_trigger] {\n\tflex: auto;\n\tposition: relative;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_text) = class $mol_text extends ($.$mol_list) {
+		auto_scroll(){
+			return null;
+		}
+		block_content(id){
+			return [];
+		}
+		quote_text(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		uri_resolve(id){
+			return "";
+		}
+		code_sidebar_showed(){
+			return true;
+		}
+		list_type(id){
+			return "-";
+		}
+		list_text(id){
+			return "";
+		}
+		header_level(id){
+			return 1;
+		}
+		header_arg(id){
+			return {};
+		}
+		pre_text(id){
+			return "";
+		}
+		pre_themes(id){
+			return [];
+		}
+		table_head_cells(id){
+			return [];
+		}
+		table_rows(id){
+			return [];
+		}
+		table_cells(id){
+			return [];
+		}
+		table_cell_text(id){
+			return "";
+		}
+		grid_rows(id){
+			return [];
+		}
+		grid_cells(id){
+			return [];
+		}
+		grid_cell_text(id){
+			return "";
+		}
+		line_text(id){
+			return "";
+		}
+		line_type(id){
+			return "";
+		}
+		line_content(id){
+			return [];
+		}
+		code_syntax(){
+			return null;
+		}
+		link_uri(id){
+			return "";
+		}
+		link_host(id){
+			return "";
+		}
+		spoiler_label(id){
+			return "";
+		}
+		Spoiler_label(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.spoiler_label(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		spoiler_content(id){
+			return "";
+		}
+		Spoiler_content(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.spoiler_content(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		uri_base(){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		param(){
+			return "";
+		}
+		flow_tokens(){
+			return [];
+		}
+		block_text(id){
+			return "";
+		}
+		auto(){
+			return [(this.auto_scroll())];
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.block_content(id)));
+			return obj;
+		}
+		Quote(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.quote_text(id)));
+			(obj.auto_scroll) = () => (null);
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		List(id){
+			const obj = new this.$.$mol_text_list();
+			(obj.type) = () => ((this.list_type(id)));
+			(obj.text) = () => ((this.list_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		item_index(id){
+			return 0;
+		}
+		Header(id){
+			const obj = new this.$.$mol_text_header();
+			(obj.minimal_height) = () => (40);
+			(obj.level) = () => ((this.header_level(id)));
+			(obj.content) = () => ((this.block_content(id)));
+			(obj.arg) = () => ((this.header_arg(id)));
+			return obj;
+		}
+		Pre(id){
+			const obj = new this.$.$mol_text_code();
+			(obj.text) = () => ((this.pre_text(id)));
+			(obj.row_themes) = () => ((this.pre_themes(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		Cut(id){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ("hr");
+			return obj;
+		}
+		Table(id){
+			const obj = new this.$.$mol_grid();
+			(obj.head_cells) = () => ((this.table_head_cells(id)));
+			(obj.rows) = () => ((this.table_rows(id)));
+			return obj;
+		}
+		Table_row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.table_cells(id)));
+			return obj;
+		}
+		Table_cell(id){
+			const obj = new this.$.$mol_text();
+			(obj.auto_scroll) = () => (null);
+			(obj.text) = () => ((this.table_cell_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		Grid(id){
+			const obj = new this.$.$mol_grid();
+			(obj.rows) = () => ((this.grid_rows(id)));
+			return obj;
+		}
+		Grid_row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.grid_cells(id)));
+			return obj;
+		}
+		Grid_cell(id){
+			const obj = new this.$.$mol_text();
+			(obj.auto_scroll) = () => (null);
+			(obj.text) = () => ((this.grid_cell_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		String(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.dom_name) = () => ("span");
+			(obj.needle) = () => ((this.highlight()));
+			(obj.haystack) = () => ((this.line_text(id)));
+			return obj;
+		}
+		Span(id){
+			const obj = new this.$.$mol_text_span();
+			(obj.dom_name) = () => ("span");
+			(obj.type) = () => ((this.line_type(id)));
+			(obj.sub) = () => ((this.line_content(id)));
+			return obj;
+		}
+		Code_line(id){
+			const obj = new this.$.$mol_text_code_line();
+			(obj.numb_showed) = () => (false);
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.text) = () => ((this.line_text(id)));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.syntax) = () => ((this.code_syntax()));
+			return obj;
+		}
+		Link(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ((this.line_content(id)));
+			return obj;
+		}
+		Link_http(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ([(this.link_host(id))]);
+			return obj;
+		}
+		Embed(id){
+			const obj = new this.$.$mol_embed_any();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.title) = () => ((this.line_text(id)));
+			return obj;
+		}
+		Spoiler(id){
+			const obj = new this.$.$mol_expander();
+			(obj.label) = () => ([(this.Spoiler_label(id))]);
+			(obj.content) = () => ([(this.Spoiler_content(id))]);
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler_label"));
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler_content"));
+	($mol_mem_key(($.$mol_text.prototype), "Paragraph"));
+	($mol_mem_key(($.$mol_text.prototype), "Quote"));
+	($mol_mem_key(($.$mol_text.prototype), "List"));
+	($mol_mem_key(($.$mol_text.prototype), "Header"));
+	($mol_mem_key(($.$mol_text.prototype), "Pre"));
+	($mol_mem_key(($.$mol_text.prototype), "Cut"));
+	($mol_mem_key(($.$mol_text.prototype), "Table"));
+	($mol_mem_key(($.$mol_text.prototype), "Table_row"));
+	($mol_mem_key(($.$mol_text.prototype), "Table_cell"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid_row"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid_cell"));
+	($mol_mem_key(($.$mol_text.prototype), "String"));
+	($mol_mem_key(($.$mol_text.prototype), "Span"));
+	($mol_mem_key(($.$mol_text.prototype), "Code_line"));
+	($mol_mem_key(($.$mol_text.prototype), "Link"));
+	($mol_mem_key(($.$mol_text.prototype), "Link_http"));
+	($mol_mem_key(($.$mol_text.prototype), "Embed"));
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler"));
+	($.$mol_text_header) = class $mol_text_header extends ($.$mol_paragraph) {
+		arg(){
+			return {};
+		}
+		content(){
+			return [];
+		}
+		Link(){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.arg()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_header_Link_hint")));
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		level(){
+			return 1;
+		}
+		sub(){
+			return [(this.Link())];
+		}
+	};
+	($mol_mem(($.$mol_text_header.prototype), "Link"));
+	($.$mol_text_span) = class $mol_text_span extends ($.$mol_paragraph) {
+		type(){
+			return "";
+		}
+		dom_name(){
+			return "span";
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_type": (this.type())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Markdown visualizer.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_demo
+         */
+        class $mol_text extends $.$mol_text {
+            flow_tokens() {
+                const tokens = [];
+                this.$.$mol_syntax2_md_flow.tokenize(this.text(), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            block_type(index) {
+                return this.flow_tokens()[index].name;
+            }
+            rows() {
+                return this.flow_tokens().map(({ name }, index) => {
+                    switch (name) {
+                        case 'quote': return this.Quote(index);
+                        case 'spoiler': return this.Spoiler(index);
+                        case 'header': return this.Header(index);
+                        case 'list': return this.List(index);
+                        case 'code': return this.Pre(index);
+                        case 'code-indent': return this.Pre(index);
+                        case 'table': return this.Table(index);
+                        case 'grid': return this.Grid(index);
+                        case 'cut': return this.Cut(index);
+                        default: return this.Paragraph(index);
+                    }
+                });
+            }
+            param() {
+                return this.toString().replace(/^.*?[\)>]\./, '').replace(/[(<>)]/g, '');
+            }
+            header_level(index) {
+                return this.flow_tokens()[index].chunks[0].length;
+            }
+            header_arg(index) {
+                return {
+                    [this.param()]: this.block_text(index)
+                };
+            }
+            list_type(index) {
+                return this.flow_tokens()[index].chunks[1] ?? '';
+            }
+            item_index(index) {
+                return this.flow_tokens().slice(0, index).filter(token => token.name === 'block').length + 1;
+            }
+            pre_text(index) {
+                const token = this.flow_tokens()[index];
+                return (token.chunks[2] ?? token.chunks[0].replace(/^(\t| (?:\+\+|--|\*\*|  ) )/gm, '')).replace(/[\n\r]*$/, '');
+            }
+            pre_themes(index) {
+                const token = this.flow_tokens()[index];
+                const names = {
+                    ' ** ': '$mol_theme_accent',
+                    ' ++ ': '$mol_theme_current',
+                    ' -- ': '$mol_theme_special',
+                };
+                return token.chunks[0].split('\n')
+                    .map(line => names[line.match(/^ (?:\+\+|--|\*\*|  ) /gm)?.[0] ?? ''] ?? null);
+            }
+            quote_text(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^[>"] /mg, '');
+            }
+            list_text(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^([-*+]|(?:\d+[\.\)])+) ?/mg, '').replace(/^  ?/mg, '');
+            }
+            cell_content(indexBlock) {
+                return this.flow_tokens()[indexBlock].chunks[0]
+                    .split(/\r?\n/g)
+                    .filter(row => row && !/\|--/.test(row))
+                    .map((row, rowId) => {
+                    return row.split(/\|/g)
+                        .filter(cell => cell)
+                        .map((cell, cellId) => cell.trim());
+                });
+            }
+            table_rows(blockId) {
+                return this.cell_content(blockId)
+                    .slice(1)
+                    .map((row, rowId) => this.Table_row({ block: blockId, row: rowId + 1 }));
+            }
+            table_head_cells(blockId) {
+                return this.cell_content(blockId)[0]
+                    .map((cell, cellId) => this.Table_cell({ block: blockId, row: 0, cell: cellId }));
+            }
+            table_cells(id) {
+                return this.cell_content(id.block)[id.row]
+                    .map((cell, cellId) => this.Table_cell({ block: id.block, row: id.row, cell: cellId }));
+            }
+            table_cell_text(id) {
+                return this.cell_content(id.block)[id.row][id.cell];
+            }
+            grid_content(indexBlock) {
+                return [...this.flow_tokens()[indexBlock].chunks[0].match(/(?:^! .*?$\r?\n?)+(?:^ +! .*?$\r?\n?)*/gm)]
+                    .map((row, rowId) => {
+                    const cells = [];
+                    for (const line of row.trim().split(/\r?\n/)) {
+                        const [_, indent, content] = /^( *)! (.*)/.exec(line) ?? ['', '', ''];
+                        const col = Math.ceil(indent.length / 2);
+                        cells[col] = (cells[col] ? cells[col] + '\n' : '') + content;
+                    }
+                    return cells;
+                });
+            }
+            grid_rows(blockId) {
+                return this.grid_content(blockId)
+                    .map((row, rowId) => this.Grid_row({ block: blockId, row: rowId }));
+            }
+            grid_cells(id) {
+                return this.grid_content(id.block)[id.row]
+                    .map((cell, cellId) => this.Grid_cell({ block: id.block, row: id.row, cell: cellId }));
+            }
+            grid_cell_text(id) {
+                return this.grid_content(id.block)[id.row][id.cell];
+            }
+            uri_base() {
+                return $mol_dom_context.document.location.href;
+            }
+            uri_base_abs() {
+                return new URL(this.uri_base(), $mol_dom_context.document.location.href);
+            }
+            uri_resolve(uri) {
+                if (/^(\w+script+:)+/.test(uri))
+                    return null;
+                if (/^#\!/.test(uri)) {
+                    const params = {};
+                    for (const chunk of uri.slice(2).split(this.$.$mol_state_arg.separator)) {
+                        if (!chunk)
+                            continue;
+                        const vals = chunk.split('=').map(decodeURIComponent);
+                        params[vals.shift()] = vals.join('=');
+                    }
+                    return this.$.$mol_state_arg.link(params);
+                }
+                try {
+                    const url = new URL(uri, this.uri_base_abs());
+                    return url.toString();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            code_syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            block_text(index) {
+                const token = this.flow_tokens()[index];
+                switch (token.name) {
+                    case 'header': return token.chunks[2];
+                    default: return token.chunks[0];
+                }
+            }
+            block_content(index) {
+                return this.line_content([index]);
+            }
+            line_tokens(path) {
+                const tokens = [];
+                this.$.$mol_syntax2_md_line.tokenize(this.line_text(path), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            line_token(path) {
+                const tokens = this.line_tokens(path.slice(0, path.length - 1));
+                return tokens[path[path.length - 1]];
+            }
+            line_type(path) {
+                return this.line_token(path).name;
+            }
+            line_text(path) {
+                if (path.length === 1)
+                    return this.block_text(path[0]);
+                const { name, found, chunks } = this.line_token(path);
+                switch (name) {
+                    case 'link': return chunks[0] || chunks[1].replace(/^.*?\/\/|\/.*$/g, '');
+                    case 'text-link': return chunks[0] || chunks[1].replace(/^.*?\/\/|\/.*$/g, '');
+                    default: return (chunks[0] || chunks[1] || chunks[2]) ?? found;
+                }
+            }
+            line_content(path) {
+                return this.line_tokens(path).map(({ name, chunks }, index) => {
+                    const path2 = [...path, index];
+                    switch (name) {
+                        case 'embed': return this.Embed(path2);
+                        case 'link': return this.Link(path2);
+                        case 'text-link-http': return this.Link_http(path2);
+                        case 'text-link': return this.Link(path2);
+                        case 'image-link': return this.Embed(path2);
+                        case 'code': return this.Code_line(path2);
+                        case '': return this.String(path2);
+                        default: return this.Span(path2);
+                    }
+                });
+            }
+            link_uri(path) {
+                const token = this.line_token(path);
+                const uri = this.uri_resolve(token.chunks[1] ?? token.found);
+                if (!uri)
+                    throw new Error('Bad link');
+                return uri;
+            }
+            link_host(path) {
+                return this.link_uri(path).replace(/^.*?\/\/|\/.*$/g, '');
+            }
+            auto_scroll() {
+                for (const [index, token] of this.flow_tokens().entries()) {
+                    if (token.name !== 'header')
+                        continue;
+                    const header = this.Header(index);
+                    if (!header.Link().current())
+                        continue;
+                    new $mol_after_tick(() => this.ensure_visible(header));
+                }
+            }
+            spoiler_rows(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^[\?] /mg, '').split('\n');
+            }
+            spoiler_label(index) {
+                return this.spoiler_rows(index)[0];
+            }
+            spoiler_content(index) {
+                return this.spoiler_rows(index).slice(1).join('\n');
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "flow_tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "block_type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "rows", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "param", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "header_level", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "header_arg", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "pre_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "pre_themes", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "quote_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "list_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "cell_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_head_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_cell_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_cell_text", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "uri_base_abs", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "uri_resolve", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "block_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_token", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_type", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "link_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "link_host", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "auto_scroll", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_label", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_content", null);
+        $$.$mol_text = $mol_text;
+        class $mol_text_header extends $.$mol_text_header {
+            dom_name() {
+                return 'h' + this.level();
+            }
+        }
+        $$.$mol_text_header = $mol_text_header;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/text/text/text.view.css", "[mol_text] {\n\tline-height: 1.5em;\n\tbox-sizing: border-box;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\tdisplay: flex;\n\tflex-direction: column;\n\tflex: 0 0 auto;\n\ttab-size: 4;\n}\n\n[mol_text_paragraph] {\n\tpadding: var(--mol_gap_text);\n\toverflow: auto;\n\toverflow-x: overlay;\n\tmax-width: 100%;\n\tdisplay: block;\n\tmax-width: 60rem;\n\tbreak-inside: avoid;\n}\n\n[mol_text_spoiler_label_paragraph] {\n\tpadding: 0;\n}\n\n[mol_text_span] {\n\tdisplay: inline;\n}\n\n[mol_text_string] {\n\tdisplay: inline;\n\tflex: 0 1 auto;\n\twhite-space: normal;\n}\n\n[mol_text_quote] {\n\tmargin: var(--mol_gap_block);\n\tpadding: var(--mol_gap_block);\n\tbackground: var(--mol_theme_card);\n\tbox-shadow: 0 0 0 1px var(--mol_theme_back);\n\tbreak-inside: avoid;\n}\n\n[mol_text_header] {\n\tdisplay: block;\n\ttext-shadow: 0 0;\n\tfont-weight: normal;\n\tbreak-after: avoid;\n\tletter-spacing: 2px;\n}\n\n* + [mol_text_header] {\n\tmargin-top: 0.75rem;\n}\n\nh1[mol_text_header] {\n\tfont-size: 1.5rem;\n}\n\nh2[mol_text_header] {\n\tfont-size: 1.5rem;\n\tfont-style: italic;\n}\n\nh3[mol_text_header] {\n\tfont-size: 1.25rem;\n}\n\nh4[mol_text_header] {\n\tfont-size: 1.25em;\n\tfont-style: italic;\n}\n\nh5[mol_text_header] {\n\tfont-size: 1rem;\n}\n\nh6[mol_text_header] {\n\tfont-size: 1rem;\n\tfont-style: italic;\n}\n\n[mol_text_header_link] {\n\tcolor: inherit;\n}\n\n[mol_text_table] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_table_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: baseline;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_grid] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_grid_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: top;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_cut] {\n\tborder: none;\n\twidth: 100%;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_text_link_http],\n[mol_text_link] {\n\tpadding: 0;\n\tdisplay: inline;\n\twhite-space: nowrap;\n}\n\n[mol_text_link_icon] + [mol_text_embed] {\n\tmargin-inline-start: -1.5rem;\n}\n\n[mol_text_embed_youtube] {\n\tdisplay: inline;\n}\n\n[mol_text_embed_youtube_image],\n[mol_text_embed_youtube_frame],\n[mol_text_embed_object] {\n\tobject-fit: contain;\n\tobject-position: center;\n\twidth: 100vw;\n\tmax-height: calc( 100vh - 6rem );\n}\n[mol_text_embed_object_fallback] {\n\tpadding: 0;\n}\n[mol_text_embed_image] {\n\tobject-fit: contain;\n\tobject-position: center;\n\tdisplay: inline;\n\t/* max-height: calc( 100vh - 6rem ); */\n\tvertical-align: top;\n}\n\n[mol_text_pre] {\n\twhite-space: pre;\n\toverflow-x: auto;\n\toverflow-x: overlay;\n\ttab-size: 2;\n\tbreak-inside: avoid;\n}\n\n[mol_text_code_line] {\n\tdisplay: inline-block;\n}\n\n[mol_text_type=\"strong\"] {\n\ttext-shadow: 0 0;\n\tfilter: contrast(1.5);\n}\n\n[mol_text_type=\"emphasis\"] {\n\tfont-style: italic;\n}\n\n[mol_text_type=\"insert\"] {\n\tcolor: var(--mol_theme_special);\n}\n\n[mol_text_type=\"delete\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"remark\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"quote\"] {\n\tfont-style: italic;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_textarea) = class $mol_textarea extends ($.$mol_stack) {
+		clickable(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		sidebar_showed(){
+			return false;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		hover(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		hint(){
+			return " ";
+		}
+		enabled(){
+			return true;
+		}
+		spellcheck(){
+			return true;
+		}
+		length_max(){
+			return +Infinity;
+		}
+		selection(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		bring(){
+			return (this.Edit().bring());
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		submit_with_ctrl(){
+			return true;
+		}
+		Edit(){
+			const obj = new this.$.$mol_textarea_edit();
+			(obj.value) = (next) => ((this.value(next)));
+			(obj.hint) = () => ((this.hint()));
+			(obj.enabled) = () => ((this.enabled()));
+			(obj.spellcheck) = () => ((this.spellcheck()));
+			(obj.length_max) = () => ((this.length_max()));
+			(obj.selection) = (next) => ((this.selection(next)));
+			(obj.submit) = (next) => ((this.submit(next)));
+			(obj.submit_with_ctrl) = () => ((this.submit_with_ctrl()));
+			return obj;
+		}
+		row_numb(id){
+			return 0;
+		}
+		highlight(){
+			return "";
+		}
+		syntax(){
+			const obj = new this.$.$mol_syntax2();
+			return obj;
+		}
+		View(){
+			const obj = new this.$.$mol_text_code();
+			(obj.text) = () => ((this.value()));
+			(obj.render_visible_only) = () => (false);
+			(obj.row_numb) = (id) => ((this.row_numb(id)));
+			(obj.sidebar_showed) = () => ((this.sidebar_showed()));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.syntax) = () => ((this.syntax()));
+			return obj;
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"mol_textarea_clickable": (this.clickable()), 
+				"mol_textarea_sidebar_showed": (this.sidebar_showed())
+			};
+		}
+		event(){
+			return {"keydown": (next) => (this.press(next)), "pointermove": (next) => (this.hover(next))};
+		}
+		sub(){
+			return [(this.Edit()), (this.View())];
+		}
+		symbols_alt(){
+			return {
+				"comma": "<", 
+				"period": ">", 
+				"dash": "−", 
+				"equals": "≈", 
+				"graveAccent": "́", 
+				"forwardSlash": "÷", 
+				"E": "€", 
+				"V": "✔", 
+				"X": "×", 
+				"C": "©", 
+				"P": "§", 
+				"H": "₽", 
+				"key0": "°", 
+				"key8": "•", 
+				"key2": "@", 
+				"key3": "#", 
+				"key4": "$", 
+				"key6": "^", 
+				"key7": "&", 
+				"bracketOpen": "[", 
+				"bracketClose": "]", 
+				"slashBack": "|"
+			};
+		}
+		symbols_alt_ctrl(){
+			return {"space": " "};
+		}
+		symbols_alt_shift(){
+			return {
+				"V": "✅", 
+				"X": "❌", 
+				"O": "⭕", 
+				"key1": "❗", 
+				"key4": "💲", 
+				"key7": "❓", 
+				"comma": "«", 
+				"period": "»", 
+				"semicolon": "“", 
+				"quoteSingle": "”", 
+				"dash": "—", 
+				"equals": "≠", 
+				"graveAccent": "̱", 
+				"bracketOpen": "{", 
+				"bracketClose": "}"
+			};
+		}
+	};
+	($mol_mem(($.$mol_textarea.prototype), "clickable"));
+	($mol_mem(($.$mol_textarea.prototype), "press"));
+	($mol_mem(($.$mol_textarea.prototype), "hover"));
+	($mol_mem(($.$mol_textarea.prototype), "value"));
+	($mol_mem(($.$mol_textarea.prototype), "selection"));
+	($mol_mem(($.$mol_textarea.prototype), "submit"));
+	($mol_mem(($.$mol_textarea.prototype), "Edit"));
+	($mol_mem(($.$mol_textarea.prototype), "syntax"));
+	($mol_mem(($.$mol_textarea.prototype), "View"));
+	($.$mol_textarea_edit) = class $mol_textarea_edit extends ($.$mol_string) {
+		dom_name(){
+			return "textarea";
+		}
+		enter(){
+			return "enter";
+		}
+		field(){
+			return {...(super.field()), "scrollTop": 0};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * An input field for entering multiline text.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
+         */
+        class $mol_textarea extends $.$mol_textarea {
+            indent_inc() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    let end = start + rows[i].length;
+                    if (end >= from && start <= to) {
+                        if (to === from || start !== to) {
+                            rows[i] = '\t' + rows[i];
+                            to += 1;
+                            end += 1;
+                        }
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from + 1, to]);
+            }
+            indent_dec() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    const end = start + rows[i].length;
+                    if (end >= from && start <= to && rows[i].startsWith('\t')) {
+                        rows[i] = rows[i].slice(1);
+                        to -= 1;
+                        if (start < from)
+                            from -= 1;
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from, to]);
+            }
+            symbol_insert(event) {
+                const symbol = event.shiftKey
+                    ? this.symbols_alt_shift()[$mol_keyboard_code[event.keyCode]]
+                    : event.ctrlKey
+                        ? this.symbols_alt_ctrl()[$mol_keyboard_code[event.keyCode]]
+                        : this.symbols_alt()[$mol_keyboard_code[event.keyCode]];
+                if (!symbol)
+                    return;
+                event.preventDefault();
+                document.execCommand('insertText', false, symbol);
+            }
+            clickable(next) {
+                if (!this.enabled())
+                    return true;
+                return next ?? false;
+            }
+            hover(event) {
+                this.clickable(event.ctrlKey);
+            }
+            press(event) {
+                if (event.altKey) {
+                    this.symbol_insert(event);
+                }
+                else {
+                    switch (event.keyCode) {
+                        case !event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_inc();
+                            break;
+                        case event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_dec();
+                            break;
+                        default: return;
+                    }
+                    event.preventDefault();
+                }
+            }
+            row_numb(index) {
+                return index;
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_textarea.prototype, "clickable", null);
+        $$.$mol_textarea = $mol_textarea;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tflex-direction: column;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n\tborder-radius: var(--mol_gap_round);\n\tfont-family: monospace;\n\tposition: relative;\n\ttab-size: 4;\n}\n\n[mol_textarea_view] {\n    interactivity: inert;\n\twhite-space: inherit;\n\tfont-family: inherit;\n\ttab-size: inherit;\n}\n\n[mol_textarea_view_copy] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_view] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_edit] {\n    interactivity: inert;\n}\n\n[mol_textarea_edit] {\n\tfont-family: inherit;\n\tpadding: var(--mol_gap_text);\n\tcolor: transparent !important;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\toverflow-anchor: none;\n\tposition: absolute;\n\theight: 100%;\n\twidth: 100%;\n\ttab-size: inherit;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 1.75rem;\n\twidth: calc( 100% - 1.75rem );\n}\n\n[mol_textarea_edit]:hover + [mol_textarea_view] {\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_textarea_edit]:focus + [mol_textarea_view] {\n\tz-index: var(--mol_layer_focus);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_section) = class $mol_section extends ($.$mol_list) {
+		title_dom_name(){
+			return "h1";
+		}
+		Title(){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ((this.title_dom_name()));
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
+		tools(){
+			return [];
+		}
+		Tools(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.tools()));
+			return obj;
+		}
+		head(){
+			return [(this.Title()), (this.Tools())];
+		}
+		Head(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.head()));
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content()));
+			return obj;
+		}
+		level(){
+			return 1;
+		}
+		rows(){
+			return [(this.Head()), (this.Content())];
+		}
+	};
+	($mol_mem(($.$mol_section.prototype), "Title"));
+	($mol_mem(($.$mol_section.prototype), "Tools"));
+	($mol_mem(($.$mol_section.prototype), "Head"));
+	($mol_mem(($.$mol_section.prototype), "Content"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * The component which contains head and content.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_section_demo
+         */
+        class $mol_section extends $.$mol_section {
+            title_dom_name() {
+                return 'h' + this.level();
+            }
+        }
+        $$.$mol_section = $mol_section;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/section/section.view.css", "[mol_section_head] {\n\tjustify-content: space-between;\n\talign-items: flex-end;\n\tflex-wrap: wrap;\n}\n\n[mol_section_title] {\n\tmargin: 0;\n\tpadding: var(--mol_gap_text);\n\ttext-shadow: 0 0;\n\tfont-weight: normal;\n}\n\n[mol_section_title]:where(h1) {\n\tfont-size: 1.5rem;\n}\n\n[mol_section_title]:where(h2) {\n\tfont-size: 1.5rem;\n\tfont-style: italic;\n}\n\n[mol_section_title]:where(h3) {\n\tfont-size: 1.25rem;\n}\n\n[mol_section_title]:where(h4) {\n\tfont-size: 1.25rem;\n\tfont-style: italic;\n}\n\n[mol_section_title]:where(h5) {\n\tfont-size: 1rem;\n}\n\n[mol_section_title]:where(h6) {\n\tfont-size: 1rem;\n\tfont-style: italic;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_text_list) = class $mol_text_list extends ($.$mol_text) {
+		type(){
+			return "";
+		}
+		auto_scroll(){
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_list_type": (this.type())};
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_text_list_item();
+			(obj.index) = () => ((this.item_index(id)));
+			(obj.sub) = () => ((this.block_content(id)));
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_text_list.prototype), "Paragraph"));
+	($.$mol_text_list_item) = class $mol_text_list_item extends ($.$mol_paragraph) {
+		index(){
+			return 0;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_list_item_index": (this.index())};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/text/list/list.view.css", "[mol_text_list] {\n\tpadding-inline-start: 1.75rem;\n}\n\n[mol_text_list_item] {\n\tcontain: none;\n\tdisplay: list-item;\n}\n\n[mol_text_list_item]::before {\n\tcontent: attr( mol_text_list_item_index ) \".\";\n\twidth: 1.25rem;\n\tdisplay: inline-block;\n\tposition: absolute;\n\tmargin-inline-start: -1.75rem;\n\ttext-align: end;\n}\n\n[mol_text_list_type=\"-\"] > [mol_text_list_item]::before,\n[mol_text_list_type=\"*\"] > [mol_text_list_item]::before {\n\tcontent: \"•\";\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_feedback2_form) = class $bog_feedback2_form extends ($.$mol_page) {
+		Close(){
+			return null;
+		}
+		prompt(){
+			return "";
+		}
+		Prompt(){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.prompt()));
+			return obj;
+		}
+		draft_text(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Entry_my(){
+			const obj = new this.$.$mol_textarea();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_feedback2_form_Entry_my_hint")));
+			(obj.value) = (next) => ((this.draft_text(next)));
+			return obj;
+		}
+		draft_contact(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Contact_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_feedback2_form_Contact_field_hint")));
+			(obj.value) = (next) => ((this.draft_contact(next)));
+			return obj;
+		}
+		submit_title(){
+			return "";
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Submit(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.submit_title()));
+			(obj.click) = (next) => ((this.submit(next)));
+			return obj;
+		}
+		entry_row_contact(id){
+			return "";
+		}
+		entry_row_text(id){
+			return "";
+		}
+		Entry_row_text(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.entry_row_text(id)));
+			return obj;
+		}
+		entry_row_reply_header_text(id){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_entry_row_reply_header_text"));
+		}
+		Entry_row_reply_header(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.entry_row_reply_header_text(id)));
+			return obj;
+		}
+		entry_row_reply_text(id){
+			return "";
+		}
+		Entry_row_reply_text(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.entry_row_reply_text(id)));
+			return obj;
+		}
+		Entry_row_reply_display(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Entry_row_reply_header(id)), (this.Entry_row_reply_text(id))]);
+			return obj;
+		}
+		entry_row_reply_draft(id, next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Entry_row_reply_input(id){
+			const obj = new this.$.$mol_textarea();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_feedback2_form_Entry_row_reply_input_hint")));
+			(obj.value) = (next) => ((this.entry_row_reply_draft(id, next)));
+			return obj;
+		}
+		entry_row_reply_submit_title(id){
+			return "";
+		}
+		entry_row_reply_submit(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Entry_row_reply_submit(id){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.entry_row_reply_submit_title(id)));
+			(obj.click) = (next) => ((this.entry_row_reply_submit(id, next)));
+			return obj;
+		}
+		Entry_row_reply_form(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Entry_row_reply_input(id)), (this.Entry_row_reply_submit(id))]);
+			return obj;
+		}
+		entry_row_reply_toggle_title(id){
+			return "";
+		}
+		entry_row_reply_toggle(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Entry_row_reply_toggle(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.entry_row_reply_toggle_title(id)));
+			(obj.click) = (next) => ((this.entry_row_reply_toggle(id, next)));
+			return obj;
+		}
+		entry_row_reply_sub(id){
+			return [
+				(this.Entry_row_reply_display(id)), 
+				(this.Entry_row_reply_form(id)), 
+				(this.Entry_row_reply_toggle(id))
+			];
+		}
+		Entry_row_reply_wrap(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.entry_row_reply_sub(id)));
+			return obj;
+		}
+		Entry_row(id){
+			const obj = new this.$.$mol_section();
+			(obj.title) = () => ((this.entry_row_contact(id)));
+			(obj.content) = () => ([(this.Entry_row_text(id)), (this.Entry_row_reply_wrap(id))]);
+			return obj;
+		}
+		entry_rows(){
+			return [(this.Entry_row("0"))];
+		}
+		Entries(){
+			const obj = new this.$.$mol_section();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_feedback2_form_Entries_title")));
+			(obj.content) = () => ((this.entry_rows()));
+			return obj;
+		}
+		Head(){
+			return null;
+		}
+		feedback_id(){
+			return "";
+		}
+		registry_link(){
+			return "";
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_title"));
+		}
+		prompt_title(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_prompt_title"));
+		}
+		prompt_like(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_prompt_like"));
+		}
+		prompt_better(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_prompt_better"));
+		}
+		prompt_future(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_prompt_future"));
+		}
+		submit_send(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_submit_send"));
+		}
+		submit_update(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_submit_update"));
+		}
+		anonymous(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_anonymous"));
+		}
+		reply_send(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_reply_send"));
+		}
+		reply_update(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_reply_update"));
+		}
+		reply_open(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_reply_open"));
+		}
+		reply_cancel(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_reply_cancel"));
+		}
+		reply_edit(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_reply_edit"));
+		}
+		not_ready(){
+			return (this.$.$mol_locale.text("$bog_feedback2_form_not_ready"));
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.Prompt()), 
+				(this.Entry_my()), 
+				(this.Contact_field()), 
+				(this.Submit()), 
+				(this.Entries())
+			];
+		}
+		Not_configured(){
+			const obj = new this.$.$mol_status();
+			(obj.message) = () => ((this.$.$mol_locale.text("$bog_feedback2_form_Not_configured_message")));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_feedback2_form.prototype), "Prompt"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "draft_text"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "Entry_my"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "draft_contact"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "Contact_field"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "submit"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "Submit"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_text"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_header"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_text"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_display"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "entry_row_reply_draft"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_input"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "entry_row_reply_submit"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_submit"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_form"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "entry_row_reply_toggle"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_toggle"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row_reply_wrap"));
+	($mol_mem_key(($.$bog_feedback2_form.prototype), "Entry_row"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "Entries"));
+	($mol_mem(($.$bog_feedback2_form.prototype), "Not_configured"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const Entries_dict = $giper_baza_dict_to($bog_feedback2_entry);
+        const Registry_dict = $giper_baza_dict_to($giper_baza_atom_text);
+        class $bog_feedback2_form extends $.$bog_feedback2_form {
+            /** Реестр по умолчанию — общий; приложение может подменить биндингом. */
+            registry_link() {
+                return super.registry_link() || $bog_feedback2_registry;
+            }
+            registry_land() {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(this.registry_link()));
+            }
+            registry_dict() {
+                return this.registry_land().Data(Registry_dict);
+            }
+            my_pass() {
+                return this.$.$giper_baza_auth.current().pass();
+            }
+            my_lord() {
+                return this.my_pass().lord().str;
+            }
+            /** Ссылка на feedback land: из URL (приоритет) или из реестра */
+            feedback_land_link() {
+                const from_arg = this.$.$mol_state_arg.value('land');
+                if (from_arg)
+                    return from_arg;
+                return this.registry_dict().key(this.feedback_id())?.val() ?? null;
+            }
+            /**
+             * Ленд проекта. null — ленда ещё нет.
+             *
+             * Заводить его ЗДЕСЬ нельзя: land() зовётся из рендера, land_grab внутри
+             * считает PoW и бросает Promise, рендер ретраится — и так по кругу, на
+             * экране вечный спиннер. Плюс на холодном кеше «указателя нет» и «реестр
+             * ещё не доехал» неотличимы, так что каждый второй посетитель форкал бы
+             * ленд и перетирал указатель. Заводим только из submit(), по явному клику.
+             */
+            land() {
+                const link = this.feedback_land_link();
+                if (!link)
+                    return null;
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(link));
+            }
+            /** Хватает ли прав записать ссылку нового ленда в реестр. */
+            can_registry_post() {
+                const rank = this.registry_land().pass_rank(this.my_pass());
+                return $giper_baza_rank_tier_of(rank) >= $giper_baza_rank_tier.post;
+            }
+            /**
+             * Реестр с пресетом [null, post]: ленд для нового feedback_id заводит
+             * первый отправитель отзыва, заход владельца не нужен. На старом
+             * read-only реестре прав не хватит — тогда отзыв просто не уедет.
+             */
+            land_ensure() {
+                if (!this.can_registry_post())
+                    return null;
+                const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+                const link = land.link().str;
+                const entry = this.registry_dict().key(this.feedback_id(), 'auto');
+                if (entry)
+                    entry.val(link);
+                return land;
+            }
+            entries_dict() {
+                return this.land()?.Data(Entries_dict) ?? null;
+            }
+            is_owner() {
+                const rank = this.registry_land().pass_rank(this.my_pass());
+                return $giper_baza_rank_tier_of(rank) >= $giper_baza_rank_tier.rule;
+            }
+            is_configured() {
+                return !!this.registry_link();
+            }
+            entry_mine() {
+                return this.entries_dict()?.key(this.my_lord()) ?? null;
+            }
+            entry_mine_or_create() {
+                const land = this.land() ?? this.land_ensure();
+                if (!land)
+                    return null;
+                const dict = land.Data(Entries_dict);
+                // Ленд ещё не доехал с мастера: гифтов нет, pass_rank молча отдаёт
+                // дефолтный read, и запись ушла бы в никуда — «отправил, а ничего не
+                // появилось». Заводить взамен свой ленд нельзя: указатель в реестре
+                // перевесится, и ветка отзывов расщепится у всех остальных. Честнее
+                // ошибка на кнопке — через секунду ленд доедет и повтор пройдёт.
+                if (!dict.can_change()) {
+                    return $mol_fail(new Error(this.not_ready()));
+                }
+                return dict.key(this.my_lord(), 'auto') ?? null;
+            }
+            prompt() {
+                return [
+                    this.prompt_title(),
+                    this.prompt_like(),
+                    this.prompt_better(),
+                    this.prompt_future(),
+                ].join('\n');
+            }
+            draft_text(next) {
+                if (next !== undefined)
+                    return next;
+                const entry = this.entry_mine();
+                return entry?.Text()?.val() ?? '';
+            }
+            draft_contact(next) {
+                if (next !== undefined)
+                    return next;
+                const entry = this.entry_mine();
+                return entry?.Contact()?.val() ?? '';
+            }
+            has_entry() {
+                return !!this.entry_mine();
+            }
+            submit_title() {
+                return this.has_entry() ? this.submit_update() : this.submit_send();
+            }
+            // Подвисающие чтения — первыми: land_ensure ниже считает PoW и ретраит
+            // фибру, а перечитанные drafts к тому моменту уже закешированы.
+            submit() {
+                const text = this.draft_text();
+                const contact = this.draft_contact();
+                if (!text)
+                    return;
+                const entry = this.entry_mine_or_create();
+                if (!entry)
+                    return;
+                entry.Text('auto').val(text);
+                if (contact)
+                    entry.Contact('auto').val(contact);
+            }
+            body() {
+                if (!this.is_configured())
+                    return [this.Not_configured()];
+                return [
+                    this.Prompt(),
+                    this.Entry_my(),
+                    this.Contact_field(),
+                    this.Submit(),
+                    // Ленда ещё нет — показывать нечего, но форму это не блокирует.
+                    ...(this.land() ? [this.Entries()] : []),
+                ];
+            }
+            all_lords() {
+                const raw = this.entries_dict()?.keys() ?? [];
+                const lords = Array.from(raw).map(l => String(l));
+                const mine = this.my_lord();
+                if (!mine)
+                    return lords;
+                const idx = lords.indexOf(mine);
+                if (idx <= 0)
+                    return lords;
+                return [mine, ...lords.slice(0, idx), ...lords.slice(idx + 1)];
+            }
+            entry_rows() {
+                return this.all_lords().map((_, i) => this.Entry_row(i));
+            }
+            entry_by_index(index) {
+                const lord = this.all_lords()[index];
+                if (!lord)
+                    return null;
+                return this.entries_dict()?.key(lord) ?? null;
+            }
+            entry_by_index_or_create(index) {
+                const lord = this.all_lords()[index];
+                if (!lord)
+                    return null;
+                return this.entries_dict()?.key(lord, 'auto') ?? null;
+            }
+            entry_row_text(index) {
+                return this.entry_by_index(index)?.Text()?.val() ?? '';
+            }
+            entry_row_contact(index) {
+                return this.entry_by_index(index)?.Contact()?.val() || this.anonymous();
+            }
+            entry_row_has_reply(index) {
+                return !!this.entry_by_index(index)?.Reply()?.val();
+            }
+            entry_row_reply_text(index) {
+                return this.entry_by_index(index)?.Reply()?.val() ?? '';
+            }
+            entry_row_reply_form_open(index, next) {
+                return next ?? false;
+            }
+            entry_row_reply_draft(index, next) {
+                if (next !== undefined)
+                    return next;
+                return this.entry_by_index(index)?.Reply()?.val() ?? '';
+            }
+            entry_row_reply_submit_title(index) {
+                return this.entry_row_has_reply(index) ? this.reply_update() : this.reply_send();
+            }
+            entry_row_reply_toggle_title(index) {
+                if (this.entry_row_has_reply(index))
+                    return this.reply_edit();
+                return this.entry_row_reply_form_open(index) ? this.reply_cancel() : this.reply_open();
+            }
+            entry_row_reply_toggle(index) {
+                const open = this.entry_row_reply_form_open(index);
+                this.entry_row_reply_form_open(index, !open);
+            }
+            entry_row_reply_submit(index) {
+                if (!this.is_owner())
+                    return;
+                const text = this.entry_row_reply_draft(index).trim();
+                if (!text)
+                    return;
+                const entry = this.entry_by_index_or_create(index);
+                if (!entry)
+                    return;
+                entry.Reply('auto').val(text);
+                entry.Reply_author('auto').val(this.my_lord());
+                entry.Reply_created('auto').val(Date.now());
+                this.entry_row_reply_form_open(index, false);
+            }
+            entry_row_reply_sub(index) {
+                const items = [];
+                const has_reply = this.entry_row_has_reply(index);
+                if (has_reply)
+                    items.push(this.Entry_row_reply_display(index));
+                if (!this.is_owner())
+                    return items;
+                if (this.entry_row_reply_form_open(index)) {
+                    items.push(this.Entry_row_reply_form(index));
+                }
+                items.push(this.Entry_row_reply_toggle(index));
+                return items;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_feedback2_form.prototype, "land_ensure", null);
+        __decorate([
+            $mol_action
+        ], $bog_feedback2_form.prototype, "entry_mine_or_create", null);
+        __decorate([
+            $mol_mem
+        ], $bog_feedback2_form.prototype, "draft_text", null);
+        __decorate([
+            $mol_mem
+        ], $bog_feedback2_form.prototype, "draft_contact", null);
+        __decorate([
+            $mol_action
+        ], $bog_feedback2_form.prototype, "submit", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_feedback2_form.prototype, "entry_row_reply_form_open", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_feedback2_form.prototype, "entry_row_reply_draft", null);
+        __decorate([
+            $mol_action
+        ], $bog_feedback2_form.prototype, "entry_row_reply_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_feedback2_form.prototype, "entry_row_reply_submit", null);
+        $$.$bog_feedback2_form = $bog_feedback2_form;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_define($bog_feedback2_form, {
+        color: $mol_theme.text,
+        flex: {
+            basis: '40rem',
+        },
+        margin: [0, 'auto'],
+        Prompt: {
+            padding: $mol_gap.block,
+        },
+        Contact_field: {
+            margin: {
+                top: $mol_gap.space,
+            },
+        },
+        Submit: {
+            margin: {
+                top: $mol_gap.block,
+            },
+        },
+        Entries: {
+            margin: {
+                top: $mol_gap.block,
+            },
+            Content: {
+                gap: $mol_gap.block,
+            },
+        },
+        Entry_row: {
+            background: {
+                color: $mol_theme.card,
+            },
+            border: {
+                radius: $mol_gap.round,
+            },
+            padding: $mol_gap.block,
+            boxShadow: `0 0 0 1px ${$mol_theme.line}`,
+            Head: {
+                font: {
+                    size: '1rem',
+                },
+            },
+        },
+        Entry_row_reply_wrap: {
+            flex: {
+                direction: 'column',
+            },
+            gap: $mol_gap.space,
+            margin: {
+                top: $mol_gap.space,
+            },
+        },
+        Entry_row_reply_display: {
+            flex: {
+                direction: 'column',
+            },
+            gap: $mol_gap.space,
+            padding: $mol_gap.block,
+            background: {
+                color: $mol_theme.back,
+            },
+            border: {
+                radius: $mol_gap.round,
+            },
+        },
+        Entry_row_reply_header: {
+            font: {
+                weight: 700,
+                size: '0.95rem',
+            },
+            opacity: 0.8,
+        },
+        Entry_row_reply_text: {
+            font: {
+                size: '0.95rem',
+            },
+            whiteSpace: 'pre-wrap',
+        },
+        Entry_row_reply_form: {
+            flex: {
+                direction: 'column',
+            },
+            gap: $mol_gap.space,
+        },
+        Entry_row_reply_toggle: {
+            align: {
+                self: 'flex-start',
+            },
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_chevron_down) = class $mol_icon_chevron_down extends ($.$mol_icon) {
+		path(){
+			return "M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_select) = class $bog_music_select extends ($.$mol_select) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_music_select, {
+            Bubble_pane: {
+                maxHeight: 'none',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_plus) = class $mol_icon_plus extends ($.$mol_icon) {
+		path(){
+			return "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
+		path(){
+			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_playlists) = class $bog_music_playlists extends ($.$mol_view) {
+		my_current(){
+			return false;
+		}
+		my_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		My_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.my_title())]);
+			return obj;
+		}
+		My(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_music_playlists_current": (this.my_current())});
+			(obj.click) = (next) => ((this.my_click(next)));
+			(obj.sub) = () => ([(this.My_label())]);
+			return obj;
+		}
+		list_active(){
+			return false;
+		}
+		list_current(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		List_icon(){
+			const obj = new this.$.$mol_icon_chevron_down();
+			return obj;
+		}
+		List(){
+			const obj = new this.$.$bog_music_select();
+			(obj.hint) = () => ("Плейлисты");
+			(obj.value) = (next) => ((this.list_current(next)));
+			(obj.dictionary) = () => ((this.list_dict()));
+			(obj.option_label_default) = () => ("Плейлисты");
+			(obj.no_options_message) = () => ("Плейлистов нет");
+			(obj.Trigger_icon) = () => ((this.List_icon()));
+			return obj;
+		}
+		add_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Add_icon(){
+			const obj = new this.$.$mol_icon_plus();
+			return obj;
+		}
+		Add_anchor(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Плейлисты");
+			(obj.click) = (next) => ((this.add_toggle(next)));
+			(obj.sub) = () => ([(this.Add_icon())]);
+			return obj;
+		}
+		add_title(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		add_submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Add_title(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Новый плейлист");
+			(obj.value) = (next) => ((this.add_title(next)));
+			(obj.submit) = (next) => ((this.add_submit(next)));
+			(obj.enter) = () => ("done");
+			return obj;
+		}
+		Add_submit(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Создать");
+			(obj.click) = (next) => ((this.add_submit(next)));
+			return obj;
+		}
+		Add_panel(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Add_title()), (this.Add_submit())]);
+			return obj;
+		}
+		rename_title(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rename_submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Rename(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название текущего");
+			(obj.value) = (next) => ((this.rename_title(next)));
+			(obj.submit) = (next) => ((this.rename_submit(next)));
+			(obj.enter) = () => ("done");
+			return obj;
+		}
+		remove_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Remove_icon(){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		remove_label(){
+			return "Удалить";
+		}
+		Remove_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.remove_label())]);
+			return obj;
+		}
+		Remove(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.remove_click(next)));
+			(obj.sub) = () => ([(this.Remove_icon()), (this.Remove_label())]);
+			return obj;
+		}
+		Edit_panel(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Rename()), (this.Remove())]);
+			return obj;
+		}
+		add_content(){
+			return [(this.Add_panel()), (this.Edit_panel())];
+		}
+		Add(){
+			const obj = new this.$.$mol_pop();
+			(obj.align) = () => ("bottom_center");
+			(obj.Anchor) = () => ((this.Add_anchor()));
+			(obj.bubble_content) = () => ((this.add_content()));
+			return obj;
+		}
+		middle(){
+			return [(this.List()), (this.Add())];
+		}
+		Middle(){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_music_playlists_current": (this.list_active())});
+			(obj.sub) = () => ((this.middle()));
+			return obj;
+		}
+		archive_current(){
+			return false;
+		}
+		archive_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Archive_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.archive_title())]);
+			return obj;
+		}
+		Archive(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_music_playlists_current": (this.archive_current())});
+			(obj.click) = (next) => ((this.archive_click(next)));
+			(obj.sub) = () => ([(this.Archive_label())]);
+			return obj;
+		}
+		page(next){
+			if(next !== undefined) return next;
+			return "my";
+		}
+		my_title(){
+			return "Моя музыка";
+		}
+		archive_title(){
+			return "Архив";
+		}
+		list_dict(){
+			return {};
+		}
+		sub(){
+			return [
+				(this.My()), 
+				(this.Middle()), 
+				(this.Archive())
+			];
+		}
+	};
+	($mol_mem(($.$bog_music_playlists.prototype), "my_click"));
+	($mol_mem(($.$bog_music_playlists.prototype), "My_label"));
+	($mol_mem(($.$bog_music_playlists.prototype), "My"));
+	($mol_mem(($.$bog_music_playlists.prototype), "list_current"));
+	($mol_mem(($.$bog_music_playlists.prototype), "List_icon"));
+	($mol_mem(($.$bog_music_playlists.prototype), "List"));
+	($mol_mem(($.$bog_music_playlists.prototype), "add_toggle"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add_icon"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add_anchor"));
+	($mol_mem(($.$bog_music_playlists.prototype), "add_title"));
+	($mol_mem(($.$bog_music_playlists.prototype), "add_submit"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add_title"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add_submit"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add_panel"));
+	($mol_mem(($.$bog_music_playlists.prototype), "rename_title"));
+	($mol_mem(($.$bog_music_playlists.prototype), "rename_submit"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Rename"));
+	($mol_mem(($.$bog_music_playlists.prototype), "remove_click"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Remove_icon"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Remove_label"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Remove"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Edit_panel"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Add"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Middle"));
+	($mol_mem(($.$bog_music_playlists.prototype), "archive_click"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Archive_label"));
+	($mol_mem(($.$bog_music_playlists.prototype), "Archive"));
+	($mol_mem(($.$bog_music_playlists.prototype), "page"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const dismissed = new WeakSet();
+    /**
+     * Тап мимо панели закрывает её. Сам $mol_pop закрывается, только когда
+     * фокус уезжает на другой фокусируемый элемент, а тап по пустому месту
+     * на телефоне фокус никуда не переносит — панель висела бы на экране.
+     */
+    function $bog_music_pop_dismiss(pop) {
+        if (dismissed.has(pop))
+            return;
+        dismissed.add(pop);
+        window.addEventListener('pointerdown', event => {
+            if (!pop.showed())
+                return;
+            const target = event.target;
+            if (!target)
+                return;
+            if (pop.dom_node().contains(target))
+                return;
+            if (pop.Bubble().dom_node().contains(target))
+                return;
+            pop.showed(false);
+        }, true);
+    }
+    $.$bog_music_pop_dismiss = $bog_music_pop_dismiss;
+    /**
+     * Тап по якорю открывает и закрывает панель. $mol_pop_over для этого не
+     * годится: он показан, пока «в фокусе ИЛИ под курсором», а на телефоне
+     * фокус остаётся на кнопке, и повторный тап ничего не закрывает.
+     */
+    function $bog_music_pop_toggle(pop) {
+        const showed = pop.showed();
+        pop.showed(!showed);
+        if (!showed)
+            $bog_music_pop_dismiss(pop);
+        return !showed;
+    }
+    $.$bog_music_pop_toggle = $bog_music_pop_toggle;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_playlists extends $.$bog_music_playlists {
+            account() {
+                return $bog_music_account_baza.home();
+            }
+            my_current() {
+                return this.page() === 'my';
+            }
+            archive_current() {
+                return this.page() === 'archive';
+            }
+            list_active() {
+                return !this.my_current() && !this.archive_current();
+            }
+            own_list() {
+                return this.page().startsWith('list:') ? this.page() : '';
+            }
+            my_click() {
+                this.page('my');
+            }
+            archive_click() {
+                this.page('archive');
+            }
+            list_current(next) {
+                if (next)
+                    this.page(next);
+                return this.list_active() ? this.page() : '';
+            }
+            middle() {
+                return [
+                    ...Object.keys(this.list_dict()).length ? [this.List()] : [],
+                    this.Add(),
+                ];
+            }
+            add_title(next) {
+                return next ?? '';
+            }
+            add_content() {
+                return this.own_list() ? [this.Add_panel(), this.Edit_panel()] : [this.Add_panel()];
+            }
+            add_toggle() {
+                this.remove_asked(false);
+                if ($bog_music_pop_toggle(this.Add()))
+                    this.focus_later(this.Add_title());
+            }
+            add_submit() {
+                const title = this.add_title().trim();
+                if (!title)
+                    return;
+                const id = this.account().playlist_create(title);
+                this.add_title('');
+                this.Add().showed(false);
+                this.page(id);
+            }
+            rename_title(next) {
+                const id = this.own_list();
+                if (next === undefined)
+                    return this.account().playlist_title(id);
+                if (id && next.trim())
+                    this.account().playlist_rename(id, next);
+                return next;
+            }
+            rename_submit() {
+                this.Add().showed(false);
+            }
+            remove_asked(next) {
+                this.own_list();
+                return next ?? false;
+            }
+            remove_label() {
+                return this.remove_asked() ? 'Точно удалить?' : 'Удалить';
+            }
+            remove_click() {
+                if (!this.remove_asked()) {
+                    this.remove_asked(true);
+                    return;
+                }
+                const id = this.own_list();
+                if (!id)
+                    return;
+                this.Add().showed(false);
+                this.account().playlist_delete(id);
+                this.page('my');
+            }
+            focus_later(field) {
+                new $mol_after_frame(() => {
+                    try {
+                        field.focused(true);
+                    }
+                    catch { }
+                });
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "my_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "archive_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_playlists.prototype, "add_title", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "add_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "add_submit", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_playlists.prototype, "rename_title", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "rename_submit", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_playlists.prototype, "remove_asked", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_playlists.prototype, "remove_click", null);
+        $$.$bog_music_playlists = $bog_music_playlists;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const current = {
+            '[bog_music_playlists_current]': {
+                true: {
+                    color: $mol_theme.current,
+                    background: { color: $mol_theme.hover },
+                },
+            },
+        };
+        const cell = {
+            ...current,
+            flex: { grow: 1, shrink: 1, basis: '0%' },
+            justify: { content: 'center' },
+            align: { items: 'center' },
+            minWidth: 0,
+        };
+        const label = {
+            display: 'block',
+            flex: { shrink: 1 },
+            minWidth: 0,
+            overflow: { x: 'hidden', y: 'hidden' },
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+        };
+        $mol_style_define($bog_music_playlists, {
+            flex: { direction: 'row' },
+            align: { items: 'stretch' },
+            gap: '0.25rem',
+            padding: {
+                top: '0.5rem',
+                bottom: '0.25rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            My: {
+                ...cell,
+                textAlign: 'center',
+            },
+            My_label: label,
+            Archive: {
+                ...cell,
+                textAlign: 'center',
+            },
+            Archive_label: label,
+            Middle: {
+                ...cell,
+                flex: { grow: 1.5, shrink: 1, basis: '0%' },
+                gap: 0,
+            },
+            List: {
+                flex: { grow: 1, shrink: 1, basis: 'auto' },
+                minWidth: 0,
+                padding: {
+                    left: '0.9rem',
+                },
+                Trigger: {
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    flex: { wrap: 'nowrap' },
+                    $mol_dimmer: label,
+                },
+            },
+            Edit_panel: {
+                border: { top: { width: '1px', style: 'solid', color: $mol_theme.line } },
+                flex: { direction: 'column' },
+                gap: $mol_gap.text,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                width: '16rem',
+                maxWidth: '80vw',
+            },
+            Remove: {
+                gap: $mol_gap.text,
+                color: $mol_theme.special,
+            },
+            Add_panel: {
+                flex: { direction: 'column' },
+                gap: $mol_gap.text,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                width: '16rem',
+                maxWidth: '80vw',
+            },
+            Add_anchor: {
+                padding: { left: 0, right: 0 },
+                justify: { content: 'center' },
+                width: '24px',
+                height: '24px',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_music_tracks) = class $bog_music_tracks extends ($.$mol_list) {
+		track_key(id){
+			return "";
+		}
+		track_current(id){
+			return false;
+		}
+		track_play(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_can_drag(id){
+			return false;
+		}
+		track_drag_start(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_drop_here(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_archive(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_restore(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_delete(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		track_demote(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Track(id){
+			const obj = new this.$.$bog_music_track();
+			(obj.key) = () => ((this.track_key(id)));
+			(obj.current) = () => ((this.track_current(id)));
+			(obj.play) = (next) => ((this.track_play(id, next)));
+			(obj.archive_mode) = () => ((this.archive_mode()));
+			(obj.can_drag) = () => ((this.track_can_drag(id)));
+			(obj.drag_start) = (next) => ((this.track_drag_start(id, next)));
+			(obj.drop_here) = (next) => ((this.track_drop_here(id, next)));
+			(obj.archive) = (next) => ((this.track_archive(id, next)));
+			(obj.restore) = (next) => ((this.track_restore(id, next)));
+			(obj.delete_forever) = (next) => ((this.track_delete(id, next)));
+			(obj.demote) = (next) => ((this.track_demote(id, next)));
+			return obj;
+		}
+		track_rows(){
+			return [(this.Track("0"))];
+		}
+		track_keys(){
+			return [];
+		}
+		current_key(){
+			return "";
+		}
+		play_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_mode(){
+			return false;
+		}
+		reorder_to(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		restore_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		delete_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		demote_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		rows(){
+			return (this.track_rows());
+		}
+	};
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_play"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_drag_start"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_drop_here"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_archive"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_restore"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_delete"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "track_demote"));
+	($mol_mem_key(($.$bog_music_tracks.prototype), "Track"));
+	($mol_mem(($.$bog_music_tracks.prototype), "play_key"));
+	($mol_mem(($.$bog_music_tracks.prototype), "reorder_to"));
+	($mol_mem(($.$bog_music_tracks.prototype), "archive_key"));
+	($mol_mem(($.$bog_music_tracks.prototype), "restore_key"));
+	($mol_mem(($.$bog_music_tracks.prototype), "delete_key"));
+	($mol_mem(($.$bog_music_tracks.prototype), "demote_key"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_tracks extends $.$bog_music_tracks {
+            _drag_index = -1;
+            track_rows() {
+                return this.track_keys().map((_, i) => this.Track(i));
+            }
+            track_key(index) {
+                return this.track_keys()[index] ?? '';
+            }
+            track_current(index) {
+                const key = this.track_key(index);
+                return !!key && key === this.current_key();
+            }
+            track_play(index) {
+                const key = this.track_key(index);
+                if (key)
+                    this.play_key(key);
+            }
+            track_can_drag(_index) {
+                return !this.archive_mode();
+            }
+            track_drag_start(index) {
+                this._drag_index = index;
+            }
+            track_drop_here(index) {
+                const from = this._drag_index;
+                this._drag_index = -1;
+                if (from < 0 || from === index)
+                    return;
+                this.reorder_to({ from, to: index });
+            }
+            track_archive(index) {
+                const key = this.track_key(index);
+                if (key)
+                    this.archive_key(key);
+            }
+            track_restore(index) {
+                const key = this.track_key(index);
+                if (key)
+                    this.restore_key(key);
+            }
+            track_demote(index) {
+                const key = this.track_key(index);
+                if (key)
+                    this.demote_key(key);
+            }
+            track_delete(index) {
+                const key = this.track_key(index);
+                if (key)
+                    this.delete_key(key);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_music_tracks.prototype, "track_rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_play", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_drop_here", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_archive", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_restore", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_demote", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_tracks.prototype, "track_delete", null);
+        $$.$bog_music_tracks = $bog_music_tracks;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function pass(data) {
+        return data;
+    }
+    function $mol_error_fence(task, fallback, loading = pass) {
+        try {
+            return task();
+        }
+        catch (error) {
+            let normalized;
+            try {
+                normalized = $mol_promise_like(error) ? loading(error) : fallback(error);
+            }
+            catch (sub_error) {
+                normalized = $mol_promise_like(sub_error) ? sub_error : new $mol_error_mix(sub_error.message, { error }, sub_error);
+            }
+            if (normalized instanceof Error || $mol_promise_like(normalized)) {
+                $mol_fail_hidden(normalized);
+            }
+            return normalized;
+        }
+    }
+    $.$mol_error_fence = $mol_error_fence;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_error_enriched(cause, cb) {
+        return $mol_error_fence(cb, e => new $mol_error_mix(e.message, cause, e));
+    }
+    $.$mol_error_enriched = $mol_error_enriched;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_fetch_response extends $mol_object {
+        native;
+        request;
+        status() {
+            const types = ['unknown', 'inform', 'success', 'redirect', 'wrong', 'failed'];
+            return types[Math.floor(this.native.status / 100)];
+        }
+        code() {
+            return this.native.status;
+        }
+        ok() {
+            return this.native.ok;
+        }
+        message() {
+            return $mol_rest_code[this.code()] || `HTTP Error ${this.code()}`;
+        }
+        headers() {
+            return this.native.headers;
+        }
+        mime() {
+            return this.headers().get('content-type');
+        }
+        stream() {
+            return this.native.body;
+        }
+        text() {
+            const buffer = this.buffer();
+            const mime = this.mime() || '';
+            const [, charset] = /charset=(.*)/.exec(mime) || [, 'utf-8'];
+            const decoder = new TextDecoder(charset);
+            return decoder.decode(buffer);
+        }
+        json() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).json());
+        }
+        blob() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).blob());
+        }
+        buffer() {
+            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).arrayBuffer());
+        }
+        xml() {
+            return $mol_dom_parse(this.text(), 'application/xml');
+        }
+        xhtml() {
+            return $mol_dom_parse(this.text(), 'application/xhtml+xml');
+        }
+        html() {
+            return $mol_dom_parse(this.text(), 'text/html');
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "stream", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "text", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "xml", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "xhtml", null);
+    __decorate([
+        $mol_action
+    ], $mol_fetch_response.prototype, "html", null);
+    $.$mol_fetch_response = $mol_fetch_response;
+    class $mol_fetch_request extends $mol_object {
+        native;
+        response_async() {
+            const controller = new AbortController();
+            let done = false;
+            const request = new Request(this.native, { signal: controller.signal });
+            const promise = fetch(request).finally(() => {
+                done = true;
+            });
+            return Object.assign(promise, {
+                destructor: () => {
+                    // Abort of done request breaks response parsing
+                    if (!done && !controller.signal.aborted)
+                        controller.abort();
+                },
+            });
+        }
+        response() {
+            const native = $mol_error_enriched(this, () => $mol_wire_sync(this).response_async());
+            return this.$.$mol_fetch_response.make({
+                native,
+                request: this
+            });
+        }
+        success() {
+            const response = this.response();
+            if (response.status() === 'success')
+                return response;
+            throw new Error(response.message(), { cause: response });
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch_request.prototype, "response", null);
+    $.$mol_fetch_request = $mol_fetch_request;
+    class $mol_fetch extends $mol_object {
+        static request(input, init) {
+            return this.$.$mol_fetch_request.make({
+                native: new Request(input, init)
+            });
+        }
+        static response(input, init) {
+            return this.request(input, init).response();
+        }
+        static success(input, init) {
+            return this.request(input, init).success();
+        }
+        static stream(input, init) {
+            return this.success(input, init).stream();
+        }
+        static text(input, init) {
+            return this.success(input, init).text();
+        }
+        static json(input, init) {
+            return this.success(input, init).json();
+        }
+        static blob(input, init) {
+            return this.success(input, init).blob();
+        }
+        static buffer(input, init) {
+            return this.success(input, init).buffer();
+        }
+        static xml(input, init) {
+            return this.success(input, init).xml();
+        }
+        static xhtml(input, init) {
+            return this.success(input, init).xhtml();
+        }
+        static html(input, init) {
+            return this.success(input, init).html();
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_fetch, "request", null);
+    $.$mol_fetch = $mol_fetch;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Клиент поиска и скачивания музыки из YouTube. Сервер — наш
+     * сервер bog/music/srv/tube в докере (yt-dlp + ffmpeg).
+     */
+    class $bog_music_tube extends $mol_object {
+        static base = 'https://tube.87.120.36.150.ip.giper.dev';
+        /** Поиск. Wire-метод: suspend'ится пока грузится. */
+        static search(query) {
+            const q = query.trim();
+            if (!q)
+                return [];
+            return $mol_fetch.json(`${this.base}/tube/search?q=${encodeURIComponent(q)}`) ?? [];
+        }
+        /** URL стрима аудио — для прослушивания без скачивания в baza. */
+        static audio_url(id) {
+            return `${this.base}/tube/audio?id=${encodeURIComponent(id)}`;
+        }
+        /** URL превью-обложки YouTube (строится по id, без запроса к серверу). */
+        static cover_url(id) {
+            return `https://i.ytimg.com/vi/${encodeURIComponent(id)}/mqdefault.jpg`;
+        }
+        /** Аудио-байты трека (m4a) — для скачивания в baza. */
+        static async audio_bytes(id) {
+            const resp = await fetch(this.audio_url(id));
+            if (!resp.ok)
+                throw new Error(`tube audio ${resp.status}`);
+            const buf = new Uint8Array(await resp.arrayBuffer());
+            if (!buf.byteLength)
+                throw new Error('tube audio: пустой ответ');
+            return buf;
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $bog_music_tube, "search", null);
+    $.$bog_music_tube = $bog_music_tube;
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
+		path(){
+			return "M8,5.14V19.14L19,12.14L8,5.14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_tube_row) = class $bog_music_tube_row extends ($.$mol_view) {
+		play(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Play_icon(){
+			const obj = new this.$.$mol_icon_play();
+			return obj;
+		}
+		Play(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Слушать");
+			(obj.click) = (next) => ((this.play(next)));
+			(obj.sub) = () => ([(this.Play_icon())]);
+			return obj;
+		}
+		Cover(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.cover()));
+			return obj;
+		}
+		Cover_placeholder(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		Cover_box(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.play(next))});
+			(obj.sub) = () => ([(this.Cover()), (this.Cover_placeholder())]);
+			return obj;
+		}
+		Title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.title()));
+			return obj;
+		}
+		Subtitle(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.subtitle()));
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.play(next))});
+			(obj.sub) = () => ([(this.Title()), (this.Subtitle())]);
+			return obj;
+		}
+		Status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.status())]);
+			return obj;
+		}
+		get(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Get_icon(){
+			const obj = new this.$.$mol_icon_download();
+			return obj;
+		}
+		Get(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Скачать в Мою музыку");
+			(obj.click) = (next) => ((this.get(next)));
+			(obj.sub) = () => ([(this.Get_icon())]);
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		subtitle(){
+			return "";
+		}
+		status(){
+			return "";
+		}
+		cover(){
+			return "";
+		}
+		playing(){
+			return false;
+		}
+		busy(){
+			return false;
+		}
+		attr(){
+			return {"bog_music_tube_row_busy": (this.busy())};
+		}
+		sub(){
+			return [
+				(this.Play()), 
+				(this.Cover_box()), 
+				(this.Info()), 
+				(this.Status()), 
+				(this.Get())
+			];
+		}
+	};
+	($mol_mem(($.$bog_music_tube_row.prototype), "play"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Play_icon"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Play"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Cover"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Cover_placeholder"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Cover_box"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Title"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Subtitle"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Info"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Status"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "get"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Get_icon"));
+	($mol_mem(($.$bog_music_tube_row.prototype), "Get"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_tube_row extends $.$bog_music_tube_row {
+            Cover() {
+                if (!this.cover())
+                    return null;
+                return super.Cover();
+            }
+            Cover_placeholder() {
+                if (this.cover())
+                    return null;
+                return super.Cover_placeholder();
+            }
+        }
+        $$.$bog_music_tube_row = $bog_music_tube_row;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_define($bog_music_tube_row, {
+        flex: { direction: 'row' },
+        align: { items: 'center' },
+        gap: '0.5rem',
+        padding: {
+            top: '0.5rem',
+            bottom: '0.5rem',
+            left: '0.5rem',
+            right: '0.5rem',
+        },
+        Play: {
+            flex: { shrink: 0 },
+        },
+        Cover_box: {
+            flex: { shrink: 0, grow: 0 },
+            width: '3rem',
+            height: '3rem',
+            borderRadius: '0.25rem',
+            overflow: { x: 'hidden', y: 'hidden' },
+            cursor: 'pointer',
+            justify: { content: 'center' },
+            align: { items: 'center' },
+            background: { color: $mol_theme.line },
+        },
+        Cover: {
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+        },
+        Cover_placeholder: {
+            width: '1.75rem',
+            height: '1.75rem',
+            color: $mol_theme.shade,
+        },
+        Info: {
+            flex: { direction: 'column', grow: 1, shrink: 1 },
+            minWidth: 0,
+            cursor: 'pointer',
+        },
+        Title: {
+            whiteSpace: 'nowrap',
+            overflow: { x: 'hidden', y: 'hidden' },
+            textOverflow: 'ellipsis',
+        },
+        Subtitle: {
+            font: { size: '0.875rem' },
+            color: $mol_theme.shade,
+            whiteSpace: 'nowrap',
+            overflow: { x: 'hidden', y: 'hidden' },
+            textOverflow: 'ellipsis',
+        },
+        Status: {
+            flex: { shrink: 0 },
+            font: { size: '0.875rem' },
+            color: $mol_theme.shade,
+            whiteSpace: 'nowrap',
+        },
+        Get: {
+            flex: { shrink: 0 },
+        },
+        '@': {
+            // Пока идёт скачивание — мигаем кнопкой Get (тем же mol-миганием,
+            // что и Upload), в дополнение к текстовому статусу «Качаю…».
+            bog_music_tube_row_busy: {
+                true: {
+                    Get: {
+                        animation: {
+                            name: 'mol_view_wait',
+                            duration: '1s',
+                            iterationCount: 'infinite',
+                        },
+                    },
+                },
+            },
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_skip_previous) = class $mol_icon_skip_previous extends ($.$mol_icon) {
+		path(){
+			return "M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_pause) = class $mol_icon_pause extends ($.$mol_icon) {
+		path(){
+			return "M14,19H18V5H14M6,19H10V5H6V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_skip_next) = class $mol_icon_skip_next extends ($.$mol_icon) {
+		path(){
+			return "M16,18H18V6H16M6,18L14.5,12L6,6V18Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_repeat) = class $mol_icon_repeat extends ($.$mol_icon) {
+		path(){
+			return "M17,17H7V14L3,18L7,22V19H19V13H17M7,7H17V10L21,6L17,2V5H5V11H7V7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_repeat_once) = class $mol_icon_repeat_once extends ($.$mol_icon) {
+		path(){
+			return "M13,15V9H12L10,10V11H11.5V15M17,17H7V14L3,18L7,22V19H19V13H17M7,7H17V10L21,6L17,2V5H5V11H7V7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_shuffle) = class $mol_icon_shuffle extends ($.$mol_icon) {
+		path(){
+			return "M14.83,13.41L13.42,14.82L16.55,17.95L14.5,20H20V14.5L17.96,16.54L14.83,13.41M14.5,4L16.54,6.04L4,18.59L5.41,20L17.96,7.46L20,9.5V4M10.59,9.17L5.41,4L4,5.41L9.17,10.58L10.59,9.17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_content_cut) = class $mol_icon_content_cut extends ($.$mol_icon) {
+		path(){
+			return "M19,3L13,9L15,11L22,4V3M12,12.5A0.5,0.5 0 0,1 11.5,12A0.5,0.5 0 0,1 12,11.5A0.5,0.5 0 0,1 12.5,12A0.5,0.5 0 0,1 12,12.5M6,20A2,2 0 0,1 4,18C4,16.89 4.9,16 6,16A2,2 0 0,1 8,18C8,19.11 7.1,20 6,20M6,8A2,2 0 0,1 4,6C4,4.89 4.9,4 6,4A2,2 0 0,1 8,6C8,7.11 7.1,8 6,8M9.64,7.64C9.87,7.14 10,6.59 10,6A4,4 0 0,0 6,2A4,4 0 0,0 2,6A4,4 0 0,0 6,10C6.59,10 7.14,9.87 7.64,9.64L10,12L7.64,14.36C7.14,14.13 6.59,14 6,14A4,4 0 0,0 2,18A4,4 0 0,0 6,22A4,4 0 0,0 10,18C10,17.41 9.87,16.86 9.64,16.36L12,14L19,21H22V20L9.64,7.64Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_tune) = class $mol_icon_tune extends ($.$mol_icon) {
+		path(){
+			return "M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_tune_vertical) = class $mol_icon_tune_vertical extends ($.$mol_icon) {
+		path(){
+			return "M7 3H5V9H7V3M19 3H17V13H19V3M3 13H5V21H7V13H9V11H3V13M15 7H13V3H11V7H9V9H15V7M11 21H13V11H11V21M15 15V17H17V21H19V17H21V15H15Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_svg_line) = class $mol_svg_line extends ($.$mol_svg) {
+		from(){
+			return [];
+		}
+		to(){
+			return [];
+		}
+		from_x(){
+			return "";
+		}
+		from_y(){
+			return "";
+		}
+		to_x(){
+			return "";
+		}
+		to_y(){
+			return "";
+		}
+		dom_name(){
+			return "line";
+		}
+		pos(){
+			return [(this.from()), (this.to())];
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"x1": (this.from_x()), 
+				"y1": (this.from_y()), 
+				"x2": (this.to_x()), 
+				"y2": (this.to_y())
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_svg_line extends $.$mol_svg_line {
+            from() {
+                return this.pos()[0];
+            }
+            from_x() {
+                return this.from()[0];
+            }
+            from_y() {
+                return this.from()[1];
+            }
+            to() {
+                return this.pos()[1];
+            }
+            to_x() {
+                return this.to()[0];
+            }
+            to_y() {
+                return this.to()[1];
+            }
+        }
+        $$.$mol_svg_line = $mol_svg_line;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_svg_circle) = class $mol_svg_circle extends ($.$mol_svg) {
+		radius(){
+			return ".5%";
+		}
+		pos_x(){
+			return "";
+		}
+		pos_y(){
+			return "";
+		}
+		dom_name(){
+			return "circle";
+		}
+		pos(){
+			return [];
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"r": (this.radius()), 
+				"cx": (this.pos_x()), 
+				"cy": (this.pos_y())
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_svg_circle extends $.$mol_svg_circle {
+            pos_x() {
+                return this.pos()[0];
+            }
+            pos_y() {
+                return this.pos()[1];
+            }
+        }
+        $$.$mol_svg_circle = $mol_svg_circle;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_music_eq_curve) = class $bog_music_eq_curve extends ($.$mol_view) {
+		db_text(id){
+			return "";
+		}
+		db_color(id){
+			return "";
+		}
+		Db(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.db_text(id)));
+			(obj.style) = () => ({"color": (this.db_color(id))});
+			return obj;
+		}
+		db_list(){
+			return [(this.Db("0"))];
+		}
+		Db_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.db_list()));
+			return obj;
+		}
+		view_box(){
+			return "";
+		}
+		gradient_id(){
+			return "";
+		}
+		stop_offset(id){
+			return "";
+		}
+		stop_color(id){
+			return "";
+		}
+		Stop(id){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("stop");
+			(obj.attr) = () => ({"offset": (this.stop_offset(id)), "stop-color": (this.stop_color(id))});
+			return obj;
+		}
+		stop_list(){
+			return [(this.Stop("0"))];
+		}
+		Gradient(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("linearGradient");
+			(obj.attr) = () => ({
+				"id": (this.gradient_id()), 
+				"x1": "0%", 
+				"x2": "100%", 
+				"y1": "0%", 
+				"y2": "0%"
+			});
+			(obj.sub) = () => ((this.stop_list()));
+			return obj;
+		}
+		Defs(){
+			const obj = new this.$.$mol_svg();
+			(obj.dom_name) = () => ("defs");
+			(obj.sub) = () => ([(this.Gradient())]);
+			return obj;
+		}
+		zero_x1(){
+			return "";
+		}
+		zero_y(){
+			return "";
+		}
+		zero_x2(){
+			return "";
+		}
+		Zero(){
+			const obj = new this.$.$mol_svg_line();
+			(obj.from_x) = () => ((this.zero_x1()));
+			(obj.from_y) = () => ((this.zero_y()));
+			(obj.to_x) = () => ((this.zero_x2()));
+			(obj.to_y) = () => ((this.zero_y()));
+			return obj;
+		}
+		curve_geometry(){
+			return "";
+		}
+		curve_stroke(){
+			return "";
+		}
+		Curve(){
+			const obj = new this.$.$mol_svg_path();
+			(obj.geometry) = () => ((this.curve_geometry()));
+			(obj.attr) = () => ({...(this.$.$mol_svg_path.prototype.attr.call(obj)), "stroke": (this.curve_stroke())});
+			return obj;
+		}
+		dot_x(id){
+			return "";
+		}
+		dot_y(id){
+			return "";
+		}
+		dot_color(id){
+			return "";
+		}
+		Dot(id){
+			const obj = new this.$.$mol_svg_circle();
+			(obj.radius) = () => ("4");
+			(obj.pos_x) = () => ((this.dot_x(id)));
+			(obj.pos_y) = () => ((this.dot_y(id)));
+			(obj.attr) = () => ({...(this.$.$mol_svg_circle.prototype.attr.call(obj)), "stroke": (this.dot_color(id))});
+			return obj;
+		}
+		dot_list(){
+			return [(this.Dot("0"))];
+		}
+		Dots(){
+			const obj = new this.$.$mol_svg_group();
+			(obj.sub) = () => ((this.dot_list()));
+			return obj;
+		}
+		Plot(){
+			const obj = new this.$.$mol_svg_root();
+			(obj.view_box) = () => ((this.view_box()));
+			(obj.aspect) = () => ("xMidYMid meet");
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.pointer_down(next)), 
+				"pointermove": (next) => (this.pointer_move(next)), 
+				"pointerup": (next) => (this.pointer_up(next)), 
+				"pointercancel": (next) => (this.pointer_up(next))
+			});
+			(obj.sub) = () => ([
+				(this.Defs()), 
+				(this.Zero()), 
+				(this.Curve()), 
+				(this.Dots())
+			]);
+			return obj;
+		}
+		freq_text(id){
+			return "";
+		}
+		Freq(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.freq_text(id)));
+			return obj;
+		}
+		freq_list(){
+			return [(this.Freq("0"))];
+		}
+		Freq_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.freq_list()));
+			return obj;
+		}
+		gains(){
+			return [];
+		}
+		pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		sub(){
+			return [
+				(this.Db_row()), 
+				(this.Plot()), 
+				(this.Freq_row())
+			];
+		}
+	};
+	($mol_mem_key(($.$bog_music_eq_curve.prototype), "Db"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Db_row"));
+	($mol_mem_key(($.$bog_music_eq_curve.prototype), "Stop"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Gradient"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Defs"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Zero"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Curve"));
+	($mol_mem_key(($.$bog_music_eq_curve.prototype), "Dot"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Dots"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Plot"));
+	($mol_mem_key(($.$bog_music_eq_curve.prototype), "Freq"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "Freq_row"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "pointer_down"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "pointer_move"));
+	($mol_mem(($.$bog_music_eq_curve.prototype), "pointer_up"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * График эквалайзера: точки на общей кривой, как в Я.Музыке. Компонент
+         * только рисует и отдаёт события указателя наружу — какая полоса поехала и
+         * куда, считает владелец (плеер): он же держит настройки.
+         *
+         * Кривая проходит ЧЕРЕЗ точки, а не повторяет расчётную АЧХ. Так у Яндекса,
+         * и так честнее для управления: полосы разведены достаточно (соседу от
+         * поднятой полосы достаётся полтора децибела), чтобы кривая совпадала со
+         * слышимым, а рисовать настоящую АЧХ значило бы уводить линию мимо точки,
+         * за которую человек тянет.
+         */
+        class $bog_music_eq_curve extends $.$bog_music_eq_curve {
+            /** Система координат графика. Совпадает с aspectRatio в стилях. */
+            static width = 240;
+            static height = 110;
+            /** Полувысота поля от нуля: остаток — поля под радиус точки. */
+            static amplitude = 45;
+            view_box() {
+                return `0 0 ${$bog_music_eq_curve.width} ${$bog_music_eq_curve.height}`;
+            }
+            gains() {
+                return $bog_music_eq.clamp(super.gains());
+            }
+            /** Колонки стоят по центрам шести равных долей ширины — как подписи. */
+            static column(index) {
+                return this.width * (index + 0.5) / $bog_music_eq.bands.length;
+            }
+            static row(db) {
+                return this.height / 2 - db / $bog_music_eq.range_db * this.amplitude;
+            }
+            /** Усиление по вертикальной доле касания. Края поля — потолок диапазона. */
+            static db_at(part) {
+                const db = (this.height / 2 - part * this.height) / this.amplitude * $bog_music_eq.range_db;
+                const range = $bog_music_eq.range_db;
+                return Math.round(Math.max(-range, Math.min(range, db)));
+            }
+            /** Полоса, к колонке которой ближе всего точка касания. */
+            static band_at(x) {
+                const step = this.width / $bog_music_eq.bands.length;
+                const index = Math.floor(x / step);
+                return Math.max(0, Math.min($bog_music_eq.bands.length - 1, index));
+            }
+            zero_x1() { return '0'; }
+            zero_x2() { return String($bog_music_eq_curve.width); }
+            zero_y() { return String($bog_music_eq_curve.height / 2); }
+            // ---------- подписи ----------
+            db_list() {
+                return this.gains().map((_, index) => this.Db(index));
+            }
+            db_text(index) {
+                return $bog_music_eq.db_text(this.gains()[index]);
+            }
+            db_color(index) {
+                return $bog_music_eq.color(this.gains()[index]);
+            }
+            freq_list() {
+                return $bog_music_eq.bands.map((_, index) => this.Freq(index));
+            }
+            freq_text(index) {
+                return $bog_music_eq.bands[index].title;
+            }
+            // ---------- точки ----------
+            dot_list() {
+                return this.gains().map((_, index) => this.Dot(index));
+            }
+            dot_x(index) {
+                return String($bog_music_eq_curve.column(index));
+            }
+            dot_y(index) {
+                return String($bog_music_eq_curve.row(this.gains()[index]));
+            }
+            dot_color(index) {
+                return $bog_music_eq.color(this.gains()[index]);
+            }
+            // ---------- заливка линии ----------
+            // Градиент по всей ширине: цвет линии в каждой колонке равен цвету своей
+            // точки, между колонками браузер разводит сам.
+            gradient_id() {
+                return `${this}_gradient`;
+            }
+            curve_stroke() {
+                return `url(#${this.gradient_id()})`;
+            }
+            stop_list() {
+                return this.gains().map((_, index) => this.Stop(index));
+            }
+            stop_offset(index) {
+                return `${($bog_music_eq_curve.column(index) / $bog_music_eq_curve.width * 100).toFixed(2)}%`;
+            }
+            stop_color(index) {
+                return $bog_music_eq.color(this.gains()[index]);
+            }
+            // ---------- сама линия ----------
+            /**
+             * Гладкая кривая через точки (Catmull-Rom, переведённый в кубические
+             * Безье). По краям добавлены точки у самых границ на высоте крайних
+             * полос: без них линия обрывалась бы на первой точке, а у Яндекса она
+             * доходит до края поля.
+             */
+            curve_geometry() {
+                const gains = this.gains();
+                const { width } = $bog_music_eq_curve;
+                const points = gains.map((db, index) => [
+                    $bog_music_eq_curve.column(index),
+                    $bog_music_eq_curve.row(db),
+                ]);
+                const all = [
+                    [0, points[0][1]],
+                    ...points,
+                    [width, points[points.length - 1][1]],
+                ];
+                let path = `M ${all[0][0]} ${all[0][1].toFixed(2)}`;
+                for (let i = 0; i < all.length - 1; i++) {
+                    const prev = all[Math.max(0, i - 1)];
+                    const from = all[i];
+                    const to = all[i + 1];
+                    const next = all[Math.min(all.length - 1, i + 2)];
+                    const c1x = from[0] + (to[0] - prev[0]) / 6;
+                    const c1y = from[1] + (to[1] - prev[1]) / 6;
+                    const c2x = to[0] - (next[0] - from[0]) / 6;
+                    const c2y = to[1] - (next[1] - from[1]) / 6;
+                    path += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}`
+                        + `, ${c2x.toFixed(2)} ${c2y.toFixed(2)}`
+                        + `, ${to[0].toFixed(2)} ${to[1].toFixed(2)}`;
+                }
+                return path;
+            }
+        }
+        $$.$bog_music_eq_curve = $bog_music_eq_curve;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_music_eq_curve, {
+            flex: {
+                direction: 'column',
+                shrink: 0,
+            },
+            gap: '0.25rem',
+            Db_row: {
+                flex: {
+                    direction: 'row',
+                    shrink: 0,
+                },
+            },
+            Freq_row: {
+                flex: {
+                    direction: 'row',
+                    shrink: 0,
+                },
+            },
+            /**
+             * Доли равны и совпадают с колонками графика: подпись стоит ровно над
+             * своей точкой и под ней.
+             */
+            Db: {
+                flex: {
+                    grow: 1,
+                    basis: 0,
+                },
+                textAlign: 'center',
+                font: {
+                    size: '0.625rem',
+                    weight: 'bold',
+                },
+                fontVariantNumeric: 'tabular-nums',
+                whiteSpace: 'nowrap',
+            },
+            Freq: {
+                flex: {
+                    grow: 1,
+                    basis: 0,
+                },
+                textAlign: 'center',
+                font: { size: '0.625rem' },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+            },
+            /**
+             * Пропорция та же, что у view_box, — иначе SVG отрисуется с полями и
+             * колонки разъедутся с подписями.
+             */
+            Plot: {
+                width: '100%',
+                aspectRatio: '240 / 110',
+                flex: { shrink: 0 },
+                touchAction: 'none',
+                userSelect: 'none',
+                cursor: 'pointer',
+                overflow: { x: 'visible', y: 'visible' },
+            },
+            Zero: {
+                stroke: `${$mol_theme.line}`,
+                strokeWidth: '1',
+            },
+            Curve: {
+                fill: 'none',
+                strokeWidth: '2.5',
+                strokeLinecap: 'round',
+                strokeLinejoin: 'round',
+                pointerEvents: 'none',
+            },
+            Dot: {
+                // Гайд типизирует SVG-свойства строками, а токен темы — это объект
+                // CSS-функции; шаблонная строка отдаёт из него var(--mol_theme_card).
+                fill: `${$mol_theme.card}`,
+                strokeWidth: '2.5',
+                pointerEvents: 'none',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_volume_high) = class $mol_icon_volume_high extends ($.$mol_icon) {
+		path(){
+			return "M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_equalizer) = class $mol_icon_equalizer extends ($.$mol_icon) {
+		path(){
+			return "M10,20H14V4H10V20M4,20H8V12H4V20M16,9V20H20V9H16Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_player) = class $bog_music_player extends ($.$mol_view) {
+		Empty_icon(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		Empty_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Ничего не играет"]);
+			return obj;
+		}
+		missing(){
+			return "";
+		}
+		Missing_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.missing())]);
+			return obj;
+		}
+		missing_pull(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Missing_pull(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Перенести");
+			(obj.click) = (next) => ((this.missing_pull(next)));
+			return obj;
+		}
+		Missing(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Missing_text()), (this.Missing_pull())]);
+			return obj;
+		}
+		seek_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		seek_pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		seek_pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Progress_line(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		progress_width(){
+			return "";
+		}
+		Progress_bar(){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"width": (this.progress_width())});
+			return obj;
+		}
+		Progress_knob(){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"left": (this.progress_width())});
+			return obj;
+		}
+		trim_start_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		trim_start_pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		trim_pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		trim_start_left(){
+			return "";
+		}
+		Trim_start_handle(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.trim_start_pointer_down(next)), 
+				"pointermove": (next) => (this.trim_start_pointer_move(next)), 
+				"pointerup": (next) => (this.trim_pointer_up(next)), 
+				"pointercancel": (next) => (this.trim_pointer_up(next))
+			});
+			(obj.style) = () => ({"left": (this.trim_start_left())});
+			return obj;
+		}
+		trim_end_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		trim_end_pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		trim_end_left(){
+			return "";
+		}
+		Trim_end_handle(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.trim_end_pointer_down(next)), 
+				"pointermove": (next) => (this.trim_end_pointer_move(next)), 
+				"pointerup": (next) => (this.trim_pointer_up(next)), 
+				"pointercancel": (next) => (this.trim_pointer_up(next))
+			});
+			(obj.style) = () => ({"left": (this.trim_end_left())});
+			return obj;
+		}
+		progress_parts(){
+			return [
+				(this.Progress_line()), 
+				(this.Progress_bar()), 
+				(this.Progress_knob()), 
+				(this.Trim_start_handle()), 
+				(this.Trim_end_handle())
+			];
+		}
+		Progress(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.seek_pointer_down(next)), 
+				"pointermove": (next) => (this.seek_pointer_move(next)), 
+				"pointerup": (next) => (this.seek_pointer_up(next)), 
+				"pointercancel": (next) => (this.seek_pointer_up(next))
+			});
+			(obj.sub) = () => ((this.progress_parts()));
+			return obj;
+		}
+		Progress_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Progress())]);
+			return obj;
+		}
+		time_current_text(){
+			return "";
+		}
+		Time_current(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.time_current_text()));
+			return obj;
+		}
+		trim_hint(){
+			return "";
+		}
+		Trim_hint(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.trim_hint())]);
+			return obj;
+		}
+		time_total_text(){
+			return "";
+		}
+		Time_total(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.time_total_text()));
+			return obj;
+		}
+		Time_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Time_current()), 
+				(this.Trim_hint()), 
+				(this.Time_total())
+			]);
+			return obj;
+		}
+		open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Cover(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.cover()));
+			return obj;
+		}
+		Cover_placeholder(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		Title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.title()));
+			return obj;
+		}
+		artist(){
+			return "";
+		}
+		Artist(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.artist()));
+			return obj;
+		}
+		Track_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Title()), (this.Artist())]);
+			return obj;
+		}
+		Left(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.open(next))});
+			(obj.sub) = () => ([
+				(this.Cover()), 
+				(this.Cover_placeholder()), 
+				(this.Track_info())
+			]);
+			return obj;
+		}
+		prev(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Prev_icon(){
+			const obj = new this.$.$mol_icon_skip_previous();
+			return obj;
+		}
+		Prev(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.prev(next)));
+			(obj.sub) = () => ([(this.Prev_icon())]);
+			return obj;
+		}
+		toggle_hint(){
+			return "";
+		}
+		toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Play_icon(){
+			const obj = new this.$.$mol_icon_play();
+			return obj;
+		}
+		Pause_icon(){
+			const obj = new this.$.$mol_icon_pause();
+			return obj;
+		}
+		toggle_icons(){
+			return [(this.Play_icon()), (this.Pause_icon())];
+		}
+		Toggle(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.toggle_hint()));
+			(obj.click) = (next) => ((this.toggle(next)));
+			(obj.sub) = () => ((this.toggle_icons()));
+			return obj;
+		}
+		next(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Next_icon(){
+			const obj = new this.$.$mol_icon_skip_next();
+			return obj;
+		}
+		Next(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.next(next)));
+			(obj.sub) = () => ([(this.Next_icon())]);
+			return obj;
+		}
+		Center(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Prev()), 
+				(this.Toggle()), 
+				(this.Next())
+			]);
+			return obj;
+		}
+		repeat_hint(){
+			return "";
+		}
+		repeat_cycle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Repeat_all_icon(){
+			const obj = new this.$.$mol_icon_repeat();
+			return obj;
+		}
+		Repeat_one_icon(){
+			const obj = new this.$.$mol_icon_repeat_once();
+			return obj;
+		}
+		Shuffle_icon(){
+			const obj = new this.$.$mol_icon_shuffle();
+			return obj;
+		}
+		Repeat(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.repeat_hint()));
+			(obj.click) = (next) => ((this.repeat_cycle(next)));
+			(obj.sub) = () => ([
+				(this.Repeat_all_icon()), 
+				(this.Repeat_one_icon()), 
+				(this.Shuffle_icon())
+			]);
+			return obj;
+		}
+		Trim_icon(){
+			const obj = new this.$.$mol_icon_content_cut();
+			return obj;
+		}
+		trim_mode(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Trim_toggle(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ("Обрезать начало и конец");
+			(obj.Icon) = () => ((this.Trim_icon()));
+			(obj.checked) = (next) => ((this.trim_mode(next)));
+			return obj;
+		}
+		eq_pop_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Eq_icon(){
+			const obj = new this.$.$mol_icon_tune_vertical();
+			return obj;
+		}
+		Eq_anchor(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Эквалайзер");
+			(obj.click) = (next) => ((this.eq_pop_toggle(next)));
+			(obj.sub) = () => ([(this.Eq_icon())]);
+			return obj;
+		}
+		eq_gains(){
+			return [];
+		}
+		eq_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		eq_pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		eq_pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Eq_curve(){
+			const obj = new this.$.$bog_music_eq_curve();
+			(obj.gains) = () => ((this.eq_gains()));
+			(obj.pointer_down) = (next) => ((this.eq_pointer_down(next)));
+			(obj.pointer_move) = (next) => ((this.eq_pointer_move(next)));
+			(obj.pointer_up) = (next) => ((this.eq_pointer_up(next)));
+			return obj;
+		}
+		Eq_power_icon(){
+			const obj = new this.$.$mol_icon_tune_vertical();
+			return obj;
+		}
+		eq_on(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Eq_power(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.title) = () => ("Эквалайзер");
+			(obj.hint) = () => ("Включить эквалайзер");
+			(obj.Icon) = () => ((this.Eq_power_icon()));
+			(obj.checked) = (next) => ((this.eq_on(next)));
+			return obj;
+		}
+		eq_preset_title(id){
+			return "";
+		}
+		eq_preset_checked(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Eq_preset_row(id){
+			const obj = new this.$.$mol_check();
+			(obj.title) = () => ((this.eq_preset_title(id)));
+			(obj.checked) = (next) => ((this.eq_preset_checked(id, next)));
+			return obj;
+		}
+		eq_preset_rows(){
+			return [(this.Eq_preset_row("0"))];
+		}
+		Eq_presets(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.eq_preset_rows()));
+			return obj;
+		}
+		Eq_panel(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Eq_curve()), 
+				(this.Eq_power()), 
+				(this.Eq_presets())
+			]);
+			return obj;
+		}
+		Eq(){
+			const obj = new this.$.$mol_pop();
+			(obj.Anchor) = () => ((this.Eq_anchor()));
+			(obj.bubble_content) = () => ([(this.Eq_panel())]);
+			return obj;
+		}
+		volume_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Volume_icon(){
+			const obj = new this.$.$mol_icon_volume_high();
+			return obj;
+		}
+		Volume_anchor(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Громкость");
+			(obj.click) = (next) => ((this.volume_toggle(next)));
+			(obj.sub) = () => ([(this.Volume_icon())]);
+			return obj;
+		}
+		Norm_icon(){
+			const obj = new this.$.$mol_icon_equalizer();
+			return obj;
+		}
+		normalize(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		Norm(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ("Выравнивать громкость треков");
+			(obj.Icon) = () => ((this.Norm_icon()));
+			(obj.checked) = (next) => ((this.normalize(next)));
+			return obj;
+		}
+		volume_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		volume_pointer_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		volume_pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		volume_fill_height(){
+			return "";
+		}
+		Volume_fill(){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"height": (this.volume_fill_height())});
+			return obj;
+		}
+		Volume_slider(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.volume_pointer_down(next)), 
+				"pointermove": (next) => (this.volume_pointer_move(next)), 
+				"pointerup": (next) => (this.volume_pointer_up(next)), 
+				"pointercancel": (next) => (this.volume_pointer_up(next))
+			});
+			(obj.sub) = () => ([(this.Volume_fill())]);
+			return obj;
+		}
+		Volume_panel(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Norm()), (this.Volume_slider())]);
+			return obj;
+		}
+		Volume(){
+			const obj = new this.$.$mol_pop();
+			(obj.align) = () => ("top_right");
+			(obj.Anchor) = () => ((this.Volume_anchor()));
+			(obj.bubble_content) = () => ([(this.Volume_panel())]);
+			return obj;
+		}
+		Options(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Repeat()), 
+				(this.Trim_toggle()), 
+				(this.Eq()), 
+				(this.Volume())
+			]);
+			return obj;
+		}
+		collapse(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Collapse_icon(){
+			const obj = new this.$.$mol_icon_chevron_down();
+			return obj;
+		}
+		Collapse(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Свернуть плеер");
+			(obj.click) = (next) => ((this.collapse(next)));
+			(obj.sub) = () => ([(this.Collapse_icon())]);
+			return obj;
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть плеер");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Controls(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Left()), 
+				(this.Center()), 
+				(this.Options()), 
+				(this.Collapse()), 
+				(this.Close())
+			]);
+			return obj;
+		}
+		current_key(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		queue_keys(){
+			return [];
+		}
+		queue_index(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		play_track(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		full(){
+			return false;
+		}
+		cover(){
+			return "";
+		}
+		attr(){
+			return {...(super.attr()), "bog_music_player_full": (this.full())};
+		}
+		Empty(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Empty_icon()), (this.Empty_text())]);
+			return obj;
+		}
+		sub(){
+			return [
+				(this.Missing()), 
+				(this.Progress_row()), 
+				(this.Time_row()), 
+				(this.Controls())
+			];
+		}
+	};
+	($mol_mem(($.$bog_music_player.prototype), "Empty_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Empty_text"));
+	($mol_mem(($.$bog_music_player.prototype), "Missing_text"));
+	($mol_mem(($.$bog_music_player.prototype), "missing_pull"));
+	($mol_mem(($.$bog_music_player.prototype), "Missing_pull"));
+	($mol_mem(($.$bog_music_player.prototype), "Missing"));
+	($mol_mem(($.$bog_music_player.prototype), "seek_pointer_down"));
+	($mol_mem(($.$bog_music_player.prototype), "seek_pointer_move"));
+	($mol_mem(($.$bog_music_player.prototype), "seek_pointer_up"));
+	($mol_mem(($.$bog_music_player.prototype), "Progress_line"));
+	($mol_mem(($.$bog_music_player.prototype), "Progress_bar"));
+	($mol_mem(($.$bog_music_player.prototype), "Progress_knob"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_start_pointer_down"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_start_pointer_move"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_pointer_up"));
+	($mol_mem(($.$bog_music_player.prototype), "Trim_start_handle"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_end_pointer_down"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_end_pointer_move"));
+	($mol_mem(($.$bog_music_player.prototype), "Trim_end_handle"));
+	($mol_mem(($.$bog_music_player.prototype), "Progress"));
+	($mol_mem(($.$bog_music_player.prototype), "Progress_row"));
+	($mol_mem(($.$bog_music_player.prototype), "Time_current"));
+	($mol_mem(($.$bog_music_player.prototype), "Trim_hint"));
+	($mol_mem(($.$bog_music_player.prototype), "Time_total"));
+	($mol_mem(($.$bog_music_player.prototype), "Time_row"));
+	($mol_mem(($.$bog_music_player.prototype), "open"));
+	($mol_mem(($.$bog_music_player.prototype), "Cover"));
+	($mol_mem(($.$bog_music_player.prototype), "Cover_placeholder"));
+	($mol_mem(($.$bog_music_player.prototype), "Title"));
+	($mol_mem(($.$bog_music_player.prototype), "Artist"));
+	($mol_mem(($.$bog_music_player.prototype), "Track_info"));
+	($mol_mem(($.$bog_music_player.prototype), "Left"));
+	($mol_mem(($.$bog_music_player.prototype), "prev"));
+	($mol_mem(($.$bog_music_player.prototype), "Prev_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Prev"));
+	($mol_mem(($.$bog_music_player.prototype), "toggle"));
+	($mol_mem(($.$bog_music_player.prototype), "Play_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Pause_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Toggle"));
+	($mol_mem(($.$bog_music_player.prototype), "next"));
+	($mol_mem(($.$bog_music_player.prototype), "Next_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Next"));
+	($mol_mem(($.$bog_music_player.prototype), "Center"));
+	($mol_mem(($.$bog_music_player.prototype), "repeat_cycle"));
+	($mol_mem(($.$bog_music_player.prototype), "Repeat_all_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Repeat_one_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Shuffle_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Repeat"));
+	($mol_mem(($.$bog_music_player.prototype), "Trim_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "trim_mode"));
+	($mol_mem(($.$bog_music_player.prototype), "Trim_toggle"));
+	($mol_mem(($.$bog_music_player.prototype), "eq_pop_toggle"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_anchor"));
+	($mol_mem(($.$bog_music_player.prototype), "eq_pointer_down"));
+	($mol_mem(($.$bog_music_player.prototype), "eq_pointer_move"));
+	($mol_mem(($.$bog_music_player.prototype), "eq_pointer_up"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_curve"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_power_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "eq_on"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_power"));
+	($mol_mem_key(($.$bog_music_player.prototype), "eq_preset_checked"));
+	($mol_mem_key(($.$bog_music_player.prototype), "Eq_preset_row"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_presets"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq_panel"));
+	($mol_mem(($.$bog_music_player.prototype), "Eq"));
+	($mol_mem(($.$bog_music_player.prototype), "volume_toggle"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume_anchor"));
+	($mol_mem(($.$bog_music_player.prototype), "Norm_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "normalize"));
+	($mol_mem(($.$bog_music_player.prototype), "Norm"));
+	($mol_mem(($.$bog_music_player.prototype), "volume_pointer_down"));
+	($mol_mem(($.$bog_music_player.prototype), "volume_pointer_move"));
+	($mol_mem(($.$bog_music_player.prototype), "volume_pointer_up"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume_fill"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume_slider"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume_panel"));
+	($mol_mem(($.$bog_music_player.prototype), "Volume"));
+	($mol_mem(($.$bog_music_player.prototype), "Options"));
+	($mol_mem(($.$bog_music_player.prototype), "collapse"));
+	($mol_mem(($.$bog_music_player.prototype), "Collapse_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Collapse"));
+	($mol_mem(($.$bog_music_player.prototype), "close"));
+	($mol_mem(($.$bog_music_player.prototype), "Close_icon"));
+	($mol_mem(($.$bog_music_player.prototype), "Close"));
+	($mol_mem(($.$bog_music_player.prototype), "Controls"));
+	($mol_mem(($.$bog_music_player.prototype), "current_key"));
+	($mol_mem(($.$bog_music_player.prototype), "queue_index"));
+	($mol_mem(($.$bog_music_player.prototype), "play_track"));
+	($mol_mem(($.$bog_music_player.prototype), "Empty"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Секрет устройства для нашего маленького backend'а (телеграм-инбокс,
+     * скробблинг). Живёт в localStorage, в baza не едет: на каждом устройстве
+     * связка своя, и потеря кода не роняет ни аккаунт, ни треки.
+     *
+     * Не путать с ключом аккаунта Гипер Базы — тот открывает всю музыку, этот
+     * только очередь пересланного и сессию last.fm.
+     */
+    class $bog_music_code extends $mol_object {
+        /** Текущий код, '' — ещё не заводили. */
+        static value(name, next) {
+            return $mol_state_local.value(name, next) ?? '';
+        }
+        /** Код, заводя его при первом обращении. Только из @$mol_action. */
+        static ensure(name) {
+            return this.value(name) || this.value(name, this.random());
+        }
+        /** 96 бит hex: перебором не угадать, в URL и диплинк лезет как есть. */
+        static random() {
+            const bytes = new Uint8Array(12);
+            crypto.getRandomValues(bytes);
+            return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        /** Формат, который принимает сервер. */
+        static valid(code) {
+            return /^[A-Za-z0-9_-]{8,64}$/.test(code);
+        }
+    }
+    $.$bog_music_code = $bog_music_code;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Скробблинг в last.fm. Ключ приложения и session key юзера лежат на нашем
+     * сервере (bog/music/srv/fm): подпись запроса требует api-секрет, а
+     * ему в клиентском бандле не место. Отсюда уходят только «что играет» и
+     * «что доиграло».
+     */
+    class $bog_music_scrobble extends $mol_object {
+        static base = 'https://tube.87.120.36.150.ip.giper.dev';
+        static code() {
+            return $bog_music_code.value('bog_music_fm_code');
+        }
+        /** Завести код при первом подключении. Только из @$mol_action. */
+        static code_ensure() {
+            return $bog_music_code.ensure('bog_music_fm_code');
+        }
+        /**
+         * Имя на last.fm — оно же признак «подключено». Держим локально, чтобы
+         * плеер на каждом тике проверял скробблинг синхронно и без запроса.
+         */
+        static user(next) {
+            return $mol_state_local.value('bog_music_fm_user', next) ?? '';
+        }
+        static enabled() {
+            return !!this.code() && !!this.user();
+        }
+        /**
+         * Страница подтверждения last.fm. Возврат — на наш сервер, он меняет
+         * токен на сессию и отправляет юзера обратно в приложение. В расширении
+         * возвращаться некуда (chrome-extension:// last.fm не примет), поэтому
+         * сервер просто показывает «готово».
+         */
+        static login_url(code) {
+            const web = location.protocol === 'https:' || location.protocol === 'http:';
+            const back = web ? location.origin + location.pathname + location.search : '';
+            return `${this.base}/fm/login?code=${encodeURIComponent(code)}&back=${encodeURIComponent(back)}`;
+        }
+        /** Подтягивает имя юзера с сервера и кеширует его локально. */
+        static async status() {
+            const code = this.code();
+            if (!code)
+                return '';
+            const resp = await fetch(`${this.base}/fm/status?code=${encodeURIComponent(code)}`);
+            if (!resp.ok)
+                throw new Error(`fm status ${resp.status}`);
+            const data = await resp.json();
+            const user = String(data?.user ?? '');
+            if (this.user() !== user)
+                this.user(user);
+            return user;
+        }
+        static async logout() {
+            const code = this.code();
+            this.user('');
+            if (!code)
+                return;
+            await fetch(`${this.base}/fm/logout?code=${encodeURIComponent(code)}`);
+        }
+        /**
+         * Пуляем и забываем: скробблинг не должен ни задерживать плеер, ни
+         * ронять его своими ошибками. keepalive — потому что отправка часто
+         * совпадает с уходом со страницы (последний трек, закрытие вкладки).
+         */
+        static send(method, params) {
+            const code = this.code();
+            if (!code)
+                return;
+            const query = new URLSearchParams({ code, ...params });
+            fetch(`${this.base}/fm/${method}?${query}`, { keepalive: true })
+                .catch(e => console.warn('[fm] ' + method + ':', e?.message ?? e));
+        }
+        static now_playing(artist, track, duration) {
+            if (!this.enabled() || !track)
+                return;
+            this.send('now', { artist, track, duration: Math.round(duration) || 0 });
+        }
+        static scrobble(artist, track, duration, started) {
+            if (!this.enabled() || !track)
+                return;
+            this.send('scrobble', {
+                artist,
+                track,
+                duration: Math.round(duration) || 0,
+                ts: Math.round(started),
+            });
+        }
+    }
+    $.$bog_music_scrobble = $bog_music_scrobble;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_stream extends $mol_object {
+        static name = 'bog-music-stream';
+        static ping = '~ping';
+        static _page_ready = false;
+        static _sw_ready = false;
+        static _served = null;
+        static _served_wait = null;
+        static url(key) {
+            const url = new URL(typeof location !== 'undefined' ? location.href : 'http://localhost/');
+            url.hash = '';
+            url.search = '';
+            url.pathname = url.pathname.replace(/[^/]*$/, this.name);
+            url.searchParams.set('key', key);
+            return url.href;
+        }
+        static matches(request_url) {
+            try {
+                const url = new URL(request_url);
+                if (!url.pathname.endsWith(this.name))
+                    return null;
+                return url.searchParams.get('key');
+            }
+            catch {
+                return null;
+            }
+        }
+        static supported() {
+            if (typeof navigator === 'undefined')
+                return false;
+            return Boolean(navigator.serviceWorker);
+        }
+        static active() {
+            return this.supported() && Boolean(navigator.serviceWorker.controller) && this._served === true;
+        }
+        static served() {
+            if (this._served_wait)
+                return this._served_wait;
+            return this._served_wait = fetch(this.url(this.ping), { cache: 'no-store' })
+                .then(res => res.status === 204)
+                .catch(() => false)
+                .then(ok => {
+                this._served = ok;
+                if (!ok)
+                    void navigator.serviceWorker.getRegistration().then(reg => reg?.update()).catch(() => { });
+                return ok;
+            });
+        }
+        static ready_limit = 3000;
+        static async when_ready() {
+            if (!this.supported())
+                return false;
+            try {
+                const ready = await Promise.race([
+                    navigator.serviceWorker.ready.then(() => true),
+                    new Promise(done => setTimeout(() => done(false), this.ready_limit)),
+                ]);
+                if (!ready)
+                    return false;
+                if (!navigator.serviceWorker.controller)
+                    return false;
+                return await this.served();
+            }
+            catch {
+                return false;
+            }
+        }
+        static install_page() {
+            if (typeof window === 'undefined')
+                return;
+            if (this._page_ready)
+                return;
+            this._page_ready = true;
+            navigator.serviceWorker?.addEventListener('message', event => {
+                void this.on_sw_message(event);
+            });
+            navigator.serviceWorker?.addEventListener('controllerchange', () => {
+                this._served = null;
+                this._served_wait = null;
+                void this.served();
+            });
+            if (navigator.serviceWorker?.controller)
+                void this.served();
+        }
+        static install_sw() {
+            if (typeof window !== 'undefined')
+                return;
+            if (typeof self === 'undefined')
+                return;
+            if (typeof self.clients === 'undefined')
+                return;
+            if (this._sw_ready)
+                return;
+            this._sw_ready = true;
+            self.addEventListener('fetch', (event) => {
+                const key = this.matches(event.request.url);
+                if (!key)
+                    return;
+                if (key === this.ping)
+                    return event.respondWith(new Response(null, { status: 204 }));
+                event.respondWith(this.sw_respond(event.request, key));
+            });
+        }
+        static warm(key) {
+            if (!this.supported() || !key)
+                return;
+            const go = () => fetch(this.url(key), {
+                headers: { Range: 'bytes=0-65535' },
+                credentials: 'same-origin',
+            }).catch(() => { });
+            if (this.active())
+                go();
+            else
+                void this.when_ready().then(ok => { if (ok)
+                    go(); });
+        }
+        static async read(key, start, end) {
+            try {
+                const slice = await $bog_music_disk.bytes(key, start, end);
+                if (!slice)
+                    return { ok: false, error: `stream: no file ${key}` };
+                return { ok: true, ...slice };
+            }
+            catch (error) {
+                return { ok: false, error: error?.message ?? String(error) };
+            }
+        }
+        static async on_sw_message(event) {
+            const data = event.data;
+            if (data?.type !== 'bog_music_stream_range')
+                return;
+            const port = event.ports?.[0];
+            if (!port)
+                return;
+            const slice = await this.read(data.key, data.start, data.end);
+            port.postMessage(slice, slice.ok ? [slice.bytes] : []);
+        }
+        static async sw_client() {
+            const list = await self.clients.matchAll({
+                type: 'window',
+                includeUncontrolled: true,
+            });
+            return list[0] ?? null;
+        }
+        static sw_page(key, start, end) {
+            return new Promise(async (done) => {
+                const client = await this.sw_client();
+                if (!client)
+                    return done({ ok: false, error: 'stream: no page client' });
+                const channel = new MessageChannel();
+                const timer = setTimeout(() => done({ ok: false, error: 'stream: page timeout' }), 30000);
+                channel.port1.onmessage = (event) => {
+                    clearTimeout(timer);
+                    done(event.data);
+                };
+                client.postMessage({ type: 'bog_music_stream_range', key, start, end }, [channel.port2]);
+            });
+        }
+        static async sw_read(key, start, end) {
+            if ($bog_music_disk.supported())
+                return this.read(key, start, end);
+            return this.sw_page(key, start, end);
+        }
+        static open_ended_window = 512 * 1024;
+        static async sw_respond(request, key) {
+            const range = request.headers.get('Range');
+            let start = 0;
+            let end = -1;
+            const m = range ? /^bytes=(\d*)-(\d*)$/i.exec(range.trim()) : null;
+            if (m) {
+                if (m[1] !== '')
+                    start = parseInt(m[1], 10);
+                end = m[2] !== '' ? parseInt(m[2], 10) + 1 : start + this.open_ended_window;
+            }
+            const data = await this.sw_read(key, start, end);
+            if (!data.ok)
+                return new Response(data.error, { status: 404 });
+            if (!range) {
+                return new Response(data.bytes, {
+                    status: 200,
+                    headers: {
+                        'Content-Type': data.mime,
+                        'Accept-Ranges': 'bytes',
+                        'Content-Length': String(data.total),
+                        'Cache-Control': 'no-store',
+                    },
+                });
+            }
+            if (start >= data.total) {
+                return new Response(null, {
+                    status: 416,
+                    headers: { 'Content-Range': `bytes */${data.total}` },
+                });
+            }
+            return new Response(data.bytes, {
+                status: 206,
+                headers: {
+                    'Content-Type': data.mime,
+                    'Accept-Ranges': 'bytes',
+                    'Content-Length': String(data.bytes.byteLength),
+                    'Content-Range': `bytes ${data.start}-${data.end - 1}/${data.total}`,
+                    'Cache-Control': 'no-store',
+                },
+            });
+        }
+    }
+    $.$bog_music_stream = $bog_music_stream;
+    $bog_music_stream.install_sw();
+    $bog_music_stream.install_page();
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_peer extends $mol_object {
+        static ice = [
+            { urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] },
+        ];
+        static chunk = 16 * 1024;
+        static buffer_high = 1024 * 1024;
+        static gather_limit = 5000;
+        static open_limit = 30000;
+        static rtc() {
+            return new RTCPeerConnection({ iceServers: this.ice });
+        }
+        static async gather(rtc) {
+            if (rtc.iceGatheringState !== 'complete') {
+                await new Promise(done => {
+                    const timer = setTimeout(done, this.gather_limit);
+                    rtc.addEventListener('icegatheringstatechange', () => {
+                        if (rtc.iceGatheringState !== 'complete')
+                            return;
+                        clearTimeout(timer);
+                        done();
+                    });
+                });
+            }
+            return rtc.localDescription.sdp;
+        }
+        static async offer() {
+            const rtc = this.rtc();
+            const channel = rtc.createDataChannel('bog_music', { ordered: true });
+            await rtc.setLocalDescription(await rtc.createOffer());
+            return { rtc, channel, sdp: await this.gather(rtc) };
+        }
+        static async answer(offer) {
+            const rtc = this.rtc();
+            const channel = new Promise(done => {
+                rtc.addEventListener('datachannel', event => done(event.channel));
+            });
+            await rtc.setRemoteDescription({ type: 'offer', sdp: offer });
+            await rtc.setLocalDescription(await rtc.createAnswer());
+            return { rtc, channel, sdp: await this.gather(rtc) };
+        }
+        static async finish(rtc, answer) {
+            await rtc.setRemoteDescription({ type: 'answer', sdp: answer });
+        }
+        static opened(channel) {
+            channel.binaryType = 'arraybuffer';
+            if (channel.readyState === 'open')
+                return Promise.resolve(channel);
+            return new Promise((done, fail) => {
+                const timer = setTimeout(() => fail(new Error('Устройства не соединились')), this.open_limit);
+                channel.addEventListener('open', () => {
+                    clearTimeout(timer);
+                    done(channel);
+                });
+                channel.addEventListener('close', () => {
+                    clearTimeout(timer);
+                    fail(new Error('Соединение закрылось'));
+                });
+            });
+        }
+        static idle_limit = 60000;
+        static ack_limit = 300000;
+        static message(channel, limit = this.idle_limit) {
+            return new Promise((done, fail) => {
+                const stop = () => {
+                    clearTimeout(timer);
+                    channel.removeEventListener('message', on);
+                    channel.removeEventListener('close', close);
+                };
+                const on = (event) => {
+                    if (typeof event.data !== 'string')
+                        return;
+                    stop();
+                    done(JSON.parse(event.data));
+                };
+                const close = () => {
+                    stop();
+                    fail(new Error('Соединение закрылось'));
+                };
+                const timer = setTimeout(() => {
+                    stop();
+                    fail(new Error('Другое устройство замолчало'));
+                }, limit);
+                channel.addEventListener('message', on);
+                channel.addEventListener('close', close);
+                if (channel.readyState !== 'open')
+                    close();
+            });
+        }
+        static async drain(channel) {
+            if (channel.bufferedAmount < this.buffer_high)
+                return;
+            channel.bufferedAmountLowThreshold = this.buffer_high / 4;
+            await new Promise((done, fail) => {
+                const low = () => {
+                    channel.removeEventListener('close', close);
+                    done();
+                };
+                const close = () => {
+                    channel.removeEventListener('bufferedamountlow', low);
+                    fail(new Error('Соединение оборвалось'));
+                };
+                channel.addEventListener('bufferedamountlow', low, { once: true });
+                channel.addEventListener('close', close, { once: true });
+                if (channel.readyState !== 'open')
+                    close();
+            });
+        }
+        static async send(channel, items, progress) {
+            channel.send(JSON.stringify({ type: 'list', count: items.length }));
+            let done = 0;
+            for (const item of items) {
+                channel.send(JSON.stringify({ type: 'file', key: item.key, meta: item.meta, size: item.file.size }));
+                for (let at = 0; at < item.file.size; at += this.chunk) {
+                    await this.drain(channel);
+                    channel.send(await item.file.slice(at, at + this.chunk).arrayBuffer());
+                }
+                channel.send(JSON.stringify({ type: 'end', key: item.key }));
+                progress?.(++done);
+            }
+            channel.send(JSON.stringify({ type: 'done' }));
+            await this.message(channel, this.ack_limit);
+        }
+        static receive(channel, take, progress) {
+            return new Promise((resolve, fail) => {
+                let count = 0;
+                let done = 0;
+                let head = null;
+                let parts = [];
+                let queue = Promise.resolve();
+                let timer = 0;
+                const idle = () => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => fail(new Error('Передача замерла')), this.idle_limit);
+                };
+                idle();
+                channel.addEventListener('close', () => {
+                    clearTimeout(timer);
+                    fail(new Error('Соединение оборвалось'));
+                });
+                channel.addEventListener('message', event => {
+                    idle();
+                    if (typeof event.data !== 'string') {
+                        parts.push(event.data);
+                        return;
+                    }
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'list') {
+                        count = msg.count;
+                        progress?.(done, count);
+                    }
+                    if (msg.type === 'file') {
+                        head = msg;
+                        parts = [];
+                    }
+                    if (msg.type === 'end' && head) {
+                        const bytes = new Uint8Array(head.size);
+                        let at = 0;
+                        for (const part of parts) {
+                            bytes.set(new Uint8Array(part), at);
+                            at += part.byteLength;
+                        }
+                        const got = { key: head.key, meta: head.meta, bytes };
+                        head = null;
+                        parts = [];
+                        queue = queue.then(() => take(got)).then(() => progress?.(++done, count));
+                    }
+                    if (msg.type === 'done') {
+                        clearTimeout(timer);
+                        queue.then(() => {
+                            channel.send(JSON.stringify({ type: 'ack' }));
+                            resolve(done);
+                        }, fail);
+                    }
+                });
+            });
+        }
+    }
+    $.$bog_music_peer = $bog_music_peer;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_beam extends $mol_object {
+        static instance() {
+            return new this;
+        }
+        account() {
+            return $bog_music_account_baza.home();
+        }
+        static answer_limit = 60000;
+        static tick = 2000;
+        static beat_every = 30000;
+        static signal_parse(text) {
+            try {
+                const data = JSON.parse(text);
+                if (typeof data?.sdp !== 'string' || typeof data?.at !== 'number')
+                    return null;
+                return data;
+            }
+            catch {
+                return null;
+            }
+        }
+        signal_id(kind, from, to, req) {
+            return `${kind}:${from}>${to}:${req}`;
+        }
+        signal(kind, from, to, req, next) {
+            const dict = this.account().signals();
+            const id = this.signal_id(kind, from, to, req);
+            if (next !== undefined)
+                dict.key(id, 'auto').val(next);
+            return dict.key(id)?.val() ?? '';
+        }
+        signal_cut(from, to, req) {
+            const dict = this.account().signals();
+            dict.cut(this.signal_id('offer', from, to, req));
+            dict.cut(this.signal_id('answer', to, from, req));
+        }
+        incoming(me) {
+            const dict = this.account().signals();
+            const out = [];
+            for (const id of (dict.keys() ?? [])) {
+                const [kind, pair = '', req = ''] = id.split(':');
+                const [from, to] = pair.split('>');
+                if (kind !== 'offer' || to !== me || !from || !req)
+                    continue;
+                const signal = $bog_music_beam.signal_parse(dict.key(id)?.val() ?? '');
+                if (signal)
+                    out.push({ from, req, signal });
+            }
+            return out;
+        }
+        status(key, next) {
+            return next ?? '';
+        }
+        summary(next) {
+            return next ?? '';
+        }
+        _handled = new Set();
+        _busy = false;
+        _beat_at = 0;
+        _started_at = Date.now();
+        async step() {
+            if (this._busy)
+                return;
+            this._busy = true;
+            try {
+                const self = $mol_wire_async(this);
+                if (Date.now() - this._beat_at > $bog_music_beam.beat_every) {
+                    this._beat_at = Date.now();
+                    await $mol_wire_async(this.account()).device_beat();
+                }
+                const me = $bog_music_device.id();
+                for (const { from, req, signal } of await self.incoming(me)) {
+                    if (signal.at < this._started_at - $bog_music_beam.answer_limit)
+                        continue;
+                    if (this._handled.has(req))
+                        continue;
+                    this._handled.add(req);
+                    void this.serve(from, req, signal).catch((error) => {
+                        $bog_music_log.err(`отдача файлов не удалась: ${error?.message ?? error}`);
+                        this.summary('');
+                    });
+                }
+            }
+            catch (error) {
+                $bog_music_log.err(`передача между устройствами: ${error?.message ?? error}`);
+            }
+            finally {
+                this._busy = false;
+            }
+        }
+        _timer = 0;
+        watch() {
+            if (this._timer)
+                clearInterval(this._timer);
+            this._timer = setInterval(() => void this.step(), $bog_music_beam.tick);
+            void this.step();
+            return null;
+        }
+        destructor() {
+            clearInterval(this._timer);
+        }
+        async serve(from, req, signal) {
+            const me = $bog_music_device.id();
+            const name = await $mol_wire_async(this.account()).device_name(from);
+            $bog_music_log.act(`запрос файлов с «${name}»`);
+            const { rtc, channel, sdp } = await $bog_music_peer.answer(signal.sdp);
+            try {
+                await $mol_wire_async(this).signal('answer', me, from, req, JSON.stringify({ at: Date.now(), sdp }));
+                const open = await $bog_music_peer.opened(await channel);
+                const want = await $bog_music_peer.message(open);
+                const items = [];
+                for (const key of (want.keys ?? [])) {
+                    const file = await $bog_music_disk.file(key);
+                    const meta = await $mol_wire_async(this.account()).info(key);
+                    if (file && meta)
+                        items.push({ key, meta, file });
+                }
+                this.summary(`Отдаю на «${name}»: 0 из ${items.length}`);
+                await $bog_music_peer.send(open, items, done => this.summary(`Отдаю на «${name}»: ${done} из ${items.length}`));
+                $bog_music_log.act(`отдано на «${name}»: ${items.length}`);
+                this.summary('');
+            }
+            finally {
+                rtc.close();
+            }
+        }
+        async pull(from, keys) {
+            const me = $bog_music_device.id();
+            const account = $mol_wire_async(this.account());
+            const name = await account.device_name(from);
+            for (const key of keys)
+                this.status(key, 'Соединяюсь…');
+            this.summary(`Соединяюсь с «${name}»…`);
+            $bog_music_log.act(`перенос ${keys.length} с «${name}»`);
+            const req = $mol_guid(8);
+            const { rtc, channel, sdp } = await $bog_music_peer.offer();
+            try {
+                const at = Date.now();
+                await $mol_wire_async(this).signal('offer', me, from, req, JSON.stringify({ at, sdp }));
+                let answer = null;
+                while (Date.now() - at < $bog_music_beam.answer_limit) {
+                    answer = $bog_music_beam.signal_parse(await $mol_wire_async(this).signal('answer', from, me, req));
+                    if (answer && answer.at >= at)
+                        break;
+                    answer = null;
+                    await new Promise(done => setTimeout(done, 1000));
+                }
+                if (!answer)
+                    throw new Error(`«${name}» не ответило, открой на нём приложение`);
+                await $bog_music_peer.finish(rtc, answer.sdp);
+                const open = await $bog_music_peer.opened(channel);
+                open.send(JSON.stringify({ type: 'want', keys }));
+                const got = await $bog_music_peer.receive(open, async (item) => {
+                    await $bog_music_disk.put(item.key, item.bytes);
+                    await account.holder_add(item.key);
+                    this.status(item.key, '');
+                }, (done, count) => this.summary(`Переношу с «${name}»: ${done} из ${count}`));
+                $bog_music_log.act(`перенесено с «${name}»: ${got}`);
+                this.summary(got ? `Перенесено с «${name}»: ${got}` : `На «${name}» этих файлов уже нет`);
+            }
+            catch (error) {
+                const text = error?.message ?? String(error);
+                $bog_music_log.err(`перенос с «${name}» не удался: ${text}`);
+                this.summary(text);
+                throw error;
+            }
+            finally {
+                for (const key of keys)
+                    this.status(key, '');
+                rtc.close();
+                await $mol_wire_async(this).signal_cut(me, from, req).catch(() => { });
+            }
+        }
+        pick_holder(key) {
+            const account = this.account();
+            const holders = account.holders_other(key);
+            return holders.find(id => account.device_online(id)) ?? holders[0] ?? null;
+        }
+        pull_one(key) {
+            const from = this.pick_holder(key);
+            if (!from)
+                return;
+            void this.pull(from, [key]).catch(() => { });
+        }
+        remote_groups(keys) {
+            const account = this.account();
+            const groups = new Map();
+            for (const key of keys) {
+                if (account.place(key) !== 'remote')
+                    continue;
+                const from = this.pick_holder(key);
+                if (!from)
+                    continue;
+                groups.set(from, [...groups.get(from) ?? [], key]);
+            }
+            return groups;
+        }
+        pull_all(keys) {
+            const groups = this.remote_groups(keys);
+            void (async () => {
+                for (const [from, list] of groups) {
+                    await this.pull(from, list).catch(() => { });
+                }
+            })();
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_music_beam.prototype, "signal_cut", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_music_beam.prototype, "status", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_beam.prototype, "summary", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_beam.prototype, "watch", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_beam.prototype, "pull_one", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_beam.prototype, "pull_all", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_beam, "instance", null);
+    $.$bog_music_beam = $bog_music_beam;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_player extends $.$bog_music_player {
+            account() {
+                return $bog_music_account_baza.home();
+            }
+            current_track() {
+                const key = this.current_key();
+                return key ? this.account().track(key) : null;
+            }
+            current_audio() {
+                const ext = this.ext();
+                if (ext)
+                    return { artist: ext.artist, title: ext.title, duration: 0, cover: ext.cover };
+                return this.current_track()?.info() ?? null;
+            }
+            _ext = null;
+            _ext_seq = 0;
+            ext_rev(next) {
+                return next ?? 0;
+            }
+            ext(next) {
+                if (next !== undefined) {
+                    this._ext = next;
+                    this.ext_rev(++this._ext_seq);
+                }
+                this.ext_rev();
+                return this._ext;
+            }
+            play_external(url, title, artist, cover = '') {
+                $bog_music_log.act(`внешний стрим: ${artist} — ${title}`);
+                this.ext({ url, title, artist, cover });
+                this.current_key('');
+                this.current_time(0);
+                this.duration(0);
+                this._trim_end_skip = '';
+                this._trim_start_done = '';
+                this.apply_media_metadata(this.current_audio());
+                this.gain_chain_unlock();
+                const el = this.audio_el();
+                this.url_drop();
+                this._dispatch_token++;
+                this.set_track_src(el, url);
+                el.play().catch(() => { });
+            }
+            url_drop() {
+                if (!this._last_blob_url)
+                    return;
+                URL.revokeObjectURL(this._last_blob_url);
+                this._last_blob_url = '';
+            }
+            url_take(file) {
+                this.url_drop();
+                return this._last_blob_url = URL.createObjectURL(file);
+            }
+            static _silence_url = '';
+            static silence_url() {
+                if (this._silence_url)
+                    return this._silence_url;
+                const rate = 8000, n = rate * 3;
+                const buf = new Uint8Array(44 + n);
+                const dv = new DataView(buf.buffer);
+                const w = (o, s) => { for (let i = 0; i < s.length; i++)
+                    buf[o + i] = s.charCodeAt(i); };
+                w(0, 'RIFF');
+                dv.setUint32(4, 36 + n, true);
+                w(8, 'WAVE');
+                w(12, 'fmt ');
+                dv.setUint32(16, 16, true);
+                dv.setUint16(20, 1, true);
+                dv.setUint16(22, 1, true);
+                dv.setUint32(24, rate, true);
+                dv.setUint32(28, rate, true);
+                dv.setUint16(32, 1, true);
+                dv.setUint16(34, 8, true);
+                w(36, 'data');
+                dv.setUint32(40, n, true);
+                buf.fill(128, 44);
+                this._silence_url = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+                return this._silence_url;
+            }
+            _track_src = '';
+            _paused_pos = 0;
+            _silent = false;
+            _await_seek = 0;
+            _switching = false;
+            _switch_gen = 0;
+            is_ios() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent)
+                    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            }
+            set_track_src(el, url) {
+                if (!this._silent && this._track_src === url) {
+                    try {
+                        if (el.src && new URL(el.src).href === new URL(url).href)
+                            return;
+                    }
+                    catch {
+                        if (el.src === url)
+                            return;
+                    }
+                }
+                this._silent = false;
+                this._track_src = url;
+                if (!this._gain_dead && this.normalize()) {
+                    const same = url.startsWith('blob:')
+                        || (typeof location !== 'undefined' && url.startsWith(location.origin));
+                    const next = same ? null : 'anonymous';
+                    if (el.crossOrigin !== next)
+                        el.crossOrigin = next;
+                }
+                el.loop = false;
+                el.src = url;
+                const gen = ++this._switch_gen;
+                this._switching = true;
+                setTimeout(() => { if (this._switch_gen === gen)
+                    this._switching = false; }, 3000);
+            }
+            ios_pause(el) {
+                if (this._silent)
+                    return;
+                this._paused_pos = el.currentTime || this._paused_pos;
+                this._silent = true;
+                this.current_time(this._paused_pos);
+                el.loop = true;
+                el.src = $bog_music_player.silence_url();
+                el.play().catch(() => { });
+                this.playing(false);
+                if ('mediaSession' in navigator)
+                    navigator.mediaSession.playbackState = 'paused';
+            }
+            ios_resume(el) {
+                if (this._track_src) {
+                    this._await_seek = this._paused_pos;
+                    this.current_time(this._paused_pos);
+                    this.set_track_src(el, this._track_src);
+                    this.attach_seek_listener(el, this._paused_pos);
+                    el.play().catch(() => { });
+                    this.playing(true);
+                    if ('mediaSession' in navigator)
+                        navigator.mediaSession.playbackState = 'playing';
+                    return;
+                }
+                const key = this.current_key();
+                if (!key)
+                    return;
+                const pos = this._paused_pos;
+                $bog_music_disk.file(key).then(file => {
+                    if (!file)
+                        return;
+                    this.set_track_src(el, this.url_take(file));
+                    this.attach_seek_listener(el, pos);
+                    el.play().catch(() => { });
+                }).catch(() => { });
+            }
+            _gain_ctx;
+            _gain_node;
+            _gain_ready = false;
+            _gain_dead = false;
+            _gain_wake_set = false;
+            gain_chain_unlock() {
+                if (this._gain_dead)
+                    return;
+                if (!this.normalize() && !this._eq_on)
+                    return;
+                if (this._gain_ready) {
+                    this.gain_resume();
+                    return;
+                }
+                try {
+                    if (!this._gain_ctx) {
+                        const AC = window.AudioContext || window.webkitAudioContext;
+                        if (!AC) {
+                            this._gain_dead = true;
+                            return;
+                        }
+                        this._gain_ctx = new AC();
+                    }
+                    const ctx = this._gain_ctx;
+                    if (ctx.state === 'running') {
+                        this.gain_wire();
+                        return;
+                    }
+                    ctx.resume().then(() => this.gain_wire()).catch(() => { });
+                }
+                catch (e) {
+                    this._gain_dead = true;
+                    console.warn('[player] gain chain failed:', e?.message ?? e);
+                }
+            }
+            gain_wire() {
+                if (this._gain_ready || this._gain_dead)
+                    return;
+                const ctx = this._gain_ctx;
+                if (!ctx || ctx.state !== 'running')
+                    return;
+                try {
+                    const src = ctx.createMediaElementSource(this.audio_el());
+                    const gain = ctx.createGain();
+                    const limiter = ctx.createDynamicsCompressor();
+                    limiter.threshold.value = -1;
+                    limiter.knee.value = 0;
+                    limiter.ratio.value = 20;
+                    limiter.attack.value = 0.003;
+                    limiter.release.value = 0.25;
+                    const eq = $bog_music_eq.bands.map(band => {
+                        const node = ctx.createBiquadFilter();
+                        node.type = band.type;
+                        node.frequency.value = band.freq;
+                        node.Q.value = $bog_music_eq.q;
+                        node.gain.value = 0;
+                        return node;
+                    });
+                    let tail = src;
+                    for (const node of eq) {
+                        tail.connect(node);
+                        tail = node;
+                    }
+                    tail.connect(gain);
+                    gain.connect(limiter);
+                    limiter.connect(ctx.destination);
+                    this._eq_nodes = eq;
+                    this._gain_node = gain;
+                    this._gain_ready = true;
+                    this.audio_el().volume = 1;
+                    this.gain_push();
+                    this.eq_push();
+                    this.setup_gain_wake();
+                }
+                catch (e) {
+                    this._gain_dead = true;
+                    console.warn('[player] gain wire failed:', e?.message ?? e);
+                }
+            }
+            setup_gain_wake() {
+                if (this._gain_wake_set)
+                    return;
+                this._gain_wake_set = true;
+                const wake = () => this.gain_resume();
+                this._gain_ctx?.addEventListener('statechange', wake);
+                document.addEventListener('visibilitychange', wake);
+                window.addEventListener('pageshow', wake);
+                window.addEventListener('focus', wake);
+            }
+            gain_resume() {
+                const ctx = this._gain_ctx;
+                if (!ctx)
+                    return;
+                if (ctx.state !== 'running')
+                    ctx.resume().catch(() => { });
+                if (!this._gain_ready)
+                    this.gain_wire();
+            }
+            normalize(next) {
+                if (next !== undefined)
+                    $bog_music_log.act(`выравнивание громкости: ${next ? 'включено' : 'выключено'}`);
+                const v = $mol_state_local.value('bog_music_gain_norm', next);
+                return v ?? true;
+            }
+            track_gain() {
+                if (!this.normalize())
+                    return 1;
+                return $bog_music_gain.factor(this.current_track()?.lufs() ?? null);
+            }
+            _audio_el;
+            _last_blob_url = '';
+            audio_el() {
+                if (this._audio_el)
+                    return this._audio_el;
+                const el = new Audio();
+                el.volume = this.volume();
+                el.addEventListener('ended', () => { if (!this._silent)
+                    this.on_ended(); });
+                el.addEventListener('play', () => {
+                    if (this._silent)
+                        return;
+                    try {
+                        this.playing(true);
+                    }
+                    catch { }
+                    if ('mediaSession' in navigator)
+                        navigator.mediaSession.playbackState = 'playing';
+                    this.gain_resume();
+                });
+                el.addEventListener('pause', () => {
+                    if (this._silent) {
+                        el.play().catch(() => { });
+                        return;
+                    }
+                    if (this._switching && !el.ended && el.readyState < el.HAVE_FUTURE_DATA) {
+                        el.play().catch(() => { });
+                        return;
+                    }
+                    if (this.is_ios() && this.playing() && !el.ended && !this._switching) {
+                        this.ios_pause(el);
+                        const key = this.current_key();
+                        if (key) {
+                            try {
+                                this.account().save_last_session(key, this.current_time());
+                            }
+                            catch { }
+                        }
+                        return;
+                    }
+                    try {
+                        this.playing(false);
+                    }
+                    catch { }
+                    if ('mediaSession' in navigator)
+                        navigator.mediaSession.playbackState = 'paused';
+                });
+                el.addEventListener('playing', () => { this._switching = false; });
+                el.addEventListener('timeupdate', () => {
+                    if (this._gain_ctx && this._gain_ctx.state !== 'running')
+                        this.gain_resume();
+                    if (this._silent)
+                        return;
+                    this._switching = false;
+                    if (this._await_seek > 0) {
+                        if (el.currentTime >= this._await_seek - 1.5)
+                            this._await_seek = 0;
+                        else
+                            return;
+                    }
+                    if (this._seek_drag)
+                        return;
+                    this.current_time(el.currentTime);
+                    this.scrobble_watch(el.currentTime);
+                });
+                el.addEventListener('loadedmetadata', () => {
+                    if (this._silent)
+                        return;
+                    if (el.duration > 0 && isFinite(el.duration))
+                        this.duration(el.duration);
+                });
+                el.addEventListener('error', () => {
+                    console.error('[player] audio error:', el.error?.code, el.error?.message);
+                });
+                this._audio_el = el;
+                return el;
+            }
+            _fm = null;
+            scrobble_watch(time) {
+                if (!$bog_music_scrobble.enabled())
+                    return;
+                let audio = null;
+                try {
+                    audio = this.current_audio();
+                }
+                catch {
+                    return;
+                }
+                const artist = audio?.artist ?? '';
+                const title = audio?.title ?? '';
+                if (!title) {
+                    this._fm = null;
+                    return;
+                }
+                const current = this._fm;
+                if (!current || current.artist !== artist || current.title !== title || (current.done && time < 3)) {
+                    let duration = 0;
+                    try {
+                        duration = this.duration() || audio?.duration || 0;
+                    }
+                    catch { }
+                    this._fm = { artist, title, duration, started: Math.floor(Date.now() / 1000), done: false };
+                    $bog_music_scrobble.now_playing(artist, title, duration);
+                    return;
+                }
+                if (current.done)
+                    return;
+                if (!current.duration) {
+                    try {
+                        current.duration = this.duration() || 0;
+                    }
+                    catch { }
+                }
+                if (current.duration < 30)
+                    return;
+                if (time < Math.min(current.duration / 2, 240))
+                    return;
+                current.done = true;
+                $bog_music_scrobble.scrobble(current.artist, current.title, current.duration, current.started);
+            }
+            on_ended() {
+                try {
+                    this.next(false);
+                }
+                catch (e) {
+                    if (e instanceof Promise) {
+                        ;
+                        $mol_wire_async(this).next_auto();
+                    }
+                    else {
+                        console.warn('[player] ended handler error:', e);
+                    }
+                }
+            }
+            _session_restored = false;
+            session_read() {
+                const session = this.account().last_session();
+                if (!session)
+                    return null;
+                const audio = this.account().info(session.key);
+                if (!audio)
+                    return null;
+                return { ...session, audio };
+            }
+            async try_restore_session() {
+                if (this._session_restored)
+                    return;
+                this._session_restored = true;
+                const session = await $mol_wire_async(this).session_read().catch(() => null);
+                if (!session)
+                    return;
+                this.current_key(session.key);
+                this.current_time(session.position);
+                if (session.audio.duration)
+                    this.duration(session.audio.duration);
+                this.apply_media_metadata(session.audio);
+                if ('mediaSession' in navigator)
+                    navigator.mediaSession.playbackState = 'paused';
+                this.restore_local(session).catch(() => { });
+            }
+            async restore_local(session) {
+                const el = this.audio_el();
+                if (!await $bog_music_disk.probe(session.key))
+                    return;
+                if ($bog_music_stream.supported() && ($bog_music_stream.active() || await $bog_music_stream.when_ready())) {
+                    this.url_drop();
+                    this.set_track_src(el, $bog_music_stream.url(session.key));
+                }
+                else {
+                    const file = await $bog_music_disk.file(session.key);
+                    if (!file)
+                        return;
+                    this.set_track_src(el, this.url_take(file));
+                }
+                this.attach_seek_listener(el, session.position);
+            }
+            setup_media_session() {
+                if (!('mediaSession' in navigator))
+                    return;
+                const ms = navigator.mediaSession;
+                ms.setActionHandler('previoustrack', () => { try {
+                    this.prev();
+                }
+                catch { } });
+                ms.setActionHandler('nexttrack', () => { try {
+                    this.next();
+                }
+                catch { } });
+                const el = this.audio_el();
+                ms.setActionHandler('seekto', details => {
+                    if (details.seekTime != null)
+                        el.currentTime = details.seekTime;
+                });
+                ms.setActionHandler('play', () => { this.resume_robust(); });
+                ms.setActionHandler('pause', () => {
+                    if (this.is_ios())
+                        this.ios_pause(el);
+                    else
+                        el.pause();
+                });
+            }
+            resume_robust() {
+                const el = this.audio_el();
+                this.gain_chain_unlock();
+                if (this.is_ios()) {
+                    this.ios_resume(el);
+                    return;
+                }
+                el.play().catch(() => { });
+            }
+            apply_media_metadata(audio) {
+                if (!('mediaSession' in navigator))
+                    return;
+                const fav = 'bog/music/app/favicon.svg';
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: audio.title,
+                    artist: audio.artist,
+                    album: 'Bog Music',
+                    artwork: [
+                        { src: fav, sizes: '96x96', type: 'image/svg+xml' },
+                        { src: fav, sizes: '192x192', type: 'image/svg+xml' },
+                        { src: fav, sizes: '512x512', type: 'image/svg+xml' },
+                    ],
+                });
+                this.setup_media_session();
+            }
+            apply_position_state() {
+                if (!('mediaSession' in navigator))
+                    return 0;
+                const ms = navigator.mediaSession;
+                if (typeof ms.setPositionState !== 'function')
+                    return 0;
+                const duration = this.duration();
+                const position = this.current_time();
+                if (!(duration > 0) || !isFinite(duration)) {
+                    try {
+                        ms.setPositionState();
+                    }
+                    catch { }
+                    return 0;
+                }
+                const at = Math.max(0, Math.min(isFinite(position) ? position : 0, duration));
+                try {
+                    ms.setPositionState({ duration, position: at, playbackRate: 1 });
+                }
+                catch (e) {
+                    console.warn('[player] position state failed:', e?.message);
+                }
+                return at;
+            }
+            playing(next) {
+                return next ?? false;
+            }
+            current_time(next) {
+                return next ?? 0;
+            }
+            duration(next) {
+                return next ?? 0;
+            }
+            volume(next) {
+                const v = $mol_state_local.value('bog_music_volume', next) ?? 0.7;
+                return Math.max(0, Math.min(1, v));
+            }
+            _gain_last = { volume: 0.7, factor: 1 };
+            apply_volume() {
+                const volume = this.volume();
+                const factor = this.track_gain();
+                this._gain_last = { volume, factor };
+                this.gain_push();
+                return volume * factor;
+            }
+            gain_push() {
+                const { volume, factor } = this._gain_last;
+                const node = this._gain_node;
+                const ctx = this._gain_ctx;
+                if (node && ctx) {
+                    try {
+                        node.gain.setTargetAtTime(volume * factor, ctx.currentTime, 0.02);
+                    }
+                    catch {
+                        node.gain.value = volume * factor;
+                    }
+                    return;
+                }
+                if (this._audio_el)
+                    this._audio_el.volume = Math.max(0, Math.min(1, volume * factor));
+            }
+            title() {
+                return this.current_audio()?.title ?? '';
+            }
+            artist() {
+                return this.current_audio()?.artist ?? '';
+            }
+            cover() {
+                const ext = this.ext();
+                if (ext)
+                    return ext.cover;
+                return this.current_track()?.cover() ?? '';
+            }
+            Cover() {
+                return this.cover() ? super.Cover() : null;
+            }
+            Cover_placeholder() {
+                return this.cover() ? null : super.Cover_placeholder();
+            }
+            time_current_text() {
+                return this.format_time(this.current_time());
+            }
+            time_total_text() {
+                return this.format_time(this.duration());
+            }
+            format_time(seconds) {
+                const min = Math.floor(seconds / 60);
+                const sec = Math.floor(seconds % 60);
+                return `${min}:${sec.toString().padStart(2, '0')}`;
+            }
+            progress_width() {
+                const dur = this.duration();
+                if (!dur)
+                    return '0%';
+                return `${(this.current_time() / dur) * 100}%`;
+            }
+            volume_toggle() {
+                const pop = this.Volume();
+                const showed = pop.showed();
+                $bog_music_log.act(`панель громкости: ${showed ? 'закрыта' : 'открыта'}`);
+                pop.showed(!showed);
+                if (!showed)
+                    this.setup_pop_dismiss(pop);
+                return null;
+            }
+            setup_pop_dismiss(pop) {
+                $bog_music_pop_dismiss(pop);
+            }
+            _vol_dragging = false;
+            volume_set_from_event(event) {
+                const target = event.currentTarget;
+                const rect = target.getBoundingClientRect();
+                const y = event.clientY - rect.top;
+                this.volume(Math.max(0, Math.min(1, 1 - y / rect.height)));
+            }
+            volume_pointer_down(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { }
+                this._vol_dragging = true;
+                this.volume_set_from_event(e);
+                e.preventDefault();
+                return null;
+            }
+            volume_pointer_move(event) {
+                if (!event || !this._vol_dragging)
+                    return null;
+                this.volume_set_from_event(event);
+                return null;
+            }
+            volume_pointer_up(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.releasePointerCapture(e.pointerId);
+                }
+                catch { }
+                this._vol_dragging = false;
+                $bog_music_log.act(`громкость: ${Math.round(this.volume() * 100)}%`);
+                try {
+                    this.Volume().showed(false);
+                }
+                catch { }
+                return null;
+            }
+            volume_fill_height() {
+                return `${Math.round(this.volume() * 100)}%`;
+            }
+            _eq_nodes = [];
+            _eq_last = $bog_music_eq.flat();
+            _eq_on = false;
+            eq_on(next) {
+                if (next === undefined) {
+                    const on = this.account().eq_on();
+                    this._eq_on = on;
+                    return on;
+                }
+                this._eq_on = next;
+                this.account().save_eq_on(next);
+                if (next)
+                    this.gain_chain_unlock();
+                return next;
+            }
+            eq_draft(next) {
+                return next ?? null;
+            }
+            eq_gains() {
+                return this.eq_draft() ?? this.account().eq_gains();
+            }
+            eq_pop_toggle() {
+                const pop = this.Eq();
+                const showed = pop.showed();
+                $bog_music_log.act(`эквалайзер: ${showed ? 'закрыт' : 'открыт'}`);
+                pop.showed(!showed);
+                if (!showed)
+                    this.setup_pop_dismiss(pop);
+                return null;
+            }
+            eq_apply(gains) {
+                this.account().save_eq_gains(gains);
+                this.eq_draft(null);
+                if (!this.eq_on() && $bog_music_eq.preset_of(gains) !== 'default')
+                    this.eq_on(true);
+            }
+            eq_preset_rows() {
+                return ['', ...$bog_music_eq.presets.map(preset => preset.id)]
+                    .map(id => this.Eq_preset_row(id));
+            }
+            eq_preset_title(id) {
+                if (!id)
+                    return $bog_music_eq.custom_title;
+                return $bog_music_eq.presets.find(preset => preset.id === id)?.title ?? id;
+            }
+            eq_preset_checked(id, next) {
+                if (next === undefined)
+                    return $bog_music_eq.preset_of(this.eq_gains()) === id;
+                const gains = $bog_music_eq.preset(id);
+                if (!gains)
+                    return this.eq_preset_checked(id);
+                this.eq_apply(gains);
+                return true;
+            }
+            eq_band_at(event) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const part = rect.width ? (event.clientX - rect.left) / rect.width : 0;
+                return $bog_music_eq_curve.band_at(part * $bog_music_eq_curve.width);
+            }
+            eq_db_at(event) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const part = rect.height ? (event.clientY - rect.top) / rect.height : 0.5;
+                return $bog_music_eq_curve.db_at(part);
+            }
+            _eq_dragging = -1;
+            eq_drag_to(event) {
+                if (this._eq_dragging < 0)
+                    return;
+                const gains = this.eq_gains().slice();
+                gains[this._eq_dragging] = this.eq_db_at(event);
+                this.eq_draft(gains);
+            }
+            eq_pointer_down(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { }
+                this._eq_dragging = this.eq_band_at(e);
+                this.eq_drag_to(e);
+                e.preventDefault();
+                return null;
+            }
+            eq_pointer_move(event) {
+                if (!event || this._eq_dragging < 0)
+                    return null;
+                this.eq_drag_to(event);
+                return null;
+            }
+            eq_pointer_up(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.releasePointerCapture(e.pointerId);
+                }
+                catch { }
+                if (this._eq_dragging < 0)
+                    return null;
+                this._eq_dragging = -1;
+                const gains = this.eq_draft();
+                if (gains)
+                    this.eq_apply(gains);
+                return null;
+            }
+            apply_eq() {
+                this._eq_last = this.eq_on() ? $bog_music_eq.clamp(this.eq_gains()) : $bog_music_eq.flat();
+                this.eq_push();
+                return this._eq_last;
+            }
+            eq_push() {
+                const ctx = this._gain_ctx;
+                if (!ctx || !this._eq_nodes.length)
+                    return;
+                this._eq_last.forEach((db, index) => {
+                    const node = this._eq_nodes[index];
+                    if (!node)
+                        return;
+                    try {
+                        node.gain.setTargetAtTime(db, ctx.currentTime, 0.02);
+                    }
+                    catch {
+                        node.gain.value = db;
+                    }
+                });
+            }
+            repeat_mode(next) {
+                const v = $mol_state_local.value('bog_music_repeat_mode', next);
+                if (v === 'one' || v === 'shuffle')
+                    return v;
+                return 'all';
+            }
+            repeat_cycle() {
+                const order = ['all', 'one', 'shuffle'];
+                const idx = order.indexOf(this.repeat_mode());
+                const mode = order[(idx + 1) % order.length];
+                $bog_music_log.act(`режим повтора: ${mode}`);
+                this.repeat_mode(mode);
+            }
+            repeat_hint() {
+                const m = this.repeat_mode();
+                if (m === 'one')
+                    return 'Повтор одного трека';
+                if (m === 'shuffle')
+                    return 'Случайный порядок';
+                return 'Повтор плейлиста';
+            }
+            Repeat_all_icon() {
+                if (this.repeat_mode() !== 'all')
+                    return null;
+                return super.Repeat_all_icon();
+            }
+            Repeat_one_icon() {
+                if (this.repeat_mode() !== 'one')
+                    return null;
+                return super.Repeat_one_icon();
+            }
+            Shuffle_icon() {
+                if (this.repeat_mode() !== 'shuffle')
+                    return null;
+                return super.Shuffle_icon();
+            }
+            _queue_at = 0;
+            _queue_at_forced = false;
+            queue_index(next) {
+                if (next !== undefined) {
+                    this._queue_at_forced = true;
+                    return this._queue_at = next;
+                }
+                if (this._queue_at_forced)
+                    return this._queue_at;
+                const at = this.queue_keys().indexOf(this.current_key());
+                return at >= 0 ? at : this._queue_at;
+            }
+            _shuffle_bag = [];
+            _shuffle_bag_idx = 0;
+            _shuffle_bag_sig = '';
+            _shuffle_last_key = '';
+            ensure_shuffle_bag(queue) {
+                const sig = queue.join(',');
+                if (sig === this._shuffle_bag_sig && this._shuffle_bag_idx < this._shuffle_bag.length)
+                    return;
+                const keys = [...queue];
+                for (let i = keys.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [keys[i], keys[j]] = [keys[j], keys[i]];
+                }
+                if (keys.length > 1 && this._shuffle_last_key && keys[0] === this._shuffle_last_key) {
+                    ;
+                    [keys[0], keys[1]] = [keys[1], keys[0]];
+                }
+                this._shuffle_bag = keys;
+                this._shuffle_bag_idx = 0;
+                this._shuffle_bag_sig = sig;
+            }
+            play_track(key) {
+                if (!key)
+                    return;
+                const audio = this.audio_of(key);
+                if (!audio) {
+                    $bog_music_log.err(`трек не найден в фонотеке: ${key}`);
+                    return;
+                }
+                $bog_music_log.act(`старт трека ${audio.artist} — ${audio.title} (${key})`);
+                this.ext(null);
+                this.file_cache_keep(key);
+                this.current_time(0);
+                this.duration(0);
+                this._await_seek = 0;
+                this.current_key(key);
+                this._queue_at_forced = false;
+                this._trim_end_skip = '';
+                const trim = this.trim_start_of(key);
+                const start_at = trim ?? 0;
+                this._trim_start_done = trim === null ? '' : key;
+                this._paused_pos = start_at;
+                try {
+                    this.account().save_last_session(key, start_at);
+                }
+                catch { }
+                this.apply_media_metadata(audio);
+                this.gain_chain_unlock();
+                this.prefetch_next(key);
+                const el = this.audio_el();
+                if (this.try_play_local_sync(key, el, start_at))
+                    return;
+                this.play_source_local(key, el, start_at);
+            }
+            _file_cache = new Map();
+            static FILE_CACHE_MAX = 2;
+            file_cache_keep(...keep) {
+                const alive = new Set(keep.filter(Boolean));
+                for (const key of [...this._file_cache.keys()]) {
+                    if (!alive.has(key))
+                        this._file_cache.delete(key);
+                }
+                while (this._file_cache.size > $bog_music_player.FILE_CACHE_MAX) {
+                    const oldest = this._file_cache.keys().next().value;
+                    if (oldest === undefined)
+                        break;
+                    this._file_cache.delete(oldest);
+                }
+            }
+            prefetch_next(key) {
+                void this.cache_next(key).catch(() => { });
+            }
+            async cache_next(key) {
+                const next_key = await $mol_wire_async(this).next_warm(key);
+                if (!next_key)
+                    return;
+                if (!await this.file_ensure(next_key))
+                    return;
+                if ($bog_music_stream.supported())
+                    return $bog_music_stream.warm(next_key);
+                const file = await $bog_music_disk.file(next_key);
+                if (!file)
+                    return;
+                this._file_cache.set(next_key, file);
+                this.file_cache_keep(this.current_key(), next_key);
+            }
+            next_warm(key) {
+                const next_key = this.predict_next_key(key);
+                if (next_key)
+                    this.track_warm(next_key);
+                return next_key;
+            }
+            track_warm(key) {
+                const track = this.account().track(key);
+                if (!track)
+                    return;
+                track.info();
+                track.trim_start();
+                track.trim_end(0);
+            }
+            audio_of(key) {
+                try {
+                    return this.account().info(key);
+                }
+                catch (e) {
+                    if (!(e instanceof Promise))
+                        throw e;
+                    $mol_wire_async(this).play_track_warm(key);
+                    return null;
+                }
+            }
+            play_track_warm(key) {
+                this.track_warm(key);
+                this.play_track(key);
+            }
+            trim_start_of(key) {
+                try {
+                    return this.account().track(key)?.trim_start() ?? 0;
+                }
+                catch (e) {
+                    if (!(e instanceof Promise))
+                        console.warn('[player] trim_start read failed:', e?.message ?? e);
+                    return null;
+                }
+            }
+            next_auto() {
+                const key = this.predict_next_key(this.current_key());
+                if (key)
+                    this.track_warm(key);
+                this.next(false);
+            }
+            _planned_wave = null;
+            predict_next_key(key) {
+                if (this.repeat_mode() === 'one')
+                    return key;
+                const queue = this.queue_keys();
+                if (this.repeat_mode() === 'shuffle' && queue.length) {
+                    this.ensure_shuffle_bag(queue);
+                    return this._shuffle_bag[this._shuffle_bag_idx] ?? null;
+                }
+                if (this._planned_wave?.from === key)
+                    return this._planned_wave.key;
+                const picked = this.wave_pick(key);
+                if (picked && picked !== key) {
+                    this._planned_wave = { from: key, key: picked };
+                    return picked;
+                }
+                if (!queue.length)
+                    return null;
+                const idx = queue.indexOf(key);
+                return queue[idx >= 0 && idx + 1 < queue.length ? idx + 1 : 0] ?? null;
+            }
+            async file_ensure(key) {
+                return $bog_music_disk.probe(key);
+            }
+            try_play_local_sync(key, el, start_at) {
+                try {
+                    if (!$bog_music_disk.has(key))
+                        return false;
+                }
+                catch {
+                    return false;
+                }
+                if ($bog_music_stream.active()) {
+                    this.url_drop();
+                    this._dispatch_token++;
+                    this.set_track_src(el, $bog_music_stream.url(key));
+                    this.attach_seek_listener(el, start_at);
+                    el.play().catch(() => { });
+                    return true;
+                }
+                const file = this._file_cache.get(key);
+                if (!file)
+                    return false;
+                this._dispatch_token++;
+                this.set_track_src(el, this.url_take(file));
+                this.attach_seek_listener(el, start_at);
+                el.play().catch(() => { });
+                return true;
+            }
+            attach_seek_listener(el, start_at) {
+                if (start_at <= 0)
+                    return;
+                const seek = () => {
+                    try {
+                        el.currentTime = start_at;
+                    }
+                    catch { }
+                    el.removeEventListener('loadedmetadata', seek);
+                };
+                el.addEventListener('loadedmetadata', seek);
+            }
+            seek_to(time) {
+                if (this._silent) {
+                    this._paused_pos = time;
+                }
+                else if (this._audio_el) {
+                    try {
+                        this._audio_el.currentTime = time;
+                    }
+                    catch { }
+                }
+            }
+            _seek_drag = false;
+            seek_time_of(event) {
+                const rect = this.Progress().dom_node().getBoundingClientRect();
+                const pct = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+                return pct * this.duration();
+            }
+            seek_pointer_down(event) {
+                if (!event || !this.duration())
+                    return null;
+                const e = event;
+                e.preventDefault();
+                try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { }
+                this._seek_drag = true;
+                this.current_time(this.seek_time_of(e));
+                return null;
+            }
+            seek_pointer_move(event) {
+                if (!event || !this._seek_drag)
+                    return null;
+                this.current_time(this.seek_time_of(event));
+                return null;
+            }
+            seek_pointer_up(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.releasePointerCapture(e.pointerId);
+                }
+                catch { }
+                if (!this._seek_drag)
+                    return null;
+                this._seek_drag = false;
+                const time = this.seek_time_of(e);
+                this._await_seek = 0;
+                this.current_time(time);
+                this.seek_to(time);
+                $bog_music_log.act(`перемотка: ${this.format_time(time)}`);
+                return null;
+            }
+            _dispatch_token = 0;
+            is_current(key) {
+                return this.current_key() === key;
+            }
+            missing(next) {
+                return next ?? '';
+            }
+            async play_source_local(key, el, start_at) {
+                const token = ++this._dispatch_token;
+                this.missing('');
+                try {
+                    this.url_drop();
+                    const ready = await this.file_ensure(key);
+                    if (token !== this._dispatch_token || !this.is_current(key))
+                        return;
+                    if (!ready) {
+                        const holders = this.account().holders_other(key);
+                        const name = holders.length ? this.account().device_name(holders[0]) : '';
+                        this.missing(name ? `Файл на «${name}» — перенеси его сюда` : 'Файла нет ни на одном устройстве');
+                        $bog_music_log.err(`нет файла на устройстве: ${key}`);
+                        this.playing(false);
+                        return;
+                    }
+                    if ($bog_music_stream.supported()) {
+                        const ok = $bog_music_stream.active() || await $bog_music_stream.when_ready();
+                        if (token !== this._dispatch_token || !this.is_current(key))
+                            return;
+                        if (ok) {
+                            this.set_track_src(el, $bog_music_stream.url(key));
+                            this.attach_seek_listener(el, start_at);
+                            await this.safe_play(el);
+                            return;
+                        }
+                    }
+                    const file = await $bog_music_disk.file(key);
+                    if (token !== this._dispatch_token || !this.is_current(key))
+                        return;
+                    if (!file)
+                        return;
+                    this.set_track_src(el, this.url_take(file));
+                    this.attach_seek_listener(el, start_at);
+                    await this.safe_play(el);
+                    return;
+                }
+                catch (e) {
+                    console.error('[player] play failed:', e);
+                }
+                this.playing(false);
+            }
+            async safe_play(el) {
+                try {
+                    await el.play();
+                }
+                catch (e) {
+                    if (e?.name === 'NotAllowedError') {
+                        el.muted = true;
+                        try {
+                            await el.play();
+                        }
+                        catch { }
+                        el.muted = false;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
+            }
+            toggle() {
+                const was_playing = this.playing() && !this._silent;
+                $bog_music_log.act(`${was_playing ? 'пауза' : 'продолжить'}: ${this.current_key() || 'без трека'}`);
+                this.gain_chain_unlock();
+                const el = this.audio_el();
+                if (this.is_ios()) {
+                    if (was_playing)
+                        this.ios_pause(el);
+                    else
+                        this.ios_resume(el);
+                }
+                else {
+                    if (was_playing)
+                        el.pause();
+                    else
+                        el.play();
+                }
+                if (was_playing) {
+                    const key = this.current_key();
+                    if (key) {
+                        try {
+                            this.account().save_last_session(key, this.current_time());
+                        }
+                        catch { }
+                    }
+                }
+            }
+            close() {
+                $bog_music_log.act('закрытие плеера');
+                this._dispatch_token++;
+                this.ext(null);
+                this._planned_wave = null;
+                this._file_cache.clear();
+                this._silent = false;
+                this._track_src = '';
+                this._paused_pos = 0;
+                this._await_seek = 0;
+                this._switching = false;
+                this._switch_gen++;
+                this._trim_end_skip = '';
+                this._trim_start_done = '';
+                this.playing(false);
+                if (this._audio_el) {
+                    const el = this._audio_el;
+                    el.pause();
+                    el.removeAttribute('src');
+                    try {
+                        el.load();
+                    }
+                    catch { }
+                }
+                this.url_drop();
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = null;
+                    navigator.mediaSession.playbackState = 'none';
+                }
+                this.current_time(0);
+                this.duration(0);
+                this.queue_index(0);
+                this._session_restored = true;
+                try {
+                    this.account().save_last_session('', 0);
+                }
+                catch { }
+                this.current_key('');
+            }
+            prev() {
+                if (this.ext()) {
+                    $bog_music_log.act('предыдущий результат выдачи');
+                    this.ext_step(-1);
+                    return;
+                }
+                const queue = this.queue_keys();
+                const idx = this.queue_index();
+                if (idx > 0) {
+                    $bog_music_log.act(`предыдущий трек: ${queue[idx - 1]}`);
+                    this.queue_index(idx - 1);
+                    this.play_track(queue[idx - 1]);
+                }
+                else {
+                    $bog_music_log.act('предыдущий трек: уже первый, шага нет');
+                }
+            }
+            ext_step(step) {
+                try {
+                    return !!$bog_music_app.Root(0).tube_step(step);
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    console.warn('[player] ext_step failed:', e?.message);
+                    return false;
+                }
+            }
+            wave_pick(key) {
+                try {
+                    return $bog_music_app.Root(0).player_pick_next(key) ?? null;
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    return null;
+                }
+            }
+            next(manual = true) {
+                const mode = this.repeat_mode();
+                const queue = this.queue_keys();
+                $bog_music_log.act(`следующий трек (${manual ? 'кнопка' : 'авто'}, режим ${mode})`);
+                if (this.ext()) {
+                    if (!manual && mode === 'one') {
+                        const ext = this.ext();
+                        this.play_external(ext.url, ext.title, ext.artist);
+                        return;
+                    }
+                    this.ext_step(1);
+                    return;
+                }
+                if (!manual && mode === 'one') {
+                    const cur = this.current_key();
+                    if (cur) {
+                        this.play_track(cur);
+                        return;
+                    }
+                }
+                if (mode === 'shuffle' && queue.length) {
+                    this.ensure_shuffle_bag(queue);
+                    const key = this._shuffle_bag[this._shuffle_bag_idx++];
+                    if (this._shuffle_bag_idx >= this._shuffle_bag.length) {
+                        this._shuffle_last_key = key;
+                        this._shuffle_bag_sig = '';
+                    }
+                    const idx = queue.indexOf(key);
+                    if (idx >= 0) {
+                        this.queue_index(idx);
+                        this.play_track(key);
+                        return;
+                    }
+                }
+                try {
+                    const cur = this.current_key();
+                    let picked = null;
+                    if (this._planned_wave?.from === cur) {
+                        picked = this._planned_wave.key;
+                        this._planned_wave = null;
+                    }
+                    else {
+                        picked = this.wave_pick(cur);
+                    }
+                    if (picked && picked !== this.current_key()) {
+                        const idx = queue.indexOf(picked);
+                        if (idx >= 0)
+                            this.queue_index(idx);
+                        this.play_track(picked);
+                        return;
+                    }
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    console.warn('[player] wave_pick failed:', e?.message);
+                }
+                if (!queue.length)
+                    return;
+                let next_idx = this.queue_index() + 1 < queue.length ? this.queue_index() + 1 : 0;
+                if (queue.length > 1 && queue[next_idx] === this.current_key()) {
+                    next_idx = next_idx + 1 < queue.length ? next_idx + 1 : 0;
+                }
+                this.queue_index(next_idx);
+                this.play_track(queue[next_idx]);
+            }
+            sub() {
+                if (!this.current_key() && !this.ext())
+                    return this.full() ? [this.Empty()] : [];
+                return super.sub();
+            }
+            Missing() {
+                return this.missing() ? super.Missing() : null;
+            }
+            Missing_pull() {
+                return this.account().holders_other(this.current_key()).length ? super.Missing_pull() : null;
+            }
+            missing_pull() {
+                const key = this.current_key();
+                const beam = $bog_music_beam.instance();
+                const from = beam.pick_holder(key);
+                if (!from)
+                    return;
+                this.missing('Переношу…');
+                void beam.pull(from, [key]).then(() => this.is_current(key) && this.play_track(key), (error) => this.missing(error?.message ?? 'Не получилось перенести'));
+            }
+            toggle_icons() {
+                return [this.playing() ? this.Pause_icon() : this.Play_icon()];
+            }
+            toggle_hint() {
+                return this.playing() ? 'Пауза' : 'Играть';
+            }
+            Collapse() {
+                if (!this.full())
+                    return null;
+                return super.Collapse();
+            }
+            progress_parts() {
+                const parts = [this.Progress_line(), this.Progress_bar(), this.Progress_knob()];
+                if (!this.trim_editing())
+                    return parts;
+                return [...parts, this.Trim_start_handle(), this.Trim_end_handle()];
+            }
+            trim_editing() {
+                return this.full() && this.trim_mode() && !!this.current_track();
+            }
+            Trim_toggle() {
+                if (!this.full() || !this.current_key())
+                    return null;
+                return super.Trim_toggle();
+            }
+            trim_hint() {
+                const track = this.current_track();
+                const dur = this.duration();
+                if (!track || !dur)
+                    return '';
+                const start = track.trim_start();
+                const end = track.trim_end(dur);
+                if (start <= 0 && end >= dur)
+                    return this.trim_editing() ? 'тяни ручки обреза' : '';
+                return `обрез ${this.format_time(start)} – ${this.format_time(end)}`;
+            }
+            _trim_end_skip = '';
+            _trim_start_done = '';
+            _trim_drag = null;
+            apply_trim_start() {
+                const key = this.current_key();
+                if (!key)
+                    return;
+                if (this._trim_start_done === key)
+                    return;
+                if (this._trim_drag)
+                    return;
+                const track = this.current_track();
+                if (!track)
+                    return;
+                const dur = this.duration();
+                if (!dur)
+                    return;
+                const ts = track.trim_start();
+                this._trim_start_done = key;
+                if (ts <= 0 || ts >= dur)
+                    return;
+                if (this.current_time() >= ts - 0.5)
+                    return;
+                queueMicrotask(() => {
+                    try {
+                        this.seek_to(ts);
+                    }
+                    catch (e) {
+                        if (e instanceof Promise)
+                            return;
+                        console.warn('[player] trim_start seek failed:', e?.message);
+                    }
+                });
+            }
+            apply_trim() {
+                const track = this.current_track();
+                if (!track)
+                    return;
+                const dur = this.duration();
+                if (!dur)
+                    return;
+                const te = track.trim_end(dur);
+                if (te >= dur)
+                    return;
+                if (this.current_time() < te)
+                    return;
+                const key = this.current_key();
+                if (this._trim_end_skip === key)
+                    return;
+                this._trim_end_skip = key;
+                queueMicrotask(() => {
+                    try {
+                        ;
+                        $mol_wire_async(this).next_auto();
+                    }
+                    catch (e) {
+                        if (e instanceof Promise)
+                            return;
+                        console.warn('[player] trim_end next failed:', e?.message);
+                    }
+                });
+            }
+            trim_apply(event) {
+                const track = this.current_track();
+                if (!track)
+                    return;
+                const dur = this.duration();
+                if (!dur)
+                    return;
+                const progress = this.Progress().dom_node();
+                const rect = progress.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const pct = Math.max(0, Math.min(1, x / rect.width));
+                let seconds = pct * dur;
+                if (this._trim_drag === 'start') {
+                    const end = track.trim_end(dur);
+                    seconds = Math.min(seconds, Math.max(0, end - 1));
+                    track.trim_start(seconds);
+                }
+                else if (this._trim_drag === 'end') {
+                    const start = track.trim_start();
+                    seconds = Math.max(seconds, Math.min(dur, start + 1));
+                    track.trim_end(dur, seconds);
+                }
+            }
+            trim_start_pointer_down(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                e.stopPropagation();
+                e.preventDefault();
+                try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { }
+                this._trim_drag = 'start';
+                this.trim_apply(e);
+                return null;
+            }
+            trim_start_pointer_move(event) {
+                if (!event || this._trim_drag !== 'start')
+                    return null;
+                this.trim_apply(event);
+                return null;
+            }
+            trim_end_pointer_down(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                e.stopPropagation();
+                e.preventDefault();
+                try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { }
+                this._trim_drag = 'end';
+                this.trim_apply(e);
+                return null;
+            }
+            trim_end_pointer_move(event) {
+                if (!event || this._trim_drag !== 'end')
+                    return null;
+                this.trim_apply(event);
+                return null;
+            }
+            trim_pointer_up(event) {
+                if (!event)
+                    return null;
+                const e = event;
+                try {
+                    e.currentTarget.releasePointerCapture(e.pointerId);
+                }
+                catch { }
+                const drag = this._trim_drag;
+                this._trim_drag = null;
+                if (drag === 'start') {
+                    const ts = this.current_track()?.trim_start() ?? 0;
+                    if (ts > 0 && this.current_time() < ts - 0.5)
+                        this.seek_to(ts);
+                }
+                return null;
+            }
+            trim_start_left() {
+                const track = this.current_track();
+                const dur = this.duration();
+                if (!track || !dur)
+                    return '0%';
+                return `${(track.trim_start() / dur) * 100}%`;
+            }
+            trim_end_left() {
+                const track = this.current_track();
+                const dur = this.duration();
+                if (!track || !dur)
+                    return '100%';
+                return `${(track.trim_end(dur) / dur) * 100}%`;
+            }
+            _pagehide_listener_set = false;
+            setup_pagehide_save() {
+                if (this._pagehide_listener_set)
+                    return;
+                this._pagehide_listener_set = true;
+                window.addEventListener('pagehide', () => {
+                    const key = this.current_key();
+                    if (!key)
+                        return;
+                    try {
+                        this.account().save_last_session(key, this.current_time());
+                    }
+                    catch { }
+                });
+            }
+            auto() {
+                this.setup_pagehide_save();
+                if (!this.current_key()) {
+                    this.try_restore_session();
+                }
+                this.apply_volume();
+                this.apply_eq();
+                this.apply_position_state();
+                try {
+                    this.apply_trim_start();
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                }
+                try {
+                    this.apply_trim();
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "ext_rev", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "normalize", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "apply_position_state", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "playing", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "current_time", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "duration", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "volume", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "apply_volume", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "eq_draft", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_player.prototype, "eq_apply", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "apply_eq", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "repeat_mode", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_player.prototype, "missing", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_player.prototype, "missing_pull", null);
+        $$.$bog_music_player = $bog_music_player;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const cover_size = $mol_style_func.clamp('12rem', '70vw', '20rem');
+        $mol_style_define($bog_music_player, {
+            width: '100%',
+            flex: {
+                direction: 'column',
+                shrink: 0,
+            },
+            background: {
+                color: $mol_theme.card,
+            },
+            border: { top: { width: '1px', style: 'solid', color: $mol_theme.line } },
+            position: 'sticky',
+            bottom: 0,
+            Missing: {
+                align: { items: 'center' },
+                gap: '0.5rem',
+                padding: { left: '0.75rem', right: '0.5rem' },
+                font: { size: '0.875rem' },
+            },
+            Missing_text: {
+                flex: { grow: 1, shrink: 1 },
+                color: $mol_theme.shade,
+            },
+            Progress_row: {
+                flex: {
+                    direction: 'row',
+                    shrink: 0,
+                },
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+            },
+            // Зона касания выше самой полоски: палец попадает, полоска остаётся тонкой.
+            Progress: {
+                height: '1.75rem',
+                cursor: 'pointer',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                position: 'relative',
+                touchAction: 'none',
+                userSelect: 'none',
+            },
+            Progress_line: {
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: $mol_style_func.calc('50% - 0.125rem'),
+                height: '0.25rem',
+                borderRadius: '0.125rem',
+                background: {
+                    color: $mol_theme.line,
+                },
+                pointerEvents: 'none',
+            },
+            Progress_bar: {
+                position: 'absolute',
+                left: 0,
+                top: $mol_style_func.calc('50% - 0.125rem'),
+                height: '0.25rem',
+                borderRadius: '0.125rem',
+                background: {
+                    color: $mol_theme.focus,
+                },
+                width: 0,
+                pointerEvents: 'none',
+            },
+            // Ползунок в rem: растёт вместе с размером шрифта из настроек.
+            Progress_knob: {
+                position: 'absolute',
+                top: $mol_style_func.calc('50% - 0.625rem'),
+                width: '1.25rem',
+                height: '1.25rem',
+                margin: { left: '-0.625rem' },
+                borderRadius: '50%',
+                background: { color: $mol_theme.focus },
+                box: { shadow: [[0, '0.0625rem', '0.25rem', 0, '#00000060']] },
+                pointerEvents: 'none',
+                zIndex: 1,
+            },
+            Trim_start_handle: {
+                position: 'absolute',
+                top: $mol_style_func.calc('50% - 0.75rem'),
+                width: '0.75rem',
+                height: '1.5rem',
+                margin: { left: '-0.375rem' },
+                background: { color: $mol_theme.text },
+                borderRadius: '0.1875rem',
+                cursor: 'ew-resize',
+                touchAction: 'none',
+                userSelect: 'none',
+                zIndex: 2,
+            },
+            Trim_end_handle: {
+                position: 'absolute',
+                top: $mol_style_func.calc('50% - 0.75rem'),
+                width: '0.75rem',
+                height: '1.5rem',
+                margin: { left: '-0.375rem' },
+                background: { color: $mol_theme.text },
+                borderRadius: '0.1875rem',
+                cursor: 'ew-resize',
+                touchAction: 'none',
+                userSelect: 'none',
+                zIndex: 2,
+            },
+            Time_row: {
+                flex: {
+                    direction: 'row',
+                    shrink: 0,
+                },
+                justify: { content: 'space-between' },
+                align: { items: 'center' },
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                margin: { top: '-0.375rem' },
+                gap: $mol_gap.text,
+            },
+            Time_current: {
+                font: { size: '0.75rem' },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                flex: { shrink: 0 },
+                fontVariantNumeric: 'tabular-nums',
+            },
+            Trim_hint: {
+                font: { size: '0.75rem' },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                overflow: { x: 'hidden' },
+                textOverflow: 'ellipsis',
+                minWidth: 0,
+            },
+            Time_total: {
+                font: { size: '0.75rem' },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                flex: { shrink: 0 },
+                fontVariantNumeric: 'tabular-nums',
+            },
+            Controls: {
+                flex: {
+                    direction: 'row',
+                },
+                align: {
+                    items: 'center',
+                },
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                gap: $mol_gap.text,
+            },
+            Left: {
+                flex: {
+                    direction: 'row',
+                    grow: 1,
+                    shrink: 1,
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.text,
+                overflow: {
+                    x: 'hidden',
+                },
+            },
+            Cover: {
+                width: '2.75rem',
+                height: '2.75rem',
+                border: { radius: $bog_builderui_tokens.radius },
+                flex: {
+                    shrink: 0,
+                },
+                objectFit: 'cover',
+            },
+            Cover_placeholder: {
+                width: '2.75rem',
+                height: '2.75rem',
+                border: { radius: $bog_builderui_tokens.radius },
+                flex: {
+                    shrink: 0,
+                },
+                background: {
+                    color: $mol_theme.line,
+                },
+                color: $mol_theme.shade,
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+            },
+            Empty: {
+                flex: { direction: 'column', grow: 1 },
+                align: { items: 'center' },
+                justify: { content: 'center' },
+                gap: $mol_gap.block,
+                color: $mol_theme.shade,
+                padding: {
+                    top: '3rem',
+                    bottom: '3rem',
+                    left: '1rem',
+                    right: '1rem',
+                },
+            },
+            Empty_icon: {
+                width: '4rem',
+                height: '4rem',
+            },
+            Track_info: {
+                flex: {
+                    direction: 'column',
+                    shrink: 1,
+                },
+                minWidth: 0,
+                overflow: {
+                    x: 'hidden',
+                },
+                gap: '0.125rem',
+            },
+            Title: {
+                font: {
+                    weight: 600,
+                    size: '0.9375rem',
+                },
+                whiteSpace: 'nowrap',
+                overflow: {
+                    x: 'hidden',
+                },
+                textOverflow: 'ellipsis',
+            },
+            Artist: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                overflow: {
+                    x: 'hidden',
+                },
+                textOverflow: 'ellipsis',
+            },
+            Center: {
+                flex: {
+                    direction: 'row',
+                    shrink: 0,
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: '0.25rem',
+            },
+            Options: {
+                flex: { direction: 'row' },
+                align: { items: 'center' },
+                gap: '0.25rem',
+            },
+            Volume_panel: {
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.text,
+            },
+            Volume_slider: {
+                width: '6px',
+                height: '8rem',
+                background: { color: $mol_theme.line },
+                borderRadius: '3px',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: { x: 'hidden', y: 'hidden' },
+                touchAction: 'none',
+                userSelect: 'none',
+            },
+            Volume_fill: {
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: { color: $mol_theme.focus },
+                borderRadius: '3px',
+            },
+            Eq_panel: {
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: $mol_gap.text,
+                width: '17rem',
+            },
+            Eq_presets: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+            },
+            /** Строка списка пресетов: подпись слева, галочка выбранного справа. */
+            Eq_preset_row: {
+                justify: {
+                    content: 'space-between',
+                },
+                textAlign: 'left',
+                '::after': {
+                    content: '"✓"',
+                    color: $mol_theme.focus,
+                    opacity: 0,
+                },
+                '@': {
+                    mol_check_checked: {
+                        'true': {
+                            color: $mol_theme.focus,
+                            '::after': {
+                                opacity: 1,
+                            },
+                        },
+                    },
+                },
+            },
+            ':not([bog_music_player_full="true"])': {
+                Options: { display: 'none' },
+                Center: {
+                    $mol_button: {
+                        padding: { left: '0.25rem', right: '0.25rem' },
+                    },
+                },
+                Close: {
+                    padding: { left: '0.25rem', right: '0.25rem' },
+                },
+            },
+            '@': {
+                bog_music_player_full: {
+                    true: {
+                        position: 'relative',
+                        flex: { direction: 'row', wrap: 'wrap', grow: 1 },
+                        justify: { content: 'center' },
+                        align: { items: 'center', content: 'center' },
+                        gap: '1rem',
+                        padding: {
+                            top: '1.5rem',
+                            bottom: '1.5rem',
+                            left: '1rem',
+                            right: '1rem',
+                        },
+                        background: { color: 'transparent' },
+                        border: { top: { style: 'none' } },
+                        Controls: {
+                            display: 'contents',
+                        },
+                        Left: {
+                            flex: { direction: 'column', basis: '100%', grow: 0 },
+                            order: '-1',
+                            overflow: { x: 'visible' },
+                            gap: '1rem',
+                        },
+                        Cover: {
+                            width: cover_size,
+                            height: cover_size,
+                            borderRadius: '1rem',
+                            box: { shadow: [[0, '1rem', '2rem', '-0.5rem', '#00000080']] },
+                        },
+                        Cover_placeholder: {
+                            width: cover_size,
+                            height: cover_size,
+                            borderRadius: '1rem',
+                            boxSizing: 'border-box',
+                            padding: {
+                                top: '4rem',
+                                bottom: '4rem',
+                                left: '4rem',
+                                right: '4rem',
+                            },
+                        },
+                        Track_info: {
+                            align: { items: 'center' },
+                            textAlign: 'center',
+                            maxWidth: '100%',
+                        },
+                        Title: {
+                            font: {
+                                family: $bog_builderui_tokens.font_head,
+                                size: '1.5rem',
+                                weight: 500,
+                            },
+                            whiteSpace: 'normal',
+                        },
+                        Artist: {
+                            font: { size: '1rem' },
+                            whiteSpace: 'normal',
+                        },
+                        Progress_row: {
+                            flex: { basis: '100%' },
+                            padding: { left: 0, right: 0 },
+                        },
+                        Time_row: {
+                            flex: { basis: '100%' },
+                            padding: { left: 0, right: 0 },
+                            margin: { top: '-1rem' },
+                        },
+                        Progress: {
+                            height: '2.5rem',
+                        },
+                        Progress_line: {
+                            top: $mol_style_func.calc('50% - 0.1875rem'),
+                            height: '0.375rem',
+                            borderRadius: '0.1875rem',
+                        },
+                        Progress_bar: {
+                            top: $mol_style_func.calc('50% - 0.1875rem'),
+                            height: '0.375rem',
+                            borderRadius: '0.1875rem',
+                        },
+                        Progress_knob: {
+                            top: $mol_style_func.calc('50% - 0.75rem'),
+                            width: '1.5rem',
+                            height: '1.5rem',
+                            margin: { left: '-0.75rem' },
+                        },
+                        Trim_start_handle: {
+                            top: $mol_style_func.calc('50% - 1rem'),
+                            height: '2rem',
+                        },
+                        Trim_end_handle: {
+                            top: $mol_style_func.calc('50% - 1rem'),
+                            height: '2rem',
+                        },
+                        Time_current: {
+                            font: { size: '0.875rem' },
+                        },
+                        Trim_hint: {
+                            font: { size: '0.875rem' },
+                        },
+                        Time_total: {
+                            font: { size: '0.875rem' },
+                        },
+                        Center: {
+                            flex: { basis: '100%' },
+                            justify: { content: 'center' },
+                            gap: '1.5rem',
+                        },
+                        Options: {
+                            flex: { basis: '100%' },
+                            justify: { content: 'center' },
+                        },
+                        Collapse: {
+                            position: 'absolute',
+                            top: '0.5rem',
+                            left: '0.5rem',
+                        },
+                        Close: {
+                            position: 'absolute',
+                            top: '0.5rem',
+                            right: '0.5rem',
+                        },
+                        Play_icon: {
+                            width: '3rem',
+                            height: '3rem',
+                        },
+                        Pause_icon: {
+                            width: '3rem',
+                            height: '3rem',
+                        },
+                        Prev_icon: {
+                            width: '2rem',
+                            height: '2rem',
+                        },
+                        Next_icon: {
+                            width: '2rem',
+                            height: '2rem',
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_magnify) = class $mol_icon_magnify extends ($.$mol_icon) {
+		path(){
+			return "M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_nav_item) = class $bog_music_nav_item extends ($.$mol_view) {
+		click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.label())]);
+			return obj;
+		}
+		label(){
+			return "";
+		}
+		active(){
+			return "off";
+		}
+		Icon(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "bog_music_nav_active": (this.active())};
+		}
+		event(){
+			return {...(super.event()), "click": (next) => (this.click(next))};
+		}
+		sub(){
+			return [(this.Icon()), (this.Label())];
+		}
+	};
+	($mol_mem(($.$bog_music_nav_item.prototype), "click"));
+	($mol_mem(($.$bog_music_nav_item.prototype), "Label"));
+	($mol_mem(($.$bog_music_nav_item.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_define($bog_music_nav_item, {
+        // shrink явно: у $mol_view по умолчанию flex-shrink: 0, и на крупном
+        // шрифте четыре nowrap-подписи распирали приложение шире экрана.
+        flex: { direction: 'column', grow: 1, shrink: 1, basis: '0%' },
+        align: { items: 'center' },
+        justify: { content: 'center' },
+        gap: '0.125rem',
+        padding: {
+            top: '0.5rem',
+            bottom: '0.5rem',
+            left: '0.25rem',
+            right: '0.25rem',
+        },
+        minWidth: 0,
+        minHeight: '3.75rem',
+        cursor: 'pointer',
+        userSelect: 'none',
+        border: { radius: $bog_builderui_tokens.radius },
+        color: $bog_builderui_tokens.shade,
+        background: { color: 'transparent' },
+        transition: 'color 120ms ease, background-color 120ms ease',
+        Icon: {
+            width: '2rem',
+            height: '2rem',
+            color: 'inherit',
+        },
+        Label: {
+            font: { size: '0.8125rem', weight: 500 },
+            color: 'inherit',
+            whiteSpace: 'nowrap',
+            maxWidth: '100%',
+            overflow: { x: 'hidden', y: 'hidden' },
+            textOverflow: 'ellipsis',
+        },
+        ':hover': {
+            background: { color: $bog_builderui_tokens.hover },
+            color: $bog_builderui_tokens.text,
+        },
+        '@': {
+            bog_music_nav_active: {
+                on: {
+                    color: $bog_builderui_tokens.special,
+                },
+            },
+        },
+    });
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_playlist_music) = class $mol_icon_playlist_music extends ($.$mol_icon) {
+		path(){
+			return "M15,6H3V8H15V6M15,10H3V12H15V10M3,16H11V14H3V16M17,6V14.18C16.69,14.07 16.35,14 16,14A3,3 0 0,0 13,17A3,3 0 0,0 16,20A3,3 0 0,0 19,17V8H22V6H17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_circle) = class $mol_icon_account_circle extends ($.$mol_icon) {
+		path(){
+			return "M12,19.2C9.5,19.2 7.29,17.92 6,16C6.03,14 10,12.9 12,12.9C14,12.9 17.97,14 18,16C16.71,17.92 14.5,19.2 12,19.2M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_text) = class $mol_icon_text extends ($.$mol_icon) {
+		path(){
+			return "M21,6V8H3V6H21M3,18H12V16H3V18M3,13H21V11H3V13Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_text_box) = class $mol_icon_text_box extends ($.$mol_icon) {
+		path(){
+			return "M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_text_box_outline) = class $mol_icon_text_box_outline extends ($.$mol_icon) {
+		path(){
+			return "M5,3C3.89,3 3,3.89 3,5V19C3,20.11 3.89,21 5,21H19C20.11,21 21,20.11 21,19V5C21,3.89 20.11,3 19,3H5M5,5H19V19H5V5M7,7V9H17V7H7M7,11V13H17V11H7M7,15V17H14V15H7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_nav) = class $bog_music_nav extends ($.$mol_view) {
+		search_active(){
+			return "off";
+		}
+		Search_icon(){
+			const obj = new this.$.$mol_icon_magnify();
+			return obj;
+		}
+		search_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tab_search(){
+			const obj = new this.$.$bog_music_nav_item();
+			(obj.label) = () => ("Поиск");
+			(obj.active) = () => ((this.search_active()));
+			(obj.Icon) = () => ((this.Search_icon()));
+			(obj.click) = (next) => ((this.search_click(next)));
+			return obj;
+		}
+		music_active(){
+			return "off";
+		}
+		Music_icon(){
+			const obj = new this.$.$mol_icon_playlist_music();
+			return obj;
+		}
+		music_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tab_music(){
+			const obj = new this.$.$bog_music_nav_item();
+			(obj.label) = () => ("Музыка");
+			(obj.active) = () => ((this.music_active()));
+			(obj.Icon) = () => ((this.Music_icon()));
+			(obj.click) = (next) => ((this.music_click(next)));
+			return obj;
+		}
+		account_active(){
+			return "off";
+		}
+		Account_icon(){
+			const obj = new this.$.$mol_icon_account_circle();
+			return obj;
+		}
+		account_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tab_account(){
+			const obj = new this.$.$bog_music_nav_item();
+			(obj.label) = () => ("Аккаунт");
+			(obj.active) = () => ((this.account_active()));
+			(obj.Icon) = () => ((this.Account_icon()));
+			(obj.click) = (next) => ((this.account_click(next)));
+			return obj;
+		}
+		logs_active(){
+			return "off";
+		}
+		Logs_icon(){
+			const obj = new this.$.$mol_icon_text_box_outline();
+			return obj;
+		}
+		logs_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tab_logs(){
+			const obj = new this.$.$bog_music_nav_item();
+			(obj.label) = () => ("Логи");
+			(obj.active) = () => ((this.logs_active()));
+			(obj.Icon) = () => ((this.Logs_icon()));
+			(obj.click) = (next) => ((this.logs_click(next)));
+			return obj;
+		}
+		section(next){
+			if(next !== undefined) return next;
+			return "music";
+		}
+		dev(){
+			return false;
+		}
+		sub(){
+			return [
+				(this.Tab_search()), 
+				(this.Tab_music()), 
+				(this.Tab_account()), 
+				(this.Tab_logs())
+			];
+		}
+	};
+	($mol_mem(($.$bog_music_nav.prototype), "Search_icon"));
+	($mol_mem(($.$bog_music_nav.prototype), "search_click"));
+	($mol_mem(($.$bog_music_nav.prototype), "Tab_search"));
+	($mol_mem(($.$bog_music_nav.prototype), "Music_icon"));
+	($mol_mem(($.$bog_music_nav.prototype), "music_click"));
+	($mol_mem(($.$bog_music_nav.prototype), "Tab_music"));
+	($mol_mem(($.$bog_music_nav.prototype), "Account_icon"));
+	($mol_mem(($.$bog_music_nav.prototype), "account_click"));
+	($mol_mem(($.$bog_music_nav.prototype), "Tab_account"));
+	($mol_mem(($.$bog_music_nav.prototype), "Logs_icon"));
+	($mol_mem(($.$bog_music_nav.prototype), "logs_click"));
+	($mol_mem(($.$bog_music_nav.prototype), "Tab_logs"));
+	($mol_mem(($.$bog_music_nav.prototype), "section"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_nav extends $.$bog_music_nav {
+            music_active() { return this.section() === 'music' ? 'on' : 'off'; }
+            search_active() { return this.section() === 'search' ? 'on' : 'off'; }
+            account_active() { return this.section() === 'account' ? 'on' : 'off'; }
+            logs_active() { return this.section() === 'logs' ? 'on' : 'off'; }
+            music_click(e) {
+                if (e)
+                    e.preventDefault();
+                this.section('music');
+                return null;
+            }
+            search_click(e) {
+                if (e)
+                    e.preventDefault();
+                this.section('search');
+                return null;
+            }
+            account_click(e) {
+                if (e)
+                    e.preventDefault();
+                this.section('account');
+                return null;
+            }
+            Tab_logs() {
+                return this.dev() ? super.Tab_logs() : null;
+            }
+            logs_click(e) {
+                if (e)
+                    e.preventDefault();
+                this.section('logs');
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_music_nav.prototype, "music_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_nav.prototype, "search_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_nav.prototype, "account_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_nav.prototype, "logs_click", null);
+        $$.$bog_music_nav = $bog_music_nav;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_define($bog_music_nav, {
+        flex: { direction: 'row' },
+        padding: {
+            top: '0.375rem',
+            bottom: '0.375rem',
+            left: '0.5rem',
+            right: '0.5rem',
+        },
+        gap: '0.25rem',
+        background: { color: $bog_builderui_tokens.card },
+        border: { top: { width: '1px', style: 'solid', color: $bog_builderui_tokens.line } },
+    });
+})($ || ($ = {}));
+
+;
+	($.$bog_music_app) = class $bog_music_app extends ($.$mol_page) {
+		Skin(){
+			const obj = new this.$.$bog_builderui_skin();
+			(obj.lights) = () => ((this.lights()));
+			(obj.base) = () => ("zinc");
+			(obj.font_head) = () => ("eb-garamond");
+			return obj;
+		}
+		Theme(){
+			const obj = new this.$.$bog_theme_auto();
+			return obj;
+		}
+		Popup_fix(){
+			const obj = new this.$.$bog_popup_plugin();
+			return obj;
+		}
+		Tooltip(){
+			const obj = new this.$.$bog_tooltip_plugin();
+			return obj;
+		}
+		Brand_image(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ("bog/music/app/favicon.svg");
+			(obj.title) = () => ((this.title()));
+			return obj;
+		}
+		Brand_name(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
+		Brand(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Brand_image()), (this.Brand_name())]);
+			return obj;
+		}
+		Sync_status(){
+			const obj = new this.$.$giper_baza_status();
+			return obj;
+		}
+		nickname_label(){
+			return "";
+		}
+		Nickname_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.nickname_label())]);
+			return obj;
+		}
+		version_label(){
+			return "";
+		}
+		Version(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.version_label())]);
+			return obj;
+		}
+		Wave_icon(){
+			const obj = new this.$.$mol_icon_chart_timeline_variant();
+			return obj;
+		}
+		wave_mode(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Wave_toggle(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ("Моя волна");
+			(obj.Icon) = () => ((this.Wave_icon()));
+			(obj.checked) = (next) => ((this.wave_mode(next)));
+			return obj;
+		}
+		upload_files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		Upload(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ("Загрузить с устройства");
+			(obj.accept) = () => ("audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac");
+			(obj.files) = (next) => ((this.upload_files(next)));
+			return obj;
+		}
+		Theme_btn(){
+			const obj = new this.$.$bog_theme_toggle();
+			(obj.theme_auto) = () => ((this.Theme()));
+			return obj;
+		}
+		scroll(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		dev(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		download_playlist(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		download_playlist_status(){
+			return "";
+		}
+		tg_hint(){
+			return "";
+		}
+		tg_button(){
+			return "";
+		}
+		tg_status(){
+			return "";
+		}
+		tg_link(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		fm_hint(){
+			return "";
+		}
+		fm_button(){
+			return "";
+		}
+		fm_status(){
+			return "";
+		}
+		fm_link(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Account(){
+			const obj = new this.$.$bog_music_account();
+			(obj.font_size) = (next) => ((this.font_size(next)));
+			(obj.dev) = (next) => ((this.dev(next)));
+			(obj.download_playlist) = (next) => ((this.download_playlist(next)));
+			(obj.download_playlist_status) = () => ((this.download_playlist_status()));
+			(obj.tg_hint) = () => ((this.tg_hint()));
+			(obj.tg_button) = () => ((this.tg_button()));
+			(obj.tg_status) = () => ((this.tg_status()));
+			(obj.tg_link) = (next) => ((this.tg_link(next)));
+			(obj.fm_hint) = () => ((this.fm_hint()));
+			(obj.fm_button) = () => ((this.fm_button()));
+			(obj.fm_status) = () => ((this.fm_status()));
+			(obj.fm_link) = (next) => ((this.fm_link(next)));
+			return obj;
+		}
+		Logs(){
+			const obj = new this.$.$bog_music_log_view();
+			(obj.version) = () => ((this.version_label()));
+			return obj;
+		}
+		Feedback(){
+			const obj = new this.$.$bog_feedback2_form();
+			(obj.feedback_id) = () => ("bog_music");
+			return obj;
+		}
+		share_toast_text(){
+			return "";
+		}
+		Share_toast(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.share_toast_text())]);
+			return obj;
+		}
+		beam_text(){
+			return "";
+		}
+		Beam_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.beam_text())]);
+			return obj;
+		}
+		beam_button(){
+			return "";
+		}
+		beam_pull(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Beam_pull(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.beam_button()));
+			(obj.click) = (next) => ((this.beam_pull(next)));
+			return obj;
+		}
+		Beam_bar(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Beam_text()), (this.Beam_pull())]);
+			return obj;
+		}
+		page(next){
+			if(next !== undefined) return next;
+			return "my";
+		}
+		my_title(){
+			return "Моя музыка";
+		}
+		archive_title(){
+			return "Архив";
+		}
+		list_dict(){
+			return {};
+		}
+		Tabs(){
+			const obj = new this.$.$bog_music_playlists();
+			(obj.page) = (next) => ((this.page(next)));
+			(obj.my_title) = () => ((this.my_title()));
+			(obj.archive_title) = () => ((this.archive_title()));
+			(obj.list_dict) = () => ((this.list_dict()));
+			return obj;
+		}
+		visible_keys(){
+			return [];
+		}
+		current_key(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		play_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_mode(){
+			return false;
+		}
+		reorder_to(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		restore_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		delete_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		demote_key(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tracks(){
+			const obj = new this.$.$bog_music_tracks();
+			(obj.track_keys) = () => ((this.visible_keys()));
+			(obj.current_key) = () => ((this.current_key()));
+			(obj.play_key) = (next) => ((this.play_key(next)));
+			(obj.archive_mode) = () => ((this.archive_mode()));
+			(obj.reorder_to) = (next) => ((this.reorder_to(next)));
+			(obj.archive_key) = (next) => ((this.archive_key(next)));
+			(obj.restore_key) = (next) => ((this.restore_key(next)));
+			(obj.delete_key) = (next) => ((this.delete_key(next)));
+			(obj.demote_key) = (next) => ((this.demote_key(next)));
+			return obj;
+		}
+		tube_submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tube_query(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Tube_query(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Что ищем на YouTube?");
+			(obj.value) = (next) => ((this.tube_query(next)));
+			(obj.keyboard) = () => ("search");
+			(obj.enter) = () => ("search");
+			return obj;
+		}
+		tube_find(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tube_find(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Найти");
+			(obj.click) = (next) => ((this.tube_find(next)));
+			return obj;
+		}
+		Tube_bar(){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ("form");
+			(obj.event) = () => ({...(this.$.$mol_view.prototype.event.call(obj)), "submit": (next) => (this.tube_submit(next))});
+			(obj.sub) = () => ([(this.Tube_query()), (this.Tube_find())]);
+			return obj;
+		}
+		tube_rows(){
+			return [];
+		}
+		Tube_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.tube_rows()));
+			return obj;
+		}
+		tube_title(id){
+			return "";
+		}
+		tube_meta(id){
+			return "";
+		}
+		tube_status_text(id){
+			return "";
+		}
+		tube_cover(id){
+			return "";
+		}
+		tube_busy(id){
+			return false;
+		}
+		tube_play(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tube_get(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tube_row(id){
+			const obj = new this.$.$bog_music_tube_row();
+			(obj.title) = () => ((this.tube_title(id)));
+			(obj.subtitle) = () => ((this.tube_meta(id)));
+			(obj.status) = () => ((this.tube_status_text(id)));
+			(obj.cover) = () => ((this.tube_cover(id)));
+			(obj.busy) = () => ((this.tube_busy(id)));
+			(obj.play) = (next) => ((this.tube_play(id, next)));
+			(obj.get) = (next) => ((this.tube_get(id, next)));
+			return obj;
+		}
+		player_full(){
+			return false;
+		}
+		player_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		player_collapse(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Player(){
+			const obj = new this.$.$bog_music_player();
+			(obj.full) = () => ((this.player_full()));
+			(obj.open) = (next) => ((this.player_open(next)));
+			(obj.collapse) = (next) => ((this.player_collapse(next)));
+			(obj.queue_keys) = () => ((this.visible_keys()));
+			(obj.current_key) = (next) => ((this.current_key(next)));
+			return obj;
+		}
+		section(next){
+			if(next !== undefined) return next;
+			return "music";
+		}
+		Nav(){
+			const obj = new this.$.$bog_music_nav();
+			(obj.section) = (next) => ((this.section(next)));
+			(obj.dev) = () => ((this.dev()));
+			return obj;
+		}
+		plugins(){
+			return [
+				(this.Skin()), 
+				(this.Theme()), 
+				(this.Popup_fix()), 
+				(this.Tooltip())
+			];
+		}
+		lights(){
+			return "system";
+		}
+		font_size(next){
+			if(next !== undefined) return next;
+			return "normal";
+		}
+		attr(){
+			return {...(super.attr()), "bog_music_font": (this.font_size())};
+		}
+		title(){
+			return "Bog Music";
+		}
+		Title(){
+			return (this.Brand());
+		}
+		tools(){
+			return [
+				(this.Sync_status()), 
+				(this.Nickname_label()), 
+				(this.Version()), 
+				(this.Wave_toggle()), 
+				(this.Upload()), 
+				(this.Theme_btn())
+			];
+		}
+		body_scroll_top(next){
+			return (this.scroll(next));
+		}
+		body(){
+			return [
+				(this.Account()), 
+				(this.Logs()), 
+				(this.Feedback()), 
+				(this.Share_toast()), 
+				(this.Beam_bar()), 
+				(this.Tabs()), 
+				(this.Tracks()), 
+				(this.Tube_bar()), 
+				(this.Tube_list()), 
+				(this.Tube_row(id))
+			];
+		}
+		foot(){
+			return [(this.Player()), (this.Nav())];
+		}
+	};
+	($mol_mem(($.$bog_music_app.prototype), "Skin"));
+	($mol_mem(($.$bog_music_app.prototype), "Theme"));
+	($mol_mem(($.$bog_music_app.prototype), "Popup_fix"));
+	($mol_mem(($.$bog_music_app.prototype), "Tooltip"));
+	($mol_mem(($.$bog_music_app.prototype), "Brand_image"));
+	($mol_mem(($.$bog_music_app.prototype), "Brand_name"));
+	($mol_mem(($.$bog_music_app.prototype), "Brand"));
+	($mol_mem(($.$bog_music_app.prototype), "Sync_status"));
+	($mol_mem(($.$bog_music_app.prototype), "Nickname_label"));
+	($mol_mem(($.$bog_music_app.prototype), "Version"));
+	($mol_mem(($.$bog_music_app.prototype), "Wave_icon"));
+	($mol_mem(($.$bog_music_app.prototype), "wave_mode"));
+	($mol_mem(($.$bog_music_app.prototype), "Wave_toggle"));
+	($mol_mem(($.$bog_music_app.prototype), "upload_files"));
+	($mol_mem(($.$bog_music_app.prototype), "Upload"));
+	($mol_mem(($.$bog_music_app.prototype), "Theme_btn"));
+	($mol_mem(($.$bog_music_app.prototype), "scroll"));
+	($mol_mem(($.$bog_music_app.prototype), "dev"));
+	($mol_mem(($.$bog_music_app.prototype), "download_playlist"));
+	($mol_mem(($.$bog_music_app.prototype), "tg_link"));
+	($mol_mem(($.$bog_music_app.prototype), "fm_link"));
+	($mol_mem(($.$bog_music_app.prototype), "Account"));
+	($mol_mem(($.$bog_music_app.prototype), "Logs"));
+	($mol_mem(($.$bog_music_app.prototype), "Feedback"));
+	($mol_mem(($.$bog_music_app.prototype), "Share_toast"));
+	($mol_mem(($.$bog_music_app.prototype), "Beam_text"));
+	($mol_mem(($.$bog_music_app.prototype), "beam_pull"));
+	($mol_mem(($.$bog_music_app.prototype), "Beam_pull"));
+	($mol_mem(($.$bog_music_app.prototype), "Beam_bar"));
+	($mol_mem(($.$bog_music_app.prototype), "page"));
+	($mol_mem(($.$bog_music_app.prototype), "Tabs"));
+	($mol_mem(($.$bog_music_app.prototype), "current_key"));
+	($mol_mem(($.$bog_music_app.prototype), "play_key"));
+	($mol_mem(($.$bog_music_app.prototype), "reorder_to"));
+	($mol_mem(($.$bog_music_app.prototype), "archive_key"));
+	($mol_mem(($.$bog_music_app.prototype), "restore_key"));
+	($mol_mem(($.$bog_music_app.prototype), "delete_key"));
+	($mol_mem(($.$bog_music_app.prototype), "demote_key"));
+	($mol_mem(($.$bog_music_app.prototype), "Tracks"));
+	($mol_mem(($.$bog_music_app.prototype), "tube_submit"));
+	($mol_mem(($.$bog_music_app.prototype), "tube_query"));
+	($mol_mem(($.$bog_music_app.prototype), "Tube_query"));
+	($mol_mem(($.$bog_music_app.prototype), "tube_find"));
+	($mol_mem(($.$bog_music_app.prototype), "Tube_find"));
+	($mol_mem(($.$bog_music_app.prototype), "Tube_bar"));
+	($mol_mem(($.$bog_music_app.prototype), "Tube_list"));
+	($mol_mem_key(($.$bog_music_app.prototype), "tube_play"));
+	($mol_mem_key(($.$bog_music_app.prototype), "tube_get"));
+	($mol_mem_key(($.$bog_music_app.prototype), "Tube_row"));
+	($mol_mem(($.$bog_music_app.prototype), "player_open"));
+	($mol_mem(($.$bog_music_app.prototype), "player_collapse"));
+	($mol_mem(($.$bog_music_app.prototype), "Player"));
+	($mol_mem(($.$bog_music_app.prototype), "section"));
+	($mol_mem(($.$bog_music_app.prototype), "Nav"));
+	($mol_mem(($.$bog_music_app.prototype), "font_size"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_boot extends $mol_object {
+        static share_token = '';
+        static init() {
+            $bog_music_stream.install_page();
+            if (typeof location === 'undefined')
+                return;
+            $bog_music_log.init();
+            $bog_music_log.act('запуск приложения');
+            this.import_account_hash();
+            this.parse_share_hash();
+        }
+        static import_account_hash() {
+            const hash = location.hash || '';
+            const match = hash.match(/[#&]account=([^&]+)/);
+            if (!match)
+                return;
+            const key = decodeURIComponent(match[1]);
+            if (key.length < 172) {
+                console.warn('[boot] account key too short, ignoring');
+                return;
+            }
+            const current = $mol_state_local.value('$giper_baza_auth');
+            $mol_state_local.value('$giper_baza_auth', key);
+            this.hash_drop('account');
+            if (current !== key)
+                location.reload();
+        }
+        static parse_share_hash() {
+            const match = (location.hash || '').match(/[#&]share=([^&]+)/);
+            if (match)
+                this.share_token = decodeURIComponent(match[1]);
+        }
+        static clear_share_hash() {
+            this.hash_drop('share');
+            this.share_token = '';
+        }
+        static hash_drop(name) {
+            const hash = (location.hash || '')
+                .replace(new RegExp(`[#&]?${name}=[^&]*`), '')
+                .replace(/^#&/, '#');
+            const url = location.origin + location.pathname + location.search
+                + (hash && hash !== '#' ? hash : '');
+            history.replaceState(null, '', url);
+        }
+    }
+    $.$bog_music_boot = $bog_music_boot;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** @deprecated Use $mol_crypto2_nonce */
+    $.$mol_crypto_salt = $mol_crypto2_nonce;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Symmetric cipher with shortest payload. */
+    class $mol_crypto_sacred extends $mol_buffer {
+        /** Key size in bytes. */
+        static size = 16;
+        /** Makes new random secret. */
+        static make() {
+            return this.from($mol_crypto_salt());
+        }
+        /** Makes from string of buffer view. */
+        static from(serial) {
+            if (typeof serial === 'string') {
+                serial = new Uint8Array([
+                    ...$mol_base64_url_decode(serial),
+                ]);
+            }
+            if (!(serial instanceof Uint8Array)) {
+                serial = new Uint8Array(serial.buffer, serial.byteOffset, serial.byteLength);
+            }
+            ;
+            serial[0] = 0xFF;
+            const sacred = super.from(serial);
+            return sacred;
+        }
+        static async from_native(native) {
+            const buf = await $mol_crypto_native.subtle.exportKey('raw', native).catch($mol_crypto_restack);
+            const sacred = this.from(new Uint8Array(buf));
+            sacred._native = native;
+            return sacred;
+        }
+        constructor(buffer, byteOffset, byteLength) {
+            super(buffer, byteOffset, byteLength);
+            if (this.getUint8(0) !== 0xFF)
+                $mol_fail(new Error('Buffer should starts with 0xFF byte'));
+        }
+        toString() {
+            return $mol_base64_url_encode(this.asArray());
+        }
+        _native;
+        /** Native crypto secret */
+        async native() {
+            return this._native ?? (this._native = await $mol_crypto_native.subtle.importKey('raw', this, {
+                name: 'AES-CBC',
+                length: 128,
+            }, true, ['encrypt', 'decrypt']).catch($mol_crypto_restack));
+        }
+        /** Encrypt any binary message. 16n bytes */
+        async encrypt(open, salt) {
+            return new Uint8Array(await $mol_crypto_native.subtle.encrypt({
+                name: 'AES-CBC',
+                length: 128,
+                tagLength: 32,
+                iv: salt,
+            }, await this.native(), open).catch($mol_crypto_restack));
+        }
+        /** Decrypt any binary message. */
+        async decrypt(closed, salt) {
+            return new Uint8Array(await $mol_crypto_native.subtle.decrypt({
+                name: 'AES-CBC',
+                length: 128,
+                tagLength: 32,
+                iv: salt,
+            }, await this.native(), closed).catch($mol_crypto_restack));
+        }
+        /** Encrypts 0xFF prefixed buffer. 16 bytes */
+        async close(opened, salt) {
+            if (opened.getUint8(0) !== 0xFF)
+                throw new Error('Closable buffer should starts with 0xFF');
+            const trimed = new Uint8Array(opened.buffer, opened.byteOffset + 1, opened.byteLength - 1);
+            return this.encrypt(trimed, salt);
+        }
+        /** Decrypts 0xFF prefixed buffer. 16 bytes */
+        async open(closed, salt) {
+            const trimed = await this.decrypt(closed, salt);
+            if (trimed.byteLength !== closed.byteLength - 1)
+                throw new Error('Length of opened buffer should be ' + (closed.byteLength - 1));
+            const opened = new Uint8Array(closed.byteLength);
+            opened[0] = 0xFF;
+            opened.set(trimed, 1);
+            return opened;
+        }
+    }
+    __decorate([
+        $mol_memo.method
+    ], $mol_crypto_sacred.prototype, "toString", null);
+    $.$mol_crypto_sacred = $mol_crypto_sacred;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_share extends $mol_object {
+        static instance() {
+            return new $bog_music_share;
+        }
+        account() {
+            return $bog_music_account_baza.home();
+        }
+        static plural_tracks(n) {
+            const mod10 = n % 10;
+            const mod100 = n % 100;
+            if (mod10 === 1 && mod100 !== 11)
+                return 'трек';
+            if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
+                return 'трека';
+            return 'треков';
+        }
+        mode(next) {
+            return next ?? false;
+        }
+        selection(next) {
+            return next ?? [];
+        }
+        selected(key) {
+            return this.selection().includes(key);
+        }
+        enter(key) {
+            $bog_music_log.act(`режим шаринга включён с ${key}`);
+            this.selection([key]);
+            this.mode(true);
+        }
+        toggle(key) {
+            const cur = this.selection();
+            const next = cur.includes(key) ? cur.filter(k => k !== key) : [...cur, key];
+            this.selection(next);
+        }
+        exit() {
+            this.selection([]);
+            this.mode(false);
+        }
+        _status_logged = '';
+        status(next) {
+            if (next && next !== this._status_logged)
+                $bog_music_log.act(`шар: ${next}`);
+            if (next !== undefined)
+                this._status_logged = next;
+            return next ?? '';
+        }
+        _import_logged = '';
+        import_status(next) {
+            if (next && next !== this._import_logged)
+                $bog_music_log.act(`приём шара: ${next}`);
+            if (next !== undefined)
+                this._import_logged = next;
+            return next ?? '';
+        }
+        share_single(key) {
+            void this.share_keys([key]);
+        }
+        submit() {
+            const keys = [...this.selection()];
+            setTimeout(() => {
+                this.exit();
+                void this.share_keys(keys);
+            });
+        }
+        static open_span = 7 * 24 * 60 * 60 * 1000;
+        opens(next) {
+            const list = this.$.$mol_state_local.value('bog_music_shares_open', next) ?? [];
+            return list.filter(open => Date.now() - open.at < $bog_music_share.open_span);
+        }
+        sender_name() {
+            return this.account().nickname() || $bog_music_device.title();
+        }
+        async share_keys(keys) {
+            try {
+                const ready = [];
+                for (const key of keys) {
+                    if (await $bog_music_disk.probe(key))
+                        ready.push(key);
+                }
+                if (!ready.length) {
+                    this.status('Этих треков нет на устройстве');
+                    return;
+                }
+                this.status('Готовлю ссылку…');
+                const secret = $mol_crypto_sacred.make();
+                const sender = await $mol_wire_async(this).sender_name();
+                const sender_cipher = await this.encrypt(secret, $mol_charset_encode(sender));
+                const burn = await $giper_baza_auth._generate();
+                const land = await $mol_wire_async(this).land_make(sender_cipher, ready.length, burn.pass());
+                this.opens([...this.opens(), { land, key: secret.toString(), keys: ready, at: Date.now() }]);
+                $bog_music_log.act(`одноразовая ссылка на ${ready.length}`, land);
+                const url = this.url_for(land, secret.toString(), burn.toString() + burn.toStringPrivate());
+                const note = 'Не закрывай приложение, пока получатель не заберёт';
+                try {
+                    await navigator.clipboard.writeText(url);
+                    this.status(`Ссылка на ${ready.length} ${$bog_music_share.plural_tracks(ready.length)} скопирована. ${note}`);
+                }
+                catch {
+                    this.status(`${url} · ${note}`);
+                }
+            }
+            catch (error) {
+                $bog_music_log.err(`шар не создан: ${error?.message ?? error}`);
+                this.status('Не получилось создать ссылку');
+            }
+        }
+        land_make(sender_cipher, count, burn) {
+            const preset = [[null, $giper_baza_rank_read], [burn, $giper_baza_rank_post('just')]];
+            const land = $giper_baza_glob.land_grab(preset);
+            const data = land.Data($bog_music_share_baza);
+            data.Kind('auto').val($bog_music_share_baza.kind);
+            data.Sender('auto').val(sender_cipher);
+            data.Count('auto').val(count);
+            this.keep(land.link().str);
+            return land.link().str;
+        }
+        url_for(land, key, burn) {
+            return location.origin + location.pathname + location.search + '#share=' + land + '.' + key + '.' + burn;
+        }
+        _kept = new Map();
+        keep(link) {
+            if (this._kept.has(link))
+                return;
+            const atom = new $mol_wire_atom(`bog_music_share_keep<${link}>`, () => {
+                $giper_baza_glob.Land(new $giper_baza_link(link)).sync();
+                return null;
+            });
+            this._kept.set(link, atom);
+            atom.fresh();
+        }
+        data(link) {
+            return $giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_music_share_baza);
+        }
+        offer_of(link) {
+            return (this.data(link).Offer()?.val() ?? null);
+        }
+        answer_put(link, cipher) {
+            const data = this.data(link);
+            data.Answer('auto').val(cipher);
+            data.Done('auto').val(true);
+        }
+        _timer = 0;
+        _busy = false;
+        watch() {
+            if (this._timer)
+                clearInterval(this._timer);
+            for (const open of this.opens())
+                this.keep(open.land);
+            this._timer = setInterval(() => void this.step(), 3000);
+            return null;
+        }
+        destructor() {
+            clearInterval(this._timer);
+        }
+        async step() {
+            if (this._busy)
+                return;
+            this._busy = true;
+            try {
+                for (const open of this.opens()) {
+                    this.keep(open.land);
+                    const cipher = await $mol_wire_async(this).offer_of(open.land);
+                    if (!cipher?.byteLength)
+                        continue;
+                    this.opens(this.opens().filter(one => one.land !== open.land));
+                    await this.serve(open, cipher).catch((error) => {
+                        $bog_music_log.err(`шар не отдан: ${error?.message ?? error}`, open.land);
+                        this.status('Не получилось отдать треки, ссылка сгорела — сделай новую');
+                    });
+                }
+            }
+            finally {
+                this._busy = false;
+            }
+        }
+        async serve(open, cipher) {
+            const secret = $mol_crypto_sacred.from(open.key);
+            const offer = JSON.parse($mol_charset_decode(await this.decrypt(secret, cipher)));
+            if (typeof offer?.sdp !== 'string')
+                throw new Error('битое приглашение');
+            const { rtc, channel, sdp } = await $bog_music_peer.answer(offer.sdp);
+            try {
+                const answer = await this.encrypt(secret, $mol_charset_encode(JSON.stringify({ sdp })));
+                await $mol_wire_async(this).answer_put(open.land, answer);
+                this.status('Получатель на связи, отдаю…');
+                const ready = await $bog_music_peer.opened(await channel);
+                const items = [];
+                for (const key of open.keys) {
+                    const file = await $bog_music_disk.file(key);
+                    const meta = await $mol_wire_async(this.account()).info(key);
+                    if (file && meta)
+                        items.push({ key, meta, file });
+                }
+                await $bog_music_peer.send(ready, items, done => this.status(`Отдаю: ${done} из ${items.length}`));
+                $bog_music_log.act(`шар отдан: ${items.length}`, open.land);
+                this.status(`Отдано: ${items.length} ${$bog_music_share.plural_tracks(items.length)}, ссылка сгорела`);
+            }
+            finally {
+                rtc.close();
+            }
+        }
+        token_done(token, next) {
+            return next ?? false;
+        }
+        head(link) {
+            const data = this.data(link);
+            return {
+                kind: data.Kind()?.val() ?? '',
+                sender: (data.Sender()?.val() ?? null),
+                count: Number(data.Count()?.val() ?? 0),
+                done: Boolean(data.Done()?.val()),
+                answer: (data.Answer()?.val() ?? null),
+            };
+        }
+        offer_put(link, cipher, burn_str) {
+            const burn = $giper_baza_auth.from(burn_str);
+            const land = $giper_baza_glob.Land(new $giper_baza_link(link));
+            Object.assign(land, { auth: () => burn });
+            land.Data($bog_music_share_baza).Offer('auto').val(cipher);
+        }
+        static wait(ms) {
+            return new Promise(done => setTimeout(done, ms));
+        }
+        async import(token) {
+            if (!token || this.token_done(token))
+                return null;
+            this.token_done(token, true);
+            $bog_music_boot.clear_share_hash();
+            const [link, key_str, burn_str] = token.split('.');
+            if (!link || !key_str || !burn_str) {
+                this.import_status('Битая ссылка');
+                return null;
+            }
+            const self = $mol_wire_async(this);
+            try {
+                const secret = $mol_crypto_sacred.from(key_str);
+                this.keep(link);
+                this.import_status('Открываю ссылку…');
+                let head = null;
+                for (let i = 0; i < 30; i++) {
+                    head = await self.head(link).catch(() => null);
+                    if (head?.kind)
+                        break;
+                    await $bog_music_share.wait(1000);
+                }
+                if (!head?.kind) {
+                    this.import_status('Ссылка не открылась — она старая или ещё не доехала');
+                    return null;
+                }
+                if (head.kind !== $bog_music_share_baza.kind) {
+                    this.import_status('Старая ссылка, попроси новую');
+                    return null;
+                }
+                if (head.done) {
+                    this.import_status('Ссылка уже использована');
+                    return null;
+                }
+                const sender = head.sender?.byteLength
+                    ? $mol_charset_decode(await this.decrypt(secret, head.sender))
+                    : 'Расшаренный';
+                const playlist = 'shared:' + sender;
+                const { rtc, channel, sdp } = await $bog_music_peer.offer();
+                try {
+                    const cipher = await this.encrypt(secret, $mol_charset_encode(JSON.stringify({ sdp })));
+                    await self.offer_put(link, cipher, burn_str);
+                    let answer = null;
+                    for (let i = 0; i < 300 && !answer; i++) {
+                        this.import_status(`Жду, когда ${sender} откроет приложение…`);
+                        const now = await self.head(link).catch(() => null);
+                        if (now?.answer?.byteLength) {
+                            answer = JSON.parse($mol_charset_decode(await this.decrypt(secret, now.answer)));
+                            break;
+                        }
+                        await $bog_music_share.wait(1000);
+                    }
+                    if (!answer) {
+                        this.import_status(`${sender} так и не открыл приложение`);
+                        return null;
+                    }
+                    await $bog_music_peer.finish(rtc, answer.sdp);
+                    const open = await $bog_music_peer.opened(channel);
+                    const got = await $bog_music_peer.receive(open, item => this.account().import_audio(item.key, item.meta, item.bytes, playlist), (done, count) => this.import_status(`От ${sender}: ${done} из ${count}`));
+                    this.import_status(`От ${sender}: ${got} ${$bog_music_share.plural_tracks(got)}`);
+                    return got ? playlist : null;
+                }
+                finally {
+                    rtc.close();
+                }
+            }
+            catch (error) {
+                $bog_music_log.err(`приём шара не удался: ${error?.message ?? error}`, link);
+                this.import_status('Не получилось: ' + (error?.message ?? 'ошибка'));
+                return null;
+            }
+        }
+        async encrypt(key, data) {
+            const iv = crypto.getRandomValues(new Uint8Array(16));
+            const ct = await key.encrypt(data, iv);
+            const out = new Uint8Array(iv.length + ct.length);
+            out.set(iv, 0);
+            out.set(ct, iv.length);
+            return out;
+        }
+        async decrypt(key, blob) {
+            if (blob.length < 17)
+                throw new Error('cipher too short');
+            return key.decrypt(blob.slice(16), blob.slice(0, 16));
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_music_share.prototype, "mode", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_share.prototype, "selection", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "enter", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "toggle", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "exit", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_share.prototype, "status", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_share.prototype, "import_status", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "share_single", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "land_make", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "answer_put", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_share.prototype, "watch", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_music_share.prototype, "token_done", null);
+    __decorate([
+        $mol_action
+    ], $bog_music_share.prototype, "offer_put", null);
+    __decorate([
+        $mol_mem
+    ], $bog_music_share, "instance", null);
+    $.$bog_music_share = $bog_music_share;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_music_share_baza extends $giper_baza_dict.with({
+        Kind: $giper_baza_atom.of($mol_schema_string),
+        Sender: $giper_baza_atom.of(Uint8Array),
+        Count: $giper_baza_atom.of($mol_schema_float),
+        Offer: $giper_baza_atom.of(Uint8Array),
+        Answer: $giper_baza_atom.of(Uint8Array),
+        Done: $giper_baza_atom.of($mol_schema_boolean),
+    }) {
+        static kind = 'p2p1';
+    }
+    $.$bog_music_share_baza = $bog_music_share_baza;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const reward_of = {
+        play: 0.5,
+        skip: -0.5,
+        like: 1,
+        dislike: -1,
+    };
+    class $bog_recsys extends $mol_object2 {
+        static namespace(next) {
+            return next ?? 'default';
+        }
+        static epsilon(next) {
+            return next ?? 0.15;
+        }
+        static decay(next) {
+            return next ?? 0.92;
+        }
+        static storage_key() {
+            return `bog_recsys_${this.namespace()}_rewards`;
+        }
+        static rewards(next) {
+            const stored = this.$.$mol_state_local.value(this.storage_key(), next ?? undefined);
+            return stored ?? {};
+        }
+        static recommend(pool, opts) {
+            const exclude_set = opts?.exclude
+                ? (opts.exclude instanceof Set
+                    ? opts.exclude
+                    : new Set(opts.exclude))
+                : null;
+            const filtered = exclude_set
+                ? pool.filter(item => !exclude_set.has(item.id))
+                : pool.slice();
+            if (filtered.length === 0)
+                return [];
+            const limit = Math.max(1, opts?.limit ?? 1);
+            const seed = opts?.seed ?? null;
+            const rewards = this.rewards();
+            const eps = this.epsilon();
+            const rand = this.$.Math.random;
+            const explore = rand() < eps;
+            if (explore) {
+                const out = [];
+                const remaining = filtered.slice();
+                while (out.length < limit && remaining.length > 0) {
+                    const idx = Math.floor(rand() * remaining.length);
+                    out.push(remaining.splice(idx, 1)[0]);
+                }
+                return out;
+            }
+            const scored = filtered.map(item => ({
+                item,
+                score: 0.6 * cosine(seed?.embedding, item.embedding)
+                    + 0.3 * tag_reward(item.tags, rewards)
+                    + 0.1 * rand(),
+            }));
+            scored.sort((a, b) => b.score - a.score);
+            return scored.slice(0, limit).map(s => s.item);
+        }
+        static feedback(item, signal) {
+            const tags = item.tags;
+            if (!tags || tags.length === 0)
+                return;
+            const r = reward_of[signal];
+            const decay = this.decay();
+            try {
+                const current = { ...this.rewards() };
+                for (const tag of tags) {
+                    const prev = current[tag] ?? 0;
+                    current[tag] = prev * decay + r;
+                }
+                this.$.$mol_state_local.value(this.storage_key(), current);
+                this.rewards(current);
+            }
+            catch (error) {
+                console.warn(error);
+            }
+        }
+        static reset() {
+            try {
+                this.$.$mol_state_local.value(this.storage_key(), null);
+                this.rewards({});
+            }
+            catch (error) {
+                console.warn(error);
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_recsys, "namespace", null);
+    __decorate([
+        $mol_mem
+    ], $bog_recsys, "epsilon", null);
+    __decorate([
+        $mol_mem
+    ], $bog_recsys, "decay", null);
+    __decorate([
+        $mol_mem
+    ], $bog_recsys, "rewards", null);
+    __decorate([
+        $mol_action
+    ], $bog_recsys, "feedback", null);
+    __decorate([
+        $mol_action
+    ], $bog_recsys, "reset", null);
+    $.$bog_recsys = $bog_recsys;
+    function cosine(a, b) {
+        if (!a || !b)
+            return 0;
+        const len = Math.min(a.length, b.length);
+        if (len === 0)
+            return 0;
+        let dot = 0, na = 0, nb = 0;
+        for (let i = 0; i < len; ++i) {
+            const x = a[i], y = b[i];
+            dot += x * y;
+            na += x * x;
+            nb += y * y;
+        }
+        if (na === 0 || nb === 0)
+            return 0;
+        return dot / Math.sqrt(na * nb);
+    }
+    function tag_reward(tags, rewards) {
+        if (!tags || tags.length === 0)
+            return 0;
+        let sum = 0, n = 0;
+        for (const tag of tags) {
+            const r = rewards[tag];
+            if (typeof r === 'number') {
+                sum += r;
+                ++n;
+            }
+        }
+        return n === 0 ? 0 : sum / n;
+    }
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Минимальный ZIP-энкодер (STORE, без компрессии — аудио и так сжато).
+     * Используется для выгрузки плейлиста файлом в PWA-режиме.
+     */
+    class $bog_music_zip extends $mol_object {
+        /** Имя файла внутри архива: `001 - Artist - Title.mp3`. */
+        static entry_name(index, artist, title, mime) {
+            const ext_map = {
+                'audio/mpeg': 'mp3',
+                'audio/mp3': 'mp3',
+                'audio/mp4': 'm4a',
+                'audio/aac': 'aac',
+                'audio/ogg': 'ogg',
+                'audio/webm': 'webm',
+                'audio/wav': 'wav',
+                'audio/flac': 'flac',
+            };
+            const ext = ext_map[(mime || '').toLowerCase()] || 'mp3';
+            const safe = (s) => (s || '').replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').trim().slice(0, 80);
+            const num = String(index).padStart(3, '0');
+            return `${num} - ${safe(artist) || 'unknown'} - ${safe(title) || 'unknown'}.${ext}`;
+        }
+        static _crc32_table = null;
+        static crc32_table() {
+            if (this._crc32_table)
+                return this._crc32_table;
+            const t = new Uint32Array(256);
+            for (let i = 0; i < 256; i++) {
+                let c = i;
+                for (let k = 0; k < 8; k++)
+                    c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+                t[i] = c;
+            }
+            this._crc32_table = t;
+            return t;
+        }
+        static crc32(data) {
+            const t = this.crc32_table();
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < data.length; i++)
+                crc = (crc >>> 8) ^ t[(crc ^ data[i]) & 0xFF];
+            return (crc ^ 0xFFFFFFFF) >>> 0;
+        }
+        static build(files) {
+            const enc = new TextEncoder();
+            const entries = files.map(f => ({
+                name: enc.encode(f.name),
+                data: f.data,
+                crc: this.crc32(f.data),
+                offset: 0,
+            }));
+            let local_size = 0;
+            let cd_size = 0;
+            for (const e of entries) {
+                local_size += 30 + e.name.length + e.data.length;
+                cd_size += 46 + e.name.length;
+            }
+            const ab = new ArrayBuffer(local_size + cd_size + 22);
+            const buf = new Uint8Array(ab);
+            const view = new DataView(ab);
+            let off = 0;
+            for (const e of entries) {
+                e.offset = off;
+                view.setUint32(off, 0x04034b50, true);
+                view.setUint16(off + 4, 20, true);
+                view.setUint16(off + 6, 0x0800, true); // UTF-8 filename
+                view.setUint16(off + 8, 0, true); // STORE
+                view.setUint16(off + 10, 0, true);
+                view.setUint16(off + 12, 0, true);
+                view.setUint32(off + 14, e.crc, true);
+                view.setUint32(off + 18, e.data.length, true);
+                view.setUint32(off + 22, e.data.length, true);
+                view.setUint16(off + 26, e.name.length, true);
+                view.setUint16(off + 28, 0, true);
+                buf.set(e.name, off + 30);
+                buf.set(e.data, off + 30 + e.name.length);
+                off += 30 + e.name.length + e.data.length;
+            }
+            const cd_off = off;
+            for (const e of entries) {
+                view.setUint32(off, 0x02014b50, true);
+                view.setUint16(off + 4, 20, true);
+                view.setUint16(off + 6, 20, true);
+                view.setUint16(off + 8, 0x0800, true);
+                view.setUint16(off + 10, 0, true);
+                view.setUint16(off + 12, 0, true);
+                view.setUint16(off + 14, 0, true);
+                view.setUint32(off + 16, e.crc, true);
+                view.setUint32(off + 20, e.data.length, true);
+                view.setUint32(off + 24, e.data.length, true);
+                view.setUint16(off + 28, e.name.length, true);
+                view.setUint16(off + 30, 0, true);
+                view.setUint16(off + 32, 0, true);
+                view.setUint16(off + 34, 0, true);
+                view.setUint16(off + 36, 0, true);
+                view.setUint32(off + 38, 0, true);
+                view.setUint32(off + 42, e.offset, true);
+                buf.set(e.name, off + 46);
+                off += 46 + e.name.length;
+            }
+            view.setUint32(off, 0x06054b50, true);
+            view.setUint16(off + 4, 0, true);
+            view.setUint16(off + 6, 0, true);
+            view.setUint16(off + 8, entries.length, true);
+            view.setUint16(off + 10, entries.length, true);
+            view.setUint32(off + 12, cd_size, true);
+            view.setUint32(off + 16, cd_off, true);
+            view.setUint16(off + 20, 0, true);
+            return ab;
+        }
+    }
+    $.$bog_music_zip = $bog_music_zip;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Клиент телеграм-инбокса: юзер пересылает музыку боту, приложение забирает
+     * её и кладёт в baza. Сервер — bog/music/srv/tg, живёт в том же процессе,
+     * что и tube (см. tube/api/api.node.ts).
+     *
+     * Методы плоско-асинхронные, без @$mol_mem: очередь меняется на стороне
+     * Телеграма, и мемоизировать её нечем — опросом рулит view приложения.
+     */
+    class $bog_music_tg extends $mol_object {
+        static base = 'https://tube.87.120.36.150.ip.giper.dev';
+        /** Юзернейм бота. Уточняется из /tg/status, чтобы не хардкодить дважды. */
+        static bot = 'bog_music_bot';
+        /** Секрет устройства: им линкуется чат и читается очередь. */
+        static code() {
+            return $bog_music_code.value('bog_music_tg_code');
+        }
+        /** Завести код при первом подключении. Только из @$mol_action. */
+        static code_ensure() {
+            return $bog_music_code.ensure('bog_music_tg_code');
+        }
+        static link_url(code) {
+            return `https://t.me/${this.bot}?start=${encodeURIComponent(code)}`;
+        }
+        static async status(code) {
+            const resp = await fetch(`${this.base}/tg/status?code=${encodeURIComponent(code)}`);
+            if (!resp.ok)
+                throw new Error(`tg status ${resp.status}`);
+            const data = await resp.json();
+            if (data.bot)
+                this.bot = data.bot;
+            return data;
+        }
+        static async inbox(code) {
+            const resp = await fetch(`${this.base}/tg/inbox?code=${encodeURIComponent(code)}`);
+            if (!resp.ok)
+                throw new Error(`tg inbox ${resp.status}`);
+            return await resp.json();
+        }
+        static async file(code, id) {
+            const resp = await fetch(`${this.base}/tg/file?code=${encodeURIComponent(code)}&id=${encodeURIComponent(id)}`);
+            if (!resp.ok)
+                throw new Error(`tg file ${resp.status}`);
+            const buffer = new Uint8Array(await resp.arrayBuffer());
+            if (!buffer.byteLength)
+                throw new Error('tg file: пустой ответ');
+            return buffer;
+        }
+        static async ack(code, id) {
+            await fetch(`${this.base}/tg/ack?code=${encodeURIComponent(code)}&id=${encodeURIComponent(id)}`);
+        }
+    }
+    $.$bog_music_tg = $bog_music_tg;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_yard extends $giper_baza_yard {
+        static stagger = 300; // ms
+        port_make(socket, link) {
+            const port = new $mol_rest_port_ws_std;
+            port.socket = socket;
+            socket.onmessage = async (event) => {
+                if (event.data instanceof ArrayBuffer) {
+                    if (!event.data.byteLength)
+                        return;
+                    await $mol_wire_async(this).port_income(port, new Uint8Array(event.data));
+                    return;
+                }
+                this.$.$mol_log3_fail({
+                    place: this,
+                    message: 'Wrong data',
+                    data: event.data,
+                });
+            };
+            const beat = setInterval(() => socket.send(new Uint8Array), 30000);
+            socket.onclose = () => {
+                clearInterval(beat);
+                setTimeout(() => this.reconnects(null), 1000);
+            };
+            port.destructor = () => {
+                socket.onclose = () => { };
+                clearInterval(beat);
+                socket.close();
+            };
+            this.$.$mol_log3_come({
+                place: this,
+                message: 'Connected',
+                port: $mol_key(port),
+                server: link,
+            });
+            return port;
+        }
+        master() {
+            this.reconnects();
+            const links = this.$.$giper_baza_yard.masters();
+            if (!links.length)
+                return null;
+            const first = ($mol_wire_probe(() => this.master_cursor()) ?? 0) % links.length;
+            const order = links.map((_, index) => (first + index) % links.length);
+            const sockets = new Map();
+            const timers = new Set();
+            let won = false;
+            let started = 0;
+            let failed = 0;
+            const stop = (keep) => {
+                for (const timer of timers)
+                    clearTimeout(timer);
+                timers.clear();
+                for (const [index, socket] of sockets) {
+                    if (index === keep)
+                        continue;
+                    socket.onopen = null;
+                    socket.onerror = null;
+                    socket.onclose = null;
+                    socket.close();
+                }
+            };
+            const promise = new Promise(done => {
+                const next = () => {
+                    if (won || started >= order.length)
+                        return;
+                    const index = order[started++];
+                    const link = links[index];
+                    const socket = new this.$.$mol_dom_context.WebSocket(link.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
+                    socket.binaryType = 'arraybuffer';
+                    sockets.set(index, socket);
+                    socket.onopen = () => {
+                        if (won)
+                            return;
+                        won = true;
+                        stop(index);
+                        socket.onerror = null;
+                        this.master_cursor(index);
+                        done(this.port_make(socket, link));
+                    };
+                    socket.onerror = () => {
+                        socket.onopen = null;
+                        socket.onerror = null;
+                        if (won)
+                            return;
+                        if (++failed >= order.length) {
+                            timers.add(setTimeout(() => this.reconnects(null), 1000));
+                            return;
+                        }
+                        next();
+                    };
+                    if (started < order.length)
+                        timers.add(setTimeout(next, this.constructor.stagger));
+                };
+                next();
+            });
+            return Object.assign(promise, { destructor: () => { if (!won)
+                    stop(); } });
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_yard.prototype, "master", null);
+    $.$bog_yard = $bog_yard;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    // Инкрементится автоматически git-хуком hooks/pre-push при каждом push.
+    $.$bog_music_version = 'v1.96';
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+        if (local)
+            $giper_baza_yard.masters = () => $giper_baza_yard.masters_override() ?? ['http://localhost:9090/'];
+        $bog_music_boot.init();
+        class $bog_music_app extends $.$bog_music_app {
+            title() {
+                return 'Bog Music';
+            }
+            account() {
+                return $bog_music_account_baza.home();
+            }
+            share() {
+                return $bog_music_share.instance();
+            }
+            page(next) {
+                if (next !== undefined) {
+                    if (next === 'share') {
+                        $bog_music_log.act('финализация шара по клику на табе');
+                        this.share().submit();
+                        return $mol_state_arg.value('page') ?? 'my';
+                    }
+                    $bog_music_log.act(`вкладка: ${next}`);
+                    $mol_state_arg.value('page', next);
+                    $mol_state_local.value('page', next);
+                    return next;
+                }
+                const page = $mol_state_arg.value('page')
+                    ?? $mol_state_local.value('page')
+                    ?? 'my';
+                if (page.startsWith('list:')) {
+                    const exists = this.account().playlists().some(pl => pl.id === page);
+                    if (!exists) {
+                        $mol_state_local.value('page', 'my');
+                        return 'my';
+                    }
+                }
+                return page;
+            }
+            list_id() {
+                const page = this.page();
+                return page.startsWith('list:') ? page : '';
+            }
+            _lists_migrated = false;
+            lists_migrate() {
+                if (this._lists_migrated)
+                    return;
+                this._lists_migrated = true;
+                $mol_wire_async(this.account()).migrate_lists();
+            }
+            archive_mode() {
+                return this.page() === 'archive';
+            }
+            visible_keys() {
+                const p = this.page();
+                if (p === 'share')
+                    return this.share().selection();
+                if (p === 'archive')
+                    return this.account().keys_in('archive');
+                if (p.startsWith('list:'))
+                    return this.account().list_keys(p);
+                if (p.startsWith('shared:'))
+                    return this.account().keys_in(p);
+                return this.account().keys_in('');
+            }
+            my_title() {
+                const my = this.account().keys_in('').length;
+                return my ? `Моя музыка ${my}` : 'Моя музыка';
+            }
+            archive_title() {
+                const arch = this.account().keys_in('archive').length;
+                return arch ? `Архив ${arch}` : 'Архив';
+            }
+            list_dict() {
+                const opts = {};
+                if (this.share().mode()) {
+                    const n = this.share().selection().length;
+                    opts['share'] = n ? `Расшаренный ${n}` : 'Расшаренный';
+                }
+                for (const pl of this.account().playlists()) {
+                    const n = this.account().list_keys(pl.id).length;
+                    opts[pl.id] = n ? `${pl.title} ${n}` : pl.title;
+                }
+                for (const pl of this.account().shared_playlists()) {
+                    opts[pl.id] = `${pl.sender} ${pl.count}`;
+                }
+                return opts;
+            }
+            current_key(next) {
+                return next ?? '';
+            }
+            play_key(key) {
+                if (!key)
+                    return;
+                $bog_music_log.act(`воспроизведение ${key}`);
+                this.tube_current(-1);
+                const keys = this.visible_keys();
+                const idx = keys.indexOf(key);
+                this.Player().queue_index(idx >= 0 ? idx : 0);
+                this.Player().play_track(key);
+                const item = this.recsys_item(key);
+                if (item) {
+                    $bog_recsys.namespace('music');
+                    $bog_recsys.feedback(item, 'play');
+                }
+            }
+            wave_mode(next) {
+                if (next !== undefined)
+                    $bog_music_log.act(`моя волна: ${next ? 'включена' : 'выключена'}`);
+                return $mol_state_local.value('music_wave_mode', next) ?? false;
+            }
+            recsys_item(key) {
+                const meta = this.account().info(key);
+                if (!meta)
+                    return null;
+                const tags = [];
+                if (meta.artist)
+                    tags.push('artist:' + meta.artist.toLowerCase().trim());
+                return { id: key, tags };
+            }
+            player_pick_next(current) {
+                if (!this.wave_mode())
+                    return null;
+                const pool = this.visible_keys();
+                if (!pool.length)
+                    return null;
+                $bog_recsys.namespace('music');
+                const items = pool.map(k => this.recsys_item(k)).filter(Boolean);
+                const seed = current ? this.recsys_item(current) : null;
+                const picked = $bog_recsys.recommend(items, {
+                    seed,
+                    exclude: current ? [current] : [],
+                    limit: 1,
+                })[0];
+                return picked?.id ?? null;
+            }
+            reorder_to(args) {
+                if (!args)
+                    return;
+                const { from, to } = args;
+                const keys = this.visible_keys();
+                if (from === to)
+                    return;
+                if (from < 0 || to < 0 || from >= keys.length || to >= keys.length)
+                    return;
+                const moving = keys[from];
+                $bog_music_log.act(`перестановка ${moving}: ${from} → ${to}`);
+                const list = this.list_id();
+                if (list)
+                    return this.account().list_move(list, moving, keys[to]);
+                const step = from < to ? 1 : -1;
+                for (let i = from; i !== to; i += step) {
+                    this.account().swap_order(moving, keys[i + step]);
+                }
+            }
+            archive_key(key) {
+                if (!key)
+                    return;
+                $bog_music_log.act(`в архив ${key}`);
+                this.account().move_to_playlist(key, 'archive');
+            }
+            restore_key(key) {
+                if (!key)
+                    return;
+                $bog_music_log.act(`из архива ${key}`);
+                this.account().move_to_playlist(key, '');
+            }
+            demote_key(key) {
+                if (!key)
+                    return;
+                const keys = this.visible_keys();
+                const from = keys.indexOf(key);
+                if (from < 0 || from === keys.length - 1)
+                    return;
+                $bog_music_log.act(`вниз списка ${key}`);
+                const current = this.current_key();
+                const at = current ? keys.indexOf(current) : -1;
+                const follow = at < 0 ? '' : keys.slice(at + 1).find(k => k !== key) ?? '';
+                const list = this.list_id();
+                if (list)
+                    this.account().list_move(list, key, keys[keys.length - 1]);
+                else
+                    this.account().move_to_bottom(key);
+                if (at < 0)
+                    return;
+                const fresh = this.visible_keys();
+                const follow_at = follow ? fresh.indexOf(follow) : -1;
+                this.Player().queue_index(follow_at >= 0
+                    ? (follow_at - 1 + fresh.length) % fresh.length
+                    : Math.max(0, fresh.indexOf(current)));
+            }
+            delete_key(key) {
+                if (!key)
+                    return;
+                $bog_music_log.act(`удаление ${key}`);
+                void this.account().delete_track(key);
+            }
+            upload_files(next) {
+                if (next?.length) {
+                    $bog_music_log.act(`загрузка с устройства: ${next.length} файл(ов)`);
+                    const files = [...next].sort((a, b) => a.name.localeCompare(b.name, 'ru', { numeric: true }));
+                    void (async () => {
+                        for (const [index, file] of files.entries()) {
+                            await this.account().save_local_track(file, index + 1).catch((error) => {
+                                $bog_music_log.err(`файл не загружен: ${file.name}: ${error?.message ?? error}`);
+                            });
+                        }
+                    })();
+                }
+                return next ?? [];
+            }
+            download_playlist_status(next) {
+                return next ?? '';
+            }
+            download_playlist() {
+                $bog_music_log.act('скачивание плейлиста zip');
+                void this.download_zip_async();
+            }
+            async download_zip_async() {
+                const keys = await $mol_wire_async(this).visible_keys();
+                if (!keys.length) {
+                    this.download_playlist_status('Плейлист пуст');
+                    return;
+                }
+                const files = [];
+                let skipped = 0;
+                for (const key of keys) {
+                    this.download_playlist_status(`Архивирую ${files.length}/${keys.length}…`);
+                    const file = await $bog_music_disk.file(key);
+                    const meta = await $mol_wire_async(this.account()).info(key);
+                    if (!file || !meta) {
+                        skipped++;
+                        continue;
+                    }
+                    const data = new Uint8Array(await file.arrayBuffer());
+                    files.push({
+                        name: $bog_music_zip.entry_name(files.length + 1, meta.artist, meta.title, $bog_music_disk.mime(data.subarray(0, 12))),
+                        data,
+                    });
+                }
+                if (!files.length) {
+                    this.download_playlist_status('На этом устройстве нет файлов этого списка');
+                    return;
+                }
+                this.download_playlist_status('Собираю zip…');
+                const blob = new Blob([$bog_music_zip.build(files)], { type: 'application/zip' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `music-playlist-${new Date().toISOString().slice(0, 10)}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                const skipped_note = skipped ? `, пропущено ${skipped}` : '';
+                $bog_music_log.act(`zip собран: ${files.length} файлов${skipped_note}`);
+                this.download_playlist_status(`Готово: ${files.length} ${$bog_music_share.plural_tracks(files.length)}${skipped_note}`);
+            }
+            beam() {
+                return $bog_music_beam.instance();
+            }
+            beam_groups() {
+                return this.beam().remote_groups(this.visible_keys());
+            }
+            beam_text() {
+                const summary = this.beam().summary();
+                if (summary)
+                    return summary;
+                const groups = [...this.beam_groups()];
+                if (!groups.length)
+                    return '';
+                return groups
+                    .map(([from, keys]) => `${keys.length} ${$bog_music_share.plural_tracks(keys.length)} только на «${this.account().device_name(from)}»`)
+                    .join(', ');
+            }
+            beam_button() {
+                return this.beam_groups().size ? 'Перенести сюда' : '';
+            }
+            beam_pull() {
+                this.beam().pull_all(this.visible_keys());
+            }
+            Beam_bar() {
+                if (!this.beam_text())
+                    return null;
+                return super.Beam_bar();
+            }
+            Beam_pull() {
+                if (!this.beam_button() || this.beam().summary())
+                    return null;
+                return super.Beam_pull();
+            }
+            version_label() {
+                return $bog_music_version;
+            }
+            lights() {
+                const theme = this.Theme();
+                if (theme.mode() === 'system')
+                    return 'system';
+                return theme.is_light_now() ? 'light' : 'dark';
+            }
+            font_size(next) {
+                return this.$.$mol_state_local.value('bog_music_font_size', next) ?? 'normal';
+            }
+            dev(next) {
+                return this.$.$mol_state_local.value('bog_music_dev', next) ?? false;
+            }
+            section(next) {
+                if (next !== undefined)
+                    $bog_music_log.act(`раздел: ${next}`);
+                return next ?? 'music';
+            }
+            player_full() {
+                return this.section() === 'player';
+            }
+            _section_back = 'music';
+            player_open(event) {
+                if (this.player_full())
+                    return;
+                this._section_back = this.section();
+                this.section('player');
+            }
+            player_collapse(event) {
+                this.section(this._section_back);
+            }
+            body() {
+                switch (this.section()) {
+                    case 'logs':
+                        if (this.dev())
+                            return [this.Logs()];
+                        break;
+                    case 'account': return [this.Account(), this.Feedback()];
+                    case 'player': return [this.Player()];
+                    case 'search': return [this.Tube_bar(), this.Tube_list()];
+                }
+                return [
+                    this.Share_toast(),
+                    this.Beam_bar(),
+                    this.Tabs(),
+                    this.Tracks(),
+                ];
+            }
+            foot() {
+                return [
+                    ...this.player_full() ? [] : [this.Player()],
+                    this.Nav(),
+                ];
+            }
+            tube_query(next) {
+                if (next !== undefined)
+                    return next;
+                return this.tube_committed();
+            }
+            tube_committed(next) {
+                return $mol_state_arg.value('q', next) ?? '';
+            }
+            tube_find() {
+                const query = this.tube_query();
+                $bog_music_log.act(`поиск на YouTube: ${query}`);
+                this.tube_committed(query);
+            }
+            tube_submit(event) {
+                event?.preventDefault();
+                this.tube_find();
+                this.Tube_query().dom_node().blur();
+            }
+            _tube_found = { query: '', items: [] };
+            tube_items() {
+                const query = this.tube_committed().trim();
+                if (!query)
+                    return [];
+                if (this._tube_found.query === query)
+                    return this._tube_found.items;
+                const items = $bog_music_tube.search(query);
+                this._tube_found = { query, items };
+                return items;
+            }
+            tube_rows() {
+                return this.tube_items().map((_, i) => this.Tube_row(i));
+            }
+            tube_item(index) {
+                return this.tube_items()[index] ?? null;
+            }
+            tube_title(index) {
+                return this.tube_item(index)?.title ?? '';
+            }
+            tube_meta(index) {
+                const item = this.tube_item(index);
+                if (!item)
+                    return '';
+                const dur = item.duration;
+                const time = dur ? `${Math.floor(dur / 60)}:${String(Math.floor(dur % 60)).padStart(2, '0')}` : '';
+                return [item.channel, time].filter(Boolean).join(' · ');
+            }
+            tube_cover(index) {
+                const item = this.tube_item(index);
+                return item ? $bog_music_tube.cover_url(item.id) : '';
+            }
+            _tube_at = -1;
+            tube_current(next) {
+                if (next !== undefined)
+                    this._tube_at = next;
+                return this._tube_at;
+            }
+            tube_step(step) {
+                const at = this.tube_current();
+                if (at < 0)
+                    return false;
+                const to = at + step;
+                if (to < 0 || to >= this.tube_items().length)
+                    return false;
+                this.tube_play(to);
+                return true;
+            }
+            tube_play(index) {
+                const item = this.tube_item(index);
+                if (!item)
+                    return;
+                $bog_music_log.act(`стрим с YouTube: ${item.title}`);
+                this.tube_current(index);
+                this.Player().play_external($bog_music_tube.audio_url(item.id), item.title, item.channel, $bog_music_tube.cover_url(item.id));
+            }
+            tube_status_text(index) {
+                const item = this.tube_item(index);
+                return item ? this.tube_status(item.id) : '';
+            }
+            tube_status(id, next) {
+                return next ?? '';
+            }
+            tube_busy(index) {
+                return this.tube_status_text(index).startsWith('Качаю');
+            }
+            tube_get(index) {
+                const item = this.tube_item(index);
+                if (!item)
+                    return;
+                $bog_music_log.act(`скачивание с YouTube: ${item.title ?? index}`);
+                $mol_wire_async(this).tube_download(item);
+            }
+            async tube_download(item) {
+                if (this.tube_status(item.id))
+                    return;
+                this.tube_status(item.id, 'Качаю…');
+                try {
+                    const bytes = await $bog_music_tube.audio_bytes(item.id);
+                    await this.account().import_audio($bog_music_account_baza.key_make('yt:' + item.id), {
+                        artist: item.channel,
+                        title: item.title,
+                        duration: item.duration,
+                        cover: $bog_music_tube.cover_url(item.id),
+                    }, bytes);
+                    $bog_music_log.act(`скачано с YouTube: ${item.title} (${bytes.length} байт)`);
+                    this.tube_status(item.id, '✓ в Моей музыке');
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    console.warn('[tube] download failed:', e?.message ?? e);
+                    $bog_music_log.err(`скачивание с YouTube не удалось: ${item.title}: ${e?.message ?? e}`);
+                    this.tube_status(item.id, 'Ошибка');
+                    setTimeout(() => this.tube_status(item.id, ''), 4000);
+                }
+            }
+            tg_state(next) {
+                return next ?? { linked: false, name: '', pending: 0, done: 0, error: '' };
+            }
+            tg_hint() {
+                return this.tg_state().linked
+                    ? 'Пересылай боту треки из любого чата — они приедут в Мою музыку сами.'
+                    : 'Подключи бота и пересылай ему музыку из любого чата. Файлы больше 20 МБ Телеграм ботам не отдаёт.';
+            }
+            tg_button() {
+                return this.tg_state().linked ? 'Открыть бота' : 'Подключить Телеграм';
+            }
+            tg_status() {
+                const state = this.tg_state();
+                if (state.error)
+                    return state.error;
+                if (!$bog_music_tg.code())
+                    return '';
+                const parts = [state.linked
+                        ? (state.name ? `Подключено: ${state.name}` : 'Подключено')
+                        : 'Ждём /start в боте'
+                ];
+                if (state.pending)
+                    parts.push(`в очереди ${state.pending}`);
+                if (state.done)
+                    parts.push(`забрано ${state.done}`);
+                return parts.join(' · ');
+            }
+            tg_link() {
+                const code = $bog_music_tg.code_ensure();
+                $bog_music_log.act('открытие телеграм-бота для связки');
+                window.open($bog_music_tg.link_url(code), '_blank');
+                $mol_wire_async(this).tg_drain();
+            }
+            tg_meta(row) {
+                let artist = row.performer;
+                let title = row.title;
+                if (!title) {
+                    const parsed = $bog_music_account_baza.parse_filename(row.file_name || 'Трек');
+                    title = parsed.title;
+                    if (!artist)
+                        artist = parsed.artist;
+                }
+                return { artist, title, duration: row.duration, cover: '' };
+            }
+            _tg_busy = false;
+            async tg_drain() {
+                const code = $bog_music_tg.code();
+                if (!code || this._tg_busy)
+                    return;
+                this._tg_busy = true;
+                try {
+                    const status = await $bog_music_tg.status(code);
+                    this.tg_state({
+                        ...this.tg_state(),
+                        linked: status.linked,
+                        name: status.name,
+                        pending: status.pending,
+                        error: '',
+                    });
+                    if (!status.linked || !status.pending)
+                        return;
+                    $bog_music_log.act(`Телеграм: в очереди ${status.pending}, забираю`);
+                    for (const row of await $bog_music_tg.inbox(code)) {
+                        try {
+                            const bytes = await $bog_music_tg.file(code, row.id);
+                            await this.account().import_audio($bog_music_account_baza.key_make('tg:' + (row.uid || row.id)), this.tg_meta(row), bytes);
+                            await $bog_music_tg.ack(code, row.id);
+                        }
+                        catch (e) {
+                            if (e instanceof Promise)
+                                throw e;
+                            console.warn('[tg] import failed:', row.id, e?.message ?? e);
+                            $bog_music_log.err(`импорт из Телеграма не удался: ${row.id}: ${e?.message ?? e}`);
+                            continue;
+                        }
+                        const state = this.tg_state();
+                        this.tg_state({ ...state, done: state.done + 1, pending: Math.max(0, state.pending - 1) });
+                    }
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    console.warn('[tg] drain failed:', e?.message ?? e);
+                    $bog_music_log.err(`Телеграм-бот недоступен: ${e?.message ?? e}`);
+                    this.tg_state({ ...this.tg_state(), error: 'Телеграм-бот недоступен' });
+                }
+                finally {
+                    this._tg_busy = false;
+                }
+            }
+            _tg_timer = 0;
+            tg_poller() {
+                if (this._tg_timer) {
+                    clearInterval(this._tg_timer);
+                    this._tg_timer = 0;
+                }
+                if (!$bog_music_tg.code())
+                    return null;
+                this._tg_timer = setInterval(() => { $mol_wire_async(this).tg_drain(); }, 30000);
+                return null;
+            }
+            fm_user() {
+                return $bog_music_scrobble.user();
+            }
+            fm_hint() {
+                return 'Прослушанное уходит в твою статистику на last.fm. Скробблится всё, что играет в плеере.';
+            }
+            fm_button() {
+                return this.fm_user() ? 'Отключить' : 'Подключить last.fm';
+            }
+            fm_error(next) {
+                return next ?? '';
+            }
+            fm_status() {
+                if (this.fm_error())
+                    return this.fm_error();
+                const user = this.fm_user();
+                return user ? `Подключено: ${user}` : '';
+            }
+            fm_link() {
+                if (this.fm_user()) {
+                    $bog_music_log.act('отключение last.fm');
+                    $mol_wire_async($bog_music_scrobble).logout();
+                    return;
+                }
+                $bog_music_log.act('подключение last.fm');
+                window.open($bog_music_scrobble.login_url($bog_music_scrobble.code_ensure()), '_blank');
+            }
+            async fm_refresh() {
+                if (!$bog_music_scrobble.code())
+                    return;
+                try {
+                    await $bog_music_scrobble.status();
+                    this.fm_error('');
+                }
+                catch (e) {
+                    if (e instanceof Promise)
+                        throw e;
+                    console.warn('[fm] status failed:', e?.message ?? e);
+                    $bog_music_log.err(`сервер скробблинга недоступен: ${e?.message ?? e}`);
+                    this.fm_error('Сервер скробблинга недоступен');
+                }
+            }
+            nickname_label() {
+                return this.account().nickname();
+            }
+            share_toast_text() {
+                return this.share().status() || this.share().import_status() || '';
+            }
+            Share_toast() {
+                if (!this.share_toast_text())
+                    return null;
+                return super.Share_toast();
+            }
+            async import_share(token) {
+                const playlist = await this.share().import(token);
+                if (playlist)
+                    this.page(playlist);
+            }
+            auto() {
+                this.beam().watch();
+                this.share().watch();
+                this.tg_poller();
+                $mol_wire_async(this).tg_drain();
+                $mol_wire_async(this).fm_refresh();
+                this.lists_migrate();
+                const token = $bog_music_boot.share_token;
+                if (token) {
+                    $bog_music_boot.share_token = '';
+                    void this.import_share(token);
+                }
+                return super.auto();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "page", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "visible_keys", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "list_dict", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "current_key", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "play_key", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "wave_mode", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "reorder_to", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "archive_key", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "restore_key", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "demote_key", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "delete_key", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "upload_files", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "download_playlist_status", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "download_playlist", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "beam_pull", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "font_size", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "dev", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "section", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "player_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "player_collapse", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tube_query", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tube_committed", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tube_find", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tube_submit", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tube_items", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tube_rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tube_step", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tube_play", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_music_app.prototype, "tube_status", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tube_get", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tg_state", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "tg_link", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "tg_poller", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_app.prototype, "fm_error", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_app.prototype, "fm_link", null);
+        $$.$bog_music_app = $bog_music_app;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+var $node = $node || {} ; $node[ "/bog/music/app/favicon.svg" ] = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZDNjNGRiIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzQjgyRjYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJzaGluZSIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjAuMyIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTA4IiBmaWxsPSJ1cmwoI2JnKSIvPgo8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjI1NiIgcng9IjEwOCIgZmlsbD0idXJsKCNzaGluZSkiLz4KPGcgZmlsbD0iI2ZmZmZmZiI+CjxlbGxpcHNlIGN4PSIxNzUiIGN5PSIzNTUiIHJ4PSI1NSIgcnk9IjQ0Ii8+CjxlbGxpcHNlIGN4PSIzNDUiIGN5PSIzMjUiIHJ4PSI1NSIgcnk9IjQ0Ii8+CjxyZWN0IHg9IjIxOCIgeT0iMTA1IiB3aWR0aD0iMTQiIGhlaWdodD0iMjUwIiByeD0iNyIvPgo8cmVjdCB4PSIzODgiIHk9Ijc1IiB3aWR0aD0iMTQiIGhlaWdodD0iMjUwIiByeD0iNyIvPgo8cGF0aCBkPSJNMjMyIDEwNSBDMjMyIDEwNSAyOTUgNjUgNDAyIDc1IEw0MDIgMTE1IEMyOTUgMTA1IDIzMiAxNDUgMjMyIDE0NVoiLz4KPC9nPgo8L3N2Zz4K"
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/music/app/app.view.css", "[bog_music_app][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_music_app][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_music_app][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_music_app][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_music_app][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n/* $bog_popup распирает html и body до min-width: 20rem (иначе попап\n   расширения схлопывается). Размер шрифта тоже на html, и на Огромном этот\n   минимум вырастал до 440px — шире экрана телефона. Те же 20rem, но в px. */\nhtml:has([bog_music_app]),\nbody:has([bog_music_app]) {\n\tmin-width: 320px;\n}\nhtml:has([bog_music_app][bog_music_font=\"large\"]) {\n\tfont-size: 118.75%;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) {\n\tfont-size: 137.5%;\n}\n\n@media ( max-width: 40rem ) {\n\t[bog_music_app_nickname_label],\n\t[bog_music_app_version] {\n\t\tdisplay: none;\n\t}\n\t[bog_music_app_brand_name] {\n\t\tfont-size: 1.25rem;\n\t}\n\t[bog_music_app] > [mol_page_head] {\n\t\tpadding-left: 0.25rem;\n\t\tpadding-right: 0.25rem;\n\t\t/* Шапка всегда в одну строку: инструменты не переносятся вниз, а\n\t\t   название при нехватке места режется многоточием. */\n\t\tflex-wrap: nowrap;\n\t\tgap: 0.25rem;\n\t}\n\t[bog_music_app_brand] {\n\t\tmin-width: 0;\n\t\tflex-shrink: 1;\n\t\tpadding-right: 0;\n\t}\n\t[bog_music_app_brand_name] {\n\t\tmin-width: 0;\n\t\toverflow: hidden;\n\t\ttext-overflow: ellipsis;\n\t}\n\t[bog_music_app_tools] {\n\t\tflex-shrink: 0;\n\t\tgap: 0;\n\t}\n}\n\n/* Огромный шрифт на телефоне: иконки шапки чуть меньше и без лишних полей,\n   иначе пять инструментов плюс название не влезают в 390px. */\n@media ( max-width: 40rem ) {\n\thtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_tools] > * {\n\t\tpadding-left: 0.2rem;\n\t\tpadding-right: 0.2rem;\n\t\tmin-width: 0;\n\t}\n\thtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_tools] [mol_icon] {\n\t\twidth: 1.25rem;\n\t\theight: 1.25rem;\n\t}\n\thtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_brand_image] {\n\t\twidth: 1.75rem;\n\t\theight: 1.75rem;\n\t}\n\thtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_brand_name] {\n\t\tfont-size: 1.1rem;\n\t}\n\thtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app] > [mol_page_head] {\n\t\tpadding-top: 0.25rem;\n\t\tpadding-bottom: 0.25rem;\n\t}\n}\n\n/* Огромный шрифт: контролы и навигация не раздуваются вместе с текстом. */\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_controls] {\n\tpadding: 0.125rem 0.5rem;\n\tgap: 0.25rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_center] {\n\tgap: 0;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_nav_item] {\n\tmin-height: 3rem;\n\tpadding: 0.25rem 0.125rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_tabs] {\n\tpadding: 0.25rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_full=\"true\"] {\n\tgap: 0.5rem;\n\tpadding: 0.5rem 0.75rem 0.75rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_full=\"true\"] [bog_music_player_cover],\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_full=\"true\"] [bog_music_player_cover_placeholder] {\n\twidth: 45vw;\n\theight: 45vw;\n\tpadding: 2rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_full=\"true\"] [bog_music_player_left] {\n\tgap: 0.5rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player_full=\"true\"] [bog_music_player_title] {\n\tfont-size: 1.25rem;\n}\n\nhtml:has([bog_music_app][bog_music_font=\"large\"]) [bog_music_player]:not([bog_music_player_full=\"true\"]) [bog_music_player_prev],\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player]:not([bog_music_player_full=\"true\"]) [bog_music_player_prev] {\n\tdisplay: none;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player]:not([bog_music_player_full=\"true\"]) [bog_music_player_cover],\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_player]:not([bog_music_player_full=\"true\"]) [bog_music_player_cover_placeholder] {\n\twidth: 2.25rem;\n\theight: 2.25rem;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        $mol_style_define($bog_music_app, {
+            minWidth: '320px',
+            maxWidth: '50rem',
+            margin: {
+                left: 'auto',
+                right: 'auto',
+            },
+            font: { family: $bog_builderui_tokens.font_body },
+            background: { color: $bog_builderui_tokens.back },
+            color: $bog_builderui_tokens.text,
+            $mol_icon: {
+                width: '1.5em',
+            },
+            $mol_button_major: {
+                background: { color: $bog_builderui_tokens.control },
+                color: $bog_builderui_tokens.back,
+            },
+            Head: {
+                justifyContent: 'space-between',
+                background: { color: $bog_builderui_tokens.back },
+                border: {
+                    radius: 0,
+                    bottom: { width: '1px', style: 'solid', color: $bog_builderui_tokens.line },
+                },
+                box: { shadow: 'none' },
+            },
+            Tabs: {
+                flex: {
+                    direction: 'row',
+                },
+                gap: '0.25rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.25rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                List: {
+                    Trigger: {
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                    }
+                }
+            },
+            Tools: {
+                alignItems: 'center',
+            },
+            Brand: {
+                align: { items: 'center' },
+                gap: $mol_gap.text,
+                padding: { left: '0.5rem' },
+            },
+            Brand_image: {
+                width: '2rem',
+                height: '2rem',
+                flex: { shrink: 0, grow: 0 },
+                objectFit: 'contain',
+            },
+            Brand_name: {
+                font: {
+                    family: $bog_builderui_tokens.font_head,
+                    size: rem(1.5),
+                    weight: 500,
+                },
+                whiteSpace: 'nowrap',
+                overflow: { x: 'visible', y: 'visible' },
+            },
+            Version: {
+                font: {
+                    size: '0.6875rem',
+                    family: 'monospace',
+                },
+                color: $bog_builderui_tokens.shade,
+                alignSelf: 'center',
+                padding: {
+                    left: '0.25rem',
+                    right: '0.25rem',
+                },
+            },
+            Tube_bar: {
+                flex: { direction: 'row' },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                align: { items: 'center' },
+            },
+            Tube_query: {
+                flex: { grow: 1 },
+            },
+            Foot: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: 0,
+            },
+            Nickname_label: {
+                font: { size: '0.875rem' },
+                color: $bog_builderui_tokens.shade,
+                padding: {
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                maxWidth: '8rem',
+                overflow: { x: 'hidden', y: 'hidden' },
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+            },
+            Share_toast: {
+                margin: {
+                    left: '0.5rem',
+                    right: '0.5rem',
+                    top: '0.5rem',
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: { color: $bog_builderui_tokens.control },
+                color: $bog_builderui_tokens.back,
+                border: { radius: $bog_builderui_tokens.radius },
+                font: { size: '0.875rem' },
+            },
+            Beam_bar: {
+                margin: {
+                    left: '0.5rem',
+                    right: '0.5rem',
+                    top: '0.5rem',
+                },
+                align: { items: 'center' },
+                gap: '0.5rem',
+                flex: { wrap: 'wrap' },
+                border: { radius: $bog_builderui_tokens.radius },
+                background: { color: $mol_theme.card },
+            },
+            Beam_text: {
+                flex: { grow: 1, shrink: 1, basis: '12rem' },
+                padding: { left: '0.75rem' },
+                font: { size: '0.875rem' },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+var $node = $node || {} ; $node[ "/bog/music/app/apple-touch-icon.png" ] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAABmJLR0QA/wD/AP+gvaeTAAAXHElEQVR4nO1da5Ac1XX+bk/PLtKy2tULWcISYCQCiJeAAJFJDFSMcQg4doVUkTjBZVeqUqlKnB82ya9UkcrP/CHlcrniHyRlUrgwdsoOdhCYp3kEBIp4SwtCEloQklbSitVK2pmdPvnROzPdt899dM/tntmZPn925/bpc+69/d3vnHtvP8QP7icAABb+CESFwIngD5KsoDXCiawpFOWtQsEdsLEsFRrtCBBng+I6HdUhYoS0Kjbda+7ziBHVVfY1zVM5IGIOxjraVDXi+tHU94kjCUeMOtPXvI7eIZGpSc3KKC1Y4ljGIMn/xVutarLCNvNDOf6J/HZtjF5hwRkwGyEL9DjjDHa8K6CsbrIFbrXIYAdMKs7g/uMdqWCcgSY9l9HEotxqAHUjmnSEDI0F8LXNiAy9CItrkSaANsOKxVA2RxOTpIom9qMwYzSJaKiQwUaTdHlGxgDKRRO9BTUy2DNtmuwrKyWVc8iIGs0WTVQZKF8H7hweGWmoVdlNNr1tzDPsAmiqaJJfk6UjPpkuqrO5iQ0y1H2dU57BSxrO0Fmya7I5A9WLTTThKiMbSTS5zRypOCNFR2en1viRbs9NZGRo3Vg1mdHJwhnGiVTmJi8wR/YMNFM0UThKwRm8SRtqNQVdM25NnKGPwNGapOKM4pvsK3HXLxloh9Qqn2Raz7Cam0CHDMmR0oKTuYmWJj3+DMH3QC7I0JZbcYYlMvSSZg20U2QY0d7B3CTdNdI22eerrmfGcm7CHszY5CzRxCrPMEUT42DwZYWUnKGspE03qfuazTMYSRlNlEG347nJYlwdN1iQ91YUnMFmN8oqFjk3MY73wuYmdpxhbJM5z0hDk7zYBFAAFE1IB3JuYo4mmeYmKppkVWyjSQ5roLy7Zk2aYaXLc5PIL1dzE6tEXWshUhnlVXG4b6K/8ik5w0lqtRBWupqBEvdH7csympg5Q10VnfvIQcsm28xa9T5zWwOVT4rTpIc2UJRGjRXIuiAIBSTUvpysgVoiQyv2TS4IGXrJNFH3WWSoyFlZG+ugy/YUm2cw4mxuYrKQaW5ileNJ/9msdFnncLyFsDxT0u3r7nGyjCZ6r1D1tf2vdmU6zTPSRBNdnmEXQA15RtasCFKTzQHUhC/FYNBu2WfKMxjHKTmDN+mkm6w5QyX2nGGOJkbOUNUhasQknWwIKLbsC5mbEJQkH5OUcxP72CeXmeYmzu7P6Jk1UP2F9hkHhc1NrDnDnIGau0ldlZYRjQXFMTa1MiND356UnJEqz5Ac6QeDp/GqOs3N3MQSGcax6mRuYoMMvQVk4QxGXCEja54RtexTSmSwB9gBlCjXRRM+AzX6txpASjttI8ZooqlDpCbGNpnzjDSpFS8utpfD8vjyuU000XtVOrb/1a6MOc/IxM9yoZM8w/rOHd9HtQK/Cr+CoarwPDQC1OvUqu1cHXNzmG+oKqRoRdOLg62iZm39RCOUjoubm9isdMGmmzQntR3pPKSfmwiBsVFaPiZWjGFsmRhZitGlWLoUI0vE6AiGhwweW1Kfx1wNnkCtjsPH6MmX6cAn7LWKiJMbD9C+iD5R781N0qxnpMozWIupOEMqEB5WjGPtavGZ1VizGquWi+XLUKnY+DZI1UfVB4ClSzC+TOzYRR8e1J7g4qZoafT6kq49Z+SVgbq5d1xrARbdpB4wS87ChnViw7k4b51YuwZDVW1lHMnq8YVmp+KMVAE0tBM9HLufo48z0HRBN6FQ9XHeerHpfGw8T6xeZbXW71aGqiBVzFBwhqQTiiVnhGJ+NIE3ZHacJc8wuLOawpkK0+QZoyO4ZJO4ZCPO/6zw5cXkoiV7npEJGdRaBFtccxNVN7GSOugSRpbiikvEZb8lNqyDKJ4lOFHTpO3cxCYDlcRXkVV/zk203eRVcOlGcfVl2HSB8BS35XdR5AY6uV0eumukuPu8L+YmbDrGylnD2HK5+Pxvi/FlSp2ui1R9B68MAXONor+Yh5p6dm6ijCYdzE3WrMbWa8VVl3Y/pTAIRWrvbg1UH/E55lhEc5MO1kDPWYkv/I64crPweiOr0Au1woqTx/JgMXpF/LmVRZeB2t8lRYAnIDw0GhgdwW03i6s2ix5JNm2EmqPOzdwkcZgd/5GprCtk6C00jeSUZyQdhRZuuFrcdpOo+Ni+k44ex5bLFg8uWuIQGfrC5gVqPmXfA3MTFhkqSTU3Wb0Sd3xxgSduuFr831tmXPWgOJu1aizEFXzkNjdRRRNW0kUTvQXIA2jtmlgEGRvl61CkzNUQBDhTQxBACCwZbh+q+uCyYwYaNqlVTIzXKB7u/YCzl8vcxIYzYEaG1XOt8W7yRLyKOYeUM3M4Ok1Hp3FiBp/O0swsTp7C7Cl8OktzNdTrmG8YAmjVx598ybt2c/vY1LRMHOxgUIk9Z0QLEw9S5zc36fy51qzbS+a8tQM5eQoHD9NHh/DxYTpyDEenafY0AF1WZEytavOYq8dOmTmlsBD5bYgmaTgjVEk8SJ08hynXcYaqgi7mJhackb/Mz+PAJ7R3Evsm6cBB+vRkPgE0cWGIVc60b8LqJS+xLxeYHadHhpu5STeRERAOfEy792JiLx04SNHbtFQBlJVUTTZYgDtkKC6x7rVPbqJJ58hAljzDiZyZw7vv01sTNLGPTjWDhbIOzZpkjiYx5fhdWESJLXvjjQecjjHPiP7yNeeoTiPNMclIh9QKp0vF1jJXwxu76PV36b29CyRBidryZlPeIazmDEoO+c45g+1HzWXkdmW1nBGtmc6ro7lJcW+kBwh4fx+98jq9uZtq9Vj5giMkCqWaqC0nf6RNrZK3gqfKQJOOEhZI+i8RVnKem7DUyosrziB5NCc7f34eO9+lp16kg0cUllxxhsYCdGugpMCo0p0xmljcLs9/UkOHDBspbG6izzMsantsGs+/GvzvTjp9hjlqyxl8UhRXttpeVg92aoYaG85Q1aHlyMQZoU5knaN3MlDX7/Zj+3z6Uzz9UvDia1RXPCFin2doKyjrWDZZUqNIfDSkVhacoaqm1GS/fY7asm12UyQyNBZMeUZ9Hv/1WPDCDmo0TB3tJM9w0mR3O2oqlWST/eiFVyJDdUxy7OSJ5/zf+nhoCs9uJ40FyZHGnZv3Z7BNTlCHPuY4jCYt8VudpLz6hXEGHOUZiWOsUTNnmKKJeRBbrXSZmtws0gEx0+q4/F+iyezd5+nzjGK+lpWJM4iL34HCCfefssl8HTgdNWdoLUQk0Iw9O85QqWgCqJ/ouyx5BitsftVRNNFyhu7W1yQ6NHgobg1UayHZFtZQPpwRirTOkQ9naCwg3XqGStgMQnMJiWSVFNHEBWcYLKh1YspO8gwom+wny9nR1nk04cUVZ2gtJE+U7NlzhkpS0qTJQkKH4jmH1ejVckZbR33Yk8oNFztu1J4zeHGyBmpChuo8+T9XyNDXIc1tbDp3nXEG6yhZMV9+d3G31zPkosx5RsyRpNH27DiaaCywNUkqKwYDKRzx7jqLJi3xY+G3wLmJgwfDbThDG91tOUOVDKbNMyyiiXIwULPbXWWgGgthYWtvxYqpoOMMSUfjFch5bhI3QolLS1Hu6NLqOKNsGgwByOoapVzC4TUFQGh+rrxIzsgnz0g60lngHGePJploMtVgWFjn0F9UmybbcUYofpA4QenAzXOthXLGwlEJ92HmX8x6hovFPfawRTRJKBtpMt69ni0yVLaildNbyHMNNOHIxIOLDhkaC3DPGaGo7yG1cFxw0O3gvePymYbvcDtbHc9Ok8zbD1gLcIaMJE3EH6RmT+idO3dsoolF7mQ47Igz3LzBraXYXARjo4nKSbZo0pL2CimPjDScwUuB6xkcZwDJnAOKjka+GahcW40FY7dHjKgGQ+Zo0hL1O8GK5AyNBRd5BkParKc830ifiibZKBNIpZbrGZk4I1RO7so2jdqA1100UUnn31Ejrn5MvVxxRuepFRg+li+Tk6RbzRmhsi/jEdbpmNZrcRmoBWdQopvYocnXIerISTQxcobgqhgtyZ8zQkm8NK9nFgSdRROLFTMH0SS394GyRvLLM6JNjj9l3zNzEzfRBFajMD9kdBJN+Cq7QobigHSVfakLzMjQenUzgLKvZ8T/08RHWlDokdVxgq62bZ3OPwNlxxmhtL9Ivcg4I80AUo3CgjlDJWw0MVyL+C/uv4x5RvQqtx9N6JQz0BPRRHLUrBhjsZc5I6lMkKayeeUZ0UKfIyvuHD1Z9XAGyrgT0t3nnHJheUbicPhLe5ugIZqk4oxYbeODwU+FjO5Hk0xTOP39mIwtp01WiX00UankxxmheJ1Gk8XFGWrp2TxDpZI3MsC+3rpnkaFSKRQZTlIrMLyirzBRzG/n0cSGJuW3CfZTNNH8VH6H29hkJ3mGkTMYhXaVC+CMUBSf8eoxzjAgAzpksD6YN/P1zHqGclkhajlnzgjF71Y3sX2UkTM0FtC7a6C8snZZoTDOAEAg7oVx/RJNmrXlfFG8m7rEGZomJ2dYC+schXAGgSDgqQ9z0lPRZGA4A/ZNdsQZoU5ky35x5RlpkCEdZfm5l5GxcIppeqzRyYAMtHMOmzXQRRdNNEI9Gk1UKlJZrtGkdcxfOEfrdfFyBqtD8cr0HmfwflVEuFDolDNCab/2SXVOP3BG0nXPc4YMaNXd5+FR15wRihc5zMki5wy9LArOMB7OgzNC8TV47AfOACBvdnMvmY8Z6X6eQWDawtztmxtnhMrKqWzfcIaiRzjpDc6wbXKenBEq87uy/Y0MXnoYGbyvnJEB5u5z9CMyjH1dIoNTZh5NKJHBuBs8ZEBI4CiRwbobSGQgxhwlMlh3g4oMtMFRIoN1N0hzE8kILYCjr5HBKy86ZGjqkDDiBBkA/BIZvLI7ZFSrWDEqlp4FIVCbp9nT4vgMxV5nqLGglVyRAcAfOGTYDM3OkCEENq0X11zsXbRBXLBOjJ8ta843cHCK3pukt/cFr+6i4zOkd6esQ7y2KgvZkAHpo8OW58SUFxsyDBbQETJWjonbbvBuuVasHNOlPH4F69eI9WvELdd4RHhjT/D4K8HzbwWketZKU+HckIEkOEpk6C2okHH2Utx9a+XW67wqM9x0IgSu3OhdudH70yn60bbGC2+aAVIMMqD7XHmJDFaZQ8bWy72/+lpl2Ugaxwk5d5X4hz/zd0wE9/+kcWxG2YjCkAHlln2fIcM4CURGZAgPf/mVyr1/3ikyWnL1Rd6//l310gv4GheJDGqBo7+RkVMG6lVw79crt3+e25/qQMZG8M/fqp6znKtDKIUgA8yWfR8io+PpGPho8jd3VW64zDEyQqn62LJRYbkoZEBIW/aDgQxJR2dBjYw7bvRuujoXZITisbYLRAakvRXNOSiRESlcPS6+/uWKwbhzKRYZiO6taM5BiYy4u7/4A2+4ajDvWApHBqRHE3oZGatW4ML1Ys1KsXIcw0M4a1jM1ehMDUencegofTCJQ0cpYiRHZKxeLrZekWNA0UthyEC4t6I5B11FhhDYvFFs3SK2XOKtGONOiMj0DHa8E7z0Bu2cCIzYUNahVa5eHb/xClHpEjaKRAZai2C9hoyqj5uv9+64WZyzQrcOHZXxUdxyvXfL9Zia9n7xTPDrl4NaXe0uKzIAXLmpC9CgwpFBITh6DRnXbBbf+KpnDwtJVo2Lb/5R5c6bvAd+Hrz8JntDf3ZkADh/XcaKdSIHjrAT8hyRAfa1TwuHu4GM4SF846veLdc7GJqrxsV376k895r4t581LE+xQYbwMOZoMdRe9nxM+w/JPZc3MsDuyqJLyBgbxd9/q3LhBpfj8veu8TasFU++YrebZUIGBPwKROHE8d5HXUAG+C37biBjdAT/+NeVz65x3/HnrxN//PsGKrJEBoDaPGrzGEq59dqhnDwTq0sxyEDy0YSuIKNSwXe+mQsyQhk7W2fZHhlh4cEpu7mQO/noSLR7C0IGJHB0KwO960vexYp9yLwlLTIA7P6waHDsOrDgsUhkIPrcSreQsXa1uOPm7qwbZEAGgJfftr5hy4V8fHQhGy0YGdTesu/eStfXvuj5hW9TICsyANoxEXxytDjy+OXLAbqBDCxs2XcPGSNLsHVLFwJKZmQACAI88rTt9LhDOT5D27Y3uoIMAF539022XCqKp41OkBHKE68Gu/YXQR4//FVjdq47yACICfaFIQPARed1gTbmanJJ2iYT4V9+PD9zKofKReSJ14KnX290CxlgprKJExKFzpABYO05XQDH9ndjGWW2Jh8+Tv/07/UzCZy5kp17gu/9vN5FZECeyiZOSBS6RAYBI2cpjuUmU9M08WGiFS1J0+TdH9J9D9Tz4I9XdgX3/ahe4xKbwpAB3Qvj8kcGgPmCEru2fDor16Et6Zv81l767vfrH3zsLP8gwsPPNO57sH6mzh2N/sgZGcTffY6CkAHgxEmFRm5yogkOV03+aIq+8/36fz7RqHGXM5Xs/YTu/WH9gcfn+XfDJWorF0qanSED/JZ9UciAwP6DdN3lhaYd+w8SXDe5Po8fP9l4Yntw+1bvtusqo0tT1+rDw/Tws41nXw/mg67NTZL/JbbsC0QGgDcn6K5bFar5yM6JxLB00mRgaob+Y1vjoacaN1/l3Xi5t/kCz7g/d+QEbd9Nz+xsvL0/fO6+h5ABIe3KFosMALv30dRxrEo8wJOTTM/gzQ/itXOEjNZyUa2ObduDbduDoSouXCcuWCs+s0KsXCaGqxgewuxpnJrD4WmanKKJSfrkWNRXbyEDsS37wpEBICD88rngnq8UtLfy6AuNRjQFdo2MqNTqeGc/vROulUUUFNe155AB6dGEgpERFm57MTjI3QPnXKam6dHnIysceSID2iYnNHsRGWi99ilhqCBkAKjP4wc/CRo573QS4XuPNNprViUyTMgA4HUXGaG8s4cefDRfdDz0eGPnRNNtiQwLZBD37vOikRHKo88FP/11Xvj4xW+Ch59sGi+RYYcMJKay3UEGBAj00GONEyfpnjsrDh8ZCgI8+FjjZ8+UyGCO65GB+A3G3URG+O+vng/2TNLf3l1Zs9LBytiR43T/w4239pTRhDluRAYAcfe35/nTCkdGS4aquPMm7w9/t3J2+qXGUM7U8N+/CR55qjHXWtIukZESGWiCo4eQ0VIeruIL13q33+iluiv90DF6cnvwPy8Fsc3SEhnpkQFA3P3tuny4B5DR0hECnztXbLlYXHK+t3G9YLnk5GnsmaR39wU7dtH7kyQvj5fIyIQMRHOOHkQGACK8P0nvTxIQABhZglXjYskwhqqYq+NMDVMn6OQphQWUyEBmZJCQnrLvMWQkLcyexuxpWig3dlOJjA6Qgdg6R88jI6ZcIiNnZKD9jbcSGayvAUYGonsr1l4VyiUyGM1FjAy09lasvSqUS2QwmosbGTDcfS57VTgokcFoLnpkwPC58hIZrPJgIIOUd5/LXhUOSmQwmn2CDCg/V14ig1UeJGSA/1x5iQxWecCQAcUXqXkpkaGz0HfIgAyOEhms8kAiA0L+IjUvJTJ0FvoUGYh/kZqXEhk6C/2LDES+SM1LiQydhb5GBoXL5yUyGOWBRwb4qazacYmMZmH/IwPMVFbtuERGs3AgkAEWHCUydBYGBhnQvTCuRAajOUDIgHLLvkQGozlYyED0PaQlMnQWBg8ZxGzZl8hgNAcRGRDSln2JDEZzQJGB2DpHiQxGc3CRgeQXqVVeS2Twyv2LDCQfTSiR0SwcdGRAejShREazsEQGYLj7HCUyFMoDgAzo7j5HiQyF8mAgg5R3n6NEhkJ5YJAB5ZZ9iQxWeZCQAX7LvkQGqzxgyIDi0YQSGQnlwUMGuEcTSmQklAcSGUg8mlAiI6E8qMhA/NGEEhkJ5QFGBkUeTSiRkVAebGSg+WhCiYyE8sAjA8D/A3U87523f1lYAAAAAElFTkSuQmCC"
+
+;
+	($.$bog_gram_music) = class $bog_gram_music extends ($.$bog_music_app) {
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		tools(){
+			return [...(super.tools()), (this.Close())];
+		}
+	};
+	($mol_mem(($.$bog_gram_music.prototype), "close"));
+	($mol_mem(($.$bog_gram_music.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_music.prototype), "Close"));
+
+
+;
+	($.$mol_icon_share) = class $mol_icon_share extends ($.$mol_icon) {
+		path(){
+			return "M21,12L14,5V9C7,10 4,15 3,20C5.5,16.5 9,14.9 14,14.9V19L21,12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_vertical_align_bottom) = class $mol_icon_format_vertical_align_bottom extends ($.$mol_icon) {
+		path(){
+			return "M16,13H13V3H11V13H8L12,17L16,13M4,19V21H20V19H4Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive) = class $mol_icon_archive extends ($.$mol_icon) {
+		path(){
+			return "M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_playlist_plus) = class $mol_icon_playlist_plus extends ($.$mol_icon) {
+		path(){
+			return "M3 16H10V14H3M18 14V10H16V14H12V16H16V20H18V16H22V14M14 6H3V8H14M14 10H3V12H14V10Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_playlist_remove) = class $mol_icon_playlist_remove extends ($.$mol_icon) {
+		path(){
+			return "M14 10H3V12H14V10M14 6H3V8H14V6M3 16H10V14H3V16M14.4 22L17 19.4L19.6 22L21 20.6L18.4 18L21 15.4L19.6 14L17 16.6L14.4 14L13 15.4L15.6 18L13 20.6L14.4 22Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_restore) = class $mol_icon_restore extends ($.$mol_icon) {
+		path(){
+			return "M13,3A9,9 0 0,0 4,12H1L4.89,15.89L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_delete_forever) = class $mol_icon_delete_forever extends ($.$mol_icon) {
+		path(){
+			return "M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8.46,11.88L9.87,10.47L12,12.59L14.12,10.47L15.53,11.88L13.41,14L15.53,16.12L14.12,17.53L12,15.41L9.88,17.53L8.47,16.12L10.59,14L8.46,11.88M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_music_track) = class $bog_music_track extends ($.$mol_view) {
+		blob_pending(){
+			return false;
+		}
+		event_drag_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_drag_over(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		on_play_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Cover(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.cover()));
+			return obj;
+		}
+		Cover_placeholder(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		Cover_box(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.on_play_click(next))});
+			(obj.sub) = () => ([(this.Cover()), (this.Cover_placeholder())]);
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		Title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.title()));
+			return obj;
+		}
+		artist(){
+			return "";
+		}
+		Artist(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.artist()));
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.on_play_click(next))});
+			(obj.sub) = () => ([(this.Title()), (this.Artist())]);
+			return obj;
+		}
+		share_pointer_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		share_pointer_up(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		share_pointer_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		share_pointer_leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Share_icon(){
+			const obj = new this.$.$mol_icon_share();
+			return obj;
+		}
+		Share(){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({"bog_music_track_share_button": true, "bog_music_track_share_selected": (this.share_selected())});
+			(obj.event) = () => ({
+				"pointerdown": (next) => (this.share_pointer_down(next)), 
+				"pointerup": (next) => (this.share_pointer_up(next)), 
+				"pointercancel": (next) => (this.share_pointer_cancel(next)), 
+				"pointerleave": (next) => (this.share_pointer_leave(next))
+			});
+			(obj.sub) = () => ([(this.Share_icon())]);
+			return obj;
+		}
+		menu_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Menu_icon(){
+			const obj = new this.$.$mol_icon_dots_vertical();
+			return obj;
+		}
+		Menu_anchor(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Действия");
+			(obj.click) = (next) => ((this.menu_toggle(next)));
+			(obj.sub) = () => ([(this.Menu_icon())]);
+			return obj;
+		}
+		demote_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Demote_icon(){
+			const obj = new this.$.$mol_icon_format_vertical_align_bottom();
+			return obj;
+		}
+		Demote_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["В конец списка"]);
+			return obj;
+		}
+		Demote(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.demote_click(next)));
+			(obj.sub) = () => ([(this.Demote_icon()), (this.Demote_label())]);
+			return obj;
+		}
+		pull_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Pull_icon(){
+			const obj = new this.$.$mol_icon_download();
+			return obj;
+		}
+		pull_label(){
+			return "";
+		}
+		Pull_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.pull_label())]);
+			return obj;
+		}
+		Pull(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.pull_click(next)));
+			(obj.sub) = () => ([(this.Pull_icon()), (this.Pull_label())]);
+			return obj;
+		}
+		delete_cached(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete_icon(){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		Delete_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Убрать с устройства"]);
+			return obj;
+		}
+		Delete(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.delete_cached(next)));
+			(obj.sub) = () => ([(this.Delete_icon()), (this.Delete_label())]);
+			return obj;
+		}
+		archive_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Archive_icon(){
+			const obj = new this.$.$mol_icon_archive();
+			return obj;
+		}
+		Archive_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["В архив"]);
+			return obj;
+		}
+		Archive(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.archive_click(next)));
+			(obj.sub) = () => ([(this.Archive_icon()), (this.Archive_label())]);
+			return obj;
+		}
+		move_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Move_add_icon(id){
+			const obj = new this.$.$mol_icon_playlist_plus();
+			return obj;
+		}
+		Move_cut_icon(id){
+			const obj = new this.$.$mol_icon_playlist_remove();
+			return obj;
+		}
+		move_label(id){
+			return "";
+		}
+		Move_label(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.move_label(id))]);
+			return obj;
+		}
+		move_content(id){
+			return [
+				(this.Move_add_icon(id)), 
+				(this.Move_cut_icon(id)), 
+				(this.Move_label(id))
+			];
+		}
+		Move(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.move_click(id, next)));
+			(obj.sub) = () => ((this.move_content(id)));
+			return obj;
+		}
+		restore_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Restore_icon(){
+			const obj = new this.$.$mol_icon_restore();
+			return obj;
+		}
+		Restore_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Восстановить"]);
+			return obj;
+		}
+		Restore(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.restore_click(next)));
+			(obj.sub) = () => ([(this.Restore_icon()), (this.Restore_label())]);
+			return obj;
+		}
+		delete_ask(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Delete_forever_icon(){
+			const obj = new this.$.$mol_icon_delete_forever();
+			return obj;
+		}
+		Delete_forever_label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Удалить навсегда"]);
+			return obj;
+		}
+		Delete_forever(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.delete_ask(next)));
+			(obj.sub) = () => ([(this.Delete_forever_icon()), (this.Delete_forever_label())]);
+			return obj;
+		}
+		menu_items(){
+			return [
+				(this.Demote()), 
+				(this.Pull()), 
+				(this.Delete()), 
+				(this.Archive()), 
+				(this.Move("0")), 
+				(this.Restore()), 
+				(this.Delete_forever())
+			];
+		}
+		Menu_panel(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.menu_items()));
+			return obj;
+		}
+		Menu(){
+			const obj = new this.$.$mol_pop();
+			(obj.Anchor) = () => ((this.Menu_anchor()));
+			(obj.bubble_content) = () => ([(this.Menu_panel())]);
+			return obj;
+		}
+		content(){
+			return [
+				(this.Cover_box()), 
+				(this.Info()), 
+				(this.Share()), 
+				(this.Menu())
+			];
+		}
+		confirm_text(){
+			return "";
+		}
+		Confirm_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.confirm_text()));
+			return obj;
+		}
+		delete_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Confirm_no(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Отмена");
+			(obj.click) = (next) => ((this.delete_cancel(next)));
+			return obj;
+		}
+		delete_confirm(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Confirm_yes(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Удалить");
+			(obj.click) = (next) => ((this.delete_confirm(next)));
+			return obj;
+		}
+		Confirm_actions(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Confirm_no()), (this.Confirm_yes())]);
+			return obj;
+		}
+		key(){
+			return "";
+		}
+		current(){
+			return false;
+		}
+		play(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_mode(){
+			return false;
+		}
+		can_drag(){
+			return false;
+		}
+		drag_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		drop_here(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		restore(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		delete_forever(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		demote(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		share_selected(){
+			return false;
+		}
+		cover(){
+			return "";
+		}
+		attr(){
+			return {
+				"bog_music_track_current": (this.current()), 
+				"bog_music_track_share_selected": (this.share_selected()), 
+				"bog_music_track_pending": (this.blob_pending()), 
+				"draggable": (this.can_drag())
+			};
+		}
+		event(){
+			return {
+				"dragstart": (next) => (this.event_drag_start(next)), 
+				"dragover": (next) => (this.event_drag_over(next)), 
+				"drop": (next) => (this.event_drop(next))
+			};
+		}
+		sub(){
+			return (this.content());
+		}
+		Confirm(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Confirm_text()), (this.Confirm_actions())]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_music_track.prototype), "event_drag_start"));
+	($mol_mem(($.$bog_music_track.prototype), "event_drag_over"));
+	($mol_mem(($.$bog_music_track.prototype), "event_drop"));
+	($mol_mem(($.$bog_music_track.prototype), "on_play_click"));
+	($mol_mem(($.$bog_music_track.prototype), "Cover"));
+	($mol_mem(($.$bog_music_track.prototype), "Cover_placeholder"));
+	($mol_mem(($.$bog_music_track.prototype), "Cover_box"));
+	($mol_mem(($.$bog_music_track.prototype), "Title"));
+	($mol_mem(($.$bog_music_track.prototype), "Artist"));
+	($mol_mem(($.$bog_music_track.prototype), "Info"));
+	($mol_mem(($.$bog_music_track.prototype), "share_pointer_down"));
+	($mol_mem(($.$bog_music_track.prototype), "share_pointer_up"));
+	($mol_mem(($.$bog_music_track.prototype), "share_pointer_cancel"));
+	($mol_mem(($.$bog_music_track.prototype), "share_pointer_leave"));
+	($mol_mem(($.$bog_music_track.prototype), "Share_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Share"));
+	($mol_mem(($.$bog_music_track.prototype), "menu_toggle"));
+	($mol_mem(($.$bog_music_track.prototype), "Menu_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Menu_anchor"));
+	($mol_mem(($.$bog_music_track.prototype), "demote_click"));
+	($mol_mem(($.$bog_music_track.prototype), "Demote_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Demote_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Demote"));
+	($mol_mem(($.$bog_music_track.prototype), "pull_click"));
+	($mol_mem(($.$bog_music_track.prototype), "Pull_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Pull_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Pull"));
+	($mol_mem(($.$bog_music_track.prototype), "delete_cached"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete"));
+	($mol_mem(($.$bog_music_track.prototype), "archive_click"));
+	($mol_mem(($.$bog_music_track.prototype), "Archive_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Archive_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Archive"));
+	($mol_mem_key(($.$bog_music_track.prototype), "move_click"));
+	($mol_mem_key(($.$bog_music_track.prototype), "Move_add_icon"));
+	($mol_mem_key(($.$bog_music_track.prototype), "Move_cut_icon"));
+	($mol_mem_key(($.$bog_music_track.prototype), "Move_label"));
+	($mol_mem_key(($.$bog_music_track.prototype), "Move"));
+	($mol_mem(($.$bog_music_track.prototype), "restore_click"));
+	($mol_mem(($.$bog_music_track.prototype), "Restore_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Restore_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Restore"));
+	($mol_mem(($.$bog_music_track.prototype), "delete_ask"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete_forever_icon"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete_forever_label"));
+	($mol_mem(($.$bog_music_track.prototype), "Delete_forever"));
+	($mol_mem(($.$bog_music_track.prototype), "Menu_panel"));
+	($mol_mem(($.$bog_music_track.prototype), "Menu"));
+	($mol_mem(($.$bog_music_track.prototype), "Confirm_text"));
+	($mol_mem(($.$bog_music_track.prototype), "delete_cancel"));
+	($mol_mem(($.$bog_music_track.prototype), "Confirm_no"));
+	($mol_mem(($.$bog_music_track.prototype), "delete_confirm"));
+	($mol_mem(($.$bog_music_track.prototype), "Confirm_yes"));
+	($mol_mem(($.$bog_music_track.prototype), "Confirm_actions"));
+	($mol_mem(($.$bog_music_track.prototype), "play"));
+	($mol_mem(($.$bog_music_track.prototype), "drag_start"));
+	($mol_mem(($.$bog_music_track.prototype), "drop_here"));
+	($mol_mem(($.$bog_music_track.prototype), "archive"));
+	($mol_mem(($.$bog_music_track.prototype), "restore"));
+	($mol_mem(($.$bog_music_track.prototype), "delete_forever"));
+	($mol_mem(($.$bog_music_track.prototype), "demote"));
+	($mol_mem(($.$bog_music_track.prototype), "Confirm"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_music_track extends $.$bog_music_track {
+            track() {
+                return $bog_music_account_baza.home().track(this.key());
+            }
+            title() {
+                return this.track()?.Title()?.val() ?? '';
+            }
+            place() {
+                return this.account().place(this.key());
+            }
+            holder_name() {
+                const holders = this.account().holders_other(this.key());
+                return holders.length ? this.account().device_name(holders[0]) : '';
+            }
+            artist() {
+                const artist = this.track()?.Artist()?.val() ?? '';
+                const status = $bog_music_beam.instance().status(this.key());
+                const where = status
+                    || (this.place() === 'remote' ? `на «${this.holder_name()}»` : '')
+                    || (this.place() === 'lost' ? 'файла нет' : '');
+                return [artist, where].filter(Boolean).join(' · ');
+            }
+            cover() {
+                return this.track()?.cover() ?? '';
+            }
+            Cover() {
+                return this.cover() ? super.Cover() : null;
+            }
+            Cover_placeholder() {
+                return this.cover() ? null : super.Cover_placeholder();
+            }
+            cached() {
+                return this.place() === 'disk';
+            }
+            blob_pending() {
+                return !this.cached();
+            }
+            can_drag() {
+                return !this.archive_mode();
+            }
+            menu_toggle() {
+                $bog_music_pop_toggle(this.Menu());
+                return null;
+            }
+            menu_items() {
+                return this.archive_mode()
+                    ? [this.Restore(), this.Delete_forever()]
+                    : [
+                        ...this.place() === 'remote' ? [this.Pull()] : [],
+                        this.Demote(),
+                        ...this.can_drop_cache() ? [this.Delete()] : [],
+                        ...this.move_targets().map(id => this.Move(id)),
+                        this.Archive(),
+                    ];
+            }
+            pull_label() {
+                return `Перенести с «${this.holder_name()}»`;
+            }
+            pull_click() {
+                this.Menu().showed(false);
+                $bog_music_beam.instance().pull_one(this.key());
+                return null;
+            }
+            account() {
+                return $bog_music_account_baza.home();
+            }
+            move_targets() {
+                return this.account().playlists().map(pl => pl.id);
+            }
+            move_member(id) {
+                return this.account().list_has(id, this.key());
+            }
+            move_content(id) {
+                return [
+                    this.move_member(id) ? this.Move_cut_icon(id) : this.Move_add_icon(id),
+                    this.Move_label(id),
+                ];
+            }
+            move_label(id) {
+                const title = this.account().playlist_title(id);
+                return this.move_member(id) ? `Убрать из «${title}»` : `В «${title}»`;
+            }
+            move_click(id) {
+                this.Menu().showed(false);
+                if (this.move_member(id))
+                    this.account().list_cut(id, this.key());
+                else
+                    this.account().list_add(id, this.key());
+                return null;
+            }
+            can_drop_cache() {
+                return this.cached() && this.account().holders_other(this.key()).length > 0;
+            }
+            delete_asked(next) {
+                return next ?? false;
+            }
+            content() {
+                return this.delete_asked() ? [this.Confirm()] : super.content();
+            }
+            confirm_text() {
+                return `Удалить «${this.title()}» навсегда?`;
+            }
+            delete_ask() {
+                this.Menu().showed(false);
+                this.delete_asked(true);
+                return null;
+            }
+            delete_cancel() {
+                this.delete_asked(false);
+                return null;
+            }
+            delete_confirm() {
+                this.delete_asked(false);
+                this.delete_forever();
+                return null;
+            }
+            on_play_click() {
+                this.play(this.key());
+            }
+            event_drag_start(event) {
+                if (!this.can_drag()) {
+                    event.preventDefault();
+                    return;
+                }
+                try {
+                    event.dataTransfer?.setData('text/x-bog-track', '1');
+                    if (event.dataTransfer)
+                        event.dataTransfer.effectAllowed = 'move';
+                }
+                catch { }
+                this.drag_start();
+            }
+            event_drag_over(event) {
+                if (!this.can_drag())
+                    return;
+                event.preventDefault();
+                if (event.dataTransfer)
+                    event.dataTransfer.dropEffect = 'move';
+            }
+            event_drop(event) {
+                if (!this.can_drag())
+                    return;
+                event.preventDefault();
+                this.drop_here();
+            }
+            delete_cached() {
+                this.Menu().showed(false);
+                void this.account().drop_file(this.key());
+            }
+            share() {
+                return $bog_music_share.instance();
+            }
+            share_selected() {
+                return this.share().selected(this.key());
+            }
+            _share_press_timer = null;
+            _share_long_press_fired = false;
+            static SHARE_LONG_PRESS_MS = 450;
+            share_pointer_down(event) {
+                if (!event)
+                    return null;
+                event.stopPropagation();
+                this._share_long_press_fired = false;
+                if (this._share_press_timer)
+                    clearTimeout(this._share_press_timer);
+                this._share_press_timer = setTimeout(() => {
+                    this._share_press_timer = null;
+                    this._share_long_press_fired = true;
+                    this.share().enter(this.key());
+                }, $bog_music_track.SHARE_LONG_PRESS_MS);
+                return null;
+            }
+            share_pointer_up(event) {
+                if (!event)
+                    return null;
+                event.stopPropagation();
+                if (this._share_press_timer) {
+                    clearTimeout(this._share_press_timer);
+                    this._share_press_timer = null;
+                }
+                if (this._share_long_press_fired)
+                    return null;
+                const share = this.share();
+                if (share.mode())
+                    share.toggle(this.key());
+                else
+                    share.share_single(this.key());
+                return null;
+            }
+            share_pointer_cancel(event) {
+                if (this._share_press_timer) {
+                    clearTimeout(this._share_press_timer);
+                    this._share_press_timer = null;
+                }
+                return null;
+            }
+            share_pointer_leave(event) {
+                return this.share_pointer_cancel(event);
+            }
+            demote_click() {
+                this.Menu().showed(false);
+                this.demote(null);
+                return null;
+            }
+            archive_click() {
+                this.Menu().showed(false);
+                this.archive(null);
+                return null;
+            }
+            restore_click() {
+                this.Menu().showed(false);
+                this.restore(null);
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "menu_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "pull_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "move_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_music_track.prototype, "delete_asked", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "delete_ask", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "delete_cancel", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "delete_confirm", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "delete_cached", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "demote_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "archive_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_music_track.prototype, "restore_click", null);
+        $$.$bog_music_track = $bog_music_track;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/music/track/track.view.css", "/* Заголовок и исполнитель: не больше трёх и двух строк, дальше многоточие.\n   $mol_style_define не знает -webkit-box-orient, поэтому обычный CSS. */\n[bog_music_track_title],\n[bog_music_track_artist] {\n\tdisplay: -webkit-box;\n\t-webkit-box-orient: vertical;\n\toverflow: hidden;\n}\n[bog_music_track_title] {\n\t-webkit-line-clamp: 3;\n}\n[bog_music_track_artist] {\n\t-webkit-line-clamp: 2;\n}\n[bog_music_track_confirm_text] {\n\tdisplay: block;\n}\n\n/* Огромный шрифт: отступы не растут вместе с буквами, иначе на телефоне\n   тексту не остаётся места. */\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_track] {\n\tpadding: 0.25rem 0 0.25rem 0.125rem;\n\tgap: 0.25rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_app_body_content] {\n\tpadding-left: 0.25rem;\n\tpadding-right: 0.25rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_track_cover_box] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n}\nhtml:has([bog_music_app][bog_music_font=\"huge\"]) [bog_music_track_share] {\n\twidth: 1.75rem;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_music_track, {
+            flex: {
+                direction: 'row',
+            },
+            align: {
+                items: 'center',
+            },
+            gap: $mol_gap.text,
+            padding: {
+                top: '0.375rem',
+                bottom: '0.375rem',
+                left: '0.5rem',
+                right: '0.25rem',
+            },
+            borderRadius: '0.5rem',
+            Cover_box: {
+                flex: {
+                    shrink: 0,
+                    grow: 0,
+                },
+                width: '3rem',
+                height: '3rem',
+                borderRadius: '4px',
+                overflow: { x: 'hidden', y: 'hidden' },
+                cursor: 'pointer',
+                justify: { content: 'center' },
+                align: { items: 'center' },
+                background: {
+                    color: $mol_theme.line,
+                },
+            },
+            Cover: {
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+            },
+            Cover_placeholder: {
+                width: '1.75rem',
+                height: '1.75rem',
+                color: $mol_theme.shade,
+            },
+            Info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+                cursor: 'pointer',
+            },
+            Title: {
+                font: {
+                    weight: 500,
+                    size: '1rem',
+                },
+                lineHeight: '1.25',
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+            },
+            Artist: {
+                font: {
+                    size: '0.875rem',
+                },
+                lineHeight: '1.25',
+                color: $mol_theme.shade,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+            },
+            Share: {
+                flex: {
+                    shrink: 0,
+                    grow: 0,
+                },
+                width: '2.25rem',
+                height: '2.25rem',
+                justify: { content: 'center' },
+                align: { items: 'center' },
+                borderRadius: '4px',
+                cursor: 'pointer',
+                color: $mol_theme.shade,
+                touchAction: 'none',
+                userSelect: 'none',
+                transition: 'background 0.15s, color 0.15s',
+            },
+            Share_icon: {
+                width: '1.5rem',
+                height: '1.5rem',
+            },
+            Menu: {
+                flex: { shrink: 0 },
+            },
+            Menu_anchor: {
+                color: $mol_theme.shade,
+                padding: { left: '0.25rem', right: '0.25rem' },
+            },
+            Menu_panel: {
+                flex: { direction: 'column' },
+                align: { items: 'stretch' },
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.25rem',
+                    right: '0.25rem',
+                },
+                minWidth: '13rem',
+            },
+            // Пункт меню: иконка + подпись в одну строку, прижаты влево.
+            Demote: { justify: { content: 'flex-start' }, gap: $mol_gap.text },
+            Delete: { justify: { content: 'flex-start' }, gap: $mol_gap.text },
+            Archive: { justify: { content: 'flex-start' }, gap: $mol_gap.text },
+            Restore: { justify: { content: 'flex-start' }, gap: $mol_gap.text },
+            Move: { justify: { content: 'flex-start' }, gap: $mol_gap.text },
+            Delete_forever: { justify: { content: 'flex-start' }, gap: $mol_gap.text, color: $mol_theme.special },
+            Confirm: {
+                flex: { direction: 'column', grow: 1, shrink: 1 },
+                minWidth: 0,
+                gap: $mol_gap.text,
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.25rem',
+                    right: '0.25rem',
+                },
+            },
+            Confirm_text: {
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+            },
+            Confirm_actions: {
+                flex: { direction: 'row', wrap: 'wrap' },
+                justify: { content: 'flex-end' },
+                gap: $mol_gap.text,
+            },
+            '@': {
+                bog_music_track_current: {
+                    true: {
+                        color: $mol_theme.focus,
+                    },
+                },
+                bog_music_track_pending: {
+                    true: {
+                        // blob ещё качается фоном — приглушаем строку, но она кликабельна
+                        // (клик играет через blob_wait, дождавшись докачки).
+                        opacity: 0.55,
+                    },
+                },
+                bog_music_track_share_selected: {
+                    true: {
+                        background: { color: $mol_theme.focus },
+                        color: $mol_theme.card,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
 	($.$bog_gram_scan) = class $bog_gram_scan extends ($.$mol_view) {
 		Toggle(){
 			const obj = new this.$.$mol_check();
@@ -20541,33 +38977,9 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
-		path(){
-			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$mol_icon_bookmark) = class $mol_icon_bookmark extends ($.$mol_icon) {
 		path(){
 			return "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_archive) = class $mol_icon_archive extends ($.$mol_icon) {
-		path(){
-			return "M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z";
 		}
 	};
 
@@ -20748,145 +39160,9 @@ var $;
 
 
 ;
-	($.$mol_image) = class $mol_image extends ($.$mol_view) {
-		uri(){
-			return "";
-		}
-		title(){
-			return "";
-		}
-		loading(){
-			return "lazy";
-		}
-		decoding(){
-			return "async";
-		}
-		cors(){
-			return null;
-		}
-		natural_width(){
-			return 0;
-		}
-		natural_height(){
-			return 0;
-		}
-		load(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dom_name(){
-			return "img";
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"src": (this.uri()), 
-				"title": (this.hint()), 
-				"alt": (this.title()), 
-				"loading": (this.loading()), 
-				"decoding": (this.decoding()), 
-				"crossOrigin": (this.cors()), 
-				"width": (this.natural_width()), 
-				"height": (this.natural_height())
-			};
-		}
-		event(){
-			return {"load": (next) => (this.load(next))};
-		}
-		minimal_width(){
-			return 16;
-		}
-		minimal_height(){
-			return 16;
-		}
-	};
-	($mol_mem(($.$mol_image.prototype), "load"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_image extends $.$mol_image {
-            natural_width(next) {
-                const dom = this.dom_node();
-                if (dom.naturalWidth)
-                    return dom.naturalWidth;
-                const found = this.uri().match(/\bwidth=(\d+)/);
-                return found ? Number(found[1]) : null;
-            }
-            natural_height(next) {
-                const dom = this.dom_node();
-                if (dom.naturalHeight)
-                    return dom.naturalHeight;
-                const found = this.uri().match(/\bheight=(\d+)/);
-                return found ? Number(found[1]) : null;
-            }
-            load() {
-                this.natural_width(null);
-                this.natural_height(null);
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_image.prototype, "natural_width", null);
-        __decorate([
-            $mol_mem
-        ], $mol_image.prototype, "natural_height", null);
-        $$.$mol_image = $mol_image;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
-		path(){
-			return "M8,5.14V19.14L19,12.14L8,5.14Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_pause) = class $mol_icon_pause extends ($.$mol_icon) {
-		path(){
-			return "M14,19H18V5H14M6,19H10V5H6V19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$bog_gram) = class $bog_gram extends ($.$mol_book2) {
 		Theme(){
 			const obj = new this.$.$mol_theme_auto();
-			return obj;
-		}
-		Favicon_icon(){
-			const obj = new this.$.$mol_icon_message();
-			return obj;
-		}
-		Favicon(){
-			const obj = new this.$.$bog_favicon();
-			(obj.Icon) = () => ((this.Favicon_icon()));
 			return obj;
 		}
 		Intro_title(){
@@ -20941,6 +39217,21 @@ var $;
 			(obj.hint) = () => ("Новая группа");
 			(obj.click) = (next) => ((this.group_open(next)));
 			(obj.sub) = () => ([(this.Group_open_icon())]);
+			return obj;
+		}
+		music_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Music_open_icon(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		Music_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Музыка");
+			(obj.click) = (next) => ((this.music_open(next)));
+			(obj.sub) = () => ([(this.Music_open_icon())]);
 			return obj;
 		}
 		settings_open(next){
@@ -21018,6 +39309,7 @@ var $;
 				(this.Status()), 
 				(this.Compose_open()), 
 				(this.Group_open()), 
+				(this.Music_open()), 
 				(this.Settings_open()), 
 				(this.Lights())
 			]);
@@ -21026,6 +39318,15 @@ var $;
 				(this.Ask_plate()), 
 				(this.Dialogs_list())
 			]);
+			return obj;
+		}
+		music_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Music_page(){
+			const obj = new this.$.$bog_gram_music();
+			(obj.close) = (next) => ((this.music_close(next)));
 			return obj;
 		}
 		settings_close(next){
@@ -22642,7 +40943,7 @@ var $;
 			return obj;
 		}
 		plugins(){
-			return [(this.Theme()), (this.Favicon())];
+			return [(this.Theme())];
 		}
 		Placeholder(){
 			return (this.Intro());
@@ -22650,6 +40951,7 @@ var $;
 		pages(){
 			return [
 				(this.Menu()), 
+				(this.Music_page()), 
 				(this.Settings_page()), 
 				(this.Compose_page()), 
 				(this.Group_page()), 
@@ -22947,8 +41249,6 @@ var $;
 		}
 	};
 	($mol_mem(($.$bog_gram.prototype), "Theme"));
-	($mol_mem(($.$bog_gram.prototype), "Favicon_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Favicon"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_title"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_hint"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_plate"));
@@ -22960,6 +41260,9 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "group_open"));
 	($mol_mem(($.$bog_gram.prototype), "Group_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Group_open"));
+	($mol_mem(($.$bog_gram.prototype), "music_open"));
+	($mol_mem(($.$bog_gram.prototype), "Music_open_icon"));
+	($mol_mem(($.$bog_gram.prototype), "Music_open"));
 	($mol_mem(($.$bog_gram.prototype), "settings_open"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_open"));
@@ -22973,6 +41276,8 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Ask_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Dialogs_list"));
 	($mol_mem(($.$bog_gram.prototype), "Menu"));
+	($mol_mem(($.$bog_gram.prototype), "music_close"));
+	($mol_mem(($.$bog_gram.prototype), "Music_page"));
 	($mol_mem(($.$bog_gram.prototype), "settings_close"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_close_icon"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_close"));
@@ -24494,194 +42799,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.52';
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function pass(data) {
-        return data;
-    }
-    function $mol_error_fence(task, fallback, loading = pass) {
-        try {
-            return task();
-        }
-        catch (error) {
-            let normalized;
-            try {
-                normalized = $mol_promise_like(error) ? loading(error) : fallback(error);
-            }
-            catch (sub_error) {
-                normalized = $mol_promise_like(sub_error) ? sub_error : new $mol_error_mix(sub_error.message, { error }, sub_error);
-            }
-            if (normalized instanceof Error || $mol_promise_like(normalized)) {
-                $mol_fail_hidden(normalized);
-            }
-            return normalized;
-        }
-    }
-    $.$mol_error_fence = $mol_error_fence;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_error_enriched(cause, cb) {
-        return $mol_error_fence(cb, e => new $mol_error_mix(e.message, cause, e));
-    }
-    $.$mol_error_enriched = $mol_error_enriched;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_fetch_response extends $mol_object {
-        native;
-        request;
-        status() {
-            const types = ['unknown', 'inform', 'success', 'redirect', 'wrong', 'failed'];
-            return types[Math.floor(this.native.status / 100)];
-        }
-        code() {
-            return this.native.status;
-        }
-        ok() {
-            return this.native.ok;
-        }
-        message() {
-            return $mol_rest_code[this.code()] || `HTTP Error ${this.code()}`;
-        }
-        headers() {
-            return this.native.headers;
-        }
-        mime() {
-            return this.headers().get('content-type');
-        }
-        stream() {
-            return this.native.body;
-        }
-        text() {
-            const buffer = this.buffer();
-            const mime = this.mime() || '';
-            const [, charset] = /charset=(.*)/.exec(mime) || [, 'utf-8'];
-            const decoder = new TextDecoder(charset);
-            return decoder.decode(buffer);
-        }
-        json() {
-            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).json());
-        }
-        blob() {
-            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).blob());
-        }
-        buffer() {
-            return $mol_error_enriched(this, () => $mol_wire_sync(this.native).arrayBuffer());
-        }
-        xml() {
-            return $mol_dom_parse(this.text(), 'application/xml');
-        }
-        xhtml() {
-            return $mol_dom_parse(this.text(), 'application/xhtml+xml');
-        }
-        html() {
-            return $mol_dom_parse(this.text(), 'text/html');
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $mol_fetch_response.prototype, "stream", null);
-    __decorate([
-        $mol_action
-    ], $mol_fetch_response.prototype, "text", null);
-    __decorate([
-        $mol_action
-    ], $mol_fetch_response.prototype, "xml", null);
-    __decorate([
-        $mol_action
-    ], $mol_fetch_response.prototype, "xhtml", null);
-    __decorate([
-        $mol_action
-    ], $mol_fetch_response.prototype, "html", null);
-    $.$mol_fetch_response = $mol_fetch_response;
-    class $mol_fetch_request extends $mol_object {
-        native;
-        response_async() {
-            const controller = new AbortController();
-            let done = false;
-            const request = new Request(this.native, { signal: controller.signal });
-            const promise = fetch(request).finally(() => {
-                done = true;
-            });
-            return Object.assign(promise, {
-                destructor: () => {
-                    // Abort of done request breaks response parsing
-                    if (!done && !controller.signal.aborted)
-                        controller.abort();
-                },
-            });
-        }
-        response() {
-            const native = $mol_error_enriched(this, () => $mol_wire_sync(this).response_async());
-            return this.$.$mol_fetch_response.make({
-                native,
-                request: this
-            });
-        }
-        success() {
-            const response = this.response();
-            if (response.status() === 'success')
-                return response;
-            throw new Error(response.message(), { cause: response });
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $mol_fetch_request.prototype, "response", null);
-    $.$mol_fetch_request = $mol_fetch_request;
-    class $mol_fetch extends $mol_object {
-        static request(input, init) {
-            return this.$.$mol_fetch_request.make({
-                native: new Request(input, init)
-            });
-        }
-        static response(input, init) {
-            return this.request(input, init).response();
-        }
-        static success(input, init) {
-            return this.request(input, init).success();
-        }
-        static stream(input, init) {
-            return this.success(input, init).stream();
-        }
-        static text(input, init) {
-            return this.success(input, init).text();
-        }
-        static json(input, init) {
-            return this.success(input, init).json();
-        }
-        static blob(input, init) {
-            return this.success(input, init).blob();
-        }
-        static buffer(input, init) {
-            return this.success(input, init).buffer();
-        }
-        static xml(input, init) {
-            return this.success(input, init).xml();
-        }
-        static xhtml(input, init) {
-            return this.success(input, init).xhtml();
-        }
-        static html(input, init) {
-            return this.success(input, init).html();
-        }
-    }
-    __decorate([
-        $mol_action
-    ], $mol_fetch, "request", null);
-    $.$mol_fetch = $mol_fetch;
+    $.$bog_gram_version = '1.0.55';
 })($ || ($ = {}));
 
 ;
@@ -24849,115 +42967,6 @@ var $;
         $mol_action
     ], $bog_gram_notify, "unsubscribe", null);
     $.$bog_gram_notify = $bog_gram_notify;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_yard extends $giper_baza_yard {
-        static stagger = 300; // ms
-        port_make(socket, link) {
-            const port = new $mol_rest_port_ws_std;
-            port.socket = socket;
-            socket.onmessage = async (event) => {
-                if (event.data instanceof ArrayBuffer) {
-                    if (!event.data.byteLength)
-                        return;
-                    await $mol_wire_async(this).port_income(port, new Uint8Array(event.data));
-                    return;
-                }
-                this.$.$mol_log3_fail({
-                    place: this,
-                    message: 'Wrong data',
-                    data: event.data,
-                });
-            };
-            const beat = setInterval(() => socket.send(new Uint8Array), 30000);
-            socket.onclose = () => {
-                clearInterval(beat);
-                setTimeout(() => this.reconnects(null), 1000);
-            };
-            port.destructor = () => {
-                socket.onclose = () => { };
-                clearInterval(beat);
-                socket.close();
-            };
-            this.$.$mol_log3_come({
-                place: this,
-                message: 'Connected',
-                port: $mol_key(port),
-                server: link,
-            });
-            return port;
-        }
-        master() {
-            this.reconnects();
-            const links = this.$.$giper_baza_yard.masters();
-            if (!links.length)
-                return null;
-            const first = ($mol_wire_probe(() => this.master_cursor()) ?? 0) % links.length;
-            const order = links.map((_, index) => (first + index) % links.length);
-            const sockets = new Map();
-            const timers = new Set();
-            let won = false;
-            let started = 0;
-            let failed = 0;
-            const stop = (keep) => {
-                for (const timer of timers)
-                    clearTimeout(timer);
-                timers.clear();
-                for (const [index, socket] of sockets) {
-                    if (index === keep)
-                        continue;
-                    socket.onopen = null;
-                    socket.onerror = null;
-                    socket.onclose = null;
-                    socket.close();
-                }
-            };
-            const promise = new Promise(done => {
-                const next = () => {
-                    if (won || started >= order.length)
-                        return;
-                    const index = order[started++];
-                    const link = links[index];
-                    const socket = new this.$.$mol_dom_context.WebSocket(link.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
-                    socket.binaryType = 'arraybuffer';
-                    sockets.set(index, socket);
-                    socket.onopen = () => {
-                        if (won)
-                            return;
-                        won = true;
-                        stop(index);
-                        socket.onerror = null;
-                        this.master_cursor(index);
-                        done(this.port_make(socket, link));
-                    };
-                    socket.onerror = () => {
-                        socket.onopen = null;
-                        socket.onerror = null;
-                        if (won)
-                            return;
-                        if (++failed >= order.length) {
-                            timers.add(setTimeout(() => this.reconnects(null), 1000));
-                            return;
-                        }
-                        next();
-                    };
-                    if (started < order.length)
-                        timers.add(setTimeout(next, this.constructor.stagger));
-                };
-                next();
-            });
-            return Object.assign(promise, { destructor: () => { if (!won)
-                    stop(); } });
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $bog_yard.prototype, "master", null);
-    $.$bog_yard = $bog_yard;
 })($ || ($ = {}));
 
 ;
@@ -26059,10 +44068,33 @@ var $;
                     ...this.group_opened() ? [this.Group_page()] : [],
                     ...this.dialog_active() ? [this.Chat_page()] : [],
                     ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
+                    ...this.music_opened() ? [this.Music_page()] : [],
                 ];
             }
             Placeholder() {
-                return this.dialog_active() ? null : super.Placeholder();
+                return this.dialog_active() || this.music_opened() ? null : super.Placeholder();
+            }
+            music_opened(next) {
+                return next ?? false;
+            }
+            /** Закрытая страница музыки только сворачивается: плеер живёт до конца
+             * сессии, иначе его аудио доигрывало бы без хозяина, а новое открытие
+             * заводило бы второй плеер поверх первого. */
+            music_alive(next) {
+                return next ?? false;
+            }
+            music_keep() {
+                if (this.music_alive())
+                    this.Music_page();
+            }
+            music_open(next) {
+                this.music_alive(true);
+                this.music_opened(!this.music_opened());
+                return null;
+            }
+            music_close(next) {
+                this.music_opened(false);
+                return null;
             }
             // ===== Создание диалога =====
             /** Уже существующий диалог с этим собеседником — повторный старт
@@ -29264,6 +47296,12 @@ var $;
                 catch (error) {
                     $mol_fail_log(error);
                 }
+                try {
+                    this.music_keep();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
             }
         }
         __decorate([
@@ -29496,6 +47534,18 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "settings_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "music_opened", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "music_alive", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "music_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "music_close", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_pending", null);
@@ -30217,9 +48267,9 @@ var $;
                         return;
                     const last = rows[rows.length - 1];
                     if (key !== this.focus_done()) {
+                        const focus = this.focus_row();
                         this.focus_done(key);
                         this.rows_seen(rows.length);
-                        const focus = this.focus_row();
                         this.reveal(focus ?? last, focus ? 'start' : 'end');
                         return;
                     }
@@ -30360,6 +48410,9 @@ var $;
                 Body_content: {
                     padding: body_pad,
                 },
+            },
+            Music_page: {
+                width: '30rem',
             },
             Members_page: {
                 width: '26rem',
@@ -35472,24 +53525,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    function $mol_wait_timeout_async(timeout) {
-        const promise = new $mol_promise();
-        const task = new this.$mol_after_timeout(timeout, () => promise.done());
-        return Object.assign(promise, {
-            destructor: () => task.destructor()
-        });
-    }
-    $.$mol_wait_timeout_async = $mol_wait_timeout_async;
-    function $mol_wait_timeout(timeout) {
-        return this.$mol_wire_sync(this).$mol_wait_timeout_async(timeout);
-    }
-    $.$mol_wait_timeout = $mol_wait_timeout;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     var $$;
     (function ($$) {
@@ -40006,30 +58041,492 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'Vector limiting'() {
+            let point = new $mol_vector_3d(7, 10, 13);
+            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
+            $mol_assert_equal(res.x, 5);
+            $mol_assert_equal(res.y, 15);
+            $mol_assert_equal(res.z, 10);
+        },
+        'Vector adding scalar'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added0(5);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 7);
+            $mol_assert_equal(res.z, 8);
+        },
+        'Vector adding vector'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added1([5, 10, 15]);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 12);
+            $mol_assert_equal(res.z, 18);
+        },
+        'Vector multiplying scalar'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed0(-1);
+            $mol_assert_equal(res.x, -2);
+            $mol_assert_equal(res.y, -3);
+            $mol_assert_equal(res.z, -4);
+        },
+        'Vector multiplying vector'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed1([5, 2, -2]);
+            $mol_assert_equal(res.x, 10);
+            $mol_assert_equal(res.y, 6);
+            $mol_assert_equal(res.z, -8);
+        },
+        'Matrix adding matrix'() {
+            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
+            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
+            $mol_assert_equal(res[0][0], 11);
+            $mol_assert_equal(res[0][1], 22);
+            $mol_assert_equal(res[1][0], 33);
+            $mol_assert_equal(res[1][1], 44);
+            $mol_assert_equal(res[2][0], 55);
+            $mol_assert_equal(res[2][1], 66);
+        },
+        'Matrix multiplying matrix'() {
+            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
+            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
+            $mol_assert_equal(res[0][0], 4);
+            $mol_assert_equal(res[0][1], 9);
+            $mol_assert_equal(res[1][0], 16);
+            $mol_assert_equal(res[1][1], 25);
+            $mol_assert_equal(res[2][0], 36);
+            $mol_assert_equal(res[2][1], 49);
+        },
+        'Range expanding'() {
+            let range = $mol_vector_range_full.inversed;
+            const expanded = range.expanded0(10).expanded0(5);
+            $mol_assert_like([...expanded], [5, 10]);
+        },
+        'Vector of range expanding by vector'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
+            $mol_assert_like([...expanded.x], [1, 3]);
+            $mol_assert_like([...expanded.y], [5, 7]);
+        },
+        'Vector of range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions
+                .expanded2([[1, 3], [7, 9]])
+                .expanded2([[2, 4], [6, 8]]);
+            $mol_assert_like([...expanded.x], [1, 4]);
+            $mol_assert_like([...expanded.y], [6, 9]);
+        },
+        'Vector of infinity range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = next
+                .expanded2(dimensions);
+            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
+            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'skin puts presets on the host node'($) {
+                class Host extends $mol_view {
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, base: () => 'stone' });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                const node = host.dom_node();
+                $mol_assert_equal(node.getAttribute('bog_builderui_base'), 'stone');
+                $mol_assert_equal(node.getAttribute('bog_builderui_lights'), 'system');
+                $mol_assert_equal(node.getAttribute('bog_builderui_theme'), 'sky');
+                $mol_assert_equal(node.getAttribute('bog_builderui_radius'), 'medium');
+                $mol_assert_equal(node.getAttribute('mol_theme'), null);
+                host.destructor();
+            },
+            'skin stops input zoom on ios only'($) {
+                const zoom_after = (agent) => {
+                    const meta = { content: 'width=device-width, initial-scale=1', getAttribute: () => meta.content, setAttribute: (_, val) => { meta.content = val; } };
+                    const document = { querySelector: () => meta };
+                    const context = { ...$.$mol_dom_context, document, navigator: { userAgent: agent, platform: '', maxTouchPoints: 0 } };
+                    const skin = $bog_builderui_skin.make({ $: $.$mol_ambient({ $mol_dom_context: context }) });
+                    skin.ios_zoom_fix();
+                    skin.ios_zoom_fix();
+                    return meta.content;
+                };
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'), 'width=device-width, initial-scale=1, maximum-scale=1');
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (Linux; Android 14)'), 'width=device-width, initial-scale=1');
+            },
+            'skin follows the host'($) {
+                class Host extends $mol_view {
+                    lights(next) {
+                        return next ?? 'dark';
+                    }
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, lights: () => this.lights() });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "lights", null);
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'dark');
+                host.lights('light');
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'light');
+                host.destructor();
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'null by default'() {
+            const key = String(Math.random());
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+        'storing'() {
+            const key = String(Math.random());
+            $mol_state_session.value(key, '$mol_state_session_test');
+            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
+            $mol_state_session.value(key, null);
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test({
-        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
-            const sender = await $.$giper_baza_auth._generate();
-            const target = await $.$giper_baza_auth._generate();
-            const stranger = await $.$giper_baza_auth._generate();
-            const seal = $mol_wire_async($bog_gram_seal);
-            const link = 'ABCDEFGH_IJKLMNOP';
-            const entry = await seal.close(sender, target.pass(), 'invite', link);
-            const again = await seal.close(sender, target.pass(), 'invite', link);
-            const parts = entry.split('|');
-            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
-            const forged = parts.join('|');
-            const opened = await seal.open(target, 'invite', entry);
-            const alien = await seal.open(stranger, 'invite', entry);
-            const other_kind = await seal.open(target, 'deny', entry);
-            const broken = await seal.open(target, 'invite', forged);
-            $mol_assert_equal(entry, again);
-            $mol_assert_equal(entry.includes(link), false);
-            $mol_assert_equal(opened?.open, link);
-            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
-            $mol_assert_equal(alien, null);
-            $mol_assert_equal(other_kind, null);
-            $mol_assert_equal(broken, null);
+        'system mode follows the device, not a light choice stored by another app'($) {
+            const device = (light) => {
+                const context = Object.create($);
+                context.$mol_lights = () => !light;
+                context.$mol_media = class extends $.$mol_media {
+                    static match() {
+                        return light;
+                    }
+                };
+                return $bog_theme_auto.make({ $: context });
+            };
+            const night = device(false);
+            $mol_assert_equal(night.mode(), 'system');
+            $mol_assert_equal(night.theme(), night.theme_dark());
+            $mol_assert_equal(night.is_light_now(), false);
+            const day = device(true);
+            $mol_assert_equal(day.theme(), day.theme_light());
+            $mol_assert_equal(day.is_light_now(), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function page($) {
+        const dom = $.$mol_dom_context;
+        const root = dom.document.createElement('div');
+        root.innerHTML = `
+			<button ${$bog_tooltip_hush_tip}="Первая"><span id="deep">жми</span></button>
+			<button ${$bog_tooltip_hush_tip}="Вторая"></button>
+			<button id="bare"></button>
+		`;
+        return root;
+    }
+    $mol_test({
+        'the hush marks the host of the node it was given, tip and all'($) {
+            const root = page($);
+            const deep = root.querySelector('#deep');
+            $mol_assert_equal($bog_tooltip_hush(deep), 'Первая');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 1);
+        },
+        'a node with no host above it is left alone'($) {
+            const root = page($);
+            $mol_assert_equal($bog_tooltip_hush(root.querySelector('#bare')), '');
+            $mol_assert_equal($bog_tooltip_hush(null), '');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+        },
+        'the next focus takes every mark away'($) {
+            const root = page($);
+            $bog_tooltip_hush(root.querySelector('#deep'));
+            $bog_tooltip_hush(root.querySelectorAll('button')[1]);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 2);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 2);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 0);
+            $mol_assert_equal($bog_tooltip_hush_off(null), 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'room is counted from the host center to both edges of the view'() {
+            $mol_assert_like($bog_tooltip_room({ left: 12, width: 40 }, 1280), { left: 32, right: 1248, flip: false, lift: 0 });
+            $mol_assert_like($bog_tooltip_room({ left: 1228, width: 40 }, 1280), { left: 1248, right: 32, flip: false, lift: 0 });
+        },
+        'host past the right edge leaves negative room on that side'() {
+            $mol_assert_like($bog_tooltip_room({ left: 1270, width: 40 }, 1280), { left: 1290, right: -10, flip: false, lift: 0 });
+        },
+        'a host with room below keeps the tip below it'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 200, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, false);
+            $mol_assert_equal(room.lift, 0);
+        },
+        'a host at the floor flips the tip up over its own height and the gap'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 790, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, true);
+            $mol_assert_equal(room.lift, 40 + $bog_tooltip_room_gap);
+        },
+        'a host with no room on either side keeps the tip below'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 30, height: 30 }, 1280, 40);
+            $mol_assert_equal(room.flip, false);
+        },
+        'the room below is counted up to the need, not to the last pixel'() {
+            const tight = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need + 1, height: 40 }, 1280, 800);
+            const enough = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need, height: 40 }, 1280, 800);
+            $mol_assert_equal(tight.flip, true);
+            $mol_assert_equal(enough.flip, false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function fake_dir() {
+        const files = new Map();
+        const dir = {
+            async getFileHandle(name, opts) {
+                if (!files.has(name)) {
+                    if (!opts?.create)
+                        throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+                    files.set(name, new Blob([]));
+                }
+                return {
+                    async getFile() {
+                        return new File([files.get(name)], name);
+                    },
+                    async createWritable() {
+                        const parts = [];
+                        return {
+                            async write(blob) { parts.push(blob); },
+                            async close() { files.set(name, new Blob(parts)); },
+                        };
+                    },
+                };
+            },
+            async removeEntry(name) {
+                if (!files.delete(name))
+                    throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+            },
+            async *keys() {
+                yield* files.keys();
+            },
+        };
+        return dir;
+    }
+    $mol_test({
+        async 'put, read range, list and drop'() {
+            $bog_music_disk._dir = Promise.resolve(fake_dir());
+            const bytes = new Uint8Array([0, 0, 0, 0, 102, 116, 121, 112, 1, 2, 3, 4, 5, 6]);
+            await $bog_music_disk.put('tube/x y', bytes);
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), true);
+            $mol_assert_equal(await $bog_music_disk.keys(), ['tube/x y']);
+            const range = await $bog_music_disk.bytes('tube/x y', 10, -1);
+            $mol_assert_equal(range.total, 14);
+            $mol_assert_equal(range.mime, 'audio/mp4');
+            $mol_assert_equal([...new Uint8Array(range.bytes)], [3, 4, 5, 6]);
+            await $bog_music_disk.drop('tube/x y');
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), false);
+            $mol_assert_equal(await $bog_music_disk.file('tube/x y'), null);
+            $mol_assert_equal(await $bog_music_disk.bytes('tube/x y', 0, -1), null);
+            $bog_music_disk._dir = null;
+        },
+        'mime by magic bytes'() {
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x4F, 0x67, 0x67, 0x53])), 'audio/ogg');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0xFF, 0xF1, 0x50])), 'audio/aac');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x49, 0x44, 0x33])), 'audio/mpeg');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'iPhone and iPad with desktop Safari agent are not Mac'() {
+            const agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15';
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 390), 'iPhone · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 820), 'iPad · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 0, 900), 'Mac · Safari');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Мощность 100-мс кусков постоянного сигнала с заданным средним квадратом. */
+    function power_of(hops, mean_square, hop) {
+        const power = new Float64Array(hops);
+        power.fill(mean_square * hop);
+        return power;
+    }
+    $mol_test({
+        'Множитель приводит запись к целевой громкости'() {
+            $mol_assert_equal($bog_music_gain.factor(null), 1);
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-14) * 1000), 1000);
+            // Тише цели на 6 dB — усиление вдвое.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-20) * 100), 200);
+            // Громче цели на 6 dB — вдвое тише.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-8) * 100), 50);
+        },
+        'Множитель зажат пределами'() {
+            $mol_assert_equal($bog_music_gain.factor(-100), Math.pow(10, 12 / 20));
+            $mol_assert_equal($bog_music_gain.factor(20), Math.pow(10, -20 / 20));
+        },
+        'Громкость ровного сигнала'() {
+            const hop = 4800;
+            const lufs = $bog_music_gain.integrated(power_of(20, 0.01, hop), hop);
+            // -0.691 + 10 * log10( 0.01 )
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.01);
+        },
+        'Тишина в конце записи не занижает громкость'() {
+            const hop = 4800;
+            const power = new Float64Array(40);
+            power.set(power_of(20, 0.01, hop), 0);
+            power.fill(1e-9 * hop, 20);
+            const lufs = $bog_music_gain.integrated(power, hop);
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.5);
+        },
+        'Сплошная тишина не измеряется'() {
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(20), 4800), null);
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(2), 4800), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Пресеты покрывают все полосы и лежат в диапазоне'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal(preset.gains.length, $bog_music_eq.bands.length);
+                for (const db of preset.gains) {
+                    $mol_assert_ok(Math.abs(db) <= $bog_music_eq.range_db);
+                }
+            }
+        },
+        'Пресет узнаётся по своему же набору'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal($bog_music_eq.preset_of(preset.gains), preset.id);
+            }
+        },
+        'Набор мимо пресетов — «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of([1, 2, 3, 4, 5]), '');
+        },
+        'Ровный набор — это пресет «По умолчанию», а не «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of($bog_music_eq.flat()), 'default');
+        },
+        'Чужой набор приводится к нашим полосам'() {
+            // Короче — недостающие полосы в ноль, длиннее — лишние прочь.
+            $mol_assert_equal($bog_music_eq.clamp([3]).join(), '3,0,0,0,0,0');
+            $mol_assert_equal($bog_music_eq.clamp([1, 1, 1, 1, 1, 1, 1, 1]).join(), '1,1,1,1,1,1');
+            // За пределом — в потолок, дробное — к целым dB.
+            $mol_assert_equal($bog_music_eq.clamp([99, -99, 2.4, 2.6, NaN, 5]).join(), '12,-12,2,3,0,5');
+        },
+        'Настройка от пятиполосной версии не роняет полосы'() {
+            // В baza могла остаться строка на пять значений: шестая полоса в ноль,
+            // первые пять сохраняются как были.
+            $mol_assert_equal($bog_music_eq.parse('8,4,0,0,1').join(), '8,4,0,0,1,0');
+        },
+        'Цвет едет от зелёного через жёлтый к красному'() {
+            $mol_assert_equal($bog_music_eq.color(-12), 'hsl( 120 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(0), 'hsl( 50 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(12), 'hsl( 0 80% 55% )');
+            // За пределом диапазона цвет не уезжает дальше края.
+            $mol_assert_equal($bog_music_eq.color(99), $bog_music_eq.color(12));
+        },
+        'Набор переживает запись строкой и чтение обратно'() {
+            const gains = $bog_music_eq.preset('bass');
+            $mol_assert_equal($bog_music_eq.parse($bog_music_eq.stringify(gains)).join(), gains.join());
+            // Пусто в baza (настройки ещё не сохраняли) — плоский набор.
+            $mol_assert_equal($bog_music_eq.parse('').join(), $bog_music_eq.flat().join());
+            $mol_assert_equal($bog_music_eq.parse(null).join(), $bog_music_eq.flat().join());
+        },
+        'Неизвестный пресет не выдумывается'() {
+            $mol_assert_equal($bog_music_eq.preset('nope'), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        '$mol_syntax2_md_flow'() {
+            const check = (input, right) => {
+                const tokens = [];
+                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
+                $mol_assert_equal(tokens, right);
+            };
+            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
+                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
+                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
+                ['block', 'of Love!', ['of Love!', ''], 19],
+            ]);
+            check('# Header1\n\nHello!\n\n## Header2', [
+                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
+                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
+            ]);
+            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
+                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
+                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
+                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
+            ]);
+            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
+                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
+                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
+            ]);
         },
     });
 })($ || ($ = {}));
@@ -40046,6 +58543,247 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function pair() {
+        const make = () => Object.assign(new EventTarget, {
+            readyState: 'open',
+            bufferedAmount: 0,
+            bufferedAmountLowThreshold: 0,
+            binaryType: 'arraybuffer',
+            other: null,
+            send(data) {
+                const target = this.other;
+                setTimeout(() => target.dispatchEvent(new MessageEvent('message', { data })));
+            },
+        });
+        const left = make();
+        const right = make();
+        left.other = right;
+        right.other = left;
+        return [left, right];
+    }
+    $mol_test({
+        async 'waiting for message fails when other side is silent'() {
+            const [channel] = pair();
+            const got = await $bog_music_peer.message(channel, 10).then(() => 'got', error => error.message);
+            $mol_assert_equal(got, 'Другое устройство замолчало');
+        },
+        async 'drain fails when channel closes with full buffer'() {
+            const [channel] = pair();
+            Object.assign(channel, { bufferedAmount: $bog_music_peer.buffer_high });
+            const wait = $bog_music_peer.drain(channel).then(() => 'drained', error => error.message);
+            Object.assign(channel, { readyState: 'closed' });
+            channel.dispatchEvent(new Event('close'));
+            $mol_assert_equal(await wait, 'Соединение оборвалось');
+        },
+        async 'files go through channel in chunks with meta'() {
+            const [sender, receiver] = pair();
+            const big = new Uint8Array($bog_music_peer.chunk * 2 + 5).map((_, i) => i % 251);
+            const items = [
+                { key: 'a', meta: { title: 'A', artist: 'X', duration: 1, cover: '' }, file: new Blob([big]) },
+                { key: 'b', meta: { title: 'B', artist: 'Y', duration: 2, cover: '' }, file: new Blob([new Uint8Array([7])]) },
+            ];
+            const got = [];
+            const counted = [];
+            const [count] = await Promise.all([
+                $bog_music_peer.receive(receiver, async (item) => { got.push(item); }, (done, all) => counted.push(`${done}/${all}`)),
+                $bog_music_peer.send(sender, items),
+            ]);
+            $mol_assert_equal(count, 2);
+            $mol_assert_equal(got.map(item => item.key), ['a', 'b']);
+            $mol_assert_equal(got[0].meta.title, 'A');
+            $mol_assert_equal([...got[0].bytes], [...big]);
+            $mol_assert_equal([...got[1].bytes], [7]);
+            $mol_assert_equal(counted, ['0/2', '1/2', '2/2']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'Sizes'() {
+            const secret = $mol_crypto_sacred.make();
+            const key = secret.asArray();
+            $mol_assert_equal(key.byteLength, $mol_crypto_sacred.size);
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            $mol_assert_equal(closed.byteLength, $mol_crypto_sacred.size);
+            const self_closed = await secret.close(secret, salt);
+            $mol_assert_equal(self_closed.byteLength, $mol_crypto_sacred.size);
+        },
+        async 'Decrypt self encrypted'() {
+            const secret = $mol_crypto_sacred.make();
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            const opened = await secret.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+        async 'Decrypt encrypted with exported key'() {
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const Alice = $mol_crypto_sacred.make();
+            const closed = await Alice.encrypt(data, salt);
+            const Bob = $mol_crypto_sacred.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function vec(...nums) {
+        return new Float32Array(nums);
+    }
+    let ns_seq = 0;
+    function ns(prefix) {
+        return `${prefix}_${Date.now()}_${++ns_seq}`;
+    }
+    $mol_test({
+        'empty pool returns empty result'($) {
+            const out = $.$bog_recsys.recommend([]);
+            $mol_assert_equal(out.length, 0);
+        },
+        'single-item pool always returns that item'($) {
+            $.$bog_recsys.namespace(ns('single'));
+            $.$bog_recsys.epsilon(0);
+            const only = { id: 'only', embedding: vec(1, 0) };
+            const out = $.$bog_recsys.recommend([only], { limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'only');
+        },
+        'excludes ids in exclude set'($) {
+            $.$bog_recsys.namespace(ns('exclude'));
+            $.$bog_recsys.epsilon(0);
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(1, 0) },
+                { id: 'c', embedding: vec(1, 0) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, {
+                exclude: ['a', 'b'],
+                limit: 5,
+            });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'c');
+        },
+        'exclude as Set works'($) {
+            $.$bog_recsys.namespace(ns('exclude_set'));
+            $.$bog_recsys.epsilon(0);
+            const out = $.$bog_recsys.recommend([{ id: 'a' }, { id: 'b' }], { exclude: new Set(['a']), limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'b');
+        },
+        'parallel embeddings rank above orthogonal'($) {
+            $.$bog_recsys.namespace(ns('cosine'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0, 0) };
+            const parallel = { id: 'par', embedding: vec(2, 0, 0) };
+            const orthogonal = { id: 'ort', embedding: vec(0, 1, 0) };
+            const out = $.$bog_recsys.recommend([orthogonal, parallel], {
+                seed,
+                limit: 2,
+            });
+            $mol_assert_equal(out[0].id, 'par');
+            $mol_assert_equal(out[1].id, 'ort');
+        },
+        'no seed: ranking falls back to tag rewards'($) {
+            $.$bog_recsys.namespace(ns('no_seed'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            const out = $.$bog_recsys.recommend([
+                { id: 'm', tags: ['metal'] },
+                { id: 'j', tags: ['jazz'] },
+            ], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'j');
+        },
+        'play raises tag reward, skip lowers it'($) {
+            $.$bog_recsys.namespace(ns('play_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'play');
+            const after_play = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_play > 0, true);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'skip');
+            const after_skip = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_skip < after_play, true);
+        },
+        'dislike pushes reward more negative than a single skip'($) {
+            $.$bog_recsys.namespace(ns('dislike_vs_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'skip');
+            const skipped = $.$bog_recsys.rewards().punk ?? 0;
+            $.$bog_recsys.namespace(ns('dislike_vs_skip2'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'dislike');
+            const disliked = $.$bog_recsys.rewards().punk ?? 0;
+            $mol_assert_equal(disliked < skipped, true);
+        },
+        'decay attenuates old reward when new feedback arrives'($) {
+            $.$bog_recsys.namespace(ns('decay'));
+            $.$bog_recsys.decay(0.5);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 0 * 0.5 + 1 = 1
+            const r1 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r1, 1);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 1 * 0.5 + 1 = 1.5
+            const r2 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r2, 1.5);
+            // reset decay back to default for other tests
+            $.$bog_recsys.decay(0.92);
+        },
+        'namespaces are isolated'($) {
+            const a = ns('iso_a');
+            const b = ns('iso_b');
+            $.$bog_recsys.namespace(a);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            $.$bog_recsys.namespace(b);
+            const rewards_b = $.$bog_recsys.rewards();
+            $mol_assert_equal(Object.keys(rewards_b).length, 0);
+            $.$bog_recsys.namespace(a);
+            const rewards_a = $.$bog_recsys.rewards();
+            $mol_assert_equal((rewards_a.jazz ?? 0) > 0, true);
+        },
+        'limit returns up to N distinct items'($) {
+            $.$bog_recsys.namespace(ns('limit'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0) };
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(0.9, 0.1) },
+                { id: 'c', embedding: vec(0.5, 0.5) },
+                { id: 'd', embedding: vec(0, 1) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, { seed, limit: 3 });
+            $mol_assert_equal(out.length, 3);
+            $mol_assert_equal(new Set(out.map(i => i.id)).size, 3);
+        },
+        'feedback raises tag reward and shifts ranking'($) {
+            $.$bog_recsys.namespace(ns('feedback_shift'));
+            $.$bog_recsys.epsilon(0);
+            const liked = { id: 'liked', tags: ['jazz'] };
+            const other = { id: 'other', tags: ['metal'] };
+            $.$bog_recsys.feedback(liked, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().jazz > 0, true);
+            const out = $.$bog_recsys.recommend([other, liked], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'liked');
+        },
+        'reset clears persisted state'($) {
+            $.$bog_recsys.namespace(ns('reset'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['pop'] }, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().pop > 0, true);
+            $.$bog_recsys.reset();
+            $mol_assert_equal(Object.keys($.$bog_recsys.rewards()).length, 0);
+        },
+    });
 })($ || ($ = {}));
 
 ;
@@ -40090,6 +58828,37 @@ var $;
             $mol_assert_equal(made[0].closed, true);
             $mol_assert_equal(spent < 500, true);
             port.destructor();
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
+            const sender = await $.$giper_baza_auth._generate();
+            const target = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const seal = $mol_wire_async($bog_gram_seal);
+            const link = 'ABCDEFGH_IJKLMNOP';
+            const entry = await seal.close(sender, target.pass(), 'invite', link);
+            const again = await seal.close(sender, target.pass(), 'invite', link);
+            const parts = entry.split('|');
+            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
+            const forged = parts.join('|');
+            const opened = await seal.open(target, 'invite', entry);
+            const alien = await seal.open(stranger, 'invite', entry);
+            const other_kind = await seal.open(target, 'deny', entry);
+            const broken = await seal.open(target, 'invite', forged);
+            $mol_assert_equal(entry, again);
+            $mol_assert_equal(entry.includes(link), false);
+            $mol_assert_equal(opened?.open, link);
+            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
+            $mol_assert_equal(alien, null);
+            $mol_assert_equal(other_kind, null);
+            $mol_assert_equal(broken, null);
         },
     });
 })($ || ($ = {}));
