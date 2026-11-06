@@ -15,7 +15,6 @@ namespace $.$$ {
 				grow: 1,
 			},
 			width: '100%',
-			border: 'none',
 		},
 
 	} )
