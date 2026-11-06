@@ -52877,7 +52877,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.60";
+    const $bog_gram_version = "1.0.61";
 }
 
 declare namespace $ {
@@ -55941,6 +55941,10 @@ declare namespace $.$$ {
         dialog_current(next?: string): string;
         dialog_current_is(id: string): boolean;
         dialog_select(id: string, next?: any): null;
+        /** С мышью и клавиатурой открытый диалог сразу принимает текст. На
+         * сенсорном экране фокус вытащил бы клавиатуру на пол-экрана поверх
+         * переписки, которую человек открыл почитать. */
+        field_focus(): void;
         /** Книга доводит страницу до края сама только когда та появляется
          * впервые. При переходе между диалогами страница чата уже открыта и
          * лишь меняет содержимое, поэтому на узком экране пользователь
