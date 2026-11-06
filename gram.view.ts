@@ -5071,6 +5071,8 @@ namespace $.$$ {
 			super.auto()
 			try {
 
+				this.stick_watch()
+
 				const key = this.focus_key()
 				if( !key ) {
 					this.focus_done( '' )
@@ -5099,15 +5101,54 @@ namespace $.$$ {
 			}
 		}
 
+		/** Первый показ строки после перезагрузки ждёт расшифровки ленда:
+		 * ensure_visible приостанавливается, и без повтора лента оставалась
+		 * наверху. Фибра доводит прокрутку, когда данные приедут. */
 		reveal( row: $mol_view, align: ScrollLogicalPosition ) {
+			this.stick_end( false )
 			new this.$.$mol_after_tick( ()=> {
-				try {
-					this.ensure_visible( row, align )
-				} catch( error ) {
-					if( $mol_promise_like( error ) ) return
-					$mol_fail_log( error )
-				}
+				$mol_wire_async( this ).ensure_visible( row, align )
+					.then( ()=> this.stick_end( align === 'end' ) )
+					.catch( $mol_fail_log )
 			} )
+		}
+
+		@$mol_mem
+		stick_end( next?: boolean ) {
+			return next ?? false
+		}
+
+		/** Строки дорисовываются после прокрутки: тексты расшифровываются
+		 * по одному, и лента растёт уже под открытым диалогом. Пока человек
+		 * сам не ушёл вверх, держим её прижатой к последнему сообщению. */
+		@$mol_mem
+		stick_watch() {
+
+			if( typeof ResizeObserver === 'undefined' ) return null
+
+			const body = this.Body().dom_node() as HTMLElement
+			const content = this.Body_content().dom_node() as HTMLElement
+
+			let last = body.scrollTop
+
+			const scrolled = ()=> {
+				if( body.scrollTop < last - 4 ) this.stick_end( false )
+				last = body.scrollTop
+			}
+
+			const observer = new ResizeObserver( ()=> {
+				if( this.stick_end() ) body.scrollTop = body.scrollHeight
+			} )
+
+			observer.observe( content )
+			body.addEventListener( 'scroll', scrolled, { passive: true } )
+
+			return {
+				destructor: ()=> {
+					observer.disconnect()
+					body.removeEventListener( 'scroll', scrolled )
+				},
+			}
 		}
 
 	}
