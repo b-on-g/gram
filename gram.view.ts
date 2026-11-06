@@ -810,7 +810,22 @@ namespace $.$$ {
 			this.chat_focus( id, null )
 			this.dialog_current( id )
 			this.chat_bring()
+			this.field_focus()
 			return null
+		}
+
+		/** С мышью и клавиатурой открытый диалог сразу принимает текст. На
+		 * сенсорном экране фокус вытащил бы клавиатуру на пол-экрана поверх
+		 * переписки, которую человек открыл почитать. */
+		field_focus() {
+			if( !this.$.$mol_media.match( '(pointer: fine)' ) ) return
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					this.Chat_page().Message_field().focused( true )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			} )
 		}
 
 		/** Книга доводит страницу до края сама только когда та появляется
