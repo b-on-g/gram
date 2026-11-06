@@ -46415,7 +46415,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.58";
+    const $bog_gram_version = "1.0.59";
 }
 
 declare namespace $ {
@@ -50507,7 +50507,17 @@ declare namespace $.$$ {
          * ленивый: scrollHeight знает лишь отрисованную часть, поэтому к строке
          * ведёт ensure_visible, он сам дорисует окно списка до неё. */
         auto(): void;
+        /** Первый показ строки после перезагрузки ждёт расшифровки ленда:
+         * ensure_visible приостанавливается, и без повтора лента оставалась
+         * наверху. Фибра доводит прокрутку, когда данные приедут. */
         reveal(row: $mol_view, align: ScrollLogicalPosition): void;
+        stick_end(next?: boolean): boolean;
+        /** Строки дорисовываются после прокрутки: тексты расшифровываются
+         * по одному, и лента растёт уже под открытым диалогом. Пока человек
+         * сам не ушёл вверх, держим её прижатой к последнему сообщению. */
+        stick_watch(): {
+            destructor: () => void;
+        } | null;
     }
 }
 

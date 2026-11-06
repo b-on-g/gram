@@ -46063,7 +46063,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.58';
+    $.$bog_gram_version = '1.0.59';
 })($ || ($ = {}));
 
 ;
@@ -51829,6 +51829,7 @@ var $;
             auto() {
                 super.auto();
                 try {
+                    this.stick_watch();
                     const key = this.focus_key();
                     if (!key) {
                         this.focus_done('');
@@ -51855,17 +51856,46 @@ var $;
                     $mol_fail_log(error);
                 }
             }
+            /** Первый показ строки после перезагрузки ждёт расшифровки ленда:
+             * ensure_visible приостанавливается, и без повтора лента оставалась
+             * наверху. Фибра доводит прокрутку, когда данные приедут. */
             reveal(row, align) {
+                this.stick_end(false);
                 new this.$.$mol_after_tick(() => {
-                    try {
-                        this.ensure_visible(row, align);
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            return;
-                        $mol_fail_log(error);
-                    }
+                    $mol_wire_async(this).ensure_visible(row, align)
+                        .then(() => this.stick_end(align === 'end'))
+                        .catch($mol_fail_log);
                 });
+            }
+            stick_end(next) {
+                return next ?? false;
+            }
+            /** Строки дорисовываются после прокрутки: тексты расшифровываются
+             * по одному, и лента растёт уже под открытым диалогом. Пока человек
+             * сам не ушёл вверх, держим её прижатой к последнему сообщению. */
+            stick_watch() {
+                if (typeof ResizeObserver === 'undefined')
+                    return null;
+                const body = this.Body().dom_node();
+                const content = this.Body_content().dom_node();
+                let last = body.scrollTop;
+                const scrolled = () => {
+                    if (body.scrollTop < last - 4)
+                        this.stick_end(false);
+                    last = body.scrollTop;
+                };
+                const observer = new ResizeObserver(() => {
+                    if (this.stick_end())
+                        body.scrollTop = body.scrollHeight;
+                });
+                observer.observe(content);
+                body.addEventListener('scroll', scrolled, { passive: true });
+                return {
+                    destructor: () => {
+                        observer.disconnect();
+                        body.removeEventListener('scroll', scrolled);
+                    },
+                };
             }
         }
         __decorate([
@@ -51877,6 +51907,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "rows_seen", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "stick_end", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "stick_watch", null);
         $$.$bog_gram_chat = $bog_gram_chat;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
