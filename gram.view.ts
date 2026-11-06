@@ -5042,9 +5042,9 @@ namespace $.$$ {
 				const last = rows[ rows.length - 1 ]
 
 				if( key !== this.focus_done() ) {
+					const focus = this.focus_row()
 					this.focus_done( key )
 					this.rows_seen( rows.length )
-					const focus = this.focus_row()
 					this.reveal( focus ?? last, focus ? 'start' : 'end' )
 					return
 				}
