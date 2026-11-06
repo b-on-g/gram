@@ -1205,6 +1205,12 @@ namespace $.$$ {
 			return null
 		}
 
+		override lights() {
+			const theme = this.Theme()
+			if( theme.mode() === 'system' ) return 'system'
+			return theme.is_light_now() ? 'light' : 'dark'
+		}
+
 		override pages() {
 			return [
 				this.Menu(),
