@@ -769,11 +769,11 @@ namespace $.$$ {
 			const empty = !visible.length && !archived.length && !requests.length
 
 			return [
+				... archived.length ? [ this.Archive_row() ] : [],
+				... this.archive_opened() ? this.fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
 				this.Saved_row(),
 				... visible.map( id => this.Dialog_row( id ) ),
 				... empty ? [ this.Dialogs_empty() ] : [],
-				... archived.length ? [ this.Archive_row() ] : [],
-				... this.archive_opened() ? this.fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
 				... requests.length ? [ this.Requests_row() ] : [],
 				... this.requests_opened() ? requests.map( id => this.Dialog_row( id ) ) : [],
 			]
