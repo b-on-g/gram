@@ -52877,7 +52877,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.62";
+    const $bog_gram_version = "1.0.63";
 }
 
 declare namespace $ {
