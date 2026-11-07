@@ -18,6 +18,10 @@ namespace $.$$ {
 			return this.sound() ? super.Sound() : null!
 		}
 
+		override Call() {
+			return this.call() ? super.Call() : null!
+		}
+
 		override Body() {
 			return this.body() ? super.Body() : null!
 		}

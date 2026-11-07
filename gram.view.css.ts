@@ -6,6 +6,10 @@ namespace $.$$ {
 			width: '30rem',
 		},
 
+		Call_page: {
+			width: '40rem',
+		},
+
 		Intro: {
 			flex: {
 				grow: 1,

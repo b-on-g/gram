@@ -12,6 +12,7 @@ namespace $ {
 		Voice: $bog_gram_link_synced( ()=> $giper_baza_file ),
 		Voice_span: $giper_baza_atom_real,
 		Reply: $giper_baza_atom_text,
+		Call: $giper_baza_atom_link,
 	}) {}
 
 }

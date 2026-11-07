@@ -18,6 +18,9 @@ $bog_gram_bubble $mol_view
 	sound_playing false
 	sound_toggle? null
 	sound_ended? null
+	call false
+	call_land null
+	call_open? null
 	body \
 	time \
 	edited false
@@ -67,6 +70,9 @@ $bog_gram_bubble $mol_view
 			playing <= sound_playing
 			toggle? <=> sound_toggle?
 			ended? <=> sound_ended?
+		<= Call $bog_gram_call_card
+			land <= call_land
+			click? <=> call_open?
 		<= Body $mol_paragraph
 			title <= body
 		<= Meta $mol_view

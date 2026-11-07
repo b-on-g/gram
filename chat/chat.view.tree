@@ -6,6 +6,7 @@ $bog_gram_chat $bog_gram_page
 	Alerts $bog_gram_alerts
 	close? null
 	members? null
+	call_open? null
 	note? \
 	note_hint \
 	note_editable false
@@ -55,6 +56,11 @@ $bog_gram_chat $bog_gram_page
 		<= Title
 		<= Tools
 	tools /
+		<= Call $mol_button_minor
+			hint \Звонок
+			click? <=> call_start? null
+			sub /
+				<= Call_icon $mol_icon_phone
 		<= Members $mol_button_minor
 			hint \Участники
 			click? <=> members?
@@ -162,6 +168,9 @@ $bog_gram_chat $bog_gram_page
 		sound_playing <= message_sound_playing* false
 		sound_toggle? <=> message_sound_toggle*? null
 		sound_ended? <=> message_sound_ended*? null
+		call <= message_call* false
+		call_land <= message_call_land* null
+		call_open? <=> message_call_open*? null
 		body <= message_body* \
 		time <= message_time* \
 		edited <= message_edited* false

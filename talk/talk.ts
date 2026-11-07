@@ -299,6 +299,7 @@ namespace $ {
 			const text = String( last.Text()?.val() ?? '' )
 			const kind = last.Image()?.val() ? 'Фото'
 				: last.Voice()?.val() ? 'Голосовое сообщение'
+				: last.Call()?.val() ? 'Звонок'
 				: ''
 			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text
 			if( this.saved_is( id ) ) return body

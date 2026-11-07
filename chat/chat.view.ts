@@ -80,6 +80,54 @@ namespace $.$$ {
 			return this.members_shown() ? super.Members() : null!
 		}
 
+		override Call() {
+			return this.saved() ? null! : super.Call()
+		}
+
+		@ $mol_mem_key
+		override message_call( id: string ) {
+			return Boolean( this.message_pawn( id )?.Call()?.val() )
+		}
+
+		override message_call_land( id: string ) {
+			const link = this.message_pawn( id )?.Call()?.val()
+			return link ? this.$.$giper_baza_glob.Land( link ) : null
+		}
+
+		@ $mol_action
+		override message_call_open( id: string, next?: any ) {
+			const link = this.message_pawn( id )?.Call()?.val()
+			if( link ) this.call_open( link.str )
+			return null
+		}
+
+		@ $mol_action
+		override call_start( next?: any ) {
+			this.Alerts().offer()
+			$mol_wire_async( this ).call_send()
+			return null
+		}
+
+		call_send() {
+
+			const session = this.Talk().session( this.dialog() )
+			if( !session ) return ''
+
+			const passes = this.passes()
+			if( !passes ) return ''
+
+			const land = this.$.$bog_gram_call_room.grab( passes )
+
+			const message = session.Messages( 'auto' )!.make( null )
+			message.Call( 'auto' )!.val( land.link() )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
+
+			this.call_open( land.link().str )
+
+			return message.link().str
+		}
+
 		messages() {
 			return this.Talk().messages_of( this.dialog() )
 		}

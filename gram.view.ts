@@ -244,12 +244,34 @@ namespace $.$$ {
 				... this.group_opened() ? [ this.Group_page() ] : [],
 				... active ? [ this.Chat_page( active ) ] : [],
 				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
+				... this.call_current() ? [ this.Call_page( this.call_current() ) ] : [],
 				... this.music_alive() ? [ this.Music_page() ] : [],
 			]
 		}
 
+		@ $mol_mem
+		call_current( next?: string ) {
+			return next ?? ''
+		}
+
+		override call_land( id: string ) {
+			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
+		}
+
+		@ $mol_action
+		override call_open( next?: any ) {
+			if( typeof next === 'string' && next ) this.call_current( next )
+			return null
+		}
+
+		@ $mol_action
+		override call_close( next?: any ) {
+			this.call_current( '' )
+			return null
+		}
+
 		override Placeholder() {
-			return this.dialog_active() || this.music_opened() ? null! : super.Placeholder()
+			return this.dialog_active() || this.music_opened() || this.call_current() ? null! : super.Placeholder()
 		}
 
 		@ $mol_action
