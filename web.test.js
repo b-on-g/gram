@@ -771,26 +771,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -1059,6 +1039,26 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -1112,6 +1112,47 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'init with overload'() {
+            class X extends $mol_object {
+                foo() {
+                    return 1;
+                }
+            }
+            var x = X.make({
+                foo: () => 2,
+            });
+            $mol_assert_equal(x.foo(), 2);
+        },
+        'Context in instance inherits from class'($) {
+            const custom = $.$mol_ambient({});
+            class X extends $.$mol_object {
+                static $ = custom;
+            }
+            $mol_assert_equal(new X().$, custom);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_after_timeout = $mol_after_mock_timeout;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -1160,667 +1201,6 @@ var $;
             $mol_assert_equal(A.instances[0] instanceof A, true);
             $mol_assert_equal(A.instances[0], A.instances[1]);
         }
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'encode empty'() {
-            $mol_assert_equal($mol_charset_encode(''), new Uint8Array([]));
-        },
-        'encode 1 octet'() {
-            $mol_assert_equal($mol_charset_encode('F'), new Uint8Array([0x46]));
-        },
-        'encode 2 octet'() {
-            $mol_assert_equal($mol_charset_encode('Б'), new Uint8Array([0xd0, 0x91]));
-        },
-        'encode 3 octet'() {
-            $mol_assert_equal($mol_charset_encode('ह'), new Uint8Array([0xe0, 0xa4, 0xb9]));
-        },
-        'encode 4 octet'() {
-            $mol_assert_equal($mol_charset_encode('𐍈'), new Uint8Array([0xf0, 0x90, 0x8d, 0x88]));
-        },
-        'encode surrogate pair'() {
-            $mol_assert_equal($mol_charset_encode('😀'), new Uint8Array([0xf0, 0x9f, 0x98, 0x80]));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const png = new Uint8Array([0x1a, 0x0a, 0x00, 0x49, 0x48, 0x78, 0xda]);
-    $mol_test({
-        'base64 encode string'() {
-            $mol_assert_equal($mol_base64_encode($mol_charset_encode('Hello, ΧΨΩЫ')), 'SGVsbG8sIM6nzqjOqdCr');
-        },
-        'base64 encode binary'() {
-            $mol_assert_equal($mol_base64_encode(png), 'GgoASUh42g==');
-        },
-        'base64 encode string with plus'() {
-            $mol_assert_equal($mol_base64_encode($mol_charset_encode('шоешпо')), '0YjQvtC10YjQv9C+');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const png = new Uint8Array([0x1a, 0x0a, 0x00, 0x49, 0x48, 0x78, 0xda]);
-    const with_plus = new TextEncoder().encode('шоешпо');
-    $mol_test({
-        'base64 decode string'() {
-            $mol_assert_equal($mol_base64_decode('SGVsbG8sIM6nzqjOqdCr'), new TextEncoder().encode('Hello, ΧΨΩЫ'));
-        },
-        'base64 decode binary'() {
-            $mol_assert_equal($mol_base64_decode('GgoASUh42g=='), png);
-        },
-        'base64 decode binary - without equals'() {
-            $mol_assert_equal($mol_base64_decode('GgoASUh42g'), png);
-        },
-        'base64 decode with plus'() {
-            $mol_assert_equal($mol_base64_decode('0YjQvtC10YjQv9C+'), with_plus);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'empty hash'() {
-            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([])), new Uint8Array([218, 57, 163, 238, 94, 107, 75, 13, 50, 85, 191, 239, 149, 96, 24, 144, 175, 216, 7, 9]));
-        },
-        'three bytes hash'() {
-            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([255, 254, 253])), new Uint8Array([240, 150, 38, 243, 255, 128, 96, 0, 72, 215, 207, 228, 19, 149, 113, 52, 2, 125, 27, 77]));
-        },
-        'six bytes hash'() {
-            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([0, 255, 10, 250, 32, 128])), new Uint8Array([23, 25, 155, 181, 46, 200, 221, 83, 254, 0, 166, 68, 91, 255, 67, 140, 114, 88, 218, 155]));
-        },
-        'seven bytes hash'() {
-            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([1, 2, 3, 4, 5, 6, 7])), new Uint8Array([140, 31, 40, 252, 47, 72, 194, 113, 214, 196, 152, 240, 242, 73, 205, 222, 54, 92, 84, 197]));
-        },
-        'unaligned hash'() {
-            const data = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7]);
-            $mol_assert_equal($mol_crypto2_hash(new Uint8Array(data.buffer, 1, 7)), new Uint8Array([140, 31, 40, 252, 47, 72, 194, 113, 214, 196, 152, 240, 242, 73, 205, 222, 54, 92, 84, 197]));
-        },
-        async 'reference'() {
-            const data = new Uint8Array([255, 254, 253]);
-            $mol_assert_equal($mol_crypto2_hash(data), new Uint8Array(await $mol_crypto_native.subtle.digest('SHA-1', data)));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'run callback'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            $mol_assert_equal(Plus1.run(() => 2), 3);
-        },
-        'wrap function'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            const obj = {
-                level: 2,
-                pow: Plus1.func(function (a) {
-                    return a ** this.level;
-                })
-            };
-            $mol_assert_equal(obj.pow(2), 5);
-        },
-        'decorate field getter'() {
-            class Plus1 extends $mol_wrapper {
-                static last = 0;
-                static wrap(task) {
-                    return function (...args) {
-                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static get two() {
-                    return 1;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                Plus1.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Plus1.last, 2);
-            $mol_assert_equal(Foo.two, 2);
-        },
-        'decorate instance method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo1 {
-                level = 2;
-                pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo1.prototype, "pow", null);
-            const Foo2 = Foo1;
-            const foo = new Foo2;
-            $mol_assert_equal(foo.pow(2), 5);
-        },
-        'decorate static method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static level = 2;
-                static pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo, "pow", null);
-            $mol_assert_equal(Foo.pow(2), 5);
-        },
-        'decorate class'() {
-            class BarInc extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        const foo = task.call(this, ...args);
-                        foo.bar++;
-                        return foo;
-                    };
-                }
-            }
-            let Foo = class Foo {
-                bar;
-                constructor(bar) {
-                    this.bar = bar;
-                }
-            };
-            Foo = __decorate([
-                BarInc.class
-            ], Foo);
-            $mol_assert_equal(new Foo(2).bar, 3);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'memoize field'() {
-            class Foo {
-                static one = 1;
-                static get two() {
-                    return ++this.one;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                $mol_memo.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Foo.two, 3);
-            $mol_assert_equal(Foo.two, 3);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-/** @jsx $mol_jsx */
-var $;
-(function ($) {
-    $mol_test({
-        'Primitives'() {
-            $mol_assert_equal($mol_key(null), 'null');
-            $mol_assert_equal($mol_key(false), 'false');
-            $mol_assert_equal($mol_key(true), 'true');
-            $mol_assert_equal($mol_key(0), '0');
-            $mol_assert_equal($mol_key(1n << 64n), '18446744073709551616n');
-            $mol_assert_equal($mol_key(''), '""');
-        },
-        'Array & POJO'() {
-            $mol_assert_equal($mol_key([null]), '[null]');
-            $mol_assert_equal($mol_key({ foo: 0 }), '{"foo":0}');
-            $mol_assert_equal($mol_key({ foo: [false] }), '{"foo":[false]}');
-        },
-        'Uint8Array'() {
-            $mol_assert_equal($mol_key(new Uint8Array([1, 2])), 'Uint8Array([1,2])');
-            $mol_assert_equal($mol_key([new Uint8Array([1, 2])]), '[Uint8Array([1,2])]');
-            $mol_assert_equal($mol_key({ foo: new Uint8Array([1, 2]) }), '{"foo":Uint8Array([1,2])}');
-        },
-        'Function'() {
-            const func = () => { };
-            $mol_assert_equal($mol_key(func), $mol_key(func));
-            $mol_assert_unique($mol_key(func), $mol_key(() => { }));
-        },
-        'Objects'() {
-            class User {
-            }
-            const jin = new User();
-            $mol_assert_equal($mol_key(jin), $mol_key(jin));
-            $mol_assert_unique($mol_key(jin), $mol_key(new User()));
-        },
-        'Elements'() {
-            const foo = $mol_jsx("div", null, "bar");
-            $mol_assert_equal($mol_key(foo), $mol_key(foo));
-            $mol_assert_unique($mol_key(foo), $mol_key($mol_jsx("div", null, "bar")));
-        },
-        'Custom JSON representation'() {
-            class User {
-                toJSON() { return 'jin'; }
-            }
-            $mol_assert_unique([$mol_key(new User)], [$mol_key(new User)]);
-        },
-        'Custom key handler'() {
-            class User {
-                name;
-                age;
-                constructor(name, age) {
-                    this.name = name;
-                    this.age = age;
-                }
-                [$mol_key_handle]() { return `User(${JSON.stringify(this.name)})`; }
-            }
-            $mol_assert_equal($mol_key([new User('jin', 16)]), $mol_key([new User('jin', 18)]), '[User("jin")]');
-        },
-        'Special native classes'() {
-            $mol_assert_equal($mol_key(new Date('xyz')), 'Date(NaN)');
-            $mol_assert_equal($mol_key(new Date(12345)), 'Date(12345)');
-            $mol_assert_equal($mol_key(/./), '/./');
-            $mol_assert_equal($mol_key(/\./gimsu), '/\\./gimsu');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Float schema"($) {
-                $mol_assert_equal('$mol_schema_float', $mol_schema_float + '', $mol_key($mol_schema_float));
-                $mol_assert_equal(true, $mol_schema_float.check(0));
-                $mol_assert_equal(true, $mol_schema_float.check(Number.NaN));
-                $mol_assert_equal(true, $mol_schema_float.check(Number.POSITIVE_INFINITY));
-                $mol_assert_equal(false, $mol_schema_float.check(null));
-                $mol_assert_equal(1.5, $mol_schema_float.cast(1.5));
-                $mol_assert_equal(Number.NaN, $mol_schema_float.cast('0'));
-                $mol_assert_equal(Number.EPSILON, $mol_schema_float.guard(Number.EPSILON));
-                $mol_assert_fail(() => $mol_schema_float.guard('0'), 'Wrong type');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "String schema"($) {
-                $mol_assert_equal('$mol_schema_string', $mol_schema_string + '', $mol_key($mol_schema_string));
-                $mol_assert_equal(true, $mol_schema_string.check('foo'));
-                $mol_assert_equal(false, $mol_schema_string.check(123));
-                $mol_assert_equal('foo', $mol_schema_string.cast('foo'));
-                $mol_assert_equal('', $mol_schema_string.cast(123));
-                $mol_assert_equal('foo', $mol_schema_string.guard('foo'));
-                $mol_assert_fail(() => $mol_schema_string.guard(123), 'Wrong type');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Cache of maybe schema"($) {
-                $mol_assert_equal($mol_schema_maybe($mol_schema_float), $mol_schema_maybe($mol_schema_float));
-                $mol_assert_unique($mol_schema_maybe($mol_schema_float), $mol_schema_maybe($mol_schema_string));
-            },
-            "Optional value"($) {
-                const Config = $mol_schema_maybe($mol_schema_string);
-                $mol_assert_equal('$mol_schema_maybe<$mol_schema_string>', Config + '');
-                $mol_assert_equal(true, Config.check('foo'));
-                $mol_assert_equal(true, Config.check(undefined));
-                $mol_assert_equal(true, Config.check(null));
-                $mol_assert_equal(false, Config.check(0));
-                $mol_assert_equal('foo', Config.cast('foo'));
-                $mol_assert_equal(undefined, Config.cast(undefined));
-                $mol_assert_equal(null, Config.cast(null));
-                $mol_assert_equal(null, Config.cast(0));
-                $mol_assert_equal('foo', Config.guard('foo'));
-                $mol_assert_fail(() => Config.guard(123), 'Wrong type');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Cache of instance schema"($) {
-                $mol_assert_equal($mol_schema_instance(Uint8Array), $mol_schema_instance(Uint8Array));
-                $mol_assert_unique($mol_schema_instance(Uint8Array), $mol_schema_instance(Int8Array));
-            },
-            "Class instance schema"($) {
-                const Blob = $mol_schema_instance(Uint8Array);
-                $mol_assert_equal('$mol_schema_instance<Uint8Array>', Blob + '', $mol_key(Blob));
-                $mol_assert_equal(true, Blob.check(new Uint8Array));
-                $mol_assert_equal(false, Blob.check(new Int8Array));
-                $mol_assert_equal(false, Blob.check(null));
-                $mol_assert_equal(new Uint8Array([0, 1]), Blob.cast(new Uint8Array([0, 1])));
-                $mol_assert_fail(() => Blob.cast(new Int8Array), 'Wrong class');
-                $mol_assert_equal(new Uint8Array, Blob.guard(new Uint8Array));
-                $mol_assert_fail(() => Blob.guard(new Int8Array), 'Wrong class');
-            },
-            "Boxed instance schema"($) {
-                const Str = $mol_schema_instance(String);
-                $mol_assert_equal('$mol_schema_instance<String>', Str + '', $mol_key(Str));
-                $mol_assert_equal(true, Str.check(Object('')));
-                $mol_assert_equal(true, Str.check(''));
-                $mol_assert_equal(true, Object('') instanceof Str);
-            },
-            "Schema instance schema"($) {
-                const Str = $mol_schema_instance($mol_schema_instance(String));
-                $mol_assert_equal('$mol_schema_instance<String>', Str + '', $mol_key(Str));
-                $mol_assert_equal(true, Str.check(Object('')));
-                $mol_assert_equal(true, Str.check(''));
-                $mol_assert_equal(true, Object('') instanceof Str);
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Validation"($) {
-                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link');
-            },
-            "From integer"($) {
-                $mol_assert_equal($giper_baza_link.from_int(178308648732587), new $giper_baza_link('qwertyui'));
-            },
-            "Pick Lord only"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').lord(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').lord(), new $giper_baza_link('qwertyui_asdfghjk').lord(), new $giper_baza_link('qwertyui_asdfghjk'));
-            },
-            "Pick Land only"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').land(), new $giper_baza_link('qwertyui_asdfghjk').land(), new $giper_baza_link('qwertyui_asdfghjk'));
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').land(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').land(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
-            },
-            "Pick Peer only"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').peer(), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').peer(), new $giper_baza_link('qwertyui'));
-                $mol_assert_equal(new $giper_baza_link('___qazwsxed').peer(), new $giper_baza_link(''));
-            },
-            "Pick Head only"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').head(), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').head(), new $giper_baza_link('zxcvbnm0'));
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').head(), new $giper_baza_link('qwertyui_asdfghjk').head(), new $giper_baza_link(''));
-            },
-            "Pick Area only"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').area(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').area(), new $giper_baza_link('qazwsxed'));
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').area(), new $giper_baza_link('qwertyui_asdfghjk').area(), new $giper_baza_link('').area(), new $giper_baza_link(''));
-            },
-            "Binary encoding"($) {
-                const pawn = new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').toBin();
-                const land = new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').toBin();
-                const lord = new $giper_baza_link('qwertyui_asdfghjk').toBin();
-                const rel_pawn = new $giper_baza_link('___zxcvbnm0').toBin();
-                const rel_root = new $giper_baza_link('').toBin();
-                $mol_assert_equal(pawn.length, 24);
-                $mol_assert_equal(land.length, 18);
-                $mol_assert_equal(lord.length, 12);
-                $mol_assert_equal(rel_pawn.length, 6);
-                $mol_assert_equal(rel_root.length, 0);
-                $mol_assert_equal($giper_baza_link.from_bin(pawn), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0'));
-                $mol_assert_equal($giper_baza_link.from_bin(land), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
-                $mol_assert_equal($giper_baza_link.from_bin(lord), new $giper_baza_link('qwertyui_asdfghjk'));
-                $mol_assert_equal($giper_baza_link.from_bin(rel_pawn), new $giper_baza_link('zxcvbnm0'));
-                $mol_assert_equal($giper_baza_link.from_bin(rel_root), new $giper_baza_link(''));
-            },
-            "Relate to base"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('QWERTYUI_ASDFGHJK')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('QWERTYUI_ASDFGHJK__ZXCVBNM0')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0'));
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_12345678')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk__12345678')), new $giper_baza_link('___zxcvbnm0'));
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('qwertyui_asdfghjk').relate(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk').relate(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link(''));
-            },
-            "Resolve Link from base"($) {
-                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('QWERTYUI_ASDFGHJK__ZXCVBNM0')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('QWERTYUI_ASDFGHJK')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0'));
-                $mol_assert_equal(new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk__12345678'));
-                $mol_assert_equal(new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_12345678'));
-                $mol_assert_equal(new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk'));
-                $mol_assert_equal(new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
-            },
-            'Hashing'() {
-                $mol_assert_equal($giper_baza_link.hash_bin(new Uint8Array([1, 2, 3])), new $giper_baza_link('cDeAcZjC_Kn0rCAc3'));
-                $mol_assert_equal($giper_baza_link.hash_str('foo bar'), new $giper_baza_link('N3PeplFW_kJg4æmwi'));
-            }
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'init with overload'() {
-            class X extends $mol_object {
-                foo() {
-                    return 1;
-                }
-            }
-            var x = X.make({
-                foo: () => 2,
-            });
-            $mol_assert_equal(x.foo(), 2);
-        },
-        'Context in instance inherits from class'($) {
-            const custom = $.$mol_ambient({});
-            class X extends $.$mol_object {
-                static $ = custom;
-            }
-            $mol_assert_equal(new X().$, custom);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        async 'str & bin sizes'() {
-            const signer = await $$.$mol_crypto2_signer.generate();
-            const auditor = signer.auditor();
-            $mol_assert_equal(signer.toStringPrivate().length, $mol_crypto2_signer.size_str);
-            $mol_assert_equal(auditor.toString().length, $mol_crypto2_auditor.size_str);
-            $mol_assert_equal(signer.asArrayPrivate().length, $mol_crypto2_signer.size_bin);
-            $mol_assert_equal(auditor.asArray().length, $mol_crypto2_auditor.size_bin);
-            const data = new Uint8Array([1, 2, 3]);
-            const sign = await signer.sign(data);
-            $mol_assert_equal(sign.byteLength, $mol_crypto2_signer.size_sign);
-        },
-        async 'verify self signed with auto generated key'() {
-            const Alice = await $$.$mol_crypto2_signer.generate();
-            const data = new Uint8Array([1, 2, 3]);
-            const sign = await Alice.sign(data);
-            $mol_assert_equal(true, await Alice.auditor().verify(data, sign));
-        },
-        async 'verify signed with str exported auto generated key'() {
-            const Alice = await $$.$mol_crypto2_signer.generate();
-            const data = new Uint8Array([1, 2, 3]);
-            const Bella = $mol_crypto2_signer.from(Alice.toString() + Alice.toStringPrivate());
-            const sign = await Bella.sign(data);
-            const Catie = $mol_crypto2_auditor.from(Alice.auditor().toString());
-            $mol_assert_equal(true, await Catie.verify(data, sign));
-            const Diana = $mol_crypto2_auditor.from(Alice.toString());
-            $mol_assert_equal(true, await Diana.verify(data, sign));
-        },
-        async 'verify signed with bin exported auto generated key'() {
-            const Alice = await $$.$mol_crypto2_signer.generate();
-            const data = new Uint8Array([1, 2, 3]);
-            const Bella = $mol_crypto2_signer.from(new Uint8Array([...Alice.asArray(), ...Alice.asArrayPrivate()]));
-            const sign = await Bella.sign(data);
-            const Catie = $mol_crypto2_auditor.from(Alice.auditor().asArray());
-            $mol_assert_equal(true, await Catie.verify(data, sign));
-            const Diana = $mol_crypto2_auditor.from(Alice.asArray());
-            $mol_assert_equal(true, await Diana.verify(data, sign));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        async 'Sizes'() {
-            const secret = $mol_crypto2_secret.make();
-            $mol_assert_equal(secret.asArray().byteLength, $mol_crypto2_secret.size);
-            const data = new Uint8Array([1, 2, 3]);
-            const nonce = $mol_crypto2_nonce();
-            const closed = await secret.encrypt(data, nonce);
-            $mol_assert_equal(closed.byteLength, data.byteLength);
-        },
-        'Wrong key size'() {
-            $mol_assert_fail(() => $mol_crypto2_secret.from(new Uint8Array(8)), 'Wrong key size');
-        },
-        async 'Decrypt self encrypted'() {
-            const secret = $mol_crypto2_secret.make();
-            const nonce = $mol_crypto2_nonce();
-            const data = new Uint8Array([1, 2, 3]);
-            const closed = await secret.encrypt(data, nonce);
-            $mol_assert_equal(closed.byteLength, 3);
-            const opened = await secret.decrypt(closed, nonce);
-            $mol_assert_equal(opened, data);
-        },
-        async 'Decrypt encrypted with exported key'() {
-            const data = new Uint8Array([1, 2, 3]);
-            const nonce = $mol_crypto2_nonce();
-            const Alice = $mol_crypto2_secret.make();
-            const closed = await Alice.encrypt(data, nonce);
-            const Bob = $mol_crypto2_secret.from(Alice.asArray());
-            const opened = await Bob.decrypt(closed, nonce);
-            $mol_assert_equal(data, opened);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        async 'str & bin sizes'() {
-            const cipher = await $$.$mol_crypto2_cipher.generate();
-            const socket = cipher.socket();
-            $mol_assert_equal(cipher.toStringPrivate().length, $mol_crypto2_cipher.size_str);
-            $mol_assert_equal(socket.toString().length, $mol_crypto2_socket.size_str);
-            $mol_assert_equal(cipher.asArrayPrivate().length, $mol_crypto2_cipher.size_bin);
-            $mol_assert_equal(socket.asArray().length, $mol_crypto2_socket.size_bin);
-            const secret = await cipher.secret(socket);
-            $mol_assert_equal(secret.byteLength, $mol_crypto2_cipher.size_secret);
-        },
-        async 'Shared secret from public & private keys'() {
-            const A = await $mol_crypto2_cipher.generate();
-            const B = await $mol_crypto2_cipher.generate();
-            const SA = await A.secret(B.socket());
-            const SB = await B.secret(A.socket());
-            $mol_assert_equal(SA.asArray(), SB.asArray());
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            async "Signing & encryption"($) {
-                const Alice = await $mol_crypto2_private.generate();
-                const Bella = await $mol_crypto2_private.generate();
-                const secretA = await Alice.cipher().secret(Bella.socket());
-                const secretB = await Bella.cipher().secret(Alice.socket());
-                $mol_assert_equal(secretA, secretB);
-                const data = new Uint8Array([1, 2, 3]);
-                const nonce = $mol_crypto2_nonce();
-                const closed = await secretA.encrypt(data, nonce);
-                const digest = $mol_crypto2_hash(closed);
-                const sign = await Alice.signer().sign(digest);
-                $mol_assert_equal(true, await Alice.auditor().verify(digest, sign));
-                $mol_assert_equal(data, await secretA.decrypt(closed, nonce));
-            },
-            async "Serial & Deserial"($) {
-                const orig = await $mol_crypto2_private.generate();
-                const bin = new Uint8Array([...orig.asArray(), ...orig.asArrayPrivate()]);
-                const str = orig.toString() + orig.toStringPrivate();
-                $mol_assert_equal(orig, $mol_crypto2_private.from(bin), $mol_crypto2_private.from(str));
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_after_timeout = $mol_after_mock_timeout;
     });
 })($ || ($ = {}));
 
@@ -2535,35 +1915,69 @@ var $;
 
 ;
 "use strict";
+/** @jsx $mol_jsx */
 var $;
 (function ($) {
     $mol_test({
-        'local get set delete'() {
-            var key = '$mol_state_local_test:' + Math.random();
-            $mol_assert_equal($mol_state_local.value(key), null);
-            $mol_state_local.value(key, 123);
-            $mol_assert_equal($mol_state_local.value(key), 123);
-            $mol_state_local.value(key, null);
-            $mol_assert_equal($mol_state_local.value(key), null);
+        'Primitives'() {
+            $mol_assert_equal($mol_key(null), 'null');
+            $mol_assert_equal($mol_key(false), 'false');
+            $mol_assert_equal($mol_key(true), 'true');
+            $mol_assert_equal($mol_key(0), '0');
+            $mol_assert_equal($mol_key(1n << 64n), '18446744073709551616n');
+            $mol_assert_equal($mol_key(''), '""');
         },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test_mocks.push(context => {
-        class $mol_state_local_mock extends $mol_state_local {
-            static state = {};
-            static value(key, next = this.state[key]) {
-                return this.state[key] = (next || null);
+        'Array & POJO'() {
+            $mol_assert_equal($mol_key([null]), '[null]');
+            $mol_assert_equal($mol_key({ foo: 0 }), '{"foo":0}');
+            $mol_assert_equal($mol_key({ foo: [false] }), '{"foo":[false]}');
+        },
+        'Uint8Array'() {
+            $mol_assert_equal($mol_key(new Uint8Array([1, 2])), 'Uint8Array([1,2])');
+            $mol_assert_equal($mol_key([new Uint8Array([1, 2])]), '[Uint8Array([1,2])]');
+            $mol_assert_equal($mol_key({ foo: new Uint8Array([1, 2]) }), '{"foo":Uint8Array([1,2])}');
+        },
+        'Function'() {
+            const func = () => { };
+            $mol_assert_equal($mol_key(func), $mol_key(func));
+            $mol_assert_unique($mol_key(func), $mol_key(() => { }));
+        },
+        'Objects'() {
+            class User {
             }
-        }
-        __decorate([
-            $mol_mem_key
-        ], $mol_state_local_mock, "value", null);
-        context.$mol_state_local = $mol_state_local_mock;
+            const jin = new User();
+            $mol_assert_equal($mol_key(jin), $mol_key(jin));
+            $mol_assert_unique($mol_key(jin), $mol_key(new User()));
+        },
+        'Elements'() {
+            const foo = $mol_jsx("div", null, "bar");
+            $mol_assert_equal($mol_key(foo), $mol_key(foo));
+            $mol_assert_unique($mol_key(foo), $mol_key($mol_jsx("div", null, "bar")));
+        },
+        'Custom JSON representation'() {
+            class User {
+                toJSON() { return 'jin'; }
+            }
+            $mol_assert_unique([$mol_key(new User)], [$mol_key(new User)]);
+        },
+        'Custom key handler'() {
+            class User {
+                name;
+                age;
+                constructor(name, age) {
+                    this.name = name;
+                    this.age = age;
+                }
+                [$mol_key_handle]() { return `User(${JSON.stringify(this.name)})`; }
+            }
+            $mol_assert_equal($mol_key([new User('jin', 16)]), $mol_key([new User('jin', 18)]), '[User("jin")]');
+        },
+        'Special native classes'() {
+            $mol_assert_equal($mol_key(new Date('xyz')), 'Date(NaN)');
+            $mol_assert_equal($mol_key(new Date(12345)), 'Date(12345)');
+            $mol_assert_equal($mol_key(/./), '/./');
+            $mol_assert_equal($mol_key(/\./gimsu), '/\\./gimsu');
+        },
     });
 })($ || ($ = {}));
 
@@ -2680,6 +2094,1942 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'all cases of using maybe'() {
+            $mol_assert_equal($mol_maybe(0)[0], 0);
+            $mol_assert_equal($mol_maybe(false)[0], false);
+            $mol_assert_equal($mol_maybe(null)[0], void 0);
+            $mol_assert_equal($mol_maybe(void 0)[0], void 0);
+            $mol_assert_equal($mol_maybe(void 0).map(v => v.toString())[0], void 0);
+            $mol_assert_equal($mol_maybe(0).map(v => v.toString())[0], '0');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'run callback'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            $mol_assert_equal(Plus1.run(() => 2), 3);
+        },
+        'wrap function'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            const obj = {
+                level: 2,
+                pow: Plus1.func(function (a) {
+                    return a ** this.level;
+                })
+            };
+            $mol_assert_equal(obj.pow(2), 5);
+        },
+        'decorate field getter'() {
+            class Plus1 extends $mol_wrapper {
+                static last = 0;
+                static wrap(task) {
+                    return function (...args) {
+                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static get two() {
+                    return 1;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                Plus1.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Plus1.last, 2);
+            $mol_assert_equal(Foo.two, 2);
+        },
+        'decorate instance method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo1 {
+                level = 2;
+                pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo1.prototype, "pow", null);
+            const Foo2 = Foo1;
+            const foo = new Foo2;
+            $mol_assert_equal(foo.pow(2), 5);
+        },
+        'decorate static method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static level = 2;
+                static pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo, "pow", null);
+            $mol_assert_equal(Foo.pow(2), 5);
+        },
+        'decorate class'() {
+            class BarInc extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        const foo = task.call(this, ...args);
+                        foo.bar++;
+                        return foo;
+                    };
+                }
+            }
+            let Foo = class Foo {
+                bar;
+                constructor(bar) {
+                    this.bar = bar;
+                }
+            };
+            Foo = __decorate([
+                BarInc.class
+            ], Foo);
+            $mol_assert_equal(new Foo(2).bar, 3);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'memoize field'() {
+            class Foo {
+                static one = 1;
+                static get two() {
+                    return ++this.one;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                $mol_memo.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Foo.two, 3);
+            $mol_assert_equal(Foo.two, 3);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'const returns stored value'() {
+            const foo = { bar: $mol_const(Math.random()) };
+            $mol_assert_equal(foo.bar(), foo.bar());
+            $mol_assert_equal(foo.bar(), foo.bar['()']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'id auto generation'($) {
+            class $mol_view_test_item extends $mol_view {
+            }
+            class $mol_view_test_block extends $mol_view {
+                static $ = $;
+                element(id) {
+                    return new $mol_view_test_item();
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], $mol_view_test_block.prototype, "element", null);
+            var x = $mol_view_test_block.Root(0);
+            $mol_assert_equal(x.dom_node().id, '$mol_view_test_block.Root(0)');
+            $mol_assert_equal(x.element(0).dom_node().id, '$mol_view_test_block.Root(0).element(0)');
+        },
+        'caching ref to dom node'($) {
+            var x = new class extends $mol_view {
+            };
+            x.$ = $;
+            $mol_assert_equal(x.dom_node(), x.dom_node());
+        },
+        'content render'($) {
+            class $mol_view_test extends $mol_view {
+                sub() {
+                    return ['lol', 5];
+                }
+            }
+            var x = new $mol_view_test();
+            x.$ = $;
+            var node = x.dom_tree();
+            $mol_assert_equal(node.innerHTML, 'lol5');
+        },
+        'bem attributes generation'($) {
+            class $mol_view_test_item extends $mol_view {
+            }
+            class $mol_view_test_block extends $mol_view {
+                Element(id) {
+                    return new $mol_view_test_item();
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], $mol_view_test_block.prototype, "Element", null);
+            var x = new $mol_view_test_block();
+            x.$ = $;
+            $mol_assert_equal(x.dom_node().getAttribute('mol_view_test_block'), '');
+            $mol_assert_equal(x.dom_node().getAttribute('mol_view'), '');
+            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view_test_block_element'), '');
+            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view_test_item'), '');
+            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view'), '');
+        },
+        'render custom attributes'($) {
+            class $mol_view_test extends $mol_view {
+                attr() {
+                    return {
+                        'href': '#haha',
+                        'required': true,
+                        'hidden': false,
+                    };
+                }
+            }
+            var x = new $mol_view_test();
+            x.$ = $;
+            var node = x.dom_tree();
+            $mol_assert_equal(node.getAttribute('href'), '#haha');
+            $mol_assert_equal(node.getAttribute('required'), 'true');
+            $mol_assert_equal(node.getAttribute('hidden'), null);
+        },
+        'render custom fields'($) {
+            class $mol_view_test extends $mol_view {
+                field() {
+                    return {
+                        'hidden': true
+                    };
+                }
+            }
+            var x = new $mol_view_test();
+            x.$ = $;
+            var node = x.dom_tree();
+            $mol_assert_equal(node.hidden, true);
+        },
+        'attach event handlers'($) {
+            var clicked = false;
+            class $mol_view_test extends $mol_view {
+                event() {
+                    return {
+                        'click': (next) => this.event_click(next)
+                    };
+                }
+                event_click(next) {
+                    clicked = true;
+                }
+            }
+            var x = new $mol_view_test();
+            x.$ = $;
+            var node = x.dom_node();
+            node.click();
+            $mol_assert_ok(clicked);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_style_sheet_test1 extends $mol_view {
+        Item() { return new $mol_view; }
+    }
+    $.$mol_style_sheet_test1 = $mol_style_sheet_test1;
+    class $mol_style_sheet_test2 extends $mol_view {
+        List() { return new $mol_style_sheet_test1; }
+    }
+    $.$mol_style_sheet_test2 = $mol_style_sheet_test2;
+    $mol_test({
+        'component block styles'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                display: 'block',
+                zIndex: 1,
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tdisplay: block;\n\tz-index: 1;\n}\n');
+        },
+        'various units'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                width: '50%',
+                height: '50px',
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\twidth: 50%;\n\theight: 50px;\n}\n');
+        },
+        'various functions'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const { calc } = $mol_style_func;
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                width: calc(`100% - 1px`),
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\twidth: calc(100% - 1px);\n}\n');
+        },
+        'property groups'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                flex: {
+                    grow: 5,
+                    shrink: 10,
+                }
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tflex-grow: 5;\n\tflex-shrink: 10;\n}\n');
+        },
+        'custom properties'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                '--isVariable': 'yes',
+                '--is_variable': 'no',
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\t--is-variable: yes;\n\t--is_variable: no;\n}\n');
+        },
+        'custom property groups'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                '--variable': {
+                    test1: '5px',
+                    test2: '10px',
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\t--variable-test1: 5px;\n\t--variable-test2: 10px;\n}\n');
+        },
+        'property shorthand'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                padding: ['5px', 'auto'],
+                margin: ['10px', 'auto'],
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tpadding: 5px auto;\n\tmargin: 10px auto;\n}\n');
+        },
+        'sequenced values'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const { url } = $mol_style_func;
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                background: {
+                    image: [[url('foo')], [url('bar')]],
+                    size: [['cover'], ['contain']],
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tbackground-image: url("foo"),url("bar");\n\tbackground-size: cover,contain;\n}\n');
+        },
+        'sequenced structs'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                box: {
+                    shadow: [
+                        {
+                            inset: true,
+                            x: 0,
+                            y: 0,
+                            blur: '0.5rem',
+                            spread: 0,
+                            color: 'red',
+                        },
+                        {
+                            inset: false,
+                            x: 0,
+                            y: 0,
+                            blur: '0.5rem',
+                            spread: 0,
+                            color: 'blue',
+                        },
+                    ],
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tbox-shadow: inset 0 0 0.5rem 0 red,0 0 0.5rem 0 blue;\n}\n');
+        },
+        'component block styles with pseudo class'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                ':focus': {
+                    display: 'block',
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:focus {\n\tdisplay: block;\n}\n');
+        },
+        'component block styles with pseudo element'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                '::first-line': {
+                    display: 'block',
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]::first-line {\n\tdisplay: block;\n}\n');
+        },
+        'component block styles with media query'() {
+            class $mol_style_sheet_test extends $mol_view {
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                '@media': {
+                    'print': {
+                        display: 'block',
+                    },
+                    '(max-width: 640px)': {
+                        display: 'inline',
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n@media print {\n[mol_style_sheet_test] {\n\tdisplay: block;\n}\n}\n@media (max-width: 640px) {\n[mol_style_sheet_test] {\n\tdisplay: inline;\n}\n}\n');
+        },
+        'component block styles with attribute value'() {
+            class $mol_style_sheet_test extends $mol_view {
+                attr() {
+                    return {
+                        mol_theme: '$mol_theme_dark'
+                    };
+                }
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                '@': {
+                    mol_theme: {
+                        '$mol_theme_dark': {
+                            display: 'block',
+                        },
+                    },
+                    disabled: {
+                        'true': {
+                            width: '100%',
+                        },
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test]:where([disabled="true"]) {\n\twidth: 100%;\n}\n');
+        },
+        'component block styles with attribute value (short syntax)'() {
+            class $mol_style_sheet_test extends $mol_view {
+                attr() {
+                    return {
+                        mol_theme: '$mol_theme_dark'
+                    };
+                }
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                '[mol_theme]': {
+                    '$mol_theme_dark': {
+                        display: 'block',
+                    },
+                },
+                '[disabled]': {
+                    'true': {
+                        width: '100%',
+                    },
+                    'false': {
+                        width: '50%',
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test]:where([disabled="true"]) {\n\twidth: 100%;\n}\n[mol_style_sheet_test]:where([disabled="false"]) {\n\twidth: 50%;\n}\n');
+        },
+        'component element styles'() {
+            class $mol_style_sheet_test extends $mol_view {
+                Item() { return new $mol_view; }
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                color: 'red',
+                Item: {
+                    display: 'block',
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test_item] {\n\tdisplay: block;\n}\n');
+        },
+        'component element of element styles'() {
+            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
+                width: '100%',
+                List: {
+                    color: 'red',
+                    Item: {
+                        display: 'block',
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\twidth: 100%;\n}\n[mol_style_sheet_test2_list] {\n\tcolor: red;\n}\n[mol_style_sheet_test2_list_item] {\n\tdisplay: block;\n}\n');
+        },
+        'component element styles with block attribute value'() {
+            class $mol_style_sheet_test extends $mol_view {
+                Item() { return new $mol_view; }
+                attr() {
+                    return {
+                        mol_theme: '$mol_theme_dark',
+                        disabled: true,
+                    };
+                }
+            }
+            const sheet = $mol_style_sheet($mol_style_sheet_test, {
+                '@': {
+                    mol_theme: {
+                        '$mol_theme_dark': {
+                            Item: {
+                                color: 'red',
+                            },
+                        },
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) :where([mol_style_sheet_test_item]) {\n\tcolor: red;\n}\n');
+        },
+        'inner component styles by class'() {
+            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
+                color: 'red',
+                $mol_style_sheet_test1: {
+                    display: 'block',
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\tcolor: red;\n}\n[mol_style_sheet_test2] :where([mol_style_sheet_test1]) {\n\tdisplay: block;\n}\n');
+        },
+        'child component styles by class'() {
+            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
+                color: 'red',
+                '>': {
+                    $mol_style_sheet_test1: {
+                        display: 'block',
+                    },
+                    $mol_style_sheet_test2: {
+                        display: 'inline',
+                    },
+                },
+            });
+            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\tcolor: red;\n}\n[mol_style_sheet_test2] > :where([mol_style_sheet_test1]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test2] > :where([mol_style_sheet_test2]) {\n\tdisplay: inline;\n}\n');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Vector limiting'() {
+            let point = new $mol_vector_3d(7, 10, 13);
+            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
+            $mol_assert_equal(res.x, 5);
+            $mol_assert_equal(res.y, 15);
+            $mol_assert_equal(res.z, 10);
+        },
+        'Vector adding scalar'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added0(5);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 7);
+            $mol_assert_equal(res.z, 8);
+        },
+        'Vector adding vector'() {
+            let point = new $mol_vector_3d(1, 2, 3);
+            let res = point.added1([5, 10, 15]);
+            $mol_assert_equal(res.x, 6);
+            $mol_assert_equal(res.y, 12);
+            $mol_assert_equal(res.z, 18);
+        },
+        'Vector multiplying scalar'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed0(-1);
+            $mol_assert_equal(res.x, -2);
+            $mol_assert_equal(res.y, -3);
+            $mol_assert_equal(res.z, -4);
+        },
+        'Vector multiplying vector'() {
+            let point = new $mol_vector_3d(2, 3, 4);
+            let res = point.multed1([5, 2, -2]);
+            $mol_assert_equal(res.x, 10);
+            $mol_assert_equal(res.y, 6);
+            $mol_assert_equal(res.z, -8);
+        },
+        'Matrix adding matrix'() {
+            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
+            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
+            $mol_assert_equal(res[0][0], 11);
+            $mol_assert_equal(res[0][1], 22);
+            $mol_assert_equal(res[1][0], 33);
+            $mol_assert_equal(res[1][1], 44);
+            $mol_assert_equal(res[2][0], 55);
+            $mol_assert_equal(res[2][1], 66);
+        },
+        'Matrix multiplying matrix'() {
+            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
+            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
+            $mol_assert_equal(res[0][0], 4);
+            $mol_assert_equal(res[0][1], 9);
+            $mol_assert_equal(res[1][0], 16);
+            $mol_assert_equal(res[1][1], 25);
+            $mol_assert_equal(res[2][0], 36);
+            $mol_assert_equal(res[2][1], 49);
+        },
+        'Range expanding'() {
+            let range = $mol_vector_range_full.inversed;
+            const expanded = range.expanded0(10).expanded0(5);
+            $mol_assert_like([...expanded], [5, 10]);
+        },
+        'Vector of range expanding by vector'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
+            $mol_assert_like([...expanded.x], [1, 3]);
+            $mol_assert_like([...expanded.y], [5, 7]);
+        },
+        'Vector of range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = dimensions
+                .expanded2([[1, 3], [7, 9]])
+                .expanded2([[2, 4], [6, 8]]);
+            $mol_assert_like([...expanded.x], [1, 4]);
+            $mol_assert_like([...expanded.y], [6, 9]);
+        },
+        'Vector of infinity range expanding by vector of range'() {
+            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
+            const expanded = next
+                .expanded2(dimensions);
+            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
+            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'local get set delete'() {
+            var key = '$mol_state_local_test:' + Math.random();
+            $mol_assert_equal($mol_state_local.value(key), null);
+            $mol_state_local.value(key, 123);
+            $mol_assert_equal($mol_state_local.value(key), 123);
+            $mol_state_local.value(key, null);
+            $mol_assert_equal($mol_state_local.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test_mocks.push(context => {
+        class $mol_state_local_mock extends $mol_state_local {
+            static state = {};
+            static value(key, next = this.state[key]) {
+                return this.state[key] = (next || null);
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $mol_state_local_mock, "value", null);
+        context.$mol_state_local = $mol_state_local_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class TestClass extends Uint8Array {
+    }
+    $mol_test({
+        'Uint8Array vs itself'() {
+            $mol_assert_ok($mol_compare_array(new Uint8Array, new Uint8Array));
+            $mol_assert_ok($mol_compare_array(new Uint8Array([0]), new Uint8Array([0])));
+            $mol_assert_not($mol_compare_array(new Uint8Array([0]), new Uint8Array([1])));
+        },
+        'Uint8Array vs subclassed array'() {
+            $mol_assert_not($mol_compare_array(new Uint8Array, new TestClass));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'decode utf8 string'() {
+            const str = 'Hello, ΧΨΩЫ';
+            const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
+            $mol_assert_equal($mol_charset_decode(encoded), str);
+            $mol_assert_equal($mol_charset_decode(encoded, 'utf8'), str);
+        },
+        'decode empty string'() {
+            const encoded = new Uint8Array([]);
+            $mol_assert_equal($mol_charset_decode(encoded), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'encode empty'() {
+            $mol_assert_equal($mol_charset_encode(''), new Uint8Array([]));
+        },
+        'encode 1 octet'() {
+            $mol_assert_equal($mol_charset_encode('F'), new Uint8Array([0x46]));
+        },
+        'encode 2 octet'() {
+            $mol_assert_equal($mol_charset_encode('Б'), new Uint8Array([0xd0, 0x91]));
+        },
+        'encode 3 octet'() {
+            $mol_assert_equal($mol_charset_encode('ह'), new Uint8Array([0xe0, 0xa4, 0xb9]));
+        },
+        'encode 4 octet'() {
+            $mol_assert_equal($mol_charset_encode('𐍈'), new Uint8Array([0xf0, 0x90, 0x8d, 0x88]));
+        },
+        'encode surrogate pair'() {
+            $mol_assert_equal($mol_charset_encode('😀'), new Uint8Array([0xf0, 0x9f, 0x98, 0x80]));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'auto name'() {
+            class Invalid extends $mol_error_mix {
+            }
+            const mix = new Invalid('foo');
+            $mol_assert_equal(mix.name, 'Invalid_Error');
+        },
+        'simpe mix'() {
+            const mix = new $mol_error_mix('foo', {}, new Error('bar'), new Error('lol'));
+            $mol_assert_equal(mix.message, 'foo');
+            $mol_assert_equal(mix.errors.map(e => e.message), ['bar', 'lol']);
+        },
+        'provide additional info'() {
+            class Invalid extends $mol_error_mix {
+            }
+            const mix = new $mol_error_mix('Wrong password', {}, new Invalid('Too short', { value: 'p@ssw0rd', hint: '> 8 letters' }), new Invalid('Too simple', { value: 'p@ssw0rd', hint: 'need capital letter' }));
+            const hints = [];
+            if (mix instanceof $mol_error_mix) {
+                for (const er of mix.errors) {
+                    if (er instanceof Invalid) {
+                        hints.push(er.cause?.hint ?? '');
+                    }
+                }
+            }
+            $mol_assert_equal(hints, ['> 8 letters', 'need capital letter']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async "Get and parse"($) {
+                $mol_assert_equal(await $mol_wire_async($mol_fetch).text('data:text/plain,foo'), 'foo');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $mol_locale_mock extends $mol_locale {
+            lang(next = 'en') { return next; }
+            static source(lang) {
+                return {};
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_locale_mock.prototype, "lang", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_locale_mock, "source", null);
+        $.$mol_locale = $mol_locale_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'handle clicks by default'($) {
+                let clicked = false;
+                const clicker = $mol_button.make({
+                    $,
+                    click: (event) => { clicked = true; },
+                });
+                const element = clicker.dom_tree();
+                const event = $mol_dom_context.document.createEvent('mouseevent');
+                event.initEvent('click', true, true);
+                element.dispatchEvent(event);
+                $mol_assert_ok(clicked);
+            },
+            'no handle clicks if disabled'($) {
+                let clicked = false;
+                const clicker = $mol_button.make({
+                    $,
+                    click: (event) => { clicked = true; },
+                    enabled: () => false,
+                });
+                const element = clicker.dom_tree();
+                const event = $mol_dom_context.document.createEvent('mouseevent');
+                event.initEvent('click', true, true);
+                element.dispatchEvent(event);
+                $mol_assert_not(clicked);
+            },
+            async 'Store error'($) {
+                const clicker = $mol_button.make({
+                    $,
+                    click: (event) => $.$mol_fail(new Error('Test error')),
+                });
+                const event = $mol_dom_context.document.createEvent('mouseevent');
+                $mol_assert_fail(() => clicker.event_activate(event), 'Test error');
+                await Promise.resolve();
+                $mol_assert_equal(clicker.status()[0].message, 'Test error');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'escape'() {
+            const specials = $mol_regexp.from('.*+?^${}()|[]\\');
+            $mol_assert_equal(specials.source, '\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\');
+        },
+        'char code'() {
+            const space = $mol_regexp.from(32);
+            $mol_assert_like(' '.match(space), [' ']);
+        },
+        'repeat fixed'() {
+            const { repeat, decimal_only: digit } = $mol_regexp;
+            const year = repeat(digit, 4, 4);
+            $mol_assert_like('#2020#'.match(year), ['2020']);
+        },
+        'greedy repeat'() {
+            const { repeat, repeat_greedy, latin_only: letter } = $mol_regexp;
+            $mol_assert_like('abc'.match(repeat(letter, 1, 2)), ['a', 'b', 'c']);
+            $mol_assert_like('abc'.match(repeat_greedy(letter, 1, 2)), ['ab', 'c']);
+        },
+        'repeat range'() {
+            const { repeat_greedy, decimal_only: digit } = $mol_regexp;
+            const year = repeat_greedy(digit, 2, 4);
+            $mol_assert_like('#2#'.match(year), null);
+            $mol_assert_like('#20#'.match(year), ['20']);
+            $mol_assert_like('#2020#'.match(year), ['2020']);
+            $mol_assert_like('#20201#'.match(year), ['2020']);
+        },
+        'repeat from'() {
+            const { repeat_greedy, latin_only: letter } = $mol_regexp;
+            const name = repeat_greedy(letter, 2);
+            $mol_assert_like('##'.match(name), null);
+            $mol_assert_like('#a#'.match(name), null);
+            $mol_assert_like('#ab#'.match(name), ['ab']);
+            $mol_assert_like('#abc#'.match(name), ['abc']);
+        },
+        'from string'() {
+            const regexp = $mol_regexp.from('[\\d]');
+            $mol_assert_equal(regexp.source, '\\[\\\\d\\]');
+            $mol_assert_equal(regexp.flags, 'gsu');
+        },
+        'from regexp'() {
+            const regexp = $mol_regexp.from(/[\d]/i);
+            $mol_assert_equal(regexp.source, '[\\d]');
+            $mol_assert_equal(regexp.flags, 'i');
+        },
+        'split'() {
+            const regexp = $mol_regexp.from(';');
+            $mol_assert_like('aaa;bbb;ccc'.split(regexp), ['aaa', ';', 'bbb', ';', 'ccc']);
+            $mol_assert_like('aaa;;ccc'.split(regexp), ['aaa', ';', '', ';', 'ccc']);
+            $mol_assert_like('aaa'.split(regexp), ['aaa']);
+            $mol_assert_like(''.split(regexp), ['']);
+        },
+        'test for matching'() {
+            const regexp = $mol_regexp.from('foo');
+            $mol_assert_like(regexp.test(''), false);
+            $mol_assert_like(regexp.test('fo'), false);
+            $mol_assert_like(regexp.test('foo'), true);
+            $mol_assert_like(regexp.test('foobar'), true);
+            $mol_assert_like(regexp.test('barfoo'), true);
+        },
+        'case ignoring'() {
+            const xxx = $mol_regexp.from('x', { ignoreCase: true });
+            $mol_assert_like(xxx.flags, 'gisu');
+            $mol_assert_like(xxx.exec('xx')[0], 'x');
+            $mol_assert_like(xxx.exec('XX')[0], 'X');
+        },
+        'multiline mode'() {
+            const { end, from } = $mol_regexp;
+            const xxx = from(['x', end], { multiline: true });
+            $mol_assert_like(xxx.exec('x\ny')[0], 'x');
+            $mol_assert_like(xxx.flags, 'gmsu');
+        },
+        'flags override'() {
+            const triplet = $mol_regexp.from($mol_regexp.from(/.../, { ignoreCase: true }), { multiline: true });
+            $mol_assert_like(triplet.toString(), '/.../gmsu');
+        },
+        'sequence'() {
+            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
+            const year = repeat(digit, 4, 4);
+            const dash = '-';
+            const month = repeat(digit, 2, 2);
+            const day = repeat(digit, 2, 2);
+            const date = from([begin, year, dash, month, dash, day, end]);
+            $mol_assert_like(date.exec('2020-01-02')[0], '2020-01-02');
+        },
+        'optional'() {
+            const name = $mol_regexp.from(['A', ['4']]);
+            $mol_assert_equal('AB'.match(name)[0], 'A');
+            $mol_assert_equal('A4'.match(name)[0], 'A4');
+        },
+        'anon variants'() {
+            const name = $mol_regexp.from(['A', $mol_regexp.vary(['4', '5'])]);
+            $mol_assert_equal('AB'.match(name), null);
+            $mol_assert_equal('A4'.match(name)[0], 'A4');
+            $mol_assert_equal('A5'.match(name)[0], 'A5');
+        },
+        'only groups'() {
+            const regexp = $mol_regexp.from({ dog: '@' });
+            $mol_assert_like([...'#'.matchAll(regexp)][0].groups, undefined);
+            $mol_assert_like([...'@'.matchAll(regexp)][0].groups, { dog: '@' });
+        },
+        'catch skipped'() {
+            const regexp = $mol_regexp.from(/(@)(\d?)/g);
+            $mol_assert_like([...'[[@]]'.matchAll(regexp)].map(f => [...f]), [
+                ['[['],
+                ['@', '@', ''],
+                [']]'],
+            ]);
+        },
+        'enum variants'() {
+            let Sex;
+            (function (Sex) {
+                Sex["male"] = "male";
+                Sex["female"] = "female";
+            })(Sex || (Sex = {}));
+            const sexism = $mol_regexp.from(Sex);
+            $mol_assert_like([...''.matchAll(sexism)].length, 0);
+            $mol_assert_like([...'trans'.matchAll(sexism)][0].groups, undefined);
+            $mol_assert_like([...'male'.matchAll(sexism)][0].groups, { male: 'male', female: '' });
+            $mol_assert_like([...'female'.matchAll(sexism)][0].groups, { male: '', female: 'female' });
+        },
+        'recursive only groups'() {
+            let Sex;
+            (function (Sex) {
+                Sex["male"] = "male";
+                Sex["female"] = "female";
+            })(Sex || (Sex = {}));
+            const sexism = $mol_regexp.from({ Sex });
+            $mol_assert_like([...''.matchAll(sexism)].length, 0);
+            $mol_assert_like([...'male'.matchAll(sexism)][0].groups, { Sex: 'male', male: 'male', female: '' });
+            $mol_assert_like([...'female'.matchAll(sexism)][0].groups, { Sex: 'female', male: '', female: 'female' });
+        },
+        'sequence with groups'() {
+            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
+            const year = repeat(digit, 4, 4);
+            const dash = '-';
+            const month = repeat(digit, 2, 2);
+            const day = repeat(digit, 2, 2);
+            const regexp = from([begin, { year }, dash, { month }, dash, { day }, end]);
+            const found = [...'2020-01-02'.matchAll(regexp)];
+            $mol_assert_like(found[0].groups, {
+                year: '2020',
+                month: '01',
+                day: '02',
+            });
+        },
+        'sequence with groups of mixed type'() {
+            const prefix = '/';
+            const postfix = '/';
+            const regexp = $mol_regexp.from([{ prefix }, /(\w+)/, { postfix }, /([gumi]*)/]);
+            $mol_assert_like([...'/foo/mi'.matchAll(regexp)], [
+                Object.assign(["/foo/mi", "/", "foo", "/", "mi"], {
+                    groups: {
+                        prefix: '/',
+                        postfix: '/',
+                    },
+                    index: 0,
+                    input: "/",
+                }),
+            ]);
+        },
+        'recursive sequence with groups'() {
+            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
+            const year = repeat(digit, 4, 4);
+            const dash = '-';
+            const month = repeat(digit, 2, 2);
+            const day = repeat(digit, 2, 2);
+            const regexp = from([
+                begin, { date: [{ year }, dash, { month }] }, dash, { day }, end
+            ]);
+            const found = [...'2020-01-02'.matchAll(regexp)];
+            $mol_assert_like(found[0].groups, {
+                date: '2020-01',
+                year: '2020',
+                month: '01',
+                day: '02',
+            });
+        },
+        'parse multiple'() {
+            const { decimal_only: digit, from } = $mol_regexp;
+            const regexp = from({ digit });
+            $mol_assert_like([...'123'.matchAll(regexp)].map(f => f.groups), [
+                { digit: '1' },
+                { digit: '2' },
+                { digit: '3' },
+            ]);
+        },
+        'named variants'() {
+            const { begin, or, end, from } = $mol_regexp;
+            const sexism = from([
+                begin, 'sex = ', { sex: ['male', or, 'female'] }, end
+            ]);
+            $mol_assert_like([...'sex = male'.matchAll(sexism)][0].groups, { sex: 'male' });
+            $mol_assert_like([...'sex = female'.matchAll(sexism)][0].groups, { sex: 'female' });
+            $mol_assert_like([...'sex = malefemale'.matchAll(sexism)][0].groups, undefined);
+        },
+        'force after'() {
+            const { latin_only: letter, force_after, from } = $mol_regexp;
+            const regexp = from([letter, force_after('.')]);
+            $mol_assert_like('x.'.match(regexp), ['x']);
+            $mol_assert_like('x,'.match(regexp), null);
+        },
+        'forbid after'() {
+            const { latin_only: letter, forbid_after, from } = $mol_regexp;
+            const regexp = from([letter, forbid_after('.')]);
+            $mol_assert_like('x.'.match(regexp), null);
+            $mol_assert_like('x,'.match(regexp), ['x']);
+        },
+        'char except'() {
+            const { char_except, latin_only, tab } = $mol_regexp;
+            const name = char_except(latin_only, tab);
+            $mol_assert_like('a'.match(name), null);
+            $mol_assert_like('\t'.match(name), null);
+            $mol_assert_like('('.match(name), ['(']);
+        },
+        'unicode only'() {
+            const { unicode_only, from } = $mol_regexp;
+            const name = from([
+                unicode_only('Script', 'Cyrillic'),
+                unicode_only('Hex_Digit'),
+            ]);
+            $mol_assert_like('FF'.match(name), null);
+            $mol_assert_like('ФG'.match(name), null);
+            $mol_assert_like('ФF'.match(name), ['ФF']);
+        },
+        'generate by optional with inner group'() {
+            const { begin, end, from } = $mol_regexp;
+            const animals = from([begin, '#', ['^', { dog: '@' }], end]);
+            $mol_assert_equal(animals.generate({}), '#');
+            $mol_assert_equal(animals.generate({ dog: false }), '#');
+            $mol_assert_equal(animals.generate({ dog: true }), '#^@');
+            $mol_assert_fail(() => animals.generate({ dog: '$' }), 'Wrong param: dog=$');
+        },
+        'generate by optional with inner group with variants'() {
+            const { begin, end, from } = $mol_regexp;
+            const animals = from([begin, '#', ['^', { animal: { dog: '@', fox: '&' } }], end]);
+            $mol_assert_equal(animals.generate({}), '#');
+            $mol_assert_equal(animals.generate({ dog: true }), '#^@');
+            $mol_assert_equal(animals.generate({ fox: true }), '#^&');
+            $mol_assert_fail(() => animals.generate({ dog: '$' }), 'Wrong param: dog=$');
+        },
+        'complex example'() {
+            const { begin, end, char_only, char_range, latin_only, slash_back, repeat_greedy, from, } = $mol_regexp;
+            const atom_char = char_only(latin_only, "!#$%&'*+/=?^`{|}~-");
+            const atom = repeat_greedy(atom_char, 1);
+            const dot_atom = from([atom, repeat_greedy(['.', atom])]);
+            const name_letter = char_only(char_range(0x01, 0x08), 0x0b, 0x0c, char_range(0x0e, 0x1f), 0x21, char_range(0x23, 0x5b), char_range(0x5d, 0x7f));
+            const quoted_pair = from([
+                slash_back,
+                char_only(char_range(0x01, 0x09), 0x0b, 0x0c, char_range(0x0e, 0x7f))
+            ]);
+            const name = repeat_greedy({ name_letter, quoted_pair });
+            const quoted_name = from(['"', { name }, '"']);
+            const local_part = from({ dot_atom, quoted_name });
+            const domain = dot_atom;
+            const mail = from([begin, local_part, '@', { domain }, end]);
+            $mol_assert_equal('foo..bar@example.org'.match(mail), null);
+            $mol_assert_equal('foo..bar"@example.org'.match(mail), null);
+            $mol_assert_like([...'foo.bar@example.org'.matchAll(mail)][0].groups, {
+                dot_atom: "foo.bar",
+                quoted_name: "",
+                name: "",
+                name_letter: "",
+                quoted_pair: "",
+                domain: "example.org",
+            });
+            $mol_assert_like([...'"foo..bar"@example.org'.matchAll(mail)][0].groups, {
+                dot_atom: "",
+                quoted_name: '"foo..bar"',
+                name: "foo..bar",
+                name_letter: "r",
+                quoted_pair: "",
+                domain: "example.org",
+            });
+            $mol_assert_equal(mail.generate({ dot_atom: 'foo.bar', domain: 'example.org' }), 'foo.bar@example.org');
+            $mol_assert_equal(mail.generate({ name: 'foo..bar', domain: 'example.org' }), '"foo..bar"@example.org');
+            $mol_assert_fail(() => mail.generate({ dot_atom: 'foo..bar', domain: 'example.org' }), 'Wrong param: dot_atom=foo..bar');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Empty needle'() {
+                const app = new $mol_dimmer;
+                app.needle = () => '  ';
+                app.haystack = () => 'foo  bar';
+                $mol_assert_like(app.strings(), ['foo  bar']);
+            },
+            'Empty haystack'() {
+                const app = new $mol_dimmer;
+                app.needle = () => 'foo  bar';
+                app.haystack = () => '';
+                $mol_assert_like(app.strings(), ['']);
+            },
+            'Not found'() {
+                const app = new $mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' bar ';
+                $mol_assert_like(app.strings(), [' bar ']);
+            },
+            'One found'() {
+                const app = new $mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' barfoo ';
+                $mol_assert_like(app.strings(), [' bar', 'foo', ' ']);
+            },
+            'Multiple found'() {
+                const app = new $mol_dimmer;
+                app.needle = () => 'foo';
+                app.haystack = () => ' foobarfoo foo';
+                $mol_assert_like(app.strings(), [' ', 'foo', 'bar', 'foo', ' ', 'foo']);
+            },
+            'Fuzzy search'() {
+                const app = new $mol_dimmer;
+                app.needle = () => 'foo bar';
+                app.haystack = () => ' barfoo ';
+                $mol_assert_like(app.strings(), [' ', 'bar', '', 'foo', ' ']);
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'skin puts presets on the host node'($) {
+                class Host extends $mol_view {
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, base: () => 'stone' });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                const node = host.dom_node();
+                $mol_assert_equal(node.getAttribute('bog_builderui_base'), 'stone');
+                $mol_assert_equal(node.getAttribute('bog_builderui_lights'), 'system');
+                $mol_assert_equal(node.getAttribute('bog_builderui_theme'), 'sky');
+                $mol_assert_equal(node.getAttribute('bog_builderui_radius'), 'medium');
+                $mol_assert_equal(node.getAttribute('mol_theme'), null);
+                host.destructor();
+            },
+            'skin stops input zoom on ios only'($) {
+                const zoom_after = (agent) => {
+                    const meta = { content: 'width=device-width, initial-scale=1', getAttribute: () => meta.content, setAttribute: (_, val) => { meta.content = val; } };
+                    const document = { querySelector: () => meta };
+                    const context = { ...$.$mol_dom_context, document, navigator: { userAgent: agent, platform: '', maxTouchPoints: 0 } };
+                    const skin = $bog_builderui_skin.make({ $: $.$mol_ambient({ $mol_dom_context: context }) });
+                    skin.ios_zoom_fix();
+                    skin.ios_zoom_fix();
+                    return meta.content;
+                };
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'), 'width=device-width, initial-scale=1, maximum-scale=1');
+                $mol_assert_equal(zoom_after('Mozilla/5.0 (Linux; Android 14)'), 'width=device-width, initial-scale=1');
+            },
+            'skin follows the host'($) {
+                class Host extends $mol_view {
+                    lights(next) {
+                        return next ?? 'dark';
+                    }
+                    Skin() {
+                        return $bog_builderui_skin.make({ $: this.$, lights: () => this.lights() });
+                    }
+                    plugins() {
+                        return [this.Skin()];
+                    }
+                }
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "lights", null);
+                __decorate([
+                    $mol_mem
+                ], Host.prototype, "Skin", null);
+                const host = Host.make({ $ });
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'dark');
+                host.lights('light');
+                host.dom_tree();
+                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'light');
+                host.destructor();
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push(context => {
+        class $mol_state_arg_mock extends $mol_state_arg {
+            static $ = context;
+            static href(next) { return next || ''; }
+            static go(next) {
+                this.href(this.link(next));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_state_arg_mock, "href", null);
+        __decorate([
+            $mol_action
+        ], $mol_state_arg_mock, "go", null);
+        context.$mol_state_arg = $mol_state_arg_mock;
+    });
+    $mol_test({
+        'args as dictionary'($) {
+            $.$mol_state_arg.href('#!foo=bar/xxx');
+            $mol_assert_equal($.$mol_state_arg.dict(), { foo: 'bar', xxx: '' });
+            $.$mol_state_arg.dict({ foo: null, yyy: '', lol: '123' });
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!yyy/lol=123');
+        },
+        'one value from args'($) {
+            $.$mol_state_arg.href('#!foo=bar/xxx');
+            $mol_assert_equal($.$mol_state_arg.value('foo'), 'bar');
+            $mol_assert_equal($.$mol_state_arg.value('xxx'), '');
+            $.$mol_state_arg.value('foo', 'lol');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=lol/xxx');
+            $.$mol_state_arg.value('foo', '');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo/xxx');
+            $.$mol_state_arg.value('foo', null);
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!xxx');
+        },
+        'nested args'($) {
+            const base = new $.$mol_state_arg('nested.');
+            class Nested extends $mol_state_arg {
+                constructor(prefix) {
+                    super(base.prefix + prefix);
+                }
+                static value = (key, next) => base.value(key, next);
+            }
+            $.$mol_state_arg.href('#!foo=bar/nested.xxx=123');
+            $mol_assert_equal(Nested.value('foo'), null);
+            $mol_assert_equal(Nested.value('xxx'), '123');
+            Nested.value('foo', 'lol');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=bar/nested.xxx=123/nested.foo=lol');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function parse(theme) {
+        if (theme === 'true')
+            return true;
+        if (theme === 'false')
+            return false;
+        return null;
+    }
+    // Get once because chrome switches to light on print
+    const base = $.$mol_media.match('(prefers-color-scheme: light)');
+    /**
+     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+     */
+    function $mol_lights(next) {
+        const arg = parse(this.$mol_state_arg.value('mol_lights'));
+        if (next === undefined) {
+            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
+        }
+        else {
+            if (arg === null) {
+                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
+            }
+            else {
+                this.$mol_state_arg.value('mol_lights', String(next));
+            }
+            return next;
+        }
+    }
+    $.$mol_lights = $mol_lights;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'null by default'() {
+            const key = String(Math.random());
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+        'storing'() {
+            const key = String(Math.random());
+            $mol_state_session.value(key, '$mol_state_session_test');
+            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
+            $mol_state_session.value(key, null);
+            $mol_assert_equal($mol_state_session.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'system mode follows the device, not a light choice stored by another app'($) {
+            const device = (light) => {
+                const context = Object.create($);
+                context.$mol_lights = () => !light;
+                context.$mol_media = class extends $.$mol_media {
+                    static match() {
+                        return light;
+                    }
+                };
+                return $bog_theme_auto.make({ $: context });
+            };
+            const night = device(false);
+            $mol_assert_equal(night.mode(), 'system');
+            $mol_assert_equal(night.theme(), night.theme_dark());
+            $mol_assert_equal(night.is_light_now(), false);
+            const day = device(true);
+            $mol_assert_equal(day.theme(), day.theme_light());
+            $mol_assert_equal(day.is_light_now(), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
+var $;
+(function ($) {
+    $mol_test({
+        'safe tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
+        },
+        'bad tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
+        },
+        'common attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
+        },
+        'safe attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
+        },
+        'bad attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
+        },
+        'danger attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Watch one value'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static set = new $mol_wire_set();
+                static lucky() {
+                    return this.set.has(777);
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "lucky", null);
+            $mol_assert_equal(App.lucky(), false);
+            App.set.add(666);
+            $mol_assert_equal(App.lucky(), false);
+            App.set.add(777);
+            $mol_assert_equal(App.lucky(), true);
+            App.set.delete(777);
+            $mol_assert_equal(App.lucky(), false);
+        },
+        'Watch item channel'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static set = new $mol_wire_set();
+                static lucky() {
+                    return this.set.item(777);
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "lucky", null);
+            $mol_assert_equal(App.lucky(), false);
+            App.set.item(666, true);
+            $mol_assert_equal(App.lucky(), false);
+            App.set.item(777, true);
+            $mol_assert_equal(App.lucky(), true);
+            App.set.item(777, false);
+            $mol_assert_equal(App.lucky(), false);
+        },
+        'Watch size'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static set = new $mol_wire_set();
+                static size() {
+                    return this.set.size;
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "size", null);
+            $mol_assert_equal(App.size(), 0);
+            App.set.add(666);
+            $mol_assert_equal(App.size(), 1);
+            App.set.add(777);
+            $mol_assert_equal(App.size(), 2);
+            App.set.delete(777);
+            $mol_assert_equal(App.size(), 1);
+        },
+        'Watch for-of'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static set = new $mol_wire_set();
+                static sum() {
+                    let res = 0;
+                    for (const val of this.set) {
+                        res += val;
+                    }
+                    return res;
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "sum", null);
+            $mol_assert_equal(App.sum(), 0);
+            App.set.add(111);
+            $mol_assert_equal(App.sum(), 111);
+            App.set.add(222);
+            $mol_assert_equal(App.sum(), 333);
+            App.set.delete(111);
+            $mol_assert_equal(App.sum(), 222);
+        },
+        'Watch forEach'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static set = new $mol_wire_set();
+                static sum() {
+                    let res = 0;
+                    this.set.forEach(val => res += val);
+                    return res;
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "sum", null);
+            $mol_assert_equal(App.sum(), 0);
+            App.set.add(111);
+            $mol_assert_equal(App.sum(), 111);
+            App.set.add(222);
+            $mol_assert_equal(App.sum(), 333);
+            App.set.delete(111);
+            $mol_assert_equal(App.sum(), 222);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const png = new Uint8Array([0x1a, 0x0a, 0x00, 0x49, 0x48, 0x78, 0xda]);
+    $mol_test({
+        'base64 encode string'() {
+            $mol_assert_equal($mol_base64_encode($mol_charset_encode('Hello, ΧΨΩЫ')), 'SGVsbG8sIM6nzqjOqdCr');
+        },
+        'base64 encode binary'() {
+            $mol_assert_equal($mol_base64_encode(png), 'GgoASUh42g==');
+        },
+        'base64 encode string with plus'() {
+            $mol_assert_equal($mol_base64_encode($mol_charset_encode('шоешпо')), '0YjQvtC10YjQv9C+');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const png = new Uint8Array([0x1a, 0x0a, 0x00, 0x49, 0x48, 0x78, 0xda]);
+    const with_plus = new TextEncoder().encode('шоешпо');
+    $mol_test({
+        'base64 decode string'() {
+            $mol_assert_equal($mol_base64_decode('SGVsbG8sIM6nzqjOqdCr'), new TextEncoder().encode('Hello, ΧΨΩЫ'));
+        },
+        'base64 decode binary'() {
+            $mol_assert_equal($mol_base64_decode('GgoASUh42g=='), png);
+        },
+        'base64 decode binary - without equals'() {
+            $mol_assert_equal($mol_base64_decode('GgoASUh42g'), png);
+        },
+        'base64 decode with plus'() {
+            $mol_assert_equal($mol_base64_decode('0YjQvtC10YjQv9C+'), with_plus);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'empty hash'() {
+            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([])), new Uint8Array([218, 57, 163, 238, 94, 107, 75, 13, 50, 85, 191, 239, 149, 96, 24, 144, 175, 216, 7, 9]));
+        },
+        'three bytes hash'() {
+            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([255, 254, 253])), new Uint8Array([240, 150, 38, 243, 255, 128, 96, 0, 72, 215, 207, 228, 19, 149, 113, 52, 2, 125, 27, 77]));
+        },
+        'six bytes hash'() {
+            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([0, 255, 10, 250, 32, 128])), new Uint8Array([23, 25, 155, 181, 46, 200, 221, 83, 254, 0, 166, 68, 91, 255, 67, 140, 114, 88, 218, 155]));
+        },
+        'seven bytes hash'() {
+            $mol_assert_equal($mol_crypto2_hash(new Uint8Array([1, 2, 3, 4, 5, 6, 7])), new Uint8Array([140, 31, 40, 252, 47, 72, 194, 113, 214, 196, 152, 240, 242, 73, 205, 222, 54, 92, 84, 197]));
+        },
+        'unaligned hash'() {
+            const data = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7]);
+            $mol_assert_equal($mol_crypto2_hash(new Uint8Array(data.buffer, 1, 7)), new Uint8Array([140, 31, 40, 252, 47, 72, 194, 113, 214, 196, 152, 240, 242, 73, 205, 222, 54, 92, 84, 197]));
+        },
+        async 'reference'() {
+            const data = new Uint8Array([255, 254, 253]);
+            $mol_assert_equal($mol_crypto2_hash(data), new Uint8Array(await $mol_crypto_native.subtle.digest('SHA-1', data)));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Float schema"($) {
+                $mol_assert_equal('$mol_schema_float', $mol_schema_float + '', $mol_key($mol_schema_float));
+                $mol_assert_equal(true, $mol_schema_float.check(0));
+                $mol_assert_equal(true, $mol_schema_float.check(Number.NaN));
+                $mol_assert_equal(true, $mol_schema_float.check(Number.POSITIVE_INFINITY));
+                $mol_assert_equal(false, $mol_schema_float.check(null));
+                $mol_assert_equal(1.5, $mol_schema_float.cast(1.5));
+                $mol_assert_equal(Number.NaN, $mol_schema_float.cast('0'));
+                $mol_assert_equal(Number.EPSILON, $mol_schema_float.guard(Number.EPSILON));
+                $mol_assert_fail(() => $mol_schema_float.guard('0'), 'Wrong type');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "String schema"($) {
+                $mol_assert_equal('$mol_schema_string', $mol_schema_string + '', $mol_key($mol_schema_string));
+                $mol_assert_equal(true, $mol_schema_string.check('foo'));
+                $mol_assert_equal(false, $mol_schema_string.check(123));
+                $mol_assert_equal('foo', $mol_schema_string.cast('foo'));
+                $mol_assert_equal('', $mol_schema_string.cast(123));
+                $mol_assert_equal('foo', $mol_schema_string.guard('foo'));
+                $mol_assert_fail(() => $mol_schema_string.guard(123), 'Wrong type');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Cache of maybe schema"($) {
+                $mol_assert_equal($mol_schema_maybe($mol_schema_float), $mol_schema_maybe($mol_schema_float));
+                $mol_assert_unique($mol_schema_maybe($mol_schema_float), $mol_schema_maybe($mol_schema_string));
+            },
+            "Optional value"($) {
+                const Config = $mol_schema_maybe($mol_schema_string);
+                $mol_assert_equal('$mol_schema_maybe<$mol_schema_string>', Config + '');
+                $mol_assert_equal(true, Config.check('foo'));
+                $mol_assert_equal(true, Config.check(undefined));
+                $mol_assert_equal(true, Config.check(null));
+                $mol_assert_equal(false, Config.check(0));
+                $mol_assert_equal('foo', Config.cast('foo'));
+                $mol_assert_equal(undefined, Config.cast(undefined));
+                $mol_assert_equal(null, Config.cast(null));
+                $mol_assert_equal(null, Config.cast(0));
+                $mol_assert_equal('foo', Config.guard('foo'));
+                $mol_assert_fail(() => Config.guard(123), 'Wrong type');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Cache of instance schema"($) {
+                $mol_assert_equal($mol_schema_instance(Uint8Array), $mol_schema_instance(Uint8Array));
+                $mol_assert_unique($mol_schema_instance(Uint8Array), $mol_schema_instance(Int8Array));
+            },
+            "Class instance schema"($) {
+                const Blob = $mol_schema_instance(Uint8Array);
+                $mol_assert_equal('$mol_schema_instance<Uint8Array>', Blob + '', $mol_key(Blob));
+                $mol_assert_equal(true, Blob.check(new Uint8Array));
+                $mol_assert_equal(false, Blob.check(new Int8Array));
+                $mol_assert_equal(false, Blob.check(null));
+                $mol_assert_equal(new Uint8Array([0, 1]), Blob.cast(new Uint8Array([0, 1])));
+                $mol_assert_fail(() => Blob.cast(new Int8Array), 'Wrong class');
+                $mol_assert_equal(new Uint8Array, Blob.guard(new Uint8Array));
+                $mol_assert_fail(() => Blob.guard(new Int8Array), 'Wrong class');
+            },
+            "Boxed instance schema"($) {
+                const Str = $mol_schema_instance(String);
+                $mol_assert_equal('$mol_schema_instance<String>', Str + '', $mol_key(Str));
+                $mol_assert_equal(true, Str.check(Object('')));
+                $mol_assert_equal(true, Str.check(''));
+                $mol_assert_equal(true, Object('') instanceof Str);
+            },
+            "Schema instance schema"($) {
+                const Str = $mol_schema_instance($mol_schema_instance(String));
+                $mol_assert_equal('$mol_schema_instance<String>', Str + '', $mol_key(Str));
+                $mol_assert_equal(true, Str.check(Object('')));
+                $mol_assert_equal(true, Str.check(''));
+                $mol_assert_equal(true, Object('') instanceof Str);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Validation"($) {
+                $mol_assert_fail(() => new $giper_baza_link('qwertyui_asdfghjk123'), 'Wrong Link');
+            },
+            "From integer"($) {
+                $mol_assert_equal($giper_baza_link.from_int(178308648732587), new $giper_baza_link('qwertyui'));
+            },
+            "Pick Lord only"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').lord(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').lord(), new $giper_baza_link('qwertyui_asdfghjk').lord(), new $giper_baza_link('qwertyui_asdfghjk'));
+            },
+            "Pick Land only"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').land(), new $giper_baza_link('qwertyui_asdfghjk').land(), new $giper_baza_link('qwertyui_asdfghjk'));
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').land(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').land(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
+            },
+            "Pick Peer only"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').peer(), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').peer(), new $giper_baza_link('qwertyui'));
+                $mol_assert_equal(new $giper_baza_link('___qazwsxed').peer(), new $giper_baza_link(''));
+            },
+            "Pick Head only"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').head(), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').head(), new $giper_baza_link('zxcvbnm0'));
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').head(), new $giper_baza_link('qwertyui_asdfghjk').head(), new $giper_baza_link(''));
+            },
+            "Pick Area only"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').area(), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').area(), new $giper_baza_link('qazwsxed'));
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').area(), new $giper_baza_link('qwertyui_asdfghjk').area(), new $giper_baza_link('').area(), new $giper_baza_link(''));
+            },
+            "Binary encoding"($) {
+                const pawn = new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').toBin();
+                const land = new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').toBin();
+                const lord = new $giper_baza_link('qwertyui_asdfghjk').toBin();
+                const rel_pawn = new $giper_baza_link('___zxcvbnm0').toBin();
+                const rel_root = new $giper_baza_link('').toBin();
+                $mol_assert_equal(pawn.length, 24);
+                $mol_assert_equal(land.length, 18);
+                $mol_assert_equal(lord.length, 12);
+                $mol_assert_equal(rel_pawn.length, 6);
+                $mol_assert_equal(rel_root.length, 0);
+                $mol_assert_equal($giper_baza_link.from_bin(pawn), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0'));
+                $mol_assert_equal($giper_baza_link.from_bin(land), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
+                $mol_assert_equal($giper_baza_link.from_bin(lord), new $giper_baza_link('qwertyui_asdfghjk'));
+                $mol_assert_equal($giper_baza_link.from_bin(rel_pawn), new $giper_baza_link('zxcvbnm0'));
+                $mol_assert_equal($giper_baza_link.from_bin(rel_root), new $giper_baza_link(''));
+            },
+            "Relate to base"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('QWERTYUI_ASDFGHJK')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('QWERTYUI_ASDFGHJK__ZXCVBNM0')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0'));
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_12345678')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').relate(new $giper_baza_link('qwertyui_asdfghjk__12345678')), new $giper_baza_link('___zxcvbnm0'));
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed').relate(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('qwertyui_asdfghjk').relate(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk').relate(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link(''));
+            },
+            "Resolve Link from base"($) {
+                $mol_assert_equal(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('QWERTYUI_ASDFGHJK__ZXCVBNM0')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('QWERTYUI_ASDFGHJK')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0'));
+                $mol_assert_equal(new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk__12345678'));
+                $mol_assert_equal(new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('___12345678').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_12345678'));
+                $mol_assert_equal(new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk')), new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk__zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk'));
+                $mol_assert_equal(new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed')), new $giper_baza_link('').resolve(new $giper_baza_link('qwertyui_asdfghjk_qazwsxed_zxcvbnm0')), new $giper_baza_link('qwertyui_asdfghjk_qazwsxed'));
+            },
+            'Hashing'() {
+                $mol_assert_equal($giper_baza_link.hash_bin(new Uint8Array([1, 2, 3])), new $giper_baza_link('cDeAcZjC_Kn0rCAc3'));
+                $mol_assert_equal($giper_baza_link.hash_str('foo bar'), new $giper_baza_link('N3PeplFW_kJg4æmwi'));
+            }
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'str & bin sizes'() {
+            const signer = await $$.$mol_crypto2_signer.generate();
+            const auditor = signer.auditor();
+            $mol_assert_equal(signer.toStringPrivate().length, $mol_crypto2_signer.size_str);
+            $mol_assert_equal(auditor.toString().length, $mol_crypto2_auditor.size_str);
+            $mol_assert_equal(signer.asArrayPrivate().length, $mol_crypto2_signer.size_bin);
+            $mol_assert_equal(auditor.asArray().length, $mol_crypto2_auditor.size_bin);
+            const data = new Uint8Array([1, 2, 3]);
+            const sign = await signer.sign(data);
+            $mol_assert_equal(sign.byteLength, $mol_crypto2_signer.size_sign);
+        },
+        async 'verify self signed with auto generated key'() {
+            const Alice = await $$.$mol_crypto2_signer.generate();
+            const data = new Uint8Array([1, 2, 3]);
+            const sign = await Alice.sign(data);
+            $mol_assert_equal(true, await Alice.auditor().verify(data, sign));
+        },
+        async 'verify signed with str exported auto generated key'() {
+            const Alice = await $$.$mol_crypto2_signer.generate();
+            const data = new Uint8Array([1, 2, 3]);
+            const Bella = $mol_crypto2_signer.from(Alice.toString() + Alice.toStringPrivate());
+            const sign = await Bella.sign(data);
+            const Catie = $mol_crypto2_auditor.from(Alice.auditor().toString());
+            $mol_assert_equal(true, await Catie.verify(data, sign));
+            const Diana = $mol_crypto2_auditor.from(Alice.toString());
+            $mol_assert_equal(true, await Diana.verify(data, sign));
+        },
+        async 'verify signed with bin exported auto generated key'() {
+            const Alice = await $$.$mol_crypto2_signer.generate();
+            const data = new Uint8Array([1, 2, 3]);
+            const Bella = $mol_crypto2_signer.from(new Uint8Array([...Alice.asArray(), ...Alice.asArrayPrivate()]));
+            const sign = await Bella.sign(data);
+            const Catie = $mol_crypto2_auditor.from(Alice.auditor().asArray());
+            $mol_assert_equal(true, await Catie.verify(data, sign));
+            const Diana = $mol_crypto2_auditor.from(Alice.asArray());
+            $mol_assert_equal(true, await Diana.verify(data, sign));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'Sizes'() {
+            const secret = $mol_crypto2_secret.make();
+            $mol_assert_equal(secret.asArray().byteLength, $mol_crypto2_secret.size);
+            const data = new Uint8Array([1, 2, 3]);
+            const nonce = $mol_crypto2_nonce();
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, data.byteLength);
+        },
+        'Wrong key size'() {
+            $mol_assert_fail(() => $mol_crypto2_secret.from(new Uint8Array(8)), 'Wrong key size');
+        },
+        async 'Decrypt self encrypted'() {
+            const secret = $mol_crypto2_secret.make();
+            const nonce = $mol_crypto2_nonce();
+            const data = new Uint8Array([1, 2, 3]);
+            const closed = await secret.encrypt(data, nonce);
+            $mol_assert_equal(closed.byteLength, 3);
+            const opened = await secret.decrypt(closed, nonce);
+            $mol_assert_equal(opened, data);
+        },
+        async 'Decrypt encrypted with exported key'() {
+            const data = new Uint8Array([1, 2, 3]);
+            const nonce = $mol_crypto2_nonce();
+            const Alice = $mol_crypto2_secret.make();
+            const closed = await Alice.encrypt(data, nonce);
+            const Bob = $mol_crypto2_secret.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, nonce);
+            $mol_assert_equal(data, opened);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'str & bin sizes'() {
+            const cipher = await $$.$mol_crypto2_cipher.generate();
+            const socket = cipher.socket();
+            $mol_assert_equal(cipher.toStringPrivate().length, $mol_crypto2_cipher.size_str);
+            $mol_assert_equal(socket.toString().length, $mol_crypto2_socket.size_str);
+            $mol_assert_equal(cipher.asArrayPrivate().length, $mol_crypto2_cipher.size_bin);
+            $mol_assert_equal(socket.asArray().length, $mol_crypto2_socket.size_bin);
+            const secret = await cipher.secret(socket);
+            $mol_assert_equal(secret.byteLength, $mol_crypto2_cipher.size_secret);
+        },
+        async 'Shared secret from public & private keys'() {
+            const A = await $mol_crypto2_cipher.generate();
+            const B = await $mol_crypto2_cipher.generate();
+            const SA = await A.secret(B.socket());
+            const SB = await B.secret(A.socket());
+            $mol_assert_equal(SA.asArray(), SB.asArray());
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async "Signing & encryption"($) {
+                const Alice = await $mol_crypto2_private.generate();
+                const Bella = await $mol_crypto2_private.generate();
+                const secretA = await Alice.cipher().secret(Bella.socket());
+                const secretB = await Bella.cipher().secret(Alice.socket());
+                $mol_assert_equal(secretA, secretB);
+                const data = new Uint8Array([1, 2, 3]);
+                const nonce = $mol_crypto2_nonce();
+                const closed = await secretA.encrypt(data, nonce);
+                const digest = $mol_crypto2_hash(closed);
+                const sign = await Alice.signer().sign(digest);
+                $mol_assert_equal(true, await Alice.auditor().verify(digest, sign));
+                $mol_assert_equal(data, await secretA.decrypt(closed, nonce));
+            },
+            async "Serial & Deserial"($) {
+                const orig = await $mol_crypto2_private.generate();
+                const bin = new Uint8Array([...orig.asArray(), ...orig.asArrayPrivate()]);
+                const str = orig.toString() + orig.toStringPrivate();
+                $mol_assert_equal(orig, $mol_crypto2_private.from(bin), $mol_crypto2_private.from(str));
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test_mocks.push($ => {
         class $giper_baza_auth_mock extends $.$giper_baza_auth {
@@ -2703,6 +4053,87 @@ var $;
             $mol_mem
         ], $giper_baza_auth_mock, "current", null);
         $.$giper_baza_auth = $giper_baza_auth_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'ordered links'() {
+            var graph = new $mol_graph();
+            graph.link('A', 'B', 'E');
+            $mol_assert_equal(graph.edge_out('A', 'B'), 'E');
+            $mol_assert_equal(graph.edge_in('B', 'A'), 'E');
+            $mol_assert_equal(graph.edge_out('B', 'A'), null);
+            $mol_assert_equal(graph.edge_in('A', 'B'), null);
+        },
+        'nodes without edges'() {
+            var graph = new $mol_graph();
+            graph.nodes.add('A');
+            graph.nodes.add('B');
+            graph.nodes.add('C');
+            graph.nodes.add('D');
+            graph.acyclic(edge => 0);
+            $mol_assert_equal([...graph.sorted].join(''), 'ABCD');
+        },
+        'partial ordering'() {
+            var graph = new $mol_graph();
+            graph.nodes.add('A');
+            graph.nodes.add('B');
+            graph.nodes.add('C');
+            graph.nodes.add('D');
+            graph.link('B', 'C', { priority: 0 });
+            graph.acyclic(edge => edge.priority);
+            $mol_assert_equal([...graph.sorted].join(''), 'ACBD');
+        },
+        'sorting must cut cycles at low priority edges A'() {
+            var graph = new $mol_graph();
+            graph.link('A', 'B', { priority: 0 });
+            graph.link('B', 'C', { priority: -2 });
+            graph.link('C', 'D', { priority: 0 });
+            graph.link('D', 'A', { priority: -1 });
+            graph.acyclic(edge => edge.priority);
+            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
+        },
+        'sorting must cut cycles at low priority edges B'() {
+            var graph = new $mol_graph();
+            graph.link('B', 'C', { priority: -2 });
+            graph.link('C', 'D', { priority: 0 });
+            graph.link('D', 'A', { priority: -1 });
+            graph.link('A', 'B', { priority: 0 });
+            graph.acyclic(edge => edge.priority);
+            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
+        },
+        'sorting must cut cycles at low priority edges C'() {
+            var graph = new $mol_graph();
+            graph.link('C', 'D', { priority: 0 });
+            graph.link('D', 'A', { priority: -1 });
+            graph.link('A', 'B', { priority: 0 });
+            graph.link('B', 'C', { priority: -2 });
+            graph.acyclic(edge => edge.priority);
+            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
+        },
+        'sorting must cut cycles at low priority edges D'() {
+            var graph = new $mol_graph();
+            graph.link('D', 'A', { priority: -1 });
+            graph.link('A', 'B', { priority: 0 });
+            graph.link('B', 'C', { priority: -2 });
+            graph.link('C', 'D', { priority: 0 });
+            graph.acyclic(edge => edge.priority);
+            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
+        },
+        'sorting must group cutted cycles'() {
+            var graph = new $mol_graph();
+            graph.link('A', 'B', 0);
+            graph.link('B', 'C', 0);
+            graph.link('C', 'D', -2);
+            graph.link('D', 'E', 0);
+            graph.link('E', 'C', 0);
+            graph.acyclic(edge => edge);
+            $mol_assert_equal([...graph.sorted].join(''), 'CEDBA');
+        },
     });
 })($ || ($ = {}));
 
@@ -2810,235 +4241,6 @@ var $;
             const moment = new $mol_time_moment('2026-01-25T16:37:36.129+00:00');
             const restored = new $mol_time_moment(moment.toArray());
             $mol_assert_equal(restored.offset?.count('PT1m'), 0);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'Watch one value'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static dict = new $mol_wire_dict();
-                static lucky() {
-                    return this.dict.get(777);
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "lucky", null);
-            $mol_assert_equal(App.lucky(), undefined);
-            App.dict.set(666, 6666);
-            $mol_assert_equal(App.lucky(), undefined);
-            App.dict.set(777, 7777);
-            $mol_assert_equal(App.lucky(), 7777);
-            App.dict.delete(777);
-            $mol_assert_equal(App.lucky(), undefined);
-        },
-        'Watch item channel'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static dict = new $mol_wire_dict();
-                static lucky() {
-                    return this.dict.item(777);
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "lucky", null);
-            $mol_assert_equal(App.lucky(), null);
-            App.dict.item(666, 6666);
-            $mol_assert_equal(App.lucky(), null);
-            App.dict.item(777, 7777);
-            $mol_assert_equal(App.lucky(), 7777);
-            App.dict.item(777, null);
-            $mol_assert_equal(App.lucky(), null);
-        },
-        'Watch size'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static dict = new $mol_wire_dict();
-                static size() {
-                    return this.dict.size;
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "size", null);
-            $mol_assert_equal(App.size(), 0);
-            App.dict.set(666, 6666);
-            $mol_assert_equal(App.size(), 1);
-            App.dict.set(777, 7777);
-            $mol_assert_equal(App.size(), 2);
-            App.dict.delete(777);
-            $mol_assert_equal(App.size(), 1);
-        },
-        'Watch for-of'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static dict = new $mol_wire_dict();
-                static sum() {
-                    let keys = 0;
-                    let vals = 0;
-                    for (const [key, val] of this.dict) {
-                        keys += key;
-                        vals += val;
-                    }
-                    return [keys, vals];
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "sum", null);
-            $mol_assert_like(App.sum(), [0, 0]);
-            App.dict.set(111, 1111);
-            $mol_assert_like(App.sum(), [111, 1111]);
-            App.dict.set(222, 2222);
-            $mol_assert_like(App.sum(), [333, 3333]);
-            App.dict.delete(111);
-            $mol_assert_like(App.sum(), [222, 2222]);
-        },
-        'Watch forEach'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static dict = new $mol_wire_dict();
-                static sum() {
-                    let keys = 0;
-                    let vals = 0;
-                    this.dict.forEach((val, key) => {
-                        keys += key;
-                        vals += val;
-                    });
-                    return [keys, vals];
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "sum", null);
-            $mol_assert_like(App.sum(), [0, 0]);
-            App.dict.set(111, 1111);
-            $mol_assert_like(App.sum(), [111, 1111]);
-            App.dict.set(222, 2222);
-            $mol_assert_like(App.sum(), [333, 3333]);
-            App.dict.delete(111);
-            $mol_assert_like(App.sum(), [222, 2222]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'ordered links'() {
-            var graph = new $mol_graph();
-            graph.link('A', 'B', 'E');
-            $mol_assert_equal(graph.edge_out('A', 'B'), 'E');
-            $mol_assert_equal(graph.edge_in('B', 'A'), 'E');
-            $mol_assert_equal(graph.edge_out('B', 'A'), null);
-            $mol_assert_equal(graph.edge_in('A', 'B'), null);
-        },
-        'nodes without edges'() {
-            var graph = new $mol_graph();
-            graph.nodes.add('A');
-            graph.nodes.add('B');
-            graph.nodes.add('C');
-            graph.nodes.add('D');
-            graph.acyclic(edge => 0);
-            $mol_assert_equal([...graph.sorted].join(''), 'ABCD');
-        },
-        'partial ordering'() {
-            var graph = new $mol_graph();
-            graph.nodes.add('A');
-            graph.nodes.add('B');
-            graph.nodes.add('C');
-            graph.nodes.add('D');
-            graph.link('B', 'C', { priority: 0 });
-            graph.acyclic(edge => edge.priority);
-            $mol_assert_equal([...graph.sorted].join(''), 'ACBD');
-        },
-        'sorting must cut cycles at low priority edges A'() {
-            var graph = new $mol_graph();
-            graph.link('A', 'B', { priority: 0 });
-            graph.link('B', 'C', { priority: -2 });
-            graph.link('C', 'D', { priority: 0 });
-            graph.link('D', 'A', { priority: -1 });
-            graph.acyclic(edge => edge.priority);
-            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
-        },
-        'sorting must cut cycles at low priority edges B'() {
-            var graph = new $mol_graph();
-            graph.link('B', 'C', { priority: -2 });
-            graph.link('C', 'D', { priority: 0 });
-            graph.link('D', 'A', { priority: -1 });
-            graph.link('A', 'B', { priority: 0 });
-            graph.acyclic(edge => edge.priority);
-            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
-        },
-        'sorting must cut cycles at low priority edges C'() {
-            var graph = new $mol_graph();
-            graph.link('C', 'D', { priority: 0 });
-            graph.link('D', 'A', { priority: -1 });
-            graph.link('A', 'B', { priority: 0 });
-            graph.link('B', 'C', { priority: -2 });
-            graph.acyclic(edge => edge.priority);
-            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
-        },
-        'sorting must cut cycles at low priority edges D'() {
-            var graph = new $mol_graph();
-            graph.link('D', 'A', { priority: -1 });
-            graph.link('A', 'B', { priority: 0 });
-            graph.link('B', 'C', { priority: -2 });
-            graph.link('C', 'D', { priority: 0 });
-            graph.acyclic(edge => edge.priority);
-            $mol_assert_equal([...graph.sorted].join(''), 'BADC');
-        },
-        'sorting must group cutted cycles'() {
-            var graph = new $mol_graph();
-            graph.link('A', 'B', 0);
-            graph.link('B', 'C', 0);
-            graph.link('C', 'D', -2);
-            graph.link('D', 'E', 0);
-            graph.link('E', 'C', 0);
-            graph.acyclic(edge => edge);
-            $mol_assert_equal([...graph.sorted].join(''), 'CEDBA');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'auto name'() {
-            class Invalid extends $mol_error_mix {
-            }
-            const mix = new Invalid('foo');
-            $mol_assert_equal(mix.name, 'Invalid_Error');
-        },
-        'simpe mix'() {
-            const mix = new $mol_error_mix('foo', {}, new Error('bar'), new Error('lol'));
-            $mol_assert_equal(mix.message, 'foo');
-            $mol_assert_equal(mix.errors.map(e => e.message), ['bar', 'lol']);
-        },
-        'provide additional info'() {
-            class Invalid extends $mol_error_mix {
-            }
-            const mix = new $mol_error_mix('Wrong password', {}, new Invalid('Too short', { value: 'p@ssw0rd', hint: '> 8 letters' }), new Invalid('Too simple', { value: 'p@ssw0rd', hint: 'need capital letter' }));
-            const hints = [];
-            if (mix instanceof $mol_error_mix) {
-                for (const er of mix.errors) {
-                    if (er instanceof Invalid) {
-                        hints.push(er.cause?.hint ?? '');
-                    }
-                }
-            }
-            $mol_assert_equal(hints, ['> 8 letters', 'need capital letter']);
         },
     });
 })($ || ($ = {}));
@@ -3191,51 +4393,114 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
+(function ($_1) {
     $mol_test({
-        'gift unit type'() {
-            const gift = $giper_baza_unit_gift.make();
-            gift.rank($giper_baza_rank_rule);
-            $mol_assert_equal(gift.kind(), 'gift');
-            $mol_assert_equal(gift.rank(), $giper_baza_rank_rule);
+        'Watch one value'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static dict = new $mol_wire_dict();
+                static lucky() {
+                    return this.dict.get(777);
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "lucky", null);
+            $mol_assert_equal(App.lucky(), undefined);
+            App.dict.set(666, 6666);
+            $mol_assert_equal(App.lucky(), undefined);
+            App.dict.set(777, 7777);
+            $mol_assert_equal(App.lucky(), 7777);
+            App.dict.delete(777);
+            $mol_assert_equal(App.lucky(), undefined);
         },
-        'data unit type'() {
-            const unit = $giper_baza_unit_sand.make(2);
-            unit.ball(new Uint8Array([0xFF, 0xFF]));
-            $mol_assert_equal(unit.kind(), 'sand');
-            $mol_assert_equal(unit.size(), 2);
-            $mol_assert_equal(unit.ball(), new Uint8Array([0xFF, 0xFF]));
+        'Watch item channel'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static dict = new $mol_wire_dict();
+                static lucky() {
+                    return this.dict.item(777);
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "lucky", null);
+            $mol_assert_equal(App.lucky(), null);
+            App.dict.item(666, 6666);
+            $mol_assert_equal(App.lucky(), null);
+            App.dict.item(777, 7777);
+            $mol_assert_equal(App.lucky(), 7777);
+            App.dict.item(777, null);
+            $mol_assert_equal(App.lucky(), null);
         },
-        'big data unit type'() {
-            const unit = $giper_baza_unit_sand.make(1000);
-            unit.ball(new Uint8Array(1000));
-            $mol_assert_equal(unit.kind(), 'sand');
-            $mol_assert_equal(unit.size(), 1000);
-            $mol_assert_equal(unit.ball(), new Uint8Array(1000));
+        'Watch size'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static dict = new $mol_wire_dict();
+                static size() {
+                    return this.dict.size;
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "size", null);
+            $mol_assert_equal(App.size(), 0);
+            App.dict.set(666, 6666);
+            $mol_assert_equal(App.size(), 1);
+            App.dict.set(777, 7777);
+            $mol_assert_equal(App.size(), 2);
+            App.dict.delete(777);
+            $mol_assert_equal(App.size(), 1);
         },
-        'gift unit fields'() {
-            const unit = $giper_baza_unit_gift.make();
-            $mol_assert_equal(unit.time(), 0);
-            $mol_assert_equal(unit.mate(), $giper_baza_link.hole);
-            unit.time_tick(0xd1d2d3d4d5d6);
-            unit.mate(new $giper_baza_link('ÆPv6æfj3_9vX08ÆLx'));
-            $mol_assert_equal(unit.time_tick(), 0xd1d2d3d4d5d6);
-            $mol_assert_equal(unit.mate(), new $giper_baza_link('ÆPv6æfj3_9vX08ÆLx'));
+        'Watch for-of'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static dict = new $mol_wire_dict();
+                static sum() {
+                    let keys = 0;
+                    let vals = 0;
+                    for (const [key, val] of this.dict) {
+                        keys += key;
+                        vals += val;
+                    }
+                    return [keys, vals];
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "sum", null);
+            $mol_assert_like(App.sum(), [0, 0]);
+            App.dict.set(111, 1111);
+            $mol_assert_like(App.sum(), [111, 1111]);
+            App.dict.set(222, 2222);
+            $mol_assert_like(App.sum(), [333, 3333]);
+            App.dict.delete(111);
+            $mol_assert_like(App.sum(), [222, 2222]);
         },
-        'data unit fields'() {
-            const unit = $giper_baza_unit_sand.make(0);
-            $mol_assert_equal(unit.time(), 0);
-            $mol_assert_equal(unit.head(), $giper_baza_link.hole);
-            $mol_assert_equal(unit.self(), $giper_baza_link.hole);
-            $mol_assert_equal(unit.lead(), $giper_baza_link.hole);
-            unit.time_tick(0xd1d2d3d4d5d6);
-            unit.head(new $giper_baza_link('ÆPv6æfj3'));
-            unit.self(new $giper_baza_link('Pv6æfj39'));
-            unit.lead(new $giper_baza_link('v6æfj39v'));
-            $mol_assert_equal(unit.time_tick(), 0xd1d2d3d4d5d6);
-            $mol_assert_equal(unit.head(), new $giper_baza_link('ÆPv6æfj3'));
-            $mol_assert_equal(unit.self(), new $giper_baza_link('Pv6æfj39'));
-            $mol_assert_equal(unit.lead(), new $giper_baza_link('v6æfj39v'));
+        'Watch forEach'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static dict = new $mol_wire_dict();
+                static sum() {
+                    let keys = 0;
+                    let vals = 0;
+                    this.dict.forEach((val, key) => {
+                        keys += key;
+                        vals += val;
+                    });
+                    return [keys, vals];
+                }
+            }
+            __decorate([
+                $mol_wire_solo
+            ], App, "sum", null);
+            $mol_assert_like(App.sum(), [0, 0]);
+            App.dict.set(111, 1111);
+            $mol_assert_like(App.sum(), [111, 1111]);
+            App.dict.set(222, 2222);
+            $mol_assert_like(App.sum(), [333, 3333]);
+            App.dict.delete(111);
+            $mol_assert_like(App.sum(), [222, 2222]);
         },
     });
 })($ || ($ = {}));
@@ -3375,22 +4640,6 @@ var $;
                 'Unexpected EOF, LF required\ntest#1:9/1\n        !\nfoo  bar',
             ]);
             $mol_assert_equal(res.toString(), 'foo bar\n');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'all cases of using maybe'() {
-            $mol_assert_equal($mol_maybe(0)[0], 0);
-            $mol_assert_equal($mol_maybe(false)[0], false);
-            $mol_assert_equal($mol_maybe(null)[0], void 0);
-            $mol_assert_equal($mol_maybe(void 0)[0], void 0);
-            $mol_assert_equal($mol_maybe(void 0).map(v => v.toString())[0], void 0);
-            $mol_assert_equal($mol_maybe(0).map(v => v.toString())[0], '0');
         },
     });
 })($ || ($ = {}));
@@ -3942,109 +5191,340 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $mol_bus extends $.$mol_bus {
+            send() { }
+        }
+        $.$mol_bus = $mol_bus;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     $mol_test({
-        'Watch one value'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static set = new $mol_wire_set();
-                static lucky() {
-                    return this.set.has(777);
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "lucky", null);
-            $mol_assert_equal(App.lucky(), false);
-            App.set.add(666);
-            $mol_assert_equal(App.lucky(), false);
-            App.set.add(777);
-            $mol_assert_equal(App.lucky(), true);
-            App.set.delete(777);
-            $mol_assert_equal(App.lucky(), false);
+        'empty array'() {
+            $mol_assert_equal($mol_array_chunks([], () => true), []);
         },
-        'Watch item channel'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static set = new $mol_wire_set();
-                static lucky() {
-                    return this.set.item(777);
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "lucky", null);
-            $mol_assert_equal(App.lucky(), false);
-            App.set.item(666, true);
-            $mol_assert_equal(App.lucky(), false);
-            App.set.item(777, true);
-            $mol_assert_equal(App.lucky(), true);
-            App.set.item(777, false);
-            $mol_assert_equal(App.lucky(), false);
+        'one chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => false), [[1, 2, 3, 4, 5]]);
         },
-        'Watch size'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static set = new $mol_wire_set();
-                static size() {
-                    return this.set.size;
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "size", null);
-            $mol_assert_equal(App.size(), 0);
-            App.set.add(666);
-            $mol_assert_equal(App.size(), 1);
-            App.set.add(777);
-            $mol_assert_equal(App.size(), 2);
-            App.set.delete(777);
-            $mol_assert_equal(App.size(), 1);
+        'fixed size chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], 3), [[1, 2, 3], [4, 5]]);
         },
-        'Watch for-of'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static set = new $mol_wire_set();
-                static sum() {
-                    let res = 0;
-                    for (const val of this.set) {
-                        res += val;
-                    }
-                    return res;
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "sum", null);
-            $mol_assert_equal(App.sum(), 0);
-            App.set.add(111);
-            $mol_assert_equal(App.sum(), 111);
-            App.set.add(222);
-            $mol_assert_equal(App.sum(), 333);
-            App.set.delete(111);
-            $mol_assert_equal(App.sum(), 222);
+        'first empty chunk'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], (_, i) => i === 0), [[1, 2, 3, 4, 5]]);
         },
-        'Watch forEach'($) {
-            class App extends $mol_object2 {
-                static $ = $;
-                static set = new $mol_wire_set();
-                static sum() {
-                    let res = 0;
-                    this.set.forEach(val => res += val);
-                    return res;
-                }
-            }
-            __decorate([
-                $mol_wire_solo
-            ], App, "sum", null);
-            $mol_assert_equal(App.sum(), 0);
-            App.set.add(111);
-            $mol_assert_equal(App.sum(), 111);
-            App.set.add(222);
-            $mol_assert_equal(App.sum(), 333);
-            App.set.delete(111);
-            $mol_assert_equal(App.sum(), 222);
+        'chunk for every item'() {
+            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => true), [[1], [2], [3], [4], [5]]);
         },
     });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $giper_baza_land_mock extends $.$giper_baza_land {
+            sync() {
+                return this;
+            }
+        }
+        $.$giper_baza_land = $giper_baza_land_mock;
+    });
+    $mol_test({
+        async 'Give rights'($) {
+            const auth0 = await $.$giper_baza_auth.grab();
+            const auth1 = await $.$giper_baza_auth.grab();
+            const auth2 = await $.$giper_baza_auth.grab();
+            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
+            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
+            $mol_assert_equal(land0.lord_rank(land0.link()), $giper_baza_rank_rule);
+            $mol_assert_equal(land0.lord_rank(auth1.pass().lord()), $giper_baza_rank_read);
+            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
+            land0.give(auth1.pass(), $giper_baza_rank_read);
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
+            land0.give(auth1.pass(), $giper_baza_rank_read);
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
+            land0.give(auth1.pass(), $giper_baza_rank_post('just'));
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
+            land0.give(auth1.pass(), $giper_baza_rank_pull('just'));
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_pull('just'));
+            land0.give(auth1.pass(), $giper_baza_rank_rule);
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_rule);
+            land0.give(auth1.pass(), $giper_baza_rank_post('just'));
+            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
+            await $mol_wire_async(land1).units_steal(land0);
+            $mol_assert_equal(land1.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
+            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
+        },
+        async 'Post Data and pick Delta'($) {
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
+            const land1 = $giper_baza_land.make({ $, auth: () => auth1 });
+            const land2 = $giper_baza_land.make({ $, link: () => land1.link(), auth: () => auth2 });
+            $mol_assert_equal(await $mol_wire_async(land1).diff_units(), []);
+            land1.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
+            $mol_assert_equal((await $mol_wire_async(land1).diff_units()).length, 4);
+            const face = land1.faces.clone();
+            land1.post(new $giper_baza_link('AA111111'), $giper_baza_link.hole, new $giper_baza_link('AA222222'), new Uint8Array([2]));
+            $mol_assert_equal((await $mol_wire_async(land1).diff_units()).length, 5);
+            $mol_assert_equal((await $mol_wire_async(land1).diff_units(face)).length, 2);
+            await $mol_wire_async(land2).units_steal(land1);
+            land2.post(new $giper_baza_link('AA222222'), $giper_baza_link.hole, new $giper_baza_link('AA333333'), new Uint8Array([3]));
+            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 5);
+            $mol_assert_equal((await $mol_wire_async(land2).diff_units(face)).length, 2);
+            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
+            await $mol_wire_async(land2).units_steal(land1);
+            land2.post(new $giper_baza_link('AA222222'), $giper_baza_link.hole, new $giper_baza_link('AA333333'), new Uint8Array([5]));
+            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 9);
+            $mol_assert_equal((await $mol_wire_async(land2).diff_units(face)).length, 6);
+            land1.give(auth2.pass(), $giper_baza_rank_read);
+            await $mol_wire_async(land2).units_steal(land1);
+            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 7);
+        },
+        async 'Land encryption'($) {
+            const land = $mol_wire_async($giper_baza_land.make({ $ }));
+            $mol_assert_equal(await land.encrypted(), false);
+            await land.encrypted(true);
+            $mol_assert_equal(await land.encrypted(), true);
+            const material = await land.post($giper_baza_link.hole, $giper_baza_link.hole, null, new Uint8Array([1, 2, 3]));
+            $mol_assert_equal((await land.sand_encode(material)).data().length, 16);
+            $mol_assert_equal(await land.sand_decode(material), new Uint8Array([1, 2, 3]));
+            $mol_assert_equal((await land.sand_ordered({ head: $giper_baza_link.hole, peer: $giper_baza_link.hole })).length, 1);
+            const tombstone = await land.post($giper_baza_link.hole, $giper_baza_link.hole, material.self(), null);
+            $mol_assert_equal((await land.sand_encode(tombstone)).data().length, 1);
+            $mol_assert_equal(await land.sand_decode(tombstone), null);
+            $mol_assert_equal((await land.sand_ordered({ head: $giper_baza_link.hole, peer: $giper_baza_link.hole })).length, 1);
+        },
+        'Land fork & merge': $mol_wire_async(($) => {
+            const home = $.$giper_baza_glob.home().land();
+            const left = home.fork();
+            home.Data($giper_baza_list).items_vary(['foo', 'xxx']);
+            $mol_assert_equal(home.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
+            $mol_assert_equal(left.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
+            left.faces.sync(home.faces);
+            left.Data($giper_baza_list).items_vary(['foo', 'yyy']);
+            $mol_assert_equal(left.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
+            const right = home.fork();
+            right.faces.sync(left.faces);
+            right.Data($giper_baza_list).items_vary(['foo', 'zzz']);
+            $mol_assert_equal(right.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
+            const both = home.fork();
+            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
+            both.Tine().items_vary([right.link()]);
+            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
+            both.Tine().items_vary([left.link()]);
+            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
+            both.Tine().items_vary([right.link(), left.link()]);
+            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
+            both.Tine().items_vary([left.link(), right.link()]);
+            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
+        }),
+        'Inner Links are relative to forked Land': $mol_wire_async(($) => {
+            const Alice = $.$giper_baza_glob.home().land();
+            const Bella = Alice.fork();
+            const alice_val = Alice.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('qwertyui'));
+            const bella_val = Bella.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('qwertyui'));
+            alice_val.val('Alice');
+            bella_val.val('Bella');
+            const alice_link = Alice.Pawn($giper_baza_atom_link).Head(new $giper_baza_link('asdfghjk'));
+            const bella_link = Bella.Pawn($giper_baza_atom_link).Head(new $giper_baza_link('asdfghjk'));
+            alice_link.val(alice_val.link());
+            $mol_assert_equal(alice_link.val(), alice_val.link());
+            $mol_assert_unique(alice_link.val(), bella_link.val());
+            $mol_assert_equal(bella_link.val(), bella_val.link());
+        }),
+        async 'Land Area inherits rights'($) {
+            const area = await $mol_wire_async(() => {
+                const base = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+                base.units_saving();
+                return base.area_make();
+            })();
+            $mol_assert_equal(area.pass_rank(area.auth().pass()), $giper_baza_rank_rule);
+            $mol_assert_equal(area.lord_rank($giper_baza_link.hole), $giper_baza_rank_post('just'));
+        },
+        async 'Gift to new Mate reaches Peer which knows Lord'($) {
+            const auth0 = $.$giper_baza_auth.grab();
+            const auth1 = $.$giper_baza_auth.grab();
+            const auth2 = $.$giper_baza_auth.grab();
+            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
+            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
+            land0.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
+            await $mol_wire_async(land1).units_steal(land0);
+            const face = land1.faces.clone();
+            land0.give(auth2.pass(), $giper_baza_rank_post('just'));
+            const delta = await $mol_wire_async(land0).diff_units(face);
+            await $mol_wire_async(land1).diff_apply(delta);
+            $mol_assert_equal(land1.lord_rank(auth2.pass().lord()), $giper_baza_rank_post('just'));
+        },
+        // async 'Merge text changes'() {
+        // 	const base = new $giper_baza_land( 1n, 1 )
+        // 	base.chief.as( $hyoo_crowd_text ).str( 'Hello World and fun!' )
+        // 	const left = base.fork( await $hyoo_crowd_peer.generate() )
+        // 	const right = base.fork( await $hyoo_crowd_peer.generate() )
+        // 	right.clock_data.tick( right.peer().id )
+        // 	left.chief.as( $hyoo_crowd_text ).str( 'Hello Alice and fun!' )
+        // 	right.chief.as( $hyoo_crowd_text ).str( 'Bye World and fun!' )
+        // 	const left_delta = left.delta()
+        // 	const right_delta = right.delta()
+        // 	left.apply( right_delta )
+        // 	right.apply( left_delta )
+        // 	$mol_assert_equal(
+        // 		left.chief.as( $hyoo_crowd_text ).str(),
+        // 		right.chief.as( $hyoo_crowd_text ).str(),
+        // 		'Bye Alice and fun!',
+        // 	)
+        // },
+        // async 'Write into token'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'foobar' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'xyz', 3 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'fooxyzbar' ] )
+        // },
+        // async 'Write into token with split'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'foobar' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'XYZ', 2, 4 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'fo', 'XYZar' ] )
+        // },
+        // async 'Write over few tokens'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'xxx foo bar yyy' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'X Y Z', 6, 9 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxx', ' fo', 'X', ' Y', ' Zar', ' yyy' ] )
+        // },
+        // async 'Write whole token'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'xxxFoo yyy' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'bar', 3, 7 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxxbaryyy' ] )
+        // },
+        // async 'Write whole text'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo bar' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'xxx', 0, 7 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxx' ] )
+        // },
+        // async 'Write at the end'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'bar' )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'foobar' ] )
+        // },
+        // async 'Write between tokens'() {
+        // 	const store = new $giper_baza_land( 1n, 1 )
+        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo bar' )
+        // 	store.chief.as( $hyoo_crowd_text ).write( 'xxx', 4 )
+        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'foo', ' xxxbar' ] )
+        // },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'gift unit type'() {
+            const gift = $giper_baza_unit_gift.make();
+            gift.rank($giper_baza_rank_rule);
+            $mol_assert_equal(gift.kind(), 'gift');
+            $mol_assert_equal(gift.rank(), $giper_baza_rank_rule);
+        },
+        'data unit type'() {
+            const unit = $giper_baza_unit_sand.make(2);
+            unit.ball(new Uint8Array([0xFF, 0xFF]));
+            $mol_assert_equal(unit.kind(), 'sand');
+            $mol_assert_equal(unit.size(), 2);
+            $mol_assert_equal(unit.ball(), new Uint8Array([0xFF, 0xFF]));
+        },
+        'big data unit type'() {
+            const unit = $giper_baza_unit_sand.make(1000);
+            unit.ball(new Uint8Array(1000));
+            $mol_assert_equal(unit.kind(), 'sand');
+            $mol_assert_equal(unit.size(), 1000);
+            $mol_assert_equal(unit.ball(), new Uint8Array(1000));
+        },
+        'gift unit fields'() {
+            const unit = $giper_baza_unit_gift.make();
+            $mol_assert_equal(unit.time(), 0);
+            $mol_assert_equal(unit.mate(), $giper_baza_link.hole);
+            unit.time_tick(0xd1d2d3d4d5d6);
+            unit.mate(new $giper_baza_link('ÆPv6æfj3_9vX08ÆLx'));
+            $mol_assert_equal(unit.time_tick(), 0xd1d2d3d4d5d6);
+            $mol_assert_equal(unit.mate(), new $giper_baza_link('ÆPv6æfj3_9vX08ÆLx'));
+        },
+        'data unit fields'() {
+            const unit = $giper_baza_unit_sand.make(0);
+            $mol_assert_equal(unit.time(), 0);
+            $mol_assert_equal(unit.head(), $giper_baza_link.hole);
+            $mol_assert_equal(unit.self(), $giper_baza_link.hole);
+            $mol_assert_equal(unit.lead(), $giper_baza_link.hole);
+            unit.time_tick(0xd1d2d3d4d5d6);
+            unit.head(new $giper_baza_link('ÆPv6æfj3'));
+            unit.self(new $giper_baza_link('Pv6æfj39'));
+            unit.lead(new $giper_baza_link('v6æfj39v'));
+            $mol_assert_equal(unit.time_tick(), 0xd1d2d3d4d5d6);
+            $mol_assert_equal(unit.head(), new $giper_baza_link('ÆPv6æfj3'));
+            $mol_assert_equal(unit.self(), new $giper_baza_link('Pv6æfj39'));
+            $mol_assert_equal(unit.lead(), new $giper_baza_link('v6æfj39v'));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Empty release"($) {
+                const pool = new $mol_memory_pool;
+                $mol_assert_equal(pool.empty(), true);
+                pool.release(0, 0);
+                $mol_assert_equal(pool.acquire(8), 0);
+                $mol_assert_equal(pool.empty(), false);
+                pool.release(0, 8);
+                $mol_assert_equal(pool.empty(), true);
+            },
+            "linear allocation"($) {
+                const pool = new $mol_memory_pool;
+                $mol_assert_equal(pool.acquire(8), 0);
+                $mol_assert_equal(pool.acquire(16), 8);
+                $mol_assert_equal(pool.acquire(32), 24);
+            },
+            "allocation in released"($) {
+                const pool = new $mol_memory_pool;
+                $mol_assert_equal(pool.acquire(8), 0);
+                $mol_assert_equal(pool.acquire(16), 8);
+                pool.release(0, 16);
+                $mol_assert_equal(pool.acquire(8), 0);
+                $mol_assert_equal(pool.acquire(16), 24);
+                $mol_assert_equal(pool.acquire(8), 8);
+            },
+            "space limitation"($) {
+                const pool = new $mol_memory_pool(10);
+                pool.acquire(8);
+                pool.release(2, 4);
+                $mol_assert_fail(() => pool.acquire(6), 'No free space\nneed: 6\nhave: 4');
+            },
+            "double release"($) {
+                const pool = new $mol_memory_pool;
+                $mol_assert_fail(() => pool.release(0, 2), 'Double release');
+                $mol_assert_fail(() => pool.release(2, 2), 'Release out of allocated');
+                pool.acquire(16);
+                pool.release(4, 8);
+                $mol_assert_fail(() => pool.release(4, 8), 'Double release');
+                $mol_assert_fail(() => pool.release(10, 4), 'Double release');
+                $mol_assert_fail(() => pool.release(2, 4), 'Double release');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -4697,448 +6177,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            async 'Dictionary invariants'($) {
-                const land = $giper_baza_land.make({ $ });
-                const dict = land.Pawn($giper_baza_dict).Data();
-                $mol_assert_equal(dict.keys(), []);
-                dict.dive(123, $giper_baza_atom, null);
-                dict.dive('xxx', $giper_baza_atom, null);
-                $mol_assert_equal(dict.keys(), ['xxx', 123]);
-                $mol_assert_equal(dict.has(123), true);
-                $mol_assert_equal(dict.has('xxx'), true);
-                $mol_assert_equal(dict.has('yyy'), false);
-                $mol_assert_equal(dict.dive(123, $giper_baza_atom).vary(), null);
-                $mol_assert_equal(dict.dive('xxx', $giper_baza_atom).vary(), null);
-                dict.dive(123, $giper_baza_atom).vary(777);
-                $mol_assert_equal(dict.dive(123, $giper_baza_atom).vary(), 777);
-                dict.dive('xxx', $giper_baza_list).items_vary(['foo', 'bar']);
-                $mol_assert_equal(dict.dive('xxx', $giper_baza_list).items_vary(), ['foo', 'bar']);
-                dict.has(123, false);
-                $mol_assert_equal(dict.keys(), ['xxx']);
-            },
-            async 'Dictionary merge'($) {
-                const land1 = $giper_baza_land.make({ $ });
-                const land2 = $giper_baza_land.make({ $ });
-                const dict1 = land1.Pawn($giper_baza_dict).Data();
-                const dict2 = land2.Pawn($giper_baza_dict).Data();
-                dict1.dive(123, $giper_baza_atom, null).vary(666);
-                land2.tick();
-                dict2.dive(123, $giper_baza_atom, null).vary(777);
-                await $mol_wire_async(land1).units_steal(land2);
-                $mol_assert_equal(dict1.dive(123, $giper_baza_atom).vary(), 777);
-                dict1.dive('xxx', $giper_baza_list, null).items_vary(['foo']);
-                land2.tick();
-                dict2.dive('xxx', $giper_baza_list, null).items_vary(['bar']);
-                await $mol_wire_async(land1).units_steal(land2);
-                $mol_assert_equal(dict1.dive('xxx', $giper_baza_list).items_vary(), ['bar', 'foo']);
-            },
-            async "Narrowed Dictionary with linked Dictionaries and others"($) {
-                class User extends $giper_baza_dict.with({
-                    Title: $giper_baza_atom_text,
-                    Account: $giper_baza_atom_link.to(() => Account),
-                    Articles: $giper_baza_list_link.to(() => Article),
-                }) {
-                }
-                class Account extends $giper_baza_dict.with({
-                    Title: $giper_baza_atom_text,
-                    User: $giper_baza_atom_link.to(() => User),
-                }) {
-                }
-                class Article extends $giper_baza_dict.with({
-                    Title: $giper_baza_dict_to($giper_baza_atom_text),
-                    Author: $giper_baza_atom_link.to(() => User),
-                }) {
-                }
-                const land = $.$giper_baza_glob.home().land();
-                const user = land.Pawn(User).Head(new $giper_baza_link('11111111'));
-                $mol_assert_equal(user.Title()?.val() ?? null, null);
-                $mol_assert_equal(user.Account()?.remote() ?? null, null);
-                $mol_assert_equal(user.Articles()?.remote_list() ?? [], []);
-                user.Title(null).val('Jin');
-                $mol_assert_equal(user.Title().val() ?? '', 'Jin');
-                const account = (await $mol_wire_async(user.Account(null)).ensure([[null, $giper_baza_rank_read]]));
-                $mol_assert_equal(user.Account()?.remote() ?? null, account);
-                $mol_assert_equal(account.User()?.remote() ?? null, null);
-                account.User(null).remote(user);
-                $mol_assert_equal(account.User()?.remote(), user);
-                const articles = [
-                    await $mol_wire_async(user.Articles(null)).make([[null, $giper_baza_rank_read]]),
-                    await $mol_wire_async(user.Articles(null)).make([[null, $giper_baza_rank_read]]),
-                ];
-                $mol_assert_equal(user.Articles()?.remote_list().map(n => n[Symbol.toStringTag]), articles.map(n => n[Symbol.toStringTag]));
-                articles[0].Title(null).key('en', 'auto').val('Hello!');
-                $mol_assert_equal(articles[0].Title()?.key('en').val(), 'Hello!');
-                $mol_assert_equal(articles[1].Title()?.key('ru')?.val() ?? null, null);
-                $mol_assert_equal(articles[1].Title()?.key('ru')?.val() ?? null, null);
-                $mol_assert_unique(user.land(), account.land(), ...articles.map(article => article.land()));
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_schema_enum = $mol_memo_key.func(function $mol_schema_enum(Options) {
-        return class $mol_schema_enum_ extends $mol_schema_any {
-            static Options = Options;
-            static toString() {
-                if (this !== $mol_schema_enum_)
-                    return super.toString();
-                return '$mol_schema_enum<' + $mol_key(Options) + '>';
-            }
-            static guard(value) {
-                if (Options.some(Option => Object.is(Option, value)))
-                    return value;
-                return $mol_fail(new TypeError('Wrong option', { cause: { value, schema: this } }));
-            }
-            static cast(value) {
-                if (this.check(value))
-                    return value;
-                return Options[0];
-            }
-            static default = Options[0];
-        };
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Cache of enum schema"($) {
-                $mol_assert_equal($mol_schema_enum(['foo']), $mol_schema_enum(['foo']));
-                $mol_assert_unique($mol_schema_enum(['foo']), $mol_schema_enum(['bar']));
-            },
-            "Enum options"($) {
-                const Config = $mol_schema_enum([123, 'foo']);
-                $mol_assert_equal('$mol_schema_enum<[123,"foo"]>', Config + '', $mol_key(Config));
-                $mol_assert_equal(true, Config.check(123));
-                $mol_assert_equal(true, Config.check('foo'));
-                $mol_assert_equal(false, Config.check(true));
-                $mol_assert_equal(false, Config.check(321));
-                $mol_assert_equal(false, Config.check('bar'));
-                $mol_assert_equal(Config.cast(123), 123);
-                $mol_assert_equal(Config.cast('foo'), 'foo');
-                $mol_assert_equal(Config.cast('bar'), 123);
-                $mol_assert_equal(123, Config.guard(123));
-                $mol_assert_fail(() => Config.guard(321), 'Wrong option');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Empty representation"($) {
-                const land = $giper_baza_land.make({ $ });
-                const reg = land.Pawn($giper_baza_atom_time).Data();
-                $mol_assert_equal(reg.val(), null);
-                reg.vary(null);
-                $mol_assert_equal(reg.val(), null);
-            },
-            "Validation on set, cast on get"($) {
-                const land = $.$giper_baza_glob.home().land();
-                const head = new $giper_baza_link('22222222');
-                const str = land.Pawn($giper_baza_atom.of($mol_schema_maybe($mol_schema_string))).Head(head);
-                const mail = land.Pawn($giper_baza_atom.of($mol_schema_pattern(/.+@.+/))).Head(head);
-                $mol_assert_equal(str.val(), null);
-                $mol_assert_equal(mail.val(), null);
-                $mol_assert_fail(() => str.val(123), 'Wrong type');
-                $mol_assert_fail(() => mail.val('foo'), 'Wrong string');
-                $mol_assert_equal(str.val(), null);
-                $mol_assert_equal(mail.val(), null);
-                str.val('foo');
-                $mol_assert_equal(str.val(), 'foo');
-                $mol_assert_equal(mail.val(), null);
-                mail.val('foo@bar');
-                $mol_assert_equal(str.val(), 'foo@bar');
-                $mol_assert_equal(mail.val(), 'foo@bar');
-            },
-            "Hyper link to another land"($) {
-                const land = $.$giper_baza_glob.home().land();
-                const reg = land.Pawn($giper_baza_atom_link.to(() => $giper_baza_atom)).Head(new $giper_baza_link('11111111'));
-                const remote = reg.ensure(land);
-                $mol_assert_unique(reg.land(), remote.land());
-                $mol_assert_equal(reg.vary(), remote.link());
-                $mol_assert_equal(reg.remote(), remote);
-            },
-            "Register with linked Pawns"($) {
-                const land = $.$giper_baza_glob.home().land();
-                const str = land.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('11111111'));
-                const link = land.Pawn($giper_baza_atom_link.to(() => $giper_baza_atom_text)).Head(new $giper_baza_link('11111111'));
-                $mol_assert_equal(link.remote(), null);
-                link.remote(str);
-                $mol_assert_equal(link.vary(), link.remote().link(), str.link());
-            },
-            "Enumerated reg type"($) {
-                class FileType extends $giper_baza_atom.of($mol_schema_maybe($mol_schema_enum(['file', 'dir', 'link']))) {
-                }
-                const land = $.$giper_baza_glob.home().land();
-                const type = land.Data(FileType);
-                $mol_assert_equal(type.val(), null);
-                type.val('file');
-                $mol_assert_equal(type.val(), 'file');
-                $mol_assert_fail(() => type.val('drive'), 'Wrong option');
-                $mol_assert_equal(type.val(), 'file');
-                type.vary('drive');
-                $mol_assert_equal(type.val(), null);
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push(context => {
-        class $mol_state_arg_mock extends $mol_state_arg {
-            static $ = context;
-            static href(next) { return next || ''; }
-            static go(next) {
-                this.href(this.link(next));
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_state_arg_mock, "href", null);
-        __decorate([
-            $mol_action
-        ], $mol_state_arg_mock, "go", null);
-        context.$mol_state_arg = $mol_state_arg_mock;
-    });
-    $mol_test({
-        'args as dictionary'($) {
-            $.$mol_state_arg.href('#!foo=bar/xxx');
-            $mol_assert_equal($.$mol_state_arg.dict(), { foo: 'bar', xxx: '' });
-            $.$mol_state_arg.dict({ foo: null, yyy: '', lol: '123' });
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!yyy/lol=123');
-        },
-        'one value from args'($) {
-            $.$mol_state_arg.href('#!foo=bar/xxx');
-            $mol_assert_equal($.$mol_state_arg.value('foo'), 'bar');
-            $mol_assert_equal($.$mol_state_arg.value('xxx'), '');
-            $.$mol_state_arg.value('foo', 'lol');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=lol/xxx');
-            $.$mol_state_arg.value('foo', '');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo/xxx');
-            $.$mol_state_arg.value('foo', null);
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!xxx');
-        },
-        'nested args'($) {
-            const base = new $.$mol_state_arg('nested.');
-            class Nested extends $mol_state_arg {
-                constructor(prefix) {
-                    super(base.prefix + prefix);
-                }
-                static value = (key, next) => base.value(key, next);
-            }
-            $.$mol_state_arg.href('#!foo=bar/nested.xxx=123');
-            $mol_assert_equal(Nested.value('foo'), null);
-            $mol_assert_equal(Nested.value('xxx'), '123');
-            Nested.value('foo', 'lol');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=bar/nested.xxx=123/nested.foo=lol');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'const returns stored value'() {
-            const foo = { bar: $mol_const(Math.random()) };
-            $mol_assert_equal(foo.bar(), foo.bar());
-            $mol_assert_equal(foo.bar(), foo.bar['()']);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class TestClass extends Uint8Array {
-    }
-    $mol_test({
-        'Uint8Array vs itself'() {
-            $mol_assert_ok($mol_compare_array(new Uint8Array, new Uint8Array));
-            $mol_assert_ok($mol_compare_array(new Uint8Array([0]), new Uint8Array([0])));
-            $mol_assert_not($mol_compare_array(new Uint8Array([0]), new Uint8Array([1])));
-        },
-        'Uint8Array vs subclassed array'() {
-            $mol_assert_not($mol_compare_array(new Uint8Array, new TestClass));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'decode utf8 string'() {
-            const str = 'Hello, ΧΨΩЫ';
-            const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
-            $mol_assert_equal($mol_charset_decode(encoded), str);
-            $mol_assert_equal($mol_charset_decode(encoded, 'utf8'), str);
-        },
-        'decode empty string'() {
-            const encoded = new Uint8Array([]);
-            $mol_assert_equal($mol_charset_decode(encoded), '');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            async "Get and parse"($) {
-                $mol_assert_equal(await $mol_wire_async($mol_fetch).text('data:text/plain,foo'), 'foo');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "Empty release"($) {
-                const pool = new $mol_memory_pool;
-                $mol_assert_equal(pool.empty(), true);
-                pool.release(0, 0);
-                $mol_assert_equal(pool.acquire(8), 0);
-                $mol_assert_equal(pool.empty(), false);
-                pool.release(0, 8);
-                $mol_assert_equal(pool.empty(), true);
-            },
-            "linear allocation"($) {
-                const pool = new $mol_memory_pool;
-                $mol_assert_equal(pool.acquire(8), 0);
-                $mol_assert_equal(pool.acquire(16), 8);
-                $mol_assert_equal(pool.acquire(32), 24);
-            },
-            "allocation in released"($) {
-                const pool = new $mol_memory_pool;
-                $mol_assert_equal(pool.acquire(8), 0);
-                $mol_assert_equal(pool.acquire(16), 8);
-                pool.release(0, 16);
-                $mol_assert_equal(pool.acquire(8), 0);
-                $mol_assert_equal(pool.acquire(16), 24);
-                $mol_assert_equal(pool.acquire(8), 8);
-            },
-            "space limitation"($) {
-                const pool = new $mol_memory_pool(10);
-                pool.acquire(8);
-                pool.release(2, 4);
-                $mol_assert_fail(() => pool.acquire(6), 'No free space\nneed: 6\nhave: 4');
-            },
-            "double release"($) {
-                const pool = new $mol_memory_pool;
-                $mol_assert_fail(() => pool.release(0, 2), 'Double release');
-                $mol_assert_fail(() => pool.release(2, 2), 'Release out of allocated');
-                pool.acquire(16);
-                pool.release(4, 8);
-                $mol_assert_fail(() => pool.release(4, 8), 'Double release');
-                $mol_assert_fail(() => pool.release(10, 4), 'Double release');
-                $mol_assert_fail(() => pool.release(2, 4), 'Double release');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            "faces serial and parse"($) {
-                const land1 = new $giper_baza_link('12345678_12345678');
-                const land2 = new $giper_baza_link('87654321_87654321');
-                const land3 = new $giper_baza_link('87654321_00000000');
-                const peer1 = new $giper_baza_link('12345678');
-                const peer2 = new $giper_baza_link('87654321');
-                const faces1 = new $giper_baza_face_map;
-                faces1.peer_time(peer1.str, $giper_baza_time_now(), 0);
-                faces1.peer_summ(peer1.str, 0);
-                faces1.peer_time(peer2.str, $giper_baza_time_now(), 0);
-                faces1.peer_summ(peer2.str, 64_000);
-                const faces2 = new $giper_baza_face_map;
-                faces2.peer_time(peer1.str, $giper_baza_time_now(), 0);
-                faces2.peer_summ(peer1.str, 1);
-                faces2.peer_time(peer2.str, $giper_baza_time_now(), 1);
-                const faces3 = new $giper_baza_face_map;
-                const parts = [
-                    [land1.str, new $giper_baza_pack_part([], faces1)],
-                    [land2.str, new $giper_baza_pack_part([], faces2)],
-                    [land3.str, new $giper_baza_pack_part([], faces3)],
-                ];
-                const pack = $giper_baza_pack.make(parts);
-                $mol_assert_equal(parts, pack.parts());
-            },
-            "units serial and parse"($) {
-                const land = new $giper_baza_link('12345678_12345678');
-                const pass = $.$giper_baza_auth.grab().pass();
-                const gift = $giper_baza_unit_gift.make();
-                const sand_small = $giper_baza_unit_sand.make(5);
-                const ball = new Uint8Array($giper_baza_unit_sand.size_equator + 5);
-                const sand_big = $giper_baza_unit_sand.make(ball.byteLength);
-                sand_big.ball(ball);
-                const seal = $giper_baza_unit_seal.make(15, true);
-                const parts = [
-                    [land.str, new $giper_baza_pack_part([pass, gift, sand_small, sand_big, seal])],
-                ];
-                const pack = $giper_baza_pack.make(parts);
-                $mol_assert_equal(parts, pack.parts());
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $giper_baza_glob_mock extends $.$giper_baza_glob {
-            static $ = $;
-            static lands_touched = new $mol_wire_set();
-        }
-        $.$giper_baza_glob = $giper_baza_glob_mock;
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
 var $;
 (function ($) {
     $mol_test({
@@ -5303,1795 +6341,50 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $mol_bus extends $.$mol_bus {
-            send() { }
-        }
-        $.$mol_bus = $mol_bus;
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'empty array'() {
-            $mol_assert_equal($mol_array_chunks([], () => true), []);
-        },
-        'one chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => false), [[1, 2, 3, 4, 5]]);
-        },
-        'fixed size chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], 3), [[1, 2, 3], [4, 5]]);
-        },
-        'first empty chunk'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], (_, i) => i === 0), [[1, 2, 3, 4, 5]]);
-        },
-        'chunk for every item'() {
-            $mol_assert_equal($mol_array_chunks([1, 2, 3, 4, 5], () => true), [[1], [2], [3], [4], [5]]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $giper_baza_land_mock extends $.$giper_baza_land {
-            sync() {
-                return this;
-            }
-        }
-        $.$giper_baza_land = $giper_baza_land_mock;
-    });
-    $mol_test({
-        async 'Give rights'($) {
-            const auth0 = await $.$giper_baza_auth.grab();
-            const auth1 = await $.$giper_baza_auth.grab();
-            const auth2 = await $.$giper_baza_auth.grab();
-            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
-            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
-            $mol_assert_equal(land0.lord_rank(land0.link()), $giper_baza_rank_rule);
-            $mol_assert_equal(land0.lord_rank(auth1.pass().lord()), $giper_baza_rank_read);
-            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
-            land0.give(auth1.pass(), $giper_baza_rank_read);
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
-            land0.give(auth1.pass(), $giper_baza_rank_read);
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_read);
-            land0.give(auth1.pass(), $giper_baza_rank_post('just'));
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
-            land0.give(auth1.pass(), $giper_baza_rank_pull('just'));
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_pull('just'));
-            land0.give(auth1.pass(), $giper_baza_rank_rule);
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_rule);
-            land0.give(auth1.pass(), $giper_baza_rank_post('just'));
-            $mol_assert_equal(land0.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
-            await $mol_wire_async(land1).units_steal(land0);
-            $mol_assert_equal(land1.pass_rank(auth1.pass()), $giper_baza_rank_post('just'));
-            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
-        },
-        async 'Post Data and pick Delta'($) {
-            const auth1 = $.$giper_baza_auth.grab();
-            const auth2 = $.$giper_baza_auth.grab();
-            const land1 = $giper_baza_land.make({ $, auth: () => auth1 });
-            const land2 = $giper_baza_land.make({ $, link: () => land1.link(), auth: () => auth2 });
-            $mol_assert_equal(await $mol_wire_async(land1).diff_units(), []);
-            land1.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
-            $mol_assert_equal((await $mol_wire_async(land1).diff_units()).length, 4);
-            const face = land1.faces.clone();
-            land1.post(new $giper_baza_link('AA111111'), $giper_baza_link.hole, new $giper_baza_link('AA222222'), new Uint8Array([2]));
-            $mol_assert_equal((await $mol_wire_async(land1).diff_units()).length, 5);
-            $mol_assert_equal((await $mol_wire_async(land1).diff_units(face)).length, 2);
-            await $mol_wire_async(land2).units_steal(land1);
-            land2.post(new $giper_baza_link('AA222222'), $giper_baza_link.hole, new $giper_baza_link('AA333333'), new Uint8Array([3]));
-            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 5);
-            $mol_assert_equal((await $mol_wire_async(land2).diff_units(face)).length, 2);
-            land1.give(auth2.pass(), $giper_baza_rank_post('just'));
-            await $mol_wire_async(land2).units_steal(land1);
-            land2.post(new $giper_baza_link('AA222222'), $giper_baza_link.hole, new $giper_baza_link('AA333333'), new Uint8Array([5]));
-            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 9);
-            $mol_assert_equal((await $mol_wire_async(land2).diff_units(face)).length, 6);
-            land1.give(auth2.pass(), $giper_baza_rank_read);
-            await $mol_wire_async(land2).units_steal(land1);
-            $mol_assert_equal((await $mol_wire_async(land2).diff_units()).length, 7);
-        },
-        async 'Land encryption'($) {
-            const land = $mol_wire_async($giper_baza_land.make({ $ }));
-            $mol_assert_equal(await land.encrypted(), false);
-            await land.encrypted(true);
-            $mol_assert_equal(await land.encrypted(), true);
-            const material = await land.post($giper_baza_link.hole, $giper_baza_link.hole, null, new Uint8Array([1, 2, 3]));
-            $mol_assert_equal((await land.sand_encode(material)).data().length, 16);
-            $mol_assert_equal(await land.sand_decode(material), new Uint8Array([1, 2, 3]));
-            $mol_assert_equal((await land.sand_ordered({ head: $giper_baza_link.hole, peer: $giper_baza_link.hole })).length, 1);
-            const tombstone = await land.post($giper_baza_link.hole, $giper_baza_link.hole, material.self(), null);
-            $mol_assert_equal((await land.sand_encode(tombstone)).data().length, 1);
-            $mol_assert_equal(await land.sand_decode(tombstone), null);
-            $mol_assert_equal((await land.sand_ordered({ head: $giper_baza_link.hole, peer: $giper_baza_link.hole })).length, 1);
-        },
-        'Land fork & merge': $mol_wire_async(($) => {
-            const home = $.$giper_baza_glob.home().land();
-            const left = home.fork();
-            home.Data($giper_baza_list).items_vary(['foo', 'xxx']);
-            $mol_assert_equal(home.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
-            $mol_assert_equal(left.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
-            left.faces.sync(home.faces);
-            left.Data($giper_baza_list).items_vary(['foo', 'yyy']);
-            $mol_assert_equal(left.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
-            const right = home.fork();
-            right.faces.sync(left.faces);
-            right.Data($giper_baza_list).items_vary(['foo', 'zzz']);
-            $mol_assert_equal(right.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
-            const both = home.fork();
-            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'xxx']);
-            both.Tine().items_vary([right.link()]);
-            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
-            both.Tine().items_vary([left.link()]);
-            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
-            both.Tine().items_vary([right.link(), left.link()]);
-            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'yyy']);
-            both.Tine().items_vary([left.link(), right.link()]);
-            $mol_assert_equal(both.Data($giper_baza_list).items_vary(), ['foo', 'zzz']);
-        }),
-        'Inner Links are relative to forked Land': $mol_wire_async(($) => {
-            const Alice = $.$giper_baza_glob.home().land();
-            const Bella = Alice.fork();
-            const alice_val = Alice.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('qwertyui'));
-            const bella_val = Bella.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('qwertyui'));
-            alice_val.val('Alice');
-            bella_val.val('Bella');
-            const alice_link = Alice.Pawn($giper_baza_atom_link).Head(new $giper_baza_link('asdfghjk'));
-            const bella_link = Bella.Pawn($giper_baza_atom_link).Head(new $giper_baza_link('asdfghjk'));
-            alice_link.val(alice_val.link());
-            $mol_assert_equal(alice_link.val(), alice_val.link());
-            $mol_assert_unique(alice_link.val(), bella_link.val());
-            $mol_assert_equal(bella_link.val(), bella_val.link());
-        }),
-        async 'Land Area inherits rights'($) {
-            const area = await $mol_wire_async(() => {
-                const base = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]);
-                base.units_saving();
-                return base.area_make();
-            })();
-            $mol_assert_equal(area.pass_rank(area.auth().pass()), $giper_baza_rank_rule);
-            $mol_assert_equal(area.lord_rank($giper_baza_link.hole), $giper_baza_rank_post('just'));
-        },
-        async 'Gift to new Mate reaches Peer which knows Lord'($) {
-            const auth0 = $.$giper_baza_auth.grab();
-            const auth1 = $.$giper_baza_auth.grab();
-            const auth2 = $.$giper_baza_auth.grab();
-            const land0 = $giper_baza_land.make({ $, auth: () => auth0 });
-            const land1 = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth1 });
-            land0.post($giper_baza_link.hole, $giper_baza_link.hole, new $giper_baza_link('AA111111'), new Uint8Array([1]));
-            await $mol_wire_async(land1).units_steal(land0);
-            const face = land1.faces.clone();
-            land0.give(auth2.pass(), $giper_baza_rank_post('just'));
-            const delta = await $mol_wire_async(land0).diff_units(face);
-            await $mol_wire_async(land1).diff_apply(delta);
-            $mol_assert_equal(land1.lord_rank(auth2.pass().lord()), $giper_baza_rank_post('just'));
-        },
-        // async 'Merge text changes'() {
-        // 	const base = new $giper_baza_land( 1n, 1 )
-        // 	base.chief.as( $hyoo_crowd_text ).str( 'Hello World and fun!' )
-        // 	const left = base.fork( await $hyoo_crowd_peer.generate() )
-        // 	const right = base.fork( await $hyoo_crowd_peer.generate() )
-        // 	right.clock_data.tick( right.peer().id )
-        // 	left.chief.as( $hyoo_crowd_text ).str( 'Hello Alice and fun!' )
-        // 	right.chief.as( $hyoo_crowd_text ).str( 'Bye World and fun!' )
-        // 	const left_delta = left.delta()
-        // 	const right_delta = right.delta()
-        // 	left.apply( right_delta )
-        // 	right.apply( left_delta )
-        // 	$mol_assert_equal(
-        // 		left.chief.as( $hyoo_crowd_text ).str(),
-        // 		right.chief.as( $hyoo_crowd_text ).str(),
-        // 		'Bye Alice and fun!',
-        // 	)
-        // },
-        // async 'Write into token'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'foobar' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'xyz', 3 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'fooxyzbar' ] )
-        // },
-        // async 'Write into token with split'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'foobar' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'XYZ', 2, 4 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'fo', 'XYZar' ] )
-        // },
-        // async 'Write over few tokens'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'xxx foo bar yyy' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'X Y Z', 6, 9 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxx', ' fo', 'X', ' Y', ' Zar', ' yyy' ] )
-        // },
-        // async 'Write whole token'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'xxxFoo yyy' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'bar', 3, 7 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxxbaryyy' ] )
-        // },
-        // async 'Write whole text'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo bar' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'xxx', 0, 7 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'xxx' ] )
-        // },
-        // async 'Write at the end'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'bar' )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'foobar' ] )
-        // },
-        // async 'Write between tokens'() {
-        // 	const store = new $giper_baza_land( 1n, 1 )
-        // 	store.chief.as( $hyoo_crowd_text ).str( 'foo bar' )
-        // 	store.chief.as( $hyoo_crowd_text ).write( 'xxx', 4 )
-        // 	$mol_assert_equal( store.chief.as( $hyoo_crowd_list ).list(), [ 'foo', ' xxxbar' ] )
-        // },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function check(str, query) {
-        $mol_assert_like(str, $hyoo_harp_to_string(query));
-        $mol_assert_like(query, $hyoo_harp_from_string(str));
-    }
-    $mol_test({
-        'root'() {
-            check('', {});
-        },
-        'only field'() {
-            check('user%3D777', {
-                'user=777': {},
-            });
-        },
-        'primary key'() {
-            check('user=jin%2C777!=', {
-                user: {
-                    '=': [['jin,777!']],
-                },
-            });
-        },
-        'single fetch'() {
-            check('friend(age%24)', {
-                friend: {
-                    age$: {},
-                },
-            });
-        },
-        'fetch and primary key'() {
-            check('user=jin()=(friend)', {
-                'user': {
-                    '=': [['jin()']],
-                    friend: {},
-                },
-            });
-        },
-        'multiple fetch'() {
-            check('age;friend', {
-                age: {},
-                friend: {},
-            });
-        },
-        'common query string back compatible'() {
-            $mol_assert_like($hyoo_harp_from_string('user=jin&age=100500'), {
-                user: {
-                    '=': [['jin']],
-                },
-                age: {
-                    '=': [['100500']],
-                },
-            });
-        },
-        'common pathname back compatible'() {
-            $mol_assert_like($hyoo_harp_from_string('users/jin/comments'), {
-                users: {},
-                jin: {},
-                comments: {},
-            });
-        },
-        'deep fetch'() {
-            check('my(friend(age);name);stat', {
-                my: {
-                    friend: {
-                        age: {},
-                    },
-                    name: {},
-                },
-                stat: {},
-            });
-        },
-        'orders'() {
-            check('+age;-name', {
-                age: {
-                    '+': true
-                },
-                name: {
-                    '+': false
-                },
-            });
-        },
-        'filter types'() {
-            check('sex=female=;status!=married=', {
-                sex: {
-                    '=': [['female']],
-                },
-                status: {
-                    '!=': [['married']],
-                },
-            });
-        },
-        'filter ranges'() {
-            check('sex=female=;age=18@25=;weight=@50=;height=150@=;hobby=paint=singing=', {
-                sex: {
-                    '=': [['female']],
-                },
-                age: {
-                    '=': [['18', '25']],
-                },
-                weight: {
-                    '=': [['', '50']],
-                },
-                height: {
-                    '=': [['150', '']],
-                },
-                hobby: {
-                    '=': [['paint'], ['singing']],
-                },
-            });
-        },
-        'unescaped values'() {
-            $mol_assert_like($hyoo_harp_from_string('foo=jin=777=;bar=jin!=666='), {
-                foo: {
-                    '=': [['jin'], ['777']],
-                },
-                bar: {
-                    '=': [['jin!'], ['666']],
-                },
-            });
-        },
-        'slicing'() {
-            check('friend(_num=0@100=)', {
-                friend: {
-                    _num: { '=': [['0', '100']] },
-                },
-            });
-        },
-        'complex'() {
-            check('pullRequest(state=closed=merged=;+repository(name;private);-updateTime;_num=0@100=)', {
-                pullRequest: {
-                    state: {
-                        '=': [
-                            ['closed'],
-                            ['merged'],
-                        ]
-                    },
-                    repository: {
-                        '+': true,
-                        name: {},
-                        private: {},
-                    },
-                    updateTime: {
-                        '+': false,
-                    },
-                    _num: {
-                        '=': [['0', '100']],
-                    },
-                },
-            });
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is string'() {
-            $mol_data_string('');
-        },
-        'Is not string'() {
-            $mol_assert_fail(() => {
-                $mol_data_string(0);
-            }, '0 is not a string');
-        },
-        'Is object string'() {
-            $mol_assert_fail(() => {
-                $mol_data_string(new String('x'));
-            }, 'x is not a string');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is first'() {
-            $mol_data_variant($mol_data_number, $mol_data_string)(0);
-        },
-        'Is second'() {
-            $mol_data_variant($mol_data_number, $mol_data_string)('');
-        },
-        'Is false'() {
-            $mol_assert_fail(() => {
-                $mol_data_variant($mol_data_number, $mol_data_string)(false);
-            }, 'false is not any of variants');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const Age = $mol_data_optional($mol_data_number);
-    const Age_or_zero = $mol_data_optional($mol_data_number, () => 0);
-    $mol_test({
-        'Is not present'() {
-            $mol_assert_equal(Age(undefined), undefined);
-        },
-        'Is present'() {
-            $mol_assert_equal(Age(0), 0);
-        },
-        'Fallbacked'() {
-            $mol_assert_equal(Age_or_zero(undefined), 0);
-        },
-        'Is null'() {
-            $mol_assert_fail(() => Age(null), 'null is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Fit to record'() {
-            const User = $mol_data_record({ age: $mol_data_number });
-            User({ age: 0 });
-        },
-        'Extends record'() {
-            const User = $mol_data_record({ age: $mol_data_number });
-            User({ age: 0, name: 'Jin' });
-        },
-        // 'Recursive record' () {
-        // 	const User = $mol_data_record({
-        // 		name : $mol_data_string ,
-        // 		get kids() { return $mol_data_array( User ) } ,
-        // 	})
-        // 	User({
-        // 		name : 'Jin' ,
-        // 		kids : [
-        // 			{
-        // 				name : 'John' ,
-        // 				kids : [] ,
-        // 			}
-        // 		] ,
-        // 	})
-        // } ,
-        'Shrinks record'() {
-            $mol_assert_fail(() => {
-                const User = $mol_data_record({ age: $mol_data_number, name: $mol_data_string });
-                User({ age: 0 });
-            }, '["name"] undefined is not a string');
-        },
-        'Shrinks deep record'() {
-            $mol_assert_fail(() => {
-                const User = $mol_data_record({ wife: $mol_data_record({ age: $mol_data_number }) });
-                User({ wife: {} });
-            }, '["wife"] ["age"] undefined is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is empty array'() {
-            $mol_data_array($mol_data_number)([]);
-        },
-        'Is array'() {
-            $mol_data_array($mol_data_number)([1, 2]);
-        },
-        'Is not array'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_number)({ [0]: 1, length: 1, map: () => { } });
-            }, '[object Object] is not an array');
-        },
-        'Has wrong item'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_number)([1, '1']);
-            }, '[1] 1 is not a number');
-        },
-        'Has wrong deep item'() {
-            $mol_assert_fail(() => {
-                $mol_data_array($mol_data_array($mol_data_number))([[], [0, 0, false]]);
-            }, '[1] [2] false is not a number');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Is boolean - true'() {
-            $mol_data_boolean(true);
-        },
-        'Is boolean - false'() {
-            $mol_data_boolean(false);
-        },
-        'Is not boolean'() {
-            $mol_assert_fail(() => {
-                $mol_data_boolean('x');
-            }, 'x is not a boolean');
-        },
-        'Is object boolean'() {
-            $mol_assert_fail(() => {
-                $mol_data_boolean(new Boolean(''));
-            }, 'false is not a boolean');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Checks for value of given enum and returns expected type.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_enum_demo
-     */
-    function $mol_data_enum(name, dict) {
-        const index = {};
-        for (let key in dict) {
-            if (Number.isNaN(Number(key))) {
-                index[dict[key]] = key;
-            }
-        }
-        return $mol_data_setup((value) => {
-            if (typeof index[value] !== 'string') {
-                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
-            }
-            return value;
-        }, { name, dict });
-    }
-    $.$mol_data_enum = $mol_data_enum;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    let sex;
-    (function (sex) {
-        sex[sex["male"] = 0] = "male";
-        sex[sex["female"] = 1] = "female";
-    })(sex || (sex = {}));
-    let gender;
-    (function (gender) {
-        gender["bisexual"] = "bisexual";
-        gender["trans"] = "transgender";
-    })(gender || (gender = {}));
-    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
-    // const Sex = $mol_data_enum( 'sex' , sex )
-    // type sex_value =  $mol_type_assert< typeof Sex.Value , sex >
-    $mol_test({
-        'config of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_like(Sex.config, {
-                name: 'sex',
-                dict: sex,
-            });
-        },
-        'name of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_equal(Sex.config.name, 'sex');
-        },
-        'Is right value of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_equal(Sex(0), sex.male);
-        },
-        'Is wrong value of enum'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex(2), `2 is not value of sex enum`);
-        },
-        'Is name instead of value'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex('male'), `male is not value of sex enum`);
-        },
-        'Is common object field'() {
-            const Sex = $mol_data_enum('sex', sex);
-            $mol_assert_fail(() => Sex('__proto__'), `__proto__ is not value of sex enum`);
-        },
-    });
-    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
-    // type gender_value =  $mol_type_assert< typeof Gender.Value , gender >
-    $mol_test({
-        'config of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_like(Gender.config, {
-                name: 'gender',
-                dict: gender,
-            });
-        },
-        'Is right value of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_equal(Gender('transgender'), gender.trans);
-        },
-        'Is wrong value of enum'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('xxx'), `xxx is not value of gender enum`);
-        },
-        'Is name instead of value'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('trans'), `trans is not value of gender enum`);
-        },
-        'Is common object field'() {
-            const Gender = $mol_data_enum('gender', gender);
-            $mol_assert_fail(() => Gender('__proto__'), `__proto__ is not value of gender enum`);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'type safe build & parse'() {
-            let States;
-            (function (States) {
-                States["opened"] = "opened";
-                States["closed"] = "closed";
-            })(States || (States = {}));
-            const State = $hyoo_harp_scheme({}, $mol_data_enum('States', States));
-            const Str = $hyoo_harp_scheme({}, $mol_data_string);
-            const Bool = $hyoo_harp_scheme({}, $mol_data_boolean);
-            const Repository = $hyoo_harp_scheme({
-                name: $mol_data_optional(Str),
-                isPrivate: $mol_data_optional(Bool),
-                // pullRequests: PullRequest,
-            });
-            const PullRequest = $hyoo_harp_scheme({
-                state: $mol_data_optional(State),
-                updated_at: $mol_data_optional(Str),
-                repository: $mol_data_optional(Repository),
-            });
-            const Request = $hyoo_harp_scheme({
-                pullRequest: $mol_data_optional(PullRequest),
-            });
-            const uri = 'pullRequest(state=closed=;-updated_at;repository(name;isPrivate);_num=0@100=)';
-            let query = Request({
-                pullRequest: {
-                    state: { '=': [[States.closed]] }, // filter
-                    updated_at: { '+': false }, // order
-                    repository: {
-                        name: {},
-                        isPrivate: {},
-                    },
-                    _num: { '=': [[0, 100]] }, // slice
-                }
-            });
-            $mol_assert_like(uri, Request.build(query));
-            $mol_assert_like(query, Request.parse(uri));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'save and load buffers'($) {
-            const land = $giper_baza_land.make({ $ });
-            const file = land.Data($giper_baza_file);
-            const source = new Uint8Array(2 ** 15 + 1);
-            source[2 ** 15] = 255;
-            file.buffer(source);
-            $mol_assert_equal(file.chunks().length, 2);
-            $mol_assert_equal(file.buffer(), source);
-        },
-        async 'save and load blobs'($) {
-            const land = $giper_baza_land.make({ $ });
-            const file = land.Data($giper_baza_file);
-            const source = new Uint8Array(2 ** 16 + 1);
-            source[2 ** 16 + 1] = 255;
-            await $mol_wire_async(file).blob(new $mol_blob([source], { type: 'test/test' }));
-            $mol_assert_equal('test/test', file.blob().type);
-            $mol_assert_equal(source, new Uint8Array(await file.blob().arrayBuffer()));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'id auto generation'($) {
-            class $mol_view_test_item extends $mol_view {
-            }
-            class $mol_view_test_block extends $mol_view {
-                static $ = $;
-                element(id) {
-                    return new $mol_view_test_item();
-                }
-            }
-            __decorate([
-                $mol_mem_key
-            ], $mol_view_test_block.prototype, "element", null);
-            var x = $mol_view_test_block.Root(0);
-            $mol_assert_equal(x.dom_node().id, '$mol_view_test_block.Root(0)');
-            $mol_assert_equal(x.element(0).dom_node().id, '$mol_view_test_block.Root(0).element(0)');
-        },
-        'caching ref to dom node'($) {
-            var x = new class extends $mol_view {
-            };
-            x.$ = $;
-            $mol_assert_equal(x.dom_node(), x.dom_node());
-        },
-        'content render'($) {
-            class $mol_view_test extends $mol_view {
-                sub() {
-                    return ['lol', 5];
-                }
-            }
-            var x = new $mol_view_test();
-            x.$ = $;
-            var node = x.dom_tree();
-            $mol_assert_equal(node.innerHTML, 'lol5');
-        },
-        'bem attributes generation'($) {
-            class $mol_view_test_item extends $mol_view {
-            }
-            class $mol_view_test_block extends $mol_view {
-                Element(id) {
-                    return new $mol_view_test_item();
-                }
-            }
-            __decorate([
-                $mol_mem_key
-            ], $mol_view_test_block.prototype, "Element", null);
-            var x = new $mol_view_test_block();
-            x.$ = $;
-            $mol_assert_equal(x.dom_node().getAttribute('mol_view_test_block'), '');
-            $mol_assert_equal(x.dom_node().getAttribute('mol_view'), '');
-            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view_test_block_element'), '');
-            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view_test_item'), '');
-            $mol_assert_equal(x.Element(0).dom_node().getAttribute('mol_view'), '');
-        },
-        'render custom attributes'($) {
-            class $mol_view_test extends $mol_view {
-                attr() {
-                    return {
-                        'href': '#haha',
-                        'required': true,
-                        'hidden': false,
-                    };
-                }
-            }
-            var x = new $mol_view_test();
-            x.$ = $;
-            var node = x.dom_tree();
-            $mol_assert_equal(node.getAttribute('href'), '#haha');
-            $mol_assert_equal(node.getAttribute('required'), 'true');
-            $mol_assert_equal(node.getAttribute('hidden'), null);
-        },
-        'render custom fields'($) {
-            class $mol_view_test extends $mol_view {
-                field() {
-                    return {
-                        'hidden': true
-                    };
-                }
-            }
-            var x = new $mol_view_test();
-            x.$ = $;
-            var node = x.dom_tree();
-            $mol_assert_equal(node.hidden, true);
-        },
-        'attach event handlers'($) {
-            var clicked = false;
-            class $mol_view_test extends $mol_view {
-                event() {
-                    return {
-                        'click': (next) => this.event_click(next)
-                    };
-                }
-                event_click(next) {
-                    clicked = true;
-                }
-            }
-            var x = new $mol_view_test();
-            x.$ = $;
-            var node = x.dom_node();
-            node.click();
-            $mol_assert_ok(clicked);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_style_sheet_test1 extends $mol_view {
-        Item() { return new $mol_view; }
-    }
-    $.$mol_style_sheet_test1 = $mol_style_sheet_test1;
-    class $mol_style_sheet_test2 extends $mol_view {
-        List() { return new $mol_style_sheet_test1; }
-    }
-    $.$mol_style_sheet_test2 = $mol_style_sheet_test2;
-    $mol_test({
-        'component block styles'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                display: 'block',
-                zIndex: 1,
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tdisplay: block;\n\tz-index: 1;\n}\n');
-        },
-        'various units'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                width: '50%',
-                height: '50px',
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\twidth: 50%;\n\theight: 50px;\n}\n');
-        },
-        'various functions'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const { calc } = $mol_style_func;
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                width: calc(`100% - 1px`),
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\twidth: calc(100% - 1px);\n}\n');
-        },
-        'property groups'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                flex: {
-                    grow: 5,
-                    shrink: 10,
-                }
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tflex-grow: 5;\n\tflex-shrink: 10;\n}\n');
-        },
-        'custom properties'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                '--isVariable': 'yes',
-                '--is_variable': 'no',
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\t--is-variable: yes;\n\t--is_variable: no;\n}\n');
-        },
-        'custom property groups'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                '--variable': {
-                    test1: '5px',
-                    test2: '10px',
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\t--variable-test1: 5px;\n\t--variable-test2: 10px;\n}\n');
-        },
-        'property shorthand'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                padding: ['5px', 'auto'],
-                margin: ['10px', 'auto'],
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tpadding: 5px auto;\n\tmargin: 10px auto;\n}\n');
-        },
-        'sequenced values'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const { url } = $mol_style_func;
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                background: {
-                    image: [[url('foo')], [url('bar')]],
-                    size: [['cover'], ['contain']],
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tbackground-image: url("foo"),url("bar");\n\tbackground-size: cover,contain;\n}\n');
-        },
-        'sequenced structs'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                box: {
-                    shadow: [
-                        {
-                            inset: true,
-                            x: 0,
-                            y: 0,
-                            blur: '0.5rem',
-                            spread: 0,
-                            color: 'red',
-                        },
-                        {
-                            inset: false,
-                            x: 0,
-                            y: 0,
-                            blur: '0.5rem',
-                            spread: 0,
-                            color: 'blue',
-                        },
-                    ],
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tbox-shadow: inset 0 0 0.5rem 0 red,0 0 0.5rem 0 blue;\n}\n');
-        },
-        'component block styles with pseudo class'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                ':focus': {
-                    display: 'block',
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:focus {\n\tdisplay: block;\n}\n');
-        },
-        'component block styles with pseudo element'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                '::first-line': {
-                    display: 'block',
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]::first-line {\n\tdisplay: block;\n}\n');
-        },
-        'component block styles with media query'() {
-            class $mol_style_sheet_test extends $mol_view {
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                '@media': {
-                    'print': {
-                        display: 'block',
-                    },
-                    '(max-width: 640px)': {
-                        display: 'inline',
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n@media print {\n[mol_style_sheet_test] {\n\tdisplay: block;\n}\n}\n@media (max-width: 640px) {\n[mol_style_sheet_test] {\n\tdisplay: inline;\n}\n}\n');
-        },
-        'component block styles with attribute value'() {
-            class $mol_style_sheet_test extends $mol_view {
-                attr() {
-                    return {
-                        mol_theme: '$mol_theme_dark'
-                    };
-                }
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                '@': {
-                    mol_theme: {
-                        '$mol_theme_dark': {
-                            display: 'block',
-                        },
-                    },
-                    disabled: {
-                        'true': {
-                            width: '100%',
-                        },
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test]:where([disabled="true"]) {\n\twidth: 100%;\n}\n');
-        },
-        'component block styles with attribute value (short syntax)'() {
-            class $mol_style_sheet_test extends $mol_view {
-                attr() {
-                    return {
-                        mol_theme: '$mol_theme_dark'
-                    };
-                }
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                '[mol_theme]': {
-                    '$mol_theme_dark': {
-                        display: 'block',
-                    },
-                },
-                '[disabled]': {
-                    'true': {
-                        width: '100%',
-                    },
-                    'false': {
-                        width: '50%',
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test]:where([disabled="true"]) {\n\twidth: 100%;\n}\n[mol_style_sheet_test]:where([disabled="false"]) {\n\twidth: 50%;\n}\n');
-        },
-        'component element styles'() {
-            class $mol_style_sheet_test extends $mol_view {
-                Item() { return new $mol_view; }
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                color: 'red',
-                Item: {
-                    display: 'block',
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test] {\n\tcolor: red;\n}\n[mol_style_sheet_test_item] {\n\tdisplay: block;\n}\n');
-        },
-        'component element of element styles'() {
-            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
-                width: '100%',
-                List: {
-                    color: 'red',
-                    Item: {
-                        display: 'block',
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\twidth: 100%;\n}\n[mol_style_sheet_test2_list] {\n\tcolor: red;\n}\n[mol_style_sheet_test2_list_item] {\n\tdisplay: block;\n}\n');
-        },
-        'component element styles with block attribute value'() {
-            class $mol_style_sheet_test extends $mol_view {
-                Item() { return new $mol_view; }
-                attr() {
-                    return {
-                        mol_theme: '$mol_theme_dark',
-                        disabled: true,
-                    };
-                }
-            }
-            const sheet = $mol_style_sheet($mol_style_sheet_test, {
-                '@': {
-                    mol_theme: {
-                        '$mol_theme_dark': {
-                            Item: {
-                                color: 'red',
-                            },
-                        },
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) :where([mol_style_sheet_test_item]) {\n\tcolor: red;\n}\n');
-        },
-        'inner component styles by class'() {
-            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
-                color: 'red',
-                $mol_style_sheet_test1: {
-                    display: 'block',
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\tcolor: red;\n}\n[mol_style_sheet_test2] :where([mol_style_sheet_test1]) {\n\tdisplay: block;\n}\n');
-        },
-        'child component styles by class'() {
-            const sheet = $mol_style_sheet($mol_style_sheet_test2, {
-                color: 'red',
-                '>': {
-                    $mol_style_sheet_test1: {
-                        display: 'block',
-                    },
-                    $mol_style_sheet_test2: {
-                        display: 'inline',
-                    },
-                },
-            });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test2] {\n\tcolor: red;\n}\n[mol_style_sheet_test2] > :where([mol_style_sheet_test1]) {\n\tdisplay: block;\n}\n[mol_style_sheet_test2] > :where([mol_style_sheet_test2]) {\n\tdisplay: inline;\n}\n');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Vector limiting'() {
-            let point = new $mol_vector_3d(7, 10, 13);
-            const res = point.limited([[1, 5], [15, 20], [5, 10]]);
-            $mol_assert_equal(res.x, 5);
-            $mol_assert_equal(res.y, 15);
-            $mol_assert_equal(res.z, 10);
-        },
-        'Vector adding scalar'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added0(5);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 7);
-            $mol_assert_equal(res.z, 8);
-        },
-        'Vector adding vector'() {
-            let point = new $mol_vector_3d(1, 2, 3);
-            let res = point.added1([5, 10, 15]);
-            $mol_assert_equal(res.x, 6);
-            $mol_assert_equal(res.y, 12);
-            $mol_assert_equal(res.z, 18);
-        },
-        'Vector multiplying scalar'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed0(-1);
-            $mol_assert_equal(res.x, -2);
-            $mol_assert_equal(res.y, -3);
-            $mol_assert_equal(res.z, -4);
-        },
-        'Vector multiplying vector'() {
-            let point = new $mol_vector_3d(2, 3, 4);
-            let res = point.multed1([5, 2, -2]);
-            $mol_assert_equal(res.x, 10);
-            $mol_assert_equal(res.y, 6);
-            $mol_assert_equal(res.z, -8);
-        },
-        'Matrix adding matrix'() {
-            let matrix = new $mol_vector_matrix(...[[1, 2], [3, 4], [5, 6]]);
-            let res = matrix.added2([[10, 20], [30, 40], [50, 60]]);
-            $mol_assert_equal(res[0][0], 11);
-            $mol_assert_equal(res[0][1], 22);
-            $mol_assert_equal(res[1][0], 33);
-            $mol_assert_equal(res[1][1], 44);
-            $mol_assert_equal(res[2][0], 55);
-            $mol_assert_equal(res[2][1], 66);
-        },
-        'Matrix multiplying matrix'() {
-            let matrix = new $mol_vector_matrix(...[[2, 3], [4, 5], [6, 7]]);
-            let res = matrix.multed2([[2, 3], [4, 5], [6, 7]]);
-            $mol_assert_equal(res[0][0], 4);
-            $mol_assert_equal(res[0][1], 9);
-            $mol_assert_equal(res[1][0], 16);
-            $mol_assert_equal(res[1][1], 25);
-            $mol_assert_equal(res[2][0], 36);
-            $mol_assert_equal(res[2][1], 49);
-        },
-        'Range expanding'() {
-            let range = $mol_vector_range_full.inversed;
-            const expanded = range.expanded0(10).expanded0(5);
-            $mol_assert_like([...expanded], [5, 10]);
-        },
-        'Vector of range expanding by vector'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions.expanded1([1, 7]).expanded1([3, 5]);
-            $mol_assert_like([...expanded.x], [1, 3]);
-            $mol_assert_like([...expanded.y], [5, 7]);
-        },
-        'Vector of range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = dimensions
-                .expanded2([[1, 3], [7, 9]])
-                .expanded2([[2, 4], [6, 8]]);
-            $mol_assert_like([...expanded.x], [1, 4]);
-            $mol_assert_like([...expanded.y], [6, 9]);
-        },
-        'Vector of infinity range expanding by vector of range'() {
-            let dimensions = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const next = new $mol_vector_2d($mol_vector_range_full.inversed, $mol_vector_range_full.inversed);
-            const expanded = next
-                .expanded2(dimensions);
-            $mol_assert_like([...expanded.x], [Infinity, -Infinity]);
-            $mol_assert_like([...expanded.y], [Infinity, -Infinity]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        class $mol_locale_mock extends $mol_locale {
-            lang(next = 'en') { return next; }
-            static source(lang) {
-                return {};
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_locale_mock.prototype, "lang", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_locale_mock, "source", null);
-        $.$mol_locale = $mol_locale_mock;
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
     var $$;
     (function ($$) {
         $mol_test({
-            'handle clicks by default'($) {
-                let clicked = false;
-                const clicker = $mol_button.make({
-                    $,
-                    click: (event) => { clicked = true; },
-                });
-                const element = clicker.dom_tree();
-                const event = $mol_dom_context.document.createEvent('mouseevent');
-                event.initEvent('click', true, true);
-                element.dispatchEvent(event);
-                $mol_assert_ok(clicked);
+            "faces serial and parse"($) {
+                const land1 = new $giper_baza_link('12345678_12345678');
+                const land2 = new $giper_baza_link('87654321_87654321');
+                const land3 = new $giper_baza_link('87654321_00000000');
+                const peer1 = new $giper_baza_link('12345678');
+                const peer2 = new $giper_baza_link('87654321');
+                const faces1 = new $giper_baza_face_map;
+                faces1.peer_time(peer1.str, $giper_baza_time_now(), 0);
+                faces1.peer_summ(peer1.str, 0);
+                faces1.peer_time(peer2.str, $giper_baza_time_now(), 0);
+                faces1.peer_summ(peer2.str, 64_000);
+                const faces2 = new $giper_baza_face_map;
+                faces2.peer_time(peer1.str, $giper_baza_time_now(), 0);
+                faces2.peer_summ(peer1.str, 1);
+                faces2.peer_time(peer2.str, $giper_baza_time_now(), 1);
+                const faces3 = new $giper_baza_face_map;
+                const parts = [
+                    [land1.str, new $giper_baza_pack_part([], faces1)],
+                    [land2.str, new $giper_baza_pack_part([], faces2)],
+                    [land3.str, new $giper_baza_pack_part([], faces3)],
+                ];
+                const pack = $giper_baza_pack.make(parts);
+                $mol_assert_equal(parts, pack.parts());
             },
-            'no handle clicks if disabled'($) {
-                let clicked = false;
-                const clicker = $mol_button.make({
-                    $,
-                    click: (event) => { clicked = true; },
-                    enabled: () => false,
-                });
-                const element = clicker.dom_tree();
-                const event = $mol_dom_context.document.createEvent('mouseevent');
-                event.initEvent('click', true, true);
-                element.dispatchEvent(event);
-                $mol_assert_not(clicked);
-            },
-            async 'Store error'($) {
-                const clicker = $mol_button.make({
-                    $,
-                    click: (event) => $.$mol_fail(new Error('Test error')),
-                });
-                const event = $mol_dom_context.document.createEvent('mouseevent');
-                $mol_assert_fail(() => clicker.event_activate(event), 'Test error');
-                await Promise.resolve();
-                $mol_assert_equal(clicker.status()[0].message, 'Test error');
+            "units serial and parse"($) {
+                const land = new $giper_baza_link('12345678_12345678');
+                const pass = $.$giper_baza_auth.grab().pass();
+                const gift = $giper_baza_unit_gift.make();
+                const sand_small = $giper_baza_unit_sand.make(5);
+                const ball = new Uint8Array($giper_baza_unit_sand.size_equator + 5);
+                const sand_big = $giper_baza_unit_sand.make(ball.byteLength);
+                sand_big.ball(ball);
+                const seal = $giper_baza_unit_seal.make(15, true);
+                const parts = [
+                    [land.str, new $giper_baza_pack_part([pass, gift, sand_small, sand_big, seal])],
+                ];
+                const pack = $giper_baza_pack.make(parts);
+                $mol_assert_equal(parts, pack.parts());
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'escape'() {
-            const specials = $mol_regexp.from('.*+?^${}()|[]\\');
-            $mol_assert_equal(specials.source, '\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\');
-        },
-        'char code'() {
-            const space = $mol_regexp.from(32);
-            $mol_assert_like(' '.match(space), [' ']);
-        },
-        'repeat fixed'() {
-            const { repeat, decimal_only: digit } = $mol_regexp;
-            const year = repeat(digit, 4, 4);
-            $mol_assert_like('#2020#'.match(year), ['2020']);
-        },
-        'greedy repeat'() {
-            const { repeat, repeat_greedy, latin_only: letter } = $mol_regexp;
-            $mol_assert_like('abc'.match(repeat(letter, 1, 2)), ['a', 'b', 'c']);
-            $mol_assert_like('abc'.match(repeat_greedy(letter, 1, 2)), ['ab', 'c']);
-        },
-        'repeat range'() {
-            const { repeat_greedy, decimal_only: digit } = $mol_regexp;
-            const year = repeat_greedy(digit, 2, 4);
-            $mol_assert_like('#2#'.match(year), null);
-            $mol_assert_like('#20#'.match(year), ['20']);
-            $mol_assert_like('#2020#'.match(year), ['2020']);
-            $mol_assert_like('#20201#'.match(year), ['2020']);
-        },
-        'repeat from'() {
-            const { repeat_greedy, latin_only: letter } = $mol_regexp;
-            const name = repeat_greedy(letter, 2);
-            $mol_assert_like('##'.match(name), null);
-            $mol_assert_like('#a#'.match(name), null);
-            $mol_assert_like('#ab#'.match(name), ['ab']);
-            $mol_assert_like('#abc#'.match(name), ['abc']);
-        },
-        'from string'() {
-            const regexp = $mol_regexp.from('[\\d]');
-            $mol_assert_equal(regexp.source, '\\[\\\\d\\]');
-            $mol_assert_equal(regexp.flags, 'gsu');
-        },
-        'from regexp'() {
-            const regexp = $mol_regexp.from(/[\d]/i);
-            $mol_assert_equal(regexp.source, '[\\d]');
-            $mol_assert_equal(regexp.flags, 'i');
-        },
-        'split'() {
-            const regexp = $mol_regexp.from(';');
-            $mol_assert_like('aaa;bbb;ccc'.split(regexp), ['aaa', ';', 'bbb', ';', 'ccc']);
-            $mol_assert_like('aaa;;ccc'.split(regexp), ['aaa', ';', '', ';', 'ccc']);
-            $mol_assert_like('aaa'.split(regexp), ['aaa']);
-            $mol_assert_like(''.split(regexp), ['']);
-        },
-        'test for matching'() {
-            const regexp = $mol_regexp.from('foo');
-            $mol_assert_like(regexp.test(''), false);
-            $mol_assert_like(regexp.test('fo'), false);
-            $mol_assert_like(regexp.test('foo'), true);
-            $mol_assert_like(regexp.test('foobar'), true);
-            $mol_assert_like(regexp.test('barfoo'), true);
-        },
-        'case ignoring'() {
-            const xxx = $mol_regexp.from('x', { ignoreCase: true });
-            $mol_assert_like(xxx.flags, 'gisu');
-            $mol_assert_like(xxx.exec('xx')[0], 'x');
-            $mol_assert_like(xxx.exec('XX')[0], 'X');
-        },
-        'multiline mode'() {
-            const { end, from } = $mol_regexp;
-            const xxx = from(['x', end], { multiline: true });
-            $mol_assert_like(xxx.exec('x\ny')[0], 'x');
-            $mol_assert_like(xxx.flags, 'gmsu');
-        },
-        'flags override'() {
-            const triplet = $mol_regexp.from($mol_regexp.from(/.../, { ignoreCase: true }), { multiline: true });
-            $mol_assert_like(triplet.toString(), '/.../gmsu');
-        },
-        'sequence'() {
-            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
-            const year = repeat(digit, 4, 4);
-            const dash = '-';
-            const month = repeat(digit, 2, 2);
-            const day = repeat(digit, 2, 2);
-            const date = from([begin, year, dash, month, dash, day, end]);
-            $mol_assert_like(date.exec('2020-01-02')[0], '2020-01-02');
-        },
-        'optional'() {
-            const name = $mol_regexp.from(['A', ['4']]);
-            $mol_assert_equal('AB'.match(name)[0], 'A');
-            $mol_assert_equal('A4'.match(name)[0], 'A4');
-        },
-        'anon variants'() {
-            const name = $mol_regexp.from(['A', $mol_regexp.vary(['4', '5'])]);
-            $mol_assert_equal('AB'.match(name), null);
-            $mol_assert_equal('A4'.match(name)[0], 'A4');
-            $mol_assert_equal('A5'.match(name)[0], 'A5');
-        },
-        'only groups'() {
-            const regexp = $mol_regexp.from({ dog: '@' });
-            $mol_assert_like([...'#'.matchAll(regexp)][0].groups, undefined);
-            $mol_assert_like([...'@'.matchAll(regexp)][0].groups, { dog: '@' });
-        },
-        'catch skipped'() {
-            const regexp = $mol_regexp.from(/(@)(\d?)/g);
-            $mol_assert_like([...'[[@]]'.matchAll(regexp)].map(f => [...f]), [
-                ['[['],
-                ['@', '@', ''],
-                [']]'],
-            ]);
-        },
-        'enum variants'() {
-            let Sex;
-            (function (Sex) {
-                Sex["male"] = "male";
-                Sex["female"] = "female";
-            })(Sex || (Sex = {}));
-            const sexism = $mol_regexp.from(Sex);
-            $mol_assert_like([...''.matchAll(sexism)].length, 0);
-            $mol_assert_like([...'trans'.matchAll(sexism)][0].groups, undefined);
-            $mol_assert_like([...'male'.matchAll(sexism)][0].groups, { male: 'male', female: '' });
-            $mol_assert_like([...'female'.matchAll(sexism)][0].groups, { male: '', female: 'female' });
-        },
-        'recursive only groups'() {
-            let Sex;
-            (function (Sex) {
-                Sex["male"] = "male";
-                Sex["female"] = "female";
-            })(Sex || (Sex = {}));
-            const sexism = $mol_regexp.from({ Sex });
-            $mol_assert_like([...''.matchAll(sexism)].length, 0);
-            $mol_assert_like([...'male'.matchAll(sexism)][0].groups, { Sex: 'male', male: 'male', female: '' });
-            $mol_assert_like([...'female'.matchAll(sexism)][0].groups, { Sex: 'female', male: '', female: 'female' });
-        },
-        'sequence with groups'() {
-            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
-            const year = repeat(digit, 4, 4);
-            const dash = '-';
-            const month = repeat(digit, 2, 2);
-            const day = repeat(digit, 2, 2);
-            const regexp = from([begin, { year }, dash, { month }, dash, { day }, end]);
-            const found = [...'2020-01-02'.matchAll(regexp)];
-            $mol_assert_like(found[0].groups, {
-                year: '2020',
-                month: '01',
-                day: '02',
-            });
-        },
-        'sequence with groups of mixed type'() {
-            const prefix = '/';
-            const postfix = '/';
-            const regexp = $mol_regexp.from([{ prefix }, /(\w+)/, { postfix }, /([gumi]*)/]);
-            $mol_assert_like([...'/foo/mi'.matchAll(regexp)], [
-                Object.assign(["/foo/mi", "/", "foo", "/", "mi"], {
-                    groups: {
-                        prefix: '/',
-                        postfix: '/',
-                    },
-                    index: 0,
-                    input: "/",
-                }),
-            ]);
-        },
-        'recursive sequence with groups'() {
-            const { begin, end, decimal_only: digit, repeat, from } = $mol_regexp;
-            const year = repeat(digit, 4, 4);
-            const dash = '-';
-            const month = repeat(digit, 2, 2);
-            const day = repeat(digit, 2, 2);
-            const regexp = from([
-                begin, { date: [{ year }, dash, { month }] }, dash, { day }, end
-            ]);
-            const found = [...'2020-01-02'.matchAll(regexp)];
-            $mol_assert_like(found[0].groups, {
-                date: '2020-01',
-                year: '2020',
-                month: '01',
-                day: '02',
-            });
-        },
-        'parse multiple'() {
-            const { decimal_only: digit, from } = $mol_regexp;
-            const regexp = from({ digit });
-            $mol_assert_like([...'123'.matchAll(regexp)].map(f => f.groups), [
-                { digit: '1' },
-                { digit: '2' },
-                { digit: '3' },
-            ]);
-        },
-        'named variants'() {
-            const { begin, or, end, from } = $mol_regexp;
-            const sexism = from([
-                begin, 'sex = ', { sex: ['male', or, 'female'] }, end
-            ]);
-            $mol_assert_like([...'sex = male'.matchAll(sexism)][0].groups, { sex: 'male' });
-            $mol_assert_like([...'sex = female'.matchAll(sexism)][0].groups, { sex: 'female' });
-            $mol_assert_like([...'sex = malefemale'.matchAll(sexism)][0].groups, undefined);
-        },
-        'force after'() {
-            const { latin_only: letter, force_after, from } = $mol_regexp;
-            const regexp = from([letter, force_after('.')]);
-            $mol_assert_like('x.'.match(regexp), ['x']);
-            $mol_assert_like('x,'.match(regexp), null);
-        },
-        'forbid after'() {
-            const { latin_only: letter, forbid_after, from } = $mol_regexp;
-            const regexp = from([letter, forbid_after('.')]);
-            $mol_assert_like('x.'.match(regexp), null);
-            $mol_assert_like('x,'.match(regexp), ['x']);
-        },
-        'char except'() {
-            const { char_except, latin_only, tab } = $mol_regexp;
-            const name = char_except(latin_only, tab);
-            $mol_assert_like('a'.match(name), null);
-            $mol_assert_like('\t'.match(name), null);
-            $mol_assert_like('('.match(name), ['(']);
-        },
-        'unicode only'() {
-            const { unicode_only, from } = $mol_regexp;
-            const name = from([
-                unicode_only('Script', 'Cyrillic'),
-                unicode_only('Hex_Digit'),
-            ]);
-            $mol_assert_like('FF'.match(name), null);
-            $mol_assert_like('ФG'.match(name), null);
-            $mol_assert_like('ФF'.match(name), ['ФF']);
-        },
-        'generate by optional with inner group'() {
-            const { begin, end, from } = $mol_regexp;
-            const animals = from([begin, '#', ['^', { dog: '@' }], end]);
-            $mol_assert_equal(animals.generate({}), '#');
-            $mol_assert_equal(animals.generate({ dog: false }), '#');
-            $mol_assert_equal(animals.generate({ dog: true }), '#^@');
-            $mol_assert_fail(() => animals.generate({ dog: '$' }), 'Wrong param: dog=$');
-        },
-        'generate by optional with inner group with variants'() {
-            const { begin, end, from } = $mol_regexp;
-            const animals = from([begin, '#', ['^', { animal: { dog: '@', fox: '&' } }], end]);
-            $mol_assert_equal(animals.generate({}), '#');
-            $mol_assert_equal(animals.generate({ dog: true }), '#^@');
-            $mol_assert_equal(animals.generate({ fox: true }), '#^&');
-            $mol_assert_fail(() => animals.generate({ dog: '$' }), 'Wrong param: dog=$');
-        },
-        'complex example'() {
-            const { begin, end, char_only, char_range, latin_only, slash_back, repeat_greedy, from, } = $mol_regexp;
-            const atom_char = char_only(latin_only, "!#$%&'*+/=?^`{|}~-");
-            const atom = repeat_greedy(atom_char, 1);
-            const dot_atom = from([atom, repeat_greedy(['.', atom])]);
-            const name_letter = char_only(char_range(0x01, 0x08), 0x0b, 0x0c, char_range(0x0e, 0x1f), 0x21, char_range(0x23, 0x5b), char_range(0x5d, 0x7f));
-            const quoted_pair = from([
-                slash_back,
-                char_only(char_range(0x01, 0x09), 0x0b, 0x0c, char_range(0x0e, 0x7f))
-            ]);
-            const name = repeat_greedy({ name_letter, quoted_pair });
-            const quoted_name = from(['"', { name }, '"']);
-            const local_part = from({ dot_atom, quoted_name });
-            const domain = dot_atom;
-            const mail = from([begin, local_part, '@', { domain }, end]);
-            $mol_assert_equal('foo..bar@example.org'.match(mail), null);
-            $mol_assert_equal('foo..bar"@example.org'.match(mail), null);
-            $mol_assert_like([...'foo.bar@example.org'.matchAll(mail)][0].groups, {
-                dot_atom: "foo.bar",
-                quoted_name: "",
-                name: "",
-                name_letter: "",
-                quoted_pair: "",
-                domain: "example.org",
-            });
-            $mol_assert_like([...'"foo..bar"@example.org'.matchAll(mail)][0].groups, {
-                dot_atom: "",
-                quoted_name: '"foo..bar"',
-                name: "foo..bar",
-                name_letter: "r",
-                quoted_pair: "",
-                domain: "example.org",
-            });
-            $mol_assert_equal(mail.generate({ dot_atom: 'foo.bar', domain: 'example.org' }), 'foo.bar@example.org');
-            $mol_assert_equal(mail.generate({ name: 'foo..bar', domain: 'example.org' }), '"foo..bar"@example.org');
-            $mol_assert_fail(() => mail.generate({ dot_atom: 'foo..bar', domain: 'example.org' }), 'Wrong param: dot_atom=foo..bar');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            'Empty needle'() {
-                const app = new $mol_dimmer;
-                app.needle = () => '  ';
-                app.haystack = () => 'foo  bar';
-                $mol_assert_like(app.strings(), ['foo  bar']);
-            },
-            'Empty haystack'() {
-                const app = new $mol_dimmer;
-                app.needle = () => 'foo  bar';
-                app.haystack = () => '';
-                $mol_assert_like(app.strings(), ['']);
-            },
-            'Not found'() {
-                const app = new $mol_dimmer;
-                app.needle = () => 'foo';
-                app.haystack = () => ' bar ';
-                $mol_assert_like(app.strings(), [' bar ']);
-            },
-            'One found'() {
-                const app = new $mol_dimmer;
-                app.needle = () => 'foo';
-                app.haystack = () => ' barfoo ';
-                $mol_assert_like(app.strings(), [' bar', 'foo', ' ']);
-            },
-            'Multiple found'() {
-                const app = new $mol_dimmer;
-                app.needle = () => 'foo';
-                app.haystack = () => ' foobarfoo foo';
-                $mol_assert_like(app.strings(), [' ', 'foo', 'bar', 'foo', ' ', 'foo']);
-            },
-            'Fuzzy search'() {
-                const app = new $mol_dimmer;
-                app.needle = () => 'foo bar';
-                app.haystack = () => ' barfoo ';
-                $mol_assert_like(app.strings(), [' ', 'bar', '', 'foo', ' ']);
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            'skin puts presets on the host node'($) {
-                class Host extends $mol_view {
-                    Skin() {
-                        return $bog_builderui_skin.make({ $: this.$, base: () => 'stone' });
-                    }
-                    plugins() {
-                        return [this.Skin()];
-                    }
-                }
-                __decorate([
-                    $mol_mem
-                ], Host.prototype, "Skin", null);
-                const host = Host.make({ $ });
-                host.dom_tree();
-                const node = host.dom_node();
-                $mol_assert_equal(node.getAttribute('bog_builderui_base'), 'stone');
-                $mol_assert_equal(node.getAttribute('bog_builderui_lights'), 'system');
-                $mol_assert_equal(node.getAttribute('bog_builderui_theme'), 'sky');
-                $mol_assert_equal(node.getAttribute('bog_builderui_radius'), 'medium');
-                $mol_assert_equal(node.getAttribute('mol_theme'), null);
-                host.destructor();
-            },
-            'skin stops input zoom on ios only'($) {
-                const zoom_after = (agent) => {
-                    const meta = { content: 'width=device-width, initial-scale=1', getAttribute: () => meta.content, setAttribute: (_, val) => { meta.content = val; } };
-                    const document = { querySelector: () => meta };
-                    const context = { ...$.$mol_dom_context, document, navigator: { userAgent: agent, platform: '', maxTouchPoints: 0 } };
-                    const skin = $bog_builderui_skin.make({ $: $.$mol_ambient({ $mol_dom_context: context }) });
-                    skin.ios_zoom_fix();
-                    skin.ios_zoom_fix();
-                    return meta.content;
-                };
-                $mol_assert_equal(zoom_after('Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)'), 'width=device-width, initial-scale=1, maximum-scale=1');
-                $mol_assert_equal(zoom_after('Mozilla/5.0 (Linux; Android 14)'), 'width=device-width, initial-scale=1');
-            },
-            'skin follows the host'($) {
-                class Host extends $mol_view {
-                    lights(next) {
-                        return next ?? 'dark';
-                    }
-                    Skin() {
-                        return $bog_builderui_skin.make({ $: this.$, lights: () => this.lights() });
-                    }
-                    plugins() {
-                        return [this.Skin()];
-                    }
-                }
-                __decorate([
-                    $mol_mem
-                ], Host.prototype, "lights", null);
-                __decorate([
-                    $mol_mem
-                ], Host.prototype, "Skin", null);
-                const host = Host.make({ $ });
-                host.dom_tree();
-                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'dark');
-                host.lights('light');
-                host.dom_tree();
-                $mol_assert_equal(host.dom_node().getAttribute('bog_builderui_lights'), 'light');
-                host.destructor();
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function parse(theme) {
-        if (theme === 'true')
-            return true;
-        if (theme === 'false')
-            return false;
-        return null;
-    }
-    // Get once because chrome switches to light on print
-    const base = $.$mol_media.match('(prefers-color-scheme: light)');
-    /**
-     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
-     */
-    function $mol_lights(next) {
-        const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        if (next === undefined) {
-            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
-        }
-        else {
-            if (arg === null) {
-                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
-            }
-            else {
-                this.$mol_state_arg.value('mol_lights', String(next));
-            }
-            return next;
-        }
-    }
-    $.$mol_lights = $mol_lights;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'null by default'() {
-            const key = String(Math.random());
-            $mol_assert_equal($mol_state_session.value(key), null);
-        },
-        'storing'() {
-            const key = String(Math.random());
-            $mol_state_session.value(key, '$mol_state_session_test');
-            $mol_assert_equal($mol_state_session.value(key), '$mol_state_session_test');
-            $mol_state_session.value(key, null);
-            $mol_assert_equal($mol_state_session.value(key), null);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'system mode follows the device, not a light choice stored by another app'($) {
-            const device = (light) => {
-                const context = Object.create($);
-                context.$mol_lights = () => !light;
-                context.$mol_media = class extends $.$mol_media {
-                    static match() {
-                        return light;
-                    }
-                };
-                return $bog_theme_auto.make({ $: context });
-            };
-            const night = device(false);
-            $mol_assert_equal(night.mode(), 'system');
-            $mol_assert_equal(night.theme(), night.theme_dark());
-            $mol_assert_equal(night.is_light_now(), false);
-            const day = device(true);
-            $mol_assert_equal(day.theme(), day.theme_light());
-            $mol_assert_equal(day.is_light_now(), true);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-/** @jsx $mol_jsx */
-/** @jsxFrag $mol_jsx_frag */
-var $;
-(function ($) {
-    $mol_test({
-        'safe tag'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
-        },
-        'bad tag'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
-        },
-        'common attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
-        },
-        'safe attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
-        },
-        'bad attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
-        },
-        'danger attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
-        },
-    });
 })($ || ($ = {}));
 
 ;
@@ -7112,31 +6405,27 @@ var $;
 ;
 "use strict";
 var $;
-(function ($_1) {
-    $mol_test({
-        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
-            const sender = await $.$giper_baza_auth._generate();
-            const target = await $.$giper_baza_auth._generate();
-            const stranger = await $.$giper_baza_auth._generate();
-            const seal = $mol_wire_async($bog_gram_seal);
-            const link = 'ABCDEFGH_IJKLMNOP';
-            const entry = await seal.close(sender, target.pass(), 'invite', link);
-            const again = await seal.close(sender, target.pass(), 'invite', link);
-            const parts = entry.split('|');
-            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
-            const forged = parts.join('|');
-            const opened = await seal.open(target, 'invite', entry);
-            const alien = await seal.open(stranger, 'invite', entry);
-            const other_kind = await seal.open(target, 'deny', entry);
-            const broken = await seal.open(target, 'invite', forged);
-            $mol_assert_equal(entry, again);
-            $mol_assert_equal(entry.includes(link), false);
-            $mol_assert_equal(opened?.open, link);
-            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
-            $mol_assert_equal(alien, null);
-            $mol_assert_equal(other_kind, null);
-            $mol_assert_equal(broken, null);
-        },
+(function ($) {
+    $.$mol_schema_enum = $mol_memo_key.func(function $mol_schema_enum(Options) {
+        return class $mol_schema_enum_ extends $mol_schema_any {
+            static Options = Options;
+            static toString() {
+                if (this !== $mol_schema_enum_)
+                    return super.toString();
+                return '$mol_schema_enum<' + $mol_key(Options) + '>';
+            }
+            static guard(value) {
+                if (Options.some(Option => Object.is(Option, value)))
+                    return value;
+                return $mol_fail(new TypeError('Wrong option', { cause: { value, schema: this } }));
+            }
+            static cast(value) {
+                if (this.check(value))
+                    return value;
+                return Options[0];
+            }
+            static default = Options[0];
+        };
     });
 })($ || ($ = {}));
 
@@ -7144,45 +6433,192 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
-            const made = [];
-            class Fake {
-                url;
-                binaryType = '';
-                closed = false;
-                onopen = null;
-                onerror = null;
-                onclose = null;
-                onmessage = null;
-                constructor(url) {
-                    this.url = url;
-                    made.push(this);
-                    if (url.includes('alive'))
-                        setTimeout(() => this.onopen?.(), 5);
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Cache of enum schema"($) {
+                $mol_assert_equal($mol_schema_enum(['foo']), $mol_schema_enum(['foo']));
+                $mol_assert_unique($mol_schema_enum(['foo']), $mol_schema_enum(['bar']));
+            },
+            "Enum options"($) {
+                const Config = $mol_schema_enum([123, 'foo']);
+                $mol_assert_equal('$mol_schema_enum<[123,"foo"]>', Config + '', $mol_key(Config));
+                $mol_assert_equal(true, Config.check(123));
+                $mol_assert_equal(true, Config.check('foo'));
+                $mol_assert_equal(false, Config.check(true));
+                $mol_assert_equal(false, Config.check(321));
+                $mol_assert_equal(false, Config.check('bar'));
+                $mol_assert_equal(Config.cast(123), 123);
+                $mol_assert_equal(Config.cast('foo'), 'foo');
+                $mol_assert_equal(Config.cast('bar'), 123);
+                $mol_assert_equal(123, Config.guard(123));
+                $mol_assert_fail(() => Config.guard(321), 'Wrong option');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            "Empty representation"($) {
+                const land = $giper_baza_land.make({ $ });
+                const reg = land.Pawn($giper_baza_atom_time).Data();
+                $mol_assert_equal(reg.val(), null);
+                reg.vary(null);
+                $mol_assert_equal(reg.val(), null);
+            },
+            "Validation on set, cast on get"($) {
+                const land = $.$giper_baza_glob.home().land();
+                const head = new $giper_baza_link('22222222');
+                const str = land.Pawn($giper_baza_atom.of($mol_schema_maybe($mol_schema_string))).Head(head);
+                const mail = land.Pawn($giper_baza_atom.of($mol_schema_pattern(/.+@.+/))).Head(head);
+                $mol_assert_equal(str.val(), null);
+                $mol_assert_equal(mail.val(), null);
+                $mol_assert_fail(() => str.val(123), 'Wrong type');
+                $mol_assert_fail(() => mail.val('foo'), 'Wrong string');
+                $mol_assert_equal(str.val(), null);
+                $mol_assert_equal(mail.val(), null);
+                str.val('foo');
+                $mol_assert_equal(str.val(), 'foo');
+                $mol_assert_equal(mail.val(), null);
+                mail.val('foo@bar');
+                $mol_assert_equal(str.val(), 'foo@bar');
+                $mol_assert_equal(mail.val(), 'foo@bar');
+            },
+            "Hyper link to another land"($) {
+                const land = $.$giper_baza_glob.home().land();
+                const reg = land.Pawn($giper_baza_atom_link.to(() => $giper_baza_atom)).Head(new $giper_baza_link('11111111'));
+                const remote = reg.ensure(land);
+                $mol_assert_unique(reg.land(), remote.land());
+                $mol_assert_equal(reg.vary(), remote.link());
+                $mol_assert_equal(reg.remote(), remote);
+            },
+            "Register with linked Pawns"($) {
+                const land = $.$giper_baza_glob.home().land();
+                const str = land.Pawn($giper_baza_atom_text).Head(new $giper_baza_link('11111111'));
+                const link = land.Pawn($giper_baza_atom_link.to(() => $giper_baza_atom_text)).Head(new $giper_baza_link('11111111'));
+                $mol_assert_equal(link.remote(), null);
+                link.remote(str);
+                $mol_assert_equal(link.vary(), link.remote().link(), str.link());
+            },
+            "Enumerated reg type"($) {
+                class FileType extends $giper_baza_atom.of($mol_schema_maybe($mol_schema_enum(['file', 'dir', 'link']))) {
                 }
-                send() { }
-                close() { this.closed = true; }
-            }
-            class Yard extends $bog_yard {
-                static stagger = 10;
-                static masters() {
-                    return ['https://silent.example/', 'https://alive.example/'];
+                const land = $.$giper_baza_glob.home().land();
+                const type = land.Data(FileType);
+                $mol_assert_equal(type.val(), null);
+                type.val('file');
+                $mol_assert_equal(type.val(), 'file');
+                $mol_assert_fail(() => type.val('drive'), 'Wrong option');
+                $mol_assert_equal(type.val(), 'file');
+                type.vary('drive');
+                $mol_assert_equal(type.val(), null);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async 'Dictionary invariants'($) {
+                const land = $giper_baza_land.make({ $ });
+                const dict = land.Pawn($giper_baza_dict).Data();
+                $mol_assert_equal(dict.keys(), []);
+                dict.dive(123, $giper_baza_atom, null);
+                dict.dive('xxx', $giper_baza_atom, null);
+                $mol_assert_equal(dict.keys(), ['xxx', 123]);
+                $mol_assert_equal(dict.has(123), true);
+                $mol_assert_equal(dict.has('xxx'), true);
+                $mol_assert_equal(dict.has('yyy'), false);
+                $mol_assert_equal(dict.dive(123, $giper_baza_atom).vary(), null);
+                $mol_assert_equal(dict.dive('xxx', $giper_baza_atom).vary(), null);
+                dict.dive(123, $giper_baza_atom).vary(777);
+                $mol_assert_equal(dict.dive(123, $giper_baza_atom).vary(), 777);
+                dict.dive('xxx', $giper_baza_list).items_vary(['foo', 'bar']);
+                $mol_assert_equal(dict.dive('xxx', $giper_baza_list).items_vary(), ['foo', 'bar']);
+                dict.has(123, false);
+                $mol_assert_equal(dict.keys(), ['xxx']);
+            },
+            async 'Dictionary merge'($) {
+                const land1 = $giper_baza_land.make({ $ });
+                const land2 = $giper_baza_land.make({ $ });
+                const dict1 = land1.Pawn($giper_baza_dict).Data();
+                const dict2 = land2.Pawn($giper_baza_dict).Data();
+                dict1.dive(123, $giper_baza_atom, null).vary(666);
+                land2.tick();
+                dict2.dive(123, $giper_baza_atom, null).vary(777);
+                await $mol_wire_async(land1).units_steal(land2);
+                $mol_assert_equal(dict1.dive(123, $giper_baza_atom).vary(), 777);
+                dict1.dive('xxx', $giper_baza_list, null).items_vary(['foo']);
+                land2.tick();
+                dict2.dive('xxx', $giper_baza_list, null).items_vary(['bar']);
+                await $mol_wire_async(land1).units_steal(land2);
+                $mol_assert_equal(dict1.dive('xxx', $giper_baza_list).items_vary(), ['bar', 'foo']);
+            },
+            async "Narrowed Dictionary with linked Dictionaries and others"($) {
+                class User extends $giper_baza_dict.with({
+                    Title: $giper_baza_atom_text,
+                    Account: $giper_baza_atom_link.to(() => Account),
+                    Articles: $giper_baza_list_link.to(() => Article),
+                }) {
                 }
-            }
-            const context = Object.create($);
-            context.$mol_dom_context = Object.assign(Object.create($.$mol_dom_context), { WebSocket: Fake });
-            context.$giper_baza_yard = Yard;
-            const yard = Yard.make({ $: context });
-            const began = Date.now();
-            const port = await $mol_wire_async(yard).master();
-            const spent = Date.now() - began;
-            $mol_assert_equal(yard.master_cursor(), 1);
-            $mol_assert_equal(port.socket.url, 'wss://alive.example/');
-            $mol_assert_equal(made[0].closed, true);
-            $mol_assert_equal(spent < 500, true);
-            port.destructor();
-        },
+                class Account extends $giper_baza_dict.with({
+                    Title: $giper_baza_atom_text,
+                    User: $giper_baza_atom_link.to(() => User),
+                }) {
+                }
+                class Article extends $giper_baza_dict.with({
+                    Title: $giper_baza_dict_to($giper_baza_atom_text),
+                    Author: $giper_baza_atom_link.to(() => User),
+                }) {
+                }
+                const land = $.$giper_baza_glob.home().land();
+                const user = land.Pawn(User).Head(new $giper_baza_link('11111111'));
+                $mol_assert_equal(user.Title()?.val() ?? null, null);
+                $mol_assert_equal(user.Account()?.remote() ?? null, null);
+                $mol_assert_equal(user.Articles()?.remote_list() ?? [], []);
+                user.Title(null).val('Jin');
+                $mol_assert_equal(user.Title().val() ?? '', 'Jin');
+                const account = (await $mol_wire_async(user.Account(null)).ensure([[null, $giper_baza_rank_read]]));
+                $mol_assert_equal(user.Account()?.remote() ?? null, account);
+                $mol_assert_equal(account.User()?.remote() ?? null, null);
+                account.User(null).remote(user);
+                $mol_assert_equal(account.User()?.remote(), user);
+                const articles = [
+                    await $mol_wire_async(user.Articles(null)).make([[null, $giper_baza_rank_read]]),
+                    await $mol_wire_async(user.Articles(null)).make([[null, $giper_baza_rank_read]]),
+                ];
+                $mol_assert_equal(user.Articles()?.remote_list().map(n => n[Symbol.toStringTag]), articles.map(n => n[Symbol.toStringTag]));
+                articles[0].Title(null).key('en', 'auto').val('Hello!');
+                $mol_assert_equal(articles[0].Title()?.key('en').val(), 'Hello!');
+                $mol_assert_equal(articles[1].Title()?.key('ru')?.val() ?? null, null);
+                $mol_assert_equal(articles[1].Title()?.key('ru')?.val() ?? null, null);
+                $mol_assert_unique(user.land(), account.land(), ...articles.map(article => article.land()));
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $giper_baza_glob_mock extends $.$giper_baza_glob {
+            static $ = $;
+            static lands_touched = new $mol_wire_set();
+        }
+        $.$giper_baza_glob = $giper_baza_glob_mock;
     });
 })($ || ($ = {}));
 
@@ -7577,6 +7013,493 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function check(str, query) {
+        $mol_assert_like(str, $hyoo_harp_to_string(query));
+        $mol_assert_like(query, $hyoo_harp_from_string(str));
+    }
+    $mol_test({
+        'root'() {
+            check('', {});
+        },
+        'only field'() {
+            check('user%3D777', {
+                'user=777': {},
+            });
+        },
+        'primary key'() {
+            check('user=jin%2C777!=', {
+                user: {
+                    '=': [['jin,777!']],
+                },
+            });
+        },
+        'single fetch'() {
+            check('friend(age%24)', {
+                friend: {
+                    age$: {},
+                },
+            });
+        },
+        'fetch and primary key'() {
+            check('user=jin()=(friend)', {
+                'user': {
+                    '=': [['jin()']],
+                    friend: {},
+                },
+            });
+        },
+        'multiple fetch'() {
+            check('age;friend', {
+                age: {},
+                friend: {},
+            });
+        },
+        'common query string back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('user=jin&age=100500'), {
+                user: {
+                    '=': [['jin']],
+                },
+                age: {
+                    '=': [['100500']],
+                },
+            });
+        },
+        'common pathname back compatible'() {
+            $mol_assert_like($hyoo_harp_from_string('users/jin/comments'), {
+                users: {},
+                jin: {},
+                comments: {},
+            });
+        },
+        'deep fetch'() {
+            check('my(friend(age);name);stat', {
+                my: {
+                    friend: {
+                        age: {},
+                    },
+                    name: {},
+                },
+                stat: {},
+            });
+        },
+        'orders'() {
+            check('+age;-name', {
+                age: {
+                    '+': true
+                },
+                name: {
+                    '+': false
+                },
+            });
+        },
+        'filter types'() {
+            check('sex=female=;status!=married=', {
+                sex: {
+                    '=': [['female']],
+                },
+                status: {
+                    '!=': [['married']],
+                },
+            });
+        },
+        'filter ranges'() {
+            check('sex=female=;age=18@25=;weight=@50=;height=150@=;hobby=paint=singing=', {
+                sex: {
+                    '=': [['female']],
+                },
+                age: {
+                    '=': [['18', '25']],
+                },
+                weight: {
+                    '=': [['', '50']],
+                },
+                height: {
+                    '=': [['150', '']],
+                },
+                hobby: {
+                    '=': [['paint'], ['singing']],
+                },
+            });
+        },
+        'unescaped values'() {
+            $mol_assert_like($hyoo_harp_from_string('foo=jin=777=;bar=jin!=666='), {
+                foo: {
+                    '=': [['jin'], ['777']],
+                },
+                bar: {
+                    '=': [['jin!'], ['666']],
+                },
+            });
+        },
+        'slicing'() {
+            check('friend(_num=0@100=)', {
+                friend: {
+                    _num: { '=': [['0', '100']] },
+                },
+            });
+        },
+        'complex'() {
+            check('pullRequest(state=closed=merged=;+repository(name;private);-updateTime;_num=0@100=)', {
+                pullRequest: {
+                    state: {
+                        '=': [
+                            ['closed'],
+                            ['merged'],
+                        ]
+                    },
+                    repository: {
+                        '+': true,
+                        name: {},
+                        private: {},
+                    },
+                    updateTime: {
+                        '+': false,
+                    },
+                    _num: {
+                        '=': [['0', '100']],
+                    },
+                },
+            });
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is string'() {
+            $mol_data_string('');
+        },
+        'Is not string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(0);
+            }, '0 is not a string');
+        },
+        'Is object string'() {
+            $mol_assert_fail(() => {
+                $mol_data_string(new String('x'));
+            }, 'x is not a string');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is first'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)(0);
+        },
+        'Is second'() {
+            $mol_data_variant($mol_data_number, $mol_data_string)('');
+        },
+        'Is false'() {
+            $mol_assert_fail(() => {
+                $mol_data_variant($mol_data_number, $mol_data_string)(false);
+            }, 'false is not any of variants');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const Age = $mol_data_optional($mol_data_number);
+    const Age_or_zero = $mol_data_optional($mol_data_number, () => 0);
+    $mol_test({
+        'Is not present'() {
+            $mol_assert_equal(Age(undefined), undefined);
+        },
+        'Is present'() {
+            $mol_assert_equal(Age(0), 0);
+        },
+        'Fallbacked'() {
+            $mol_assert_equal(Age_or_zero(undefined), 0);
+        },
+        'Is null'() {
+            $mol_assert_fail(() => Age(null), 'null is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Fit to record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0 });
+        },
+        'Extends record'() {
+            const User = $mol_data_record({ age: $mol_data_number });
+            User({ age: 0, name: 'Jin' });
+        },
+        // 'Recursive record' () {
+        // 	const User = $mol_data_record({
+        // 		name : $mol_data_string ,
+        // 		get kids() { return $mol_data_array( User ) } ,
+        // 	})
+        // 	User({
+        // 		name : 'Jin' ,
+        // 		kids : [
+        // 			{
+        // 				name : 'John' ,
+        // 				kids : [] ,
+        // 			}
+        // 		] ,
+        // 	})
+        // } ,
+        'Shrinks record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ age: $mol_data_number, name: $mol_data_string });
+                User({ age: 0 });
+            }, '["name"] undefined is not a string');
+        },
+        'Shrinks deep record'() {
+            $mol_assert_fail(() => {
+                const User = $mol_data_record({ wife: $mol_data_record({ age: $mol_data_number }) });
+                User({ wife: {} });
+            }, '["wife"] ["age"] undefined is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is empty array'() {
+            $mol_data_array($mol_data_number)([]);
+        },
+        'Is array'() {
+            $mol_data_array($mol_data_number)([1, 2]);
+        },
+        'Is not array'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)({ [0]: 1, length: 1, map: () => { } });
+            }, '[object Object] is not an array');
+        },
+        'Has wrong item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_number)([1, '1']);
+            }, '[1] 1 is not a number');
+        },
+        'Has wrong deep item'() {
+            $mol_assert_fail(() => {
+                $mol_data_array($mol_data_array($mol_data_number))([[], [0, 0, false]]);
+            }, '[1] [2] false is not a number');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Is boolean - true'() {
+            $mol_data_boolean(true);
+        },
+        'Is boolean - false'() {
+            $mol_data_boolean(false);
+        },
+        'Is not boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean('x');
+            }, 'x is not a boolean');
+        },
+        'Is object boolean'() {
+            $mol_assert_fail(() => {
+                $mol_data_boolean(new Boolean(''));
+            }, 'false is not a boolean');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Checks for value of given enum and returns expected type.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_data_enum_demo
+     */
+    function $mol_data_enum(name, dict) {
+        const index = {};
+        for (let key in dict) {
+            if (Number.isNaN(Number(key))) {
+                index[dict[key]] = key;
+            }
+        }
+        return $mol_data_setup((value) => {
+            if (typeof index[value] !== 'string') {
+                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
+            }
+            return value;
+        }, { name, dict });
+    }
+    $.$mol_data_enum = $mol_data_enum;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    let sex;
+    (function (sex) {
+        sex[sex["male"] = 0] = "male";
+        sex[sex["female"] = 1] = "female";
+    })(sex || (sex = {}));
+    let gender;
+    (function (gender) {
+        gender["bisexual"] = "bisexual";
+        gender["trans"] = "transgender";
+    })(gender || (gender = {}));
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // const Sex = $mol_data_enum( 'sex' , sex )
+    // type sex_value =  $mol_type_assert< typeof Sex.Value , sex >
+    $mol_test({
+        'config of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_like(Sex.config, {
+                name: 'sex',
+                dict: sex,
+            });
+        },
+        'name of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex.config.name, 'sex');
+        },
+        'Is right value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_equal(Sex(0), sex.male);
+        },
+        'Is wrong value of enum'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex(2), `2 is not value of sex enum`);
+        },
+        'Is name instead of value'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('male'), `male is not value of sex enum`);
+        },
+        'Is common object field'() {
+            const Sex = $mol_data_enum('sex', sex);
+            $mol_assert_fail(() => Sex('__proto__'), `__proto__ is not value of sex enum`);
+        },
+    });
+    // Test disabled due https://github.com/microsoft/TypeScript/issues/46112
+    // type gender_value =  $mol_type_assert< typeof Gender.Value , gender >
+    $mol_test({
+        'config of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_like(Gender.config, {
+                name: 'gender',
+                dict: gender,
+            });
+        },
+        'Is right value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_equal(Gender('transgender'), gender.trans);
+        },
+        'Is wrong value of enum'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('xxx'), `xxx is not value of gender enum`);
+        },
+        'Is name instead of value'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('trans'), `trans is not value of gender enum`);
+        },
+        'Is common object field'() {
+            const Gender = $mol_data_enum('gender', gender);
+            $mol_assert_fail(() => Gender('__proto__'), `__proto__ is not value of gender enum`);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'type safe build & parse'() {
+            let States;
+            (function (States) {
+                States["opened"] = "opened";
+                States["closed"] = "closed";
+            })(States || (States = {}));
+            const State = $hyoo_harp_scheme({}, $mol_data_enum('States', States));
+            const Str = $hyoo_harp_scheme({}, $mol_data_string);
+            const Bool = $hyoo_harp_scheme({}, $mol_data_boolean);
+            const Repository = $hyoo_harp_scheme({
+                name: $mol_data_optional(Str),
+                isPrivate: $mol_data_optional(Bool),
+                // pullRequests: PullRequest,
+            });
+            const PullRequest = $hyoo_harp_scheme({
+                state: $mol_data_optional(State),
+                updated_at: $mol_data_optional(Str),
+                repository: $mol_data_optional(Repository),
+            });
+            const Request = $hyoo_harp_scheme({
+                pullRequest: $mol_data_optional(PullRequest),
+            });
+            const uri = 'pullRequest(state=closed=;-updated_at;repository(name;isPrivate);_num=0@100=)';
+            let query = Request({
+                pullRequest: {
+                    state: { '=': [[States.closed]] }, // filter
+                    updated_at: { '+': false }, // order
+                    repository: {
+                        name: {},
+                        isPrivate: {},
+                    },
+                    _num: { '=': [[0, 100]] }, // slice
+                }
+            });
+            $mol_assert_like(uri, Request.build(query));
+            $mol_assert_like(query, Request.parse(uri));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'save and load buffers'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15] = 255;
+            file.buffer(source);
+            $mol_assert_equal(file.chunks().length, 2);
+            $mol_assert_equal(file.buffer(), source);
+        },
+        async 'save and load blobs'($) {
+            const land = $giper_baza_land.make({ $ });
+            const file = land.Data($giper_baza_file);
+            const source = new Uint8Array(2 ** 16 + 1);
+            source[2 ** 16 + 1] = 255;
+            await $mol_wire_async(file).blob(new $mol_blob([source], { type: 'test/test' }));
+            $mol_assert_equal('test/test', file.blob().type);
+            $mol_assert_equal(source, new Uint8Array(await file.blob().arrayBuffer()));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     $mol_test({
         'Special'() {
             $mol_assert_equal($mol_si_short(0), '0');
@@ -7656,1349 +7579,1715 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'Числительные склоняются по-русски'() {
+            $mol_assert_equal($bog_gram_count.dialogs(1), '1 диалог');
+            $mol_assert_equal($bog_gram_count.dialogs(3), '3 диалога');
+            $mol_assert_equal($bog_gram_count.dialogs(5), '5 диалогов');
+            $mol_assert_equal($bog_gram_count.dialogs(11), '11 диалогов');
+            $mol_assert_equal($bog_gram_count.dialogs(21), '21 диалог');
+            $mol_assert_equal($bog_gram_count.people(112), '112 участников');
+            $mol_assert_equal($bog_gram_count.people(22), '22 участника');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Ожидание заменяется запасным значением, готовое отдаётся как есть'() {
+            const wait = new Promise(() => { });
+            $mol_assert_equal($bog_gram_soft(() => { throw wait; }, 'запас'), 'запас');
+            $mol_assert_equal($bog_gram_soft(() => 'готово', 'запас'), 'готово');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Избранное первым, архив и запросы входами по краям, пустой список говорит об этом'($) {
+            const empty = $bog_gram_menu.make({ $ });
+            $mol_assert_equal(empty.dialog_rows(), [empty.Saved_row(), empty.Dialogs_empty()]);
+            const full = $bog_gram_menu.make({ $,
+                visible: () => ['A'],
+                archived: () => ['Z'],
+                requests: () => ['R'],
+            });
+            $mol_assert_equal(full.dialog_rows(), [full.Archive_row(), full.Saved_row(), full.Dialog_row('A'), full.Requests_row()]);
+            full.archive_toggle();
+            full.requests_toggle();
+            $mol_assert_equal(full.dialog_rows(), [
+                full.Archive_row(), full.Dialog_row('Z'),
+                full.Saved_row(), full.Dialog_row('A'),
+                full.Requests_row(), full.Dialog_row('R'),
+            ]);
+        },
+        'Корзина удаляет со второго нажатия, другой клик снимает взвод'($) {
+            const dropped = [];
+            const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
+            menu.delete_click('A');
+            $mol_assert_equal(menu.delete_armed('A'), true);
+            $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
+            menu.archive_toggle();
+            $mol_assert_equal(menu.delete_armed('A'), false);
+            menu.delete_click('A');
+            menu.delete_click('A');
+            $mol_assert_equal(dropped, ['A']);
+        },
+        'В строке запроса вместо архива и корзины согласие и отказ'($) {
+            const menu = $bog_gram_menu.make({ $, request_is: (id) => id === 'R' });
+            $mol_assert_equal(menu.Dialog_archive('R'), menu.Request_accept('R'));
+            $mol_assert_equal(menu.Dialog_delete('R'), menu.Request_reject('R'));
+            $mol_assert_equal(menu.Dialog_archive('A') === menu.Request_accept('A'), false);
+        },
+        'Непрочитанное в архиве складывается'($) {
+            const menu = $bog_gram_menu.make({ $,
+                archived: () => ['X', 'Y'],
+                unread: (id) => id === 'X' ? 2 : 3,
+            });
+            $mol_assert_equal(menu.archive_unread_label(), '5');
+            $mol_assert_equal(menu.archive_note(), '2 диалога');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const key = auth.toString() + auth.toStringPrivate();
+            const block = $bog_gram_settings_key.make({ $ });
+            block.armed(true);
+            block.Scan().found(key);
+            $mol_assert_equal(block.input(), key);
+            $mol_assert_equal(block.error(), '');
+            $mol_assert_equal(block.armed(), false);
+            block.Scan().found('https://example.org/');
+            $mol_assert_equal(block.input(), 'https://example.org/');
+            $mol_assert_equal(block.error(), 'В QR не ключ аккаунта');
+        },
+        'Вход по ключу взводится первым нажатием, мусор до взвода не доходит'($) {
+            const block = $bog_gram_settings_key.make({ $ });
+            block.import();
+            $mol_assert_equal(block.error(), 'Вставьте ключ или загрузите файл');
+            block.input('не ключ');
+            block.import();
+            $mol_assert_equal(block.error(), 'Это не похоже на ключ аккаунта');
+            $mol_assert_equal(block.armed(), false);
+        },
+        'Пока ключ скрыт, его нет ни в тексте, ни в коде'($) {
+            const block = $bog_gram_settings_key.make({ $ });
+            $mol_assert_equal(block.rows().includes(block.Row()), false);
+            $mol_assert_equal(block.rows().includes(block.Qr_box()), false);
+            block.toggle();
+            $mol_assert_equal(block.rows().includes(block.Row()), true);
+            $mol_assert_equal(block.toggle_label(), 'Скрыть ключ');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Своя подпись важнее имени, без обоих — сокращённый идентификатор'() {
+            const peer = 'LordPeerWithVeryLongIdentifier';
+            $mol_assert_equal($bog_gram_lord.label(peer, 'Костя с работы', 'Иииии'), 'Костя с работы');
+            $mol_assert_equal($bog_gram_lord.label(peer, '', 'Иииии'), 'Иииии');
+            $mol_assert_equal($bog_gram_lord.label(peer, '', ''), 'LordPe…fier');
+            $mol_assert_equal($bog_gram_lord.label('', 'Костя с работы', 'Иииии'), '');
+        },
+        'Лордом считается только полный идентификатор владельца'() {
+            $mol_assert_equal($bog_gram_lord.check('ikjOnflc_WufmHhGH'), true);
+            $mol_assert_equal($bog_gram_lord.check('не ссылка'), false);
+            $mol_assert_equal($bog_gram_lord.check('ikjOnflc_Wufm'), false);
+            $mol_assert_equal($bog_gram_lord.check('ikjOnflc_WufmHhGH_Aaaaaaaa'), false);
+        },
+        'Один лорд всегда красится одинаково'() {
+            $mol_assert_equal($bog_gram_lord.tint('LordA'), $bog_gram_lord.tint('LordA'));
+            $mol_assert_equal($bog_gram_lord.tint('LordA') < 7, true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Набранный ID и выбранный человек открывают диалог, поле очищается'($) {
+            const opened = [];
+            const compose = $bog_gram_compose.make({ $, open: (lord) => { opened.push(lord); return null; } });
+            compose.start();
+            $mol_assert_equal(opened, []);
+            compose.peer('  LordPeer_Aaaaaaaa  ');
+            compose.start();
+            compose.pick('LordUser_Bbbbbbbb');
+            $mol_assert_equal(opened, ['LordPeer_Aaaaaaaa', 'LordUser_Bbbbbbbb']);
+            $mol_assert_equal(compose.peer(), '');
+        },
+        'Без людей список объясняет, откуда их взять'($) {
+            const lonely = $bog_gram_compose.make({ $, users: () => [], registry_ids: () => [] });
+            $mol_assert_equal(lonely.user_rows(), [lonely.Users_empty()]);
+            $mol_assert_equal(lonely.users_empty_text(), 'Вы не состоите ни в одном реестре. Создайте свой в настройках');
+            const alone = $bog_gram_compose.make({ $, users: () => [], registry_ids: () => ['Registry'] });
+            $mol_assert_equal(alone.users_empty_text(), 'Кроме вас в реестрах пока никого нет');
+            const crowd = $bog_gram_compose.make({ $, users: () => ['LordA', 'LordB'] });
+            $mol_assert_equal(crowd.user_rows().length, 2);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Выбранные отмечаются в списке и называются числом'($) {
+            const group = $bog_gram_group.make({ $,
+                contact_lords: () => ['LordA', 'LordB'],
+                picked: () => ['LordB'],
+            });
+            $mol_assert_equal(group.pick_rows().length, 2);
+            $mol_assert_equal(group.Pick_mark('LordA'), null);
+            $mol_assert_equal(group.Pick_mark('LordB') === null, false);
+            $mol_assert_equal(group.chosen_rows().length, 1);
+            $mol_assert_equal(group.chosen_head(), '1 участник');
+            const empty = $bog_gram_group.make({ $ });
+            $mol_assert_equal(empty.chosen_head(), 'Пока никого не выбрали');
+        },
+        'Потерянные ключи называются по именам, а кнопка создаёт без них'($) {
+            const group = $bog_gram_group.make({ $,
+                lost: () => ['LordA'],
+                label: (lord) => lord === 'LordA' ? 'Аня' : lord,
+            });
+            $mol_assert_equal(group.lost_note().startsWith('Не нашли ключей: Аня.'), true);
+            $mol_assert_equal(group.make_label(), 'Создать без них');
+            const clean = $bog_gram_group.make({ $ });
+            $mol_assert_equal(clean.Lost_note(), null);
+            $mol_assert_equal(clean.make_label(), 'Создать группу');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Звать людей может только админ, назначать админов только создатель'($) {
+            const plain = $bog_gram_members.make({ $, me: () => 'Me', lords: () => ['Me', 'Ann'] });
+            $mol_assert_equal(plain.add_rows(), []);
+            $mol_assert_equal(plain.Rule('Ann'), null);
+            $mol_assert_equal(plain.Drop('Ann'), null);
+            $mol_assert_equal(plain.Drop_note(), null);
+            const admin = $bog_gram_members.make({ $, me: () => 'Me', admin: () => true });
+            $mol_assert_equal(admin.add_rows().includes(admin.Admin_note()), false);
+            $mol_assert_equal(admin.Rule('Ann'), null);
+            $mol_assert_equal(admin.Drop('Me'), null);
+            $mol_assert_equal(admin.Drop('Ann') === null, false);
+            const owner = $bog_gram_members.make({ $, me: () => 'Me', admin: () => true, owner: () => true, admin_is: (lord) => lord === 'Bob' });
+            $mol_assert_equal(owner.add_rows().includes(owner.Admin_note()), true);
+            $mol_assert_equal(owner.Rule('Ann') === null, false);
+            $mol_assert_equal(owner.Rule('Bob'), null);
+            $mol_assert_equal(owner.member_title('Me'), 'Вы');
+        },
+        'Убрать участника можно только вторым нажатием'($) {
+            const parted = [];
+            const members = $bog_gram_members.make({ $,
+                lords: () => ['Ann', 'Bob'],
+                part: (lord) => { parted.push(lord); return null; },
+            });
+            members.drop_click('Ann');
+            $mol_assert_equal(members.armed('Ann'), true);
+            $mol_assert_equal(members.drop_hint('Ann'), 'Точно убрать? Прошлые сообщения у него останутся');
+            members.drop_click('Bob');
+            $mol_assert_equal(members.armed('Ann'), false);
+            $mol_assert_equal(parted, []);
+            members.drop_click('Bob');
+            $mol_assert_equal(parted, ['Bob']);
+        },
+        'Набранный ID проверяется до добавления'($) {
+            const added = [];
+            const members = $bog_gram_members.make({ $,
+                me: () => 'ikjOnflc_WufmHhGH',
+                add: (lord) => { added.push(lord); return null; },
+            });
+            members.id('ikjOnflc_WufmHhGH');
+            members.id_add();
+            $mol_assert_equal(members.error(), 'Это ваш собственный идентификатор');
+            members.id('мусор');
+            members.id_add();
+            $mol_assert_equal(members.error(), 'Это не похоже на идентификатор');
+            members.id('AAAAAAAA_BBBBBBBB');
+            members.id_add();
+            $mol_assert_equal(members.error(), '');
+            $mol_assert_equal(added, ['AAAAAAAA_BBBBBBBB']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Имя и ссылка на лобби пишутся и читаются'($) {
+            const land = $giper_baza_land.make({ $ });
+            const user = land.Data($bog_gram_user);
+            user.Name('auto')?.val('Алиса');
+            user.Inbox_land('auto')?.val('InboxLink1');
+            $mol_assert_equal(user.Name().val(), 'Алиса');
+            $mol_assert_equal(user.Inbox_land().val(), 'InboxLink1');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Чужой пользователь доставляет приглашение в открытое лобби владельца'($) {
+            const owner = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const inbox0 = $giper_baza_land.make({ $, auth: () => owner });
+            inbox0.give(null, $giper_baza_rank_post('just'));
+            const inbox_stranger = $giper_baza_land.make({ $, link: () => inbox0.link(), auth: () => stranger });
+            await $mol_wire_async(inbox_stranger).units_steal(inbox0);
+            inbox_stranger.Data($bog_gram_inbox).Invites('auto').add('NewDialogLink');
+            await $mol_wire_async(inbox0).units_steal(inbox_stranger);
+            const invites = inbox0.Data($bog_gram_inbox).Invites().items();
+            $mol_assert_equal(invites.includes('NewDialogLink'), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function message_of(land, link) {
+        return land.Pawn($bog_gram_message).Head(link.head());
+    }
+    async function pair($) {
+        const king = await $.$giper_baza_auth._generate();
+        const auth_a = await $.$giper_baza_auth._generate();
+        const auth_b = await $.$giper_baza_auth._generate();
+        const session0 = $giper_baza_land.make({ $, auth: () => king });
+        session0.give(auth_a.pass(), $giper_baza_rank_rule);
+        session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+        const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+        await $mol_wire_async(session_a).units_steal(session0);
+        const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+        return { auth_a, lord_a: auth_a.pass().lord().str, session_a, session_b };
+    }
+    $mol_test({
+        async 'Правка синхронизируется вместе с меткой Edited'($) {
+            const { lord_a, session_a, session_b } = await pair($);
+            const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+            msg_a.Text('auto')?.val('первая редакция');
+            msg_a.Author('auto')?.val(lord_a);
+            msg_a.Moment('auto')?.val(1000);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const links_b = session_b.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_b.length, 1);
+            $mol_assert_equal(message_of(session_b, links_b[0]).Text().val(), 'первая редакция');
+            $mol_assert_equal(message_of(session_b, links_b[0]).Edited()?.val() ?? null, null);
+            msg_a.Text('auto')?.val('вторая редакция');
+            msg_a.Edited('auto')?.val(1500);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const edited_b = message_of(session_b, links_b[0]);
+            $mol_assert_equal(edited_b.Text().val(), 'вторая редакция');
+            $mol_assert_equal(edited_b.Edited().val(), 1500);
+        },
+        async 'Удаление — метка Deleted, сообщение остаётся в списке у обеих сторон'($) {
+            const { lord_a, session_a, session_b } = await pair($);
+            const data_a = session_a.Data($bog_gram_session);
+            const alive_a = data_a.Messages('auto').make(null);
+            alive_a.Text('auto')?.val('доживёт');
+            alive_a.Author('auto')?.val(lord_a);
+            alive_a.Moment('auto')?.val(1000);
+            const dead_a = data_a.Messages('auto').make(null);
+            dead_a.Text('auto')?.val('сотрут');
+            dead_a.Author('auto')?.val(lord_a);
+            dead_a.Moment('auto')?.val(2000);
+            dead_a.Deleted('auto')?.val(2500);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const links_b = session_b.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_b.length, 2);
+            const pawns_b = links_b.map(link => message_of(session_b, link));
+            const alive_b = pawns_b.filter(message => !message.Deleted()?.val());
+            const dead_b = pawns_b.filter(message => message.Deleted()?.val());
+            $mol_assert_equal(alive_b.length, 1);
+            $mol_assert_equal(alive_b[0].Text().val(), 'доживёт');
+            $mol_assert_equal(dead_b.length, 1);
+            $mol_assert_equal(dead_b[0].Text().val(), 'сотрут');
+            $mol_assert_equal(dead_b[0].Deleted().val(), 2500);
+        },
+        async 'Ссылка на кадр и его размеры доезжают до собеседника без самого кадра'($) {
+            const { auth_a, lord_a, session_a, session_b } = await pair($);
+            const shot_land = $giper_baza_land.make({ $, auth: () => auth_a });
+            const shot = shot_land.Data($giper_baza_file);
+            shot.buffer(new Uint8Array([1, 2, 3, 4]));
+            shot.type('image/webp');
+            const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+            msg_a.Author('auto')?.val(lord_a);
+            msg_a.Moment('auto')?.val(1000);
+            msg_a.Image('auto').remote(shot);
+            msg_a.Image_width('auto')?.val(1200);
+            msg_a.Image_height('auto')?.val(900);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const links_b = session_b.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_b.length, 1);
+            const got = message_of(session_b, links_b[0]);
+            $mol_assert_equal(got.Image().val().str, shot.link().str);
+            $mol_assert_equal(got.Image_width().val(), 1200);
+            $mol_assert_equal(got.Image_height().val(), 900);
+        },
+        async 'Кадр без подписи остаётся живым сообщением, подпись дописывается правкой'($) {
+            const land = $giper_baza_land.make({ $ });
+            const session = land.Data($bog_gram_session);
+            const shot_land = $giper_baza_land.make({ $ });
+            const shot = shot_land.Data($giper_baza_file);
+            shot.buffer(new Uint8Array([7, 7, 7]));
+            shot.type('image/webp');
+            const message = session.Messages('auto').make(null);
+            message.Author('auto')?.val('LordMine');
+            message.Moment('auto')?.val(1000);
+            message.Image('auto').remote(shot);
+            message.Image_width('auto')?.val(800);
+            message.Image_height('auto')?.val(600);
+            const links = session.Messages().items();
+            const found = message_of(land, links[0]);
+            $mol_assert_equal(found.Text()?.val() ?? '', '');
+            $mol_assert_equal(found.Deleted()?.val() ?? null, null);
+            $mol_assert_equal(found.Image().val().str, shot.link().str);
+            $mol_assert_equal(found.Image_width().val(), 800);
+            $mol_assert_equal(found.Image_height().val(), 600);
+            found.Text('auto')?.val('Вид с балкона');
+            found.Edited('auto')?.val(1500);
+            $mol_assert_equal(message_of(land, links[0]).Text().val(), 'Вид с балкона');
+            $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
+        },
+        async 'Ссылка на запись и её длительность доезжают до собеседника без самой записи'($) {
+            const { auth_a, lord_a, session_a, session_b } = await pair($);
+            const sound_land = $giper_baza_land.make({ $, auth: () => auth_a });
+            const sound = sound_land.Data($giper_baza_file);
+            sound.buffer(new Uint8Array([9, 8, 7, 6]));
+            sound.type('audio/webm');
+            const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+            msg_a.Author('auto')?.val(lord_a);
+            msg_a.Moment('auto')?.val(1000);
+            msg_a.Voice('auto').remote(sound);
+            msg_a.Voice_span('auto')?.val(7.5);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const links_b = session_b.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_b.length, 1);
+            const got = message_of(session_b, links_b[0]);
+            $mol_assert_equal(got.Voice().val().str, sound.link().str);
+            $mol_assert_equal(got.Voice_span().val(), 7.5);
+            $mol_assert_equal(got.Text()?.val() ?? '', '');
+            $mol_assert_equal(got.Image()?.val() ?? null, null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    async function pair($) {
+        const king = await $.$giper_baza_auth._generate();
+        const auth_a = await $.$giper_baza_auth._generate();
+        const auth_b = await $.$giper_baza_auth._generate();
+        const session0 = $giper_baza_land.make({ $, auth: () => king });
+        session0.give(auth_a.pass(), $giper_baza_rank_rule);
+        session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+        const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+        await $mol_wire_async(session_a).units_steal(session0);
+        const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+        await $mol_wire_async(session_b).units_steal(session0);
+        return {
+            lord_a: auth_a.pass().lord().str,
+            lord_b: auth_b.pass().lord().str,
+            reads_a: () => session_a.Data($bog_gram_session),
+            reads_b: () => session_b.Data($bog_gram_session),
+            session_a,
+            session_b,
+        };
+    }
+    $mol_test({
+        async 'Отметки участников лежат по ключу-лорду и мержатся без конфликтов'($) {
+            const { lord_a, lord_b, reads_a, reads_b, session_a, session_b } = await pair($);
+            reads_a().Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(1000);
+            reads_b().Reads('auto')?.key(lord_b, 'auto')?.Moment('auto')?.val(2000);
+            await $mol_wire_async(session_a).units_steal(session_b);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            $mol_assert_equal(reads_a().Reads()?.key(lord_a)?.Moment()?.val(), 1000);
+            $mol_assert_equal(reads_a().Reads()?.key(lord_b)?.Moment()?.val(), 2000);
+            $mol_assert_equal(reads_b().Reads()?.key(lord_a)?.Moment()?.val(), 1000);
+            $mol_assert_equal(reads_b().Reads()?.key(lord_b)?.Moment()?.val(), 2000);
+        },
+        async 'Сдвинутая вперёд отметка доезжает до собеседника'($) {
+            const { lord_a, reads_a, reads_b, session_a, session_b } = await pair($);
+            reads_a().Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(1000);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            $mol_assert_equal(reads_b().Reads()?.key(lord_a)?.Moment()?.val(), 1000);
+            reads_a().Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(3000);
+            await $mol_wire_async(session_b).units_steal(session_a);
+            $mol_assert_equal(reads_a().Reads()?.key(lord_a)?.Moment()?.val(), 3000);
+            $mol_assert_equal(reads_b().Reads()?.key(lord_a)?.Moment()?.val(), 3000);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Участники и сессии пишутся и читаются'($) {
+            const land = $giper_baza_land.make({ $ });
+            const dialog = land.Data($bog_gram_dialog);
+            dialog.Peers('auto').add('LordA');
+            dialog.Peers('auto').add('LordB');
+            dialog.Sessions('auto').add('SessionLink1');
+            $mol_assert_equal(dialog.Peers().items().length, 2);
+            $mol_assert_equal(dialog.Sessions().items()[0], 'SessionLink1');
+        },
+        async 'Участник с выданным правом читает и пишет шифрованный ленд диалога'($) {
+            const king = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const land0 = $giper_baza_land.make({ $, auth: () => king });
+            await $mol_wire_async(land0).encrypted(true);
+            $mol_assert_equal(land0.encrypted(), true);
+            const land_b = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth_b });
+            const ops = {
+                king_writes() {
+                    land0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+                    land0.Data($bog_gram_dialog).Peers('auto').add('SecretLordA');
+                    return true;
+                },
+                b_reads() {
+                    return land_b.Data($bog_gram_dialog).Peers().items().slice();
+                },
+                b_writes() {
+                    land_b.Data($bog_gram_dialog).Peers('auto').add('SecretLordB');
+                    return true;
+                },
+                king_reads() {
+                    return land0.Data($bog_gram_dialog).Peers().items().slice();
+                },
+            };
+            await $mol_wire_async(ops).king_writes();
+            await $mol_wire_async(land_b).units_steal(land0);
+            const peers_b = await $mol_wire_async(ops).b_reads();
+            $mol_assert_equal(peers_b.includes('SecretLordA'), true);
+            await $mol_wire_async(ops).b_writes();
+            await $mol_wire_async(land0).units_steal(land_b);
+            const peers0 = await $mol_wire_async(ops).king_reads();
+            $mol_assert_equal(peers0.includes('SecretLordB'), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function message_of(land, link) {
+        return land.Pawn($bog_gram_message).Head(link.head());
+    }
+    $mol_test({
+        async 'Сообщение пишется в сессию и читается из неё'($) {
+            const land = $giper_baza_land.make({ $ });
+            const session = land.Data($bog_gram_session);
+            const message = session.Messages('auto').make(null);
+            message.Text('auto')?.val('Привет!');
+            message.Author('auto')?.val('LordA');
+            message.Moment('auto')?.val(1000);
+            const links = session.Messages().items();
+            $mol_assert_equal(links.length, 1);
+            const found = message_of(land, links[0]);
+            $mol_assert_equal(found.Text().val(), 'Привет!');
+            $mol_assert_equal(found.Author().val(), 'LordA');
+        },
+        async 'Два участника обмениваются сообщениями через синк сессии'($) {
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_session = await $.$giper_baza_auth._generate();
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            const dialog0 = $giper_baza_land.make({ $, auth: () => king_dialog });
+            dialog0.give(auth_a.pass(), $giper_baza_rank_rule);
+            dialog0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+            const session0 = $giper_baza_land.make({ $, auth: () => king_session });
+            session0.give(auth_a.pass(), $giper_baza_rank_rule);
+            session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
+            const dialog_a = $giper_baza_land.make({ $, link: () => dialog0.link(), auth: () => auth_a });
+            await $mol_wire_async(dialog_a).units_steal(dialog0);
+            const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
+            await $mol_wire_async(session_a).units_steal(session0);
+            const dialog_data_a = dialog_a.Data($bog_gram_dialog);
+            dialog_data_a.Peers('auto').add(lord_a);
+            dialog_data_a.Peers('auto').add(lord_b);
+            dialog_data_a.Sessions('auto').add(session0.link().str);
+            const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
+            msg_a.Text('auto')?.val('Привет, B!');
+            msg_a.Author('auto')?.val(lord_a);
+            msg_a.Moment('auto')?.val(1000);
+            const dialog_b = $giper_baza_land.make({ $, link: () => dialog0.link(), auth: () => auth_b });
+            await $mol_wire_async(dialog_b).units_steal(dialog_a);
+            const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
+            await $mol_wire_async(session_b).units_steal(session_a);
+            const peers_b = dialog_b.Data($bog_gram_dialog).Peers().items();
+            $mol_assert_equal(peers_b.includes(lord_a), true);
+            $mol_assert_equal(peers_b.includes(lord_b), true);
+            const links_b = session_b.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_b.length, 1);
+            $mol_assert_equal(message_of(session_b, links_b[0]).Text().val(), 'Привет, B!');
+            const msg_b = session_b.Data($bog_gram_session).Messages('auto').make(null);
+            msg_b.Text('auto')?.val('Привет, A!');
+            msg_b.Author('auto')?.val(lord_b);
+            msg_b.Moment('auto')?.val(2000);
+            await $mol_wire_async(session_a).units_steal(session_b);
+            const links_a = session_a.Data($bog_gram_session).Messages().items();
+            $mol_assert_equal(links_a.length, 2);
+            const sorted = links_a
+                .map(link => message_of(session_a, link))
+                .sort((x, y) => (x.Moment()?.val() ?? 0) - (y.Moment()?.val() ?? 0));
+            $mol_assert_equal(sorted[0].Author().val(), lord_a);
+            $mol_assert_equal(sorted[1].Author().val(), lord_b);
+            $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
+        },
+        async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
+            const land = $giper_baza_land.make({ $ });
+            const session = land.Data($bog_gram_session);
+            const moments = [3000, 1000, 2000];
+            const texts = ['третье', 'первое', 'второе'];
+            for (let i = 0; i < moments.length; ++i) {
+                const message = session.Messages('auto').make(null);
+                message.Text('auto')?.val(texts[i]);
+                message.Moment('auto')?.val(moments[i]);
+            }
+            const links = session.Messages().items();
+            const sorted = links
+                .map(link => message_of(land, link))
+                .sort((x, y) => (x.Moment()?.val() ?? 0) - (y.Moment()?.val() ?? 0));
+            $mol_assert_equal(sorted[0].Text().val(), 'первое');
+            $mol_assert_equal(sorted[1].Text().val(), 'второе');
+            $mol_assert_equal(sorted[2].Text().val(), 'третье');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Ключ принимается только под своим лордом'($) {
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
+        },
+        async 'Мусор вместо ключа не роняет разбор'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
+            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
+        },
+        async 'Одна строка ключа даёт один и тот же объект'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const str = auth.pass().toString();
+            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function strings(list) {
+        return (list?.items() ?? []).map(String);
+    }
+    async function open_registry($) {
+        const king = await $.$giper_baza_auth._generate();
+        const registry0 = $giper_baza_land.make({ $, auth: () => king });
+        registry0.give(null, $giper_baza_rank_post('just'));
+        return { king, registry0 };
+    }
+    async function copy($, of, auth) {
+        const land = $giper_baza_land.make({ $, link: () => of.link(), auth: () => auth });
+        await $mol_wire_async(land).units_steal(of);
+        return land;
+    }
+    $mol_test({
+        async 'Конкурентная регистрация мержится без конфликтов'($) {
+            const { registry0 } = await open_registry($);
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const registry_a = await copy($, registry0, auth_a);
+            const registry_b = await copy($, registry0, auth_b);
+            registry_a.Data($bog_gram_users).Lords('auto').add(auth_a.pass().lord().str);
+            registry_b.Data($bog_gram_users).Lords('auto').add(auth_b.pass().lord().str);
+            await $mol_wire_async(registry_a).units_steal(registry_b);
+            await $mol_wire_async(registry_b).units_steal(registry_a);
+            const lords_a = strings(registry_a.Data($bog_gram_users).Lords());
+            const lords_b = strings(registry_b.Data($bog_gram_users).Lords());
+            $mol_assert_equal(lords_a.includes(auth_a.pass().lord().str), true);
+            $mol_assert_equal(lords_a.includes(auth_b.pass().lord().str), true);
+            $mol_assert_equal(lords_a.length, lords_b.length);
+        },
+        async 'Вступление — явная запись, чтение список не меняет'($) {
+            const { registry0 } = await open_registry($);
+            const guest = await $.$giper_baza_auth._generate();
+            const guest_lord = guest.pass().lord().str;
+            const registry_guest = await copy($, registry0, guest);
+            $mol_assert_equal(strings(registry_guest.Data($bog_gram_users).Lords()).length, 0);
+            registry_guest.Data($bog_gram_users).Lords('auto').add(guest_lord);
+            $mol_assert_equal(strings(registry_guest.Data($bog_gram_users).Lords()).includes(guest_lord), true);
+            await $mol_wire_async(registry0).units_steal(registry_guest);
+            $mol_assert_equal(strings(registry0.Data($bog_gram_users).Lords()).includes(guest_lord), true);
+        },
+        async 'Название задаёт создатель, видит участник'($) {
+            const { king, registry0 } = await open_registry($);
+            const guest = await $.$giper_baza_auth._generate();
+            const king_lord = king.pass().lord().str;
+            const data0 = registry0.Data($bog_gram_users);
+            data0.Title('auto')?.val('Соседи по даче');
+            data0.Lords('auto').add(king_lord);
+            const data_guest = (await copy($, registry0, guest)).Data($bog_gram_users);
+            $mol_assert_equal(data_guest.Title().val(), 'Соседи по даче');
+            $mol_assert_equal(strings(data_guest.Lords()).includes(king_lord), true);
+        },
+        async 'Ключ участника доезжает до других и лежит по ключу-лорду'($) {
+            const { registry0 } = await open_registry($);
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const key_a = auth_a.pass().toString();
+            const registry_a = await copy($, registry0, auth_a);
+            const data_a = registry_a.Data($bog_gram_users);
+            data_a.Lords('auto').add(lord_a);
+            data_a.Keys('auto')?.key(lord_a, 'auto')?.Pass('auto')?.val(key_a);
+            const data_b = (await copy($, registry_a, auth_b)).Data($bog_gram_users);
+            $mol_assert_equal(strings(data_b.Lords()).includes(lord_a), true);
+            const got = String(data_b.Keys()?.key(lord_a)?.Pass()?.val() ?? '');
+            $mol_assert_equal(got, key_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, got)?.lord().str, lord_a);
+            $mol_assert_equal(Boolean(data_b.Keys()?.key(auth_b.pass().lord().str)), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function message_of(land, link) {
+        return land.Pawn($bog_gram_message).Head(link.head());
+    }
+    function strings(list) {
+        return (list?.items() ?? []).map(String);
+    }
+    $mol_test({
+        async 'Удалённый диалог оседает в Hidden и инвайтом не возвращается'($) {
+            const land = $giper_baza_land.make({ $ });
+            const store = land.Data($bog_gram_dialogs);
+            store.Dialogs('auto').add('DialogKeep');
+            store.Dialogs('auto').add('DialogDrop');
+            store.Dialogs('auto').cut('DialogDrop');
+            store.Hidden('auto').add('DialogDrop');
+            $mol_assert_equal(strings(store.Dialogs()), ['DialogKeep']);
+            const hidden = new Set(strings(store.Hidden()));
+            $mol_assert_equal(hidden.has('DialogDrop'), true);
+            $mol_assert_equal(hidden.has('DialogKeep'), false);
+            const merged = ['DialogKeep', 'DialogDrop'].filter(link => !hidden.has(link));
+            $mol_assert_equal(merged, ['DialogKeep']);
+        },
+        async 'Заявка проходит очередь, отправленное и приём'($) {
+            const land = $giper_baza_land.make({ $ });
+            const store = land.Data($bog_gram_dialogs);
+            const waiting = 'AAAAAAAA_BBBBBBBB';
+            const answered = 'CCCCCCCC_DDDDDDDD';
+            $mol_assert_equal(strings(store.Asks()).length, 0);
+            $mol_assert_equal(strings(store.Asked()).length, 0);
+            store.Asks('auto').add(waiting);
+            store.Asks('auto').add(answered);
+            store.Asks('auto').add(waiting);
+            $mol_assert_equal(strings(store.Asks()).length, 2);
+            for (const id of [waiting, answered]) {
+                store.Asked('auto').add(id);
+                store.Asks('auto').cut(id);
+            }
+            $mol_assert_equal(strings(store.Asks()).length, 0);
+            $mol_assert_equal(strings(store.Asked()).length, 2);
+            store.Dialogs('auto').add(answered);
+            store.Asked('auto').cut(answered);
+            const asked = new Set(strings(store.Asked()));
+            $mol_assert_equal(asked.has(waiting), true);
+            $mol_assert_equal(asked.has(answered), false);
+            const have = new Set(strings(store.Dialogs()));
+            $mol_assert_equal([...asked].filter(id => !have.has(id)), [waiting]);
+            $mol_assert_equal(strings(store.Outbox()).length, 0);
+        },
+        async 'Архив прячет диалог из списка, но не удаляет'($) {
+            const land = $giper_baza_land.make({ $ });
+            const store = land.Data($bog_gram_dialogs);
+            store.Dialogs('auto').add('DialogPlain');
+            store.Dialogs('auto').add('DialogFolded');
+            store.Archived('auto').add('DialogFolded');
+            const dialogs = strings(store.Dialogs());
+            $mol_assert_equal(dialogs.length, 2);
+            $mol_assert_equal(new Set(dialogs).has('DialogFolded'), true);
+            const archived = new Set(strings(store.Archived()));
+            $mol_assert_equal(dialogs.filter(id => !archived.has(id)), ['DialogPlain']);
+            $mol_assert_equal(archived.has('DialogFolded'), true);
+            store.Dialogs('auto').cut('DialogFolded');
+            store.Hidden('auto').add('DialogFolded');
+            const alive = new Set(strings(store.Dialogs()));
+            const dropped = new Set(strings(store.Hidden()));
+            const in_archive = strings(store.Archived()).filter(id => alive.has(id) && !dropped.has(id));
+            $mol_assert_equal(in_archive.length, 0);
+            store.Archived('auto').cut('DialogFolded');
+            $mol_assert_equal(strings(store.Archived()).length, 0);
+            $mol_assert_equal(strings(store.Dialogs()).length, 1);
+        },
+        async 'Избранное — ссылка на свой ленд с обычной сессией без отметок прочтения'($) {
+            const owner = $giper_baza_land.make({ $ });
+            const store = owner.Data($bog_gram_dialogs);
+            store.Saved_land('auto')?.val('SavedLandLink');
+            $mol_assert_equal(store.Saved_land().val(), 'SavedLandLink');
+            const saved = $giper_baza_land.make({ $ });
+            const session = saved.Data($bog_gram_session);
+            const note = session.Messages('auto').make(null);
+            note.Text('auto')?.val('Не забыть купить хлеб');
+            note.Author('auto')?.val('LordMine');
+            note.Moment('auto')?.val(1000);
+            const links = session.Messages().items();
+            $mol_assert_equal(links.length, 1);
+            const found = message_of(saved, links[0]);
+            $mol_assert_equal(found.Text().val(), 'Не забыть купить хлеб');
+            $mol_assert_equal(found.Author().val(), 'LordMine');
+            found.Text('auto')?.val('Хлеб и молоко');
+            found.Edited('auto')?.val(1500);
+            $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
+            $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
+        },
+        async 'Подпись собеседника лежит по ключу-лорду, снятая подпись пустая'($) {
+            const land = $giper_baza_land.make({ $ });
+            const store = land.Data($bog_gram_dialogs);
+            const peer = 'LordPeerWithVeryLongIdentifier';
+            $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
+            store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('Костя с работы');
+            $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', 'Костя с работы');
+            $mol_assert_equal(Boolean(store.Notes()?.key('LordStranger')), false);
+            store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('');
+            $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
+        },
+        async 'Согласие на собеседника не задваивается и не задевает скрытые диалоги'($) {
+            const land = $giper_baza_land.make({ $ });
+            const store = land.Data($bog_gram_dialogs);
+            const known = 'LordKnown';
+            $mol_assert_equal(strings(store.Accepted()).length, 0);
+            store.Accepted('auto').add(known);
+            store.Accepted('auto').add(known);
+            $mol_assert_equal(strings(store.Accepted()), [known]);
+            store.Hidden('auto').add('DialogFromStranger');
+            const hidden = new Set(strings(store.Hidden()));
+            $mol_assert_equal(hidden.has('DialogFromStranger'), true);
+            $mol_assert_equal(hidden.has(known), false);
+            $mol_assert_equal(strings(store.Accepted()).length, 1);
+            $mol_assert_equal(strings(store.Archived()).length, 0);
+        },
+        async 'Забыть реестр — локальная операция, запись в нём остаётся'($) {
+            const king = await $.$giper_baza_auth._generate();
+            const me = await $.$giper_baza_auth._generate();
+            const my_lord = me.pass().lord().str;
+            const registry0 = $giper_baza_land.make({ $, auth: () => king });
+            registry0.give(null, $giper_baza_rank_post('just'));
+            const registry_me = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => me });
+            await $mol_wire_async(registry_me).units_steal(registry0);
+            registry_me.Data($bog_gram_users).Lords('auto').add(my_lord);
+            const private_land = $giper_baza_land.make({ $, auth: () => me });
+            const store = private_land.Data($bog_gram_dialogs);
+            const link = registry0.link().str;
+            store.Registries('auto').add(link);
+            store.Registries('auto').add('OtherRegistry');
+            store.Registries('auto').cut(link);
+            const known = strings(store.Registries());
+            $mol_assert_equal(known.includes(link), false);
+            $mol_assert_equal(known.includes('OtherRegistry'), true);
+            const lords = strings(registry_me.Data($bog_gram_users).Lords());
+            $mol_assert_equal(lords.includes(my_lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'($) {
+            const king_lobby = await $.$giper_baza_auth._generate();
+            const king_user = await $.$giper_baza_auth._generate();
+            const king_dialogs = await $.$giper_baza_auth._generate();
+            const lobby = $giper_baza_land.make({ $, auth: () => king_lobby });
+            const profile = $giper_baza_land.make({ $, auth: () => king_user }).Data($bog_gram_user);
+            const dialogs = $giper_baza_land.make({ $, auth: () => king_dialogs }).Data($bog_gram_dialogs);
+            profile.Inbox_land('auto')?.val('OldLobbyLink');
+            const account = $bog_gram_account.make({ $,
+                inbox_land: () => lobby,
+                user_store: () => profile,
+                dialogs_store: () => dialogs,
+            });
+            account.inbox_open();
+            account.inbox_publish();
+            $mol_assert_equal(lobby.lord_rank(null), $giper_baza_rank_post('slow'));
+            $mol_assert_equal(profile.Inbox_land()?.val(), lobby.link().str);
+            $mol_assert_equal(account.lobbies_old(), ['OldLobbyLink']);
+        },
+        async 'Записи лобби читаются одним списком и снимаются по одной'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $,
+                inbox_store: () => inbox,
+                dialogs_store: () => dialogs,
+            });
+            inbox.Joins('auto').add('первая');
+            inbox.Joins('auto').add('вторая');
+            inbox.Denies('auto').add('отказ');
+            $mol_assert_equal(new Set(account.joins()).size, 2);
+            $mol_assert_equal(account.denies(), ['отказ']);
+            $mol_assert_equal(account.invites(), []);
+            account.joins_cut('первая');
+            $mol_assert_equal(account.joins(), ['вторая']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Люди из реестров собираются без меня, их ключ находится по лорду'($) {
+            const me = await $.$giper_baza_auth._generate();
+            const ann = await $.$giper_baza_auth._generate();
+            const my = me.pass().lord().str;
+            const ann_lord = ann.pass().lord().str;
+            const id = 'AAAAAAAA_BBBBBBBB';
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const users = $giper_baza_land.make({ $ }).Data($bog_gram_users);
+            const account = $bog_gram_account.make({ $, my_lord: () => my, dialogs_store: () => dialogs });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, store: () => users });
+            dialogs.Registries('auto').add(id);
+            users.Title('auto')?.val('Соседи по даче');
+            users.Lords('auto').add(my);
+            users.Lords('auto').add(ann_lord);
+            users.Keys('auto')?.key(ann_lord, 'auto')?.Pass('auto')?.val(ann.pass().toString());
+            $mol_assert_equal(registry.title(id), 'Соседи по даче');
+            $mol_assert_equal(registry.status(id), '2 участника · вы в списке');
+            $mol_assert_equal(Object.keys(registry.sources()), [ann_lord]);
+            $mol_assert_equal(registry.source_title(ann_lord), '');
+            $mol_assert_equal(registry.pass_of(ann_lord)?.lord().str, ann_lord);
+            $mol_assert_equal(registry.pass_of(my), null);
+        },
+        async 'Забытый реестр уходит из своего списка и с адреса'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const registry = $bog_gram_registry.make({ $, Account: () => account });
+            const id = 'AAAAAAAA_BBBBBBBB';
+            registry.open(id);
+            $mol_assert_equal(registry.remember(), id);
+            $mol_assert_equal(registry.ids(), [id]);
+            registry.forget(id);
+            $mol_assert_equal(registry.ids(), []);
+            $mol_assert_equal(registry.active(), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Ключ из ссылки проверяется и не теряется после ухода экрана'($) {
+            const peer = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const lord = peer.pass().lord().str;
+            const key = peer.pass().toString();
+            const king = await $.$giper_baza_auth._generate();
+            const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const first = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(first.pass_learn(lord, other.pass().toString()), null);
+            $mol_assert_equal(first.pass_learn(lord, 'мусор'), null);
+            $mol_assert_equal(first.pass_learn(lord, ''), null);
+            const learned = first.pass_learn(lord, key);
+            $mol_assert_equal(learned?.lord().str, lord);
+            $mol_assert_equal(first.pass_of(lord), learned);
+            const next = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(next.pass_given(lord), null);
+            $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
+        },
+        async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const people = $bog_gram_people.make({ $, Account: () => account, name: () => 'Иииии' });
+            const peer = 'LordPeerWithVeryLongIdentifier';
+            $mol_assert_equal(people.label(peer), 'Иииии');
+            people.note_set(peer, 'Костя с работы');
+            $mol_assert_equal(people.label(peer), 'Костя с работы');
+            people.note_set(peer, '');
+            $mol_assert_equal(people.label(peer), 'Иииии');
+        },
+        async 'Согласие даётся человеку один раз и только настоящему лорду'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, my_lord: () => 'LordMine' });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, sources: () => ({}) });
+            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry });
+            $mol_assert_equal(people.known(lord), false);
+            people.accept(lord);
+            people.accept(lord);
+            people.accept('не лорд');
+            people.accept('LordMine');
+            $mol_assert_equal(people.accepted(), [lord]);
+            $mol_assert_equal(people.known(lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Заголовок дня и время сообщения форматируются по-человечески'() {
+            const now = new Date();
+            $mol_assert_equal($bog_gram_clock.day_title(now.toDateString()), 'Сегодня');
+            $mol_assert_equal($bog_gram_clock.day_title(new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString()), 'Вчера');
+            $mol_assert_equal($bog_gram_clock.day_title(''), '');
+            $mol_assert_equal($bog_gram_clock.day_title(new Date(2020, 0, 15).toDateString()).includes('2020'), true);
+            $mol_assert_equal($bog_gram_clock.time(new Date(2020, 0, 15, 9, 5).getTime()), '09:05');
+            $mol_assert_equal($bog_gram_clock.time(new Date(2020, 0, 15, 23, 59).getTime()), '23:59');
+        },
+        'В списке сегодняшнее показывается временем, прошлое — датой'() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 5).getTime();
+            $mol_assert_equal($bog_gram_clock.brief(today), '09:05');
+            $mol_assert_equal($bog_gram_clock.brief(new Date(2020, 0, 15, 9, 5).getTime()), '15.01');
+            $mol_assert_equal($bog_gram_clock.brief(0), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function message_of(land, link) {
+        return land.Pawn($bog_gram_message).Head(link.head());
+    }
+    function list_of(land) {
+        return land.Data($bog_gram_session).Messages().items()
+            .map(link => message_of(land, link));
+    }
+    function write(land, moment, text, author = '') {
+        const message = land.Data($bog_gram_session).Messages('auto').make(null);
+        message.Text('auto')?.val(text);
+        message.Moment('auto')?.val(moment);
+        if (author)
+            message.Author('auto')?.val(author);
+        return message;
+    }
+    $mol_test({
+        async 'Избранное собирается изо всех своих лендов, пишется в указанный'($) {
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => store });
+            const talk = $bog_gram_talk.make({ $, Account: () => account });
+            const first = 'AAAAAAAA_BBBBBBBB';
+            const second = 'CCCCCCCC_DDDDDDDD';
+            $mol_assert_equal(talk.saved_links().length, 0);
+            $mol_assert_equal(talk.saved_is(first), false);
+            store.Saved_land('auto')?.val(first);
+            store.Saved_lands('auto').add(first);
+            $mol_assert_equal(talk.saved_links().join(), first);
+            store.Saved_lands('auto').add(second);
+            store.Saved_land('auto')?.val(second);
+            $mol_assert_equal(talk.saved_is(first), true);
+            $mol_assert_equal(talk.saved_is(second), true);
+            $mol_assert_equal(talk.saved_is('DialogPlain'), false);
+            $mol_assert_equal(talk.saved_is(''), false);
+            const links = talk.saved_links();
+            $mol_assert_equal(links.length, 2);
+            $mol_assert_equal(links[links.length - 1], second);
+            $mol_assert_equal(talk.links_of(second).join(), links.join());
+            $mol_assert_equal(talk.links_of(first).join(), links.join());
+        },
+        'Сообщения из разных бакетов сливаются по моменту'($) {
+            const talk = $bog_gram_talk.make({ $ });
+            const early = $giper_baza_land.make({ $ });
+            const late = $giper_baza_land.make({ $ });
+            write(early, 1000, 'первое');
+            write(early, 3000, 'третье');
+            write(late, 2000, 'второе');
+            write(late, 4000, 'четвёртое');
+            const text = (list) => list.map(item => item.Text().val()).join(' ');
+            $mol_assert_equal(text(talk.messages_merge([list_of(early), list_of(late)])), 'первое второе третье четвёртое');
+            $mol_assert_equal(text(talk.messages_merge([list_of(late), list_of(early)])), 'первое второе третье четвёртое');
+            $mol_assert_equal(text(talk.messages_merge([[], list_of(early), []])), 'первое третье');
+            $mol_assert_equal(talk.messages_merge([]).length, 0);
+            const tie_one = $giper_baza_land.make({ $ });
+            const tie_two = $giper_baza_land.make({ $ });
+            write(tie_one, 5000, 'один');
+            write(tie_two, 5000, 'два');
+            $mol_assert_equal(text(talk.messages_merge([list_of(tie_one), list_of(tie_two)])), text(talk.messages_merge([list_of(tie_two), list_of(tie_one)])));
+        },
+        'Своё сообщение в диалоге считается, чужое и удалённое нет'($) {
+            const land = $giper_baza_land.make({ $ });
+            const talk = $bog_gram_talk.make({ $ });
+            $mol_assert_equal(talk.mine_among([], 'LordMine'), false);
+            write(land, 1000, 'Эй', 'LordPeer');
+            $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), false);
+            const mine = write(land, 2000, 'Привет', 'LordMine');
+            $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), true);
+            mine.Deleted('auto')?.val(3000);
+            const alive = list_of(land).filter(message => !message.Deleted()?.val());
+            $mol_assert_equal(talk.mine_among(alive, 'LordMine'), false);
+        },
+        'Пока отметка прочтения едет, её чтение ждёт, а не отдаёт ноль'($) {
+            const wait = new Promise(() => { });
+            const talk = $bog_gram_talk.make({ $, lands_of: () => [{ Data: () => { throw wait; } }] });
+            let thrown = null;
+            try {
+                talk.read_moment_of('dialog', 'Me');
+            }
+            catch (error) {
+                thrown = error;
+            }
+            $mol_assert_equal(thrown, wait);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Запечатанную ссылку открывает только адресат, подмену печать отвергает'($) {
+            const sender = await $.$giper_baza_auth._generate();
+            const target = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const seal = $mol_wire_async($bog_gram_seal);
+            const link = 'ABCDEFGH_IJKLMNOP';
+            const entry = await seal.close(sender, target.pass(), 'invite', link);
+            const again = await seal.close(sender, target.pass(), 'invite', link);
+            const parts = entry.split('|');
+            parts[3] = parts[3].slice(0, -2) + (parts[3].endsWith('AA') ? 'BB' : 'AA');
+            const forged = parts.join('|');
+            const opened = await seal.open(target, 'invite', entry);
+            const alien = await seal.open(stranger, 'invite', entry);
+            const other_kind = await seal.open(target, 'deny', entry);
+            const broken = await seal.open(target, 'invite', forged);
+            $mol_assert_equal(entry, again);
+            $mol_assert_equal(entry.includes(link), false);
+            $mol_assert_equal(opened?.open, link);
+            $mol_assert_equal(opened?.lord, sender.pass().lord().str);
+            $mol_assert_equal(alien, null);
+            $mol_assert_equal(other_kind, null);
+            $mol_assert_equal(broken, null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Чужой диалог показывается по сообщениям и знакомству'($) {
+            const roster = $bog_gram_roster.make({ $ });
+            $mol_assert_equal(roster.sort(true, false, false), 'plain');
+            $mol_assert_equal(roster.sort(true, true, false), 'plain');
+            $mol_assert_equal(roster.sort(false, false, true), 'skip');
+            $mol_assert_equal(roster.sort(false, false, false), 'skip');
+            $mol_assert_equal(roster.sort(false, true, true), 'plain');
+            $mol_assert_equal(roster.sort(false, true, false), 'request');
+        },
+        'Список раскладывает диалоги по полкам: общий, запросы, архив'($) {
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => store });
+            const kinds = {
+                Mine: 'plain',
+                Stranger: 'request',
+                Empty: 'skip',
+                Folded: 'plain',
+            };
+            const talk = $bog_gram_talk.make({ $, Account: () => account, fresh_first: (ids) => [...ids].sort() });
+            const roster = $bog_gram_roster.make({ $,
+                Account: () => account,
+                Talk: () => talk,
+                kind: (id) => kinds[id],
+            });
+            for (const id of Object.keys(kinds))
+                store.Dialogs('auto').add(id);
+            store.Archived('auto').add('Folded');
+            $mol_assert_equal(roster.visible(), ['Mine']);
+            $mol_assert_equal(roster.requests(), ['Stranger']);
+            $mol_assert_equal(roster.archived(), ['Folded']);
+            roster.unarchive('Folded');
+            $mol_assert_equal(roster.archived(), []);
+            $mol_assert_equal(roster.visible(), ['Folded', 'Mine']);
+        },
+        'Убранный диалог прячется и не возвращается приглашением'($) {
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const monitor = $giper_baza_land.make({ $ }).Data($bog_gram_monitor);
+            const account = $bog_gram_account.make({ $,
+                dialogs_store: () => store,
+                monitor_store: () => monitor,
+                invites: () => ['Keep', 'Drop', 'Fresh'],
+            });
+            const talk = $bog_gram_talk.make({ $, Account: () => account, links_of: () => [] });
+            const roster = $bog_gram_roster.make({ $, Account: () => account, Talk: () => talk });
+            store.Dialogs('auto').add('Keep');
+            store.Dialogs('auto').add('Drop');
+            store.Archived('auto').add('Drop');
+            roster.drop('Drop');
+            $mol_assert_equal(roster.ids(), ['Keep']);
+            $mol_assert_equal(roster.hidden(), ['Drop']);
+            $mol_assert_equal(roster.archive_links(), []);
+            roster.invites_merge();
+            $mol_assert_equal([...roster.ids()].sort(), ['Fresh', 'Keep']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Без ключа человека группа сперва не создаётся, а называет потерю'($) {
+            const people = $bog_gram_people.make({ $, pass_of: () => null });
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordMine' });
+            const crew = $bog_gram_crew.make({ $, People: () => people, Account: () => account });
+            $mol_assert_equal(crew.group_make('Дача', ['LordLost'], false), { id: '', lost: ['LordLost'] });
+            $mol_assert_equal(crew.group_make('Дача', ['LordLost'], true), { id: '', lost: [] });
+            $mol_assert_equal(crew.group_make('Дача', ['LordMine'], false), { id: '', lost: [] });
+        },
+        async 'Исключённый теряет новый бакет, но не старый'($) {
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_old = await $.$giper_baza_auth._generate();
+            const king_new = await $.$giper_baza_auth._generate();
+            const auth_stay = await $.$giper_baza_auth._generate();
+            const auth_out = await $.$giper_baza_auth._generate();
+            const lord_stay = auth_stay.pass().lord().str;
+            const lord_out = auth_out.pass().lord().str;
+            const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+            const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
+            const new_bucket = $giper_baza_land.make({ $, auth: () => king_new });
+            await $mol_wire_async(old_bucket).encrypted(true);
+            await $mol_wire_async(new_bucket).encrypted(true);
+            const ops = {
+                start() {
+                    old_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
+                    old_bucket.give(auth_out.pass(), $giper_baza_rank_post('just'));
+                    return true;
+                },
+                part() {
+                    new_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
+                    return true;
+                },
+                fill() {
+                    const data = dialog.Data($bog_gram_dialog);
+                    data.Peers('auto').add(king_dialog.pass().lord().str);
+                    data.Peers('auto').add(lord_stay);
+                    data.Peers('auto').add(lord_out);
+                    data.Sessions('auto').add(old_bucket.link().str);
+                    data.Sessions('auto').add(new_bucket.link().str);
+                    data.Peers('auto').cut(lord_out);
+                    return true;
+                },
+                read() {
+                    const data = dialog.Data($bog_gram_dialog);
+                    return {
+                        peers: data.Peers().items().map(String),
+                        sessions: data.Sessions().items().map(String),
+                        out_old: old_bucket.lord_rank(auth_out.pass().lord()),
+                        out_new: new_bucket.lord_rank(auth_out.pass().lord()),
+                        stay_new: new_bucket.lord_rank(auth_stay.pass().lord()),
+                    };
+                },
+            };
+            await $mol_wire_async(ops).start();
+            await $mol_wire_async(ops).part();
+            await $mol_wire_async(ops).fill();
+            const state = await $mol_wire_async(ops).read();
+            $mol_assert_equal(state.peers.includes(lord_out), false);
+            $mol_assert_equal(state.peers.includes(lord_stay), true);
+            $mol_assert_equal(state.sessions.length, 2);
+            $mol_assert_equal(state.sessions.includes(old_bucket.link().str), true);
+            $mol_assert_equal(state.sessions.includes(new_bucket.link().str), true);
+            $mol_assert_equal(state.out_old, $giper_baza_rank_post('just'));
+            $mol_assert_equal(state.out_new, $giper_baza_rank_deny);
+            $mol_assert_equal(state.stay_new, $giper_baza_rank_post('just'));
+        },
+        async 'Добавленный без истории видит только новый бакет'($) {
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_old = await $.$giper_baza_auth._generate();
+            const king_fresh = await $.$giper_baza_auth._generate();
+            const auth_old = await $.$giper_baza_auth._generate();
+            const auth_new = await $.$giper_baza_auth._generate();
+            const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+            const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
+            const fresh = $giper_baza_land.make({ $, auth: () => king_fresh });
+            await $mol_wire_async(old_bucket).encrypted(true);
+            await $mol_wire_async(fresh).encrypted(true);
+            const ops = {
+                start() {
+                    old_bucket.give(auth_old.pass(), $giper_baza_rank_post('just'));
+                    return true;
+                },
+                join() {
+                    fresh.give(auth_old.pass(), $giper_baza_rank_post('just'));
+                    fresh.give(auth_new.pass(), $giper_baza_rank_post('just'));
+                    return true;
+                },
+                fill() {
+                    const data = dialog.Data($bog_gram_dialog);
+                    data.Peers('auto').add(auth_old.pass().lord().str);
+                    data.Sessions('auto').add(old_bucket.link().str);
+                    data.Peers('auto').add(auth_new.pass().lord().str);
+                    data.Sessions('auto').add(fresh.link().str);
+                    return true;
+                },
+                read() {
+                    const data = dialog.Data($bog_gram_dialog);
+                    return {
+                        sessions: data.Sessions().items().length,
+                        new_old: old_bucket.lord_rank(auth_new.pass().lord()),
+                        new_fresh: fresh.lord_rank(auth_new.pass().lord()),
+                        old_old: old_bucket.lord_rank(auth_old.pass().lord()),
+                        old_fresh: fresh.lord_rank(auth_old.pass().lord()),
+                        king_old_rank: old_bucket.lord_rank(king_old.pass().lord()),
+                        king_fresh_rank: fresh.lord_rank(king_fresh.pass().lord()),
+                    };
+                },
+            };
+            await $mol_wire_async(ops).start();
+            await $mol_wire_async(ops).join();
+            await $mol_wire_async(ops).fill();
+            const state = await $mol_wire_async(ops).read();
+            $mol_assert_equal(state.sessions, 2);
+            $mol_assert_equal(state.new_old, $giper_baza_rank_deny);
+            $mol_assert_equal(state.new_fresh, $giper_baza_rank_post('just'));
+            $mol_assert_equal(state.old_old, $giper_baza_rank_post('just'));
+            $mol_assert_equal(state.old_fresh, $giper_baza_rank_post('just'));
+            $mol_assert_equal(state.king_old_rank, $giper_baza_rank_rule);
+            $mol_assert_equal(state.king_fresh_rank, $giper_baza_rank_rule);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function lobby_with(context, inbox, store) {
+        const account = $bog_gram_account.make({ $: context, inbox_store: () => inbox, dialogs_store: () => store });
+        const roster = $bog_gram_roster.make({ $: context, Account: () => account });
+        return $bog_gram_lobby.make({ $: context, Account: () => account, Roster: () => roster });
+    }
+    $mol_test({
+        async 'Ссылка в группу несёт создателя: участника открывает, остальных ведёт к заявке'($) {
+            const owner = await $.$giper_baza_auth._generate();
+            const owner_lord = owner.pass().lord().str;
+            const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
+            const my = 'LordMine';
+            const lobby = $bog_gram_lobby.make({ $, join_owner_of: () => owner_lord });
+            const uri = lobby.join_uri(group);
+            $mol_assert_equal(uri, $.$mol_state_arg.make_link({ join: group, by: owner_lord }));
+            $mol_assert_equal(lobby.join_uri(''), '');
+            const blind = $bog_gram_lobby.make({ $, join_owner_of: () => '' });
+            $mol_assert_equal(blind.join_uri(group), $.$mol_state_arg.make_link({ join: group }));
+            $mol_assert_equal(lobby.join_plan(group, my, true), 'open');
+            $mol_assert_equal(lobby.join_plan(group, my, false), 'ask');
+            $mol_assert_equal(lobby.join_plan('', my, false), 'skip');
+            $mol_assert_equal(lobby.join_plan(my, my, false), 'skip');
+            $mol_assert_equal(lobby.join_plan('не ссылка', my, false), 'skip');
+        },
+        'Запись очереди заявок помнит создателя группы'($) {
+            const lobby = $bog_gram_lobby.make({ $ });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const task = lobby.task(group, owner);
+            $mol_assert_equal(task, group + '|' + owner);
+            $mol_assert_equal(lobby.task_group(task), group);
+            $mol_assert_equal(lobby.task_owner(task), owner);
+            $mol_assert_equal(lobby.task(group, ''), group);
+            $mol_assert_equal(lobby.task_group(group), group);
+            $mol_assert_equal(lobby.task_owner(group), '');
+        },
+        'Плашка заявок не обещает отправку раньше времени'($) {
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const task = group + '|CCCCCCCC_DDDDDDDD';
+            const make = (queued, sent, ids) => $bog_gram_lobby.make({ $,
+                queued: () => queued,
+                sent: () => sent,
+                denied: () => [],
+                Roster: () => $bog_gram_roster.make({ $, ids: () => ids }),
+            });
+            $mol_assert_equal(make([task], [], []).plate(), 'Заявка отправляется — это не мгновенно');
+            $mol_assert_equal(make([], [task], []).plate(), 'Заявка отправлена — ждём, пока её примут');
+            $mol_assert_equal(make([], [task], [group]).plate(), '');
+            const lost = make([], [], []);
+            lost.lost(group);
+            $mol_assert_equal(lost.plate(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
+        },
+        'Отказ доезжает до просящего и снимает заявку, но не банит'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store);
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const task = lobby.task(group, owner);
+            store.Asked('auto').add(task);
+            $mol_assert_equal(lobby.plate(), 'Заявка отправлена — ждём, пока её примут');
+            inbox.Denies('auto').add(group);
+            lobby.denies_merge();
+            $mol_assert_equal(store.Asked().items().length, 0);
+            $mol_assert_equal(inbox.Denies().items().length, 0);
+            $mol_assert_equal(lobby.denied().join(), group);
+            $mol_assert_equal(lobby.plate(), 'Заявку отклонили — попроситься снова можно по той же ссылке');
+            lobby.send(group, owner);
+            $mol_assert_equal(lobby.denied().length, 0);
+            $mol_assert_equal(store.Asks().items().map(String).join(), task);
+            $mol_assert_equal(lobby.plate(), 'Заявка отправляется — это не мгновенно');
+        },
+        'Чужой отказ снимает только свою заявку, а мусор из лобби убирается'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store);
+            store.Asked('auto').add(lobby.task('AAAAAAAA_BBBBBBBB', 'CCCCCCCC_DDDDDDDD'));
+            inbox.Denies('auto').add('EEEEEEEE_FFFFFFFF');
+            lobby.denies_merge();
+            $mol_assert_equal(store.Asked().items().length, 1);
+            $mol_assert_equal(lobby.denied().length, 0);
+            $mol_assert_equal(inbox.Denies().items().length, 0);
+        },
+        async 'Заявка собирается и разбирается, мусор и подложенный ключ отсекаются'($) {
+            const lobby = $bog_gram_lobby.make({ $ });
+            const guest = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const lord = guest.pass().lord().str;
+            const key = guest.pass().toString();
+            const group = new $giper_baza_link(lord + '_KJhgFdSa').str;
+            const entry = lobby.entry(group, lord, key);
+            $mol_assert_equal(entry, group + '|' + lord + '|' + key);
+            const ask = lobby.parse(entry);
+            $mol_assert_equal(ask?.group, group);
+            $mol_assert_equal(ask?.lord, lord);
+            $mol_assert_equal($bog_gram_pass.verified(ask.lord, ask.pass)?.lord().str, lord);
+            $mol_assert_equal(lobby.parse(''), null);
+            $mol_assert_equal(lobby.parse('ТолькоГруппа'), null);
+            $mol_assert_equal(lobby.parse(group + '|' + lord), null);
+            $mol_assert_equal(lobby.parse(group + '|' + lord + '|' + key + '|лишнее'), null);
+            $mol_assert_equal(lobby.parse('||'), null);
+            $mol_assert_equal(lobby.parse(group + '||' + key), null);
+            const junk = lobby.parse(lobby.entry(group, lord, 'не ключ'));
+            $mol_assert_equal(junk?.pass, 'не ключ');
+            $mol_assert_equal($bog_gram_pass.verified(junk.lord, junk.pass), null);
+            const forged = lobby.parse(lobby.entry(group, lord, other.pass().toString()));
+            $mol_assert_equal($bog_gram_pass.verified(forged.lord, forged.pass), null);
+            const swapped = lobby.parse(lobby.entry(group, other.pass().lord().str, key));
+            $mol_assert_equal($bog_gram_pass.verified(swapped.lord, swapped.pass), null);
+        },
+        async 'Заявки живут отдельным списком лобби и снимаются решением'($) {
+            const owner = await $.$giper_baza_auth._generate();
+            const guest = await $.$giper_baza_auth._generate();
+            const lobby = $bog_gram_lobby.make({ $ });
+            const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
+            const entry = lobby.entry(group, guest.pass().lord().str, guest.pass().toString());
+            const inbox = $giper_baza_land.make({ $, auth: () => owner });
+            const ops = {
+                ask() {
+                    inbox.Data($bog_gram_inbox).Joins('auto').add(entry);
+                    return true;
+                },
+                drop() {
+                    inbox.Data($bog_gram_inbox).Joins('auto').cut(entry);
+                    return true;
+                },
+                read() {
+                    const data = inbox.Data($bog_gram_inbox);
+                    return {
+                        joins: data.Joins().items().map(String),
+                        invites: (data.Invites()?.items() ?? []).length,
+                    };
+                },
+            };
+            await $mol_wire_async(ops).ask();
+            const filled = await $mol_wire_async(ops).read();
+            $mol_assert_equal(filled.joins.includes(entry), true);
+            $mol_assert_equal(filled.invites, 0);
+            await $mol_wire_async(ops).drop();
+            $mol_assert_equal((await $mol_wire_async(ops).read()).joins.length, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Ссылка несёт лорд и ключ, ключ адрес не ломает'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            const key = auth.pass().toString();
+            const invite = $bog_gram_invite.make({ $ });
+            $mol_assert_equal(invite.uri(lord, key), $.$mol_state_arg.make_link({ invite: lord, key }));
+            $mol_assert_equal(invite.uri(lord, ''), $.$mol_state_arg.make_link({ invite: lord }));
+            $mol_assert_equal(invite.uri('', ''), '');
+            $mol_assert_equal(encodeURIComponent(key), key);
+        },
+        'Своя и битая ссылки диалога не заводят, знакомый открывается'($) {
+            const invite = $bog_gram_invite.make({ $ });
+            const my = 'LordMine';
+            const other = 'LordOthr_Bbbbbbbb';
+            $mol_assert_equal(invite.plan(my, my, ''), 'skip');
+            $mol_assert_equal(invite.plan('', my, ''), 'skip');
+            $mol_assert_equal(invite.plan('не ссылка', my, ''), 'bad');
+            $mol_assert_equal(invite.plan(other, my, 'DialogLink'), 'open');
+            $mol_assert_equal(invite.plan(other, my, ''), 'start');
+        },
+        'Ожидание ключа собеседника объясняется на экране'($) {
+            const invite = $bog_gram_invite.make({ $ });
+            const other = 'LordOthr_Bbbbbbbb';
+            $mol_assert_equal(invite.plate(), '');
+            invite.pending(other);
+            $mol_assert_equal(invite.plate(), 'Открываем диалог — ищем ключ собеседника');
+            invite.late(other);
+            $mol_assert_equal(invite.plate().startsWith('Ключ собеседника не нашёлся'), true);
+            invite.pending('LordThrd_Cccccccc');
+            $mol_assert_equal(invite.plate(), 'Открываем диалог — ищем ключ собеседника');
+            invite.lost('мусор');
+            $mol_assert_equal(invite.plate(), 'Ссылка на диалог битая — попросите свежую');
+            invite.drop();
+            $mol_assert_equal(invite.plate(), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
+            const alerts = $bog_gram_alerts.make({ $ });
+            const plan = (permission, on, off, asked) => alerts.plan(true, permission, on, off, asked);
+            $mol_assert_equal(plan('granted', false, false, false), 'subscribe');
+            $mol_assert_equal(plan('default', false, false, false), 'ask');
+            $mol_assert_equal(plan('default', false, false, true), 'skip');
+            $mol_assert_equal(plan('denied', false, false, false), 'skip');
+            $mol_assert_equal(plan('granted', true, false, false), 'subscribe');
+            $mol_assert_equal(plan('denied', true, false, false), 'skip');
+            $mol_assert_equal(plan('granted', false, true, false), 'skip');
+            $mol_assert_equal(plan('default', false, true, false), 'skip');
+            $mol_assert_equal(alerts.plan(false, 'granted', false, false, false), 'skip');
+        },
+        'Подпись под тумблером говорит, что будет дальше'($) {
+            const make = (supported, permission, on, off) => $bog_gram_alerts.make({ $,
+                supported: () => supported,
+                permission: () => permission,
+                on: () => on,
+                off: () => off,
+            });
+            $mol_assert_equal(make(false, 'default', false, false).status(), 'Не поддерживается этим браузером');
+            $mol_assert_equal(make(true, 'denied', false, false).status(), 'Запрещены в браузере');
+            $mol_assert_equal(make(true, 'granted', true, false).status(), 'Уведомления включены');
+            $mol_assert_equal(make(true, 'default', false, true).status(), 'Выключены');
+            $mol_assert_equal(make(true, 'default', false, false).status(), 'Спросим разрешение, когда откроете диалог');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Длительность показывается минутами и секундами, доли округляются'() {
+            $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
+            $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
+            $mol_assert_equal($bog_gram_voice.stamp(59), '0:59');
+            $mol_assert_equal($bog_gram_voice.stamp(60), '1:00');
+            $mol_assert_equal($bog_gram_voice.stamp(125), '2:05');
+            $mol_assert_equal($bog_gram_voice.stamp(5 * 60), '5:00');
+            $mol_assert_equal($bog_gram_voice.stamp(7.4), '0:07');
+            $mol_assert_equal($bog_gram_voice.stamp(7.6), '0:08');
+            $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Большая сторона вписывается в предел с сохранением пропорций'() {
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
+            $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
+            $mol_assert_equal($bog_gram_shrink.fit(2000, 2000, 1600), { width: 1600, height: 1600 });
+        },
+        'Кадр мельче предела не растягивается, узкая полоска не схлопывается'() {
+            $mol_assert_equal($bog_gram_shrink.fit(320, 200, 1600), { width: 320, height: 200 });
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 1, 1600), { width: 1600, height: 1 });
+        },
+        'Картинкой считается только файл с типом image'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     var $$;
     (function ($$) {
-        function message_of(land, link) {
-            return land.Pawn($bog_gram_message).Head(link.head());
-        }
         $mol_test({
-            async 'Схема: профиль, диалог, сессия, сообщение пишутся и читаются'($) {
-                const land = $giper_baza_land.make({ $ });
-                const user = land.Data($bog_gram_user);
-                user.Name('auto')?.val('Алиса');
-                user.Inbox_land('auto')?.val('InboxLink1');
-                $mol_assert_equal(user.Name().val(), 'Алиса');
-                $mol_assert_equal(user.Inbox_land().val(), 'InboxLink1');
-                const dialog = land.Data($bog_gram_dialog);
-                dialog.Peers('auto').add('LordA');
-                dialog.Peers('auto').add('LordB');
-                dialog.Sessions('auto').add('SessionLink1');
-                $mol_assert_equal(dialog.Peers().items().length, 2);
-                $mol_assert_equal(dialog.Sessions().items()[0], 'SessionLink1');
-                const session = land.Data($bog_gram_session);
-                const message = session.Messages('auto').make(null);
-                message.Text('auto')?.val('Привет!');
-                message.Author('auto')?.val('LordA');
-                message.Moment('auto')?.val(1000);
-                const links = session.Messages().items();
-                $mol_assert_equal(links.length, 1);
-                const found = message_of(land, links[0]);
-                $mol_assert_equal(found.Text().val(), 'Привет!');
-                $mol_assert_equal(found.Author().val(), 'LordA');
-            },
-            async 'Диалог: два пользователя обмениваются сообщениями через CRDT-синк'($) {
-                const king_dialog = await $.$giper_baza_auth._generate();
-                const king_session = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const lord_b = auth_b.pass().lord().str;
-                // Инициатор (кинг ленда) раздаёт права обоим участникам
-                const dialog0 = $giper_baza_land.make({ $, auth: () => king_dialog });
-                dialog0.give(auth_a.pass(), $giper_baza_rank_rule);
-                dialog0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session0 = $giper_baza_land.make({ $, auth: () => king_session });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                // Копия пользователя A
-                const dialog_a = $giper_baza_land.make({ $, link: () => dialog0.link(), auth: () => auth_a });
-                await $mol_wire_async(dialog_a).units_steal(dialog0);
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                const dialog_data_a = dialog_a.Data($bog_gram_dialog);
-                dialog_data_a.Peers('auto').add(lord_a);
-                dialog_data_a.Peers('auto').add(lord_b);
-                dialog_data_a.Sessions('auto').add(session0.link().str);
-                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
-                msg_a.Text('auto')?.val('Привет, B!');
-                msg_a.Author('auto')?.val(lord_a);
-                msg_a.Moment('auto')?.val(1000);
-                // Копия пользователя B: стягивает состояние A
-                const dialog_b = $giper_baza_land.make({ $, link: () => dialog0.link(), auth: () => auth_b });
-                await $mol_wire_async(dialog_b).units_steal(dialog_a);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const peers_b = dialog_b.Data($bog_gram_dialog).Peers().items();
-                $mol_assert_equal(peers_b.includes(lord_a), true);
-                $mol_assert_equal(peers_b.includes(lord_b), true);
-                const links_b = session_b.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_b.length, 1);
-                $mol_assert_equal(message_of(session_b, links_b[0]).Text().val(), 'Привет, B!');
-                // B отвечает
-                const msg_b = session_b.Data($bog_gram_session).Messages('auto').make(null);
-                msg_b.Text('auto')?.val('Привет, A!');
-                msg_b.Author('auto')?.val(lord_b);
-                msg_b.Moment('auto')?.val(2000);
-                // A стягивает ответ B
-                await $mol_wire_async(session_a).units_steal(session_b);
-                const links_a = session_a.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_a.length, 2);
-                const sorted = links_a
-                    .map(link => message_of(session_a, link))
-                    .sort((x, y) => (x.Moment()?.val() ?? 0) - (y.Moment()?.val() ?? 0));
-                $mol_assert_equal(sorted[0].Author().val(), lord_a);
-                $mol_assert_equal(sorted[1].Author().val(), lord_b);
-                $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
-            },
-            async 'Шифрование: участник с гифтом читает и пишет данные диалога'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const land0 = $giper_baza_land.make({ $, auth: () => king });
-                await $mol_wire_async(land0).encrypted(true);
-                $mol_assert_equal(land0.encrypted(), true);
-                const land_b = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth_b });
-                // Крипто-операции асинхронные — каждый шаг гоняем в своей фибре с ретраями
-                const ops = {
-                    king_writes() {
-                        land0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                        land0.Data($bog_gram_dialog).Peers('auto').add('SecretLordA');
-                        return true;
-                    },
-                    b_reads() {
-                        return land_b.Data($bog_gram_dialog).Peers().items().slice();
-                    },
-                    b_writes() {
-                        land_b.Data($bog_gram_dialog).Peers('auto').add('SecretLordB');
-                        return true;
-                    },
-                    king_reads() {
-                        return land0.Data($bog_gram_dialog).Peers().items().slice();
-                    },
-                };
-                await $mol_wire_async(ops).king_writes();
-                await $mol_wire_async(land_b).units_steal(land0);
-                const peers_b = await $mol_wire_async(ops).b_reads();
-                $mol_assert_equal(peers_b.includes('SecretLordA'), true);
-                // Участник с правом post может дописывать в шифрованный ленд
-                await $mol_wire_async(ops).b_writes();
-                await $mol_wire_async(land0).units_steal(land_b);
-                const peers0 = await $mol_wire_async(ops).king_reads();
-                $mol_assert_equal(peers0.includes('SecretLordB'), true);
-            },
-            async 'Inbox-лобби: чужой пользователь доставляет инвайт владельцу'($) {
-                const owner = await $.$giper_baza_auth._generate();
-                const stranger = await $.$giper_baza_auth._generate();
-                const inbox0 = $giper_baza_land.make({ $, auth: () => owner });
-                inbox0.give(null, $giper_baza_rank_post('just'));
-                const inbox_stranger = $giper_baza_land.make({ $, link: () => inbox0.link(), auth: () => stranger });
-                await $mol_wire_async(inbox_stranger).units_steal(inbox0);
-                inbox_stranger.Data($bog_gram_inbox).Invites('auto').add('NewDialogLink');
-                await $mol_wire_async(inbox0).units_steal(inbox_stranger);
-                const invites = inbox0.Data($bog_gram_inbox).Invites().items();
-                $mol_assert_equal(invites.includes('NewDialogLink'), true);
-            },
-            async 'Удалённый диалог не возвращается инвайтом'($) {
-                const land = $giper_baza_land.make({ $ });
-                const store = land.Data($bog_gram_dialogs);
-                store.Dialogs('auto').add('DialogKeep');
-                store.Dialogs('auto').add('DialogDrop');
-                // Удаление из своего списка: ссылка уходит из Dialogs и оседает в Hidden
-                store.Dialogs('auto').cut('DialogDrop');
-                store.Hidden('auto').add('DialogDrop');
-                const dialogs = store.Dialogs().items().map(String);
-                $mol_assert_equal(dialogs.length, 1);
-                $mol_assert_equal(dialogs[0], 'DialogKeep');
-                const hidden = new Set(store.Hidden().items().map(String));
-                $mol_assert_equal(hidden.has('DialogDrop'), true);
-                $mol_assert_equal(hidden.has('DialogKeep'), false);
-                // Собеседник шлёт инвайты на оба ленда: скрытый отсеивается, живой проходит
-                const merged = ['DialogKeep', 'DialogDrop'].filter(link => !hidden.has(link));
-                $mol_assert_equal(merged.length, 1);
-                $mol_assert_equal(merged[0], 'DialogKeep');
-            },
-            async 'Реестр пользователей: конкурентная регистрация мержится без конфликтов'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const registry0 = $giper_baza_land.make({ $, auth: () => king });
-                registry0.give(null, $giper_baza_rank_post('just'));
-                const registry_a = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_a });
-                await $mol_wire_async(registry_a).units_steal(registry0);
-                const registry_b = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_b });
-                await $mol_wire_async(registry_b).units_steal(registry0);
-                // Оба регистрируются, не видя друг друга
-                registry_a.Data($bog_gram_users).Lords('auto').add(auth_a.pass().lord().str);
-                registry_b.Data($bog_gram_users).Lords('auto').add(auth_b.pass().lord().str);
-                // Взаимный синк
-                await $mol_wire_async(registry_a).units_steal(registry_b);
-                await $mol_wire_async(registry_b).units_steal(registry_a);
-                const lords_a = registry_a.Data($bog_gram_users).Lords().items();
-                const lords_b = registry_b.Data($bog_gram_users).Lords().items();
-                $mol_assert_equal(lords_a.includes(auth_a.pass().lord().str), true);
-                $mol_assert_equal(lords_a.includes(auth_b.pass().lord().str), true);
-                $mol_assert_equal(lords_a.length, lords_b.length);
-            },
-            async 'Вступление в реестр — явное действие, чтение список не меняет'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const guest = await $.$giper_baza_auth._generate();
-                const guest_lord = guest.pass().lord().str;
-                const registry0 = $giper_baza_land.make({ $, auth: () => king });
-                registry0.give(null, $giper_baza_rank_post('just'));
-                // Гость просто открыл ссылку и прочитал реестр
-                const registry_guest = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => guest });
-                await $mol_wire_async(registry_guest).units_steal(registry0);
-                const before = (registry_guest.Data($bog_gram_users).Lords()?.items() ?? []);
-                $mol_assert_equal(before.length, 0);
-                // Запись появляется только от явного вступления
-                registry_guest.Data($bog_gram_users).Lords('auto').add(guest_lord);
-                const after = registry_guest.Data($bog_gram_users).Lords().items();
-                $mol_assert_equal(after.includes(guest_lord), true);
-                // И доезжает до владельца реестра
-                await $mol_wire_async(registry0).units_steal(registry_guest);
-                const owner_side = registry0.Data($bog_gram_users).Lords().items();
-                $mol_assert_equal(owner_side.includes(guest_lord), true);
-            },
-            async 'Название реестра задаёт создатель, видит участник'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const guest = await $.$giper_baza_auth._generate();
-                const king_lord = king.pass().lord().str;
-                const registry0 = $giper_baza_land.make({ $, auth: () => king });
-                registry0.give(null, $giper_baza_rank_post('just'));
-                const data0 = registry0.Data($bog_gram_users);
-                data0.Title('auto')?.val('Соседи по даче');
-                data0.Lords('auto').add(king_lord);
-                const registry_guest = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => guest });
-                await $mol_wire_async(registry_guest).units_steal(registry0);
-                const data_guest = registry_guest.Data($bog_gram_users);
-                $mol_assert_equal(data_guest.Title().val(), 'Соседи по даче');
-                $mol_assert_equal(data_guest.Lords().items().includes(king_lord), true);
-            },
-            async 'Забыть реестр — локальная операция, запись в нём остаётся'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const me = await $.$giper_baza_auth._generate();
-                const my_lord = me.pass().lord().str;
-                const registry0 = $giper_baza_land.make({ $, auth: () => king });
-                registry0.give(null, $giper_baza_rank_post('just'));
-                const registry_me = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => me });
-                await $mol_wire_async(registry_me).units_steal(registry0);
-                registry_me.Data($bog_gram_users).Lords('auto').add(my_lord);
-                // Свой приватный список известных реестров
-                const private_land = $giper_baza_land.make({ $, auth: () => me });
-                const store = private_land.Data($bog_gram_dialogs);
-                const link = registry0.link().str;
-                store.Registries('auto').add(link);
-                store.Registries('auto').add('OtherRegistry');
-                store.Registries('auto').cut(link);
-                const known = store.Registries().items().map(String);
-                $mol_assert_equal(known.includes(link), false);
-                $mol_assert_equal(known.includes('OtherRegistry'), true);
-                // Из самого реестра это не выкидывает
-                const lords = registry_me.Data($bog_gram_users).Lords().items();
-                $mol_assert_equal(lords.includes(my_lord), true);
-            },
-            async 'Ключ участника доезжает до других через реестр'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const key_a = auth_a.pass().toString();
-                const registry0 = $giper_baza_land.make({ $, auth: () => king });
-                registry0.give(null, $giper_baza_rank_post('just'));
-                // A вступает в реестр: рядом со своим идентификатором кладёт и ключ
-                const registry_a = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_a });
-                await $mol_wire_async(registry_a).units_steal(registry0);
-                const data_a = registry_a.Data($bog_gram_users);
-                data_a.Lords('auto').add(lord_a);
-                data_a.Keys('auto')?.key(lord_a, 'auto')?.Pass('auto')?.val(key_a);
-                // B стягивает реестр и находит там ключ A
-                const registry_b = $giper_baza_land.make({ $, link: () => registry0.link(), auth: () => auth_b });
-                await $mol_wire_async(registry_b).units_steal(registry_a);
-                const data_b = registry_b.Data($bog_gram_users);
-                $mol_assert_equal(data_b.Lords().items().includes(lord_a), true);
-                const got = String(data_b.Keys()?.key(lord_a)?.Pass()?.val() ?? '');
-                $mol_assert_equal(got, key_a);
-                // Из строки собирается тот самый ключ: по нему и выдаются права
-                const app = $bog_gram.make({ $ });
-                $mol_assert_equal(app.pass_verified(lord_a, got)?.lord().str, lord_a);
-                // Ключи лежат по ключу-лорду и соседей не задевают
-                $mol_assert_equal(Boolean(data_b.Keys()?.key(auth_b.pass().lord().str)), false);
-            },
-            async 'Подложенный ключ не принимается: идентификатор его не подтверждает'($) {
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const app = $bog_gram.make({ $ });
-                // Свой ключ под своей записью проходит
-                $mol_assert_equal(app.pass_verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
-                // Реестр открыт всем, и чужой ключ под записью A мог положить кто
-                // угодно: идентификатор это хеш ключа, пересчёт ловит подмену
-                $mol_assert_equal(app.pass_verified(lord_a, auth_b.pass().toString()), null);
-                $mol_assert_equal(app.pass_verified(auth_b.pass().lord().str, auth_a.pass().toString()), null);
-            },
-            async 'Мусор вместо ключа не роняет разбор'($) {
-                const auth = await $.$giper_baza_auth._generate();
-                const lord = auth.pass().lord().str;
-                const app = $bog_gram.make({ $ });
-                // Ни строки короче ключа, ни строки нужной длины из чего попало
-                $mol_assert_equal(app.pass_verified(lord, 'не ключ'), null);
-                $mol_assert_equal(app.pass_verified(lord, 'a'.repeat(43)), null);
-                $mol_assert_equal(app.pass_verified(lord, 'a'.repeat(86)), null);
-                // Пустого места в реестре тоже достаточно, чтобы ничего не делать
-                $mol_assert_equal(app.pass_verified(lord, ''), null);
-                $mol_assert_equal(app.pass_verified('', auth.pass().toString()), null);
-            },
-            async 'Ключ из ссылки не теряется после ухода экрана'($) {
-                const peer = await $.$giper_baza_auth._generate();
-                const lord = peer.pass().lord().str;
-                const king = await $.$giper_baza_auth._generate();
-                const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
-                const first = $bog_gram.make({ $, dialogs_store: () => dialogs });
-                const learned = first.peer_pass_learn(lord, peer.pass().toString());
-                const next = $bog_gram.make({ $, dialogs_store: () => dialogs });
-                $mol_assert_equal(learned?.lord().str, lord);
-                $mol_assert_equal(next.peer_pass_given(lord), null);
-                $mol_assert_equal(next.peer_pass_of(lord)?.lord().str, lord);
-            },
-            async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'($) {
-                const king_lobby = await $.$giper_baza_auth._generate();
-                const king_user = await $.$giper_baza_auth._generate();
-                const king_dialogs = await $.$giper_baza_auth._generate();
-                const lobby = $giper_baza_land.make({ $, auth: () => king_lobby });
-                const profile = $giper_baza_land.make({ $, auth: () => king_user }).Data($bog_gram_user);
-                const dialogs = $giper_baza_land.make({ $, auth: () => king_dialogs }).Data($bog_gram_dialogs);
-                profile.Inbox_land('auto')?.val('OldLobbyLink');
-                const app = $bog_gram.make({ $,
-                    inbox_land: () => lobby,
-                    user_store: () => profile,
-                    dialogs_store: () => dialogs,
-                });
-                app.inbox_open();
-                app.inbox_publish();
-                $mol_assert_equal(lobby.lord_rank(null), $giper_baza_rank_post('slow'));
-                $mol_assert_equal(profile.Inbox_land()?.val(), lobby.link().str);
-                $mol_assert_equal(app.lobbies_old(), ['OldLobbyLink']);
-            },
-            async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
-                const auth = await $.$giper_baza_auth._generate();
-                const key = auth.toString() + auth.toStringPrivate();
-                const app = $bog_gram.make({ $ });
-                app.import_armed(true);
-                app.Key_scan().found(key);
-                $mol_assert_equal(app.key_input(), key);
-                $mol_assert_equal(app.key_error(), '');
-                $mol_assert_equal(app.import_armed(), false);
-                app.Key_scan().found('https://example.org/');
-                $mol_assert_equal(app.key_input(), 'https://example.org/');
-                $mol_assert_equal(app.key_error(), 'В QR не ключ аккаунта');
-            },
-            async 'Ссылка в группу: участника открывает, остальных ведёт к заявке'($) {
-                const owner = await $.$giper_baza_auth._generate();
-                const owner_lord = owner.pass().lord().str;
-                const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
-                const my = 'LordMine';
-                const app = $bog_gram.make({ $, join_owner_of: () => owner_lord });
-                // В ссылке едут и ленд группы, и её создатель: заявку несут в его
-                // лобби, а из шифрованного ленда группы просящий его не узнает —
-                // прав на неё у него ещё нет, и ленд ему не читается вовсе
-                const location = $.$mol_dom_context.location;
-                const uri = app.join_uri(group);
-                $mol_assert_equal(uri, location.origin + location.pathname + '#!join=' + group + '/by=' + owner_lord);
-                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!join=' + group + '/by=' + owner_lord);
-                $mol_assert_equal(app.join_uri(''), '');
-                // Создателя взять неоткуда — ссылка выходит прежней, куцей
-                const blind = $bog_gram.make({ $, join_owner_of: () => '' });
-                $mol_assert_equal(blind.join_uri(group), location.origin + location.pathname + '#!join=' + group);
-                // Уже в группе — просто открываем, ещё нет — просимся
-                $mol_assert_equal(app.join_plan(group, my, true), 'open');
-                $mol_assert_equal(app.join_plan(group, my, false), 'ask');
-                // Пустой параметр, свой же идентификатор и мусор заявку не заводят
-                $mol_assert_equal(app.join_plan('', my, false), 'skip');
-                $mol_assert_equal(app.join_plan(my, my, false), 'skip');
-                $mol_assert_equal(app.join_plan('не ссылка', my, false), 'skip');
-            },
-            async 'Запись очереди заявок помнит создателя группы'($) {
-                const app = $bog_gram.make({ $ });
-                const group = 'AAAAAAAA_BBBBBBBB';
-                const owner = 'CCCCCCCC_DDDDDDDD';
-                // Очередь переживает перезагрузку страницы, а ссылка-приглашение
-                // нет: лорд создателя оседает в самой записи, иначе нести заявку
-                // станет некуда — ленд группы просящему не читается
-                const task = app.ask_task(group, owner);
-                $mol_assert_equal(task, group + '|' + owner);
-                $mol_assert_equal(app.ask_task_group(task), group);
-                $mol_assert_equal(app.ask_task_owner(task), owner);
-                // Заявки, заведённые до появления лорда в записи, читаются по-прежнему
-                $mol_assert_equal(app.ask_task(group, ''), group);
-                $mol_assert_equal(app.ask_task_group(group), group);
-                $mol_assert_equal(app.ask_task_owner(group), '');
-            },
-            async 'Плашка заявок не обещает отправку раньше времени'($) {
-                const group = 'AAAAAAAA_BBBBBBBB';
-                const task = group + '|' + 'CCCCCCCC_DDDDDDDD';
-                // Пока запись лежит в своей очереди, она никуда не доехала: в
-                // чужое лобби пишут с перебором подписей, и это занимает время
-                const queued = $bog_gram.make({ $, ask_queued: () => [task], ask_sent: () => [], dialog_ids: () => [] });
-                $mol_assert_equal(queued.ask_plate_text(), 'Заявка отправляется — это не мгновенно');
-                const sent = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [] });
-                $mol_assert_equal(sent.ask_plate_text(), 'Заявка отправлена — ждём, пока её примут');
-                // Приняли — группа появилась в списке диалогов, и плашке нечего сказать
-                const taken = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [task], dialog_ids: () => [group] });
-                $mol_assert_equal(taken.ask_plate_text(), '');
-                // Ссылка без создателя не притворяется отправленной заявкой
-                const lost = $bog_gram.make({ $, ask_queued: () => [], ask_sent: () => [], dialog_ids: () => [] });
-                lost.join_lost(group);
-                $mol_assert_equal(lost.ask_plate_text(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
-            },
-            async 'Отказ доезжает до просящего и снимает заявку'($) {
-                const lobby = $giper_baza_land.make({ $ });
-                const private_land = $giper_baza_land.make({ $ });
-                const inbox = lobby.Data($bog_gram_inbox);
-                const store = private_land.Data($bog_gram_dialogs);
-                const app = $bog_gram.make({ $, inbox_store: () => inbox, dialogs_store: () => store });
-                const group = 'AAAAAAAA_BBBBBBBB';
-                const owner = 'CCCCCCCC_DDDDDDDD';
-                const task = app.ask_task(group, owner);
-                store.Asked('auto').add(task);
-                $mol_assert_equal(app.ask_plate_text(), 'Заявка отправлена — ждём, пока её примут');
-                // Решение приезжает в лобби просящего: снятая у себя запись ему
-                // никакого следа не оставляет, и заявка висела бы вечно
-                inbox.Denies('auto').add(group);
-                app.denies_merge();
-                $mol_assert_equal(store.Asked().items().length, 0);
-                $mol_assert_equal(inbox.Denies().items().length, 0);
-                $mol_assert_equal(app.ask_denied().join(), group);
-                $mol_assert_equal(app.ask_plate_text(), 'Заявку отклонили — попроситься снова можно по той же ссылке');
-                // Отказ не бан: по той же ссылке просимся снова, отметка снимается
-                app.ask_send(group, owner);
-                $mol_assert_equal(app.ask_denied().length, 0);
-                $mol_assert_equal(store.Asks().items().map(String).join(), task);
-                $mol_assert_equal(app.ask_plate_text(), 'Заявка отправляется — это не мгновенно');
-            },
-            async 'Чужой отказ снимает только свою заявку'($) {
-                const lobby = $giper_baza_land.make({ $ });
-                const private_land = $giper_baza_land.make({ $ });
-                const inbox = lobby.Data($bog_gram_inbox);
-                const store = private_land.Data($bog_gram_dialogs);
-                const app = $bog_gram.make({ $, inbox_store: () => inbox, dialogs_store: () => store });
-                const mine = app.ask_task('AAAAAAAA_BBBBBBBB', 'CCCCCCCC_DDDDDDDD');
-                store.Asked('auto').add(mine);
-                // Лобби открыто на запись всем, поэтому туда кладут что попало:
-                // заявку снимаем только по той группе, куда сами просились
-                inbox.Denies('auto').add('EEEEEEEE_FFFFFFFF');
-                app.denies_merge();
-                $mol_assert_equal(store.Asked().items().length, 1);
-                $mol_assert_equal(app.ask_denied().length, 0);
-                // Мусор в лобби всё равно убираем: иначе он копился бы там навсегда
-                $mol_assert_equal(inbox.Denies().items().length, 0);
-            },
-            async 'Заявка в группу: запись собирается и разбирается'($) {
-                const app = $bog_gram.make({ $ });
-                const guest = await $.$giper_baza_auth._generate();
-                const lord = guest.pass().lord().str;
-                const key = guest.pass().toString();
-                const group = new $giper_baza_link(lord + '_KJhgFdSa').str;
-                const entry = app.ask_entry(group, lord, key);
-                $mol_assert_equal(entry, group + '|' + lord + '|' + key);
-                const ask = app.ask_parse(entry);
-                $mol_assert_equal(ask?.group, group);
-                $mol_assert_equal(ask?.lord, lord);
-                $mol_assert_equal(ask?.pass, key);
-                // Ключ приезжает вместе с заявкой: по нему админ и выдаёт права
-                $mol_assert_equal(app.pass_verified(ask.lord, ask.pass)?.lord().str, lord);
-                // Лобби открыто на запись всем, и мусор туда долетает наравне
-                // с заявками: разбор его отвергает, а не роняет весь список
-                $mol_assert_equal(app.ask_parse(''), null);
-                $mol_assert_equal(app.ask_parse('ТолькоГруппа'), null);
-                $mol_assert_equal(app.ask_parse(group + '|' + lord), null);
-                $mol_assert_equal(app.ask_parse(group + '|' + lord + '|' + key + '|лишнее'), null);
-                $mol_assert_equal(app.ask_parse('||'), null);
-                $mol_assert_equal(app.ask_parse(group + '||' + key), null);
-                // Мусор на месте ключа разбор проходит, а проверка — нет
-                const junk = app.ask_parse(app.ask_entry(group, lord, 'не ключ'));
-                $mol_assert_equal(junk?.pass, 'не ключ');
-                $mol_assert_equal(app.pass_verified(junk.lord, junk.pass), null);
-            },
-            async 'Подложенный в заявке ключ не принимается'($) {
-                const app = $bog_gram.make({ $ });
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const group = new $giper_baza_link(lord_a + '_KJhgFdSa').str;
-                // Своя заявка со своим ключом проходит
-                const honest = app.ask_parse(app.ask_entry(group, lord_a, auth_a.pass().toString()));
-                $mol_assert_equal(app.pass_verified(honest.lord, honest.pass)?.lord().str, lord_a);
-                // Лобби открыто на запись всем: под лордом A кто угодно кладёт свой
-                // ключ. Идентификатор это хеш ключа, пересчёт ловит подмену — иначе
-                // в группу попал бы подложивший, а не тот, кого туда звали
-                const forged = app.ask_parse(app.ask_entry(group, lord_a, auth_b.pass().toString()));
-                $mol_assert_equal(forged.lord, lord_a);
-                $mol_assert_equal(app.pass_verified(forged.lord, forged.pass), null);
-                // И наоборот: настоящий ключ A под чужим идентификатором
-                const swapped = app.ask_parse(app.ask_entry(group, auth_b.pass().lord().str, auth_a.pass().toString()));
-                $mol_assert_equal(app.pass_verified(swapped.lord, swapped.pass), null);
-            },
-            async 'Заявка ложится в свой список лобби и снимается решением'($) {
-                const owner = await $.$giper_baza_auth._generate();
-                const guest = await $.$giper_baza_auth._generate();
-                const app = $bog_gram.make({ $ });
-                const guest_lord = guest.pass().lord().str;
-                const group = new $giper_baza_link(owner.pass().lord().str + '_KJhgFdSa').str;
-                const entry = app.ask_entry(group, guest_lord, guest.pass().toString());
-                // Саму доставку через чужое лобби проверяет тест про инвайты: она
-                // одна и та же. Здесь важно наше — что заявки живут отдельным
-                // списком и что решение их убирает.
-                const inbox = $giper_baza_land.make({ $, auth: () => owner });
-                const ops = {
-                    ask() {
-                        inbox.Data($bog_gram_inbox).Joins('auto').add(entry);
-                        return true;
-                    },
-                    drop() {
-                        inbox.Data($bog_gram_inbox).Joins('auto').cut(entry);
-                        return true;
-                    },
-                    /** Читаем отдельным заходом: в одной фибре с записью список
-                     * застаётся ещё не осевшим, и счёт скачет от прогона к прогону. */
-                    read() {
-                        const data = inbox.Data($bog_gram_inbox);
-                        return {
-                            joins: data.Joins().items().map(String),
-                            invites: (data.Invites()?.items() ?? []).length,
-                        };
-                    },
-                };
-                await $mol_wire_async(ops).ask();
-                const filled = await $mol_wire_async(ops).read();
-                $mol_assert_equal(filled.joins.includes(entry), true);
-                // Заявки не мешаются с приглашениями: это разные списки
-                $mol_assert_equal(filled.invites, 0);
-                // Из записи собирается тот самый ключ: по нему и выдаются права на
-                // ленд группы, без всяких реестров
-                const ask = app.ask_parse(entry);
-                $mol_assert_equal(ask?.group, group);
-                $mol_assert_equal(app.pass_verified(ask.lord, ask.pass)?.lord().str, guest_lord);
-                // Решение по заявке снимает её из лобби, чтобы такие не копились
-                await $mol_wire_async(ops).drop();
-                $mol_assert_equal((await $mol_wire_async(ops).read()).joins.length, 0);
-            },
-            async 'Заявка проходит очередь, отправленное и приём'($) {
-                const land = $giper_baza_land.make({ $ });
-                const store = land.Data($bog_gram_dialogs);
-                const waiting = 'AAAAAAAA_BBBBBBBB';
-                const answered = 'CCCCCCCC_DDDDDDDD';
-                // Пока никуда не просились, списков заявок нет вовсе
-                $mol_assert_equal((store.Asks()?.items() ?? []).length, 0);
-                $mol_assert_equal((store.Asked()?.items() ?? []).length, 0);
-                store.Asks('auto').add(waiting);
-                store.Asks('auto').add(answered);
-                // Повторный переход по той же ссылке ничего не задваивает
-                store.Asks('auto').add(waiting);
-                $mol_assert_equal(store.Asks().items().length, 2);
-                // Доехала до чужого лобби: уходит из очереди в отправленные, и
-                // второй раз её оттуда уже не пошлют — иначе отклонённая заявка
-                // возвращалась бы в лобби сама
-                for (const id of [waiting, answered]) {
-                    store.Asked('auto').add(id);
-                    store.Asks('auto').cut(id);
-                }
-                $mol_assert_equal(store.Asks().items().length, 0);
-                $mol_assert_equal(store.Asked().items().length, 2);
-                // Приняли: группа появилась в списке диалогов, заявка снята.
-                // Порядок в списках задаётся слиянием, поэтому проверяем состав
-                store.Dialogs('auto').add(answered);
-                store.Asked('auto').cut(answered);
-                const asked = new Set(store.Asked().items().map(String));
-                $mol_assert_equal(asked.has(waiting), true);
-                $mol_assert_equal(asked.has(answered), false);
-                // Ожидание рисуется по тем заявкам, чьих групп ещё нет в списке
-                const have = new Set(store.Dialogs().items().map(String));
-                const pending = [...asked].filter(id => !have.has(id));
-                $mol_assert_equal(pending.length, 1);
-                $mol_assert_equal(pending[0], waiting);
-                // Заявки не мешаются с отложенными приглашениями: разные списки
-                $mol_assert_equal((store.Outbox()?.items() ?? []).length, 0);
-            },
-            async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
-                const land = $giper_baza_land.make({ $ });
-                const session = land.Data($bog_gram_session);
-                const moments = [3000, 1000, 2000];
-                const texts = ['третье', 'первое', 'второе'];
-                for (let i = 0; i < moments.length; ++i) {
-                    const message = session.Messages('auto').make(null);
-                    message.Text('auto')?.val(texts[i]);
-                    message.Moment('auto')?.val(moments[i]);
-                }
-                const links = session.Messages().items();
-                const sorted = links
-                    .map(link => message_of(land, link))
-                    .sort((x, y) => (x.Moment()?.val() ?? 0) - (y.Moment()?.val() ?? 0));
-                $mol_assert_equal(sorted[0].Text().val(), 'первое');
-                $mol_assert_equal(sorted[1].Text().val(), 'второе');
-                $mol_assert_equal(sorted[2].Text().val(), 'третье');
-            },
-            async 'Правка сообщения синхронизируется вместе с меткой Edited'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
-                msg_a.Text('auto')?.val('первая редакция');
-                msg_a.Author('auto')?.val(lord_a);
-                msg_a.Moment('auto')?.val(1000);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const links_b = session_b.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_b.length, 1);
-                $mol_assert_equal(message_of(session_b, links_b[0]).Text().val(), 'первая редакция');
-                $mol_assert_equal(message_of(session_b, links_b[0]).Edited()?.val() ?? null, null);
-                // A правит текст и проставляет момент правки
-                msg_a.Text('auto')?.val('вторая редакция');
-                msg_a.Edited('auto')?.val(1500);
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const edited_b = message_of(session_b, links_b[0]);
-                $mol_assert_equal(edited_b.Text().val(), 'вторая редакция');
-                $mol_assert_equal(edited_b.Edited().val(), 1500);
-            },
-            async 'Удаление — это флаг Deleted, обе стороны его видят'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                const data_a = session_a.Data($bog_gram_session);
-                const alive_a = data_a.Messages('auto').make(null);
-                alive_a.Text('auto')?.val('доживёт');
-                alive_a.Author('auto')?.val(lord_a);
-                alive_a.Moment('auto')?.val(1000);
-                const dead_a = data_a.Messages('auto').make(null);
-                dead_a.Text('auto')?.val('сотрут');
-                dead_a.Author('auto')?.val(lord_a);
-                dead_a.Moment('auto')?.val(2000);
-                dead_a.Deleted('auto')?.val(2500);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session_a);
-                // Поун никуда не девается: удаление — это метка, а не выкидывание из списка
-                const links_b = session_b.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_b.length, 2);
-                const pawns_b = links_b.map(link => message_of(session_b, link));
-                const alive_b = pawns_b.filter(message => !message.Deleted()?.val());
-                const dead_b = pawns_b.filter(message => message.Deleted()?.val());
-                $mol_assert_equal(alive_b.length, 1);
-                $mol_assert_equal(alive_b[0].Text().val(), 'доживёт');
-                $mol_assert_equal(dead_b.length, 1);
-                $mol_assert_equal(dead_b[0].Text().val(), 'сотрут');
-                $mol_assert_equal(dead_b[0].Deleted().val(), 2500);
-            },
-            async 'Позиции прочтения: Reads мержатся по ключу-лорду'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const lord_b = auth_b.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session0);
-                // Каждый ставит свою отметку, не видя чужой
-                session_a.Data($bog_gram_session).Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(1000);
-                session_b.Data($bog_gram_session).Reads('auto')?.key(lord_b, 'auto')?.Moment('auto')?.val(2000);
-                // Взаимный синк
-                await $mol_wire_async(session_a).units_steal(session_b);
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const reads_a = session_a.Data($bog_gram_session).Reads();
-                $mol_assert_equal(reads_a?.key(lord_a)?.Moment()?.val(), 1000);
-                $mol_assert_equal(reads_a?.key(lord_b)?.Moment()?.val(), 2000);
-                const reads_b = session_b.Data($bog_gram_session).Reads();
-                $mol_assert_equal(reads_b?.key(lord_a)?.Moment()?.val(), 1000);
-                $mol_assert_equal(reads_b?.key(lord_b)?.Moment()?.val(), 2000);
-            },
-            async 'Отметка прочтения сдвигается вперёд и доезжает до собеседника'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session0);
-                session_a.Data($bog_gram_session).Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(1000);
-                await $mol_wire_async(session_b).units_steal(session_a);
-                $mol_assert_equal(session_b.Data($bog_gram_session).Reads()?.key(lord_a)?.Moment()?.val(), 1000);
-                // Перезапись более поздним моментом: побеждает последняя запись
-                session_a.Data($bog_gram_session).Reads('auto')?.key(lord_a, 'auto')?.Moment('auto')?.val(3000);
-                await $mol_wire_async(session_b).units_steal(session_a);
-                $mol_assert_equal(session_a.Data($bog_gram_session).Reads()?.key(lord_a)?.Moment()?.val(), 3000);
-                $mol_assert_equal(session_b.Data($bog_gram_session).Reads()?.key(lord_a)?.Moment()?.val(), 3000);
-            },
-            async 'Заголовок дня и время сообщения форматируются по-человечески'($) {
-                const app = $bog_gram.make({ $ });
-                const now = new Date();
-                $mol_assert_equal(app.day_title(now.toDateString()), 'Сегодня');
-                $mol_assert_equal(app.day_title(new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString()), 'Вчера');
-                $mol_assert_equal(app.day_title(''), '');
-                $mol_assert_ok(app.day_title(new Date(2020, 0, 15).toDateString()).includes('2020'));
-                $mol_assert_equal(app.time_hm(new Date(2020, 0, 15, 9, 5).getTime()), '09:05');
-                $mol_assert_equal(app.time_hm(new Date(2020, 0, 15, 23, 59).getTime()), '23:59');
-            },
-            async 'Приглашение не заводит диалог с самим собой'($) {
-                const app = $bog_gram.make({ $ });
-                const my = 'LordMine';
-                const other = 'LordOthr_Bbbbbbbb';
-                // Ссылка — адрес страницы с лордом приглашающего
-                const location = $.$mol_dom_context.location;
-                const uri = app.invite_uri(my, '');
-                $mol_assert_equal(uri, location.origin + location.pathname + '#!invite=' + my);
-                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!invite=LordMine');
-                $mol_assert_equal(app.invite_uri('', ''), '');
-                // Свою же ссылку и пустой параметр пропускаем мимо
-                $mol_assert_equal(app.invite_plan(my, my, ''), 'skip');
-                $mol_assert_equal(app.invite_plan('', my, ''), 'skip');
-                // Чужую: знакомого собеседника открываем, незнакомому заводим диалог
-                $mol_assert_equal(app.invite_plan(other, my, 'DialogLink'), 'open');
-                $mol_assert_equal(app.invite_plan(other, my, ''), 'start');
-            },
-            async 'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
-                const app = $bog_gram.make({ $ });
-                const plan = (permission, on, off, asked) => app.notify_plan(true, permission, on, off, asked);
-                // Разрешение уже есть — подписываемся молча, без похода в настройки
-                $mol_assert_equal(plan('granted', false, false, false), 'subscribe');
-                // Разрешения нет — спрашиваем, но ровно один раз на браузер
-                $mol_assert_equal(plan('default', false, false, false), 'ask');
-                $mol_assert_equal(plan('default', false, false, true), 'skip');
-                $mol_assert_equal(plan('denied', false, false, false), 'skip');
-                // Включённые переподписываются на каждом заходе: демон мог выкинуть
-                // протухшую подписку, а сам браузер об этом не узнает
-                $mol_assert_equal(plan('granted', true, false, false), 'subscribe');
-                $mol_assert_equal(plan('denied', true, false, false), 'skip');
-                // Выключенное руками не включается обратно ни при каком разрешении
-                $mol_assert_equal(plan('granted', false, true, false), 'skip');
-                $mol_assert_equal(plan('default', false, true, false), 'skip');
-                // Без поддержки в браузере не делаем вообще ничего
-                $mol_assert_equal(app.notify_plan(false, 'granted', false, false, false), 'skip');
-            },
-            async 'Ключ в ссылке-приглашении избавляет от ожидания сети'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
-                const app = $bog_gram.make({ $, dialogs_store: () => dialogs });
-                const auth = await $.$giper_baza_auth._generate();
-                const pass = auth.pass();
-                const lord = pass.lord().str;
-                const key = pass.toString();
-                // Лорд и ключ едут в ссылке рядом, ключ URL не ломает
-                const uri = app.invite_uri(lord, key);
-                $mol_assert_equal(uri.slice(uri.indexOf('#')), '#!invite=' + lord + '/key=' + key);
-                $mol_assert_equal(encodeURIComponent(key), key);
-                // Лорд — хеш ключа, поэтому ключ из ссылки проверяется пересчётом
-                const learned = app.peer_pass_learn(lord, key);
-                $mol_assert_equal(learned?.lord().str, lord);
-                // И дальше берётся как есть: домашний ленд собеседника ждать нечего
-                $mol_assert_equal(app.peer_pass_of(lord), learned);
-                // Подложенный чужой ключ и мусор не принимаются
-                const other = await $.$giper_baza_auth._generate();
-                $mol_assert_equal(app.peer_pass_learn(lord, other.pass().toString()), null);
-                $mol_assert_equal(app.peer_pass_learn(lord, 'мусор'), null);
-                $mol_assert_equal(app.peer_pass_learn(lord, ''), null);
-                // Старая ссылка без ключа по-прежнему работает — через сеть
-                $mol_assert_equal(app.invite_plan(lord, 'LordMine', ''), 'start');
-            },
-            async 'Битая ссылка-приглашение не уходит в молчаливое ожидание'($) {
-                const app = $bog_gram.make({ $ });
-                const my = 'LordMine';
-                // Обрезанный при пересылке идентификатор форматом не проходит
-                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_WufmHhGH'), true);
-                $mol_assert_equal(app.invite_lord_ok('не ссылка'), false);
-                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_Wufm'), false);
-                // Ссылка на ленд — не лорд: личный диалог по ней не открывается
-                $mol_assert_equal(app.invite_lord_ok('ikjOnflc_WufmHhGH_Aaaaaaaa'), false);
-                // Мусор отсекается до ожидания, а не уходит в него молча
-                $mol_assert_equal(app.invite_plan('не ссылка', my, ''), 'bad');
-            },
-            async 'Ожидание ключа собеседника объясняется на экране'($) {
-                const app = $bog_gram.make({ $ });
-                const other = 'LordOthr_Bbbbbbbb';
-                // Пока ждать нечего, плитки нет вовсе
-                $mol_assert_equal(app.invite_plate_text(), '');
-                $mol_assert_equal(app.Invite_plate(), null);
-                // Ожидание ключа объясняем сразу, а не после таймаута
-                app.dialog_pending(other);
-                $mol_assert_equal(app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника');
-                // Ключ не доехал: молчание превращается в объяснение
-                app.pending_late(other);
-                $mol_assert_equal(app.invite_plate_text().startsWith('Ключ собеседника не нашёлся'), true);
-                // Метка от прошлого приглашения на новое не налипает
-                app.dialog_pending('LordThrd_Cccccccc');
-                $mol_assert_equal(app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника');
-                // Битая ссылка говорит о себе отдельно
-                app.invite_lost('мусор');
-                $mol_assert_equal(app.invite_plate_text(), 'Ссылка на диалог битая — попросите свежую');
-            },
-            async 'Архив прячет диалог из списка, но не удаляет'($) {
-                const land = $giper_baza_land.make({ $ });
-                const store = land.Data($bog_gram_dialogs);
-                store.Dialogs('auto').add('DialogPlain');
-                store.Dialogs('auto').add('DialogFolded');
-                store.Archived('auto').add('DialogFolded');
-                // Сам список диалогов архив не трогает: ссылка остаётся на месте
-                const dialogs = store.Dialogs().items().map(String);
-                $mol_assert_equal(dialogs.length, 2);
-                $mol_assert_equal(new Set(dialogs).has('DialogFolded'), true);
-                // Основной список отдаёт одну строку, архив — другую
-                const archived = new Set(store.Archived().items().map(String));
-                const visible = dialogs.filter(id => !archived.has(id));
-                $mol_assert_equal(visible.length, 1);
-                $mol_assert_equal(visible[0], 'DialogPlain');
-                $mol_assert_equal(archived.has('DialogFolded'), true);
-                // Удалённый диалог в архиве не показывается: он осел в Hidden
-                store.Dialogs('auto').cut('DialogFolded');
-                store.Hidden('auto').add('DialogFolded');
-                const alive = new Set(store.Dialogs().items().map(String));
-                const dropped = new Set(store.Hidden().items().map(String));
-                const in_archive = store.Archived().items()
-                    .map(String)
-                    .filter(id => alive.has(id) && !dropped.has(id));
-                $mol_assert_equal(in_archive.length, 0);
-                // Возврат из архива — снятие одной ссылки, остальное не меняется
-                store.Archived('auto').cut('DialogFolded');
-                $mol_assert_equal(store.Archived().items().length, 0);
-                $mol_assert_equal(store.Dialogs().items().length, 1);
-            },
-            async 'Избранное живёт в своём ленде'($) {
-                const owner = $giper_baza_land.make({ $ });
-                // Ссылка на ленд заметок лежит в приватном списке диалогов владельца
-                const store = owner.Data($bog_gram_dialogs);
-                store.Saved_land('auto')?.val('SavedLandLink');
-                $mol_assert_equal(store.Saved_land().val(), 'SavedLandLink');
-                // Данные избранного — обычная сессия: сообщения пишутся и читаются
-                const saved = $giper_baza_land.make({ $ });
-                const session = saved.Data($bog_gram_session);
-                const note = session.Messages('auto').make(null);
-                note.Text('auto')?.val('Не забыть купить хлеб');
-                note.Author('auto')?.val('LordMine');
-                note.Moment('auto')?.val(1000);
-                const links = session.Messages().items();
-                $mol_assert_equal(links.length, 1);
-                const found = message_of(saved, links[0]);
-                $mol_assert_equal(found.Text().val(), 'Не забыть купить хлеб');
-                $mol_assert_equal(found.Author().val(), 'LordMine');
-                // Правка заметки — та же операция, что и в диалоге
-                found.Text('auto')?.val('Хлеб и молоко');
-                found.Edited('auto')?.val(1500);
-                $mol_assert_equal(message_of(saved, links[0]).Text().val(), 'Хлеб и молоко');
-                // Собеседника нет, поэтому отметки прочтения в избранном никто не ставит
-                $mol_assert_equal(session.Reads()?.key('LordMine')?.Moment()?.val() ?? 0, 0);
-            },
-            async 'Избранное собирается изо всех своих лендов'($) {
-                const owner = $giper_baza_land.make({ $ });
-                const store = owner.Data($bog_gram_dialogs);
-                const app = $bog_gram.make({ $, dialogs_store: () => store });
-                const first = 'AAAAAAAA_BBBBBBBB';
-                const second = 'CCCCCCCC_DDDDDDDD';
-                // Ленда заметок ещё нет: избранного нет ни у одной ссылки
-                $mol_assert_equal(app.saved_links().length, 0);
-                $mol_assert_equal(app.saved_is(first), false);
-                store.Saved_land('auto')?.val(first);
-                store.Saved_lands('auto').add(first);
-                $mol_assert_equal(app.saved_links().join(), first);
-                // Второе устройство успело завести своё избранное, пока список
-                // диалогов был в пути: ссылка указывает на него, но заброшенный
-                // ленд остаётся своим — иначе заметки из него пропали бы
-                store.Saved_lands('auto').add(second);
-                store.Saved_land('auto')?.val(second);
-                $mol_assert_equal(app.saved_is(first), true);
-                $mol_assert_equal(app.saved_is(second), true);
-                $mol_assert_equal(app.saved_is('DialogPlain'), false);
-                $mol_assert_equal(app.saved_is(''), false);
-                // Читаем изо всех, а пишем в указанный — он идёт последним, и
-                // запись всегда уходит в последний отсек
-                const links = app.saved_links();
-                $mol_assert_equal(links.length, 2);
-                $mol_assert_equal(links[links.length - 1], second);
-                $mol_assert_equal(app.session_links_of(second).join(), links.join());
-                $mol_assert_equal(app.session_links_of(first).join(), links.join());
-            },
-            async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                // Сам кадр лежит в отдельном ленде, в переписку едет только ссылка на него
-                const shot_land = $giper_baza_land.make({ $, auth: () => auth_a });
-                const shot = shot_land.Data($giper_baza_file);
-                shot.buffer(new Uint8Array([1, 2, 3, 4]));
-                shot.type('image/webp');
-                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
-                msg_a.Author('auto')?.val(lord_a);
-                msg_a.Moment('auto')?.val(1000);
-                msg_a.Image('auto').remote(shot);
-                msg_a.Image_width('auto')?.val(1200);
-                msg_a.Image_height('auto')?.val(900);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const links_b = session_b.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_b.length, 1);
-                // Ленд самого кадра тут не поднимаем: он приезжает по сети отдельно,
-                // у собеседника от сообщения есть ссылка на него и размеры
-                const got = message_of(session_b, links_b[0]);
-                $mol_assert_equal(got.Image().val().str, shot.link().str);
-                $mol_assert_equal(got.Image_width().val(), 1200);
-                $mol_assert_equal(got.Image_height().val(), 900);
-            },
-            async 'Сообщение с картинкой без текста остаётся живым и читаемым'($) {
-                const land = $giper_baza_land.make({ $ });
-                const session = land.Data($bog_gram_session);
-                const shot_land = $giper_baza_land.make({ $ });
-                const shot = shot_land.Data($giper_baza_file);
-                shot.buffer(new Uint8Array([7, 7, 7]));
-                shot.type('image/webp');
-                const message = session.Messages('auto').make(null);
-                message.Author('auto')?.val('LordMine');
-                message.Moment('auto')?.val(1000);
-                message.Image('auto').remote(shot);
-                message.Image_width('auto')?.val(800);
-                message.Image_height('auto')?.val(600);
-                const links = session.Messages().items();
-                const found = message_of(land, links[0]);
-                // Подписи нет — и это норма: пустой текст сообщение не ломает
-                $mol_assert_equal(found.Text()?.val() ?? '', '');
-                $mol_assert_equal(found.Deleted()?.val() ?? null, null);
-                $mol_assert_equal(found.Image().val().str, shot.link().str);
-                $mol_assert_equal(found.Image_width().val(), 800);
-                $mol_assert_equal(found.Image_height().val(), 600);
-                // Подпись можно дописать правкой, как и любой другой текст
-                found.Text('auto')?.val('Вид с балкона');
-                found.Edited('auto')?.val(1500);
-                $mol_assert_equal(message_of(land, links[0]).Text().val(), 'Вид с балкона');
-                $mol_assert_equal(message_of(land, links[0]).Image().val().str, shot.link().str);
-            },
-            async 'Голосовое: ссылка на запись и её длительность доезжают до собеседника'($) {
-                const king = await $.$giper_baza_auth._generate();
-                const auth_a = await $.$giper_baza_auth._generate();
-                const auth_b = await $.$giper_baza_auth._generate();
-                const lord_a = auth_a.pass().lord().str;
-                const session0 = $giper_baza_land.make({ $, auth: () => king });
-                session0.give(auth_a.pass(), $giper_baza_rank_rule);
-                session0.give(auth_b.pass(), $giper_baza_rank_post('just'));
-                const session_a = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_a });
-                await $mol_wire_async(session_a).units_steal(session0);
-                // Сама запись лежит в отдельном ленде, в переписку едет только ссылка
-                const sound_land = $giper_baza_land.make({ $, auth: () => auth_a });
-                const sound = sound_land.Data($giper_baza_file);
-                sound.buffer(new Uint8Array([9, 8, 7, 6]));
-                sound.type('audio/webm');
-                const msg_a = session_a.Data($bog_gram_session).Messages('auto').make(null);
-                msg_a.Author('auto')?.val(lord_a);
-                msg_a.Moment('auto')?.val(1000);
-                msg_a.Voice('auto').remote(sound);
-                msg_a.Voice_span('auto')?.val(7.5);
-                const session_b = $giper_baza_land.make({ $, link: () => session0.link(), auth: () => auth_b });
-                await $mol_wire_async(session_b).units_steal(session_a);
-                const links_b = session_b.Data($bog_gram_session).Messages().items();
-                $mol_assert_equal(links_b.length, 1);
-                // Ленд самой записи тут не поднимаем: он приезжает по сети отдельно,
-                // у собеседника от сообщения есть ссылка на него и длительность
-                const got = message_of(session_b, links_b[0]);
-                $mol_assert_equal(got.Voice().val().str, sound.link().str);
-                $mol_assert_equal(got.Voice_span().val(), 7.5);
-                // Подписи у голосового нет — и это норма
-                $mol_assert_equal(got.Text()?.val() ?? '', '');
-                $mol_assert_equal(got.Image()?.val() ?? null, null);
-            },
-            async 'Длительность записи показывается минутами и секундами'($) {
-                $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
-                $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
-                $mol_assert_equal($bog_gram_voice.stamp(59), '0:59');
-                $mol_assert_equal($bog_gram_voice.stamp(60), '1:00');
-                $mol_assert_equal($bog_gram_voice.stamp(125), '2:05');
-                $mol_assert_equal($bog_gram_voice.stamp(5 * 60), '5:00');
-                // Доли секунды округляются, отрицательного времени не бывает
-                $mol_assert_equal($bog_gram_voice.stamp(7.4), '0:07');
-                $mol_assert_equal($bog_gram_voice.stamp(7.6), '0:08');
-                $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
-            },
-            async 'Пережатие вписывает большую сторону в предел, сохраняя пропорции'($) {
-                const wide = $bog_gram_shrink.fit(4000, 3000, 1600);
-                $mol_assert_equal(wide.width, 1600);
-                $mol_assert_equal(wide.height, 1200);
-                const tall = $bog_gram_shrink.fit(3000, 4000, 1600);
-                $mol_assert_equal(tall.width, 1200);
-                $mol_assert_equal(tall.height, 1600);
-                const square = $bog_gram_shrink.fit(2000, 2000, 1600);
-                $mol_assert_equal(square.width, 1600);
-                $mol_assert_equal(square.height, 1600);
-                // Помещается — оставляем как есть: растянутый кадр только потяжелеет
-                const small = $bog_gram_shrink.fit(320, 200, 1600);
-                $mol_assert_equal(small.width, 320);
-                $mol_assert_equal(small.height, 200);
-                // Совсем узкая полоска не схлопывается в ноль
-                const strip = $bog_gram_shrink.fit(4000, 1, 1600);
-                $mol_assert_equal(strip.width, 1600);
-                $mol_assert_equal(strip.height, 1);
-                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
-                $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
-            },
-            async 'Подпись собеседника живёт в приватном ленде и перекрывает его имя'($) {
-                const land = $giper_baza_land.make({ $ });
-                const store = land.Data($bog_gram_dialogs);
-                const peer = 'LordPeerWithVeryLongIdentifier';
-                // Пока никого не подписали, словаря подписей нет вовсе
-                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
-                store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('Костя с работы');
-                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', 'Костя с работы');
-                // Подпись лежит по ключу-лорду и соседей не задевает
-                $mol_assert_equal(Boolean(store.Notes()?.key('LordStranger')), false);
-                // Снятая подпись — это пустое значение, а не исчезнувшая запись
-                store.Notes('auto')?.key(peer, 'auto')?.Title('auto')?.val('');
-                $mol_assert_equal(store.Notes()?.key(peer)?.Title()?.val() ?? '', '');
-                // Приоритет: своя подпись важнее имени из чужого профиля, а без
-                // обоих человек показывается сокращённым идентификатором
-                const app = $bog_gram.make({ $ });
-                $mol_assert_equal(app.label_pick(peer, 'Костя с работы', 'Иииии'), 'Костя с работы');
-                $mol_assert_equal(app.label_pick(peer, '', 'Иииии'), 'Иииии');
-                $mol_assert_equal(app.label_pick(peer, '', ''), app.lord_short(peer));
-                $mol_assert_equal(app.label_pick('', 'Костя с работы', 'Иииии'), '');
-            },
-            async 'Приглашение ждёт первого сообщения'($) {
-                const land = $giper_baza_land.make({ $ });
-                const session = land.Data($bog_gram_session);
-                const app = $bog_gram.make({ $ });
-                const my = 'LordMine';
-                const peer = 'LordPeer';
-                // Диалог только что заведён: показывать собеседнику нечего
-                $mol_assert_equal(app.mine_among([], my), false);
-                // Чужое сообщение приглашения не отпускает: считаются только свои
-                const alien = session.Messages('auto').make(null);
-                alien.Text('auto')?.val('Эй');
-                alien.Author('auto')?.val(peer);
-                alien.Moment('auto')?.val(1000);
-                const one = session.Messages().items()
-                    .map(link => message_of(land, link));
-                $mol_assert_equal(one.length, 1);
-                $mol_assert_equal(app.mine_among(one, my), false);
-                // Написал сам — теперь диалогу есть чем себя показать
-                const mine = session.Messages('auto').make(null);
-                mine.Text('auto')?.val('Привет');
-                mine.Author('auto')?.val(my);
-                mine.Moment('auto')?.val(2000);
-                const both = session.Messages().items()
-                    .map(link => message_of(land, link));
-                $mol_assert_equal(both.length, 2);
-                $mol_assert_equal(app.mine_among(both, my), true);
-                // Удалённое сообщение из списка живых уходит вместе со своим правом
-                // на доставку: список сообщений сюда приходит уже отфильтрованным
-                mine.Deleted('auto')?.val(3000);
-                const alive = both.filter(message => !message.Deleted()?.val());
-                $mol_assert_equal(app.mine_among(alive, my), false);
-            },
-            async 'Принятый собеседник уходит из запросов'($) {
-                const land = $giper_baza_land.make({ $ });
-                const store = land.Data($bog_gram_dialogs);
-                const known = 'LordKnown';
-                const stranger = 'LordStranger';
-                // Пока никого не принимали, списка согласий нет вовсе
-                $mol_assert_equal((store.Accepted()?.items() ?? []).length, 0);
-                store.Accepted('auto').add(known);
-                const accepted = new Set(store.Accepted().items().map(String));
-                $mol_assert_equal(accepted.has(known), true);
-                $mol_assert_equal(accepted.has(stranger), false);
-                // Повторное согласие ничего не задваивает
-                store.Accepted('auto').add(known);
-                $mol_assert_equal(store.Accepted().items().length, 1);
-                // Согласие даётся человеку, а отказ прячет ссылку на диалог:
-                // это разные записи и друг друга они не задевают
-                store.Hidden('auto').add('DialogFromStranger');
-                const hidden = new Set(store.Hidden().items().map(String));
-                $mol_assert_equal(hidden.has('DialogFromStranger'), true);
-                $mol_assert_equal(hidden.has(known), false);
-                $mol_assert_equal(store.Accepted().items().length, 1);
-                $mol_assert_equal((store.Archived()?.items() ?? []).length, 0);
-            },
-            async 'Чужой диалог показывается по сообщениям и знакомству'($) {
-                const app = $bog_gram.make({ $ });
-                // Свой диалог показывается всегда: пустым его завёл я сам
-                $mol_assert_equal(app.dialog_sort(true, false, false), 'plain');
-                $mol_assert_equal(app.dialog_sort(true, true, false), 'plain');
-                // Чужой пустой не показывается вовсе, знаком его автор или нет
-                $mol_assert_equal(app.dialog_sort(false, false, true), 'skip');
-                $mol_assert_equal(app.dialog_sort(false, false, false), 'skip');
-                // Чужой с сообщениями: от знакомого в общий список, от незнакомца в запросы
-                $mol_assert_equal(app.dialog_sort(false, true, true), 'plain');
-                $mol_assert_equal(app.dialog_sort(false, true, false), 'request');
-                // Создателя приходится записывать прямо в ленд: королём числится
-                // служебный ключ, выданный при захвате, и по ссылке ленда автора
-                // не узнать. Без записи ответ честно пустой.
-                $mol_assert_equal(app.dialog_owner(''), '');
-                const auth = await $.$giper_baza_auth._generate();
-                const lord = auth.pass().lord().str;
-                const land = $giper_baza_land.make({ $, auth: () => auth });
-                const ops = {
-                    write() {
-                        land.Data($bog_gram_dialog).Owner('auto')?.val(lord);
-                        return true;
-                    },
-                    read() {
-                        return String(land.Data($bog_gram_dialog).Owner()?.val() ?? '');
-                    },
-                };
-                await $mol_wire_async(ops).write();
-                $mol_assert_equal(await $mol_wire_async(ops).read(), lord);
-            },
-            async 'Сообщения из разных бакетов сливаются по моменту'($) {
-                const app = $bog_gram.make({ $ });
-                const early = $giper_baza_land.make({ $ });
-                const late = $giper_baza_land.make({ $ });
-                const write = (land, moment, text) => {
-                    const message = land.Data($bog_gram_session).Messages('auto').make(null);
-                    message.Text('auto')?.val(text);
-                    message.Moment('auto')?.val(moment);
-                };
-                const list_of = (land) => land.Data($bog_gram_session).Messages().items()
-                    .map(link => message_of(land, link));
-                // Бакеты писались вперемешку: старый не кончается там, где
-                // начинается новый — в него ещё дописывали, пока свежий уже жил
-                write(early, 1000, 'первое');
-                write(early, 3000, 'третье');
-                write(late, 2000, 'второе');
-                write(late, 4000, 'четвёртое');
-                const merged = app.messages_merge([list_of(early), list_of(late)]);
-                $mol_assert_equal(merged.length, 4);
-                $mol_assert_equal(merged.map(item => item.Text().val()).join(' '), 'первое второе третье четвёртое');
-                // Порядок задают данные, а не порядок бакетов: та же склейка
-                // наоборот даёт тот же результат
-                const back = app.messages_merge([list_of(late), list_of(early)]);
-                $mol_assert_equal(back.map(item => item.Text().val()).join(' '), 'первое второе третье четвёртое');
-                // Недоступный бакет приходит сюда пустым списком и ничего не портит
-                const alone = app.messages_merge([[], list_of(early), []]);
-                $mol_assert_equal(alone.map(item => item.Text().val()).join(' '), 'первое третье');
-                $mol_assert_equal(app.messages_merge([]).length, 0);
-                // Совпавшие моменты разводятся ссылкой, поэтому порядок не зависит
-                // от того, какой бакет доехал первым
-                const tie_one = $giper_baza_land.make({ $ });
-                const tie_two = $giper_baza_land.make({ $ });
-                write(tie_one, 5000, 'один');
-                write(tie_two, 5000, 'два');
-                const straight = app.messages_merge([list_of(tie_one), list_of(tie_two)]);
-                const reverse = app.messages_merge([list_of(tie_two), list_of(tie_one)]);
-                $mol_assert_equal(straight.map(item => item.Text().val()).join(' '), reverse.map(item => item.Text().val()).join(' '));
-            },
-            async 'Исключённый теряет новый бакет, но не старый'($) {
-                // Ссылка ленда выводится из ключа его короля, поэтому каждому ленду
-                // нужен свой: с общим ключом это был бы один и тот же ленд в трёх
-                // обёртках, и шифрование с раздачей прав уходило бы в клинч
-                const king_dialog = await $.$giper_baza_auth._generate();
-                const king_old = await $.$giper_baza_auth._generate();
-                const king_new = await $.$giper_baza_auth._generate();
-                const auth_stay = await $.$giper_baza_auth._generate();
-                const auth_out = await $.$giper_baza_auth._generate();
-                const lord_stay = auth_stay.pass().lord().str;
-                const lord_out = auth_out.pass().lord().str;
-                const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
-                const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
-                const new_bucket = $giper_baza_land.make({ $, auth: () => king_new });
-                // Бакеты закрыты ото всех, как и в самом приложении: без гифта
-                // такой ленд не читается вовсе
-                await $mol_wire_async(old_bucket).encrypted(true);
-                await $mol_wire_async(new_bucket).encrypted(true);
-                // Выдача прав на шифрованный ленд считает общий секрет, поэтому
-                // каждый шаг гоняем в своей фибре с ретраями
-                const ops = {
-                    /** Пока в группе трое, права на первый бакет у всех */
-                    start() {
-                        old_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
-                        old_bucket.give(auth_out.pass(), $giper_baza_rank_post('just'));
-                        return true;
-                    },
-                    /** Исключение: свежий бакет открывается всем, кроме уходящего */
-                    part() {
-                        new_bucket.give(auth_stay.pass(), $giper_baza_rank_post('just'));
-                        return true;
-                    },
-                    /** Записи в ленд подписываются, а подпись асинхронна: вне фибры
-                     * приостановка не переживается и прогон замирает молча. */
-                    fill() {
-                        const data = dialog.Data($bog_gram_dialog);
-                        data.Peers('auto').add(king_dialog.pass().lord().str);
-                        data.Peers('auto').add(lord_stay);
-                        data.Peers('auto').add(lord_out);
-                        data.Sessions('auto').add(old_bucket.link().str);
-                        data.Sessions('auto').add(new_bucket.link().str);
-                        data.Peers('auto').cut(lord_out);
-                        return true;
-                    },
-                    /** Права шифрованного ленда тоже читаем в фибре: обращение к
-                     * ним считает секрет, а он приезжает асинхронно. */
-                    read() {
-                        const data = dialog.Data($bog_gram_dialog);
-                        return {
-                            peers: data.Peers().items().map(String),
-                            sessions: data.Sessions().items().map(String),
-                            out_old: old_bucket.lord_rank(auth_out.pass().lord()),
-                            out_new: new_bucket.lord_rank(auth_out.pass().lord()),
-                            stay_new: new_bucket.lord_rank(auth_stay.pass().lord()),
-                        };
-                    },
-                };
-                await $mol_wire_async(ops).start();
-                await $mol_wire_async(ops).part();
-                await $mol_wire_async(ops).fill();
-                const state = await $mol_wire_async(ops).read();
-                const peers = state.peers;
-                $mol_assert_equal(peers.includes(lord_out), false);
-                $mol_assert_equal(peers.includes(lord_stay), true);
-                // Старый бакет никуда не делся: переписка продолжается в свежем,
-                // а прошлое остаётся там, где лежало
-                // Порядок в списке задаётся слиянием, а не добавлением, поэтому
-                // проверяем состав, а какой бакет свежий — знает отдельный указатель
-                const sessions = state.sessions;
-                $mol_assert_equal(sessions.length, 2);
-                $mol_assert_equal(sessions.includes(old_bucket.link().str), true);
-                $mol_assert_equal(sessions.includes(new_bucket.link().str), true);
-                // Прошлые сообщения у исключённого остаются: ключ от старого бакета
-                // ему уже выдали, и отобрать его нечем
-                $mol_assert_equal(state.out_old, $giper_baza_rank_post('just'));
-                // А свежего бакета у него нет — закрытый ленд без гифта не читается
-                $mol_assert_equal(state.out_new, $giper_baza_rank_deny);
-                $mol_assert_equal(state.stay_new, $giper_baza_rank_post('just'));
-            },
-            async 'Добавленный без истории видит только новый бакет'($) {
-                // Каждому ленду свой король: ссылка выводится из ключа, и общий
-                // ключ склеил бы три ленда в один
-                const king_dialog = await $.$giper_baza_auth._generate();
-                const king_old = await $.$giper_baza_auth._generate();
-                const king_fresh = await $.$giper_baza_auth._generate();
-                const auth_old = await $.$giper_baza_auth._generate();
-                const auth_new = await $.$giper_baza_auth._generate();
-                const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
-                const old_bucket = $giper_baza_land.make({ $, auth: () => king_old });
-                const fresh = $giper_baza_land.make({ $, auth: () => king_fresh });
-                await $mol_wire_async(old_bucket).encrypted(true);
-                await $mol_wire_async(fresh).encrypted(true);
-                const ops = {
-                    start() {
-                        old_bucket.give(auth_old.pass(), $giper_baza_rank_post('just'));
-                        return true;
-                    },
-                    /** Новичка зовут без истории: заводится свежий бакет и
-                     * открывается нынешним участникам вместе с ним */
-                    join() {
-                        fresh.give(auth_old.pass(), $giper_baza_rank_post('just'));
-                        fresh.give(auth_new.pass(), $giper_baza_rank_post('just'));
-                        return true;
-                    },
-                    /** Записи в ленд подписываются, а подпись асинхронна: вне фибры
-                     * приостановка не переживается и прогон замирает молча. */
-                    fill() {
-                        const data = dialog.Data($bog_gram_dialog);
-                        data.Peers('auto').add(auth_old.pass().lord().str);
-                        data.Sessions('auto').add(old_bucket.link().str);
-                        data.Peers('auto').add(auth_new.pass().lord().str);
-                        data.Sessions('auto').add(fresh.link().str);
-                        return true;
-                    },
-                    /** И список бакетов, и права — одним чтением из фибры. */
-                    read() {
-                        const data = dialog.Data($bog_gram_dialog);
-                        return {
-                            sessions: data.Sessions().items().length,
-                            new_old: old_bucket.lord_rank(auth_new.pass().lord()),
-                            new_fresh: fresh.lord_rank(auth_new.pass().lord()),
-                            old_old: old_bucket.lord_rank(auth_old.pass().lord()),
-                            old_fresh: fresh.lord_rank(auth_old.pass().lord()),
-                            king_old_rank: old_bucket.lord_rank(king_old.pass().lord()),
-                            king_fresh_rank: fresh.lord_rank(king_fresh.pass().lord()),
-                        };
-                    },
-                };
-                await $mol_wire_async(ops).start();
-                await $mol_wire_async(ops).join();
-                await $mol_wire_async(ops).fill();
-                const state = await $mol_wire_async(ops).read();
-                // В списке бакетов новичок видит оба, а открыть может только свежий
-                $mol_assert_equal(state.sessions, 2);
-                $mol_assert_equal(state.new_old, $giper_baza_rank_deny);
-                $mol_assert_equal(state.new_fresh, $giper_baza_rank_post('just'));
-                // Старожил продолжает читать и то, и другое
-                $mol_assert_equal(state.old_old, $giper_baza_rank_post('just'));
-                $mol_assert_equal(state.old_fresh, $giper_baza_rank_post('just'));
-                // Создатель — король обоих лендов, права у него полные и без гифта
-                $mol_assert_equal(state.king_old_rank, $giper_baza_rank_rule);
-                $mol_assert_equal(state.king_fresh_rank, $giper_baza_rank_rule);
-            },
-            async 'Диалог открывается с первого непрочитанного чужого сообщения'($) {
-                const app = $bog_gram.make({ $ });
+            'Открывается с первого непрочитанного чужого сообщения'($) {
+                const chat = $bog_gram_chat.make({ $ });
                 const list = [
                     { moment: 1000, author: 'Peer' },
                     { moment: 2000, author: 'Me' },
                     { moment: 3000, author: 'Peer' },
                     { moment: 4000, author: 'Peer' },
                 ];
-                // Прочитано до 2000: первое непрочитанное — третье
-                $mol_assert_equal(app.unread_first(list, 'Me', 2000), 2);
-                // Свои сообщения непрочитанными не считаются, даже позже отметки
-                $mol_assert_equal(app.unread_first(list.slice(0, 2), 'Me', 1000), -1);
-                // Всё прочитано — открываем с конца
-                $mol_assert_equal(app.unread_first(list, 'Me', 4000), -1);
-                // Отметки нет вовсе — читать с самого начала
-                $mol_assert_equal(app.unread_first(list, 'Me', 0), 0);
+                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), 2);
+                $mol_assert_equal(chat.unread_first(list.slice(0, 2), 'Me', 1000), -1);
+                $mol_assert_equal(chat.unread_first(list, 'Me', 4000), -1);
+                $mol_assert_equal(chat.unread_first(list, 'Me', 0), 0);
             },
             'Ответ вызывается двумя тапами по одному пузырю, а не по разным'($) {
-                const app = $bog_gram.make({ $ });
-                $mol_assert_equal(app.message_double_tap('a', 1000), false);
-                $mol_assert_equal(app.message_double_tap('a', 1200), true);
-                // Третий тап начинает отсчёт заново, а не отвечает ещё раз
-                $mol_assert_equal(app.message_double_tap('a', 1300), false);
-                // Тапы по разным пузырям — не двойной
-                $mol_assert_equal(app.message_double_tap('b', 1400), false);
-                // Слишком медленно — тоже
-                $mol_assert_equal(app.message_double_tap('b', 2000), false);
+                const chat = $bog_gram_chat.make({ $ });
+                $mol_assert_equal(chat.message_double_tap('a', 1000), false);
+                $mol_assert_equal(chat.message_double_tap('a', 1200), true);
+                $mol_assert_equal(chat.message_double_tap('a', 1300), false);
+                $mol_assert_equal(chat.message_double_tap('b', 1400), false);
+                $mol_assert_equal(chat.message_double_tap('b', 2000), false);
             },
-            async 'Тап по диалогу открывает его, даже пока отметка прочтения едет'($) {
+            'В группе вместо галочек — сколько человек прочитало'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                const mates = ['LordA', 'LordB', 'LordC'];
+                const reads = { LordA: 3000, LordB: 1000, LordC: 0 };
+                $mol_assert_equal(chat.read_tally(reads, mates, 1000), 2);
+                $mol_assert_equal(chat.read_tally(reads, mates, 3000), 1);
+                $mol_assert_equal(chat.read_tally(reads, mates, 4000), 0);
+                $mol_assert_equal(chat.read_tally({ ...reads, LordGone: 9000 }, mates, 3000), 1);
+                $mol_assert_equal(chat.read_tally({}, mates, 1000), 0);
+                $mol_assert_equal(chat.read_tally(reads, [], 1000), 0);
+            },
+            'Отпускание над крестиком отменяет запись, мимо него — нет'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                chat.cancel_rect = () => ({ left: 100, right: 200, top: 10, bottom: 50, width: 100, height: 40 });
+                $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 30 }), true);
+                $mol_assert_equal(chat.voice_on_cancel({ clientX: 250, clientY: 30 }), false);
+                $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 60 }), false);
+                $mol_assert_equal(chat.voice_on_cancel(), false);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
+            const made = [];
+            class Fake {
+                url;
+                binaryType = '';
+                closed = false;
+                onopen = null;
+                onerror = null;
+                onclose = null;
+                onmessage = null;
+                constructor(url) {
+                    this.url = url;
+                    made.push(this);
+                    if (url.includes('alive'))
+                        setTimeout(() => this.onopen?.(), 5);
+                }
+                send() { }
+                close() { this.closed = true; }
+            }
+            class Yard extends $bog_yard {
+                static stagger = 10;
+                static masters() {
+                    return ['https://silent.example/', 'https://alive.example/'];
+                }
+            }
+            const context = Object.create($);
+            context.$mol_dom_context = Object.assign(Object.create($.$mol_dom_context), { WebSocket: Fake });
+            context.$giper_baza_yard = Yard;
+            const yard = Yard.make({ $: context });
+            const began = Date.now();
+            const port = await $mol_wire_async(yard).master();
+            const spent = Date.now() - began;
+            $mol_assert_equal(yard.master_cursor(), 1);
+            $mol_assert_equal(port.socket.url, 'wss://alive.example/');
+            $mol_assert_equal(made[0].closed, true);
+            $mol_assert_equal(spent < 500, true);
+            port.destructor();
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async 'Тап по диалогу открывает его сразу'($) {
                 const app = $bog_gram.make({ $ });
-                const wait = new Promise(() => { });
-                app.chat_focus = () => { throw wait; };
                 await $mol_wire_async(app).dialog_select('dialog');
                 $mol_assert_equal(app.dialog_current(), 'dialog');
-            },
-            'Пока отметка прочтения не доехала, диалог не решает, откуда открываться'($) {
-                const app = $bog_gram.make({ $ });
-                const wait = new Promise(() => { });
-                app.session_lands_of = () => [{ Data: () => { throw wait; } }];
-                let thrown = null;
-                try {
-                    app.read_moment_of('dialog', 'Me');
-                }
-                catch (error) {
-                    thrown = error;
-                }
-                $mol_assert_equal(thrown, wait);
-            },
-            async 'В группе вместо галочек — сколько человек прочитало'($) {
-                const app = $bog_gram.make({ $ });
-                const mates = ['LordA', 'LordB', 'LordC'];
-                // Отметка участника — момент последнего прочитанного им сообщения
-                const reads = { LordA: 3000, LordB: 1000, LordC: 0 };
-                // Раннее сообщение прочитали все, кто вообще заглядывал
-                $mol_assert_equal(app.read_tally(reads, mates, 1000), 2);
-                // Позднее — только тот, кто дочитал до него
-                $mol_assert_equal(app.read_tally(reads, mates, 3000), 1);
-                // Самое свежее не прочитал никто
-                $mol_assert_equal(app.read_tally(reads, mates, 4000), 0);
-                // Отметки того, кого в группе уже нет, счёт не задевают: считаем
-                // по списку участников, а не по всему словарю
-                $mol_assert_equal(app.read_tally({ ...reads, LordGone: 9000 }, mates, 3000), 1);
-                // Ни одной отметки — ноль, а не ошибка
-                $mol_assert_equal(app.read_tally({}, mates, 1000), 0);
-                $mol_assert_equal(app.read_tally(reads, [], 1000), 0);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

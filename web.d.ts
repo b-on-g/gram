@@ -117,7 +117,7 @@ declare namespace $ {
         static calc<Value>(value: Value): $mol_style_func<"calc", Value>;
         static vary<Name extends string, Value extends string>(name: Name, defaultValue?: Value): $mol_style_func<"var", Name | (Name | Value)[]>;
         static url<Href extends string>(href: Href): $mol_style_func<"url", string>;
-        static hsla(hue: number | $mol_style_func<'var'>, saturation: number, lightness: number, alpha: number): $mol_style_func<"hsla", (number | $mol_style_func<"var", unknown> | `${number}%`)[]>;
+        static hsla(hue: number | $mol_style_func<'var'>, saturation: number, lightness: number, alpha: number): $mol_style_func<"hsla", (number | `${number}%` | $mol_style_func<"var", unknown>)[]>;
         static clamp(min: $mol_style_unit_str<any>, mid: $mol_style_unit_str<any>, max: $mol_style_unit_str<any>): $mol_style_func<"clamp", `${number}${any}`[]>;
         static rgba(red: number | $mol_style_func<'var'>, green: number | $mol_style_func<'var'>, blue: number | $mol_style_func<'var'>, alpha: number | $mol_style_func<'var'>): $mol_style_func<"rgba", (number | $mol_style_func<"var", unknown>)[]>;
         static scale(zoom: number): $mol_style_func<"scale", number[]>;
@@ -636,7 +636,7 @@ declare namespace $ {
      * Theme css variables
      * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
      */
-    const $mol_theme: Record<"image" | "line" | "text" | "field" | "current" | "focus" | "hover" | "back" | "card" | "special" | "control" | "shade" | "spirit" | "hue" | "hue_spread", $mol_style_func<"var", unknown>>;
+    const $mol_theme: Record<"image" | "line" | "text" | "field" | "current" | "focus" | "hover" | "hue" | "back" | "card" | "special" | "control" | "shade" | "spirit" | "hue_spread", $mol_style_func<"var", unknown>>;
 }
 
 declare namespace $ {
@@ -647,7 +647,7 @@ declare namespace $ {
      * Gap in CSS
      * @see https://page.hyoo.ru/#!=msdb74_bm7nsq
      */
-    let $mol_gap: Record<"text" | "blur" | "page" | "block" | "emoji" | "round" | "space", $mol_style_func<"var", unknown>>;
+    let $mol_gap: Record<"text" | "blur" | "page" | "block" | "space" | "round" | "emoji", $mol_style_func<"var", unknown>>;
 }
 
 declare namespace $ {
@@ -4379,6 +4379,103 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_view__dom_name_mol_page_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_view['dom_name'] >
+	>
+	type $mol_view__sub_mol_page_2 = $mol_type_enforce<
+		ReturnType< $mol_page['title_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_mol_page_3 = $mol_type_enforce<
+		ReturnType< $mol_page['tools'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__minimal_height_mol_page_4 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_view['minimal_height'] >
+	>
+	type $mol_view__dom_name_mol_page_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_view['dom_name'] >
+	>
+	type $mol_view__sub_mol_page_6 = $mol_type_enforce<
+		ReturnType< $mol_page['head'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type __mol_page_7 = $mol_type_enforce<
+		Parameters< $mol_page['body_scroll_top'] >[0]
+		,
+		Parameters< ReturnType< $mol_page['Body'] >['scroll_top'] >[0]
+	>
+	type $mol_view__sub_mol_page_8 = $mol_type_enforce<
+		ReturnType< $mol_page['body'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_scroll__sub_mol_page_9 = $mol_type_enforce<
+		ReturnType< $mol_page['body_content'] >
+		,
+		ReturnType< $mol_scroll['sub'] >
+	>
+	type $mol_view__dom_name_mol_page_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_view['dom_name'] >
+	>
+	type $mol_view__sub_mol_page_11 = $mol_type_enforce<
+		ReturnType< $mol_page['foot'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $mol_page extends $mol_view {
+		tabindex( ): number
+		Logo( ): any
+		title_content( ): readonly(any)[]
+		Title( ): $mol_view
+		tools( ): readonly($mol_view_content)[]
+		Tools( ): $mol_view
+		head( ): readonly(any)[]
+		Head( ): $mol_view
+		body_scroll_top( next?: ReturnType< ReturnType< $mol_page['Body'] >['scroll_top'] > ): ReturnType< ReturnType< $mol_page['Body'] >['scroll_top'] >
+		body( ): readonly($mol_view)[]
+		Body_content( ): $mol_view
+		body_content( ): readonly(any)[]
+		Body( ): $mol_scroll
+		foot( ): readonly($mol_view)[]
+		Foot( ): $mol_view
+		dom_name( ): string
+		attr( ): ({ 
+			'tabIndex': ReturnType< $mol_page['tabindex'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=page.view.tree.d.ts.map
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $bog_gram_page extends $mol_page {
+	}
+	
+}
+
+//# sourceMappingURL=page.view.tree.d.ts.map
+declare namespace $.$$ {
 }
 
 declare namespace $ {
@@ -36706,790 +36803,6 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
-	type $mol_view__dom_name_mol_page_1 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_view['dom_name'] >
-	>
-	type $mol_view__sub_mol_page_2 = $mol_type_enforce<
-		ReturnType< $mol_page['title_content'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_mol_page_3 = $mol_type_enforce<
-		ReturnType< $mol_page['tools'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__minimal_height_mol_page_4 = $mol_type_enforce<
-		number
-		,
-		ReturnType< $mol_view['minimal_height'] >
-	>
-	type $mol_view__dom_name_mol_page_5 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_view['dom_name'] >
-	>
-	type $mol_view__sub_mol_page_6 = $mol_type_enforce<
-		ReturnType< $mol_page['head'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type __mol_page_7 = $mol_type_enforce<
-		Parameters< $mol_page['body_scroll_top'] >[0]
-		,
-		Parameters< ReturnType< $mol_page['Body'] >['scroll_top'] >[0]
-	>
-	type $mol_view__sub_mol_page_8 = $mol_type_enforce<
-		ReturnType< $mol_page['body'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_scroll__sub_mol_page_9 = $mol_type_enforce<
-		ReturnType< $mol_page['body_content'] >
-		,
-		ReturnType< $mol_scroll['sub'] >
-	>
-	type $mol_view__dom_name_mol_page_10 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_view['dom_name'] >
-	>
-	type $mol_view__sub_mol_page_11 = $mol_type_enforce<
-		ReturnType< $mol_page['foot'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	export class $mol_page extends $mol_view {
-		tabindex( ): number
-		Logo( ): any
-		title_content( ): readonly(any)[]
-		Title( ): $mol_view
-		tools( ): readonly($mol_view_content)[]
-		Tools( ): $mol_view
-		head( ): readonly(any)[]
-		Head( ): $mol_view
-		body_scroll_top( next?: ReturnType< ReturnType< $mol_page['Body'] >['scroll_top'] > ): ReturnType< ReturnType< $mol_page['Body'] >['scroll_top'] >
-		body( ): readonly($mol_view)[]
-		Body_content( ): $mol_view
-		body_content( ): readonly(any)[]
-		Body( ): $mol_scroll
-		foot( ): readonly($mol_view)[]
-		Foot( ): $mol_view
-		dom_name( ): string
-		attr( ): ({ 
-			'tabIndex': ReturnType< $mol_page['tabindex'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		sub( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=page.view.tree.d.ts.map
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-    function $mol_wait_timeout_async(this: $, timeout: number): Promise<void>;
-    function $mol_wait_timeout(this: $, timeout: number): void;
-}
-
-declare namespace $ {
-
-	type $mol_link__uri_mol_embed_native_1 = $mol_type_enforce<
-		ReturnType< $mol_embed_native['uri'] >
-		,
-		ReturnType< $mol_link['uri'] >
-	>
-	type $mol_link__sub_mol_embed_native_2 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_link['sub'] >
-	>
-	export class $mol_embed_native extends $mol_scroll {
-		uri( next?: string ): string
-		title( ): string
-		Fallback( ): $mol_link
-		uri_change( next?: any ): any
-		dom_name( ): string
-		window( ): any
-		attr( ): ({ 
-			'src': ReturnType< $mol_embed_native['uri'] >,
-		})  & ReturnType< $mol_scroll['attr'] >
-		sub( ): readonly(any)[]
-		message( ): ({ 
-			hashchange( next?: ReturnType< $mol_embed_native['uri_change'] > ): ReturnType< $mol_embed_native['uri_change'] >,
-		}) 
-	}
-	
-}
-
-//# sourceMappingURL=native.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $mol_embed_native extends $.$mol_embed_native {
-        window(): Window;
-        load(frame: HTMLIFrameElement): Promise<Window>;
-        uri_resource(): string;
-        message_listener(): $mol_dom_listener;
-        sub_visible(): readonly $mol_view_content[];
-        message_receive(event?: MessageEvent<[string, string]>): void;
-        uri_change(event: MessageEvent<[string, string]>): void;
-        auto(): (Window | $mol_dom_listener)[];
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_frame extends $mol_embed_native {
-		allow( ): string
-		html( ): any
-		attr( ): ({ 
-			'tabindex': ReturnType< $mol_frame['tabindex'] >,
-			'allow': ReturnType< $mol_frame['allow'] >,
-			'src': ReturnType< $mol_frame['uri'] >,
-			'srcdoc': ReturnType< $mol_frame['html'] >,
-		}) 
-		fullscreen( ): boolean
-		accelerometer( ): boolean
-		autoplay( ): boolean
-		encription( ): boolean
-		gyroscope( ): boolean
-		pip( ): boolean
-		clipboard_read( ): boolean
-		clipboard_write( ): boolean
-	}
-	
-}
-
-//# sourceMappingURL=frame.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_frame_demo
-     */
-    class $mol_frame extends $.$mol_frame {
-        window(): any;
-        allow(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	type $mol_button_minor__hint_bog_gram_music_1 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_music_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_music['close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_music_3 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_frame__uri_bog_gram_music_4 = $mol_type_enforce<
-		ReturnType< $bog_gram_music['uri'] >
-		,
-		ReturnType< $mol_frame['uri'] >
-	>
-	export class $bog_gram_music extends $mol_page {
-		hidden( ): boolean
-		close( next?: any ): any
-		Close_icon( ): $mol_icon_close
-		Close( ): $mol_button_minor
-		title( ): string
-		uri( ): string
-		attr( ): ({ 
-			'bog_gram_music_hidden': ReturnType< $bog_gram_music['hidden'] >,
-		})  & ReturnType< $mol_page['attr'] >
-		tools( ): readonly(any)[]
-		Frame( ): $mol_frame
-	}
-	
-}
-
-//# sourceMappingURL=music.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_gram_music extends $.$bog_gram_music {
-        sub(): ($mol_view | $.$mol_frame)[];
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-    type $mol_blob = Blob;
-    let $mol_blob: {
-        prototype: Blob;
-        new (blobParts?: readonly BlobPart[], options?: BlobPropertyBag): Blob;
-    };
-}
-
-declare namespace $ {
-
-	export class $mol_icon_clipboard extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=clipboard.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_clipboard_outline extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=outline.view.tree.d.ts.map
-declare namespace $ {
-    function $mol_html_encode(text: string): string;
-}
-
-declare namespace $ {
-
-	type $mol_blob__mol_button_copy_1 = $mol_type_enforce<
-		[ readonly(BlobPart)[], ({ 
-			'type': string,
-		})  ]
-		,
-		ConstructorParameters< typeof $mol_blob >
-	>
-	type $mol_blob__mol_button_copy_2 = $mol_type_enforce<
-		[ readonly(BlobPart)[], ({ 
-			'type': string,
-		})  ]
-		,
-		ConstructorParameters< typeof $mol_blob >
-	>
-	export class $mol_button_copy extends $mol_button_minor {
-		text( ): ReturnType< $mol_button_copy['title'] >
-		text_blob( next?: $mol_blob ): $mol_blob
-		html( ): string
-		html_blob( next?: $mol_blob ): $mol_blob
-		Icon( ): $mol_icon_clipboard_outline
-		title( ): string
-		blobs( ): readonly($mol_blob)[]
-		data( ): Record<string, any>
-		sub( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=copy.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * Button copy text() value to clipboard
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-     */
-    class $mol_button_copy extends $.$mol_button_copy {
-        data(): {
-            [k: string]: Blob;
-        };
-        html(): string;
-        attachments(): ClipboardItem[];
-        click(event?: Event): void;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	type $mol_view__minimal_height_mol_labeler_1 = $mol_type_enforce<
-		number
-		,
-		ReturnType< $mol_view['minimal_height'] >
-	>
-	type $mol_view__sub_mol_labeler_2 = $mol_type_enforce<
-		ReturnType< $mol_labeler['label'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__minimal_height_mol_labeler_3 = $mol_type_enforce<
-		number
-		,
-		ReturnType< $mol_view['minimal_height'] >
-	>
-	type $mol_view__sub_mol_labeler_4 = $mol_type_enforce<
-		ReturnType< $mol_labeler['content'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	export class $mol_labeler extends $mol_list {
-		label( ): readonly($mol_view_content)[]
-		Label( ): $mol_view
-		content( ): readonly(any)[]
-		Content( ): $mol_view
-		rows( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=labeler.view.tree.d.ts.map
-declare namespace $ {
-    /** Dynamic sources import. */
-    class $mol_import extends $mol_object2 {
-        static module(uri: string): any;
-        static module_async(uri: string): Promise<any>;
-        static script(uri: string): any;
-        static script_async(uri: string): Promise<any>;
-        static style(uri: string): any;
-        static style_async(uri: string): any;
-    }
-}
-
-declare namespace $ {
-
-	type $mol_svg__dom_name_bog_qr_1 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_svg['dom_name'] >
-	>
-	type $mol_svg__attr_bog_qr_2 = $mol_type_enforce<
-		({ 
-			'id': ReturnType< $bog_qr['gradient_id'] >,
-			'x1': ReturnType< $bog_qr['grad_x1'] >,
-			'y1': ReturnType< $bog_qr['grad_y1'] >,
-			'x2': ReturnType< $bog_qr['grad_x2'] >,
-			'y2': ReturnType< $bog_qr['grad_y2'] >,
-		})  & ReturnType< $mol_svg['attr'] >
-		,
-		ReturnType< $mol_svg['attr'] >
-	>
-	type $mol_svg__sub_bog_qr_3 = $mol_type_enforce<
-		ReturnType< $bog_qr['gradient_stop_list'] >
-		,
-		ReturnType< $mol_svg['sub'] >
-	>
-	type $mol_svg__dom_name_bog_qr_4 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_svg['dom_name'] >
-	>
-	type $mol_svg__sub_bog_qr_5 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_svg['sub'] >
-	>
-	type $mol_svg_path__geometry_bog_qr_6 = $mol_type_enforce<
-		ReturnType< $bog_qr['modules_d'] >
-		,
-		ReturnType< $mol_svg_path['geometry'] >
-	>
-	type $mol_svg_path__attr_bog_qr_7 = $mol_type_enforce<
-		({ 
-			'fill': ReturnType< $bog_qr['gradient_fill'] >,
-		})  & ReturnType< $mol_svg_path['attr'] >
-		,
-		ReturnType< $mol_svg_path['attr'] >
-	>
-	type $mol_svg_path__geometry_bog_qr_8 = $mol_type_enforce<
-		ReturnType< $bog_qr['rings_d'] >
-		,
-		ReturnType< $mol_svg_path['geometry'] >
-	>
-	type $mol_svg_path__attr_bog_qr_9 = $mol_type_enforce<
-		({ 
-			'fill': ReturnType< $bog_qr['gradient_fill'] >,
-			'fill-rule': string,
-		})  & ReturnType< $mol_svg_path['attr'] >
-		,
-		ReturnType< $mol_svg_path['attr'] >
-	>
-	type $mol_svg_path__geometry_bog_qr_10 = $mol_type_enforce<
-		ReturnType< $bog_qr['centers_d'] >
-		,
-		ReturnType< $mol_svg_path['geometry'] >
-	>
-	type $mol_svg_path__attr_bog_qr_11 = $mol_type_enforce<
-		({ 
-			'fill': ReturnType< $bog_qr['gradient_fill'] >,
-		})  & ReturnType< $mol_svg_path['attr'] >
-		,
-		ReturnType< $mol_svg_path['attr'] >
-	>
-	type $mol_view__sub_bog_qr_12 = $mol_type_enforce<
-		ReturnType< $bog_qr['center'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_svg__dom_name_bog_qr_13 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_svg['dom_name'] >
-	>
-	type $mol_svg__attr_bog_qr_14 = $mol_type_enforce<
-		({ 
-			'x': ReturnType< $bog_qr['center_x'] >,
-			'y': ReturnType< $bog_qr['center_y'] >,
-			'width': ReturnType< $bog_qr['center_size'] >,
-			'height': ReturnType< $bog_qr['center_size'] >,
-		})  & ReturnType< $mol_svg['attr'] >
-		,
-		ReturnType< $mol_svg['attr'] >
-	>
-	type $mol_svg__sub_bog_qr_15 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_svg['sub'] >
-	>
-	type $mol_svg__dom_name_bog_qr_16 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_svg['dom_name'] >
-	>
-	type $mol_svg__attr_bog_qr_17 = $mol_type_enforce<
-		({ 
-			'offset': ReturnType< $bog_qr['stop_offset'] >,
-			'stop-color': ReturnType< $bog_qr['stop_color'] >,
-		})  & ReturnType< $mol_svg['attr'] >
-		,
-		ReturnType< $mol_svg['attr'] >
-	>
-	export class $bog_qr extends $mol_svg_root {
-		stop_offset( id: any): string
-		stop_color( id: any): string
-		qr_view_box( ): string
-		grad_x1( ): string
-		grad_y1( ): string
-		grad_x2( ): string
-		grad_y2( ): string
-		gradient_stop_list( ): readonly(any)[]
-		Gradient( ): $mol_svg
-		Defs( ): $mol_svg
-		modules_d( ): string
-		Modules( ): $mol_svg_path
-		rings_d( ): string
-		Rings( ): $mol_svg_path
-		centers_d( ): string
-		Centers( ): $mol_svg_path
-		center_x( ): string
-		center_y( ): string
-		center_size( ): string
-		Center_body( ): $mol_view
-		Center_wrap( ): $mol_svg
-		uri( ): string
-		module_radius( ): number
-		finder_radius( ): number
-		gradient_angle( ): number
-		error_correction( ): string
-		quiet_zone( ): number
-		center( ): readonly(any)[]
-		gradient_id( ): string
-		gradient_fill( ): string
-		gradient_stops( ): readonly(any)[]
-		Stop( id: any): $mol_svg
-		view_box( ): ReturnType< $bog_qr['qr_view_box'] >
-		sub( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=qr.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_qr extends $.$bog_qr {
-        gradient_id(): string;
-        gradient_fill(): string;
-        grad_x1(): string;
-        grad_y1(): string;
-        grad_x2(): string;
-        grad_y2(): string;
-        gradient_stop_list(): $.$mol_svg[];
-        stop_offset(index: number): string;
-        stop_color(index: number): any;
-        qr_lib(): any;
-        qr_matrix(): boolean[][] | null;
-        qr_view_box(): string;
-        qr_paths(): {
-            modules: string;
-            rings: string;
-            centers: string;
-        };
-        center_area(): {
-            x: number;
-            y: number;
-            size: number;
-        };
-        center_x(): string;
-        center_y(): string;
-        center_size(): string;
-        modules_d(): string;
-        rings_d(): string;
-        centers_d(): string;
-        rect_path(x: number, y: number, w: number, h: number, tl: number, tr: number, br: number, bl: number): string;
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_button_major extends $mol_button_minor {
-		theme( ): string
-	}
-	
-}
-
-//# sourceMappingURL=major.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_upload extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=upload.view.tree.d.ts.map
-declare namespace $ {
-
-	type $mol_button_open_native__files_mol_button_open_1 = $mol_type_enforce<
-		ReturnType< $mol_button_open['files_handled'] >
-		,
-		ReturnType< $mol_button_open_native['files'] >
-	>
-	type $mol_button_open_native__accept_mol_button_open_2 = $mol_type_enforce<
-		ReturnType< $mol_button_open['accept'] >
-		,
-		ReturnType< $mol_button_open_native['accept'] >
-	>
-	type $mol_button_open_native__multiple_mol_button_open_3 = $mol_type_enforce<
-		ReturnType< $mol_button_open['multiple'] >
-		,
-		ReturnType< $mol_button_open_native['multiple'] >
-	>
-	export class $mol_button_open extends $mol_button_minor {
-		Icon( ): $mol_icon_upload
-		files( next?: readonly(File)[] ): readonly(File)[]
-		files_handled( next?: ReturnType< $mol_button_open['files'] > ): ReturnType< $mol_button_open['files'] >
-		accept( ): string
-		multiple( ): boolean
-		Native( ): $mol_button_open_native
-		sub( ): readonly(any)[]
-	}
-	
-	export class $mol_button_open_native extends $mol_view {
-		accept( ): string
-		multiple( ): boolean
-		picked( next?: any ): any
-		dom_name( ): string
-		files( next?: readonly(File)[] ): readonly(File)[]
-		attr( ): ({ 
-			'type': string,
-			'accept': ReturnType< $mol_button_open_native['accept'] >,
-			'multiple': ReturnType< $mol_button_open_native['multiple'] >,
-		}) 
-		event( ): ({ 
-			change( next?: ReturnType< $mol_button_open_native['picked'] > ): ReturnType< $mol_button_open_native['picked'] >,
-		}) 
-	}
-	
-}
-
-//# sourceMappingURL=open.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $mol_button_open extends $.$mol_button_open {
-        files_handled(next?: readonly File[]): readonly File[];
-    }
-    /**
-     * File open button
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-     */
-    class $mol_button_open_native extends $.$mol_button_open_native {
-        dom_node(): HTMLInputElement;
-        picked(): void;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_video_player extends $mol_view {
-		uri( ): string
-		controls( ): boolean
-		autoplay( ): boolean
-		inline( ): boolean
-		loop( ): boolean
-		muted( ): boolean
-		poster( ): string
-		stream( ): any
-		revolume( next?: any ): any
-		retime( next?: any ): any
-		redurate( next?: any ): any
-		playing_event( next?: any ): any
-		play_event( next?: any ): any
-		pause_event( next?: any ): any
-		dom_name( ): string
-		playing( next?: boolean ): boolean
-		play( ): any
-		pause( ): any
-		volume( next?: number ): number
-		time( next?: number ): number
-		duration( ): number
-		attr( ): ({ 
-			'src': ReturnType< $mol_video_player['uri'] >,
-			'controls': ReturnType< $mol_video_player['controls'] >,
-			'autoplay': ReturnType< $mol_video_player['autoplay'] >,
-			'playsinline': ReturnType< $mol_video_player['inline'] >,
-			'loop': ReturnType< $mol_video_player['loop'] >,
-			'muted': ReturnType< $mol_video_player['muted'] >,
-			'poster': ReturnType< $mol_video_player['poster'] >,
-		}) 
-		field( ): ({ 
-			'srcObject': ReturnType< $mol_video_player['stream'] >,
-		}) 
-		event( ): ({ 
-			volumechange( next?: ReturnType< $mol_video_player['revolume'] > ): ReturnType< $mol_video_player['revolume'] >,
-			timeupdate( next?: ReturnType< $mol_video_player['retime'] > ): ReturnType< $mol_video_player['retime'] >,
-			durationchange( next?: ReturnType< $mol_video_player['redurate'] > ): ReturnType< $mol_video_player['redurate'] >,
-			playing( next?: ReturnType< $mol_video_player['playing_event'] > ): ReturnType< $mol_video_player['playing_event'] >,
-			play( next?: ReturnType< $mol_video_player['play_event'] > ): ReturnType< $mol_video_player['play_event'] >,
-			pause( next?: ReturnType< $mol_video_player['pause_event'] > ): ReturnType< $mol_video_player['pause_event'] >,
-		}) 
-	}
-	
-}
-
-//# sourceMappingURL=player.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * Video player component
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_video_player_demo
-     */
-    class $mol_video_player extends $.$mol_video_player {
-        dom_node(): HTMLVideoElement;
-        volume(next?: number): number;
-        time(next?: number): number;
-        duration(): number;
-        playing(next?: boolean): boolean;
-        play(): void;
-        pause(): void;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_video_camera extends $mol_video_player {
-		transform( ): string
-		facing( ): string
-		aspect( ): number
-		size( ): number
-		width( ): ReturnType< $mol_video_camera['size'] >
-		height( ): ReturnType< $mol_video_camera['size'] >
-		brightness( ): number
-		sharpness( ): number
-		contrast( ): number
-		saturation( ): number
-		temperature( ): number
-		torch( ): boolean
-		controls( ): boolean
-		style( ): ({ 
-			'transform': ReturnType< $mol_video_camera['transform'] >,
-		}) 
-		video_constraints( ): ({ 
-			'facingMode': ReturnType< $mol_video_camera['facing'] >,
-			'aspectRatio': ReturnType< $mol_video_camera['aspect'] >,
-			'width': ({ 
-				'ideal': ReturnType< $mol_video_camera['width'] >,
-			}) ,
-			'height': ({ 
-				'ideal': ReturnType< $mol_video_camera['height'] >,
-			}) ,
-		}) 
-		video_settings( ): ({ 
-			'brightness': ReturnType< $mol_video_camera['brightness'] >,
-			'sharpness': ReturnType< $mol_video_camera['sharpness'] >,
-			'contrast': ReturnType< $mol_video_camera['contrast'] >,
-			'saturation': ReturnType< $mol_video_camera['saturation'] >,
-			'advanced': readonly(any)[],
-		}) 
-	}
-	
-}
-
-//# sourceMappingURL=camera.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $mol_video_camera extends $.$mol_video_camera {
-        stream_raw(): MediaStream & {
-            destructor: () => void;
-        };
-        stream(): MediaStream & {
-            destructor: () => void;
-        };
-        dom_node_actual(): HTMLVideoElement;
-        transform(): string;
-    }
-}
-
-declare namespace $ {
-
-	type $mol_check__title_bog_gram_scan_1 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_check['title'] >
-	>
-	type $mol_check__checked_bog_gram_scan_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_scan['scanning'] >
-		,
-		ReturnType< $mol_check['checked'] >
-	>
-	type $mol_video_camera__facing_bog_gram_scan_3 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_video_camera['facing'] >
-	>
-	type $mol_video_camera__muted_bog_gram_scan_4 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $mol_video_camera['muted'] >
-	>
-	export class $bog_gram_scan extends $mol_view {
-		Toggle( ): $mol_check
-		Camera( ): $mol_video_camera
-		scanning( next?: boolean ): boolean
-		prefix( ): string
-		found( next?: string ): string
-		sub( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=scan.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_gram_scan extends $.$bog_gram_scan {
-        sub(): ($.$mol_check | $.$mol_video_camera)[];
-        canvas(): HTMLCanvasElement;
-        tick(): string | null;
-        auto(): void;
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-
 	export class $mol_icon_delete extends $mol_icon {
 		path( ): string
 	}
@@ -37497,6 +36810,15 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=delete.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_check extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=check.view.tree.d.ts.map
 declare namespace $ {
 
 	export class $mol_icon_bookmark extends $mol_icon {
@@ -37525,59 +36847,172 @@ declare namespace $ {
 
 //# sourceMappingURL=question.view.tree.d.ts.map
 declare namespace $ {
-
-	export class $mol_icon_check extends $mol_icon {
-		path( ): string
-	}
-	
+    const $bog_gram_tone: {
+        readonly veil: "#8888881a";
+        readonly alert: "#e14b4b";
+        readonly tints: {
+            readonly '0': {
+                readonly color: "#e17076";
+            };
+            readonly '1': {
+                readonly color: "#faa774";
+            };
+            readonly '2': {
+                readonly color: "#a695e7";
+            };
+            readonly '3': {
+                readonly color: "#7bc862";
+            };
+            readonly '4': {
+                readonly color: "#6ec9cb";
+            };
+            readonly '5': {
+                readonly color: "#65aadd";
+            };
+            readonly '6': {
+                readonly color: "#ee7aae";
+            };
+        };
+    };
 }
 
-//# sourceMappingURL=check.view.tree.d.ts.map
 declare namespace $ {
 
-	export class $mol_icon_shield extends $mol_icon {
-		path( ): string
+	export class $bog_gram_avatar extends $mol_avatar {
+		id( ): string
+		tint( ): number
+		attr( ): ({ 
+			'bog_gram_tint': ReturnType< $bog_gram_avatar['tint'] >,
+		})  & ReturnType< $mol_avatar['attr'] >
 	}
 	
 }
 
-//# sourceMappingURL=shield.view.tree.d.ts.map
+//# sourceMappingURL=avatar.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_avatar extends $.$bog_gram_avatar {
+        path(): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
 declare namespace $ {
 
-	export class $mol_icon_shield_crown extends $mol_icon {
-		path( ): string
+	type $bog_gram_avatar__id_bog_gram_row_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_row['avatar_id'] >
+		,
+		ReturnType< $bog_gram_avatar['id'] >
+	>
+	type $bog_gram_avatar__tint_bog_gram_row_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_row['tint'] >
+		,
+		ReturnType< $bog_gram_avatar['tint'] >
+	>
+	type $mol_view__sub_bog_gram_row_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_7 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_8 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_row_10 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__event_bog_gram_row_11 = $mol_type_enforce<
+		({ 
+			click( next?: ReturnType< $bog_gram_row['tools_click'] > ): ReturnType< $bog_gram_row['tools_click'] >,
+		})  & ReturnType< $mol_view['event'] >
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_bog_gram_row_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_row['tools'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $bog_gram_row extends $mol_button_minor {
+		Avatar( ): $bog_gram_avatar
+		Sign( ): $mol_view
+		Title( ): $mol_view
+		Time( ): $mol_view
+		Top( ): $mol_view
+		Note( ): $mol_view
+		Badge( ): $mol_view
+		Bottom( ): $mol_view
+		Info( ): $mol_view
+		tools_click( next?: any ): any
+		Tools( ): $mol_view
+		current( ): boolean
+		size( ): string
+		faced( ): boolean
+		avatar_id( ): string
+		tint( ): number
+		time( ): string
+		note( ): string
+		badge( ): string
+		marks( ): readonly($mol_view)[]
+		tools( ): readonly($mol_view)[]
+		Icon( ): $mol_view | null
+		attr( ): ({ 
+			'bog_gram_row_current': ReturnType< $bog_gram_row['current'] >,
+			'bog_gram_row_size': ReturnType< $bog_gram_row['size'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		sub( ): readonly(any)[]
 	}
 	
 }
 
-//# sourceMappingURL=crown.view.tree.d.ts.map
+//# sourceMappingURL=row.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_row extends $.$bog_gram_row {
+        sub(): ($mol_view | $.$bog_gram_avatar)[];
+        face(): $mol_view[] | $.$bog_gram_avatar[];
+        Time(): $mol_view;
+        Bottom(): $mol_view;
+        Note(): $mol_view;
+        Badge(): $mol_view;
+        tools_click(next?: Event): null;
+    }
+}
+
 declare namespace $ {
-
-	export class $mol_icon_account_remove extends $mol_icon {
-		path( ): string
-	}
-	
 }
 
-//# sourceMappingURL=remove.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_account_plus extends $mol_icon {
-		path( ): string
-	}
-	
+declare namespace $.$$ {
 }
 
-//# sourceMappingURL=plus.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_pencil extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=pencil.view.tree.d.ts.map
 declare namespace $ {
 
 	export class $mol_icon_archive_arrow_down extends $mol_icon {
@@ -37596,112 +37031,6 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=up.view.tree.d.ts.map
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_string_button extends $mol_string {
-	}
-	
-}
-
-//# sourceMappingURL=button.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_arrow_left extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=left.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_reply extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=reply.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_paperclip extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=paperclip.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_send extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=send.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_microphone extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=microphone.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_image extends $mol_view {
-		uri( ): string
-		title( ): string
-		loading( ): string
-		decoding( ): string
-		cors( ): any
-		natural_width( ): number
-		natural_height( ): number
-		load( next?: any ): any
-		dom_name( ): string
-		attr( ): Record<string, any> & ReturnType< $mol_view['attr'] >
-		event( ): Record<string, any>
-		minimal_width( ): number
-		minimal_height( ): number
-	}
-	
-}
-
-//# sourceMappingURL=image.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $mol_image extends $.$mol_image {
-        natural_width(next?: null): number;
-        natural_height(next?: null): number;
-        load(): void;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_icon_play extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=play.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_pause extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=pause.view.tree.d.ts.map
 declare namespace $ {
     function $mol_offline(): void;
 }
@@ -37904,6 +37233,95 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=source.view.tree.d.ts.map
+declare namespace $ {
+    function $mol_wait_timeout_async(this: $, timeout: number): Promise<void>;
+    function $mol_wait_timeout(this: $, timeout: number): void;
+}
+
+declare namespace $ {
+
+	type $mol_link__uri_mol_embed_native_1 = $mol_type_enforce<
+		ReturnType< $mol_embed_native['uri'] >
+		,
+		ReturnType< $mol_link['uri'] >
+	>
+	type $mol_link__sub_mol_embed_native_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	export class $mol_embed_native extends $mol_scroll {
+		uri( next?: string ): string
+		title( ): string
+		Fallback( ): $mol_link
+		uri_change( next?: any ): any
+		dom_name( ): string
+		window( ): any
+		attr( ): ({ 
+			'src': ReturnType< $mol_embed_native['uri'] >,
+		})  & ReturnType< $mol_scroll['attr'] >
+		sub( ): readonly(any)[]
+		message( ): ({ 
+			hashchange( next?: ReturnType< $mol_embed_native['uri_change'] > ): ReturnType< $mol_embed_native['uri_change'] >,
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=native.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_embed_native extends $.$mol_embed_native {
+        window(): Window;
+        load(frame: HTMLIFrameElement): Promise<Window>;
+        uri_resource(): string;
+        message_listener(): $mol_dom_listener;
+        sub_visible(): readonly $mol_view_content[];
+        message_receive(event?: MessageEvent<[string, string]>): void;
+        uri_change(event: MessageEvent<[string, string]>): void;
+        auto(): (Window | $mol_dom_listener)[];
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_frame extends $mol_embed_native {
+		allow( ): string
+		html( ): any
+		attr( ): ({ 
+			'tabindex': ReturnType< $mol_frame['tabindex'] >,
+			'allow': ReturnType< $mol_frame['allow'] >,
+			'src': ReturnType< $mol_frame['uri'] >,
+			'srcdoc': ReturnType< $mol_frame['html'] >,
+		}) 
+		fullscreen( ): boolean
+		accelerometer( ): boolean
+		autoplay( ): boolean
+		encription( ): boolean
+		gyroscope( ): boolean
+		pip( ): boolean
+		clipboard_read( ): boolean
+		clipboard_write( ): boolean
+	}
+	
+}
+
+//# sourceMappingURL=frame.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_frame_demo
+     */
+    class $mol_frame extends $.$mol_frame {
+        window(): any;
+        allow(): string;
+    }
+}
+
+declare namespace $ {
+}
+
 declare namespace $ {
 
 	export class $mol_icon_security extends $mol_icon {
@@ -39085,6 +38503,82 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    type $mol_blob = Blob;
+    let $mol_blob: {
+        prototype: Blob;
+        new (blobParts?: readonly BlobPart[], options?: BlobPropertyBag): Blob;
+    };
+}
+
+declare namespace $ {
+
+	export class $mol_icon_clipboard extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=clipboard.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_clipboard_outline extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=outline.view.tree.d.ts.map
+declare namespace $ {
+    function $mol_html_encode(text: string): string;
+}
+
+declare namespace $ {
+
+	type $mol_blob__mol_button_copy_1 = $mol_type_enforce<
+		[ readonly(BlobPart)[], ({ 
+			'type': string,
+		})  ]
+		,
+		ConstructorParameters< typeof $mol_blob >
+	>
+	type $mol_blob__mol_button_copy_2 = $mol_type_enforce<
+		[ readonly(BlobPart)[], ({ 
+			'type': string,
+		})  ]
+		,
+		ConstructorParameters< typeof $mol_blob >
+	>
+	export class $mol_button_copy extends $mol_button_minor {
+		text( ): ReturnType< $mol_button_copy['title'] >
+		text_blob( next?: $mol_blob ): $mol_blob
+		html( ): string
+		html_blob( next?: $mol_blob ): $mol_blob
+		Icon( ): $mol_icon_clipboard_outline
+		title( ): string
+		blobs( ): readonly($mol_blob)[]
+		data( ): Record<string, any>
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=copy.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Button copy text() value to clipboard
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+     */
+    class $mol_button_copy extends $.$mol_button_copy {
+        data(): {
+            [k: string]: Blob;
+        };
+        html(): string;
+        attachments(): ClipboardItem[];
+        click(event?: Event): void;
+    }
+}
+
+declare namespace $ {
 
 	type $mol_text_code_line__numb_showed_mol_text_code_1 = $mol_type_enforce<
 		ReturnType< $mol_text_code['sidebar_showed'] >
@@ -39953,8 +39447,8 @@ declare namespace $ {
     let $giper_baza_text_tokens: $mol_regexp<{
         [x: string]: string;
         readonly token: string;
-        readonly emoji: string;
         readonly space: string;
+        readonly emoji: string;
         readonly 'line-break': string;
         readonly indents: string;
         readonly Word: string;
@@ -42286,10 +41780,10 @@ declare namespace $ {
                 _sum?: Readonly<{}> | undefined;
             };
         }> | undefined;
-        file: {
+        BAZA: {
             '+'?: boolean | undefined;
-            '='?: readonly (readonly string[])[] | undefined;
-            '!='?: readonly (readonly string[])[] | undefined;
+            '='?: readonly (readonly number[])[] | undefined;
+            '!='?: readonly (readonly number[])[] | undefined;
             _num?: {
                 '=': readonly (readonly (string | number)[])[];
             } | undefined;
@@ -42298,10 +41792,10 @@ declare namespace $ {
             _min?: Readonly<{}> | undefined;
             _sum?: Readonly<{}> | undefined;
         };
-        BAZA: {
+        file: {
             '+'?: boolean | undefined;
-            '='?: readonly (readonly number[])[] | undefined;
-            '!='?: readonly (readonly number[])[] | undefined;
+            '='?: readonly (readonly string[])[] | undefined;
+            '!='?: readonly (readonly string[])[] | undefined;
             _num?: {
                 '=': readonly (readonly (string | number)[])[];
             } | undefined;
@@ -42421,10 +41915,10 @@ declare namespace $ {
                 _sum?: Readonly<{}> | undefined;
             }>;
         }> | undefined;
-        file: Readonly<{
+        BAZA: Readonly<{
             '+'?: boolean | undefined;
-            '='?: readonly (readonly string[])[] | undefined;
-            '!='?: readonly (readonly string[])[] | undefined;
+            '='?: readonly (readonly number[])[] | undefined;
+            '!='?: readonly (readonly number[])[] | undefined;
             _num?: Readonly<{
                 '=': readonly (readonly number[])[];
             }> | undefined;
@@ -42433,10 +41927,10 @@ declare namespace $ {
             _min?: Readonly<{}> | undefined;
             _sum?: Readonly<{}> | undefined;
         }>;
-        BAZA: Readonly<{
+        file: Readonly<{
             '+'?: boolean | undefined;
-            '='?: readonly (readonly number[])[] | undefined;
-            '!='?: readonly (readonly number[])[] | undefined;
+            '='?: readonly (readonly string[])[] | undefined;
+            '!='?: readonly (readonly string[])[] | undefined;
             _num?: Readonly<{
                 '=': readonly (readonly number[])[];
             }> | undefined;
@@ -43117,10 +42611,10 @@ declare namespace $ {
                     _sum?: Readonly<{}> | undefined;
                 }>;
             }> | undefined;
-            file: Readonly<{
+            BAZA: Readonly<{
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly string[])[] | undefined;
-                '!='?: readonly (readonly string[])[] | undefined;
+                '='?: readonly (readonly number[])[] | undefined;
+                '!='?: readonly (readonly number[])[] | undefined;
                 _num?: Readonly<{
                     '=': readonly (readonly number[])[];
                 }> | undefined;
@@ -43129,10 +42623,10 @@ declare namespace $ {
                 _min?: Readonly<{}> | undefined;
                 _sum?: Readonly<{}> | undefined;
             }>;
-            BAZA: Readonly<{
+            file: Readonly<{
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly number[])[] | undefined;
-                '!='?: readonly (readonly number[])[] | undefined;
+                '='?: readonly (readonly string[])[] | undefined;
+                '!='?: readonly (readonly string[])[] | undefined;
                 _num?: Readonly<{
                     '=': readonly (readonly number[])[];
                 }> | undefined;
@@ -43254,10 +42748,10 @@ declare namespace $ {
                     _sum?: Readonly<{}> | undefined;
                 }>;
             }> | undefined;
-            file: Readonly<{
+            BAZA: Readonly<{
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly string[])[] | undefined;
-                '!='?: readonly (readonly string[])[] | undefined;
+                '='?: readonly (readonly number[])[] | undefined;
+                '!='?: readonly (readonly number[])[] | undefined;
                 _num?: Readonly<{
                     '=': readonly (readonly number[])[];
                 }> | undefined;
@@ -43266,10 +42760,10 @@ declare namespace $ {
                 _min?: Readonly<{}> | undefined;
                 _sum?: Readonly<{}> | undefined;
             }>;
-            BAZA: Readonly<{
+            file: Readonly<{
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly number[])[] | undefined;
-                '!='?: readonly (readonly number[])[] | undefined;
+                '='?: readonly (readonly string[])[] | undefined;
+                '!='?: readonly (readonly string[])[] | undefined;
                 _num?: Readonly<{
                     '=': readonly (readonly number[])[];
                 }> | undefined;
@@ -43390,10 +42884,10 @@ declare namespace $ {
                     _sum?: Readonly<{}> | undefined;
                 };
             }> | undefined;
-            file: {
+            BAZA: {
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly string[])[] | undefined;
-                '!='?: readonly (readonly string[])[] | undefined;
+                '='?: readonly (readonly number[])[] | undefined;
+                '!='?: readonly (readonly number[])[] | undefined;
                 _num?: {
                     '=': readonly (readonly (string | number)[])[];
                 } | undefined;
@@ -43402,10 +42896,10 @@ declare namespace $ {
                 _min?: Readonly<{}> | undefined;
                 _sum?: Readonly<{}> | undefined;
             };
-            BAZA: {
+            file: {
                 '+'?: boolean | undefined;
-                '='?: readonly (readonly number[])[] | undefined;
-                '!='?: readonly (readonly number[])[] | undefined;
+                '='?: readonly (readonly string[])[] | undefined;
+                '!='?: readonly (readonly string[])[] | undefined;
                 _num?: {
                     '=': readonly (readonly (string | number)[])[];
                 } | undefined;
@@ -44601,6 +44095,42 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_view__minimal_height_mol_labeler_1 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_view['minimal_height'] >
+	>
+	type $mol_view__sub_mol_labeler_2 = $mol_type_enforce<
+		ReturnType< $mol_labeler['label'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__minimal_height_mol_labeler_3 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_view['minimal_height'] >
+	>
+	type $mol_view__sub_mol_labeler_4 = $mol_type_enforce<
+		ReturnType< $mol_labeler['content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $mol_labeler extends $mol_list {
+		label( ): readonly($mol_view_content)[]
+		Label( ): $mol_view
+		content( ): readonly(any)[]
+		Content( ): $mol_view
+		rows( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=labeler.view.tree.d.ts.map
+declare namespace $ {
 
 	export class $mol_icon_source extends $mol_icon {
 		path( ): string
@@ -44866,6 +44396,78 @@ declare namespace $.$$ {
     class $giper_baza_land_grab extends $.$giper_baza_land_grab {
         value(rights?: string): string;
     }
+}
+
+declare namespace $ {
+
+	export class $mol_icon_upload extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=upload.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_button_open_native__files_mol_button_open_1 = $mol_type_enforce<
+		ReturnType< $mol_button_open['files_handled'] >
+		,
+		ReturnType< $mol_button_open_native['files'] >
+	>
+	type $mol_button_open_native__accept_mol_button_open_2 = $mol_type_enforce<
+		ReturnType< $mol_button_open['accept'] >
+		,
+		ReturnType< $mol_button_open_native['accept'] >
+	>
+	type $mol_button_open_native__multiple_mol_button_open_3 = $mol_type_enforce<
+		ReturnType< $mol_button_open['multiple'] >
+		,
+		ReturnType< $mol_button_open_native['multiple'] >
+	>
+	export class $mol_button_open extends $mol_button_minor {
+		Icon( ): $mol_icon_upload
+		files( next?: readonly(File)[] ): readonly(File)[]
+		files_handled( next?: ReturnType< $mol_button_open['files'] > ): ReturnType< $mol_button_open['files'] >
+		accept( ): string
+		multiple( ): boolean
+		Native( ): $mol_button_open_native
+		sub( ): readonly(any)[]
+	}
+	
+	export class $mol_button_open_native extends $mol_view {
+		accept( ): string
+		multiple( ): boolean
+		picked( next?: any ): any
+		dom_name( ): string
+		files( next?: readonly(File)[] ): readonly(File)[]
+		attr( ): ({ 
+			'type': string,
+			'accept': ReturnType< $mol_button_open_native['accept'] >,
+			'multiple': ReturnType< $mol_button_open_native['multiple'] >,
+		}) 
+		event( ): ({ 
+			change( next?: ReturnType< $mol_button_open_native['picked'] > ): ReturnType< $mol_button_open_native['picked'] >,
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=open.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_button_open extends $.$mol_button_open {
+        files_handled(next?: readonly File[]): readonly File[];
+    }
+    /**
+     * File open button
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+     */
+    class $mol_button_open_native extends $.$mol_button_open_native {
+        dom_node(): HTMLInputElement;
+        picked(): void;
+    }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -46125,6 +45727,15 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+
+	export class $mol_icon_play extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=play.view.tree.d.ts.map
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -46295,7 +45906,2503 @@ declare namespace $.$$ {
 declare namespace $.$$ {
 }
 
+declare namespace $ {
+    class $bog_gram_count extends $mol_object {
+        static plural(count: number, one: string, few: string, many: string): string;
+        static people(count: number): string;
+        static dialogs(count: number): string;
+    }
+}
+
+declare namespace $ {
+    function $bog_gram_soft<Result>(task: () => Result, fallback: Result): Result;
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_menu_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['compose'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['group'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_8 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['music'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_11 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['settings'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_theme_toggle__theme_auto_bog_gram_menu_13 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['Theme'] >
+		,
+		ReturnType< $bog_theme_toggle['theme_auto'] >
+	>
+	type $mol_paragraph__title_bog_gram_menu_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['invite_plate_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_15 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['invite_drop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_menu_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_menu_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['ask_plate_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_menu_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_gram_menu_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_menu_22 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_23 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_25 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_icons'] >
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_26 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['delete_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_menu_27 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram_menu['delete_armed'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_28 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['delete_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_29 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_menu_30 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_row__size_bog_gram_menu_31 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['size'] >
+	>
+	type $bog_gram_row__click_bog_gram_menu_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['pick'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__current_bog_gram_menu_33 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['current_is'] >
+		,
+		ReturnType< $bog_gram_row['current'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_menu_34 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_menu_35 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_menu_36 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__time_bog_gram_menu_37 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_time'] >
+		,
+		ReturnType< $bog_gram_row['time'] >
+	>
+	type $bog_gram_row__note_bog_gram_menu_38 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['dialog_preview'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__badge_bog_gram_menu_39 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['unread_label'] >
+		,
+		ReturnType< $bog_gram_row['badge'] >
+	>
+	type $bog_gram_row__tools_bog_gram_menu_40 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['tools'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_41 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_42 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['request_accept'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_43 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_menu_44 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_menu_45 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['request_reject'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_menu_46 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_row__size_bog_gram_menu_47 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['size'] >
+	>
+	type $bog_gram_row__hint_bog_gram_menu_48 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['hint'] >
+	>
+	type $bog_gram_row__click_bog_gram_menu_49 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['saved_pick'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__current_bog_gram_menu_50 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['saved_current'] >
+		,
+		ReturnType< $bog_gram_row['current'] >
+	>
+	type $bog_gram_row__Icon_bog_gram_menu_51 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['Saved_icon'] >
+		,
+		ReturnType< $bog_gram_row['Icon'] >
+	>
+	type $bog_gram_row__title_bog_gram_menu_52 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['saved_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__time_bog_gram_menu_53 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['saved_time'] >
+		,
+		ReturnType< $bog_gram_row['time'] >
+	>
+	type $bog_gram_row__note_bog_gram_menu_54 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['saved_preview'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__size_bog_gram_menu_55 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['size'] >
+	>
+	type $bog_gram_row__hint_bog_gram_menu_56 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['hint'] >
+	>
+	type $bog_gram_row__click_bog_gram_menu_57 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_toggle'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__Icon_bog_gram_menu_58 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['Archive_icon'] >
+		,
+		ReturnType< $bog_gram_row['Icon'] >
+	>
+	type $bog_gram_row__title_bog_gram_menu_59 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_menu_60 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_note'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__badge_bog_gram_menu_61 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['archive_unread_label'] >
+		,
+		ReturnType< $bog_gram_row['badge'] >
+	>
+	type $bog_gram_row__size_bog_gram_menu_62 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['size'] >
+	>
+	type $bog_gram_row__hint_bog_gram_menu_63 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['hint'] >
+	>
+	type $bog_gram_row__click_bog_gram_menu_64 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['requests_toggle'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__Icon_bog_gram_menu_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['Requests_icon'] >
+		,
+		ReturnType< $bog_gram_row['Icon'] >
+	>
+	type $bog_gram_row__title_bog_gram_menu_66 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_menu_67 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__badge_bog_gram_menu_68 = $mol_type_enforce<
+		ReturnType< $bog_gram_menu['requests_count_label'] >
+		,
+		ReturnType< $bog_gram_row['badge'] >
+	>
+	export class $bog_gram_menu extends $bog_gram_page {
+		Status( ): $giper_baza_status
+		Compose_open_icon( ): $mol_icon_message_plus
+		Compose_open( ): $mol_button_minor
+		Group_open_icon( ): $mol_icon_account_multiple_plus
+		Group_open( ): $mol_button_minor
+		Music_open_icon( ): $mol_icon_music
+		Music_open( ): $mol_button_minor
+		Settings_open_icon( ): $mol_icon_cog
+		Settings_open( ): $mol_button_minor
+		Lights( ): $bog_theme_toggle
+		Invite_plate_text( ): $mol_paragraph
+		Invite_drop_icon( ): $mol_icon_close
+		Invite_drop( ): $mol_button_minor
+		Invite_plate( ): $mol_view
+		Ask_plate_text( ): $mol_paragraph
+		Ask_plate( ): $mol_view
+		dialog_rows( ): readonly(any)[]
+		Dialogs_list( ): $mol_list
+		Dialogs_empty_text( ): $mol_paragraph
+		pick( id: any, next?: any ): any
+		unread_label( id: any): string
+		archive_hint( id: any): string
+		archive_click( id: any, next?: any ): any
+		archive_icons( id: any): readonly(any)[]
+		Dialog_archive( id: any): $mol_button_minor
+		delete_hint( id: any): string
+		delete_armed( id: any, next?: boolean ): boolean
+		delete_click( id: any, next?: any ): any
+		Dialog_delete_icon( id: any): $mol_icon_delete
+		Dialog_delete( id: any): $mol_button_minor
+		request_accept( id: any, next?: any ): any
+		Request_accept_icon( id: any): $mol_icon_check
+		request_reject( id: any, next?: any ): any
+		Request_reject_icon( id: any): $mol_icon_close
+		saved_pick( next?: any ): any
+		Saved_icon( ): $mol_icon_bookmark
+		archive_toggle( next?: any ): any
+		Archive_icon( ): $mol_icon_archive
+		archive_note( ): string
+		archive_unread_label( ): string
+		requests_toggle( next?: any ): any
+		Requests_icon( ): $mol_icon_account_question
+		requests_count_label( ): string
+		title( ): string
+		Theme( ): $bog_theme_auto
+		compose( next?: any ): any
+		group( next?: any ): any
+		music( next?: any ): any
+		settings( next?: any ): any
+		invite_plate_text( ): string
+		invite_drop( next?: any ): any
+		ask_plate_text( ): string
+		visible( ): readonly(string)[]
+		archived( ): readonly(string)[]
+		requests( ): readonly(string)[]
+		dialog_title( id: any): string
+		dialog_time( id: any): string
+		dialog_preview( id: any): string
+		dialog_avatar_id( id: any): string
+		dialog_tint( id: any): number
+		unread( id: any): number
+		current_is( id: any): boolean
+		request_is( id: any): boolean
+		archive_is( id: any): boolean
+		select( id: any, next?: any ): any
+		archive( id: any, next?: any ): any
+		unarchive( id: any, next?: any ): any
+		drop( id: any, next?: any ): any
+		accept( id: any, next?: any ): any
+		saved_title( ): string
+		saved_time( ): string
+		saved_preview( ): string
+		saved_current( ): boolean
+		saved_open( next?: any ): any
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		Dialogs_empty( ): $mol_view
+		Dialog_row( id: any): $bog_gram_row
+		Dialog_archive_icon( id: any): $mol_icon_archive_arrow_down
+		Dialog_unarchive_icon( id: any): $mol_icon_archive_arrow_up
+		Request_accept( id: any): $mol_button_minor
+		Request_reject( id: any): $mol_button_minor
+		Saved_row( ): $bog_gram_row
+		Archive_row( ): $bog_gram_row
+		Requests_row( ): $bog_gram_row
+	}
+	
+}
+
+//# sourceMappingURL=menu.view.tree.d.ts.map
 declare namespace $.$$ {
+    class $bog_gram_menu extends $.$bog_gram_menu {
+        archive_opened(next?: boolean): boolean;
+        requests_opened(next?: boolean): boolean;
+        dialog_rows(): ($mol_view | $.$bog_gram_row)[];
+        Invite_plate(): $mol_view;
+        Ask_plate(): $mol_view;
+        unread_label(id: string): string;
+        armed(next?: string): string;
+        delete_armed(id: string, next?: boolean): boolean;
+        delete_hint(id: string): "Точно удалить?" | "Удалить диалог";
+        pick(id: string, next?: any): null;
+        saved_pick(next?: any): null;
+        delete_click(id: string, next?: any): null;
+        archive_click(id: string, next?: any): null;
+        archive_hint(id: string): "Вернуть из архива" | "В архив";
+        archive_icons(id: string): ($mol_icon_archive_arrow_up | $mol_icon_archive_arrow_down)[];
+        archive_toggle(next?: any): null;
+        requests_toggle(next?: any): null;
+        archive_note(): string;
+        archive_unread_label(): string;
+        requests_count_label(): string;
+        Dialog_archive(id: string): $mol_button_minor;
+        Dialog_delete(id: string): $mol_button_minor;
+        request_accept(id: string, next?: any): null;
+        request_reject(id: string, next?: any): null;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_music_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_music_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_music['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_music_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_frame__uri_bog_gram_music_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_music['uri'] >
+		,
+		ReturnType< $mol_frame['uri'] >
+	>
+	export class $bog_gram_music extends $mol_page {
+		hidden( ): boolean
+		close( next?: any ): any
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		title( ): string
+		uri( ): string
+		attr( ): ({ 
+			'bog_gram_music_hidden': ReturnType< $bog_gram_music['hidden'] >,
+		})  & ReturnType< $mol_page['attr'] >
+		tools( ): readonly(any)[]
+		Frame( ): $mol_frame
+	}
+	
+}
+
+//# sourceMappingURL=music.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_music extends $.$bog_gram_music {
+        sub(): ($mol_view | $.$mol_frame)[];
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_string_button extends $mol_string {
+	}
+	
+}
+
+//# sourceMappingURL=button.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_pencil extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=pencil.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_string_button__hint_bog_gram_field_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_field['hint'] >
+		,
+		ReturnType< $mol_string_button['hint'] >
+	>
+	type $mol_string_button__value_bog_gram_field_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_field['value'] >
+		,
+		ReturnType< $mol_string_button['value'] >
+	>
+	export class $bog_gram_field extends $mol_view {
+		Field( ): $mol_string_button
+		Edit_icon( ): $mol_icon_pencil
+		hint( ): string
+		value( next?: string ): string
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=field.view.tree.d.ts.map
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    /** Dynamic sources import. */
+    class $mol_import extends $mol_object2 {
+        static module(uri: string): any;
+        static module_async(uri: string): Promise<any>;
+        static script(uri: string): any;
+        static script_async(uri: string): Promise<any>;
+        static style(uri: string): any;
+        static style_async(uri: string): any;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_svg__dom_name_bog_qr_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_2 = $mol_type_enforce<
+		({ 
+			'id': ReturnType< $bog_qr['gradient_id'] >,
+			'x1': ReturnType< $bog_qr['grad_x1'] >,
+			'y1': ReturnType< $bog_qr['grad_y1'] >,
+			'x2': ReturnType< $bog_qr['grad_x2'] >,
+			'y2': ReturnType< $bog_qr['grad_y2'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	type $mol_svg__sub_bog_qr_3 = $mol_type_enforce<
+		ReturnType< $bog_qr['gradient_stop_list'] >
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__sub_bog_qr_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_6 = $mol_type_enforce<
+		ReturnType< $bog_qr['modules_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_7 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_8 = $mol_type_enforce<
+		ReturnType< $bog_qr['rings_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_9 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+			'fill-rule': string,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_svg_path__geometry_bog_qr_10 = $mol_type_enforce<
+		ReturnType< $bog_qr['centers_d'] >
+		,
+		ReturnType< $mol_svg_path['geometry'] >
+	>
+	type $mol_svg_path__attr_bog_qr_11 = $mol_type_enforce<
+		({ 
+			'fill': ReturnType< $bog_qr['gradient_fill'] >,
+		})  & ReturnType< $mol_svg_path['attr'] >
+		,
+		ReturnType< $mol_svg_path['attr'] >
+	>
+	type $mol_view__sub_bog_qr_12 = $mol_type_enforce<
+		ReturnType< $bog_qr['center'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_13 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_14 = $mol_type_enforce<
+		({ 
+			'x': ReturnType< $bog_qr['center_x'] >,
+			'y': ReturnType< $bog_qr['center_y'] >,
+			'width': ReturnType< $bog_qr['center_size'] >,
+			'height': ReturnType< $bog_qr['center_size'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	type $mol_svg__sub_bog_qr_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_svg['sub'] >
+	>
+	type $mol_svg__dom_name_bog_qr_16 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_svg['dom_name'] >
+	>
+	type $mol_svg__attr_bog_qr_17 = $mol_type_enforce<
+		({ 
+			'offset': ReturnType< $bog_qr['stop_offset'] >,
+			'stop-color': ReturnType< $bog_qr['stop_color'] >,
+		})  & ReturnType< $mol_svg['attr'] >
+		,
+		ReturnType< $mol_svg['attr'] >
+	>
+	export class $bog_qr extends $mol_svg_root {
+		stop_offset( id: any): string
+		stop_color( id: any): string
+		qr_view_box( ): string
+		grad_x1( ): string
+		grad_y1( ): string
+		grad_x2( ): string
+		grad_y2( ): string
+		gradient_stop_list( ): readonly(any)[]
+		Gradient( ): $mol_svg
+		Defs( ): $mol_svg
+		modules_d( ): string
+		Modules( ): $mol_svg_path
+		rings_d( ): string
+		Rings( ): $mol_svg_path
+		centers_d( ): string
+		Centers( ): $mol_svg_path
+		center_x( ): string
+		center_y( ): string
+		center_size( ): string
+		Center_body( ): $mol_view
+		Center_wrap( ): $mol_svg
+		uri( ): string
+		module_radius( ): number
+		finder_radius( ): number
+		gradient_angle( ): number
+		error_correction( ): string
+		quiet_zone( ): number
+		center( ): readonly(any)[]
+		gradient_id( ): string
+		gradient_fill( ): string
+		gradient_stops( ): readonly(any)[]
+		Stop( id: any): $mol_svg
+		view_box( ): ReturnType< $bog_qr['qr_view_box'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=qr.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_qr extends $.$bog_qr {
+        gradient_id(): string;
+        gradient_fill(): string;
+        grad_x1(): string;
+        grad_y1(): string;
+        grad_x2(): string;
+        grad_y2(): string;
+        gradient_stop_list(): $.$mol_svg[];
+        stop_offset(index: number): string;
+        stop_color(index: number): any;
+        qr_lib(): any;
+        qr_matrix(): boolean[][] | null;
+        qr_view_box(): string;
+        qr_paths(): {
+            modules: string;
+            rings: string;
+            centers: string;
+        };
+        center_area(): {
+            x: number;
+            y: number;
+            size: number;
+        };
+        center_x(): string;
+        center_y(): string;
+        center_size(): string;
+        modules_d(): string;
+        rings_d(): string;
+        centers_d(): string;
+        rect_path(x: number, y: number, w: number, h: number, tl: number, tr: number, br: number, bl: number): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_button_major extends $mol_button_minor {
+		theme( ): string
+	}
+	
+}
+
+//# sourceMappingURL=major.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_video_player extends $mol_view {
+		uri( ): string
+		controls( ): boolean
+		autoplay( ): boolean
+		inline( ): boolean
+		loop( ): boolean
+		muted( ): boolean
+		poster( ): string
+		stream( ): any
+		revolume( next?: any ): any
+		retime( next?: any ): any
+		redurate( next?: any ): any
+		playing_event( next?: any ): any
+		play_event( next?: any ): any
+		pause_event( next?: any ): any
+		dom_name( ): string
+		playing( next?: boolean ): boolean
+		play( ): any
+		pause( ): any
+		volume( next?: number ): number
+		time( next?: number ): number
+		duration( ): number
+		attr( ): ({ 
+			'src': ReturnType< $mol_video_player['uri'] >,
+			'controls': ReturnType< $mol_video_player['controls'] >,
+			'autoplay': ReturnType< $mol_video_player['autoplay'] >,
+			'playsinline': ReturnType< $mol_video_player['inline'] >,
+			'loop': ReturnType< $mol_video_player['loop'] >,
+			'muted': ReturnType< $mol_video_player['muted'] >,
+			'poster': ReturnType< $mol_video_player['poster'] >,
+		}) 
+		field( ): ({ 
+			'srcObject': ReturnType< $mol_video_player['stream'] >,
+		}) 
+		event( ): ({ 
+			volumechange( next?: ReturnType< $mol_video_player['revolume'] > ): ReturnType< $mol_video_player['revolume'] >,
+			timeupdate( next?: ReturnType< $mol_video_player['retime'] > ): ReturnType< $mol_video_player['retime'] >,
+			durationchange( next?: ReturnType< $mol_video_player['redurate'] > ): ReturnType< $mol_video_player['redurate'] >,
+			playing( next?: ReturnType< $mol_video_player['playing_event'] > ): ReturnType< $mol_video_player['playing_event'] >,
+			play( next?: ReturnType< $mol_video_player['play_event'] > ): ReturnType< $mol_video_player['play_event'] >,
+			pause( next?: ReturnType< $mol_video_player['pause_event'] > ): ReturnType< $mol_video_player['pause_event'] >,
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=player.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Video player component
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_video_player_demo
+     */
+    class $mol_video_player extends $.$mol_video_player {
+        dom_node(): HTMLVideoElement;
+        volume(next?: number): number;
+        time(next?: number): number;
+        duration(): number;
+        playing(next?: boolean): boolean;
+        play(): void;
+        pause(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_video_camera extends $mol_video_player {
+		transform( ): string
+		facing( ): string
+		aspect( ): number
+		size( ): number
+		width( ): ReturnType< $mol_video_camera['size'] >
+		height( ): ReturnType< $mol_video_camera['size'] >
+		brightness( ): number
+		sharpness( ): number
+		contrast( ): number
+		saturation( ): number
+		temperature( ): number
+		torch( ): boolean
+		controls( ): boolean
+		style( ): ({ 
+			'transform': ReturnType< $mol_video_camera['transform'] >,
+		}) 
+		video_constraints( ): ({ 
+			'facingMode': ReturnType< $mol_video_camera['facing'] >,
+			'aspectRatio': ReturnType< $mol_video_camera['aspect'] >,
+			'width': ({ 
+				'ideal': ReturnType< $mol_video_camera['width'] >,
+			}) ,
+			'height': ({ 
+				'ideal': ReturnType< $mol_video_camera['height'] >,
+			}) ,
+		}) 
+		video_settings( ): ({ 
+			'brightness': ReturnType< $mol_video_camera['brightness'] >,
+			'sharpness': ReturnType< $mol_video_camera['sharpness'] >,
+			'contrast': ReturnType< $mol_video_camera['contrast'] >,
+			'saturation': ReturnType< $mol_video_camera['saturation'] >,
+			'advanced': readonly(any)[],
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=camera.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_video_camera extends $.$mol_video_camera {
+        stream_raw(): MediaStream & {
+            destructor: () => void;
+        };
+        stream(): MediaStream & {
+            destructor: () => void;
+        };
+        dom_node_actual(): HTMLVideoElement;
+        transform(): string;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_check__title_bog_gram_scan_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check['title'] >
+	>
+	type $mol_check__checked_bog_gram_scan_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_scan['scanning'] >
+		,
+		ReturnType< $mol_check['checked'] >
+	>
+	type $mol_video_camera__facing_bog_gram_scan_3 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_video_camera['facing'] >
+	>
+	type $mol_video_camera__muted_bog_gram_scan_4 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $mol_video_camera['muted'] >
+	>
+	export class $bog_gram_scan extends $mol_view {
+		Toggle( ): $mol_check
+		Camera( ): $mol_video_camera
+		scanning( next?: boolean ): boolean
+		prefix( ): string
+		found( next?: string ): string
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=scan.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_scan extends $.$bog_gram_scan {
+        sub(): ($.$mol_check | $.$mol_video_camera)[];
+        canvas(): HTMLCanvasElement;
+        tick(): string | null;
+        auto(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_paragraph__title_bog_gram_settings_key_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_settings_key_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_settings_key_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['text'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $bog_qr__uri_bog_gram_settings_key_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['text'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $bog_qr__gradient_stops_bog_gram_settings_key_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_qr['gradient_stops'] >
+	>
+	type $mol_string__hint_bog_gram_settings_key_6 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_settings_key_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['input'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_key_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_open__hint_bog_gram_settings_key_9 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_open['hint'] >
+	>
+	type $mol_button_open__accept_bog_gram_settings_key_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_open['accept'] >
+	>
+	type $mol_button_open__multiple_bog_gram_settings_key_11 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $mol_button_open['multiple'] >
+	>
+	type $mol_button_open__files_bog_gram_settings_key_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['file'] >
+		,
+		ReturnType< $mol_button_open['files'] >
+	>
+	type $mol_view__sub_bog_gram_settings_key_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_scan__found_bog_gram_settings_key_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['scanned'] >
+		,
+		ReturnType< $bog_gram_scan['found'] >
+	>
+	type $mol_button_major__attr_bog_gram_settings_key_15 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram_settings_key['armed'] >,
+		})  & ReturnType< $mol_button_major['attr'] >
+		,
+		ReturnType< $mol_button_major['attr'] >
+	>
+	type $mol_button_major__click_bog_gram_settings_key_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['import'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_settings_key_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_key_18 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['error'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__click_bog_gram_settings_key_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_settings_key_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_key_21 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_settings_key_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_settings_key_23 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_download__title_bog_gram_settings_key_24 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['title'] >
+	>
+	type $mol_button_download__file_name_bog_gram_settings_key_25 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['file_name'] >
+	>
+	type $mol_button_download__blob_bog_gram_settings_key_26 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['blob'] >
+		,
+		ReturnType< $mol_button_download['blob'] >
+	>
+	type $mol_view__sub_bog_gram_settings_key_27 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $bog_gram_settings_key extends $mol_view {
+		rows( ): readonly(any)[]
+		toggle( next?: any ): any
+		toggle_label( ): string
+		text( ): string
+		Text( ): $mol_paragraph
+		Copy( ): $mol_button_copy
+		Qr( ): $bog_qr
+		blob( ): Blob | null
+		input( next?: string ): string
+		Field( ): $mol_string
+		Load_hint( ): $mol_paragraph
+		file( next?: any ): any
+		Open( ): $mol_button_open
+		Load_row( ): $mol_view
+		scanned( next?: string ): string
+		Scan( ): $bog_gram_scan
+		armed( next?: boolean ): boolean
+		import( next?: any ): any
+		import_label( ): string
+		Import( ): $mol_button_major
+		error( next?: string ): string
+		Error( ): $mol_paragraph
+		notify_on( next?: boolean ): boolean
+		sub( ): ReturnType< $bog_gram_settings_key['rows'] >
+		Toggle( ): $mol_button_minor
+		Warning( ): $mol_paragraph
+		Row( ): $mol_view
+		Qr_box( ): $mol_view
+		Save( ): $mol_button_download
+		Import_form( ): $mol_view
+	}
+	
+}
+
+//# sourceMappingURL=key.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_settings_key extends $.$bog_gram_settings_key {
+        text(): string;
+        blob(): Blob;
+        shown(next?: boolean): boolean;
+        toggle_label(): "Скрыть ключ" | "Показать ключ";
+        toggle(next?: any): null;
+        rows(): ($mol_view | $.$mol_paragraph | $.$mol_button_download)[];
+        Error(): $.$mol_paragraph;
+        import_label(): "Точно войти? Текущий аккаунт будет заменён" | "Войти по ключу";
+        auth_from(str: string): $giper_baza_auth | null;
+        import(next?: any): null;
+        file(next?: readonly File[]): readonly File[] | null;
+        file_read(file: File): boolean;
+        scanned(next?: string): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    const $bog_gram_version = "1.0.94";
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_settings_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_settings_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_settings_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_field__hint_bog_gram_settings_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_field['hint'] >
+	>
+	type $bog_gram_field__value_bog_gram_settings_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['user_name'] >
+		,
+		ReturnType< $bog_gram_field['value'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['my_lord'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_settings_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_settings_8 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['my_lord'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_9 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_10 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_11 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['invite_link'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_settings_13 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_settings_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['invite_link'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $bog_qr__uri_bog_gram_settings_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['invite_link'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $bog_qr__gradient_stops_bog_gram_settings_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_qr['gradient_stops'] >
+	>
+	type $mol_view__sub_bog_gram_settings_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_settings_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_19 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['notify_status'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_major__click_bog_gram_settings_22 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['notify_toggle'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_settings_23 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_view__sub_bog_gram_settings_24 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_25 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_26 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_27 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_28 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_content'] >
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $bog_gram_settings_key__notify_on_bog_gram_settings_29 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['notify_on'] >
+		,
+		ReturnType< $bog_gram_settings_key['notify_on'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_30 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_31 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['version'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_labeler__title_bog_gram_settings_33 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_gram_settings_34 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_35 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_settings_36 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_settings_37 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_uri'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_string__hint_bog_gram_settings_38 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_settings_39 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_name'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_gram_settings_40 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_make'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__click_bog_gram_settings_41 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_make'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_settings_42 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_settings_43 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_settings_44 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_join'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_settings_45 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_settings_46 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_settings_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_forget'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_settings_48 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_49 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_gram_settings_50 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_51 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_settings_52 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_settings_53 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_row__faced_bog_gram_settings_54 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_row['faced'] >
+	>
+	type $bog_gram_row__click_bog_gram_settings_55 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_open'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__current_bog_gram_settings_56 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_active_is'] >
+		,
+		ReturnType< $bog_gram_row['current'] >
+	>
+	type $bog_gram_row__title_bog_gram_settings_57 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_settings_58 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['registry_status'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__tools_bog_gram_settings_59 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['tools'] >
+	>
+	export class $bog_gram_settings extends $bog_gram_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		Name_field( ): $bog_gram_field
+		My_id_text( ): $mol_paragraph
+		My_id_copy( ): $mol_button_copy
+		My_id( ): $mol_labeler
+		Invite_hint( ): $mol_paragraph
+		Invite_text( ): $mol_paragraph
+		Invite_copy( ): $mol_button_copy
+		Invite_qr( ): $bog_qr
+		Invite_qr_box( ): $mol_view
+		Invite_body( ): $mol_view
+		Invite( ): $mol_labeler
+		Notify_status( ): $mol_paragraph
+		Notify_toggle( ): $mol_button_major
+		Notify_body( ): $mol_view
+		Notify( ): $mol_labeler
+		registry_content( ): readonly(any)[]
+		Registry_block( ): $mol_labeler
+		Key( ): $bog_gram_settings_key
+		Account( ): $mol_labeler
+		version( ): string
+		Version_text( ): $mol_paragraph
+		Version( ): $mol_labeler
+		registry_rows( ): readonly(any)[]
+		Registry_share_text( ): $mol_paragraph
+		Registry_share_copy( ): $mol_button_copy
+		Registry_name( ): $mol_string
+		Registry_make( ): $mol_button_major
+		Registry_join( id: any): $mol_button_minor
+		Registry_drop_icon( id: any): $mol_icon_close
+		Registry_drop( id: any): $mol_button_minor
+		title( ): string
+		user_name( next?: string ): string
+		my_lord( ): string
+		invite_link( ): string
+		notify_status( ): string
+		notify_label( ): string
+		notify_supported( ): boolean
+		notify_toggle( next?: any ): any
+		notify_on( next?: boolean ): boolean
+		registry_ids( ): readonly(string)[]
+		registry_active( ): string
+		registry_uri( ): string
+		registry_name( next?: string ): string
+		registry_make( next?: any ): any
+		registry_title( id: any): string
+		registry_status( id: any): string
+		registry_joined( id: any): boolean
+		registry_active_is( id: any): boolean
+		registry_open( id: any, next?: any ): any
+		registry_join( id: any, next?: any ): any
+		registry_forget( id: any, next?: any ): any
+		close( next?: any ): any
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		Registry_empty( ): $mol_paragraph
+		Registry_list( ): $mol_list
+		Registry_note( ): $mol_paragraph
+		Registry_share( ): $mol_view
+		Registry_form( ): $mol_view
+		Registry_row( id: any): $bog_gram_row
+	}
+	
+}
+
+//# sourceMappingURL=settings.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_settings extends $.$bog_gram_settings {
+        version(): string;
+        Notify_toggle(): $mol_button_major;
+        Registry_join(id: string): $mol_button_minor;
+        registry_rows(): $.$bog_gram_row[];
+        registry_content(): ($mol_view | $.$mol_paragraph)[];
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    class $bog_gram_lord extends $mol_object {
+        static short(lord: string): string;
+        static label(lord: string, note: string, name: string): string;
+        static tint(lord: string): number;
+        static check(lord: string): boolean;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_compose_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_compose_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_compose_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_string__hint_bog_gram_compose_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_compose_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['peer'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_gram_compose_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['start'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__click_bog_gram_compose_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['start'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_compose_8 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_view__sub_bog_gram_compose_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_compose_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_compose_11 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_major__click_bog_gram_compose_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['join'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_compose_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_view__sub_bog_gram_compose_14 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_gram_compose_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['user_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_compose_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['users_empty_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_compose_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_row__click_bog_gram_compose_18 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['pick'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_compose_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['user_lord'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_compose_20 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['user_tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_compose_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['user_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_compose_22 = $mol_type_enforce<
+		ReturnType< $bog_gram_compose['user_source'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	export class $bog_gram_compose extends $bog_gram_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		peer( next?: string ): string
+		start( next?: any ): any
+		Peer_field( ): $mol_string
+		Peer_start( ): $mol_button_major
+		Peer_form( ): $mol_view
+		Users_title( ): $mol_paragraph
+		Join_plate_text( ): $mol_paragraph
+		Join_plate_button( ): $mol_button_major
+		Join_plate( ): $mol_view
+		user_rows( ): readonly(any)[]
+		Users_list( ): $mol_list
+		users_empty_text( ): string
+		Users_empty_text( ): $mol_paragraph
+		pick( id: any, next?: any ): any
+		user_lord( id: any): string
+		user_tint( id: any): number
+		title( ): string
+		close( next?: any ): any
+		open( id: any, next?: any ): any
+		users( ): readonly(string)[]
+		user_title( id: any): string
+		user_source( id: any): string
+		registry_ids( ): readonly(string)[]
+		join_needed( ): boolean
+		join( next?: any ): any
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		Users_empty( ): $mol_view
+		User_row( id: any): $bog_gram_row
+	}
+	
+}
+
+//# sourceMappingURL=compose.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_compose extends $.$bog_gram_compose {
+        start(next?: any): null;
+        pick(lord: string, next?: any): null;
+        Join_plate(): $mol_view;
+        user_rows(): $mol_view[] | $.$bog_gram_row[];
+        users_empty_text(): "Вы не состоите ни в одном реестре. Создайте свой в настройках" | "Кроме вас в реестрах пока никого нет";
+        user_lord(lord: string): string;
+        user_tint(lord: string): number;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_group_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_group_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_group_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_string__hint_bog_gram_group_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_group_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['name'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_paragraph__title_bog_gram_group_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['chosen_head'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_gram_group_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['chosen_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_group_8 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['lost_note'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_major__click_bog_gram_group_9 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['make'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_group_10 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_string__hint_bog_gram_group_11 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_group_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['id'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_gram_group_13 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['id_add'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__click_bog_gram_group_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['id_add'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_group_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_view__sub_bog_gram_group_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_group_17 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['id_error'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_group_18 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_gram_group_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['pick_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_button_minor__hint_bog_gram_group_20 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_group_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['drop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_group_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_row__click_bog_gram_group_23 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['pick'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__current_bog_gram_group_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['picked_is'] >
+		,
+		ReturnType< $bog_gram_row['current'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_group_25 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['person'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_group_26 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_group_27 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['label'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_group_28 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['contact_source'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__marks_bog_gram_group_29 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['marks'] >
+	>
+	type $bog_gram_row__enabled_bog_gram_group_30 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_row['enabled'] >
+	>
+	type $bog_gram_row__size_bog_gram_group_31 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_row['size'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_group_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['person'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_group_33 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_group_34 = $mol_type_enforce<
+		ReturnType< $bog_gram_group['label'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__tools_bog_gram_group_35 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['tools'] >
+	>
+	export class $bog_gram_group extends $bog_gram_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		Name_field( ): $mol_string
+		chosen_head( ): string
+		Chosen_head( ): $mol_paragraph
+		chosen_rows( ): readonly(any)[]
+		Chosen_list( ): $mol_list
+		lost_note( ): string
+		Lost_note( ): $mol_paragraph
+		make_label( ): string
+		Make( ): $mol_button_major
+		Id_field( ): $mol_string
+		Id_add( ): $mol_button_major
+		Id_form( ): $mol_view
+		Id_error( ): $mol_paragraph
+		Pick_head( ): $mol_paragraph
+		pick_rows( ): readonly(any)[]
+		Pick_list( ): $mol_list
+		picked_is( id: any): boolean
+		person( id: any): string
+		tint( id: any): number
+		Pick_mark( id: any): $mol_icon_check
+		Chosen_drop_icon( id: any): $mol_icon_close
+		Chosen_drop( id: any): $mol_button_minor
+		title( ): string
+		close( next?: any ): any
+		name( next?: string ): string
+		picked( ): readonly(string)[]
+		lost( ): readonly(string)[]
+		id( next?: string ): string
+		id_error( ): string
+		pick( id: any, next?: any ): any
+		drop( id: any, next?: any ): any
+		id_add( next?: any ): any
+		make( next?: any ): any
+		label( id: any): string
+		contact_lords( ): readonly(string)[]
+		contact_source( id: any): string
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		Pick_row( id: any): $bog_gram_row
+		Chosen_row( id: any): $bog_gram_row
+	}
+	
+}
+
+//# sourceMappingURL=group.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_group extends $.$bog_gram_group {
+        person(lord: string): string;
+        tint(lord: string): number;
+        picked_is(lord: string): boolean;
+        Pick_mark(lord: string): $mol_icon_check;
+        pick_rows(): $.$bog_gram_row[];
+        chosen_rows(): $.$bog_gram_row[];
+        chosen_head(): string;
+        lost_note(): string;
+        Lost_note(): $.$mol_paragraph;
+        make_label(): "Создать без них" | "Создать группу";
+        Id_error(): $.$mol_paragraph;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_shield extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=shield.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_shield_crown extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=crown.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_account_remove extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=remove.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_account_plus extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=plus.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_gram_members_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_bog_gram_members_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['member_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_members_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['add_rows'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_members_9 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram_members['leave_armed'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_10 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['leave_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_11 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_12 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_13 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_members_14 = $mol_type_enforce<
+		({ 
+			'bog_gram_current': ReturnType< $bog_gram_members['history_open'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['history_all'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_17 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_members_18 = $mol_type_enforce<
+		({ 
+			'bog_gram_current': ReturnType< $bog_gram_members['history_shut'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['history_new'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_members_21 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_22 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['history_note'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_string__hint_bog_gram_members_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_members_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['id'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_gram_members_25 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['id_add'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__click_bog_gram_members_26 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['id_add'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_members_27 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_28 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_29 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_30 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['join_link'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_copy__title_bog_gram_members_31 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_gram_members_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['join_link'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $bog_qr__uri_bog_gram_members_33 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['join_link'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $bog_qr__gradient_stops_bog_gram_members_34 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_qr['gradient_stops'] >
+	>
+	type $mol_view__sub_bog_gram_members_35 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_36 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_37 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['accept'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_38 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_39 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_40 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['reject'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_41 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_42 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_43 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['rule_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_44 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_members_45 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['drop_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_members_46 = $mol_type_enforce<
+		({ 
+			'bog_gram_armed': ReturnType< $bog_gram_members['armed'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_members_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['drop_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_members_48 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_49 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_members_50 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_51 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['error'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_members_52 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_gram_members_53 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['pick_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_54 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_members_55 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_members_56 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['asks_head'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_gram_members_57 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['ask_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $bog_gram_row__enabled_bog_gram_members_58 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_row['enabled'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_members_59 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['ask_lord'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_members_60 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['ask_tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_members_61 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['ask_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_members_62 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['ask_status'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__tools_bog_gram_members_63 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['tools'] >
+	>
+	type $bog_gram_row__enabled_bog_gram_members_64 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_row['enabled'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_members_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['person'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_members_66 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_members_67 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['member_title'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_members_68 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['status'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__tools_bog_gram_members_69 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['tools'] >
+	>
+	type $bog_gram_row__click_bog_gram_members_70 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['add'] >
+		,
+		ReturnType< $bog_gram_row['click'] >
+	>
+	type $bog_gram_row__avatar_id_bog_gram_members_71 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['person'] >
+		,
+		ReturnType< $bog_gram_row['avatar_id'] >
+	>
+	type $bog_gram_row__tint_bog_gram_members_72 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['tint'] >
+		,
+		ReturnType< $bog_gram_row['tint'] >
+	>
+	type $bog_gram_row__title_bog_gram_members_73 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['label'] >
+		,
+		ReturnType< $bog_gram_row['title'] >
+	>
+	type $bog_gram_row__note_bog_gram_members_74 = $mol_type_enforce<
+		ReturnType< $bog_gram_members['contact_source'] >
+		,
+		ReturnType< $bog_gram_row['note'] >
+	>
+	type $bog_gram_row__marks_bog_gram_members_75 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_row['marks'] >
+	>
+	export class $bog_gram_members extends $bog_gram_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		member_rows( ): readonly(any)[]
+		List( ): $mol_list
+		Drop_note( ): $mol_paragraph
+		add_rows( ): readonly(any)[]
+		Add_block( ): $mol_view
+		Leave_note( ): $mol_paragraph
+		leave_armed( next?: boolean ): boolean
+		leave_click( next?: any ): any
+		leave_label( ): string
+		Leave( ): $mol_button_minor
+		History_head( ): $mol_paragraph
+		history_open( ): boolean
+		history_all( next?: any ): any
+		History_all( ): $mol_button_minor
+		history_shut( ): boolean
+		history_new( next?: any ): any
+		History_new( ): $mol_button_minor
+		History_row( ): $mol_view
+		history_note( ): string
+		History_note( ): $mol_paragraph
+		id( next?: string ): string
+		id_add( next?: any ): any
+		Id_field( ): $mol_string
+		Id_add( ): $mol_button_major
+		pick_rows( ): readonly(any)[]
+		Join_head( ): $mol_paragraph
+		Join_hint( ): $mol_paragraph
+		Join_text( ): $mol_paragraph
+		Join_copy( ): $mol_button_copy
+		Join_qr( ): $bog_qr
+		Join_qr_box( ): $mol_view
+		asks_head( ): string
+		ask_rows( ): readonly(any)[]
+		ask_tint( id: any): number
+		ask_title( id: any): string
+		ask_status( id: any): string
+		Ask_accept_icon( id: any): $mol_icon_check
+		Ask_accept( id: any): $mol_button_minor
+		Ask_reject_icon( id: any): $mol_icon_close
+		Ask_reject( id: any): $mol_button_minor
+		person( id: any): string
+		tint( id: any): number
+		member_title( id: any): string
+		rule_click( id: any, next?: any ): any
+		Rule_icon( id: any): $mol_icon_shield_crown
+		Rule( id: any): $mol_button_minor
+		drop_hint( id: any): string
+		armed( id: any, next?: boolean ): boolean
+		drop_click( id: any, next?: any ): any
+		Drop_icon( id: any): $mol_icon_account_remove
+		Drop( id: any): $mol_button_minor
+		Pick_mark( id: any): $mol_icon_account_plus
+		title( ): string
+		close( next?: any ): any
+		me( ): string
+		lords( ): readonly(string)[]
+		label( id: any): string
+		status( id: any): string
+		admin( ): boolean
+		owner( ): boolean
+		admin_is( id: any): boolean
+		error( next?: string ): string
+		join_link( ): string
+		asks( ): readonly(string)[]
+		ask_lord( id: any): string
+		accept( id: any, next?: any ): any
+		reject( id: any, next?: any ): any
+		candidates( ): readonly(string)[]
+		contact_source( id: any): string
+		history( next?: boolean ): boolean
+		add( id: any, next?: any ): any
+		part( id: any, next?: any ): any
+		promote( id: any, next?: any ): any
+		leave( next?: any ): any
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		Add_title( ): $mol_paragraph
+		History( ): $mol_view
+		Error( ): $mol_paragraph
+		Id_form( ): $mol_view
+		Pick_list( ): $mol_list
+		Admin_note( ): $mol_paragraph
+		Join( ): $mol_view
+		Asks_head( ): $mol_paragraph
+		Asks_list( ): $mol_list
+		Ask_row( id: any): $bog_gram_row
+		Member_row( id: any): $bog_gram_row
+		Pick_row( id: any): $bog_gram_row
+	}
+	
+}
+
+//# sourceMappingURL=members.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_members extends $.$bog_gram_members {
+        person(lord: string): string;
+        tint(lord: string): number;
+        member_rows(): $.$bog_gram_row[];
+        member_title(lord: string): string;
+        Drop_note(): $.$mol_paragraph;
+        Rule(lord: string): $mol_button_minor;
+        Drop(lord: string): $mol_button_minor;
+        drop_hint(lord: string): "Точно убрать? Прошлые сообщения у него останутся" | "Убрать из группы";
+        disarm(): void;
+        drop_click(lord: string, next?: any): null;
+        rule_click(lord: string, next?: any): null;
+        history_shut(): boolean;
+        history_open(): boolean;
+        history_all(next?: any): null;
+        history_new(next?: any): null;
+        history_note(): "Новый участник получит ключи от всех прошлых сообщений группы" | "Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше";
+        pick_rows(): $.$bog_gram_row[];
+        id_add(next?: any): null;
+        asks_head(): string;
+        ask_rows(): $.$bog_gram_row[];
+        ask_tint(entry: string): number;
+        ask_title(entry: string): string;
+        ask_status(entry: string): string;
+        add_rows(): ($mol_view | $.$mol_paragraph)[];
+        leave_label(): "Точно выйти?" | "Выйти из группы";
+        leave_click(next?: any): null;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
     const $bog_gram_user_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Name: (auto?: any) => $giper_baza_atom_text | null;
@@ -46316,13 +48423,12 @@ declare namespace $.$$ {
             readonly Devices_land: typeof $giper_baza_atom_text;
         };
     };
-    /** Публичный профиль в home land: имя + ссылки на служебные ленды владельца. */
     export class $bog_gram_user extends $bog_gram_user_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_inbox_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Invites: (auto?: any) => $giper_baza_list_str | null;
@@ -46335,33 +48441,16 @@ declare namespace $.$$ {
             [x: string]: typeof $giper_baza_pawn;
         } & {
             readonly Invites: typeof $giper_baza_list_str;
-            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
-             * приглашений: приглашение — это готовый доступ, а заявка только
-             * просьба его выдать, и решение по ней принимает человек.
-             *
-             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
-             * заворачивается на ключ конкретного человека, и без ключа админу
-             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
-             * под чужой идентификатор это не даёт — идентификатор его хеш, и
-             * подмена ловится пересчётом на месте. */
             readonly Joins: typeof $giper_baza_list_str;
-            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
-             * не оставляет просившему никакого следа, и она висела бы у него
-             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
-             * писать в чужое лобби есть у всех, им и пользуемся.
-             *
-             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
-             * по той же ссылке можно попроситься снова. */
             readonly Denies: typeof $giper_baza_list_str;
         };
     };
-    /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
     export class $bog_gram_inbox extends $bog_gram_inbox_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_note_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
@@ -46374,13 +48463,12 @@ declare namespace $.$$ {
             readonly Title: typeof $giper_baza_atom_text;
         };
     };
-    /** Личная подпись собеседника: как владелец назвал его для себя. */
     export class $bog_gram_note extends $bog_gram_note_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_dialogs_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Dialogs: (auto?: any) => $giper_baza_list_str | null;
@@ -46441,43 +48529,16 @@ declare namespace $.$$ {
             [x: string]: typeof $giper_baza_pawn;
         } & {
             readonly Dialogs: typeof $giper_baza_list_str;
-            /** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
             readonly Outbox: typeof $giper_baza_list_str;
-            /** Очередь заявок в группы: ссылка на ленд группы. Отдельно от Outbox —
-             * тот ждёт первого сообщения в диалоге, а заявку шлют до всякого
-             * доступа к переписке, и общая проверка её просто заперла бы */
             readonly Asks: typeof $giper_baza_list_str;
-            /** Заявки, уже доехавшие до чужого лобби. Второй раз их не шлём:
-             * отклонённую заявку админ из лобби убирает, и повтор возвращал бы её
-             * туда снова. Запись держится тут, пока не выдадут права, — по ней же
-             * рисуется «ждём подтверждения» */
             readonly Asked: typeof $giper_baza_list_str;
-            /** Группы, по заявкам в которые пришёл отказ. Держим их тут, а не в
-             * лобби: запись из лобби снимается сразу, а сказать о решении надо —
-             * иначе заявка просто исчезнет с экрана без объяснений. Повторный
-             * переход по ссылке эту отметку снимает: отказ не бан */
             readonly Denied: typeof $giper_baza_list_str;
-            /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
             readonly Hidden: typeof $giper_baza_list_str;
-            /** Собеседники, с которыми владелец согласился переписываться: их диалоги
-             * идут в общий список, а не в запросы. Ключ — lord человека, а не ссылка
-             * на диалог: согласие даётся один раз и на все его будущие диалоги */
             readonly Accepted: typeof $giper_baza_list_str;
-            /** Ссылки на известные владельцу реестры пользователей */
             readonly Registries: typeof $giper_baza_list_str;
-            /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
             readonly Saved_land: typeof $giper_baza_atom_text;
-            /** Все заведённые ленды заметок. Ссылка выше — одна, и в ней побеждает
-             * та запись, что легла позже: два устройства, заведя избранное каждое
-             * своё (список диалогов приезжает не мгновенно, и пустая ссылка на нём
-             * выглядит как «ленда ещё нет»), проигравшую ссылку потеряли бы вместе
-             * со всеми заметками. Список же сливается, а не перетирается —
-             * читаем изо всех лендов, пишем в тот, на который указывает ссылка */
             readonly Saved_lands: typeof $giper_baza_list_str;
-            /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
             readonly Archived: typeof $giper_baza_list_str;
-            /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
-             * Ленд приватный, поэтому подпись видна только владельцу */
             readonly Notes: {
                 new (): {
                     Value: typeof $bog_gram_note;
@@ -46779,13 +48840,12 @@ declare namespace $.$$ {
             readonly Lobbies: typeof $giper_baza_list_str;
         };
     };
-    /** Приватный (шифрованный ленд) список диалогов пользователя. */
     export class $bog_gram_dialogs extends $bog_gram_dialogs_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_monitor_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Watch: (auto?: any) => $giper_baza_list_str | null;
@@ -46798,13 +48858,12 @@ declare namespace $.$$ {
             readonly Watch: typeof $giper_baza_list_str;
         };
     };
-    /** Публичный список лендов, за которыми пуш-сервису надо следить. */
     export class $bog_gram_monitor extends $bog_gram_monitor_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_device_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
@@ -46819,13 +48878,12 @@ declare namespace $.$$ {
             readonly Token: typeof $giper_baza_atom_text;
         };
     };
-    /** Устройство пользователя с пуш-токеном. */
     export class $bog_gram_device extends $bog_gram_device_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_devices_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Registry: (auto?: any) => {
@@ -47171,13 +49229,478 @@ declare namespace $.$$ {
             };
         };
     };
-    /** Приватный реестр устройств пользователя. */
     export class $bog_gram_devices extends $bog_gram_devices_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
+    class $bog_gram_account extends $mol_object {
+        user_store(): $bog_gram_user;
+        my_lord(): string;
+        my_pass(): string;
+        user_name(next?: string): string;
+        inbox_land(): $giper_baza_land;
+        inbox_open(): boolean;
+        inbox_publish(): string;
+        lobbies_old(): string[];
+        inbox_stores(): $bog_gram_inbox[];
+        inbox_items(pick: (store: $bog_gram_inbox) => $giper_baza_list_str | null): string[];
+        inbox_cut(pick: (store: $bog_gram_inbox, auto?: 'auto') => $giper_baza_list_str | null, entry: string): void;
+        invites(): string[];
+        joins(): string[];
+        denies(): string[];
+        joins_cut(entry: string): void;
+        denies_cut(entry: string): void;
+        land(str: string): $giper_baza_land;
+        dialogs_land_make(): $giper_baza_land;
+        dialogs_land(): $giper_baza_land;
+        monitor_land_make(): $giper_baza_land;
+        monitor_land(): $giper_baza_land;
+        devices_land_make(): $giper_baza_land;
+        devices_land(): $giper_baza_land;
+        dialogs_store(): $bog_gram_dialogs;
+        inbox_store(): $bog_gram_inbox;
+        monitor_store(): $bog_gram_monitor;
+        devices_store(): $bog_gram_devices;
+        monitor_link(): string;
+        device_ready(): boolean;
+        ready(): boolean;
+    }
+}
+
+declare namespace $ {
+    const $bog_gram_key_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Pass: (auto?: any) => $giper_baza_atom_text | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Pass: typeof $giper_baza_atom_text;
+        };
+    };
+    export class $bog_gram_key extends $bog_gram_key_base {
+    }
+    export {};
+}
+
+declare namespace $ {
+    const $bog_gram_users_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Title: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Lords: (auto?: any) => $giper_baza_list_str | null;
+            readonly Keys: (auto?: any) => {
+                Value: typeof $bog_gram_key;
+                key(key: $giper_baza_vary_type, auto?: any): $bog_gram_key;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Title: typeof $giper_baza_atom_text;
+            readonly Lords: typeof $giper_baza_list_str;
+            readonly Keys: {
+                new (): {
+                    Value: typeof $bog_gram_key;
+                    key(key: $giper_baza_vary_type, auto?: any): $bog_gram_key;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
+        };
+    };
+    export class $bog_gram_users extends $bog_gram_users_base {
+    }
+    export {};
+}
+
+declare namespace $ {
+    class $bog_gram_pass extends $mol_object {
+        static parse(str: string): $giper_baza_auth_pass;
+        static verified(lord: string, str: string): $giper_baza_auth_pass | null;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_registry extends $mol_object {
+        Account(): $bog_gram_account;
+        active(): string;
+        ids(): string[];
+        land(id: string): $giper_baza_land;
+        store(id: string): $bog_gram_users;
+        lords(id: string): string[];
+        title(id: string): string;
+        joined(id: string): boolean;
+        active_is(id: string): boolean;
+        status(id: string): string;
+        uri(): string;
+        key_put(id: string): void;
+        keys_fill(): number;
+        name(next?: string): string;
+        make(next?: any): null;
+        remember(): string;
+        join(id: string, next?: any): null;
+        join_active(next?: any): null;
+        forget(id: string, next?: any): null;
+        open(id: string, next?: any): null;
+        join_needed(): boolean;
+        sources(): Record<string, string>;
+        people(): string[];
+        source_title(lord: string): string;
+        pass_of(lord: string): $giper_baza_auth_pass | null;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_people extends $mol_object {
+        Account(): $bog_gram_account;
+        Registry(): $bog_gram_registry;
+        store(lord: string): $bog_gram_user;
+        name(lord: string): string;
+        inbox(lord: string): string;
+        note(lord: string): string;
+        note_set(lord: string, next?: string): null;
+        label(lord: string): string;
+        accepted(): string[];
+        known(lord: string): boolean;
+        accept(lord: string): null;
+        pass_given(lord: string, next?: $giper_baza_auth_pass | null): $giper_baza_auth_pass | null;
+        pass_stored(lord: string): $giper_baza_auth_pass | null;
+        pass_learn(lord: string, key: string): $giper_baza_auth_pass | null;
+        pass_of(lord: string): $giper_baza_auth_pass | null;
+        passes_of(lords: readonly string[]): $giper_baza_auth_pass[];
+    }
+}
+
+declare namespace $ {
     const $bog_gram_dialog_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Peers: (auto?: any) => $giper_baza_list_str | null;
@@ -47195,33 +49718,19 @@ declare namespace $.$$ {
         } & {
             readonly Peers: typeof $giper_baza_list_str;
             readonly Sessions: typeof $giper_baza_list_str;
-            /** Кто завёл переписку. Королём ленда числится служебный ключ, выданный
-             * при захвате, поэтому по ленду создателя не узнать — пишем прямо. */
             readonly Owner: typeof $giper_baza_atom_text;
-            /** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
-             * а не добавлением, поэтому «последний» там — не обязательно свежий. */
             readonly Session_last: typeof $giper_baza_atom_text;
             readonly Created: typeof $giper_baza_atom_real;
-            /** Название группы. У переписки вдвоём его нет: там заголовок — это
-             * личная подпись собеседника, и лежит она в приватном ленде. */
             readonly Title: typeof $giper_baza_atom_text;
-            /** Кто может звать и убирать людей. Создатель — король ленда, и
-             * админом остаётся всегда, даже не числясь тут. */
             readonly Admins: typeof $giper_baza_list_str;
         };
     };
-    /** Шаренный между участниками ленд диалога: участники + ссылки на сессии-бакеты. */
     export class $bog_gram_dialog extends $bog_gram_dialog_base {
     }
     export {};
 }
 
 declare namespace $ {
-    /** Ссылка на пешку в чужом ленде, которая на чтении сама поднимает синк
-     * этого ленда. Базовый `remote()` только строит прокси, поэтому без
-     * такой обёртки содержимое отдельного ленда никогда не докачивается:
-     * ссылка есть, а данных по ней нет. Синк дёргается только на чтении —
-     * сразу после записи ленд ещё наш собственный и тянуть нечего. */
     function $bog_gram_link_synced<const Value extends any>(Value: Value): {
         new (): {
             Value: Value;
@@ -48539,7 +51048,7 @@ declare namespace $ {
     };
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_message_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Text: (auto?: any) => $giper_baza_atom_text | null;
@@ -48642,12 +51151,8 @@ declare namespace $.$$ {
             readonly Text: typeof $giper_baza_atom_text;
             readonly Author: typeof $giper_baza_atom_text;
             readonly Moment: typeof $giper_baza_atom_real;
-            /** Момент последней правки, отсутствует — сообщение не правилось. */
             readonly Edited: typeof $giper_baza_atom_real;
-            /** Момент удаления, отсутствует — сообщение живое. */
             readonly Deleted: typeof $giper_baza_atom_real;
-            /** Картинка лежит в своём ленде: переписка синкается налегке, а
-             * тяжёлый кадр приезжает отдельно и только когда его показывают. */
             readonly Image: {
                 new (): {
                     Value: () => typeof $giper_baza_file;
@@ -49963,12 +52468,8 @@ declare namespace $.$$ {
                 [Symbol.toPrimitive](): any;
                 [$mol_key_handle](): any;
             };
-            /** Размеры кадра в пикселях: место под него в ленте занимается
-             * заранее, и приехавшая картинка ничего под собой не сдвигает. */
             readonly Image_width: typeof $giper_baza_atom_real;
             readonly Image_height: typeof $giper_baza_atom_real;
-            /** Голосовое лежит в своём ленде, как и картинка: переписка
-             * синкается налегке, а звук приезжает отдельно. */
             readonly Voice: {
                 new (): {
                     Value: () => typeof $giper_baza_file;
@@ -51284,20 +53785,16 @@ declare namespace $.$$ {
                 [Symbol.toPrimitive](): any;
                 [$mol_key_handle](): any;
             };
-            /** Длительность записи в секундах. Едет вместе с сообщением, до
-             * самого звука: длину пузырь показывает сразу. */
             readonly Voice_span: typeof $giper_baza_atom_real;
-            /** Ссылка на сообщение, на которое это — ответ. */
             readonly Reply: typeof $giper_baza_atom_text;
         };
     };
-    /** Сообщение: порядок задаётся полем Moment в самих данных, а не порядком доставки. */
     export class $bog_gram_message extends $bog_gram_message_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_read_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Moment: (auto?: any) => $giper_baza_atom_real | null;
@@ -51310,13 +53807,12 @@ declare namespace $.$$ {
             readonly Moment: typeof $giper_baza_atom_real;
         };
     };
-    /** Позиция прочтения участника: Moment последнего прочитанного сообщения. */
     export class $bog_gram_read extends $bog_gram_read_base {
     }
     export {};
 }
 
-declare namespace $.$$ {
+declare namespace $ {
     const $bog_gram_session_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Dialog_land: (auto?: any) => $giper_baza_atom_text | null;
@@ -52103,7 +54599,6 @@ declare namespace $.$$ {
                 [Symbol.toPrimitive](): any;
                 [$mol_key_handle](): any;
             };
-            /** Позиции прочтения участников, ключ — lord собеседника. */
             readonly Reads: {
                 new (): {
                     Value: typeof $bog_gram_read;
@@ -52403,16 +54898,73 @@ declare namespace $.$$ {
             };
         };
     };
-    /** Сессия-бакет: живёт в отдельном ленде вместе со своими сообщениями. */
     export class $bog_gram_session extends $bog_gram_session_base {
     }
     export {};
 }
 
 declare namespace $ {
+    class $bog_gram_clock extends $mol_object {
+        static day_key(moment: number): string;
+        static day_title(key: string): string;
+        static time(moment: number): string;
+        static brief(moment: number): string;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_talk extends $mol_object {
+        Account(): $bog_gram_account;
+        People(): $bog_gram_people;
+        my(): string;
+        land(id: string): $giper_baza_land;
+        saved_title(): string;
+        saved_land_make(): $giper_baza_land;
+        saved_land(): $giper_baza_land;
+        saved_id(): string;
+        saved_links(): string[];
+        saved_is(id: string): boolean;
+        store(id: string): $bog_gram_dialog;
+        lords(id: string): string[];
+        mates(id: string): string[];
+        peer(id: string): string;
+        group_title(id: string): string;
+        group_is(id: string): boolean;
+        group_name_auto(id: string): string;
+        group_title_set(id: string, next?: string): null;
+        admins(id: string): string[];
+        admin_is(id: string, lord: string): boolean;
+        admin_me(id: string): boolean;
+        member_rank(id: string, lord: string): number & {
+            $giper_baza_rank: number;
+        };
+        owner(id: string): string;
+        own(id: string): boolean;
+        title(id: string): string;
+        avatar_id(id: string): string;
+        tint(id: string): number;
+        moment(id: string): number;
+        fresh_first(ids: readonly string[]): string[];
+        alive(id: string): boolean;
+        links_of(id: string): readonly string[];
+        lands_of(id: string): $giper_baza_land[];
+        land_of(id: string): $giper_baza_land | null;
+        session(id: string): $bog_gram_session | null;
+        messages_merge(buckets: readonly (readonly $bog_gram_message[])[]): $bog_gram_message[];
+        messages_of(id: string): $bog_gram_message[];
+        messages_alive_of(id: string): $bog_gram_message[];
+        read_moment_of(id: string, lord: string): number;
+        unread(id: string): number;
+        preview(id: string): string;
+        time(id: string): string;
+        mine_among(messages: readonly $bog_gram_message[], my: string): boolean;
+        mine_wrote(id: string): boolean;
+    }
+}
+
+declare namespace $ {
     class $bog_gram_seal extends $mol_object {
         static prefix: string;
-        static pass(str: string): $giper_baza_auth_pass;
         static nonce(kind: string, open: string): Uint8Array<ArrayBuffer>;
         static is(entry: string): boolean;
         static close(auth: $giper_baza_auth, mate: $giper_baza_auth_pass, kind: string, open: string): string;
@@ -52425,501 +54977,157 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    /** Кадр, готовый к записи в ленд. */
-    type $bog_gram_shrink_shot = {
-        bytes: Uint8Array<ArrayBuffer>;
-        type: string;
-        width: number;
-        height: number;
-    };
-    /** Пережатие картинки перед отправкой. */
-    class $bog_gram_shrink extends $mol_object {
-        /** Вписывает размеры в квадрат со стороной limit, сохраняя пропорции.
-         * То, что уже помещается, оставляем как есть: растянутый кадр только
-         * потяжелеет и станет мыльным. */
-        static fit(width: number, height: number, limit: number): {
-            width: number;
-            height: number;
-        };
-        /** Это картинка, а не документ и не видео. */
-        static image_is(file: Blob): boolean;
-        /** Готовый к отправке кадр. Зовётся только из фибры: внутри промисы. */
-        static shrink(file: Blob): $bog_gram_shrink_shot;
+    class $bog_gram_roster extends $mol_object {
+        Account(): $bog_gram_account;
+        People(): $bog_gram_people;
+        Talk(): $bog_gram_talk;
+        store(): $bog_gram_dialogs;
+        ids(): string[];
+        hidden(): string[];
+        sort(own: boolean, alive: boolean, known: boolean): 'plain' | 'request' | 'skip';
+        kind(id: string): 'plain' | 'request' | 'skip';
+        requests(): string[];
+        archive_links(): string[];
+        archived(): string[];
+        archive_is(id: string): boolean;
+        visible(): string[];
+        archive(id: string): void;
+        unarchive(id: string): void;
+        drop(id: string): void;
+        with(peer: string): string;
+        create(peer: string): string;
+        invites_merge(): number;
+        invite_open(entry: string): string;
+        sealed(entry: string): {
+            open: string;
+            pass: string;
+            lord: string;
+        } | null;
+        contacts(): Record<string, string>;
+        contact_lords(): string[];
+        contact_source(lord: string): string;
+        watch_fill(): boolean;
     }
 }
 
 declare namespace $ {
-    /** Готовая к отправке запись. */
-    type $bog_gram_voice_take = {
-        bytes: Uint8Array<ArrayBuffer>;
-        type: string;
-        /** Длительность в секундах. */
-        span: number;
-    };
-    /** Запись голоса с микрофона: один объект — одна запись. Начало и конец
-     * приходят разными событиями, поэтому она не может жить ни в меме, ни
-     * внутри одной фибры: фибра нажатия к моменту отпускания давно кончилась. */
-    class $bog_gram_voice extends $mol_object {
-        /** Длительность строкой: семь секунд — это «0:07», а не «7». */
-        static stamp(span: number): string;
-        /** Формат, который здешний браузер умеет писать. Пусто — не умеет ни
-         * одного из наших, и микрофон показывать незачем. */
-        static type(): string;
-        static supported(): boolean;
-        /** Кого позвать, когда запись упёрлась в потолок длительности. */
-        filled: () => void;
-        /** Итог отдаём одним и тем же промисом, и это принципиально: фибра
-         * перезапускается на каждом ожидании, а новый промис на каждом её
-         * заходе означал бы запись, которая никогда не кончается. */
-        done: (take: $bog_gram_voice_take | null) => void;
-        result: Promise<$bog_gram_voice_take | null>;
-        /** Микрофон просим тоже ровно один раз — по той же причине. */
-        opening: Promise<boolean> | null;
-        stream: MediaStream | null;
-        recorder: MediaRecorder | null;
-        /** Просили остановиться. Взводится и до того, как браузер отдал
-         * микрофон: тогда его сразу же и возвращаем. */
-        asked: boolean;
-        /** Момент, с которого пошла запись: по нему считается её длина. */
-        moment: number;
-        limit: ReturnType<typeof setTimeout> | null;
-        open(): Promise<boolean>;
-        /** Разрешение спрашивает браузер, и ответа можно ждать сколько
-         * угодно, поэтому внутри обычный async без фибр. */
-        open_run(): Promise<boolean>;
-        /** Кодировщик отдаёт запись кусками, а ленду нужен цельный буфер. */
-        pack(chunks: readonly Blob[], type: string, span: number): Promise<void>;
-        /** Микрофон отпускаем сразу, как запись кончилась: иначе на телефоне
-         * так и останется гореть индикатор записи. */
-        hush(stream: MediaStream | null): void;
-        /** Остановка синхронная и повторов не боится: палец могли отпустить
-         * ровно тогда же, когда сработал потолок длительности. */
-        stop(): void;
-        /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
-        drop(): void;
-        /** Итог записи. Пусто — записывать было нечего или вышло короче
-         * случайного тычка в кнопку. */
-        take(): Promise<$bog_gram_voice_take | null>;
-    }
-}
-
-declare namespace $.$$ {
-    const $bog_gram_key_base: Omit<typeof $giper_baza_dict, "prototype"> & {
-        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
-            readonly Pass: (auto?: any) => $giper_baza_atom_text | null;
-        }>;
-        path: string;
-    } & {
-        schema: {
-            [x: string]: typeof $giper_baza_pawn;
-        } & {
-            readonly Pass: typeof $giper_baza_atom_text;
+    class $bog_gram_crew extends $mol_object {
+        Account(): $bog_gram_account;
+        People(): $bog_gram_people;
+        Talk(): $bog_gram_talk;
+        error(next?: string): string;
+        history(next?: boolean): boolean;
+        draft_name(next?: string): string;
+        draft_picked(next?: readonly string[]): readonly string[];
+        draft_lost(next?: readonly string[]): readonly string[];
+        draft_id(next?: string): string;
+        draft_error(next?: string): string;
+        draft_pick(lord: string, next?: any): null;
+        draft_drop(lord: string, next?: any): null;
+        draft_id_add(next?: any): null;
+        draft_build(title: string, lords: readonly string[], forced: boolean): string;
+        grab(): $giper_baza_land;
+        watch(link: string): void;
+        invite(lord: string, id: string): void;
+        stay(id: string, lord: string): [string, $giper_baza_auth_pass][] | null;
+        group_make(title: string, lords: readonly string[], forced: boolean): {
+            id: string;
+            lost: string[];
         };
-    };
-    /** Публичный ключ участника. Ленды диалога шифрованные, и право читать их
-     * заворачивается на ключ конкретного человека — по одному лишь его
-     * идентификатору выдать это право нечем. Идентификатор — хеш ключа,
-     * поэтому чужой ключ, подложенный под чужую же запись, отличается от
-     * настоящего пересчётом на месте, без всякой сети. */
-    export class $bog_gram_key extends $bog_gram_key_base {
+        join(id: string, lord: string, history: boolean, known?: $giper_baza_auth_pass | null): string;
+        part(id: string, lord: string): string;
+        promote(id: string, lord: string): string;
     }
-    export {};
-}
-
-declare namespace $.$$ {
-    const $bog_gram_users_base: Omit<typeof $giper_baza_dict, "prototype"> & {
-        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
-            readonly Title: (auto?: any) => $giper_baza_atom_text | null;
-            readonly Lords: (auto?: any) => $giper_baza_list_str | null;
-            readonly Keys: (auto?: any) => {
-                Value: typeof $bog_gram_key;
-                key(key: $giper_baza_vary_type, auto?: any): $bog_gram_key;
-                keys(): readonly $giper_baza_vary_type[];
-                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
-                [$mol_dev_format_head](): any[];
-                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
-                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
-                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
-                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                cut(vary: $giper_baza_vary_type): void;
-                move(from: number, to: number): void;
-                wipe(seat: number): void;
-                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
-                land(): $giper_baza_land;
-                head(): $giper_baza_link;
-                land_link(): $giper_baza_link;
-                link(): $giper_baza_link;
-                toJSON(): string;
-                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
-                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
-                units(): $giper_baza_unit_sand[];
-                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
-                meta(next?: $giper_baza_link): $giper_baza_link | null;
-                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
-                filled(): boolean;
-                can_change(): boolean;
-                last_change(): $mol_time_moment | null;
-                authors(): $giper_baza_auth_pass[];
-                get $(): $;
-                set $(next: $);
-                destructor(): void;
-                toString(): string;
-                [Symbol.toStringTag]: string;
-                [$mol_ambient_ref]: $;
-                [Symbol.dispose](): void;
-            } | null;
-        }>;
-        path: string;
-    } & {
-        schema: {
-            [x: string]: typeof $giper_baza_pawn;
-        } & {
-            /** Название реестра: задаёт создатель, видят все. */
-            readonly Title: typeof $giper_baza_atom_text;
-            readonly Lords: typeof $giper_baza_list_str;
-            /** Публичные ключи участников, ключ словаря — лорд участника. Со
-             * скачанным реестром диалог заводится без сети: одного идентификатора
-             * для шифрованного ленда мало, нужен сам ключ. */
-            readonly Keys: {
-                new (): {
-                    Value: typeof $bog_gram_key;
-                    key(key: $giper_baza_vary_type, auto?: any): $bog_gram_key;
-                    keys(): readonly $giper_baza_vary_type[];
-                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
-                    [$mol_dev_format_head](): any[];
-                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
-                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
-                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
-                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                    cut(vary: $giper_baza_vary_type): void;
-                    move(from: number, to: number): void;
-                    wipe(seat: number): void;
-                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
-                    land(): $giper_baza_land;
-                    head(): $giper_baza_link;
-                    land_link(): $giper_baza_link;
-                    link(): $giper_baza_link;
-                    toJSON(): string;
-                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
-                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
-                    units(): $giper_baza_unit_sand[];
-                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
-                    meta(next?: $giper_baza_link): $giper_baza_link | null;
-                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
-                    filled(): boolean;
-                    can_change(): boolean;
-                    last_change(): $mol_time_moment | null;
-                    authors(): $giper_baza_auth_pass[];
-                    get $(): $;
-                    set $(next: $);
-                    destructor(): void;
-                    toString(): string;
-                    [Symbol.toStringTag]: string;
-                    [$mol_ambient_ref]: $;
-                    [Symbol.dispose](): void;
-                };
-                toString(): any;
-                tag: keyof typeof $giper_baza_unit_sand_tag /** Публичные ключи участников, ключ словаря — лорд участника. Со
-                 * скачанным реестром диалог заводится без сети: одного идентификатора
-                 * для шифрованного ленда мало, нужен сам ключ. */;
-                schema: Record<string, typeof $giper_baza_pawn>;
-                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
-                    tag: keyof typeof $giper_baza_unit_sand_tag;
-                    new (): {};
-                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
-                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
-                    path: string;
-                } & {
-                    schema: {
-                        [x: string]: typeof $giper_baza_pawn;
-                    } & Schema;
-                };
-                of<Init extends new (...args: any[]) => any>(init: Init): {
-                    new (): {
-                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
-                            new (value?: any): {
-                                constructor: Function;
-                                toString(): string;
-                                toLocaleString(): string;
-                                valueOf(): Object;
-                                hasOwnProperty(v: PropertyKey): boolean;
-                                isPrototypeOf(v: Object): boolean;
-                                propertyIsEnumerable(v: PropertyKey): boolean;
-                            };
-                            Class: Init;
-                            toString(): string;
-                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
-                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
-                            default: InstanceType<Init>;
-                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
-                            [Symbol.toStringTag]: string;
-                            [$mol_key_handle](): string;
-                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
-                            getPrototypeOf(o: any): any;
-                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
-                            getOwnPropertyNames(o: any): string[];
-                            create(o: object | null): any;
-                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
-                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
-                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
-                            seal<T>(o: T): T;
-                            freeze<T extends Function>(f: T): T;
-                            freeze<T extends {
-                                [idx: string]: U | null | undefined | object;
-                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
-                            freeze<T>(o: T): Readonly<T>;
-                            preventExtensions<T>(o: T): T;
-                            isSealed(o: any): boolean;
-                            isFrozen(o: any): boolean;
-                            isExtensible(o: any): boolean;
-                            keys(o: object): string[];
-                            keys(o: {}): string[];
-                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
-                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
-                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
-                            assign(target: object, ...sources: any[]): any;
-                            getOwnPropertySymbols(o: any): symbol[];
-                            is(value1: any, value2: any): boolean;
-                            setPrototypeOf(o: any, proto: object | null): any;
-                            values<T>(o: {
-                                [s: string]: T;
-                            } | ArrayLike<T>): T[];
-                            values(o: {}): any[];
-                            entries<T>(o: {
-                                [s: string]: T;
-                            } | ArrayLike<T>): [string, T][];
-                            entries(o: {}): [string, any][];
-                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
-                                [x: string]: PropertyDescriptor;
-                            };
-                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
-                                [k: string]: T;
-                            };
-                            fromEntries(entries: Iterable<readonly any[]>): any;
-                            hasOwn(o: object, v: PropertyKey): boolean;
-                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
-                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
-                            new (value?: any): {
-                                constructor: Function;
-                                toString(): string;
-                                toLocaleString(): string;
-                                valueOf(): Object;
-                                hasOwnProperty(v: PropertyKey): boolean;
-                                isPrototypeOf(v: Object): boolean;
-                                propertyIsEnumerable(v: PropertyKey): boolean;
-                            };
-                            Class: Init;
-                            toString(): string;
-                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
-                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
-                            default: InstanceType<Init>;
-                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
-                            [Symbol.toStringTag]: string;
-                            [$mol_key_handle](): string;
-                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
-                            getPrototypeOf(o: any): any;
-                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
-                            getOwnPropertyNames(o: any): string[];
-                            create(o: object | null): any;
-                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
-                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
-                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
-                            seal<T_1>(o: T_1): T_1;
-                            freeze<T_1 extends Function>(f: T_1): T_1;
-                            freeze<T_1 extends {
-                                [idx: string]: U | null | undefined | object;
-                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
-                            freeze<T_1>(o: T_1): Readonly<T_1>;
-                            preventExtensions<T_1>(o: T_1): T_1;
-                            isSealed(o: any): boolean;
-                            isFrozen(o: any): boolean;
-                            isExtensible(o: any): boolean;
-                            keys(o: object): string[];
-                            keys(o: {}): string[];
-                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
-                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
-                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
-                            assign(target: object, ...sources: any[]): any;
-                            getOwnPropertySymbols(o: any): symbol[];
-                            is(value1: any, value2: any): boolean;
-                            setPrototypeOf(o: any, proto: object | null): any;
-                            values<T_1>(o: {
-                                [s: string]: T_1;
-                            } | ArrayLike<T_1>): T_1[];
-                            values(o: {}): any[];
-                            entries<T_1>(o: {
-                                [s: string]: T_1;
-                            } | ArrayLike<T_1>): [string, T_1][];
-                            entries(o: {}): [string, any][];
-                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
-                                [x: string]: PropertyDescriptor;
-                            };
-                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
-                                [k: string]: T_1;
-                            };
-                            fromEntries(entries: Iterable<readonly any[]>): any;
-                            hasOwn(o: object, v: PropertyKey): boolean;
-                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
-                        })["default"][];
-                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
-                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
-                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
-                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
-                        cut(vary: $giper_baza_vary_type): void;
-                        move(from: number, to: number): void;
-                        wipe(seat: number): void;
-                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
-                        [$mol_dev_format_head](): any[];
-                        land(): $giper_baza_land;
-                        head(): $giper_baza_link;
-                        land_link(): $giper_baza_link;
-                        link(): $giper_baza_link;
-                        toJSON(): string;
-                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
-                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
-                        units(): $giper_baza_unit_sand[];
-                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
-                        meta(next?: $giper_baza_link): $giper_baza_link | null;
-                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
-                        filled(): boolean;
-                        can_change(): boolean;
-                        last_change(): $mol_time_moment | null;
-                        authors(): $giper_baza_auth_pass[];
-                        get $(): $;
-                        set $(next: $);
-                        destructor(): void;
-                        toString(): string;
-                        [Symbol.toStringTag]: string;
-                        [$mol_ambient_ref]: $;
-                        [Symbol.dispose](): void;
-                    };
-                    Item: Init extends typeof $mol_schema_any ? Init : {
-                        new (value?: any): {
-                            constructor: Function;
-                            toString(): string;
-                            toLocaleString(): string;
-                            valueOf(): Object;
-                            hasOwnProperty(v: PropertyKey): boolean;
-                            isPrototypeOf(v: Object): boolean;
-                            propertyIsEnumerable(v: PropertyKey): boolean;
-                        };
-                        Class: Init;
-                        toString(): string;
-                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
-                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
-                        default: InstanceType<Init>;
-                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
-                        [Symbol.toStringTag]: string;
-                        [$mol_key_handle](): string;
-                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
-                        getPrototypeOf(o: any): any;
-                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
-                        getOwnPropertyNames(o: any): string[];
-                        create(o: object | null): any;
-                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
-                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
-                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
-                        seal<T_1>(o: T_1): T_1;
-                        freeze<T_1 extends Function>(f: T_1): T_1;
-                        freeze<T_1 extends {
-                            [idx: string]: U | null | undefined | object;
-                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
-                        freeze<T_1>(o: T_1): Readonly<T_1>;
-                        preventExtensions<T_1>(o: T_1): T_1;
-                        isSealed(o: any): boolean;
-                        isFrozen(o: any): boolean;
-                        isExtensible(o: any): boolean;
-                        keys(o: object): string[];
-                        keys(o: {}): string[];
-                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
-                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
-                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
-                        assign(target: object, ...sources: any[]): any;
-                        getOwnPropertySymbols(o: any): symbol[];
-                        is(value1: any, value2: any): boolean;
-                        setPrototypeOf(o: any, proto: object | null): any;
-                        values<T_1>(o: {
-                            [s: string]: T_1;
-                        } | ArrayLike<T_1>): T_1[];
-                        values(o: {}): any[];
-                        entries<T_1>(o: {
-                            [s: string]: T_1;
-                        } | ArrayLike<T_1>): [string, T_1][];
-                        entries(o: {}): [string, any][];
-                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
-                            [x: string]: PropertyDescriptor;
-                        };
-                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
-                            [k: string]: T_1;
-                        };
-                        fromEntries(entries: Iterable<readonly any[]>): any;
-                        hasOwn(o: object, v: PropertyKey): boolean;
-                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
-                    };
-                    toString(): any;
-                    tag: keyof typeof $giper_baza_unit_sand_tag;
-                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
-                    meta: null | $giper_baza_link;
-                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
-                    $: $;
-                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
-                    toJSON(): any;
-                    destructor(): void;
-                    [Symbol.toPrimitive](): any;
-                    [$mol_key_handle](): any;
-                };
-                meta: null | $giper_baza_link;
-                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
-                $: $;
-                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
-                toJSON(): any;
-                destructor(): void;
-                [Symbol.toPrimitive](): any;
-                [$mol_key_handle](): any;
-            };
-        };
-    };
-    /** Публичный реестр пользователей (для обнаружения и пуш-сервиса). */
-    export class $bog_gram_users extends $bog_gram_users_base {
-    }
-    export {};
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.71";
+    class $bog_gram_lobby extends $mol_object {
+        Account(): $bog_gram_account;
+        People(): $bog_gram_people;
+        Talk(): $bog_gram_talk;
+        Roster(): $bog_gram_roster;
+        Crew(): $bog_gram_crew;
+        store(): $bog_gram_dialogs;
+        inbox_of(lord: string): $bog_gram_inbox | null;
+        sealed_close([kind, pass, open]: readonly [string, string, string]): string;
+        sealed_open([kind, entry]: readonly [string, string]): {
+            open: string;
+            pass: string;
+            lord: string;
+        } | null;
+        invite_ready(id: string): boolean;
+        outbox_flush(): number;
+        entry(group: string, lord: string, pass: string): string;
+        parse(entry: string): {
+            group: string;
+            lord: string;
+            pass: string;
+        } | null;
+        asks_all(): string[];
+        asks_of(id: string): string[];
+        lord_of(entry: string): string;
+        forget(entry: string): void;
+        deny(entry: string): string;
+        apply(entry: string, history: boolean): string;
+        join_owner_of(id: string): string;
+        join_uri(id: string): string;
+        join_id(): string;
+        join_by(): string;
+        lost(next?: string): string;
+        join_plan(id: string, my: string, member: boolean): 'skip' | 'open' | 'ask';
+        join_take(id: string, by: string): "open" | "skip" | "ask";
+        task(group: string, owner: string): string;
+        task_group(entry: string): string;
+        task_owner(entry: string): string;
+        send(id: string, owner: string): void;
+        queued(): string[];
+        sent(): string[];
+        denied(): string[];
+        groups(): string[];
+        waiting(entries: readonly string[]): string[];
+        pending_queued(): string[];
+        pending_sent(): string[];
+        denies_merge(): number;
+        plate(): string;
+        taken(entry: string): boolean;
+        asks_flush(): number;
+    }
 }
 
 declare namespace $ {
-    /** Клиент пуш-демона: подписка браузера плюс её регистрация на сервере.
-     * Демон держит endpoint у себя, а не в ленде: в публичном ленде ключи
-     * подписки означали бы, что слать пуши может любой прохожий. */
+    class $bog_gram_invite extends $mol_object {
+        Account(): $bog_gram_account;
+        People(): $bog_gram_people;
+        Roster(): $bog_gram_roster;
+        uri(lord: string, key: string): string;
+        link(): string;
+        lord(): string;
+        key(): string;
+        plan(lord: string, my: string, exist: string): 'skip' | 'bad' | 'open' | 'start';
+        lost(next?: string): string;
+        pending(next?: string): string;
+        late(next?: string): string;
+        timer(): $mol_after_timeout | null;
+        take(lord: string, key: string): {
+            plan: "start" | "open" | "skip" | "bad";
+            exist: string;
+        };
+        ready(): string;
+        done(): void;
+        drop(next?: any): null;
+        plate(): "" | "Ссылка на диалог битая — попросите свежую" | "Открываем диалог — ищем ключ собеседника" | "Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку";
+    }
+}
+
+declare namespace $ {
     class $bog_gram_notify extends $mol_object {
         static base: string;
-        /** По http воркер не регистрируется, а ожидание готового так и висит:
-         * лучше честно сказать «не поддерживается», чем подвесить кнопку. */
         static supported(): boolean;
         static permission(): NotificationPermission;
-        /** Живой жест пользователя. Без него Safari и Firefox запрос разрешения
-         * отклоняют не спрашивая, а Chrome показывает тихую плашку, которую
-         * почти никто не замечает — и всё это выглядит как «нажал, и ничего».
-         * Где свойства нет, полагаемся на сам браузер и не мешаем. */
         static activated(): boolean;
-        /** Только запрос разрешения, без подписки. Отдельно от `subscribe`,
-         * потому что успеть его надо ПЕРВЫМ действием фибры: любое подвисшее
-         * чтение до него перезапустит фибру уже в микрозадаче, а жест
-         * пользователя к тому моменту протухнет. */
         static permission_request(): NotificationPermission;
-        /** Тело POST-ов шлём без заголовка типа: строка уходит как text/plain,
-         * это простой CORS-запрос без preflight, а демон всё равно парсит JSON. */
         static send(path: string, body: object): $mol_fetch_response;
-        /** Разрешение, подписка в браузере и отправка её демону. Наружу не роняем:
-         * при отказе кнопка в настройках просто останется выключенной. */
         static subscribe(lord: string, monitor: string): boolean;
-        /** Снимаем подписку с обеих сторон. Браузерная может уже не существовать —
-         * это не повод не сказать демону, что слать больше некому. */
         static unsubscribe(lord: string): boolean;
     }
 }
@@ -52928,2807 +55136,206 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $bog_gram_mine extends $giper_baza_mine_idb {
-        static db(): Promise<$mol_db_database<{
-            Unit: {
-                Key: [land: string, path: string];
-                Doc: [ArrayBuffer];
-                Indexes: {};
-            };
-            Ball: {
-                Key: [land: string, path: string];
-                Doc: [ArrayBuffer];
-                Indexes: {};
-            };
-        }>>;
+    class $bog_gram_alerts extends $mol_object {
+        Account(): $bog_gram_account;
+        supported(): boolean;
+        permission(next?: NotificationPermission): NotificationPermission;
+        on(next?: boolean): boolean;
+        off(next?: boolean): boolean;
+        asked(next?: boolean): boolean;
+        plan(supported: boolean, permission: NotificationPermission, on: boolean, off: boolean, asked: boolean): 'skip' | 'subscribe' | 'ask';
+        plan_now(): "skip" | "ask" | "subscribe";
+        auto(): boolean;
+        offer(): boolean;
+        grant(): boolean;
+        label(): "Выключить" | "Включить уведомления";
+        status(): "Не поддерживается этим браузером" | "Запрещены в браузере" | "Уведомления включены" | "Выключены" | "Спросим разрешение, когда откроете диалог";
+        toggle(next?: any): null;
+        apply(on: boolean): boolean;
     }
 }
 
 declare namespace $ {
-    class $bog_yard extends $giper_baza_yard {
-        static stagger: number;
-        port_make(socket: WebSocket, link: string): $mol_rest_port_ws_std;
-        master(): $mol_rest_port | null;
-    }
-}
 
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $bog_gram_auth extends $giper_baza_auth {
-        /** Строку из хранилища принимаем только целым ключом: обрезок бросил бы
-         * исключение прямо на старте, и приложение осталось бы без экрана. */
-        static restore(key: string): $bog_gram_auth | null;
-        static current(next?: $giper_baza_auth | null): $giper_baza_auth;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	type $bog_builderui_skin__lights_bog_gram_1 = $mol_type_enforce<
-		ReturnType< $bog_gram['lights'] >
-		,
-		ReturnType< $bog_builderui_skin['lights'] >
-	>
-	type $bog_builderui_skin__base_bog_gram_2 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $bog_builderui_skin['base'] >
-	>
-	type $bog_builderui_skin__font_head_bog_gram_3 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $bog_builderui_skin['font_head'] >
-	>
-	type $mol_paragraph__title_bog_gram_4 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_5 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_6 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_7 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_8 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_9 = $mol_type_enforce<
-		ReturnType< $bog_gram['compose_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_10 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_11 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_12 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_13 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_14 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_15 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_16 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_17 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_18 = $mol_type_enforce<
-		ReturnType< $bog_gram['settings_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_19 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $bog_theme_toggle__theme_auto_bog_gram_20 = $mol_type_enforce<
-		ReturnType< $bog_gram['Theme'] >
-		,
-		ReturnType< $bog_theme_toggle['theme_auto'] >
-	>
-	type $mol_paragraph__title_bog_gram_21 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_plate_text'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_minor__hint_bog_gram_22 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_23 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_drop'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_24 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_25 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_26 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_plate_text'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_27 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_list__rows_bog_gram_28 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_page__title_bog_gram_29 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_page['title'] >
-	>
-	type $mol_page__tools_bog_gram_30 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['tools'] >
-	>
-	type $mol_page__body_bog_gram_31 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['body'] >
-	>
-	type $bog_gram_music__hidden_bog_gram_32 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_hidden'] >
-		,
-		ReturnType< $bog_gram_music['hidden'] >
-	>
-	type $bog_gram_music__close_bog_gram_33 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_close'] >
-		,
-		ReturnType< $bog_gram_music['close'] >
-	>
-	type $mol_button_minor__hint_bog_gram_34 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_35 = $mol_type_enforce<
-		ReturnType< $bog_gram['settings_close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_36 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $bog_gram_field__hint_bog_gram_37 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $bog_gram_field['hint'] >
-	>
-	type $bog_gram_field__value_bog_gram_38 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_name'] >
-		,
-		ReturnType< $bog_gram_field['value'] >
-	>
-	type $mol_paragraph__title_bog_gram_39 = $mol_type_enforce<
-		ReturnType< $bog_gram['my_lord'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_copy__title_bog_gram_40 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_button_copy__text_bog_gram_41 = $mol_type_enforce<
-		ReturnType< $bog_gram['my_lord'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $mol_labeler__title_bog_gram_42 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_43 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_paragraph__title_bog_gram_44 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_45 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_link'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_copy__title_bog_gram_46 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_button_copy__text_bog_gram_47 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_link'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $bog_qr__uri_bog_gram_48 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_link'] >
-		,
-		ReturnType< $bog_qr['uri'] >
-	>
-	type $bog_qr__gradient_stops_bog_gram_49 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $bog_qr['gradient_stops'] >
-	>
-	type $mol_view__sub_bog_gram_50 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_51 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_labeler__title_bog_gram_52 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_53 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_paragraph__title_bog_gram_54 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_status'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_major__click_bog_gram_55 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_toggle'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_56 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_view__sub_bog_gram_57 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_labeler__title_bog_gram_58 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_59 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_labeler__title_bog_gram_60 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_61 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_content'] >
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_view__sub_bog_gram_62 = $mol_type_enforce<
-		ReturnType< $bog_gram['account_rows'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_labeler__title_bog_gram_63 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_64 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_paragraph__title_bog_gram_65 = $mol_type_enforce<
-		ReturnType< $bog_gram['version'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_labeler__title_bog_gram_66 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_labeler['title'] >
-	>
-	type $mol_labeler__content_bog_gram_67 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_labeler['content'] >
-	>
-	type $mol_page__title_bog_gram_68 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_page['title'] >
-	>
-	type $mol_page__tools_bog_gram_69 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['tools'] >
-	>
-	type $mol_page__body_bog_gram_70 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['body'] >
-	>
-	type $mol_button_minor__hint_bog_gram_71 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_72 = $mol_type_enforce<
-		ReturnType< $bog_gram['compose_close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_73 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_string__hint_bog_gram_74 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_75 = $mol_type_enforce<
-		ReturnType< $bog_gram['peer_lord'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__submit_bog_gram_76 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_start'] >
-		,
-		ReturnType< $mol_string['submit'] >
-	>
-	type $mol_button_major__click_bog_gram_77 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_start'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_78 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_view__sub_bog_gram_79 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_80 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_81 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_major__click_bog_gram_82 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join_active'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_83 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_view__sub_bog_gram_84 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_list__rows_bog_gram_85 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_page__title_bog_gram_86 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_page['title'] >
-	>
-	type $mol_page__tools_bog_gram_87 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['tools'] >
-	>
-	type $mol_page__body_bog_gram_88 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['body'] >
-	>
-	type $mol_button_minor__hint_bog_gram_89 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_90 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_91 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_string__hint_bog_gram_92 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_93 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_name'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_paragraph__title_bog_gram_94 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_head'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_list__rows_bog_gram_95 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_96 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_lost_note'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_major__click_bog_gram_97 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_make'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_98 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_string__hint_bog_gram_99 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_100 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__submit_bog_gram_101 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id_add'] >
-		,
-		ReturnType< $mol_string['submit'] >
-	>
-	type $mol_button_major__click_bog_gram_102 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id_add'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_103 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_view__sub_bog_gram_104 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_105 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id_error'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_106 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_list__rows_bog_gram_107 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_pick_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_page__title_bog_gram_108 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_page['title'] >
-	>
-	type $mol_page__tools_bog_gram_109 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['tools'] >
-	>
-	type $mol_page__body_bog_gram_110 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['body'] >
-	>
-	type $mol_button_minor__hint_bog_gram_111 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_112 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_113 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_list__rows_bog_gram_114 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_115 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_116 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_add_rows'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_117 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_minor__hint_bog_gram_118 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__attr_bog_gram_119 = $mol_type_enforce<
-		({ 
-			'bog_gram_armed': ReturnType< $bog_gram['leave_armed'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__click_bog_gram_120 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_leave_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_121 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_page__title_bog_gram_122 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_page['title'] >
-	>
-	type $mol_page__tools_bog_gram_123 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['tools'] >
-	>
-	type $mol_page__body_bog_gram_124 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_page['body'] >
-	>
-	type $bog_gram_chat__title_bog_gram_125 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_title'] >
-		,
-		ReturnType< $bog_gram_chat['title'] >
-	>
-	type $bog_gram_chat__focus_key_bog_gram_126 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_dialog'] >
-		,
-		ReturnType< $bog_gram_chat['focus_key'] >
-	>
-	type $bog_gram_chat__focus_row_bog_gram_127 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_focus_row'] >
-		,
-		ReturnType< $bog_gram_chat['focus_row'] >
-	>
-	type $bog_gram_chat__members_shown_bog_gram_128 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_members_shown'] >
-		,
-		ReturnType< $bog_gram_chat['members_shown'] >
-	>
-	type $bog_gram_chat__members_bog_gram_129 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_open'] >
-		,
-		ReturnType< $bog_gram_chat['members'] >
-	>
-	type $bog_gram_chat__note_bog_gram_130 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_note'] >
-		,
-		ReturnType< $bog_gram_chat['note'] >
-	>
-	type $bog_gram_chat__note_hint_bog_gram_131 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_note_hint'] >
-		,
-		ReturnType< $bog_gram_chat['note_hint'] >
-	>
-	type $bog_gram_chat__note_editable_bog_gram_132 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_note_editable'] >
-		,
-		ReturnType< $bog_gram_chat['note_editable'] >
-	>
-	type $bog_gram_chat__rows_bog_gram_133 = $mol_type_enforce<
-		ReturnType< $bog_gram['chat_rows'] >
-		,
-		ReturnType< $bog_gram_chat['rows'] >
-	>
-	type $bog_gram_chat__edit_mode_bog_gram_134 = $mol_type_enforce<
-		ReturnType< $bog_gram['edit_mode'] >
-		,
-		ReturnType< $bog_gram_chat['edit_mode'] >
-	>
-	type $bog_gram_chat__message_text_bog_gram_135 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_text'] >
-		,
-		ReturnType< $bog_gram_chat['message_text'] >
-	>
-	type $bog_gram_chat__message_send_bog_gram_136 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_send'] >
-		,
-		ReturnType< $bog_gram_chat['message_send'] >
-	>
-	type $bog_gram_chat__edit_cancel_bog_gram_137 = $mol_type_enforce<
-		ReturnType< $bog_gram['edit_cancel'] >
-		,
-		ReturnType< $bog_gram_chat['edit_cancel'] >
-	>
-	type $bog_gram_chat__reply_mode_bog_gram_138 = $mol_type_enforce<
-		ReturnType< $bog_gram['reply_mode'] >
-		,
-		ReturnType< $bog_gram_chat['reply_mode'] >
-	>
-	type $bog_gram_chat__reply_title_bog_gram_139 = $mol_type_enforce<
-		ReturnType< $bog_gram['reply_title'] >
-		,
-		ReturnType< $bog_gram_chat['reply_title'] >
-	>
-	type $bog_gram_chat__reply_text_bog_gram_140 = $mol_type_enforce<
-		ReturnType< $bog_gram['reply_text'] >
-		,
-		ReturnType< $bog_gram_chat['reply_text'] >
-	>
-	type $bog_gram_chat__reply_cancel_bog_gram_141 = $mol_type_enforce<
-		ReturnType< $bog_gram['reply_cancel'] >
-		,
-		ReturnType< $bog_gram_chat['reply_cancel'] >
-	>
-	type $bog_gram_chat__close_bog_gram_142 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_close'] >
-		,
-		ReturnType< $bog_gram_chat['close'] >
-	>
-	type $bog_gram_chat__image_files_bog_gram_143 = $mol_type_enforce<
-		ReturnType< $bog_gram['image_files'] >
-		,
-		ReturnType< $bog_gram_chat['image_files'] >
-	>
-	type $bog_gram_chat__image_paste_bog_gram_144 = $mol_type_enforce<
-		ReturnType< $bog_gram['image_paste'] >
-		,
-		ReturnType< $bog_gram_chat['image_paste'] >
-	>
-	type $bog_gram_chat__image_over_bog_gram_145 = $mol_type_enforce<
-		ReturnType< $bog_gram['image_over'] >
-		,
-		ReturnType< $bog_gram_chat['image_over'] >
-	>
-	type $bog_gram_chat__image_drop_bog_gram_146 = $mol_type_enforce<
-		ReturnType< $bog_gram['image_drop'] >
-		,
-		ReturnType< $bog_gram_chat['image_drop'] >
-	>
-	type $bog_gram_chat__zoom_uri_bog_gram_147 = $mol_type_enforce<
-		ReturnType< $bog_gram['zoom_uri'] >
-		,
-		ReturnType< $bog_gram_chat['zoom_uri'] >
-	>
-	type $bog_gram_chat__zoom_close_bog_gram_148 = $mol_type_enforce<
-		ReturnType< $bog_gram['zoom_close'] >
-		,
-		ReturnType< $bog_gram_chat['zoom_close'] >
-	>
-	type $bog_gram_chat__voice_on_bog_gram_149 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_on'] >
-		,
-		ReturnType< $bog_gram_chat['voice_on'] >
-	>
-	type $bog_gram_chat__voice_ready_bog_gram_150 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_ready'] >
-		,
-		ReturnType< $bog_gram_chat['voice_ready'] >
-	>
-	type $bog_gram_chat__voice_clock_bog_gram_151 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_clock'] >
-		,
-		ReturnType< $bog_gram_chat['voice_clock'] >
-	>
-	type $bog_gram_chat__voice_hint_bog_gram_152 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_hint'] >
-		,
-		ReturnType< $bog_gram_chat['voice_hint'] >
-	>
-	type $bog_gram_chat__voice_press_bog_gram_153 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_press'] >
-		,
-		ReturnType< $bog_gram_chat['voice_press'] >
-	>
-	type $bog_gram_chat__voice_release_bog_gram_154 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_release'] >
-		,
-		ReturnType< $bog_gram_chat['voice_release'] >
-	>
-	type $bog_gram_chat__voice_abort_bog_gram_155 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_abort'] >
-		,
-		ReturnType< $bog_gram_chat['voice_abort'] >
-	>
-	type $bog_gram_chat__voice_cancel_bog_gram_156 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_cancel'] >
-		,
-		ReturnType< $bog_gram_chat['voice_cancel'] >
-	>
-	type $bog_gram_chat__voice_menu_bog_gram_157 = $mol_type_enforce<
-		ReturnType< $bog_gram['voice_menu'] >
-		,
-		ReturnType< $bog_gram_chat['voice_menu'] >
-	>
-	type $mol_paragraph__title_bog_gram_158 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_159 = $mol_type_enforce<
-		ReturnType< $bog_gram['users_empty_text'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_160 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_copy__title_bog_gram_161 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_button_copy__text_bog_gram_162 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_uri'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $mol_string__hint_bog_gram_163 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_164 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_name'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__submit_bog_gram_165 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_make'] >
-		,
-		ReturnType< $mol_string['submit'] >
-	>
-	type $mol_button_major__click_bog_gram_166 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_make'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_167 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_view__sub_bog_gram_168 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_169 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_170 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_171 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_172 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_173 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_174 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_175 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_forget'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_176 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_177 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_text'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_copy__title_bog_gram_178 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_button_copy__text_bog_gram_179 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_text'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $bog_qr__uri_bog_gram_180 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_text'] >
-		,
-		ReturnType< $bog_qr['uri'] >
-	>
-	type $bog_qr__gradient_stops_bog_gram_181 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $bog_qr['gradient_stops'] >
-	>
-	type $mol_string__hint_bog_gram_182 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_183 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_input'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_paragraph__title_bog_gram_184 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_open__hint_bog_gram_185 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_open['hint'] >
-	>
-	type $mol_button_open__accept_bog_gram_186 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_open['accept'] >
-	>
-	type $mol_button_open__multiple_bog_gram_187 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $mol_button_open['multiple'] >
-	>
-	type $mol_button_open__files_bog_gram_188 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_file'] >
-		,
-		ReturnType< $mol_button_open['files'] >
-	>
-	type $mol_view__sub_bog_gram_189 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_scan__found_bog_gram_190 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_scanned'] >
-		,
-		ReturnType< $bog_gram_scan['found'] >
-	>
-	type $mol_button_major__attr_bog_gram_191 = $mol_type_enforce<
-		({ 
-			'bog_gram_armed': ReturnType< $bog_gram['import_armed'] >,
-		})  & ReturnType< $mol_button_major['attr'] >
-		,
-		ReturnType< $mol_button_major['attr'] >
-	>
-	type $mol_button_major__click_bog_gram_192 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_import'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_193 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_194 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_error'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_195 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_avatar_id'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_196 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_197 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_198 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_199 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_200 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_201 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_202 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_203 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_204 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_hint'] >
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_205 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_archive_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_206 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_icons'] >
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_207 = $mol_type_enforce<
-		ReturnType< $bog_gram['delete_hint'] >
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__attr_bog_gram_208 = $mol_type_enforce<
-		({ 
-			'bog_gram_armed': ReturnType< $bog_gram['delete_armed'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__click_bog_gram_209 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_delete_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_210 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_211 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_212 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_213 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_214 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_215 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_216 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_217 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_218 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_219 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_220 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_221 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_222 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_223 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_224 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_225 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_226 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_227 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_228 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_229 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_230 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_231 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_232 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_233 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_pick_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_234 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_pick_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_235 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_236 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_237 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_238 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_239 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_240 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_241 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_242 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_drop'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_243 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_244 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_minor__hint_bog_gram_245 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__attr_bog_gram_246 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['history_open'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__click_bog_gram_247 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_history_all'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_248 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_249 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__attr_bog_gram_250 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['history_shut'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__click_bog_gram_251 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_history_new'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_252 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_253 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_254 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_history_note'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_string__hint_bog_gram_255 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_256 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_id'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__submit_bog_gram_257 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_id_add'] >
-		,
-		ReturnType< $mol_string['submit'] >
-	>
-	type $mol_button_major__click_bog_gram_258 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_id_add'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_259 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_260 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_261 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_paragraph__title_bog_gram_262 = $mol_type_enforce<
-		ReturnType< $bog_gram['join_link'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_copy__title_bog_gram_263 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_button_copy__text_bog_gram_264 = $mol_type_enforce<
-		ReturnType< $bog_gram['join_link'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $bog_qr__uri_bog_gram_265 = $mol_type_enforce<
-		ReturnType< $bog_gram['join_link'] >
-		,
-		ReturnType< $bog_qr['uri'] >
-	>
-	type $bog_qr__gradient_stops_bog_gram_266 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $bog_qr['gradient_stops'] >
-	>
-	type $mol_view__sub_bog_gram_267 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_268 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_269 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_270 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_271 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_272 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_273 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_274 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_accept'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_275 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_276 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_277 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_reject'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_278 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_279 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_280 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_281 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_282 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_283 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_284 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_285 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_rule_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_286 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_287 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_drop_hint'] >
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__attr_bog_gram_288 = $mol_type_enforce<
-		({ 
-			'bog_gram_armed': ReturnType< $bog_gram['member_armed'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__click_bog_gram_289 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_drop_click'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_290 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $bog_gram_avatar__id_bog_gram_291 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_pick_lord'] >
-		,
-		ReturnType< $bog_gram_avatar['id'] >
-	>
-	type $bog_gram_avatar__tint_bog_gram_292 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_pick_tint'] >
-		,
-		ReturnType< $bog_gram_avatar['tint'] >
-	>
-	type $mol_view__sub_bog_gram_293 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_294 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_295 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_296 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__attr_bog_gram_297 = $mol_type_enforce<
-		({ 
-			'bog_gram_tint': ReturnType< $bog_gram['message_author_tint'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		,
-		ReturnType< $mol_view['attr'] >
-	>
-	type $mol_view__sub_bog_gram_298 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_299 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_300 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_301 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_302 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_quote_jump'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_303 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $bog_gram_photo__hint_bog_gram_304 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $bog_gram_photo['hint'] >
-	>
-	type $bog_gram_photo__uri_bog_gram_305 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_shot_uri'] >
-		,
-		ReturnType< $bog_gram_photo['uri'] >
-	>
-	type $bog_gram_photo__box_width_bog_gram_306 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_shot_width'] >
-		,
-		ReturnType< $bog_gram_photo['box_width'] >
-	>
-	type $bog_gram_photo__box_ratio_bog_gram_307 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_shot_ratio'] >
-		,
-		ReturnType< $bog_gram_photo['box_ratio'] >
-	>
-	type $bog_gram_photo__click_bog_gram_308 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_zoom'] >
-		,
-		ReturnType< $bog_gram_photo['click'] >
-	>
-	type $bog_gram_sound__uri_bog_gram_309 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_sound_uri'] >
-		,
-		ReturnType< $bog_gram_sound['uri'] >
-	>
-	type $bog_gram_sound__span_bog_gram_310 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_sound_span'] >
-		,
-		ReturnType< $bog_gram_sound['span'] >
-	>
-	type $bog_gram_sound__playing_bog_gram_311 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_sound_playing'] >
-		,
-		ReturnType< $bog_gram_sound['playing'] >
-	>
-	type $bog_gram_sound__toggle_bog_gram_312 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_sound_toggle'] >
-		,
-		ReturnType< $bog_gram_sound['toggle'] >
-	>
-	type $bog_gram_sound__ended_bog_gram_313 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_sound_ended'] >
-		,
-		ReturnType< $bog_gram_sound['ended'] >
-	>
-	type $mol_paragraph__title_bog_gram_314 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_body'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_315 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_316 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_317 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_318 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_319 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_320 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_edit'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_321 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_322 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_323 = $mol_type_enforce<
-		ReturnType< $bog_gram['message_delete'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_324 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_325 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_326 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_327 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_328 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_list__rows_bog_gram_329 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_330 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_331 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_332 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_333 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__attr_bog_gram_334 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['registry_active_is'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__sub_bog_gram_335 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_336 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_337 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_338 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_339 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_340 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_341 = $mol_type_enforce<
-		ReturnType< $bog_gram['key_save'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_342 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_343 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_344 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_select'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__attr_bog_gram_345 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['dialog_current_is'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__sub_bog_gram_346 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_347 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_348 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_open'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__attr_bog_gram_349 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['saved_current_is'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__sub_bog_gram_350 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_351 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_352 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_353 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_354 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_355 = $mol_type_enforce<
-		ReturnType< $bog_gram['requests_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_356 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_357 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_358 = $mol_type_enforce<
-		ReturnType< $bog_gram['request_accept'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_359 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_360 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_361 = $mol_type_enforce<
-		ReturnType< $bog_gram['request_reject'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_362 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_363 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_pick'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_364 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_365 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_pick'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__attr_bog_gram_366 = $mol_type_enforce<
-		({ 
-			'bog_gram_current': ReturnType< $bog_gram['group_picked_is'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		,
-		ReturnType< $mol_button_minor['attr'] >
-	>
-	type $mol_button_minor__sub_bog_gram_367 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_368 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_369 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_370 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_371 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_error'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_372 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_list__rows_bog_gram_373 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_pick_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__title_bog_gram_374 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_375 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_376 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_asks_head'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_list__rows_bog_gram_377 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_ask_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_view__sub_bog_gram_378 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_379 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__click_bog_gram_380 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_pick'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_381 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_382 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__attr_bog_gram_383 = $mol_type_enforce<
-		({ 
-			'bog_gram_out': ReturnType< $bog_gram['message_out'] >,
-			'bog_gram_menu': ReturnType< $bog_gram['message_menu_is'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		,
-		ReturnType< $mol_view['attr'] >
-	>
-	type $mol_view__event_bog_gram_384 = $mol_type_enforce<
-		({ 
-			pointerdown( next?: ReturnType< $bog_gram['message_press'] > ): ReturnType< $bog_gram['message_press'] >,
-			pointerup( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
-			pointercancel( next?: ReturnType< $bog_gram['message_release'] > ): ReturnType< $bog_gram['message_release'] >,
-			contextmenu( next?: ReturnType< $bog_gram['message_context'] > ): ReturnType< $bog_gram['message_context'] >,
-		})  & ReturnType< $mol_view['event'] >
-		,
-		ReturnType< $mol_view['event'] >
-	>
-	type $mol_view__sub_bog_gram_385 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	export class $bog_gram extends $mol_book2 {
-		lights( ): string
-		Skin( ): $bog_builderui_skin
-		Theme( ): $bog_theme_auto
-		Intro_title( ): $mol_paragraph
-		Intro_hint( ): $mol_paragraph
-		Intro_plate( ): $mol_view
-		Intro( ): $mol_view
-		Status( ): $giper_baza_status
-		compose_open( next?: any ): any
-		Compose_open_icon( ): $mol_icon_message_plus
-		Compose_open( ): $mol_button_minor
-		group_open( next?: any ): any
-		Group_open_icon( ): $mol_icon_account_multiple_plus
-		Group_open( ): $mol_button_minor
-		music_open( next?: any ): any
-		Music_open_icon( ): $mol_icon_music
-		Music_open( ): $mol_button_minor
-		settings_open( next?: any ): any
-		Settings_open_icon( ): $mol_icon_cog
-		Settings_open( ): $mol_button_minor
-		Lights( ): $bog_theme_toggle
-		invite_plate_text( ): string
-		Invite_plate_text( ): $mol_paragraph
-		invite_drop( next?: any ): any
-		Invite_drop_icon( ): $mol_icon_close
-		Invite_drop( ): $mol_button_minor
-		Invite_plate( ): $mol_view
-		ask_plate_text( ): string
-		Ask_plate_text( ): $mol_paragraph
-		Ask_plate( ): $mol_view
-		dialog_rows( ): readonly(any)[]
-		Dialogs_list( ): $mol_list
-		Menu( ): $mol_page
-		music_hidden( ): boolean
-		music_close( next?: any ): any
-		Music_page( ): $bog_gram_music
-		settings_close( next?: any ): any
-		Settings_close_icon( ): $mol_icon_close
-		Settings_close( ): $mol_button_minor
-		user_name( next?: string ): string
-		Name_field( ): $bog_gram_field
-		my_lord( ): string
-		My_id_text( ): $mol_paragraph
-		My_id_copy( ): $mol_button_copy
-		My_id( ): $mol_labeler
-		Invite_hint( ): $mol_paragraph
-		invite_link( ): string
-		Invite_text( ): $mol_paragraph
-		Invite_copy( ): $mol_button_copy
-		Invite_qr( ): $bog_qr
-		Invite_qr_box( ): $mol_view
-		Invite_body( ): $mol_view
-		Invite( ): $mol_labeler
-		notify_status( ): string
-		Notify_status( ): $mol_paragraph
-		notify_toggle( next?: any ): any
-		notify_label( ): string
-		Notify_toggle( ): $mol_button_major
-		Notify_body( ): $mol_view
-		Notify( ): $mol_labeler
-		registry_content( ): readonly(any)[]
-		Registry_block( ): $mol_labeler
-		account_rows( ): readonly(any)[]
-		Account_body( ): $mol_view
-		Account( ): $mol_labeler
-		version( ): string
-		Version_text( ): $mol_paragraph
-		Version( ): $mol_labeler
-		Settings_page( ): $mol_page
-		compose_close( next?: any ): any
-		Compose_close_icon( ): $mol_icon_close
-		Compose_close( ): $mol_button_minor
-		peer_lord( next?: string ): string
-		dialog_start( next?: any ): any
-		Peer_field( ): $mol_string
-		Peer_start( ): $mol_button_major
-		Peer_form( ): $mol_view
-		Users_title( ): $mol_paragraph
-		Join_plate_text( ): $mol_paragraph
-		registry_join_active( next?: any ): any
-		Join_plate_button( ): $mol_button_major
-		Join_plate( ): $mol_view
-		user_rows( ): readonly(any)[]
-		Users_list( ): $mol_list
-		Compose_page( ): $mol_page
-		group_close( next?: any ): any
-		Group_close_icon( ): $mol_icon_close
-		Group_close( ): $mol_button_minor
-		group_name( next?: string ): string
-		Group_name_field( ): $mol_string
-		group_chosen_head( ): string
-		Group_chosen_head( ): $mol_paragraph
-		group_chosen_rows( ): readonly(any)[]
-		Group_chosen_list( ): $mol_list
-		group_lost_note( ): string
-		Group_lost_note( ): $mol_paragraph
-		group_make( next?: any ): any
-		group_make_label( ): string
-		Group_make( ): $mol_button_major
-		group_id( next?: string ): string
-		group_id_add( next?: any ): any
-		Group_id_field( ): $mol_string
-		Group_id_add( ): $mol_button_major
-		Group_id_form( ): $mol_view
-		group_id_error( ): string
-		Group_id_error( ): $mol_paragraph
-		Group_pick_head( ): $mol_paragraph
-		group_pick_rows( ): readonly(any)[]
-		Group_pick_list( ): $mol_list
-		Group_page( ): $mol_page
-		members_close( next?: any ): any
-		Members_close_icon( ): $mol_icon_close
-		Members_close( ): $mol_button_minor
-		member_rows( ): readonly(any)[]
-		Members_list( ): $mol_list
-		Members_drop_note( ): $mol_paragraph
-		members_add_rows( ): readonly(any)[]
-		Members_add_block( ): $mol_view
-		Members_leave_note( ): $mol_paragraph
-		leave_armed( ): boolean
-		group_leave_click( next?: any ): any
-		group_leave_label( ): string
-		Members_leave( ): $mol_button_minor
-		Members_page( ): $mol_page
-		chat_title( ): string
-		chat_dialog( ): string
-		chat_focus_row( ): any
-		chat_members_shown( ): boolean
-		members_open( next?: any ): any
-		chat_note( next?: string ): string
-		chat_note_hint( ): string
-		chat_note_editable( ): boolean
-		chat_rows( ): readonly(any)[]
-		edit_mode( ): boolean
-		message_text( next?: string ): string
-		message_send( next?: any ): any
-		edit_cancel( next?: any ): any
-		reply_mode( ): boolean
-		reply_title( ): string
-		reply_text( ): string
-		reply_cancel( next?: any ): any
-		dialog_close( next?: any ): any
-		image_files( next?: any ): any
-		image_paste( next?: any ): any
-		image_over( next?: any ): any
-		image_drop( next?: any ): any
-		zoom_uri( ): string
-		zoom_close( next?: any ): any
-		voice_on( ): boolean
-		voice_ready( ): boolean
-		voice_clock( ): string
-		voice_hint( ): string
-		voice_press( next?: any ): any
-		voice_release( next?: any ): any
-		voice_abort( next?: any ): any
-		voice_cancel( next?: any ): any
-		voice_menu( next?: any ): any
-		Chat_page( ): $bog_gram_chat
-		Dialogs_empty_text( ): $mol_paragraph
-		users_empty_text( ): string
-		Users_empty_text( ): $mol_paragraph
-		registry_rows( ): readonly(any)[]
-		Registry_share_text( ): $mol_paragraph
-		registry_uri( ): string
-		Registry_share_copy( ): $mol_button_copy
-		registry_name( next?: string ): string
-		registry_make( next?: any ): any
-		Registry_name( ): $mol_string
-		Registry_make( ): $mol_button_major
-		registry_open( id: any, next?: any ): any
-		registry_active_is( id: any): boolean
-		registry_title( id: any): string
-		Registry_title( id: any): $mol_view
-		registry_status( id: any): string
-		Registry_status( id: any): $mol_view
-		Registry_info( id: any): $mol_view
-		registry_join( id: any, next?: any ): any
-		Registry_join( id: any): $mol_button_minor
-		registry_forget( id: any, next?: any ): any
-		Registry_drop_icon( id: any): $mol_icon_close
-		Registry_drop( id: any): $mol_button_minor
-		key_toggle( next?: any ): any
-		key_toggle_label( ): string
-		key_text( ): string
-		Key_text( ): $mol_paragraph
-		Key_copy( ): $mol_button_copy
-		Key_qr( ): $bog_qr
-		key_save( next?: any ): any
-		key_input( next?: string ): string
-		Key_field( ): $mol_string
-		Key_load_hint( ): $mol_paragraph
-		key_file( next?: any ): any
-		Key_open( ): $mol_button_open
-		Key_load_row( ): $mol_view
-		key_scanned( next?: string ): string
-		Key_scan( ): $bog_gram_scan
-		import_armed( ): boolean
-		key_import( next?: any ): any
-		key_import_label( ): string
-		Key_import( ): $mol_button_major
-		key_error( ): string
-		Key_error( ): $mol_paragraph
-		dialog_select( id: any, next?: any ): any
-		dialog_current_is( id: any): boolean
-		dialog_avatar_id( id: any): string
-		dialog_tint( id: any): number
-		Dialog_avatar( id: any): $bog_gram_avatar
-		dialog_title( id: any): string
-		Dialog_title( id: any): $mol_view
-		dialog_time( id: any): string
-		Dialog_time( id: any): $mol_view
-		Dialog_top( id: any): $mol_view
-		dialog_preview( id: any): string
-		Dialog_preview( id: any): $mol_view
-		unread_label( id: any): string
-		Unread_badge( id: any): $mol_view
-		Dialog_bottom( id: any): $mol_view
-		Dialog_info( id: any): $mol_view
-		archive_hint( id: any): string
-		dialog_archive_click( id: any, next?: any ): any
-		archive_icons( id: any): readonly(any)[]
-		Dialog_archive( id: any): $mol_button_minor
-		delete_hint( id: any): string
-		delete_armed( id: any): boolean
-		dialog_delete_click( id: any, next?: any ): any
-		Dialog_delete_icon( id: any): $mol_icon_delete
-		Dialog_delete( id: any): $mol_button_minor
-		saved_open( next?: any ): any
-		saved_current_is( ): boolean
-		Saved_avatar_icon( ): $mol_icon_bookmark
-		Saved_avatar( ): $mol_view
-		saved_title( ): string
-		Saved_title( ): $mol_view
-		saved_time( ): string
-		Saved_time( ): $mol_view
-		Saved_top( ): $mol_view
-		saved_preview( ): string
-		Saved_preview( ): $mol_view
-		Saved_bottom( ): $mol_view
-		Saved_info( ): $mol_view
-		archive_toggle( next?: any ): any
-		Archive_avatar_icon( ): $mol_icon_archive
-		Archive_avatar( ): $mol_view
-		Archive_title( ): $mol_view
-		archive_note( ): string
-		Archive_note( ): $mol_view
-		Archive_info( ): $mol_view
-		archive_unread_label( ): string
-		Archive_unread( ): $mol_view
-		requests_toggle( next?: any ): any
-		Requests_avatar_icon( ): $mol_icon_account_question
-		Requests_avatar( ): $mol_view
-		Requests_title( ): $mol_view
-		Requests_note( ): $mol_view
-		Requests_info( ): $mol_view
-		requests_count_label( ): string
-		Requests_count( ): $mol_view
-		request_accept( id: any, next?: any ): any
-		Request_accept_icon( id: any): $mol_icon_check
-		request_reject( id: any, next?: any ): any
-		Request_reject_icon( id: any): $mol_icon_close
-		user_pick( id: any, next?: any ): any
-		user_lord( id: any): string
-		user_tint( id: any): number
-		User_avatar( id: any): $bog_gram_avatar
-		user_title( id: any): string
-		User_title( id: any): $mol_view
-		user_source( id: any): string
-		User_source( id: any): $mol_view
-		User_info( id: any): $mol_view
-		group_pick( id: any, next?: any ): any
-		group_picked_is( id: any): boolean
-		group_pick_lord( id: any): string
-		group_pick_tint( id: any): number
-		Group_pick_avatar( id: any): $bog_gram_avatar
-		group_pick_title( id: any): string
-		Group_pick_title( id: any): $mol_view
-		group_pick_source( id: any): string
-		Group_pick_source( id: any): $mol_view
-		Group_pick_info( id: any): $mol_view
-		Group_pick_mark( id: any): $mol_icon_check
-		group_chosen_lord( id: any): string
-		group_chosen_tint( id: any): number
-		Group_chosen_avatar( id: any): $bog_gram_avatar
-		group_chosen_name( id: any): string
-		Group_chosen_name( id: any): $mol_view
-		group_chosen_drop( id: any, next?: any ): any
-		Group_chosen_drop_icon( id: any): $mol_icon_close
-		Group_chosen_drop( id: any): $mol_button_minor
-		Members_history_head( ): $mol_paragraph
-		history_open( ): boolean
-		members_history_all( next?: any ): any
-		Members_history_all( ): $mol_button_minor
-		history_shut( ): boolean
-		members_history_new( next?: any ): any
-		Members_history_new( ): $mol_button_minor
-		Members_history_row( ): $mol_view
-		members_history_note( ): string
-		Members_history_note( ): $mol_paragraph
-		member_error( ): string
-		member_id( next?: string ): string
-		member_id_add( next?: any ): any
-		Members_id_field( ): $mol_string
-		Members_id_add( ): $mol_button_major
-		member_pick_rows( ): readonly(any)[]
-		Members_join_head( ): $mol_paragraph
-		Members_join_hint( ): $mol_paragraph
-		join_link( ): string
-		Members_join_text( ): $mol_paragraph
-		Members_join_copy( ): $mol_button_copy
-		Members_join_qr( ): $bog_qr
-		Members_join_qr_box( ): $mol_view
-		members_asks_head( ): string
-		members_ask_rows( ): readonly(any)[]
-		ask_lord( id: any): string
-		ask_tint( id: any): number
-		Ask_avatar( id: any): $bog_gram_avatar
-		ask_title( id: any): string
-		Ask_title( id: any): $mol_view
-		ask_status( id: any): string
-		Ask_status( id: any): $mol_view
-		Ask_info( id: any): $mol_view
-		ask_accept( id: any, next?: any ): any
-		Ask_accept_icon( id: any): $mol_icon_check
-		Ask_accept( id: any): $mol_button_minor
-		ask_reject( id: any, next?: any ): any
-		Ask_reject_icon( id: any): $mol_icon_close
-		Ask_reject( id: any): $mol_button_minor
-		member_lord( id: any): string
-		member_tint( id: any): number
-		Member_avatar( id: any): $bog_gram_avatar
-		member_title( id: any): string
-		Member_title( id: any): $mol_view
-		member_status( id: any): string
-		Member_status( id: any): $mol_view
-		Member_info( id: any): $mol_view
-		member_rule_click( id: any, next?: any ): any
-		Member_rule_icon( id: any): $mol_icon_shield_crown
-		Member_rule( id: any): $mol_button_minor
-		member_drop_hint( id: any): string
-		member_armed( id: any): boolean
-		member_drop_click( id: any, next?: any ): any
-		Member_drop_icon( id: any): $mol_icon_account_remove
-		Member_drop( id: any): $mol_button_minor
-		member_pick( id: any, next?: any ): any
-		member_pick_lord( id: any): string
-		member_pick_tint( id: any): number
-		Member_pick_avatar( id: any): $bog_gram_avatar
-		member_pick_title( id: any): string
-		Member_pick_title( id: any): $mol_view
-		member_pick_source( id: any): string
-		Member_pick_source( id: any): $mol_view
-		Member_pick_info( id: any): $mol_view
-		Member_pick_mark( id: any): $mol_icon_account_plus
-		day_title( id: any): string
-		Day_chip( id: any): $mol_view
-		message_out( id: any): boolean
-		message_menu_is( id: any): boolean
-		message_press( id: any, next?: any ): any
-		message_release( id: any, next?: any ): any
-		message_context( id: any, next?: any ): any
-		message_author_tint( id: any): number
-		message_author( id: any): string
-		Message_author( id: any): $mol_view
-		message_quote_jump( id: any, next?: any ): any
-		message_quote_author( id: any): string
-		Message_quote_author( id: any): $mol_view
-		message_quote_text( id: any): string
-		Message_quote_text( id: any): $mol_view
-		Message_quote( id: any): $mol_button_minor
-		message_shot_uri( id: any): string
-		message_shot_width( id: any): string
-		message_shot_ratio( id: any): string
-		message_zoom( id: any, next?: any ): any
-		Message_shot( id: any): $bog_gram_photo
-		message_sound_uri( id: any): string
-		message_sound_span( id: any): number
-		message_sound_playing( id: any): boolean
-		message_sound_toggle( id: any, next?: any ): any
-		message_sound_ended( id: any, next?: any ): any
-		Message_sound( id: any): $bog_gram_sound
-		message_body( id: any): string
-		Message_body( id: any): $mol_paragraph
-		message_time( id: any): string
-		Message_time( id: any): $mol_view
-		Message_edited( id: any): $mol_view
-		message_checks( id: any): string
-		Message_checks( id: any): $mol_view
-		Message_meta( id: any): $mol_view
-		message_edit( id: any, next?: any ): any
-		Message_edit_icon( id: any): $mol_icon_pencil
-		Message_edit( id: any): $mol_button_minor
-		message_delete( id: any, next?: any ): any
-		Message_delete_icon( id: any): $mol_icon_delete
-		Message_delete( id: any): $mol_button_minor
-		Message_actions( id: any): $mol_view
-		plugins( ): readonly(any)[]
-		Placeholder( ): ReturnType< $bog_gram['Intro'] >
-		pages( ): readonly(any)[]
-		Dialogs_empty( ): $mol_view
-		Users_empty( ): $mol_view
-		Registry_empty( ): $mol_paragraph
-		Registry_list( ): $mol_list
-		Registry_note( ): $mol_paragraph
-		Registry_share( ): $mol_view
-		Registry_form( ): $mol_view
-		Registry_row( id: any): $mol_button_minor
-		Key_toggle( ): $mol_button_minor
-		Key_warning( ): $mol_paragraph
-		Key_row( ): $mol_view
-		Key_qr_box( ): $mol_view
-		Key_save( ): $mol_button_minor
-		Key_import_form( ): $mol_view
-		Dialog_row( id: any): $mol_button_minor
-		Dialog_archive_icon( id: any): $mol_icon_archive_arrow_down
-		Dialog_unarchive_icon( id: any): $mol_icon_archive_arrow_up
-		Saved_row( ): $mol_button_minor
-		Archive_row( ): $mol_button_minor
-		Requests_row( ): $mol_button_minor
-		Request_accept( id: any): $mol_button_minor
-		Request_reject( id: any): $mol_button_minor
-		User_row( id: any): $mol_button_minor
-		Group_pick_row( id: any): $mol_button_minor
-		Group_chosen_row( id: any): $mol_view
-		Members_add_title( ): $mol_paragraph
-		Members_history( ): $mol_view
-		Members_error( ): $mol_paragraph
-		Members_id_form( ): $mol_view
-		Members_pick_list( ): $mol_list
-		Members_admin_note( ): $mol_paragraph
-		Members_join( ): $mol_view
-		Members_asks_head( ): $mol_paragraph
-		Members_asks_list( ): $mol_list
-		Ask_row( id: any): $mol_view
-		Member_row( id: any): $mol_view
-		Member_pick_row( id: any): $mol_button_minor
-		Day_row( id: any): $mol_view
-		Message_row( id: any): $mol_view
+	export class $mol_icon_arrow_left extends $mol_icon {
+		path( ): string
 	}
 	
-	type $mol_string_button__hint_bog_gram_field_1 = $mol_type_enforce<
-		ReturnType< $bog_gram_field['hint'] >
+}
+
+//# sourceMappingURL=left.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_reply extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=reply.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_paperclip extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=paperclip.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_send extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=send.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_microphone extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=microphone.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_image extends $mol_view {
+		uri( ): string
+		title( ): string
+		loading( ): string
+		decoding( ): string
+		cors( ): any
+		natural_width( ): number
+		natural_height( ): number
+		load( next?: any ): any
+		dom_name( ): string
+		attr( ): Record<string, any> & ReturnType< $mol_view['attr'] >
+		event( ): Record<string, any>
+		minimal_width( ): number
+		minimal_height( ): number
+	}
+	
+}
+
+//# sourceMappingURL=image.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_image extends $.$mol_image {
+        natural_width(next?: null): number;
+        natural_height(next?: null): number;
+        load(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_hotkey__key_bog_gram_zoom_1 = $mol_type_enforce<
+		({ 
+			escape( next?: ReturnType< $bog_gram_zoom['close'] > ): ReturnType< $bog_gram_zoom['close'] >,
+		}) 
 		,
-		ReturnType< $mol_string_button['hint'] >
+		ReturnType< $mol_hotkey['key'] >
 	>
-	type $mol_string_button__value_bog_gram_field_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_field['value'] >
+	type $mol_image__uri_bog_gram_zoom_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_zoom['uri'] >
 		,
-		ReturnType< $mol_string_button['value'] >
+		ReturnType< $mol_image['uri'] >
 	>
-	export class $bog_gram_field extends $mol_view {
-		value( next?: string ): string
-		Field( ): $mol_string_button
-		Edit_icon( ): $mol_icon_pencil
-		hint( ): string
+	export class $bog_gram_zoom extends $mol_view {
+		tab_index( ): number
+		Hotkey( ): $mol_hotkey
+		Shot( ): $mol_image
+		uri( ): string
+		close( next?: any ): any
+		attr( ): ({ 
+			'tabindex': ReturnType< $bog_gram_zoom['tab_index'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		event( ): ({ 
+			click( next?: ReturnType< $bog_gram_zoom['close'] > ): ReturnType< $bog_gram_zoom['close'] >,
+		})  & ReturnType< $mol_view['event'] >
+		plugins( ): readonly(any)[]
 		sub( ): readonly(any)[]
 	}
 	
-	type $bog_gram_field__hint_bog_gram_chat_1 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['note_hint'] >
+}
+
+//# sourceMappingURL=zoom.view.tree.d.ts.map
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $bog_gram_attach_native__files_bog_gram_attach_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_attach['files_handled'] >
 		,
-		ReturnType< $bog_gram_field['hint'] >
+		ReturnType< $bog_gram_attach_native['files'] >
 	>
-	type $bog_gram_field__value_bog_gram_chat_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['note'] >
+	type $bog_gram_attach_native__accept_bog_gram_attach_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_attach['accept'] >
 		,
-		ReturnType< $bog_gram_field['value'] >
+		ReturnType< $bog_gram_attach_native['accept'] >
 	>
-	type $mol_view__sub_bog_gram_chat_3 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_gram_attach_native__multiple_bog_gram_attach_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_attach['multiple'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_gram_attach_native['multiple'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_4 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_5 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_6 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_7 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_8 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['members'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_9 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_10 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_11 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['close'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_12 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_list__rows_bog_gram_chat_13 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_view__sub_bog_gram_chat_14 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_15 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_17 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_18 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['reply_cancel'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_19 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_20 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_chat_21 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_22 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_23 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['edit_cancel'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_24 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_25 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_chat_26 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['voice_hint'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_chat_27 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['send_tools'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_28 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_29 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_30 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_zoom__uri_bog_gram_chat_31 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['zoom_uri'] >
-		,
-		ReturnType< $bog_gram_zoom['uri'] >
-	>
-	type $bog_gram_zoom__close_bog_gram_chat_32 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['zoom_close'] >
-		,
-		ReturnType< $bog_gram_zoom['close'] >
-	>
-	type $mol_button_open__hint_bog_gram_chat_33 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_open['hint'] >
-	>
-	type $mol_button_open__accept_bog_gram_chat_34 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_open['accept'] >
-	>
-	type $mol_button_open__multiple_bog_gram_chat_35 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $mol_button_open['multiple'] >
-	>
-	type $mol_button_open__files_bog_gram_chat_36 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['image_files'] >
-		,
-		ReturnType< $mol_button_open['files'] >
-	>
-	type $mol_button_open__Icon_bog_gram_chat_37 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['Attach_icon'] >
-		,
-		ReturnType< $mol_button_open['Icon'] >
-	>
-	type $mol_string__hint_bog_gram_chat_38 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__value_bog_gram_chat_39 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['message_text'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__submit_bog_gram_chat_40 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['message_send'] >
-		,
-		ReturnType< $mol_string['submit'] >
-	>
-	type $mol_button_major__hint_bog_gram_chat_41 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_major['hint'] >
-	>
-	type $mol_button_major__click_bog_gram_chat_42 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['message_send'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $mol_button_major__sub_bog_gram_chat_43 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_major['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_44 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__event_bog_gram_chat_45 = $mol_type_enforce<
-		({ 
-			pointerdown( next?: ReturnType< $bog_gram_chat['voice_press'] > ): ReturnType< $bog_gram_chat['voice_press'] >,
-			pointerup( next?: ReturnType< $bog_gram_chat['voice_release'] > ): ReturnType< $bog_gram_chat['voice_release'] >,
-			pointercancel( next?: ReturnType< $bog_gram_chat['voice_abort'] > ): ReturnType< $bog_gram_chat['voice_abort'] >,
-			contextmenu( next?: ReturnType< $bog_gram_chat['voice_menu'] > ): ReturnType< $bog_gram_chat['voice_menu'] >,
-		})  & ReturnType< $mol_button_minor['event'] >
-		,
-		ReturnType< $mol_button_minor['event'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_46 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_47 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_48 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_49 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['voice_cancel'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_50 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	export class $bog_gram_chat extends $mol_page {
-		image_paste( next?: any ): any
-		image_over( next?: any ): any
-		image_drop( next?: any ): any
-		zoom_close( next?: any ): any
-		note_hint( ): string
-		note( next?: string ): string
-		Note_field( ): $bog_gram_field
-		Title_text( ): $mol_view
-		close( next?: any ): any
-		Back_icon( ): $mol_icon_arrow_left
-		Back( ): $mol_button_minor
-		members( next?: any ): any
-		Members_icon( ): $mol_icon_account_multiple
-		Members( ): $mol_button_minor
-		Close_icon( ): $mol_icon_close
-		Close( ): $mol_button_minor
-		Messages( ): $mol_list
-		Reply_icon( ): $mol_icon_reply
-		Reply_title( ): $mol_view
-		Reply_text( ): $mol_view
-		Reply_info( ): $mol_view
-		reply_cancel( next?: any ): any
-		Reply_cancel_icon( ): $mol_icon_close
-		Reply_cancel( ): $mol_button_minor
-		Reply_banner( ): $mol_view
-		Edit_banner_text( ): $mol_paragraph
-		edit_cancel( next?: any ): any
-		Edit_cancel_icon( ): $mol_icon_close
-		Edit_cancel( ): $mol_button_minor
-		Edit_banner( ): $mol_view
-		Voice_note( ): $mol_paragraph
-		send_tools( ): readonly(any)[]
-		Send_row( ): $mol_view
-		Foot( ): $mol_view
-		image_files( next?: any ): any
-		Attach_icon( ): $mol_icon_paperclip
-		message_text( next?: string ): string
-		message_send( next?: any ): any
-		Send_icon( ): $mol_icon_send
-		voice_press( next?: any ): any
-		voice_release( next?: any ): any
-		voice_abort( next?: any ): any
-		voice_menu( next?: any ): any
-		Voice_icon( ): $mol_icon_microphone
-		Record_dot( ): $mol_view
-		Record_time( ): $mol_view
-		voice_cancel( next?: any ): any
-		Voice_cancel_icon( ): $mol_icon_close
-		Voice_cancel_text( ): $mol_view
-		rows( ): readonly($mol_view)[]
-		focus_key( ): string
-		focus_row( ): any
-		edit_mode( ): boolean
-		reply_mode( ): boolean
-		reply_title( ): string
-		reply_text( ): string
-		note_editable( ): boolean
-		members_shown( ): boolean
-		zoom_uri( ): string
-		voice_on( ): boolean
-		voice_ready( ): boolean
-		voice_clock( ): string
-		voice_hint( ): string
+	export class $bog_gram_attach extends $mol_button_open {
+		files( next?: readonly(File)[] ): readonly(File)[]
+		files_handled( next?: ReturnType< $bog_gram_attach['files'] > ): ReturnType< $bog_gram_attach['files'] >
+		accept( ): string
+		multiple( ): boolean
+		Native( ): $bog_gram_attach_native
+	}
+	
+	export class $bog_gram_attach_native extends $mol_button_open_native {
+	}
+	
+}
+
+//# sourceMappingURL=attach.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_attach_native extends $.$bog_gram_attach_native {
+        picked(): null;
+    }
+}
+
+declare namespace $ {
+
+	export class $bog_gram_hold extends $mol_button_minor {
+		down( next?: any ): any
+		menu( next?: any ): any
+		press( next?: any ): any
+		release( next?: any ): any
+		abort( next?: any ): any
 		event( ): ({ 
-			paste( next?: ReturnType< $bog_gram_chat['image_paste'] > ): ReturnType< $bog_gram_chat['image_paste'] >,
-			dragover( next?: ReturnType< $bog_gram_chat['image_over'] > ): ReturnType< $bog_gram_chat['image_over'] >,
-			drop( next?: ReturnType< $bog_gram_chat['image_drop'] > ): ReturnType< $bog_gram_chat['image_drop'] >,
-		})  & ReturnType< $mol_page['event'] >
-		Zoom( ): $bog_gram_zoom
-		title_content( ): readonly(any)[]
-		head( ): readonly(any)[]
-		tools( ): readonly(any)[]
-		body( ): readonly(any)[]
-		foot( ): readonly(any)[]
-		Attach( ): $mol_button_open
-		Message_field( ): $mol_string
-		Send( ): $mol_button_major
-		Voice( ): $mol_button_minor
-		Record_state( ): $mol_view
-		Voice_cancel( ): $mol_button_minor
+			pointerdown( next?: ReturnType< $bog_gram_hold['down'] > ): ReturnType< $bog_gram_hold['down'] >,
+			pointerup( next?: ReturnType< $bog_gram_hold['release'] > ): ReturnType< $bog_gram_hold['release'] >,
+			pointercancel( next?: ReturnType< $bog_gram_hold['abort'] > ): ReturnType< $bog_gram_hold['abort'] >,
+			contextmenu( next?: ReturnType< $bog_gram_hold['menu'] > ): ReturnType< $bog_gram_hold['menu'] >,
+		})  & ReturnType< $mol_button_minor['event'] >
 	}
 	
-	export class $bog_gram_avatar extends $mol_avatar {
-		id( ): string
-		tint( ): number
-		attr( ): ({ 
-			'bog_gram_tint': ReturnType< $bog_gram_avatar['tint'] >,
-		})  & ReturnType< $mol_avatar['attr'] >
-	}
-	
+}
+
+//# sourceMappingURL=hold.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_hold extends $.$bog_gram_hold {
+        down(next?: PointerEvent): null;
+        menu(next?: Event): null;
+    }
+}
+
+declare namespace $ {
+
 	type $mol_image__uri_bog_gram_photo_1 = $mol_type_enforce<
 		ReturnType< $bog_gram_photo['uri'] >
 		,
@@ -55746,6 +55353,91 @@ declare namespace $ {
 		sub( ): readonly(any)[]
 	}
 	
+}
+
+//# sourceMappingURL=photo.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_photo extends $.$bog_gram_photo {
+        Image(): $.$mol_image;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $bog_gram_sound_node extends $mol_view {
+		retime( next?: any ): any
+		ended( next?: any ): any
+		dom_name( ): string
+		uri( ): string
+		attr( ): ({ 
+			'src': ReturnType< $bog_gram_sound_node['uri'] >,
+			'preload': string,
+		})  & ReturnType< $mol_view['attr'] >
+		event( ): ({ 
+			timeupdate( next?: ReturnType< $bog_gram_sound_node['retime'] > ): ReturnType< $bog_gram_sound_node['retime'] >,
+			ended( next?: ReturnType< $bog_gram_sound_node['ended'] > ): ReturnType< $bog_gram_sound_node['ended'] >,
+		})  & ReturnType< $mol_view['event'] >
+	}
+	
+}
+
+//# sourceMappingURL=node.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_sound_node extends $.$bog_gram_sound_node {
+        dom_node(next?: Element): HTMLAudioElement;
+        time(): number;
+        start(): void;
+        stop(): void;
+        destructor(): void;
+    }
+}
+
+declare namespace $ {
+
+	export class $mol_icon_pause extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=pause.view.tree.d.ts.map
+declare namespace $ {
+    type $bog_gram_voice_take = {
+        bytes: Uint8Array<ArrayBuffer>;
+        type: string;
+        span: number;
+    };
+    class $bog_gram_voice extends $mol_object {
+        static stamp(span: number): string;
+        static type(): string;
+        static supported(): boolean;
+        filled: () => void;
+        done: (take: $bog_gram_voice_take | null) => void;
+        result: Promise<$bog_gram_voice_take | null>;
+        opening: Promise<boolean> | null;
+        stream: MediaStream | null;
+        recorder: MediaRecorder | null;
+        asked: boolean;
+        moment: number;
+        limit: ReturnType<typeof setTimeout> | null;
+        open(): Promise<boolean>;
+        open_run(): Promise<boolean>;
+        pack(chunks: readonly Blob[], type: string, span: number): Promise<void>;
+        hush(stream: MediaStream | null): void;
+        stop(): void;
+        drop(): void;
+        take(): Promise<$bog_gram_voice_take | null>;
+    }
+}
+
+declare namespace $ {
+
 	type $mol_button_minor__hint_bog_gram_sound_1 = $mol_type_enforce<
 		string
 		,
@@ -55789,7 +55481,6 @@ declare namespace $ {
 		ReturnType< $bog_gram_sound_node['ended'] >
 	>
 	export class $bog_gram_sound extends $mol_view {
-		toggle( next?: any ): any
 		toggle_icons( ): readonly(any)[]
 		Toggle( ): $mol_button_minor
 		fill_width( ): string
@@ -55797,697 +55488,868 @@ declare namespace $ {
 		Track( ): $mol_view
 		stamp( ): string
 		Stamp( ): $mol_view
-		ended( next?: any ): any
 		Node( ): $bog_gram_sound_node
 		uri( ): string
 		span( ): number
 		playing( ): boolean
+		toggle( next?: any ): any
+		ended( next?: any ): any
 		sub( ): readonly(any)[]
 		Play_icon( ): $mol_icon_play
 		Pause_icon( ): $mol_icon_pause
 	}
 	
-	export class $bog_gram_sound_node extends $mol_view {
-		retime( next?: any ): any
-		ended( next?: any ): any
-		dom_name( ): string
-		uri( ): string
-		attr( ): ({ 
-			'src': ReturnType< $bog_gram_sound_node['uri'] >,
-			'preload': string,
-		})  & ReturnType< $mol_view['attr'] >
-		event( ): ({ 
-			timeupdate( next?: ReturnType< $bog_gram_sound_node['retime'] > ): ReturnType< $bog_gram_sound_node['retime'] >,
-			ended( next?: ReturnType< $bog_gram_sound_node['ended'] > ): ReturnType< $bog_gram_sound_node['ended'] >,
-		})  & ReturnType< $mol_view['event'] >
-	}
-	
-	type $mol_hotkey__key_bog_gram_zoom_1 = $mol_type_enforce<
+}
+
+//# sourceMappingURL=sound.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_sound extends $.$bog_gram_sound {
+        Node(): $.$bog_gram_sound_node;
+        node(): $.$$.$bog_gram_sound_node | null;
+        moment(): number;
+        stamp(): string;
+        fill_width(): string;
+        toggle_icons(): ($mol_icon_pause | $mol_icon_play)[];
+        start(): void;
+        stop(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_view__attr_bog_gram_bubble_1 = $mol_type_enforce<
 		({ 
-			escape( next?: ReturnType< $bog_gram_zoom['close'] > ): ReturnType< $bog_gram_zoom['close'] >,
-		}) 
+			'bog_gram_tint': ReturnType< $bog_gram_bubble['author_tint'] >,
+		})  & ReturnType< $mol_view['attr'] >
 		,
-		ReturnType< $mol_hotkey['key'] >
+		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_image__uri_bog_gram_zoom_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_zoom['uri'] >
+	type $mol_view__sub_bog_gram_bubble_2 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $mol_image['uri'] >
+		ReturnType< $mol_view['sub'] >
 	>
-	export class $bog_gram_zoom extends $mol_view {
-		tab_index( ): number
-		close( next?: any ): any
-		Hotkey( ): $mol_hotkey
-		Shot( ): $mol_image
-		uri( ): string
+	type $mol_view__sub_bog_gram_bubble_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_bubble_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['quote_jump'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_bubble_7 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_photo__hint_bog_gram_bubble_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_photo['hint'] >
+	>
+	type $bog_gram_photo__uri_bog_gram_bubble_9 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['shot_uri'] >
+		,
+		ReturnType< $bog_gram_photo['uri'] >
+	>
+	type $bog_gram_photo__box_width_bog_gram_bubble_10 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['shot_width'] >
+		,
+		ReturnType< $bog_gram_photo['box_width'] >
+	>
+	type $bog_gram_photo__box_ratio_bog_gram_bubble_11 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['shot_ratio'] >
+		,
+		ReturnType< $bog_gram_photo['box_ratio'] >
+	>
+	type $bog_gram_photo__click_bog_gram_bubble_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['zoom'] >
+		,
+		ReturnType< $bog_gram_photo['click'] >
+	>
+	type $bog_gram_sound__uri_bog_gram_bubble_13 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['sound_uri'] >
+		,
+		ReturnType< $bog_gram_sound['uri'] >
+	>
+	type $bog_gram_sound__span_bog_gram_bubble_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['sound_span'] >
+		,
+		ReturnType< $bog_gram_sound['span'] >
+	>
+	type $bog_gram_sound__playing_bog_gram_bubble_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['sound_playing'] >
+		,
+		ReturnType< $bog_gram_sound['playing'] >
+	>
+	type $bog_gram_sound__toggle_bog_gram_bubble_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['sound_toggle'] >
+		,
+		ReturnType< $bog_gram_sound['toggle'] >
+	>
+	type $bog_gram_sound__ended_bog_gram_bubble_17 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['sound_ended'] >
+		,
+		ReturnType< $bog_gram_sound['ended'] >
+	>
+	type $mol_paragraph__title_bog_gram_bubble_18 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['body'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_19 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_21 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_bubble_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['edit'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_bubble_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_26 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_bubble_27 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['delete'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_bubble_28 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__event_bog_gram_bubble_29 = $mol_type_enforce<
+		({ 
+			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+		})  & ReturnType< $mol_view['event'] >
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_30 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $bog_gram_bubble extends $mol_view {
+		mouse_down( next?: any ): any
+		Author( ): $mol_view
+		Quote_author( ): $mol_view
+		Quote_text( ): $mol_view
+		Quote( ): $mol_button_minor
+		Shot( ): $bog_gram_photo
+		Sound( ): $bog_gram_sound
+		Body( ): $mol_paragraph
+		Time( ): $mol_view
+		Edited( ): $mol_view
+		Checks( ): $mol_view
+		Meta( ): $mol_view
+		actions_touch( next?: any ): any
+		Edit_icon( ): $mol_icon_pencil
+		Edit( ): $mol_button_minor
+		Delete_icon( ): $mol_icon_delete
+		Delete( ): $mol_button_minor
+		Actions( ): $mol_view
+		out( ): boolean
+		menu( ): boolean
+		author( ): string
+		author_tint( ): number
+		quote_shown( ): boolean
+		quote_author( ): string
+		quote_text( ): string
+		quote_jump( next?: any ): any
+		shot( ): boolean
+		shot_uri( ): string
+		shot_width( ): string
+		shot_ratio( ): string
+		zoom( next?: any ): any
+		sound( ): boolean
+		sound_uri( ): string
+		sound_span( ): number
+		sound_playing( ): boolean
+		sound_toggle( next?: any ): any
+		sound_ended( next?: any ): any
+		body( ): string
+		time( ): string
+		edited( ): boolean
+		checks( ): string
+		edit( next?: any ): any
+		delete( next?: any ): any
+		press( next?: any ): any
+		release( next?: any ): any
+		context( next?: any ): any
 		attr( ): ({ 
-			'tabindex': ReturnType< $bog_gram_zoom['tab_index'] >,
+			'bog_gram_bubble_out': ReturnType< $bog_gram_bubble['out'] >,
+			'bog_gram_bubble_menu': ReturnType< $bog_gram_bubble['menu'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		event( ): ({ 
-			click( next?: ReturnType< $bog_gram_zoom['close'] > ): ReturnType< $bog_gram_zoom['close'] >,
+			pointerdown( next?: ReturnType< $bog_gram_bubble['press'] > ): ReturnType< $bog_gram_bubble['press'] >,
+			pointerup( next?: ReturnType< $bog_gram_bubble['release'] > ): ReturnType< $bog_gram_bubble['release'] >,
+			pointercancel( next?: ReturnType< $bog_gram_bubble['release'] > ): ReturnType< $bog_gram_bubble['release'] >,
+			contextmenu( next?: ReturnType< $bog_gram_bubble['context'] > ): ReturnType< $bog_gram_bubble['context'] >,
+			mousedown( next?: ReturnType< $bog_gram_bubble['mouse_down'] > ): ReturnType< $bog_gram_bubble['mouse_down'] >,
 		})  & ReturnType< $mol_view['event'] >
-		plugins( ): readonly(any)[]
 		sub( ): readonly(any)[]
 	}
 	
 }
 
-//# sourceMappingURL=gram.view.tree.d.ts.map
+//# sourceMappingURL=bubble.view.tree.d.ts.map
 declare namespace $.$$ {
-    class $bog_gram extends $.$bog_gram {
-        user_store(): $bog_gram_user;
-        my_lord(): string;
-        /** Публичная часть своего ключа строкой. Приватная сюда не попадает:
-         * это ровно то, что можно класть в открытый реестр — по нему мне и
-         * выдадут право читать шифрованный ленд диалога. */
-        my_pass_str(): string;
-        user_name(next?: string): string;
-        inbox_land(): $giper_baza_land;
-        inbox_open(): boolean;
-        inbox_publish(): string;
-        lobbies_old(): string[];
-        inbox_stores(): $bog_gram_inbox[];
-        inbox_items(pick: (store: $bog_gram_inbox) => $giper_baza_list_str | null): string[];
-        inbox_cut(pick: (store: $bog_gram_inbox, auto?: 'auto') => $giper_baza_list_str | null, entry: string): null;
-        dialogs_land_make(): $giper_baza_land;
-        dialogs_land(): $giper_baza_land;
-        monitor_land_make(): $giper_baza_land;
-        monitor_land(): $giper_baza_land;
-        devices_land_make(): $giper_baza_land;
-        devices_land(): $giper_baza_land;
-        dialogs_store(): $bog_gram_dialogs;
-        inbox_store(): $bog_gram_inbox;
-        monitor_store(): $bog_gram_monitor;
-        devices_store(): $bog_gram_devices;
-        device_ready(): boolean;
-        peer_store(lord: string): $bog_gram_user;
-        /** Имя человек хранит в своём ленде, и тот приезжает не сразу — а с
-         * ключом из реестра диалог заводится и вовсе без сети. Ждать имени
-         * поэтому нельзя: пока его нет, показываем сокращённый идентификатор,
-         * подписка на приход ленда сохраняется, и имя проявится само. */
-        peer_name(lord: string): string;
-        /** Как я назвал человека для себя. Подписи лежат в том же приватном
-         * ленде, что и список диалогов, поэтому собеседник их не видит и
-         * своего имени в профиле из-за них не теряет. */
-        peer_note(lord: string): string;
-        /** Пустая подпись означает «показывать настоящее имя»: ради неё запись
-         * в словаре не заводим, а уже заведённую просто очищаем. */
-        peer_note_set(lord: string, next?: string): null;
-        /** Порядок один на всё приложение: моя подпись важнее имени из чужого
-         * профиля, а безымянного и неподписанного показываем сокращённым
-         * идентификатором. Аватар при этом остаётся привязан к лорду —
-         * от переименования человек не должен менять лицо. */
-        label_pick(lord: string, note: string, name: string): string;
-        peer_label(lord: string): string;
-        /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
-        avatar_tint(lord: string): number;
-        /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
-         * весь список, поэтому пока рисуем пустой кружок — подписка
-         * сохраняется, узор и цвет проявятся сами.
-         *
-         * У группы собеседника нет, зато есть свой ленд: по его ссылке узор и
-         * рисуем — он у группы один на всех участников. */
-        dialog_avatar_id(id: string): string;
-        dialog_tint(id: string): number;
-        user_tint(lord: string): number;
-        /** Заметки для себя лежат в приватном шифрованном ленде, как и список
-         * диалогов: ссылка на него хранится там же, а не в открытом профиле.
-         * Захват небыстрый, и клик по строке может позвать сюда второй раз —
-         * поэтому уже записанная ссылка всегда важнее только что захваченной.
-         *
-         * Заводим ленд только отсюда, то есть по явному клику: список диалогов
-         * приезжает не мгновенно, и на свежем устройстве пустая ссылка какое-то
-         * время выглядит как «ленда ещё нет». Захват на старте приложения
-         * попадал в это окно всегда. */
-        saved_land_make(): $giper_baza_land;
-        saved_land(): $giper_baza_land;
-        /** Ссылка на уже заведённый ленд: строка избранного рисуется с первого
-         * кадра, а захват ленда идёт своим чередом — ждать его список не должен. */
-        saved_id(): string;
-        /** Все ленды заметок, какие про этот аккаунт известны, и указанный
-         * последним. Их больше одного, если избранное успело завестись на двух
-         * устройствах сразу: заметки при этом разъезжаются по разным лендам, и
-         * терять один из них только потому, что ссылка указывает на другой,
-         * незачем — читаем изо всех, а пишем всегда в указанный. */
-        saved_links(): string[];
-        /** Единственная развилка на всё приложение: у избранного нет собеседника,
-         * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
-         * в превью ему не полагается.
-         *
-         * Заброшенный ленд заметок остаётся избранным наравне с указанным:
-         * иначе открытая с него страница схлопывалась бы сама, а отправка с
-         * неё молча ничего не делала. */
-        saved_is(id: string): boolean;
-        saved_title(): string;
-        /** На новом устройстве ленд избранного приезжает не мгновенно: пока он
-         * в пути, строка стоит с пустым превью, а не вешает весь список. */
-        saved_preview(): string;
-        saved_time(): string;
-        saved_current_is(): boolean;
-        /** Клик по строке заводит ленд, если его ещё нет: действие живёт в фибре,
-         * поэтому захват с его перебором степеней тут уместен. */
-        saved_open(next?: any): null;
-        dialog_ids(): string[];
-        /** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
-         * иначе собеседник вернул бы диалог обратно на следующем же синке. */
-        hidden_ids(): string[];
-        dialog_store(id: string): $bog_gram_dialog;
-        dialog_peer(id: string): string;
-        /** Все участники диалога, включая меня. Ленд может быть ещё не
-         * засинкан — тогда чтение приостанавливается, и это правильно: по
-         * этому списку выдаются права, и неполным он быть не должен. Места,
-         * где ждать нечем, прикрываются сами. */
-        dialog_lords(id: string): string[];
-        /** Все, кроме меня: кому выдавать права и чьи прочтения считать. */
-        dialog_mates(id: string): string[];
-        /** Ключи участников одним списком. Неполный список — это отказ: писать
-         * в ленд, который часть группы никогда не откроет, незачем. Ключи
-         * умеют ждать, поэтому зовётся только из фибры. */
-        passes_of(lords: readonly string[]): $giper_baza_auth_pass[];
-        /** Безымянного собеседника показываем началом и концом идентификатора:
-         * у одного только начала первые символы у разных людей совпадают глазом. */
-        lord_short(lord: string): string;
-        /** Название группы. Пустое — группу не назвали, и подписываться она
-         * будет своими участниками. Ленд может быть ещё не засинкан: заголовок
-         * это косметика, ждать её незачем — подписка сохраняется, название
-         * проявится само. */
-        group_title(id: string): string;
-        /** Группа отличается от переписки вдвоём числом участников: третий
-         * человек делает её группой. Названная — тоже группа, даже если в ней
-         * пока двое: название заводят осознанно, и от того, что кто-то вышел,
-         * группа обратно в личную переписку превращаться не должна. */
-        group_is(id: string): boolean;
-        /** Группа без названия подписывается своими участниками: список имён
-         * говорит больше, чем «5 участников». */
-        group_name_auto(id: string): string;
-        admin_lords(id: string): string[];
-        /** Создатель группы — король её ленда, и админом остаётся всегда:
-         * отдельной записи для него не нужно. */
-        admin_is(id: string, lord: string): boolean;
-        admin_me(id: string): boolean;
-        /** Назначает админов создатель: раздавать право раздавать права — его
-         * решение, а не решение назначенного. */
-        owner_me(id: string): boolean;
-        /** Ранг участника в лендах группы. Чтобы админ мог выдать право новому
-         * человеку, ему самому нужно полное управление лендом — а вместе с ним
-         * он получает и возможность менять чужие права: разделить эти
-         * способности в Базе нечем. */
-        member_rank(id: string, lord: string): number & {
-            $giper_baza_rank: number;
+    class $bog_gram_bubble extends $.$bog_gram_bubble {
+        Author(): $mol_view;
+        Quote(): $mol_button_minor;
+        Shot(): $.$bog_gram_photo;
+        Sound(): $.$bog_gram_sound;
+        Body(): $.$mol_paragraph;
+        Edited(): $mol_view;
+        Checks(): $mol_view;
+        Actions(): $mol_view;
+        sound_start(): void;
+        sound_stop(): void;
+        actions_touch(next?: Event): null;
+        mouse_down(next?: MouseEvent): null;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    type $bog_gram_shrink_shot = {
+        bytes: Uint8Array<ArrayBuffer>;
+        type: string;
+        width: number;
+        height: number;
+    };
+    class $bog_gram_shrink extends $mol_object {
+        static fit(width: number, height: number, limit: number): {
+            width: number;
+            height: number;
         };
-        dialog_title(id: string): string;
-        /** Момент последней активности — по нему диалоги сортируются в списке.
-         * Ленды могут быть ещё не засинканы: suspend любого из них не должен
-         * вешать весь список, поэтому недоступное заменяем нулём — подписка
-         * на приход данных при этом сохраняется, список пересортируется сам. */
-        dialog_moment(id: string): number;
-        /** Порядок один и тот же и в основном списке, и в архиве: свежие сверху. */
-        fresh_first(ids: readonly string[]): string[];
-        /** Создатель диалога — лорд его ленда: ленд заводит тот, кто начал
-         * переписку. Ссылка приезжает из инбокса, открытого на запись всем,
-         * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
-         * весь список из-за одной такой строки падать не должен. */
-        dialog_owner(id: string): string;
-        /** Моя ли это переписка. У заведённых до появления записи о создателе
-         * спрашивать некого, поэтому смотрим на права: полное управление лендом
-         * получает тот, кто его захватил, а в старых диалогах админов не было. */
-        dialog_own(id: string): boolean;
-        /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
-         * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
-         * подождёт снаружи списка. Подписка на приход данных сохраняется, так
-         * что строка появится сама вместе с первым сообщением. */
-        dialog_alive(id: string): boolean;
-        /** Собеседники, с которыми я согласился переписываться. Список свой,
-         * приватный: собеседник не знает ни что попал в запросы, ни что вышел
-         * из них. */
-        accepted_lords(): string[];
-        /** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
-         * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
-         * его приход сохраняется, и запрос уедет в общий список сам. */
-        peer_known(lord: string): boolean;
-        /** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
-         * ним не должен оказаться в запросах, даже если ленд под него завёл он.
-         * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
-         * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
-         * Запись идемпотентна — обработчик события перезапускается на каждом
-         * ожидании, и повторный заход не должен ничего дописывать. */
-        peer_accept(lord: string): null;
-        /** Куда попадает диалог в списке. Свой показываем всегда — пустым его
-         * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
-         * человек мог открыть диалог со мной и передумать, а строка от него
-         * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
-         * уходит в запросы: знакомство предлагают, а не назначают. */
-        dialog_sort(own: boolean, alive: boolean, known: boolean): 'plain' | 'request' | 'skip';
-        /** То же по ссылке на диалог. Заархивированный не разбираем: он уже
-         * прошёл через мои руки, и второй раз спрашивать про него незачем.
-         * Свой ответ в диалоге — то же согласие, только данное молча: иначе
-         * давняя переписка с человеком не из реестра уехала бы в запросы. */
-        dialog_kind(id: string): 'plain' | 'request' | 'skip';
-        /** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
-         * я нигде не встречал. Убранные из списка сюда не попадают — отказ
-         * такое же решение, как и согласие. */
-        request_ids(): string[];
-        /** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
-         * последними и только пока им есть что показать; развёрнутый раздел
-         * досыпает строки туда же. */
-        dialog_rows(): $mol_view[];
-        dialog_current(next?: string): string;
-        dialog_current_is(id: string): boolean;
-        dialog_select(id: string, next?: any): null;
-        /** Отметка прочтения после перезагрузки ещё едет, и пересчёт фокуса
-         * ждёт её. Тап по диалогу ждать не должен: решение досчитается само,
-         * когда отметка приедет. */
-        chat_focus_reset(id: string): void;
-        /** С мышью и клавиатурой открытый диалог сразу принимает текст. На
-         * сенсорном экране фокус вытащил бы клавиатуру на пол-экрана поверх
-         * переписки, которую человек открыл почитать. */
-        field_focus(): void;
-        /** Книга доводит страницу до края сама только когда та появляется
-         * впервые. При переходе между диалогами страница чата уже открыта и
-         * лишь меняет содержимое, поэтому на узком экране пользователь
-         * оставался на списке и дальше листал руками. Досылаем прокрутку
-         * после отрисовки, когда размеры страницы уже известны. */
-        chat_bring(): void;
-        /** Новую страницу книга показывает сама. Ехать к ней отсюда можно
-         * только когда она уже стоит в книге: до отрисовки смещение у неё
-         * нулевое, и такая прокрутка сбивает прокрутку самой книги. */
-        page_bring(target: () => $mol_view): void;
-        dialog_close(next?: any): null;
-        /** Взвод корзины живёт на своей строке: первый клик красит её,
-         * второй удаляет — без модалок и системных алертов. */
-        delete_armed(id: string, next?: boolean): boolean;
-        delete_hint(id: string): "Точно удалить?" | "Удалить диалог";
-        /** Красной ждёт подтверждения максимум одна строка: любой другой клик
-         * по списку снимает взвод, чтобы забытая корзина не сработала потом. */
-        delete_disarm(next?: any): null;
-        /** Корзина лежит внутри кликабельной строки, поэтому первым делом гасим
-         * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
-        dialog_delete_click(id: string, next?: Event): null;
-        /** Диалог живёт в шаренном ленде и у собеседника остаётся:
-         * убираем только свою ссылку и свою слежку за сессиями. */
-        dialog_delete(id: string, next?: any): null;
-        /** Сырые ссылки из хранилища: по ним рисуется состояние кнопки в строке,
-         * даже когда сам диалог из списка уже выпал. */
-        archive_links(): string[];
-        /** В архиве показываем только живые диалоги: удалённый осел в Hidden
-         * и вернуться на экран не должен ни в списке, ни в архиве. */
-        archive_ids(): string[];
-        archive_is(id: string): boolean;
-        archive_opened(next?: boolean): boolean;
-        /** Архив разворачивается прямо в списке: отдельная страница ради
-         * пары спрятанных диалогов — лишний шаг навигации. */
-        archive_toggle(next?: any): null;
-        /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-         * всплытие: иначе тот же клик ещё и открыл бы прячущийся диалог.
-         * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
-        dialog_archive_click(id: string, next?: Event): null;
-        /** Диалог остаётся в своём списке и продолжает принимать сообщения:
-         * архив — это только вторая полка, а не удаление. */
-        dialog_archive(id: string, next?: any): null;
-        dialog_unarchive(id: string, next?: any): null;
-        archive_hint(id: string): "Вернуть из архива" | "В архив";
-        /** Одна и та же кнопка прячет и возвращает, поэтому и стрелка на ней
-         * смотрит в ту сторону, куда уедет диалог. */
-        archive_icons(id: string): ($mol_icon_archive_arrow_up | $mol_icon_archive_arrow_down)[];
-        archive_note(): string;
-        /** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
-         * диалогов. Ленд любого из них может быть ещё в пути — такой не считаем. */
-        archive_unread(): number;
-        archive_unread_label(): string;
-        Archive_unread(): $mol_view;
-        requests_opened(next?: boolean): boolean;
-        /** Запросы разворачиваются прямо в списке, как и архив: отдельная
-         * страница ради пары незнакомцев — лишний шаг навигации. */
-        requests_toggle(next?: any): null;
-        requests_count_label(): string;
-        /** В строке запроса на месте архива и корзины стоят согласие и отказ:
-         * прятать на вторую полку то, о чём решение ещё не принято, незачем.
-         * Сама строка остаётся обычной строкой диалога — по клику она так же
-         * открывает переписку, и прочитать её до решения это нормально. */
-        Dialog_archive(id: string): $mol_button_minor;
-        Dialog_delete(id: string): $mol_button_minor;
-        /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-         * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
-         * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
-        request_accept(id: string, next?: Event): null;
-        /** Отказ — то же самое, что удаление диалога из своего списка: ссылка
-         * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
-         * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
-        request_reject(id: string, next?: Event): null;
-        /** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
-         * Избранного нет в списке диалогов, но открывается оно так же. */
-        dialog_active(): string;
-        chat_title(): string;
-        /** Собеседник открытого диалога: ни у избранного, ни у группы его нет,
-         * поэтому и подписывать там некого. */
-        chat_peer(): string;
-        /** Заголовок чата правится прямо в шапке. В переписке вдвоём это моя
-         * подпись собеседника, в группе — её название, и менять его может
-         * админ. У избранного заголовок фиксированный, поля там нет. */
-        chat_note_editable(): boolean;
-        /** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
-         * стоит то, как человек назвал себя сам, а у неназванной группы —
-         * её участники. */
-        chat_note_hint(): string;
-        chat_note(next?: string): string;
-        /** Название лежит в общем ленде группы, поэтому и видят его все.
-         * Менять его может тот, у кого есть право писать в этот ленд, — админ;
-         * поле у остальных и не показывается, но решение принимается тут. */
-        group_title_set(id: string, next?: string): null;
-        compose_opened(next?: boolean): boolean;
-        settings_opened(next?: boolean): boolean;
-        /** Кнопка в шапке работает как переключатель: повторный клик
-         * закрывает уже открытую страницу, а не оставляет её висеть. */
-        compose_open(next?: any): null;
-        compose_close(next?: any): null;
-        settings_open(next?: any): null;
-        settings_close(next?: any): null;
-        lights(): "light" | "dark" | "system";
-        pages(): ($.$bog_gram_music | $mol_page | $.$bog_gram_chat)[];
-        Placeholder(): $mol_view;
-        music_opened(next?: boolean): boolean;
-        /** Фрейм музыки, убранный из документа, выгружается вместе с плеером,
-         * поэтому после первого открытия страница остаётся в книге и при
-         * закрытии только прячется: музыка играет дальше. */
-        music_alive(next?: boolean): boolean;
-        music_hidden(): boolean;
-        music_open(next?: any): null;
-        music_close(next?: any): null;
-        /** Уже существующий диалог с этим собеседником — повторный старт
-         * не должен плодить новые ленды, а должен открывать старый.
-         * Незасинканный диалог считаем несовпадением, чтобы не виснуть.
-         * Группы тут не в счёт: человек может быть в общей группе и всё равно
-         * не иметь с тобой личной переписки. */
-        dialog_with(peer: string): string;
-        dialog_pending(next?: string): string;
-        dialog_start(next?: any): null;
-        /** Разбор ключа из недоверенного источника с проверкой подлинности:
-         * так приезжают ключи из реестра, из заявки в группу и из ссылки-
-         * приглашения. Реестр открыт на запись всем, ссылку по дороге тоже
-         * могли подменить — и тогда диалог, заведённый для одного человека,
-         * открылся бы совсем другому. Идентификатор это хеш ключа, так что
-         * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
-         * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
-         * исключение, и оно не должно мешать заводить диалог. */
-        pass_verified(lord: string, str: string): $giper_baza_auth_pass | null;
-        /** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
-         * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
-         * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
-         * ленд ждёт сети — но у человека из реестра ключ лежит ещё и там,
-         * поэтому запрос ленда шлём, а доставки не дожидаемся. */
-        peer_pass_of(lord: string): $giper_baza_auth_pass | null;
-        dialog_autocreate(): string;
-        dialog_create(peer: string): string | null;
-        group_opened(next?: boolean): boolean;
-        /** Кнопка в шапке работает переключателем, как и у нового диалога:
-         * повторный клик закрывает уже открытую страницу. */
-        group_open(next?: any): null;
-        group_close(next?: any): null;
-        /** Кого можно позвать: собеседники своих переписок и участники
-         * реестров. Ключи первых уже лежат в их лендах, поэтому такой список
-         * работает и без сети. Один человек — одна строка, даже если он
-         * встречается в обоих источниках: подписью берём переписку, она ближе.
-         * Незасинканный диалог просто не даёт своего собеседника — весь список
-         * из-за одного такого молчать не должен. */
-        group_sources(): Record<string, string>;
-        group_picked(next?: readonly string[]): readonly string[];
-        /** Список ненайденных ключей относился к прежнему составу: любая
-         * правка выбора его снимает, и кнопка возвращается к обычной. */
-        group_pick(lord: string, next?: any): null;
-        group_chosen_drop(lord: string, next?: Event): null;
-        group_id_error(next?: string): string;
-        Group_id_error(): $.$mol_paragraph;
-        /** Идентификатор руками. Заведомую опечатку отсеиваем сразу: группа с
-         * несуществующим участником всё равно бы его не дождалась. */
-        group_id_add(next?: any): null;
-        group_pick_rows(): $mol_button_minor[];
-        group_pick_lord(lord: string): string;
-        group_pick_tint(lord: string): number;
-        group_pick_title(lord: string): string;
-        group_pick_source(lord: string): string;
-        group_picked_is(lord: string): boolean;
-        Group_pick_mark(lord: string): $mol_icon_check;
-        group_chosen_rows(): $mol_view[];
-        group_chosen_head(): string;
-        group_chosen_lord(lord: string): string;
-        group_chosen_tint(lord: string): number;
-        group_chosen_name(lord: string): string;
-        group_lost(next?: readonly string[]): readonly string[];
-        group_lost_note(): string;
-        Group_lost_note(): $.$mol_paragraph;
-        group_make_label(): "Создать без них" | "Создать группу";
-        group_make(next?: any): null;
-        /** Создание группы целиком. Порядок здесь не косметика: всё, что умеет
-         * ждать — ключи участников, захват лендов, выдача прав, — стоит до
-         * первой записи. Фибра перезапускается с начала на каждом ожидании, и
-         * заведённая раньше группа завелась бы заново, оставив в списке пустые
-         * копии. Название и состав приезжают сюда аргументами по той же
-         * причине: очищенные поля следующий заход прочитал бы уже пустыми.
-         *
-         * Ключ может не найтись ни в ленде человека, ни в реестрах: без него
-         * шифрованный ленд ему не открыть, и группа с ним вышла бы молча
-         * кривой. Поэтому первый заход только показывает, кого не удалось
-         * добавить, а создаёт уже второй — когда с потерей согласились. */
-        group_create(title: string, lords: readonly string[], forced: boolean): string;
-        members_opened(next?: boolean): boolean;
-        /** Экран участников есть только у группы: в переписке вдвоём
-         * перечислять некого. */
+        static image_is(file: Blob): boolean;
+        static shrink(file: Blob): $bog_gram_shrink_shot;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_hotkey__key_bog_gram_chat_1 = $mol_type_enforce<
+		({ 
+			escape( next?: ReturnType< $bog_gram_chat['zoom_close'] > ): ReturnType< $bog_gram_chat['zoom_close'] >,
+		}) 
+		,
+		ReturnType< $mol_hotkey['key'] >
+	>
+	type $bog_gram_field__hint_bog_gram_chat_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['note_hint'] >
+		,
+		ReturnType< $bog_gram_field['hint'] >
+	>
+	type $bog_gram_field__value_bog_gram_chat_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['note'] >
+		,
+		ReturnType< $bog_gram_field['value'] >
+	>
+	type $mol_view__sub_bog_gram_chat_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_7 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_9 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['members'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_10 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_11 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_bog_gram_chat_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_view__sub_bog_gram_chat_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_18 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['reply_cancel'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_21 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_chat_22 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['edit_cancel'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_26 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_chat_27 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_hint'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_chat_28 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['send_tools'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_29 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_30 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_31 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_zoom__uri_bog_gram_chat_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['zoom_uri'] >
+		,
+		ReturnType< $bog_gram_zoom['uri'] >
+	>
+	type $bog_gram_zoom__close_bog_gram_chat_33 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['zoom_close'] >
+		,
+		ReturnType< $bog_gram_zoom['close'] >
+	>
+	type $bog_gram_attach__hint_bog_gram_chat_34 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_attach['hint'] >
+	>
+	type $bog_gram_attach__accept_bog_gram_chat_35 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_attach['accept'] >
+	>
+	type $bog_gram_attach__multiple_bog_gram_chat_36 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_attach['multiple'] >
+	>
+	type $bog_gram_attach__files_bog_gram_chat_37 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['image_files'] >
+		,
+		ReturnType< $bog_gram_attach['files'] >
+	>
+	type $bog_gram_attach__Icon_bog_gram_chat_38 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['Attach_icon'] >
+		,
+		ReturnType< $bog_gram_attach['Icon'] >
+	>
+	type $mol_string__hint_bog_gram_chat_39 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_gram_chat_40 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_text'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_gram_chat_41 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_send'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__hint_bog_gram_chat_42 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['hint'] >
+	>
+	type $mol_button_major__click_bog_gram_chat_43 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_send'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_major__sub_bog_gram_chat_44 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_major['sub'] >
+	>
+	type $bog_gram_hold__hint_bog_gram_chat_45 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_gram_hold['hint'] >
+	>
+	type $bog_gram_hold__press_bog_gram_chat_46 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_press'] >
+		,
+		ReturnType< $bog_gram_hold['press'] >
+	>
+	type $bog_gram_hold__release_bog_gram_chat_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_release'] >
+		,
+		ReturnType< $bog_gram_hold['release'] >
+	>
+	type $bog_gram_hold__abort_bog_gram_chat_48 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_cancel'] >
+		,
+		ReturnType< $bog_gram_hold['abort'] >
+	>
+	type $bog_gram_hold__sub_bog_gram_chat_49 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_hold['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_50 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_51 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_52 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_cancel'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_53 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_54 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_bubble__out_bog_gram_chat_55 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_out'] >
+		,
+		ReturnType< $bog_gram_bubble['out'] >
+	>
+	type $bog_gram_bubble__menu_bog_gram_chat_56 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_menu_is'] >
+		,
+		ReturnType< $bog_gram_bubble['menu'] >
+	>
+	type $bog_gram_bubble__author_bog_gram_chat_57 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_author'] >
+		,
+		ReturnType< $bog_gram_bubble['author'] >
+	>
+	type $bog_gram_bubble__author_tint_bog_gram_chat_58 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_author_tint'] >
+		,
+		ReturnType< $bog_gram_bubble['author_tint'] >
+	>
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_59 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_quote_shown'] >
+		,
+		ReturnType< $bog_gram_bubble['quote_shown'] >
+	>
+	type $bog_gram_bubble__quote_author_bog_gram_chat_60 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_quote_author'] >
+		,
+		ReturnType< $bog_gram_bubble['quote_author'] >
+	>
+	type $bog_gram_bubble__quote_text_bog_gram_chat_61 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_quote_text'] >
+		,
+		ReturnType< $bog_gram_bubble['quote_text'] >
+	>
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_62 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_quote_jump'] >
+		,
+		ReturnType< $bog_gram_bubble['quote_jump'] >
+	>
+	type $bog_gram_bubble__shot_bog_gram_chat_63 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_shot'] >
+		,
+		ReturnType< $bog_gram_bubble['shot'] >
+	>
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_64 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_shot_uri'] >
+		,
+		ReturnType< $bog_gram_bubble['shot_uri'] >
+	>
+	type $bog_gram_bubble__shot_width_bog_gram_chat_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_shot_width'] >
+		,
+		ReturnType< $bog_gram_bubble['shot_width'] >
+	>
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_66 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_shot_ratio'] >
+		,
+		ReturnType< $bog_gram_bubble['shot_ratio'] >
+	>
+	type $bog_gram_bubble__zoom_bog_gram_chat_67 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_zoom'] >
+		,
+		ReturnType< $bog_gram_bubble['zoom'] >
+	>
+	type $bog_gram_bubble__sound_bog_gram_chat_68 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound'] >
+		,
+		ReturnType< $bog_gram_bubble['sound'] >
+	>
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_69 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound_uri'] >
+		,
+		ReturnType< $bog_gram_bubble['sound_uri'] >
+	>
+	type $bog_gram_bubble__sound_span_bog_gram_chat_70 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound_span'] >
+		,
+		ReturnType< $bog_gram_bubble['sound_span'] >
+	>
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_71 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound_playing'] >
+		,
+		ReturnType< $bog_gram_bubble['sound_playing'] >
+	>
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_72 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound_toggle'] >
+		,
+		ReturnType< $bog_gram_bubble['sound_toggle'] >
+	>
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_73 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_sound_ended'] >
+		,
+		ReturnType< $bog_gram_bubble['sound_ended'] >
+	>
+	type $bog_gram_bubble__body_bog_gram_chat_74 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_body'] >
+		,
+		ReturnType< $bog_gram_bubble['body'] >
+	>
+	type $bog_gram_bubble__time_bog_gram_chat_75 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_time'] >
+		,
+		ReturnType< $bog_gram_bubble['time'] >
+	>
+	type $bog_gram_bubble__edited_bog_gram_chat_76 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_edited'] >
+		,
+		ReturnType< $bog_gram_bubble['edited'] >
+	>
+	type $bog_gram_bubble__checks_bog_gram_chat_77 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_checks'] >
+		,
+		ReturnType< $bog_gram_bubble['checks'] >
+	>
+	type $bog_gram_bubble__edit_bog_gram_chat_78 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_edit'] >
+		,
+		ReturnType< $bog_gram_bubble['edit'] >
+	>
+	type $bog_gram_bubble__delete_bog_gram_chat_79 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_delete'] >
+		,
+		ReturnType< $bog_gram_bubble['delete'] >
+	>
+	type $bog_gram_bubble__press_bog_gram_chat_80 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_press'] >
+		,
+		ReturnType< $bog_gram_bubble['press'] >
+	>
+	type $bog_gram_bubble__release_bog_gram_chat_81 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_release'] >
+		,
+		ReturnType< $bog_gram_bubble['release'] >
+	>
+	type $bog_gram_bubble__context_bog_gram_chat_82 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_context'] >
+		,
+		ReturnType< $bog_gram_bubble['context'] >
+	>
+	export class $bog_gram_chat extends $bog_gram_page {
+		image_paste( next?: any ): any
+		image_over( next?: any ): any
+		image_drop( next?: any ): any
+		zoom_close( next?: any ): any
+		Hotkey( ): $mol_hotkey
+		Note_field( ): $bog_gram_field
+		Title_text( ): $mol_view
+		Back_icon( ): $mol_icon_arrow_left
+		Back( ): $mol_button_minor
+		Members_icon( ): $mol_icon_account_multiple
+		Members( ): $mol_button_minor
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_button_minor
+		rows( ): readonly($mol_view)[]
+		Messages( ): $mol_list
+		Reply_icon( ): $mol_icon_reply
+		Reply_title( ): $mol_view
+		Reply_text( ): $mol_view
+		Reply_info( ): $mol_view
+		reply_cancel( next?: any ): any
+		Reply_cancel_icon( ): $mol_icon_close
+		Reply_cancel( ): $mol_button_minor
+		Reply_banner( ): $mol_view
+		Edit_banner_text( ): $mol_paragraph
+		edit_cancel( next?: any ): any
+		Edit_cancel_icon( ): $mol_icon_close
+		Edit_cancel( ): $mol_button_minor
+		Edit_banner( ): $mol_view
+		Voice_note( ): $mol_paragraph
+		send_tools( ): readonly(any)[]
+		Send_row( ): $mol_view
+		image_files( next?: any ): any
+		Attach_icon( ): $mol_icon_paperclip
+		message_send( next?: any ): any
+		Send_icon( ): $mol_icon_send
+		voice_press( next?: any ): any
+		voice_release( next?: any ): any
+		voice_cancel( next?: any ): any
+		Voice_icon( ): $mol_icon_microphone
+		Record_dot( ): $mol_view
+		Record_time( ): $mol_view
+		Voice_cancel_icon( ): $mol_icon_close
+		Voice_cancel_text( ): $mol_view
+		day_title( id: any): string
+		Day_chip( id: any): $mol_view
+		message_out( id: any): boolean
+		message_menu_is( id: any): boolean
+		message_author( id: any): string
+		message_author_tint( id: any): number
+		message_quote_shown( id: any): boolean
+		message_quote_author( id: any): string
+		message_quote_text( id: any): string
+		message_quote_jump( id: any, next?: any ): any
+		message_shot( id: any): boolean
+		message_shot_uri( id: any): string
+		message_shot_width( id: any): string
+		message_shot_ratio( id: any): string
+		message_zoom( id: any, next?: any ): any
+		message_sound( id: any): boolean
+		message_sound_uri( id: any): string
+		message_sound_span( id: any): number
+		message_sound_playing( id: any): boolean
+		message_sound_toggle( id: any, next?: any ): any
+		message_sound_ended( id: any, next?: any ): any
+		message_body( id: any): string
+		message_time( id: any): string
+		message_edited( id: any): boolean
+		message_checks( id: any): string
+		message_edit( id: any, next?: any ): any
+		message_delete( id: any, next?: any ): any
+		message_press( id: any, next?: any ): any
+		message_release( id: any, next?: any ): any
+		message_context( id: any, next?: any ): any
+		dialog( ): string
+		my_lord( ): string
+		Talk( ): $bog_gram_talk
+		People( ): $bog_gram_people
+		Alerts( ): $bog_gram_alerts
+		close( next?: any ): any
+		members( next?: any ): any
+		note( next?: string ): string
+		note_hint( ): string
+		note_editable( ): boolean
+		members_shown( ): boolean
+		edit_mode( ): boolean
+		reply_mode( ): boolean
+		reply_title( ): string
+		reply_text( ): string
+		message_text( next?: string ): string
+		zoom_uri( ): string
+		voice_ready( ): boolean
+		voice_on( ): boolean
+		voice_clock( ): string
+		voice_hint( next?: string ): string
+		edit_id( next?: string ): string
+		reply_id( next?: string ): string
+		message_menu( next?: string ): string
+		zoom_id( next?: string ): string
+		voice_start( next?: number ): number
+		voice_playing( next?: string ): string
+		stick_end( next?: boolean ): boolean
+		rows_seen( next?: number ): number
+		event( ): ({ 
+			paste( next?: ReturnType< $bog_gram_chat['image_paste'] > ): ReturnType< $bog_gram_chat['image_paste'] >,
+			dragover( next?: ReturnType< $bog_gram_chat['image_over'] > ): ReturnType< $bog_gram_chat['image_over'] >,
+			drop( next?: ReturnType< $bog_gram_chat['image_drop'] > ): ReturnType< $bog_gram_chat['image_drop'] >,
+		})  & ReturnType< $bog_gram_page['event'] >
+		plugins( ): readonly(any)[]
+		Zoom( ): $bog_gram_zoom
+		title_content( ): readonly(any)[]
+		head( ): readonly(any)[]
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+		foot( ): readonly(any)[]
+		Attach( ): $bog_gram_attach
+		Message_field( ): $mol_string
+		Send( ): $mol_button_major
+		Voice( ): $bog_gram_hold
+		Record_state( ): $mol_view
+		Voice_cancel( ): $mol_button_minor
+		Day_row( id: any): $mol_view
+		Bubble( id: any): $bog_gram_bubble
+	}
+	
+}
+
+//# sourceMappingURL=chat.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_chat extends $.$bog_gram_chat {
+        saved(): boolean;
+        group(): boolean;
+        title(): string;
+        peer(): string;
+        note_editable(): boolean;
+        note_hint(): string;
+        note(next?: string): string;
+        Note_field(): $bog_gram_field;
+        Title_text(): $mol_view;
         members_shown(): boolean;
-        chat_members_shown(): boolean;
-        members_open(next?: any): null;
-        members_close(next?: any): null;
-        member_error(next?: string): string;
-        /** Что значит «убрать», объясняем на месте и только тому, кто может
-         * убирать: остальным эта кнопка и не показывается. Прятать пояснение
-         * в подсказку кнопки нельзя — на телефоне её никто не увидит, а
-         * операция необратимая. */
-        Members_drop_note(): $.$mol_paragraph;
-        /** Ленд группы может быть ещё не засинкан: список участников тогда
-         * пуст, а подписка на его приход сохраняется — строки дорисуются. */
-        member_lords(): string[];
-        member_rows(): $mol_view[];
-        member_lord(lord: string): string;
-        member_tint(lord: string): number;
-        member_title(lord: string): string;
-        /** Создателя отмечаем отдельно от назначенных админов: его права никто
-         * не отберёт — он король ленда. */
-        member_status(lord: string): "" | "создатель" | "админ";
-        Member_status(lord: string): $mol_view;
-        /** Назначает админов создатель, и только тех, кто им ещё не стал. */
-        Member_rule(lord: string): $mol_button_minor;
-        /** Убирает людей админ. Себя убрать нельзя: для этого есть выход из
-         * группы, он не трогает остальных. */
-        Member_drop(lord: string): $mol_button_minor;
-        member_armed(lord: string, next?: boolean): boolean;
-        member_drop_hint(lord: string): "Точно убрать? Прошлые сообщения у него останутся" | "Убрать из группы";
-        member_disarm(next?: any): null;
-        /** Первый клик взводит кнопку, второй убирает человека — как корзина в
-         * списке диалогов. Строка участника не кликабельна, но всплытие гасим
-         * так же: кнопка лежит внутри неё. */
-        member_drop_click(lord: string, next?: Event): null;
-        member_rule_click(lord: string, next?: Event): null;
-        /** Что достанется новому участнику: ключи от всех бакетов группы или
-         * только от свежего. */
-        history_open(next?: boolean): boolean;
-        history_shut(): boolean;
-        members_history_all(next?: any): null;
-        members_history_new(next?: any): null;
-        members_history_note(): "Новый участник получит ключи от всех прошлых сообщений группы" | "Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше";
-        /** Кого ещё можно позвать: те же источники, что и при создании, минус
-         * те, кто в группе уже есть. */
-        member_pick_lords(): string[];
-        member_pick_rows(): $mol_button_minor[];
-        member_pick_lord(lord: string): string;
-        member_pick_tint(lord: string): number;
-        member_pick_title(lord: string): string;
-        member_pick_source(lord: string): string;
-        Member_pick_source(lord: string): $mol_view;
-        member_pick(lord: string, next?: any): null;
-        member_id_add(next?: any): null;
-        /** Звать людей может админ, поэтому у остальных этого блока нет вовсе —
-         * вместе со ссылкой-приглашением и заявками по ней: принять заявку
-         * всё равно некому, а ссылка без приёма бесполезна.
-         *
-         * Выбор истории стоит наверху блока и распространяется на все способы
-         * добавить человека сразу: и на заявку, и на ссылку из реестра, и на
-         * набранный руками идентификатор. */
-        members_add_rows(): ($mol_view | $.$mol_paragraph)[];
-        leave_armed(next?: boolean): boolean;
-        group_leave_label(): "Точно выйти?" | "Выйти из группы";
-        /** Выход — то же самое, что удаление диалога из своего списка: ленд
-         * остаётся у остальных, а свою ссылку и слежку за бакетами мы снимаем.
-         * Из списка участников при этом не вычёркиваемся: сделать это можно
-         * только записью в тот же ленд, а писать в группу, из которой уходишь,
-         * — лишнее. */
-        group_leave_click(next?: any): null;
-        /** Добавление участника. Всё, что умеет ждать — ключ человека, ключи
-         * остальных, захват свежего бакета, выдача прав, — стоит до первой
-         * записи: фибра перезапускается с начала на каждом ожидании.
-         *
-         * С историей: выдаём право на все бакеты, что уже есть, и новичок
-         * читает переписку с самого начала. Без истории: заводим свежий бакет,
-         * открываем его нынешним участникам и новичку, а старые ему не
-         * открываем вовсе — ключей от них у него не появится.
-         *
-         * Готовый ключ приходит сюда из заявки: там он приезжает вместе с
-         * просьбой, уже проверенный пересчётом, и разыскивать человека по
-         * реестрам не нужно. Во всех остальных местах ключ ищется как прежде. */
-        member_join(id: string, lord: string, history: boolean, known?: $giper_baza_auth_pass | null): string;
-        /** Исключение — это свежий бакет без исключённого. Ключ от уже выданных
-         * бакетов отобрать нельзя: прошлые сообщения у него остаются навсегда,
-         * а новых он не увидит — права на свежий бакет ему не выдают.
-         *
-         * Порядок тот же: ключи остающихся и захват бакета умеют ждать и стоят
-         * до первой записи. */
-        member_part(id: string, lord: string): string;
-        /** Назначение админом. Право звать людей — это право управлять лендом,
-         * поэтому выдаётся оно и на ленд группы, и на каждый её бакет: иначе
-         * новый админ не смог бы открыть бакет новому человеку. Вместе с ним
-         * он получает и возможность менять чужие права — разделить эти
-         * способности в Базе нечем, и в интерфейсе об этом сказано прямо. */
-        member_promote(id: string, lord: string): string;
-        /** Все заявки, что долетели в моё лобби. Лобби открыто на запись всем,
-         * поэтому мусор там обычное дело: разбор его отвергает, а на новом
-         * устройстве ленд может быть ещё в пути — подписка на его приход
-         * сохраняется, и заявки дорисуются сами. */
-        ask_all(): string[];
-        /** Заявки в конкретную группу. Того, кто уже внутри, не показываем: его
-         * заявку либо приняли, либо он пришёл своим путём — и принимать её
-         * второй раз незачем. */
-        ask_entries(id: string): string[];
-        members_asks_head(): string;
-        members_ask_rows(): $mol_view[];
-        /** Строка заявки ключуется самой записью: одна и та же запись должна
-         * дать один и тот же ряд, а лорда из неё достаёт разбор. */
-        ask_lord(entry: string): string;
-        ask_tint(entry: string): number;
-        ask_title(entry: string): string;
-        /** Под именем стоит сокращённый идентификатор: имя человек задаёт себе
-         * сам, и по одному только имени понять, того ли впускаешь, нельзя. */
-        ask_status(entry: string): string;
-        /** Выдача прав — это криптография с перебором степеней, поэтому из
-         * обработчика уходим в фибру. */
-        ask_accept(entry: string, next?: Event): null;
-        /** Отказ — тоже криптография с перебором степеней: решение уезжает в
-         * лобби просящего, а туда пишут с работой. Поэтому в фибру. */
-        ask_reject(entry: string, next?: Event): null;
-        /** Снять запись из своего лобби мало: у просившего заявка так и висела
-         * бы «ждём, пока примут» — отказ не оставляет никакого следа, а
-         * отсутствие записи в лобби и «лобби ещё не приехало» с его стороны
-         * неотличимы. Поэтому решение кладём ему прямо в лобби, открытое на
-         * запись всем. Своё чистим уже после доставки: пока она идёт, строка
-         * заявки остаётся на экране.
-         *
-         * Повторную заявку это не блокирует: отказ не бан, а нерешение. */
-        ask_deny(entry: string): string;
-        /** Обработанную заявку убираем из лобби, чтобы они не копились. Лобби
-         * моё, я его король — снять из него запись есть чем. */
-        ask_forget(entry: string): null;
-        /** Приём заявки. Ключ проверяем пересчётом до всего остального: лобби
-         * открыто на запись всем, и свой ключ под чужим идентификатором может
-         * положить кто угодно — тогда в группу попал бы он, а не тот, кого
-         * туда позвали. Не сошлось — заявку отклоняем с пояснением.
-         *
-         * Дальше это обычное добавление участника: тем же кодом, с тем же
-         * выбором истории, что и при добавлении руками. Ключ передаём готовым —
-         * он приехал вместе с заявкой, и разыскивать человека по реестрам,
-         * которых у меня может и не быть, не приходится. */
-        ask_apply(entry: string): string;
-        /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
-         * приглашение до первого своего сообщения никуда не едет, а диалог,
-         * в котором я уже отвечал, никаким запросом быть не может. */
-        mine_among(messages: readonly $bog_gram_message[], my: string): boolean;
-        /** То же по ссылке на диалог. Ленд может быть ещё не засинкан: тогда
-         * считаем, что писать было нечего — приглашение подождёт, а подписка
-         * на приход данных сохраняется, и флаш вернётся сам. */
-        mine_wrote(id: string): boolean;
-        /** Когда приглашение можно отправлять. В переписке вдвоём — после
-         * первого своего сообщения: пустой диалог собеседнику показывать
-         * незачем, он мог быть и заведён по ошибке. В группе довольно любого
-         * сообщения: человека туда позвали осознанно, и ждать, пока напишет
-         * именно позвавший, нелепо — переписка там уже идёт. */
-        invite_ready(id: string): boolean;
-        outbox_flush(): number;
-        sealed_close([kind, pass, open]: readonly [string, string, string]): string;
-        sealed_open([kind, entry]: readonly [string, string]): {
-            open: string;
-            pass: string;
-            lord: string;
-        } | null;
-        invite_open(entry: string): string;
-        inbox_merge(): number;
-        monitor_fill(): boolean;
-        /** Ссылки на все бакеты диалога. Бакетов больше одного, когда кого-то
-         * убрали из группы или добавили без истории: ключ от уже выданного
-         * бакета отобрать нельзя, поэтому переписка продолжается в свежем.
-         * Читаем изо всех, до каких дотягиваемся, а пишем всегда в последний.
-         * У избранного делить нечего и не с кем, поэтому его ленд сам себе
-         * единственный бакет — остальной код от этого ничем не отличается. */
-        session_links_of(id: string): readonly string[];
-        session_land_by(link: string): $giper_baza_land;
-        session_lands_of(id: string): $giper_baza_land[];
-        /** Свежий бакет: в него уходит вся запись — сообщения, картинки,
-         * голосовые, отметки прочтения.
-         *
-         * Берём его по явному указателю, а не по хвосту списка: порядок в
-         * списке определяется слиянием, а не тем, что добавили позже, и после
-         * ротации запись легко ушла бы в покинутый бакет. Хвост оставлен
-         * запасным путём для диалогов, заведённых до появления указателя. */
-        session_land_of(id: string): $giper_baza_land | null;
-        session_land_active(): $giper_baza_land | null;
-        session_store_last(id: string): $bog_gram_session | null;
-        /** Склейка лент нескольких бакетов. Порядок задаётся полем момента в
-         * самих данных, а не порядком доставки, поэтому склейка — это просто
-         * сортировка. Совпавшие моменты разводим ссылкой: без этого два
-         * сообщения, отправленные в одну миллисекунду, менялись бы местами от
-         * синка к синку. */
-        messages_merge(buckets: readonly (readonly $bog_gram_message[])[]): $bog_gram_message[];
-        /** Бакет, который не читается — не приехал, не расшифровался, прав на
-         * него не выдавали, — молча пропускаем: один недоступный не должен
-         * уносить с собой всю остальную переписку. Подписка на его приход при
-         * этом сохраняется, и лента дособерётся сама. */
-        messages_of(id: string): $bog_gram_message[];
-        messages_alive_of(id: string): $bog_gram_message[];
+        Members(): $mol_button_minor;
         messages(): $bog_gram_message[];
         message_pawn(id: string): $bog_gram_message | null;
-        day_key(moment: number): string;
+        message_lord(id: string): string;
+        message_moment(id: string): number;
         day_title(key: string): string;
-        time_hm(moment: number): string;
-        /** Лента чата: пузыри вперемешку с разделителями календарных дней. */
-        chat_rows(): $mol_view[];
+        rows(): ($mol_view | $.$bog_gram_bubble)[];
         message_body(id: string): string;
         message_out(id: string): boolean;
         message_time(id: string): string;
         message_edited(id: string): boolean;
-        Message_edited(id: string): $mol_view;
-        /** Сколько участников успело прочитать сообщение. Автора не считаем ни
-         * в числителе, ни в знаменателе: своё сообщение он не читает. */
         read_tally(reads: Readonly<Record<string, number>>, mates: readonly string[], moment: number): number;
-        /** Одна галочка — доставлено, две — собеседник прочитал. В группе
-         * галочки не годятся: прочитавших там сколько угодно, поэтому вместо
-         * них счёт. Только для своих сообщений и только там, где есть кому
-         * читать: в избранном отметок нет. */
         message_checks(id: string): string;
-        Message_checks(id: string): $mol_view;
-        /** Имя отправителя стоит только в группе и только над чужим пузырём:
-         * в переписке вдвоём оно ничего не добавляет — там и так двое. Порядок
-         * тот же, что и везде: моя подпись, потом его имя, потом сокращённый
-         * идентификатор. */
         message_author(id: string): string;
-        /** Цвет подписи — тот же, что у аватара автора: в длинной группе имена
-         * различаются ещё и на глаз, не только буквами. */
         message_author_tint(id: string): number;
-        Message_author(id: string): $mol_view;
-        /** Чужое сообщение править и удалять нечем: панель есть только у своих. */
-        Message_actions(id: string): $mol_view;
-        /** Пузырь с раскрытой панелью ровно один: второе долгое нажатие
-         * переносит её на новое сообщение, а не плодит вторую. */
-        message_menu(next?: string): string;
         message_menu_is(id: string): boolean;
-        /** Отсчёт удержания живёт между двумя разными обработчиками, поэтому это
-         * обычные поля, а не мемы: мем сбросился бы вместе с фиброй предыдущего
-         * события, и отпускание пальца не увидело бы, что нажатие было долгим. */
-        press_timer: ReturnType<typeof setTimeout> | null;
+        press_timer: $mol_after_timeout | null;
         press_row: string;
         press_held: boolean;
         tap_row: string;
@@ -56495,35 +56357,22 @@ declare namespace $.$$ {
         press_stop(): void;
         message_press(id: string, next?: Event): null;
         message_hold(id: string): null;
-        /** Отпускание пальца внутри самой панели: по нему прятать её нельзя.
-         * Клик браузер шлёт уже после отпускания, и кнопка, успевшая пропасть
-         * из вёрстки, его не получит — правка и удаление просто не сработают. */
-        press_on_actions(next?: Event): boolean;
-        /** Короткий тап по своему пузырю прячет раскрытую панель обратно. Отмена
-         * жеста (палец поехал прокручивать ленту) приходит сюда же и делает то
-         * же самое, а вот отпускание после сработавшего удержания — нет, иначе
-         * панель закрывалась бы в тот же момент, когда открылась. */
         message_release(id: string, next?: Event): null;
-        /** Двойной тап узнаём сами по двум отпусканиям подряд: dblclick на
-         * телефонах приходит не везде, а отпускание пальца — всегда. */
         message_double_tap(id: string, now: number): boolean;
-        /** На телефоне это тот же долгий тап, на десктопе — правый клик.
-         * Показываем свою панель, поэтому системное меню гасим. */
         message_context(id: string, next?: Event): null;
-        edit_id(next?: string): string;
         edit_mode(): boolean;
-        reply_id(next?: string): string;
         reply_mode(): boolean;
+        Edit_banner(): $mol_view;
+        Reply_banner(): $mol_view;
+        field_focus(): boolean;
         message_reply(id: string): null;
         reply_cancel(next?: any): null;
-        /** Кто написал сообщение, на которое отвечают: в цитате это видно
-         * и в переписке вдвоём, иначе непонятно, чьи слова процитированы. */
         quote_author(id: string): string;
         quote_text(id: string): string;
         reply_title(): string;
         reply_text(): string;
         message_quote_id(id: string): string;
-        Message_quote(id: string): $mol_button_minor;
+        message_quote_shown(id: string): boolean;
         message_quote_author(id: string): string;
         message_quote_text(id: string): string;
         message_quote_jump(id: string, next?: any): null;
@@ -56531,608 +56380,1341 @@ declare namespace $.$$ {
         edit_cancel(next?: any): null;
         message_delete(id: string, next?: any): null;
         message_send(next?: any): null;
-        /** Кадр есть, если у сообщения есть ссылка на его ленд. Сама
-         * картинка при этом может быть ещё в пути — коробку под неё
-         * рисуем всё равно, иначе лента дёрнется при её появлении. */
         message_shot(id: string): boolean;
-        Message_shot(id: string): $.$bog_gram_photo;
-        /** Картинка без подписи — обычное дело, и пустой абзац под ней
-         * оставлял бы в пузыре лишнюю полосу. */
-        Message_body(id: string): $.$mol_paragraph;
-        /** Размеры кадра приезжают вместе с сообщением, до самой картинки.
-         * Пока их нет, считаем кадр квадратным: перепрыгнуть один раз при
-         * загрузке лучше, чем схлопнуть пузырь в ноль. */
         message_shot_size(id: string): {
             width: number;
             height: number;
         };
         message_shot_ratio(id: string): string;
-        /** В предел упирается большая сторона, меньшая считается от неё по
-         * пропорциям. Кадр мельче предела показываем как есть. */
         message_shot_width(id: string): string;
-        /** Ленд картинки приезжает отдельно от переписки: пока буфер пуст,
-         * отдаём пустую ссылку — место уже занято коробкой, а подписка на
-         * приход ленда сохраняется, и кадр проявится сам. */
+        file_uri(file: $giper_baza_file | null | undefined): string;
         message_shot_uri(id: string): string;
-        zoom_id(next?: string): string;
         zoom_uri(): string;
-        /** Долгое нажатие уже раскрыло под пузырём правку с удалением —
-         * тот же жест не должен вдобавок разворачивать картинку. */
         message_zoom(id: string, next?: any): null;
         zoom_close(next?: any): null;
-        /** Слой ловит Esc, только пока на нём фокус, а в разметке он
-         * появляется лишь следующим кадром — тогда же его и фокусируем. */
-        zoom_focus(): void;
-        /** Кнопка со скрепкой. Из выбранного берём первую картинку:
-         * множественный выбор в поле отключён, но система может подсунуть
-         * заодно и что-нибудь постороннее. */
+        sub(): readonly any[];
         image_files(next?: readonly File[]): readonly File[] | null;
-        /** Поле выбора файла помнит прошлый выбор и о повторе того же самого
-         * файла уже не сообщает: без сброса одну картинку нельзя было бы
-         * отправить дважды. */
-        attach_reset(): void;
-        /** Вставка из буфера. Картинку достаём синхронно, пока событие живо,
-         * и тут же уходим в фибру: ждать прямо в обработчике нельзя — mol
-         * перезапускает его на каждом ожидании, а каждый перезапуск доставал
-         * бы из буфера новый файл, то есть отправлял бы копию. */
         image_paste(next?: Event): null;
-        /** Без отмены умолчания браузер откроет брошенный файл вместо
-         * страницы — и переписка просто исчезнет с экрана. */
         image_over(next?: Event): null;
         image_drop(next?: Event): null;
-        /** Пережатие, захват ленда и подпись — это криптография с перебором
-         * степеней: из обработчика уходим в фибру, иначе каждое ожидание
-         * начинало бы перебор заново, а интерфейс всё это время стоял бы. */
         image_start(file: File): void;
-        /** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
-         * читать выдаём каждому участнику, для всех остальных — включая
-         * мастера — там шифрованный мусор. В избранном выдавать право некому,
-         * ленд просто остаётся закрытым.
-         *
-         * Порядок здесь не косметика. Всё, что умеет ждать — пережатие,
-         * захват ленда, выдача права, — стоит до создания сообщения: фибра
-         * перезапускается с начала на каждом ожидании, и созданное раньше
-         * сообщение она завела бы заново, оставив в переписке копии. */
+        passes(): $giper_baza_auth_pass[] | null;
+        land_closed(bytes: Uint8Array<ArrayBuffer>, type: string, passes: readonly $giper_baza_auth_pass[]): $giper_baza_file;
         image_send(file: File): string;
-        /** Микрофон показываем, только если браузер умеет писать звук: иначе
-         * кнопка обещала бы то, чего не будет. */
         voice_ready(): boolean;
-        /** Живая запись между двумя событиями: нажатие её заводит, отпускание
-         * забирает результат. Это обычное поле, а не мем — фибра нажатия к
-         * моменту отпускания давно кончилась, и мем обнулился бы вместе с ней. */
         voice_live: $bog_gram_voice | null;
-        /** Момент начала записи, ноль — не пишем. По нему же идёт таймер. */
-        voice_start(next?: number): number;
         voice_on(): boolean;
-        voice_hint(next?: string): string;
-        /** Растущий таймер. Пока не пишем, время не читаем вовсе: иначе вся
-         * страница пересчитывалась бы пять раз в секунду впустую. */
         voice_clock(): string;
-        /** Нажали микрофон. Разрешение и кодировщик умеют ждать, поэтому
-         * уходим в фибру: держать обработчик события нельзя, mol перезапускает
-         * его на каждом ожидании. */
+        Voice_note(): $.$mol_paragraph;
+        send_is(): boolean;
+        Send(): $mol_button_major;
+        Voice(): $.$bog_gram_hold;
+        send_tools(): $mol_view[] | ($.$mol_string | $mol_button_major | $.$bog_gram_hold | $bog_gram_attach)[];
         voice_press(next?: Event): null;
-        /** Палец может съехать с кнопки, а мышь — уйти вообще со страницы:
-         * без захвата указателя отпускание пришло бы другому элементу, и
-         * запись осталась бы висеть включённой. */
-        voice_grab(next?: Event): void;
-        /** Разрешение спрашивает браузер, и ответа можно ждать сколько угодно.
-         * Отказ объясняем строкой над полем ввода, ничего не отправляя. */
         voice_open(take: $bog_gram_voice): boolean;
-        /** Отпустили палец. На крестике это отмена: во время удержания все
-         * события указателя захвачены самим микрофоном, и дотянуться до
-         * крестика можно только отпустив палец над ним. */
-        voice_release(next?: Event): null;
-        /** Смотрим точку отпускания, а не цель события: цель захвачена кнопкой
-         * микрофона и на всё время жеста остаётся ею же. */
+        cancel_rect(): {
+            width: number;
+            height: number;
+            left: number;
+            right: number;
+            top: number;
+            bottom: number;
+        } | null;
         voice_on_cancel(next?: Event): boolean;
-        /** Конец записи: останавливаем её прямо здесь, синхронно. Уйди
-         * остановка в фибру — микрофон писал бы всё время, пока та ждёт
-         * права собеседника, и в сообщение попала бы лишняя тишина. */
-        voice_finish(next?: any): null;
-        /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
+        voice_release(next?: Event): null;
+        voice_finish(): null;
         voice_cancel(next?: any): null;
-        /** Жест прервала система — входящий звонок, переключение окна. */
-        voice_abort(next?: any): null;
-        /** Долгое нажатие на тач-экране — это ещё и вызов системного меню,
-         * а на мыши правый клик. Здесь и то, и другое только мешает. */
-        voice_menu(next?: Event): null;
-        /** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
-         * читать выдаём каждому участнику, для всех остальных — включая
-         * мастера — там шифрованный мусор. В избранном выдавать право некому,
-         * ленд просто остаётся закрытым.
-         *
-         * Порядок тот же, что и у кадра, и по той же причине: всё, что умеет
-         * ждать, стоит до создания сообщения — фибра перезапускается с начала
-         * на каждом ожидании, и созданное раньше сообщение она завела бы
-         * заново, оставив в переписке копии. */
         voice_send(take: $bog_gram_voice): string;
-        /** Голос есть, если у сообщения есть ссылка на его ленд. Сам звук при
-         * этом может быть ещё в пути: строку с кнопкой и длиной рисуем всё
-         * равно, иначе лента дёрнется при её появлении. */
         message_sound(id: string): boolean;
-        Message_sound(id: string): $.$bog_gram_sound;
-        /** Длина приезжает вместе с сообщением, до самой записи: пузырь
-         * сообщает её сразу, ещё до того, как звук можно включить. */
         message_sound_span(id: string): number;
-        /** Ленд записи приезжает отдельно от переписки: пока буфер пуст,
-         * отдаём пустую ссылку — подписка на приход ленда сохраняется, и
-         * звук включится сам, как только доедет. */
         message_sound_uri(id: string): string;
-        /** Звучит ровно одно сообщение на всё приложение. */
-        voice_playing(next?: string): string;
         message_sound_playing(id: string): boolean;
-        /** Включение нового гасит предыдущее: два голоса разом — это шум. */
+        bubble(id: string): $.$$.$bog_gram_bubble;
         message_sound_toggle(id: string, next?: any): null;
-        /** Дослушали до конца: кнопка возвращается к треугольнику сама. */
         message_sound_ended(id: string, next?: any): null;
-        /** Пузырь мог уехать из ленты вместе со своим сообщением: тогда
-         * управлять уже нечем, и это не ошибка. */
-        sound_start(id: string): void;
-        sound_stop(id: string): void;
-        /** Смена диалога не должна оставлять голос звучать из закрытой
-         * переписки. Зовётся только из действий, поэтому обычный метод. */
-        sound_hush(): void;
-        /** Отметка прочтения участника. Своя отметка пишется в последний бакет,
-         * но человек читает переписку целиком, а не по отсекам: у прошлых
-         * бакетов остались свои отметки, и дальняя из них и есть ответ.
-         * Недоступный бакет пропускаем — он ничего не добавит. */
-        read_moment_of(id: string, lord: string): number;
-        /** Первое непрочитанное чужое сообщение: его номер в ленте или -1, если читать нечего. */
         unread_first(list: readonly {
             moment: number;
             author: string;
         }[], my: string, seen: number): number;
-        /** С какого сообщения открыть диалог: с первого непрочитанного, а без них
-         * с конца (пустая строка). Решение запоминается до следующего открытия:
-         * отметка прочтения сдвигается сразу, и без этого лента тут же уехала бы вниз.
-         * Пока сообщений нет, решения нет (null), и запоминать нечего. */
-        chat_focus(id: string, reset?: null): string | null;
-        chat_dialog(): string;
-        chat_focus_row(): $mol_view;
-        /** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
+        focus(): string | null;
         read_sync(): number;
-        unread_count(id: string): number;
-        unread_label(id: string): string;
-        Unread_badge(id: string): $mol_view;
-        /** Вложение в строке списка называем словом: ни кадра, ни звука там
-         * показать негде, а подпись под ними, если она есть, идёт следом.
-         * В группе перед текстом стоит имя написавшего: без него непонятно,
-         * кто из пятерых сейчас говорит. */
-        dialog_preview(id: string): string;
-        dialog_time(id: string): string;
-        /** Реестр из адреса страницы: по такой ссылке зовут в реестр, а свой
-         * список известных реестров ведётся отдельно, в приватном ленде. */
-        registry_active(): string;
-        registry_ids(): string[];
-        registry_land(id: string): $giper_baza_land;
-        registry_store(id: string): $bog_gram_users;
-        /** Чужой реестр может быть ещё не засинкан: подписка на его приход
-         * сохраняется, а пустой список не даёт одному ленду подвесить весь
-         * экран настроек — строка дорисуется сама. */
-        registry_lords(id: string): string[];
-        /** Название задаёт создатель. Пока оно не приехало (или его не задали),
-         * показываем сокращённую ссылку — молчащая строка хуже. */
-        registry_title(id: string): string;
-        registry_size(id: string): number;
-        registry_joined(id: string): boolean;
-        registry_active_is(id: string): boolean;
-        /** Русское склонение числительных: 1 диалог, 2 диалога, 5 диалогов. */
-        plural(count: number, one: string, few: string, many: string): string;
-        people_count(count: number): string;
-        registry_status(id: string): string;
-        Registry_join(id: string): $mol_button_minor;
-        registry_rows(): $mol_button_minor[];
-        /** Приглашение — адрес страницы с одним лишь реестром: остальные
-         * параметры (свой мастер, открытый диалог) чужому человеку не нужны. */
-        registry_uri(): string;
-        registry_content(): ($mol_view | $.$mol_paragraph)[];
-        /** Свой ключ рядом со своей записью: по одному идентификатору диалог со
-         * мной не завести, а так скачанного реестра собеседнику хватает.
-         * Запись идемпотентна — уже лежащий там ключ второй раз не пишем,
-         * поэтому звать её можно и из действия, и из реактивной дозаписи. */
-        registry_key_put(id: string): null;
-        /** Реестры, куда я вступил до появления ключей: там лежит только мой
-         * идентификатор, и собеседник без сети диалог со мной не заведёт.
-         * Дописываем ключ туда, где я уже числюсь. Чужой реестр может быть ещё
-         * не засинкан — подписка на его приход сохраняется, дозапись случится
-         * сама, а один незасинканный не должен мешать остальным. */
-        registry_keys_fill(): number;
-        /** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
-        registry_make(next?: any): null;
-        /** Открытая ссылка только запоминает реестр: попасть в чужой список
-         * людей — отдельное решение, поэтому лорд туда не дописывается. */
-        registry_remember(): string;
-        /** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
-         * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр.
-         *
-         * Дописать запись мало: подпись с перебором степеней и сохранение
-         * уезжают в фон, действие кончается мгновенно, и человек видит, что
-         * ничего не произошло. Поэтому подтверждения дожидаемся тут же, не
-         * выходя из фибры: обработчик приостанавливается, кнопка мигает сама,
-         * пока запись не осядет, и перестаёт, когда та подтвердилась.
-         *
-         * Перезапуск фибры при этом ничего не задваивает: список сам отказывает
-         * уже лежащему в нём значению, а ключ пишется только когда отличается
-         * от записанного. */
-        registry_join(id: string, next?: Event): null;
-        registry_join_active(next?: any): null;
-        /** Убрать — значит забыть ссылку у себя: запись в самом реестре остаётся,
-         * выйти из него нельзя. Заодно снимаем реестр с адреса, иначе он
-         * вернулся бы в список на ближайшем же заходе. */
-        registry_forget(id: string, next?: Event): null;
-        registry_open(id: string, next?: any): null;
-        /** Открытый чужой реестр, в котором нет твоей записи: собеседники
-         * листают его список и тебя там не видят. */
-        registry_join_needed(): boolean;
-        Join_plate(): $mol_view;
-        /** Один человек — одна строка, даже если он числится в нескольких
-         * реестрах: подписью берём тот, где он встретился первым. */
-        user_sources(): Record<string, string>;
-        user_lords(): string[];
-        user_rows(): $mol_view[];
-        users_empty_text(): "Вы не состоите ни в одном реестре. Создайте свой в настройках" | "Кроме вас в реестрах пока никого нет";
-        /** Строка человека ключуется его же лордом — по нему и рисуется узор. */
-        user_lord(lord: string): string;
-        user_title(lord: string): string;
-        /** Пока реестр один, называть его в каждой строке незачем. */
-        user_source(lord: string): string;
-        User_source(lord: string): $mol_view;
-        user_pick(lord: string, next?: any): null;
-        /** Свой публичный ключ строкой — тот же вид, в котором он лежит в
-         * реестрах и уезжает в заявке в группу. */
-        my_pass(): string;
-        /** Приглашение — адрес страницы с лордом и публичным ключом хозяина.
-         * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны,
-         * а вот ключ нужен: без него диалог не завести, и приложение уходит
-         * ждать, пока домашний ленд приглашающего доедет по сети. С ключом в
-         * ссылке ждать нечего — диалог открывается сразу и даже офлайн.
-         *
-         * Класть ключ в ссылку безопасно: он публичный, лежит в открытом
-         * ленде и в реестрах. Подменить его в ссылке нельзя — лорд рядом
-         * это хеш ключа, и `pass_verified` пересчитывает его. */
-        invite_uri(lord: string, key: string): string;
-        version(): string;
-        invite_link(): string;
-        /** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
-        invite_lord(): string;
-        /** Ключ приглашающего из адреса страницы. У ссылок, выданных до его
-         * появления, его нет — для них остаётся прежний путь через сеть. */
-        invite_key(): string;
-        /** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
-         * Лордом считаем только полный идентификатор владельца — ссылка на
-         * чей-то ленд личным диалогом не открывается, и ждать по ней нечего.
-         * Проверка формата тут ровно та же, что у ссылки в группу. */
-        invite_lord_ok(lord: string): boolean;
-        /** Своя же ссылка диалога не заводит, знакомый собеседник просто
-         * открывается, а незнакомый уходит обычным путём — через ожидание. */
-        invite_plan(lord: string, my: string, exist: string): 'skip' | 'bad' | 'open' | 'start';
-        /** Битая ссылка: как и у групп, говорим об этом на экране. Молчание
-         * тут неотличимо от «ничего не произошло». */
-        invite_lost(next?: string): string;
-        /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
-         * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
-        invite_handle(): string;
-        /** Ключ, приехавший в ссылке. Проверка та же, что у ключа из реестра:
-         * лорд это хеш ключа, поэтому подмена ловится пересчётом. Не сошлось —
-         * считаем, что ключа в ссылке не было, и дальше работает обычный путь
-         * через домашний ленд приглашающего.
-         *
-         * Разобранный ключ `pass_verified` отдаёт из своего кэша одним и тем
-         * же объектом, так что повторный заход перезапущенной фибры пишет в
-         * ячейку то же значение и никого не будит. */
-        peer_pass_learn(lord: string, key: string): $giper_baza_auth_pass | null;
-        /** Ключи, добытые не из сети: пока их источник — только ссылка. */
-        peer_pass_stored(lord: string): $giper_baza_auth_pass | null;
-        peer_pass_given(lord: string, next?: $giper_baza_auth_pass | null): $giper_baza_auth_pass | null;
-        /** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
-         * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
-         * снятый заранее параметр означал бы, что перезагрузка страницы в
-         * этот момент теряет приглашение насовсем, и экран после неё молчит.
-         * Снимет его `invite_done`, когда диалог действительно заведён. */
-        invite_accept(lord: string, key: string): "start" | "open" | "skip" | "bad";
-        /** Приглашение отработало: снимаем параметры из адреса и метку
-         * долгого ожидания. */
-        invite_done(): void;
-        /** Ключ собеседника приезжает не мгновенно, а иногда не приезжает
-         * вовсе: человек мог не заходить в приложение или сидеть на другом
-         * мастере. Через `pending_wait` молчание превращаем в объяснение.
-         *
-         * Таймер ВОЗВРАЩАЕМ из ячейки: объект, созданный внутри @$mol_mem и
-         * не отданный наружу, уборка уничтожает сразу, и он не сработает. */
-        pending_timer(): $mol_after_timeout | null;
-        /** Собеседник, ключ которого ждём непозволительно долго. Держим тут
-         * именно лорда, а не флаг: следующее приглашение начинает ожидание
-         * заново, и старая метка не должна на него налипать. */
-        pending_late(next?: string): string;
-        /** Ждать человека, который в приложение не заходил, можно вечно,
-         * поэтому ожидание должно сниматься руками. */
-        invite_drop(next?: any): null;
-        /** Строка над списком диалогов, пока диалога по ссылке ещё нет. Без
-         * неё переход по приглашению выглядит как будто ничего не произошло:
-         * список пустой, ошибки нет, ждать непонятно чего. */
-        invite_plate_text(): "" | "Ссылка на диалог битая — попросите свежую" | "Открываем диалог — ищем ключ собеседника" | "Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку";
-        Invite_plate(): $mol_view;
-        /** Приглашение в группу — адрес страницы со ссылкой на её ленд и лордом
-         * создателя. Вступить по ней мгновенно нельзя: ленд группы шифрованный,
-         * и ключ от него заворачивается на ключ конкретного человека тем, у
-         * кого есть права. Поэтому ссылка ведёт к заявке.
-         *
-         * Создатель едет вторым параметром, и без него ссылка бесполезна:
-         * заявку несут в его лобби, а взять его из ленда группы просящему
-         * неоткуда — прав на неё у него ещё нет, и ленд ему не читается вовсе.
-         * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны. */
-        join_uri(id: string): string;
-        /** Создателя берём из ленда группы: у того, кто копирует ссылку, права
-         * на неё есть. У групп, заведённых до появления явной записи о
-         * создателе, её нет — там на него указывает полное управление лендом,
-         * и такую ссылку может дать только он сам. */
-        join_owner_of(id: string): string;
-        join_link(): string;
-        /** Группа из адреса страницы: по такой ссылке просятся в группу. */
-        join_id(): string;
-        /** Создатель группы из адреса страницы. */
-        join_by(): string;
-        /** Ссылка без создателя: нести заявку некому, и молчать об этом нельзя —
-         * иначе переход по ссылке выглядит как будто ничего не произошло. */
-        join_lost(next?: string): string;
-        /** Уже участнику показываем группу, остальным заводим заявку. Мусор
-         * вместо ссылки отсеиваем сразу: заявка в несуществующую группу
-         * осела бы в приватном ленде навсегда и никуда бы не уехала. */
-        join_plan(id: string, my: string, member: boolean): 'skip' | 'open' | 'ask';
-        /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
-         * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
-        join_handle(): string;
-        /** Параметры из адреса снимаем в любом случае: иначе перезагрузка
-         * страницы просилась бы в ту же группу снова и снова. */
-        join_request(id: string, by: string): "open" | "skip" | "ask";
-        /** Запись заявки: группа, лорд просящего и его ключ. Разделитель тот
-         * же, что в отложенной доставке приглашений. */
-        ask_entry(group: string, lord: string, pass: string): string;
-        /** Запись очереди: группа и лорд её создателя. Лорд оседает тут же,
-         * потому что взять его больше неоткуда — ленд группы просящему не
-         * читается, а очередь переживает перезагрузку страницы, после которой
-         * от ссылки-приглашения уже ничего не остаётся. */
-        ask_task(group: string, owner: string): string;
-        ask_task_group(entry: string): string;
-        /** У заявок, заведённых до появления лорда в записи, его нет: для них
-         * остаётся прежний путь — прочитать создателя из ленда группы, если
-         * права на неё за это время всё же выдали. */
-        ask_task_owner(entry: string): string;
-        /** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
-         * с заявками: разбор отвергает всё, что не сходится по числу частей
-         * или недосчитывается любой из них. */
-        ask_parse(entry: string): {
-            group: string;
-            lord: string;
-            pass: string;
-        } | null;
-        /** Заявка встаёт в свою очередь, а уезжает отдельным потоком: право
-         * писать в чужое лобби приезжает не сразу, и с первого раза запись
-         * может не пройти. Повтор ничего не задваивает — ни очередь, ни
-         * отправленное второй ссылки не примут. */
-        ask_send(id: string, owner: string): null;
-        /** Свой приватный ленд шифрованный и на новом устройстве приезжает не
-         * мгновенно. Строка ожидания стоит прямо в теле страницы списка, и
-         * suspend тут подвесил бы её целиком: пока ленда нет, заявок «нет»,
-         * а подписка на его приход сохраняется — строка появится сама. */
-        ask_queued(): string[];
-        ask_sent(): string[];
-        /** Группы, в которые уже просимся — и те, что ждут отправки, и те, что
-         * уже доехали. Записи очереди несут ещё и лорда, поэтому сравнивать с
-         * ссылками на группы можно только их первую половину. */
-        ask_groups(): string[];
-        /** Заявки, на которые ещё не ответили. Принятая уходит отсюда сама:
-         * группа появляется в списке диалогов, и записи там больше нечего
-         * ждать. */
-        ask_waiting(entries: readonly string[]): string[];
-        ask_pending_queued(): string[];
-        ask_pending_sent(): string[];
-        ask_denied(): string[];
-        /** Отказы, доехавшие в моё лобби. Лобби открыто на запись всем, поэтому
-         * запись туда может положить кто угодно: заявку снимаем только если
-         * сами в эту группу просились. Худшее, что даёт подлог — чужая заявка
-         * снимется раньше времени, и человек попросится по ссылке заново.
-         *
-         * Саму запись из лобби убираем в любом случае, иначе отказы копились бы
-         * там навсегда: лобби моё, я его король. */
-        denies_merge(): number;
-        /** Ссылка привела к заявке, а не к группе: без этой строки экран после
-         * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
-         * так же, поэтому и о ней говорим прямо.
-         *
-         * Отправку и отправленное разводим: запись в чужое лобби идёт с
-         * перебором подписей и занимает время. Пока она не доехала, обещать
-         * «отправлена» нельзя — человек пойдёт спрашивать у владельца группы,
-         * а у того ещё пусто, и оба решат, что сломалось. */
-        ask_plate_text(): string;
-        Ask_plate(): $mol_view;
-        /** Заявку приняли: права на ленд группы приехали, и в списке участников
-         * уже стоит мой идентификатор. Ленд без выданных прав не читается
-         * вовсе — это обычное состояние ожидания, а не ошибка. */
-        ask_taken(entry: string): boolean;
-        /** Доставка заявок. Повторами ретраится только очередь: право писать в
-         * чужое лобби приезжает не сразу, и с первого раза запись может не
-         * пройти. Доехавшую заявку второй раз не шлём — отклонённую админ из
-         * лобби убирает, и повтор возвращал бы её туда снова, сводя отказ на
-         * нет. Отправленные при этом остаются под присмотром без всякого
-         * таймера: чтение ленда группы подписывает на его приход, и выданные
-         * права разбудят этот пересчёт сами. */
-        asks_flush(): number;
-        notify_supported(): boolean;
-        Notify_toggle(): $mol_button_major;
-        /** Разрешение браузера само о себе не сообщает: держим копию в меме
-         * и обновляем её после запроса, иначе подпись останется старой. */
-        notify_permission(next?: NotificationPermission): NotificationPermission;
-        /** Сам браузер о живой подписке расскажет только через воркер, а демон
-         * помнит её по лорду — нам достаточно своей отметки в хранилище. */
-        notify_on(next?: boolean): boolean;
-        /** Уведомления выключены руками: сами больше не включаются. */
-        notify_off(next?: boolean): boolean;
-        /** Разрешение в этом браузере уже спрашивали. */
-        notify_asked(next?: boolean): boolean;
-        /** Что делать с уведомлениями при заходе. Решение тут не про браузер,
-         * а про то, чего человек хотел, поэтому и живёт отдельно от возни с
-         * разрешениями и подписками.
-         *
-         * Явное «выключить» бьёт всё остальное: без этого автоподписка
-         * возвращала бы уведомления на следующем же открытии страницы. */
-        notify_plan(supported: boolean, permission: NotificationPermission, on: boolean, off: boolean, asked: boolean): 'skip' | 'subscribe' | 'ask';
-        notify_plan_now(): "skip" | "subscribe" | "ask";
-        /** Разрешение уже выдано — значит уведомления человек хотел, и гонять
-         * его за ними в настройки незачем: подписываемся сами. Так же ведёт
-         * себя переустановка приложения и вход другим ключом: разрешение у
-         * браузера остаётся, подписка поднимается заново без единого клика. */
-        notify_auto(): boolean;
-        /** Разрешения ещё нет. Просить его на старте нельзя: без живого жеста
-         * Safari и Firefox запрос отклоняют молча, а Chrome прячет его в тихую
-         * плашку. Поэтому спрашиваем ровно тогда, когда человек сам что-то
-         * сделал — открыл диалог или отправил сообщение.
-         *
-         * Один раз на браузер: отказ переспрашивать невежливо, а для
-         * передумавших остаётся тумблер в настройках. */
-        notify_offer(): boolean;
-        /** Запрос разрешения — ПЕРВЫМ делом, до любого подвисающего чтения:
-         * иначе фибра перезапустится в микрозадаче, и жест пользователя к
-         * моменту запроса протухнет.
-         *
-         * Подписку отсюда не заводим, хотя руки чешутся: выданное разрешение
-         * увидит `notify_auto` и сделает всё сам. Делали бы оба — на одно
-         * согласие уходило бы две подписки сразу. */
-        notify_grant(): boolean;
-        notify_label(): "Выключить" | "Включить уведомления";
-        notify_status(): "Не поддерживается этим браузером" | "Запрещены в браузере" | "Уведомления включены" | "Выключены" | "Спросим разрешение, когда откроете диалог";
-        notify_toggle(next?: any): null;
-        /** Разрешение и сеть ждать из обработчика клика нечем, поэтому вся
-         * работа уезжает в фибру, а сюда возвращается уже итог. */
-        notify_apply(on: boolean): boolean;
-        /** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
-         * не уезжает: только на экран и только по явной просьбе. */
-        key_text(): string;
-        key_shown(next?: boolean): boolean;
-        key_toggle_label(): "Скрыть ключ" | "Показать ключ";
-        key_toggle(next?: any): null;
-        /** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
-         * останется на экране, а следующий одиночный клик сменит аккаунт. */
-        account_reset(): void;
-        /** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
-         * ни QR — в дереве компонентов их просто нет. */
-        account_rows(): ($mol_view | $.$mol_paragraph)[];
-        /** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
-         * программно и тут же освобождаем, в документе она не остаётся. */
-        key_save(next?: any): null;
-        key_error(next?: string): string;
-        Key_error(): $.$mol_paragraph;
-        import_armed(next?: boolean): boolean;
-        key_import_label(): "Точно войти? Текущий аккаунт будет заменён" | "Войти по ключу";
-        /** Ключом считаем только строку полного размера: обрезок или случайный
-         * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
-        auth_from(str: string): $giper_baza_auth | null;
-        /** Первый клик взводит кнопку, второй применяет — как корзина в списке диалогов.
-         * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
-        key_import(next?: any): null;
-        /** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
-        key_file(next?: readonly File[]): readonly File[] | null;
-        key_scanned(next?: string): string;
-        key_file_read(file: File): boolean;
-        /** Ленд заметок тут не заводим: он нужен не раньше первого клика по
-         * строке избранного, а на старте список диалогов ещё в пути, и захват
-         * попадал бы в окно, когда своей ссылки на него как бы нет. */
-        setup_ready(): boolean;
-        auto(): void;
-    }
-    class $bog_gram_avatar extends $.$bog_gram_avatar {
-        /** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
-         * перекрываются, и у длинных идентификаторов картинка сливается в
-         * сплошное пятно. Берём шаг крупнее толщины: точек меньше, зато
-         * узор читается и остаётся узнаваемым.
-         *
-         * Сетка прямоугольная, а рамка круглая, поэтому угловые точки
-         * срезались краем. Вписываем узор в окружность: точку, которая не
-         * помещается целиком, просто не рисуем — обрезков не остаётся,
-         * а сам узор становится круглым, как и аватар. */
-        path(): string;
-    }
-    class $bog_gram_photo extends $.$bog_gram_photo {
-        /** Пока кадр не докачался, коробка стоит пустой: картинку с пустым
-         * адресом браузер рисует значком битой. */
-        Image(): $.$mol_image;
-    }
-    /** Строка голосового в пузыре: кнопка, полоса и длина. Сам элемент
-     * звука лежит тут же, просто не показывается. */
-    class $bog_gram_sound extends $.$bog_gram_sound {
-        /** Пока запись не приехала, элемент звука не заводим: пустой адрес
-         * источника браузер честно пытается загрузить — и ругается. */
-        Node(): $.$bog_gram_sound_node;
-        /** Сколько уже прозвучало. Ленд может быть ещё в пути, а разметка —
-         * не отрисована: тогда просто стоим в начале. */
-        moment(): number;
-        /** Молчит — показываем общую длину, на ходу — сколько прозвучало. */
-        stamp(): string;
-        fill_width(): string;
-        toggle_icons(): ($mol_icon_pause | $mol_icon_play)[];
-        /** Играет ровно то, что решил список: решение принимается снаружи,
-         * иначе два голосовых заговорили бы разом.
-         *
-         * Управление объявлено в наследнике, а свойство отдаёт тип базы —
-         * отсюда приведение: без него сборка не видит этих методов. */
-        start(): void;
-        stop(): void;
-    }
-    class $bog_gram_sound_node extends $.$bog_gram_sound_node {
-        dom_node(next?: Element): HTMLAudioElement;
-        /** Позиция звучания: событие сдвига объявляет её устаревшей, и полоса
-         * прогресса едет сама. */
-        time(): number;
-        /** Обещание запуска не ждём: браузер отказывает, только когда звук
-         * включают без участия человека, а тут за кнопкой стоит его нажатие.
-         * Дослушанное до конца начинаем сначала. */
-        start(): void;
-        stop(): void;
-    }
-    class $bog_gram_chat extends $.$bog_gram_chat {
-        /** Заголовок чата — это подпись собеседника, поэтому он и правится
-         * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
-         * заголовок остаётся обычной строкой. */
-        Note_field(): $bog_gram_field;
-        Title_text(): $mol_view;
-        /** Список участников есть только у группы: в переписке вдвоём
-         * перечислять некого. */
-        Members(): $mol_button_minor;
-        Edit_banner(): $mol_view;
-        Reply_banner(): $mol_view;
-        Voice_note(): $.$mol_paragraph;
-        /** Микрофон стоит на месте отправки, пока писать нечего — как в телеге.
-         * В правке его нет: она про текст. Нет и там, где браузер не умеет
-         * писать звук: тогда отправка остаётся единственной кнопкой. */
-        send_is(): boolean;
-        Send(): $mol_button_major;
-        Voice(): $mol_button_minor;
-        /** Пока идёт запись, поле ввода со скрепкой уступают место таймеру и
-         * отмене. Сам микрофон при этом остаётся на месте и той же кнопкой:
-         * палец всё ещё лежит на ней, и отпускание должно прийти именно туда. */
-        send_tools(): $mol_view[] | ($.$mol_string | $mol_button_minor | $.$mol_button_open)[];
-        /** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
-         * в ленте он ездил бы вместе с прокруткой переписки. */
-        sub(): readonly any[];
-        focus_done(next?: string): string;
-        rows_seen(next?: number): number;
-        /** Открытый диалог встаёт на первое непрочитанное, без них — на последнее
-         * сообщение; дальше лента едет вниз только за новыми сообщениями. Список
-         * ленивый: scrollHeight знает лишь отрисованную часть, поэтому к строке
-         * ведёт ensure_visible, он сам дорисует окно списка до неё. */
-        auto(): void;
-        /** Первый показ строки после перезагрузки ждёт расшифровки ленда:
-         * ensure_visible приостанавливается, и без повтора лента оставалась
-         * наверху. Фибра доводит прокрутку, когда данные приедут. */
+        follow(): void;
         reveal(row: $mol_view, align: ScrollLogicalPosition): void;
-        stick_end(next?: boolean): boolean;
-        /** Строки дорисовываются после прокрутки: тексты расшифровываются
-         * по одному, и лента растёт уже под открытым диалогом. Пока человек
-         * сам не ушёл вверх, держим её прижатой к последнему сообщению. */
-        stick_watch(): {
-            destructor: () => void;
-        } | null;
+        stick_watch(): number;
+        content_height(): number;
+        stick_hold(): number;
+        auto(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    class $bog_gram_mine extends $giper_baza_mine_idb {
+        static db(): Promise<$mol_db_database<{
+            Unit: {
+                Key: [land: string, path: string];
+                Doc: [ArrayBuffer];
+                Indexes: {};
+            };
+            Ball: {
+                Key: [land: string, path: string];
+                Doc: [ArrayBuffer];
+                Indexes: {};
+            };
+        }>>;
+    }
+}
+
+declare namespace $ {
+    class $bog_yard extends $giper_baza_yard {
+        static stagger: number;
+        port_make(socket: WebSocket, link: string): $mol_rest_port_ws_std;
+        master(): $mol_rest_port | null;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $bog_gram_auth extends $giper_baza_auth {
+        static restore(key: string): $bog_gram_auth | null;
+        static current(next?: $giper_baza_auth | null): $giper_baza_auth;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $bog_builderui_skin__lights_bog_gram_1 = $mol_type_enforce<
+		ReturnType< $bog_gram['lights'] >
+		,
+		ReturnType< $bog_builderui_skin['lights'] >
+	>
+	type $bog_builderui_skin__base_bog_gram_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_builderui_skin['base'] >
+	>
+	type $bog_builderui_skin__font_head_bog_gram_3 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $bog_builderui_skin['font_head'] >
+	>
+	type __bog_gram_4 = $mol_type_enforce<
+		Parameters< $bog_gram['user_name'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Account'] >['user_name'] >[0]
+	>
+	type __bog_gram_5 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_title'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['title'] >[0]
+	>
+	type __bog_gram_6 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_status'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['status'] >[0]
+	>
+	type __bog_gram_7 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_joined'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['joined'] >[0]
+	>
+	type __bog_gram_8 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_active_is'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['active_is'] >[0]
+	>
+	type __bog_gram_9 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_name'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['name'] >[0]
+	>
+	type __bog_gram_10 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_make'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['make'] >[0]
+	>
+	type __bog_gram_11 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_open'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['open'] >[0]
+	>
+	type __bog_gram_12 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_open'] >[1]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['open'] >[1]
+	>
+	type __bog_gram_13 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_join'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['join'] >[0]
+	>
+	type __bog_gram_14 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_join'] >[1]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['join'] >[1]
+	>
+	type __bog_gram_15 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_join_active'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['join_active'] >[0]
+	>
+	type __bog_gram_16 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_forget'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['forget'] >[0]
+	>
+	type __bog_gram_17 = $mol_type_enforce<
+		Parameters< $bog_gram['registry_forget'] >[1]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['forget'] >[1]
+	>
+	type __bog_gram_18 = $mol_type_enforce<
+		Parameters< $bog_gram['user_source'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Registry'] >['source_title'] >[0]
+	>
+	type __bog_gram_19 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_name'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['name'] >[0]
+	>
+	type __bog_gram_20 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_note'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['note'] >[0]
+	>
+	type __bog_gram_21 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_label'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['label'] >[0]
+	>
+	type __bog_gram_22 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_known'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['known'] >[0]
+	>
+	type __bog_gram_23 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_accept'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['accept'] >[0]
+	>
+	type __bog_gram_24 = $mol_type_enforce<
+		Parameters< $bog_gram['peer_pass_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['People'] >['pass_of'] >[0]
+	>
+	type __bog_gram_25 = $mol_type_enforce<
+		Parameters< $bog_gram['saved_is'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['saved_is'] >[0]
+	>
+	type __bog_gram_26 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_store'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['store'] >[0]
+	>
+	type __bog_gram_27 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_lords'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['lords'] >[0]
+	>
+	type __bog_gram_28 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_mates'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['mates'] >[0]
+	>
+	type __bog_gram_29 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_peer'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['peer'] >[0]
+	>
+	type __bog_gram_30 = $mol_type_enforce<
+		Parameters< $bog_gram['group_title'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['group_title'] >[0]
+	>
+	type __bog_gram_31 = $mol_type_enforce<
+		Parameters< $bog_gram['group_is'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['group_is'] >[0]
+	>
+	type __bog_gram_32 = $mol_type_enforce<
+		Parameters< $bog_gram['group_name_auto'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['group_name_auto'] >[0]
+	>
+	type __bog_gram_33 = $mol_type_enforce<
+		Parameters< $bog_gram['admin_lords'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['admins'] >[0]
+	>
+	type __bog_gram_34 = $mol_type_enforce<
+		Parameters< $bog_gram['admin_me'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['admin_me'] >[0]
+	>
+	type __bog_gram_35 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_owner'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['owner'] >[0]
+	>
+	type __bog_gram_36 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_own'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['own'] >[0]
+	>
+	type __bog_gram_37 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_title'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['title'] >[0]
+	>
+	type __bog_gram_38 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_avatar_id'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['avatar_id'] >[0]
+	>
+	type __bog_gram_39 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_tint'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['tint'] >[0]
+	>
+	type __bog_gram_40 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_moment'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['moment'] >[0]
+	>
+	type __bog_gram_41 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_alive'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['alive'] >[0]
+	>
+	type __bog_gram_42 = $mol_type_enforce<
+		Parameters< $bog_gram['session_links_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['links_of'] >[0]
+	>
+	type __bog_gram_43 = $mol_type_enforce<
+		Parameters< $bog_gram['session_land_by'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['land'] >[0]
+	>
+	type __bog_gram_44 = $mol_type_enforce<
+		Parameters< $bog_gram['session_lands_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['lands_of'] >[0]
+	>
+	type __bog_gram_45 = $mol_type_enforce<
+		Parameters< $bog_gram['session_land_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['land_of'] >[0]
+	>
+	type __bog_gram_46 = $mol_type_enforce<
+		Parameters< $bog_gram['session_store_last'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['session'] >[0]
+	>
+	type __bog_gram_47 = $mol_type_enforce<
+		Parameters< $bog_gram['messages_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['messages_of'] >[0]
+	>
+	type __bog_gram_48 = $mol_type_enforce<
+		Parameters< $bog_gram['messages_alive_of'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['messages_alive_of'] >[0]
+	>
+	type __bog_gram_49 = $mol_type_enforce<
+		Parameters< $bog_gram['unread_total'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['unread'] >[0]
+	>
+	type __bog_gram_50 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_preview'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['preview'] >[0]
+	>
+	type __bog_gram_51 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_time'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['time'] >[0]
+	>
+	type __bog_gram_52 = $mol_type_enforce<
+		Parameters< $bog_gram['mine_wrote'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Talk'] >['mine_wrote'] >[0]
+	>
+	type __bog_gram_53 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_kind'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Roster'] >['kind'] >[0]
+	>
+	type __bog_gram_54 = $mol_type_enforce<
+		Parameters< $bog_gram['archive_is'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Roster'] >['archive_is'] >[0]
+	>
+	type __bog_gram_55 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_with'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Roster'] >['with'] >[0]
+	>
+	type __bog_gram_56 = $mol_type_enforce<
+		Parameters< $bog_gram['contact_source'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Roster'] >['contact_source'] >[0]
+	>
+	type __bog_gram_57 = $mol_type_enforce<
+		Parameters< $bog_gram['member_error'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['error'] >[0]
+	>
+	type __bog_gram_58 = $mol_type_enforce<
+		Parameters< $bog_gram['member_history'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['history'] >[0]
+	>
+	type __bog_gram_59 = $mol_type_enforce<
+		Parameters< $bog_gram['group_name'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_name'] >[0]
+	>
+	type __bog_gram_60 = $mol_type_enforce<
+		Parameters< $bog_gram['group_id'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_id'] >[0]
+	>
+	type __bog_gram_61 = $mol_type_enforce<
+		Parameters< $bog_gram['group_pick'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_pick'] >[0]
+	>
+	type __bog_gram_62 = $mol_type_enforce<
+		Parameters< $bog_gram['group_pick'] >[1]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_pick'] >[1]
+	>
+	type __bog_gram_63 = $mol_type_enforce<
+		Parameters< $bog_gram['group_chosen_drop'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_drop'] >[0]
+	>
+	type __bog_gram_64 = $mol_type_enforce<
+		Parameters< $bog_gram['group_chosen_drop'] >[1]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_drop'] >[1]
+	>
+	type __bog_gram_65 = $mol_type_enforce<
+		Parameters< $bog_gram['group_id_add'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Crew'] >['draft_id_add'] >[0]
+	>
+	type __bog_gram_66 = $mol_type_enforce<
+		Parameters< $bog_gram['ask_lord'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Lobby'] >['lord_of'] >[0]
+	>
+	type __bog_gram_67 = $mol_type_enforce<
+		Parameters< $bog_gram['dialog_pending'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Invite'] >['pending'] >[0]
+	>
+	type __bog_gram_68 = $mol_type_enforce<
+		Parameters< $bog_gram['invite_drop'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Invite'] >['drop'] >[0]
+	>
+	type __bog_gram_69 = $mol_type_enforce<
+		Parameters< $bog_gram['notify_toggle'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Alerts'] >['toggle'] >[0]
+	>
+	type __bog_gram_70 = $mol_type_enforce<
+		Parameters< $bog_gram['notify_on'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Alerts'] >['on'] >[0]
+	>
+	type $mol_paragraph__title_bog_gram_71 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_72 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_73 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_74 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_menu__Theme_bog_gram_75 = $mol_type_enforce<
+		ReturnType< $bog_gram['Theme'] >
+		,
+		ReturnType< $bog_gram_menu['Theme'] >
+	>
+	type $bog_gram_menu__compose_bog_gram_76 = $mol_type_enforce<
+		ReturnType< $bog_gram['compose_open'] >
+		,
+		ReturnType< $bog_gram_menu['compose'] >
+	>
+	type $bog_gram_menu__group_bog_gram_77 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_open'] >
+		,
+		ReturnType< $bog_gram_menu['group'] >
+	>
+	type $bog_gram_menu__music_bog_gram_78 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_open'] >
+		,
+		ReturnType< $bog_gram_menu['music'] >
+	>
+	type $bog_gram_menu__settings_bog_gram_79 = $mol_type_enforce<
+		ReturnType< $bog_gram['settings_open'] >
+		,
+		ReturnType< $bog_gram_menu['settings'] >
+	>
+	type $bog_gram_menu__invite_plate_text_bog_gram_80 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_plate_text'] >
+		,
+		ReturnType< $bog_gram_menu['invite_plate_text'] >
+	>
+	type $bog_gram_menu__invite_drop_bog_gram_81 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_drop'] >
+		,
+		ReturnType< $bog_gram_menu['invite_drop'] >
+	>
+	type $bog_gram_menu__ask_plate_text_bog_gram_82 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_plate_text'] >
+		,
+		ReturnType< $bog_gram_menu['ask_plate_text'] >
+	>
+	type $bog_gram_menu__visible_bog_gram_83 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_visible'] >
+		,
+		ReturnType< $bog_gram_menu['visible'] >
+	>
+	type $bog_gram_menu__archived_bog_gram_84 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_fresh'] >
+		,
+		ReturnType< $bog_gram_menu['archived'] >
+	>
+	type $bog_gram_menu__requests_bog_gram_85 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_ids'] >
+		,
+		ReturnType< $bog_gram_menu['requests'] >
+	>
+	type $bog_gram_menu__dialog_title_bog_gram_86 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_title'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_title'] >
+	>
+	type $bog_gram_menu__dialog_time_bog_gram_87 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_time'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_time'] >
+	>
+	type $bog_gram_menu__dialog_preview_bog_gram_88 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_preview'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_preview'] >
+	>
+	type $bog_gram_menu__dialog_avatar_id_bog_gram_89 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_avatar_id'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
+	>
+	type $bog_gram_menu__dialog_tint_bog_gram_90 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_tint'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_tint'] >
+	>
+	type $bog_gram_menu__unread_bog_gram_91 = $mol_type_enforce<
+		ReturnType< $bog_gram['unread_count'] >
+		,
+		ReturnType< $bog_gram_menu['unread'] >
+	>
+	type $bog_gram_menu__current_is_bog_gram_92 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_current_is'] >
+		,
+		ReturnType< $bog_gram_menu['current_is'] >
+	>
+	type $bog_gram_menu__request_is_bog_gram_93 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_is'] >
+		,
+		ReturnType< $bog_gram_menu['request_is'] >
+	>
+	type $bog_gram_menu__archive_is_bog_gram_94 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_is'] >
+		,
+		ReturnType< $bog_gram_menu['archive_is'] >
+	>
+	type $bog_gram_menu__select_bog_gram_95 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_select'] >
+		,
+		ReturnType< $bog_gram_menu['select'] >
+	>
+	type $bog_gram_menu__archive_bog_gram_96 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_archive'] >
+		,
+		ReturnType< $bog_gram_menu['archive'] >
+	>
+	type $bog_gram_menu__unarchive_bog_gram_97 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_unarchive'] >
+		,
+		ReturnType< $bog_gram_menu['unarchive'] >
+	>
+	type $bog_gram_menu__drop_bog_gram_98 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_delete'] >
+		,
+		ReturnType< $bog_gram_menu['drop'] >
+	>
+	type $bog_gram_menu__accept_bog_gram_99 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_accept'] >
+		,
+		ReturnType< $bog_gram_menu['accept'] >
+	>
+	type $bog_gram_menu__saved_title_bog_gram_100 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_title'] >
+		,
+		ReturnType< $bog_gram_menu['saved_title'] >
+	>
+	type $bog_gram_menu__saved_time_bog_gram_101 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_time'] >
+		,
+		ReturnType< $bog_gram_menu['saved_time'] >
+	>
+	type $bog_gram_menu__saved_preview_bog_gram_102 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_preview'] >
+		,
+		ReturnType< $bog_gram_menu['saved_preview'] >
+	>
+	type $bog_gram_menu__saved_current_bog_gram_103 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_current_is'] >
+		,
+		ReturnType< $bog_gram_menu['saved_current'] >
+	>
+	type $bog_gram_menu__saved_open_bog_gram_104 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_open'] >
+		,
+		ReturnType< $bog_gram_menu['saved_open'] >
+	>
+	type $bog_gram_music__hidden_bog_gram_105 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_hidden'] >
+		,
+		ReturnType< $bog_gram_music['hidden'] >
+	>
+	type $bog_gram_music__close_bog_gram_106 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_close'] >
+		,
+		ReturnType< $bog_gram_music['close'] >
+	>
+	type $bog_gram_settings__close_bog_gram_107 = $mol_type_enforce<
+		ReturnType< $bog_gram['settings_close'] >
+		,
+		ReturnType< $bog_gram_settings['close'] >
+	>
+	type $bog_gram_settings__user_name_bog_gram_108 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_name'] >
+		,
+		ReturnType< $bog_gram_settings['user_name'] >
+	>
+	type $bog_gram_settings__my_lord_bog_gram_109 = $mol_type_enforce<
+		ReturnType< $bog_gram['my_lord'] >
+		,
+		ReturnType< $bog_gram_settings['my_lord'] >
+	>
+	type $bog_gram_settings__invite_link_bog_gram_110 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_link'] >
+		,
+		ReturnType< $bog_gram_settings['invite_link'] >
+	>
+	type $bog_gram_settings__notify_status_bog_gram_111 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_status'] >
+		,
+		ReturnType< $bog_gram_settings['notify_status'] >
+	>
+	type $bog_gram_settings__notify_label_bog_gram_112 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_label'] >
+		,
+		ReturnType< $bog_gram_settings['notify_label'] >
+	>
+	type $bog_gram_settings__notify_supported_bog_gram_113 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_supported'] >
+		,
+		ReturnType< $bog_gram_settings['notify_supported'] >
+	>
+	type $bog_gram_settings__notify_toggle_bog_gram_114 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_toggle'] >
+		,
+		ReturnType< $bog_gram_settings['notify_toggle'] >
+	>
+	type $bog_gram_settings__notify_on_bog_gram_115 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_on'] >
+		,
+		ReturnType< $bog_gram_settings['notify_on'] >
+	>
+	type $bog_gram_settings__registry_ids_bog_gram_116 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_ids'] >
+		,
+		ReturnType< $bog_gram_settings['registry_ids'] >
+	>
+	type $bog_gram_settings__registry_active_bog_gram_117 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_active'] >
+		,
+		ReturnType< $bog_gram_settings['registry_active'] >
+	>
+	type $bog_gram_settings__registry_uri_bog_gram_118 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_uri'] >
+		,
+		ReturnType< $bog_gram_settings['registry_uri'] >
+	>
+	type $bog_gram_settings__registry_name_bog_gram_119 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_name'] >
+		,
+		ReturnType< $bog_gram_settings['registry_name'] >
+	>
+	type $bog_gram_settings__registry_make_bog_gram_120 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_make'] >
+		,
+		ReturnType< $bog_gram_settings['registry_make'] >
+	>
+	type $bog_gram_settings__registry_title_bog_gram_121 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_title'] >
+		,
+		ReturnType< $bog_gram_settings['registry_title'] >
+	>
+	type $bog_gram_settings__registry_status_bog_gram_122 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_status'] >
+		,
+		ReturnType< $bog_gram_settings['registry_status'] >
+	>
+	type $bog_gram_settings__registry_joined_bog_gram_123 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_joined'] >
+		,
+		ReturnType< $bog_gram_settings['registry_joined'] >
+	>
+	type $bog_gram_settings__registry_active_is_bog_gram_124 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_active_is'] >
+		,
+		ReturnType< $bog_gram_settings['registry_active_is'] >
+	>
+	type $bog_gram_settings__registry_open_bog_gram_125 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_open'] >
+		,
+		ReturnType< $bog_gram_settings['registry_open'] >
+	>
+	type $bog_gram_settings__registry_join_bog_gram_126 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join'] >
+		,
+		ReturnType< $bog_gram_settings['registry_join'] >
+	>
+	type $bog_gram_settings__registry_forget_bog_gram_127 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_forget'] >
+		,
+		ReturnType< $bog_gram_settings['registry_forget'] >
+	>
+	type $bog_gram_compose__close_bog_gram_128 = $mol_type_enforce<
+		ReturnType< $bog_gram['compose_close'] >
+		,
+		ReturnType< $bog_gram_compose['close'] >
+	>
+	type $bog_gram_compose__open_bog_gram_129 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_open'] >
+		,
+		ReturnType< $bog_gram_compose['open'] >
+	>
+	type $bog_gram_compose__users_bog_gram_130 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_lords'] >
+		,
+		ReturnType< $bog_gram_compose['users'] >
+	>
+	type $bog_gram_compose__user_title_bog_gram_131 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_compose['user_title'] >
+	>
+	type $bog_gram_compose__user_source_bog_gram_132 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_source'] >
+		,
+		ReturnType< $bog_gram_compose['user_source'] >
+	>
+	type $bog_gram_compose__registry_ids_bog_gram_133 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_ids'] >
+		,
+		ReturnType< $bog_gram_compose['registry_ids'] >
+	>
+	type $bog_gram_compose__join_needed_bog_gram_134 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join_needed'] >
+		,
+		ReturnType< $bog_gram_compose['join_needed'] >
+	>
+	type $bog_gram_compose__join_bog_gram_135 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join_active'] >
+		,
+		ReturnType< $bog_gram_compose['join'] >
+	>
+	type $bog_gram_group__close_bog_gram_136 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_close'] >
+		,
+		ReturnType< $bog_gram_group['close'] >
+	>
+	type $bog_gram_group__make_bog_gram_137 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_make'] >
+		,
+		ReturnType< $bog_gram_group['make'] >
+	>
+	type $bog_gram_group__name_bog_gram_138 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_name'] >
+		,
+		ReturnType< $bog_gram_group['name'] >
+	>
+	type $bog_gram_group__picked_bog_gram_139 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_picked'] >
+		,
+		ReturnType< $bog_gram_group['picked'] >
+	>
+	type $bog_gram_group__lost_bog_gram_140 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_lost'] >
+		,
+		ReturnType< $bog_gram_group['lost'] >
+	>
+	type $bog_gram_group__id_bog_gram_141 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id'] >
+		,
+		ReturnType< $bog_gram_group['id'] >
+	>
+	type $bog_gram_group__id_error_bog_gram_142 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id_error'] >
+		,
+		ReturnType< $bog_gram_group['id_error'] >
+	>
+	type $bog_gram_group__pick_bog_gram_143 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_pick'] >
+		,
+		ReturnType< $bog_gram_group['pick'] >
+	>
+	type $bog_gram_group__drop_bog_gram_144 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_chosen_drop'] >
+		,
+		ReturnType< $bog_gram_group['drop'] >
+	>
+	type $bog_gram_group__id_add_bog_gram_145 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id_add'] >
+		,
+		ReturnType< $bog_gram_group['id_add'] >
+	>
+	type $bog_gram_group__label_bog_gram_146 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_group['label'] >
+	>
+	type $bog_gram_group__contact_lords_bog_gram_147 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_lords'] >
+		,
+		ReturnType< $bog_gram_group['contact_lords'] >
+	>
+	type $bog_gram_group__contact_source_bog_gram_148 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_source'] >
+		,
+		ReturnType< $bog_gram_group['contact_source'] >
+	>
+	type $bog_gram_members__close_bog_gram_149 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_close'] >
+		,
+		ReturnType< $bog_gram_members['close'] >
+	>
+	type $bog_gram_members__me_bog_gram_150 = $mol_type_enforce<
+		ReturnType< $bog_gram['my_lord'] >
+		,
+		ReturnType< $bog_gram_members['me'] >
+	>
+	type $bog_gram_members__lords_bog_gram_151 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_lords'] >
+		,
+		ReturnType< $bog_gram_members['lords'] >
+	>
+	type $bog_gram_members__label_bog_gram_152 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_members['label'] >
+	>
+	type $bog_gram_members__status_bog_gram_153 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_status'] >
+		,
+		ReturnType< $bog_gram_members['status'] >
+	>
+	type $bog_gram_members__admin_bog_gram_154 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_admin'] >
+		,
+		ReturnType< $bog_gram_members['admin'] >
+	>
+	type $bog_gram_members__owner_bog_gram_155 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_owner'] >
+		,
+		ReturnType< $bog_gram_members['owner'] >
+	>
+	type $bog_gram_members__admin_is_bog_gram_156 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_admin'] >
+		,
+		ReturnType< $bog_gram_members['admin_is'] >
+	>
+	type $bog_gram_members__error_bog_gram_157 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_error'] >
+		,
+		ReturnType< $bog_gram_members['error'] >
+	>
+	type $bog_gram_members__join_link_bog_gram_158 = $mol_type_enforce<
+		ReturnType< $bog_gram['join_link'] >
+		,
+		ReturnType< $bog_gram_members['join_link'] >
+	>
+	type $bog_gram_members__asks_bog_gram_159 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_asks'] >
+		,
+		ReturnType< $bog_gram_members['asks'] >
+	>
+	type $bog_gram_members__ask_lord_bog_gram_160 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_lord'] >
+		,
+		ReturnType< $bog_gram_members['ask_lord'] >
+	>
+	type $bog_gram_members__accept_bog_gram_161 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_accept'] >
+		,
+		ReturnType< $bog_gram_members['accept'] >
+	>
+	type $bog_gram_members__reject_bog_gram_162 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_reject'] >
+		,
+		ReturnType< $bog_gram_members['reject'] >
+	>
+	type $bog_gram_members__candidates_bog_gram_163 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_candidates'] >
+		,
+		ReturnType< $bog_gram_members['candidates'] >
+	>
+	type $bog_gram_members__contact_source_bog_gram_164 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_source'] >
+		,
+		ReturnType< $bog_gram_members['contact_source'] >
+	>
+	type $bog_gram_members__history_bog_gram_165 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_history'] >
+		,
+		ReturnType< $bog_gram_members['history'] >
+	>
+	type $bog_gram_members__add_bog_gram_166 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_add'] >
+		,
+		ReturnType< $bog_gram_members['add'] >
+	>
+	type $bog_gram_members__part_bog_gram_167 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_drop'] >
+		,
+		ReturnType< $bog_gram_members['part'] >
+	>
+	type $bog_gram_members__promote_bog_gram_168 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_raise'] >
+		,
+		ReturnType< $bog_gram_members['promote'] >
+	>
+	type $bog_gram_members__leave_bog_gram_169 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_leave'] >
+		,
+		ReturnType< $bog_gram_members['leave'] >
+	>
+	type $bog_gram_registry__Account_bog_gram_170 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_registry['Account'] >
+	>
+	type $bog_gram_people__Account_bog_gram_171 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_people['Account'] >
+	>
+	type $bog_gram_people__Registry_bog_gram_172 = $mol_type_enforce<
+		ReturnType< $bog_gram['Registry'] >
+		,
+		ReturnType< $bog_gram_people['Registry'] >
+	>
+	type $bog_gram_talk__Account_bog_gram_173 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_talk['Account'] >
+	>
+	type $bog_gram_talk__People_bog_gram_174 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_talk['People'] >
+	>
+	type $bog_gram_roster__Account_bog_gram_175 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_roster['Account'] >
+	>
+	type $bog_gram_roster__People_bog_gram_176 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_roster['People'] >
+	>
+	type $bog_gram_roster__Talk_bog_gram_177 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_roster['Talk'] >
+	>
+	type $bog_gram_crew__Account_bog_gram_178 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_crew['Account'] >
+	>
+	type $bog_gram_crew__People_bog_gram_179 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_crew['People'] >
+	>
+	type $bog_gram_crew__Talk_bog_gram_180 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_crew['Talk'] >
+	>
+	type $bog_gram_lobby__Account_bog_gram_181 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_lobby['Account'] >
+	>
+	type $bog_gram_lobby__People_bog_gram_182 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_lobby['People'] >
+	>
+	type $bog_gram_lobby__Talk_bog_gram_183 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_lobby['Talk'] >
+	>
+	type $bog_gram_lobby__Roster_bog_gram_184 = $mol_type_enforce<
+		ReturnType< $bog_gram['Roster'] >
+		,
+		ReturnType< $bog_gram_lobby['Roster'] >
+	>
+	type $bog_gram_lobby__Crew_bog_gram_185 = $mol_type_enforce<
+		ReturnType< $bog_gram['Crew'] >
+		,
+		ReturnType< $bog_gram_lobby['Crew'] >
+	>
+	type $bog_gram_invite__Account_bog_gram_186 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_invite['Account'] >
+	>
+	type $bog_gram_invite__People_bog_gram_187 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_invite['People'] >
+	>
+	type $bog_gram_invite__Roster_bog_gram_188 = $mol_type_enforce<
+		ReturnType< $bog_gram['Roster'] >
+		,
+		ReturnType< $bog_gram_invite['Roster'] >
+	>
+	type $bog_gram_alerts__Account_bog_gram_189 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_alerts['Account'] >
+	>
+	type $bog_gram_chat__dialog_bog_gram_190 = $mol_type_enforce<
+		ReturnType< $bog_gram['chat_dialog'] >
+		,
+		ReturnType< $bog_gram_chat['dialog'] >
+	>
+	type $bog_gram_chat__my_lord_bog_gram_191 = $mol_type_enforce<
+		ReturnType< $bog_gram['my_lord'] >
+		,
+		ReturnType< $bog_gram_chat['my_lord'] >
+	>
+	type $bog_gram_chat__Talk_bog_gram_192 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_chat['Talk'] >
+	>
+	type $bog_gram_chat__People_bog_gram_193 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_chat['People'] >
+	>
+	type $bog_gram_chat__Alerts_bog_gram_194 = $mol_type_enforce<
+		ReturnType< $bog_gram['Alerts'] >
+		,
+		ReturnType< $bog_gram_chat['Alerts'] >
+	>
+	type $bog_gram_chat__close_bog_gram_195 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_close'] >
+		,
+		ReturnType< $bog_gram_chat['close'] >
+	>
+	type $bog_gram_chat__members_bog_gram_196 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_open'] >
+		,
+		ReturnType< $bog_gram_chat['members'] >
+	>
+	export class $bog_gram extends $mol_book2 {
+		lights( ): string
+		Skin( ): $bog_builderui_skin
+		Theme( ): $bog_theme_auto
+		my_lord( ): ReturnType< ReturnType< $bog_gram['Account'] >['my_lord'] >
+		my_pass( ): ReturnType< ReturnType< $bog_gram['Account'] >['my_pass'] >
+		user_name( next?: ReturnType< ReturnType< $bog_gram['Account'] >['user_name'] > ): ReturnType< ReturnType< $bog_gram['Account'] >['user_name'] >
+		dialogs_store( ): ReturnType< ReturnType< $bog_gram['Account'] >['dialogs_store'] >
+		monitor_store( ): ReturnType< ReturnType< $bog_gram['Account'] >['monitor_store'] >
+		monitor_link( ): ReturnType< ReturnType< $bog_gram['Account'] >['monitor_link'] >
+		account_ready( ): ReturnType< ReturnType< $bog_gram['Account'] >['ready'] >
+		registry_ids( ): ReturnType< ReturnType< $bog_gram['Registry'] >['ids'] >
+		registry_active( ): ReturnType< ReturnType< $bog_gram['Registry'] >['active'] >
+		registry_title( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['title'] >
+		registry_status( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['status'] >
+		registry_joined( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['joined'] >
+		registry_active_is( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['active_is'] >
+		registry_uri( ): ReturnType< ReturnType< $bog_gram['Registry'] >['uri'] >
+		registry_name( next?: ReturnType< ReturnType< $bog_gram['Registry'] >['name'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['name'] >
+		registry_make( next?: ReturnType< ReturnType< $bog_gram['Registry'] >['make'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['make'] >
+		registry_open( id: any, next?: ReturnType< ReturnType< $bog_gram['Registry'] >['open'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['open'] >
+		registry_join( id: any, next?: ReturnType< ReturnType< $bog_gram['Registry'] >['join'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['join'] >
+		registry_join_active( next?: ReturnType< ReturnType< $bog_gram['Registry'] >['join_active'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['join_active'] >
+		registry_forget( id: any, next?: ReturnType< ReturnType< $bog_gram['Registry'] >['forget'] > ): ReturnType< ReturnType< $bog_gram['Registry'] >['forget'] >
+		registry_join_needed( ): ReturnType< ReturnType< $bog_gram['Registry'] >['join_needed'] >
+		user_sources( ): ReturnType< ReturnType< $bog_gram['Registry'] >['sources'] >
+		user_lords( ): ReturnType< ReturnType< $bog_gram['Registry'] >['people'] >
+		user_source( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['source_title'] >
+		registry_remember( ): ReturnType< ReturnType< $bog_gram['Registry'] >['remember'] >
+		registry_keys_fill( ): ReturnType< ReturnType< $bog_gram['Registry'] >['keys_fill'] >
+		peer_name( id: any): ReturnType< ReturnType< $bog_gram['People'] >['name'] >
+		peer_note( id: any): ReturnType< ReturnType< $bog_gram['People'] >['note'] >
+		peer_label( id: any): ReturnType< ReturnType< $bog_gram['People'] >['label'] >
+		peer_known( id: any): ReturnType< ReturnType< $bog_gram['People'] >['known'] >
+		peer_accept( id: any): ReturnType< ReturnType< $bog_gram['People'] >['accept'] >
+		peer_pass_of( id: any): ReturnType< ReturnType< $bog_gram['People'] >['pass_of'] >
+		saved_title( ): ReturnType< ReturnType< $bog_gram['Talk'] >['saved_title'] >
+		saved_id( ): ReturnType< ReturnType< $bog_gram['Talk'] >['saved_id'] >
+		saved_links( ): ReturnType< ReturnType< $bog_gram['Talk'] >['saved_links'] >
+		saved_is( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['saved_is'] >
+		saved_land( ): ReturnType< ReturnType< $bog_gram['Talk'] >['saved_land'] >
+		dialog_store( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['store'] >
+		dialog_lords( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['lords'] >
+		dialog_mates( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['mates'] >
+		dialog_peer( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['peer'] >
+		group_title( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['group_title'] >
+		group_is( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['group_is'] >
+		group_name_auto( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['group_name_auto'] >
+		admin_lords( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['admins'] >
+		admin_me( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['admin_me'] >
+		dialog_owner( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['owner'] >
+		dialog_own( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['own'] >
+		dialog_title( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['title'] >
+		dialog_avatar_id( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['avatar_id'] >
+		dialog_tint( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['tint'] >
+		dialog_moment( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['moment'] >
+		dialog_alive( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['alive'] >
+		session_links_of( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['links_of'] >
+		session_land_by( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['land'] >
+		session_lands_of( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['lands_of'] >
+		session_land_of( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['land_of'] >
+		session_store_last( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['session'] >
+		messages_of( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['messages_of'] >
+		messages_alive_of( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['messages_alive_of'] >
+		unread_total( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['unread'] >
+		dialog_preview( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['preview'] >
+		dialog_time( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['time'] >
+		mine_wrote( id: any): ReturnType< ReturnType< $bog_gram['Talk'] >['mine_wrote'] >
+		dialog_ids( ): ReturnType< ReturnType< $bog_gram['Roster'] >['ids'] >
+		hidden_ids( ): ReturnType< ReturnType< $bog_gram['Roster'] >['hidden'] >
+		dialog_kind( id: any): ReturnType< ReturnType< $bog_gram['Roster'] >['kind'] >
+		request_ids( ): ReturnType< ReturnType< $bog_gram['Roster'] >['requests'] >
+		archive_ids( ): ReturnType< ReturnType< $bog_gram['Roster'] >['archived'] >
+		archive_is( id: any): ReturnType< ReturnType< $bog_gram['Roster'] >['archive_is'] >
+		dialog_visible( ): ReturnType< ReturnType< $bog_gram['Roster'] >['visible'] >
+		dialog_with( id: any): ReturnType< ReturnType< $bog_gram['Roster'] >['with'] >
+		inbox_merge( ): ReturnType< ReturnType< $bog_gram['Roster'] >['invites_merge'] >
+		monitor_fill( ): ReturnType< ReturnType< $bog_gram['Roster'] >['watch_fill'] >
+		contact_lords( ): ReturnType< ReturnType< $bog_gram['Roster'] >['contact_lords'] >
+		contact_source( id: any): ReturnType< ReturnType< $bog_gram['Roster'] >['contact_source'] >
+		member_error( next?: ReturnType< ReturnType< $bog_gram['Crew'] >['error'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['error'] >
+		member_history( next?: ReturnType< ReturnType< $bog_gram['Crew'] >['history'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['history'] >
+		group_name( next?: ReturnType< ReturnType< $bog_gram['Crew'] >['draft_name'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_name'] >
+		group_picked( ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_picked'] >
+		group_lost( ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_lost'] >
+		group_id( next?: ReturnType< ReturnType< $bog_gram['Crew'] >['draft_id'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_id'] >
+		group_id_error( ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_error'] >
+		group_pick( id: any, next?: ReturnType< ReturnType< $bog_gram['Crew'] >['draft_pick'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_pick'] >
+		group_chosen_drop( id: any, next?: ReturnType< ReturnType< $bog_gram['Crew'] >['draft_drop'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_drop'] >
+		group_id_add( next?: ReturnType< ReturnType< $bog_gram['Crew'] >['draft_id_add'] > ): ReturnType< ReturnType< $bog_gram['Crew'] >['draft_id_add'] >
+		outbox_flush( ): ReturnType< ReturnType< $bog_gram['Lobby'] >['outbox_flush'] >
+		denies_merge( ): ReturnType< ReturnType< $bog_gram['Lobby'] >['denies_merge'] >
+		asks_flush( ): ReturnType< ReturnType< $bog_gram['Lobby'] >['asks_flush'] >
+		ask_plate_text( ): ReturnType< ReturnType< $bog_gram['Lobby'] >['plate'] >
+		ask_lord( id: any): ReturnType< ReturnType< $bog_gram['Lobby'] >['lord_of'] >
+		invite_link( ): ReturnType< ReturnType< $bog_gram['Invite'] >['link'] >
+		invite_plate_text( ): ReturnType< ReturnType< $bog_gram['Invite'] >['plate'] >
+		dialog_pending( next?: ReturnType< ReturnType< $bog_gram['Invite'] >['pending'] > ): ReturnType< ReturnType< $bog_gram['Invite'] >['pending'] >
+		invite_drop( next?: ReturnType< ReturnType< $bog_gram['Invite'] >['drop'] > ): ReturnType< ReturnType< $bog_gram['Invite'] >['drop'] >
+		pending_timer( ): ReturnType< ReturnType< $bog_gram['Invite'] >['timer'] >
+		notify_supported( ): ReturnType< ReturnType< $bog_gram['Alerts'] >['supported'] >
+		notify_status( ): ReturnType< ReturnType< $bog_gram['Alerts'] >['status'] >
+		notify_label( ): ReturnType< ReturnType< $bog_gram['Alerts'] >['label'] >
+		notify_toggle( next?: ReturnType< ReturnType< $bog_gram['Alerts'] >['toggle'] > ): ReturnType< ReturnType< $bog_gram['Alerts'] >['toggle'] >
+		notify_on( next?: ReturnType< ReturnType< $bog_gram['Alerts'] >['on'] > ): ReturnType< ReturnType< $bog_gram['Alerts'] >['on'] >
+		notify_auto( ): ReturnType< ReturnType< $bog_gram['Alerts'] >['auto'] >
+		Intro_title( ): $mol_paragraph
+		Intro_hint( ): $mol_paragraph
+		Intro_plate( ): $mol_view
+		Intro( ): $mol_view
+		compose_open( next?: any ): any
+		group_open( next?: any ): any
+		music_open( next?: any ): any
+		settings_open( next?: any ): any
+		archive_fresh( ): readonly(string)[]
+		unread_count( id: any): number
+		dialog_current_is( id: any): boolean
+		request_is( id: any): boolean
+		dialog_select( id: any, next?: any ): any
+		dialog_archive( id: any, next?: any ): any
+		dialog_unarchive( id: any, next?: any ): any
+		dialog_delete( id: any, next?: any ): any
+		request_accept( id: any, next?: any ): any
+		saved_time( ): string
+		saved_preview( ): string
+		saved_current_is( ): boolean
+		saved_open( next?: any ): any
+		Menu( ): $bog_gram_menu
+		music_hidden( ): boolean
+		music_close( next?: any ): any
+		Music_page( ): $bog_gram_music
+		settings_close( next?: any ): any
+		Settings_page( ): $bog_gram_settings
+		compose_close( next?: any ): any
+		dialog_open( id: any, next?: any ): any
+		Compose_page( ): $bog_gram_compose
+		group_close( next?: any ): any
+		group_make( next?: any ): any
+		Group_page( ): $bog_gram_group
+		members_close( next?: any ): any
+		member_lords( ): readonly(string)[]
+		member_status( id: any): string
+		members_admin( ): boolean
+		members_owner( ): boolean
+		member_admin( id: any): boolean
+		join_link( ): string
+		members_asks( ): readonly(string)[]
+		ask_accept( id: any, next?: any ): any
+		ask_reject( id: any, next?: any ): any
+		member_candidates( ): readonly(string)[]
+		member_add( id: any, next?: any ): any
+		member_drop( id: any, next?: any ): any
+		member_raise( id: any, next?: any ): any
+		group_leave( next?: any ): any
+		Members_page( ): $bog_gram_members
+		chat_dialog( id: any): string
+		dialog_close( next?: any ): any
+		members_open( next?: any ): any
+		plugins( ): readonly(any)[]
+		Account( ): $bog_gram_account
+		Registry( ): $bog_gram_registry
+		People( ): $bog_gram_people
+		Talk( ): $bog_gram_talk
+		Roster( ): $bog_gram_roster
+		Crew( ): $bog_gram_crew
+		Lobby( ): $bog_gram_lobby
+		Invite( ): $bog_gram_invite
+		Alerts( ): $bog_gram_alerts
+		Placeholder( ): ReturnType< $bog_gram['Intro'] >
+		pages( ): readonly(any)[]
+		Chat_page( id: any): $bog_gram_chat
+	}
+	
+}
+
+//# sourceMappingURL=gram.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram extends $.$bog_gram {
+        saved_preview(): string;
+        saved_time(): string;
+        saved_current_is(): boolean;
+        saved_open(next?: any): null;
+        owner_me(id: string): boolean;
+        admin_is(id: string, lord: string): boolean;
+        archive_fresh(): string[];
+        request_is(id: string): boolean;
+        dialog_archive(id: string, next?: any): null;
+        dialog_unarchive(id: string, next?: any): null;
+        request_accept(id: string, next?: any): null;
+        dialog_current(next?: string): string;
+        dialog_current_is(id: string): boolean;
+        dialog_select(id: string, next?: any): null;
+        dialog_close(next?: any): null;
+        dialog_delete(id: string, next?: any): null;
+        dialog_active(): string;
+        chat_dialog(id: string): string;
+        compose_opened(next?: boolean): boolean;
+        settings_opened(next?: boolean): boolean;
+        group_opened(next?: boolean): boolean;
+        members_opened(next?: boolean): boolean;
+        compose_open(next?: any): null;
+        compose_close(next?: any): null;
+        settings_open(next?: any): null;
+        settings_close(next?: any): null;
+        group_open(next?: any): null;
+        group_close(next?: any): null;
+        members_shown(): boolean;
+        members_open(next?: any): null;
+        members_close(next?: any): null;
+        music_opened(next?: boolean): boolean;
+        music_alive(next?: boolean): boolean;
+        music_hidden(): boolean;
+        music_open(next?: any): null;
+        music_close(next?: any): null;
+        lights(): "light" | "dark" | "system";
+        pages(): ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_chat)[];
+        Placeholder(): $mol_view;
+        dialog_open(lord: string, next?: any): null;
+        dialog_autocreate(): string;
+        dialog_create(peer: string): string | null;
+        group_make(next?: any): null;
+        group_create(title: string, lords: readonly string[], forced: boolean): string;
+        member_lords(): string[];
+        member_status(lord: string): "" | "создатель" | "админ";
+        members_admin(): boolean;
+        members_owner(): boolean;
+        member_admin(lord: string): boolean;
+        members_asks(): string[];
+        member_candidates(): string[];
+        member_add(lord: string, next?: any): null;
+        member_drop(lord: string, next?: any): null;
+        member_raise(lord: string, next?: any): null;
+        ask_accept(entry: string, next?: any): null;
+        ask_reject(entry: string, next?: any): null;
+        group_leave(next?: any): null;
+        unread_count(id: string): number;
+        invite_handle(): string;
+        invite_accept(lord: string, key: string): "start" | "open" | "skip" | "bad";
+        join_link(): string;
+        join_handle(): string;
+        join_request(id: string, by: string): "open" | "skip" | "ask";
+        auto(): void;
     }
 }
 

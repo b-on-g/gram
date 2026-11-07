@@ -10834,6 +10834,260 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_page) = class $mol_page extends ($.$mol_view) {
+		tabindex(){
+			return -1;
+		}
+		Logo(){
+			return null;
+		}
+		title_content(){
+			return [(this.Logo()), (this.title())];
+		}
+		Title(){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ("h1");
+			(obj.sub) = () => ((this.title_content()));
+			return obj;
+		}
+		tools(){
+			return [];
+		}
+		Tools(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.tools()));
+			return obj;
+		}
+		head(){
+			return [(this.Title()), (this.Tools())];
+		}
+		Head(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (64);
+			(obj.dom_name) = () => ("header");
+			(obj.sub) = () => ((this.head()));
+			return obj;
+		}
+		body_scroll_top(next){
+			return (this.Body().scroll_top(next));
+		}
+		body(){
+			return [];
+		}
+		Body_content(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.body()));
+			return obj;
+		}
+		body_content(){
+			return [(this.Body_content())];
+		}
+		Body(){
+			const obj = new this.$.$mol_scroll();
+			(obj.sub) = () => ((this.body_content()));
+			return obj;
+		}
+		foot(){
+			return [];
+		}
+		Foot(){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ("footer");
+			(obj.sub) = () => ((this.foot()));
+			return obj;
+		}
+		dom_name(){
+			return "article";
+		}
+		attr(){
+			return {...(super.attr()), "tabIndex": (this.tabindex())};
+		}
+		sub(){
+			return [
+				(this.Head()), 
+				(this.Body()), 
+				(this.Foot())
+			];
+		}
+	};
+	($mol_mem(($.$mol_page.prototype), "Title"));
+	($mol_mem(($.$mol_page.prototype), "Tools"));
+	($mol_mem(($.$mol_page.prototype), "Head"));
+	($mol_mem(($.$mol_page.prototype), "Body_content"));
+	($mol_mem(($.$mol_page.prototype), "Body"));
+	($mol_mem(($.$mol_page.prototype), "Foot"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { per, rem } = $mol_style_unit;
+        const { hsla, blur } = $mol_style_func;
+        $mol_style_define($mol_page, {
+            display: 'flex',
+            flex: {
+                basis: 'auto',
+                direction: 'column',
+            },
+            alignSelf: 'stretch',
+            maxWidth: per(100),
+            maxHeight: per(100),
+            boxSizing: 'border-box',
+            color: $mol_theme.text,
+            ':focus': {
+                outline: 'none',
+            },
+            Head: {
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-end',
+                flex: 'none',
+                margin: 0,
+                minHeight: rem(4),
+                padding: $mol_gap.block,
+                background: {
+                    color: $mol_theme.card,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                box: {
+                    shadow: [
+                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                    ],
+                },
+                '@media': {
+                    'print': {
+                        box: {
+                            shadow: [[0, `1px`, 0, 0, hsla(0, 0, 0, .25)]],
+                        },
+                    },
+                },
+            },
+            Title: {
+                minHeight: rem(2),
+                margin: 0,
+                padding: $mol_gap.text,
+                gap: $mol_gap.text,
+                wordBreak: 'normal',
+                textShadow: '0 0',
+                font: {
+                    size: 'inherit',
+                    weight: 'normal',
+                },
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: 'auto',
+                },
+            },
+            Tools: {
+                flex: {
+                    basis: 'auto',
+                    grow: 0,
+                    shrink: 1,
+                },
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start',
+                flexWrap: 'wrap',
+                '@media': {
+                    'print': {
+                        display: 'none',
+                    },
+                },
+            },
+            Body: {
+                flex: {
+                    grow: 1000,
+                    shrink: 1,
+                    basis: per(100),
+                },
+            },
+            Body_content: {
+                padding: $mol_gap.block,
+                minHeight: 0,
+                minWidth: 0,
+                flex: {
+                    direction: 'column',
+                    shrink: 1,
+                    grow: 1,
+                },
+                justify: {
+                    self: 'stretch',
+                },
+            },
+            Foot: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                flex: 'none',
+                margin: 0,
+                background: {
+                    color: $mol_theme.card,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                box: {
+                    shadow: [
+                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                    ],
+                },
+                padding: $mol_gap.block,
+                ':empty': {
+                    display: 'none',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_page) = class $bog_gram_page extends ($.$mol_page) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_page, {
+            width: '26rem',
+            Head: {
+                padding: {
+                    top: $mol_style_func.calc(`${$mol_gap.block} + env(safe-area-inset-top)`),
+                    bottom: $mol_gap.block,
+                    left: $mol_gap.block,
+                    right: $mol_gap.block,
+                },
+            },
+            Body_content: {
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: $mol_style_func.calc(`${$mol_gap.block} + env(safe-area-inset-bottom)`),
+                    left: $mol_gap.block,
+                    right: $mol_gap.block,
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_avatar) = class $mol_avatar extends ($.$mol_icon) {
 		view_box(){
 			return "0 0 24 24";
@@ -21775,88 +22029,277 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_page) = class $mol_page extends ($.$mol_view) {
-		tabindex(){
-			return -1;
+	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
+		path(){
+			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
 		}
-		Logo(){
-			return null;
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_check) = class $mol_icon_check extends ($.$mol_icon) {
+		path(){
+			return "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z";
 		}
-		title_content(){
-			return [(this.Logo()), (this.title())];
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_bookmark) = class $mol_icon_bookmark extends ($.$mol_icon) {
+		path(){
+			return "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive) = class $mol_icon_archive extends ($.$mol_icon) {
+		path(){
+			return "M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_account_question) = class $mol_icon_account_question extends ($.$mol_icon) {
+		path(){
+			return "M13,8A4,4 0 0,1 9,12A4,4 0 0,1 5,8A4,4 0 0,1 9,4A4,4 0 0,1 13,8M17,18V20H1V18C1,15.79 4.58,14 9,14C13.42,14 17,15.79 17,18M20.5,14.5V16H19V14.5H20.5M18.5,9.5H17V9A3,3 0 0,1 20,6A3,3 0 0,1 23,9C23,9.97 22.5,10.88 21.71,11.41L21.41,11.6C20.84,12 20.5,12.61 20.5,13.3V13.5H19V13.3C19,12.11 19.6,11 20.59,10.35L20.88,10.16C21.27,9.9 21.5,9.47 21.5,9A1.5,1.5 0 0,0 20,7.5A1.5,1.5 0 0,0 18.5,9V9.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_avatar) {
+		id(){
+			return "";
+		}
+		tint(){
+			return 0;
+		}
+		attr(){
+			return {...(super.attr()), "bog_gram_tint": (this.tint())};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_gram_tone = {
+        veil: '#8888881a',
+        alert: '#e14b4b',
+        tints: {
+            '0': { color: '#e17076' },
+            '1': { color: '#faa774' },
+            '2': { color: '#a695e7' },
+            '3': { color: '#7bc862' },
+            '4': { color: '#6ec9cb' },
+            '5': { color: '#65aadd' },
+            '6': { color: '#ee7aae' },
+        },
+    };
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const start = 4;
+        const step = 4;
+        const center = 12;
+        const limit = center - 2.5;
+        class $bog_gram_avatar extends $.$bog_gram_avatar {
+            path() {
+                const id = $mol_hash_string(this.id());
+                let path = '';
+                for (let x = 0; x < 3; ++x) {
+                    for (let y = 0; y < 5; ++y) {
+                        if (!((id >> (x + y * 3)) & 1))
+                            continue;
+                        const px = step * x + start;
+                        const py = step * y + start;
+                        if (Math.hypot(px - center, py - center) > limit)
+                            continue;
+                        path += `M ${px} ${py} l 0 0 ` + `M ${24 - px} ${py} l 0 0 `;
+                    }
+                }
+                return path;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_avatar.prototype, "path", null);
+        $$.$bog_gram_avatar = $bog_gram_avatar;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_avatar, {
+            flex: {
+                shrink: 0,
+            },
+            borderRadius: '50%',
+            background: {
+                color: $bog_gram_tone.veil,
+            },
+            padding: '0.25rem',
+            '@': {
+                bog_gram_tint: $bog_gram_tone.tints,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_row) = class $bog_gram_row extends ($.$mol_button_minor) {
+		Avatar(){
+			const obj = new this.$.$bog_gram_avatar();
+			(obj.id) = () => ((this.avatar_id()));
+			(obj.tint) = () => ((this.tint()));
+			return obj;
+		}
+		Sign(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Icon())]);
+			return obj;
 		}
 		Title(){
 			const obj = new this.$.$mol_view();
-			(obj.dom_name) = () => ("h1");
-			(obj.sub) = () => ((this.title_content()));
+			(obj.sub) = () => ([(this.title())]);
 			return obj;
+		}
+		Time(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.time())]);
+			return obj;
+		}
+		Top(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Title()), (this.Time())]);
+			return obj;
+		}
+		Note(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.note())]);
+			return obj;
+		}
+		Badge(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.badge())]);
+			return obj;
+		}
+		Bottom(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Note()), (this.Badge())]);
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Top()), (this.Bottom())]);
+			return obj;
+		}
+		tools_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Tools(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({...(this.$.$mol_view.prototype.event.call(obj)), "click": (next) => (this.tools_click(next))});
+			(obj.sub) = () => ((this.tools()));
+			return obj;
+		}
+		current(){
+			return false;
+		}
+		size(){
+			return "small";
+		}
+		faced(){
+			return true;
+		}
+		avatar_id(){
+			return "";
+		}
+		tint(){
+			return 0;
+		}
+		time(){
+			return "";
+		}
+		note(){
+			return "";
+		}
+		badge(){
+			return "";
+		}
+		marks(){
+			return [];
 		}
 		tools(){
 			return [];
 		}
-		Tools(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.tools()));
-			return obj;
-		}
-		head(){
-			return [(this.Title()), (this.Tools())];
-		}
-		Head(){
-			const obj = new this.$.$mol_view();
-			(obj.minimal_height) = () => (64);
-			(obj.dom_name) = () => ("header");
-			(obj.sub) = () => ((this.head()));
-			return obj;
-		}
-		body_scroll_top(next){
-			return (this.Body().scroll_top(next));
-		}
-		body(){
-			return [];
-		}
-		Body_content(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.body()));
-			return obj;
-		}
-		body_content(){
-			return [(this.Body_content())];
-		}
-		Body(){
-			const obj = new this.$.$mol_scroll();
-			(obj.sub) = () => ((this.body_content()));
-			return obj;
-		}
-		foot(){
-			return [];
-		}
-		Foot(){
-			const obj = new this.$.$mol_view();
-			(obj.dom_name) = () => ("footer");
-			(obj.sub) = () => ((this.foot()));
-			return obj;
-		}
-		dom_name(){
-			return "article";
+		Icon(){
+			return null;
 		}
 		attr(){
-			return {...(super.attr()), "tabIndex": (this.tabindex())};
+			return {
+				...(super.attr()), 
+				"bog_gram_row_current": (this.current()), 
+				"bog_gram_row_size": (this.size())
+			};
 		}
 		sub(){
 			return [
-				(this.Head()), 
-				(this.Body()), 
-				(this.Foot())
+				(this.Avatar()), 
+				(this.Sign()), 
+				(this.Info()), 
+				(this.Tools())
 			];
 		}
 	};
-	($mol_mem(($.$mol_page.prototype), "Title"));
-	($mol_mem(($.$mol_page.prototype), "Tools"));
-	($mol_mem(($.$mol_page.prototype), "Head"));
-	($mol_mem(($.$mol_page.prototype), "Body_content"));
-	($mol_mem(($.$mol_page.prototype), "Body"));
-	($mol_mem(($.$mol_page.prototype), "Foot"));
+	($mol_mem(($.$bog_gram_row.prototype), "Avatar"));
+	($mol_mem(($.$bog_gram_row.prototype), "Sign"));
+	($mol_mem(($.$bog_gram_row.prototype), "Title"));
+	($mol_mem(($.$bog_gram_row.prototype), "Time"));
+	($mol_mem(($.$bog_gram_row.prototype), "Top"));
+	($mol_mem(($.$bog_gram_row.prototype), "Note"));
+	($mol_mem(($.$bog_gram_row.prototype), "Badge"));
+	($mol_mem(($.$bog_gram_row.prototype), "Bottom"));
+	($mol_mem(($.$bog_gram_row.prototype), "Info"));
+	($mol_mem(($.$bog_gram_row.prototype), "tools_click"));
+	($mol_mem(($.$bog_gram_row.prototype), "Tools"));
 
 
 ;
@@ -21869,123 +22312,978 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const { per, rem } = $mol_style_unit;
-        const { hsla, blur } = $mol_style_func;
-        $mol_style_define($mol_page, {
-            display: 'flex',
-            flex: {
-                basis: 'auto',
-                direction: 'column',
+        class $bog_gram_row extends $.$bog_gram_row {
+            sub() {
+                return [
+                    ...this.face(),
+                    this.Info(),
+                    ...this.marks(),
+                    ...this.tools().length ? [this.Tools()] : [],
+                ];
+            }
+            face() {
+                if (this.Icon())
+                    return [this.Sign()];
+                return this.faced() ? [this.Avatar()] : [];
+            }
+            Time() {
+                return this.time() ? super.Time() : null;
+            }
+            Bottom() {
+                return this.note() || this.badge() ? super.Bottom() : null;
+            }
+            Note() {
+                return this.note() ? super.Note() : null;
+            }
+            Badge() {
+                return this.badge() ? super.Badge() : null;
+            }
+            tools_click(next) {
+                next?.stopPropagation();
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_gram_row.prototype, "tools_click", null);
+        $$.$bog_gram_row = $bog_gram_row;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1.25rem;\n\theight: 1.25rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const veil = '#8888881a';
+        const line = {
+            display: 'block',
+            minWidth: 0,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        };
+        $mol_style_define($bog_gram_row, {
+            align: {
+                items: 'center',
             },
-            alignSelf: 'stretch',
-            maxWidth: per(100),
-            maxHeight: per(100),
-            boxSizing: 'border-box',
+            gap: '0.75rem',
+            padding: {
+                top: '0.5rem',
+                bottom: '0.5rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            borderRadius: '0.75rem',
             color: $mol_theme.text,
-            ':focus': {
-                outline: 'none',
-            },
-            Head: {
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'flex-end',
-                flex: 'none',
-                margin: 0,
-                minHeight: rem(4),
-                padding: $mol_gap.block,
-                background: {
-                    color: $mol_theme.card,
-                },
-                border: {
-                    radius: $mol_gap.round,
-                },
-                box: {
-                    shadow: [
-                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
-                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
-                    ],
-                },
-                '@media': {
-                    'print': {
-                        box: {
-                            shadow: [[0, `1px`, 0, 0, hsla(0, 0, 0, .25)]],
-                        },
+            minWidth: 0,
+            '@': {
+                disabled: {
+                    true: {
+                        pointerEvents: 'auto',
+                        cursor: 'default',
                     },
                 },
             },
-            Title: {
-                minHeight: rem(2),
-                margin: 0,
-                padding: $mol_gap.text,
-                gap: $mol_gap.text,
-                wordBreak: 'normal',
-                textShadow: '0 0',
-                font: {
-                    size: 'inherit',
-                    weight: 'normal',
+            Avatar: {
+                width: '2.5rem',
+                height: '2.5rem',
+            },
+            Sign: {
+                flex: {
+                    shrink: 0,
                 },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: '50%',
+                background: {
+                    color: veil,
+                },
+                color: $mol_theme.shade,
+            },
+            Info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                gap: '0.125rem',
+            },
+            Top: {
+                align: {
+                    items: 'baseline',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Title: {
+                ...line,
                 flex: {
                     grow: 1,
                     shrink: 1,
-                    basis: 'auto',
                 },
+            },
+            Time: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+            },
+            Bottom: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Note: {
+                ...line,
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+            },
+            Badge: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                background: {
+                    color: $mol_theme.control,
+                },
+                color: '#ffffff',
+                font: {
+                    size: '0.75rem',
+                    weight: 'bold',
+                },
+                lineHeight: '1.25rem',
+                minWidth: '1.25rem',
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '1rem',
             },
             Tools: {
                 flex: {
-                    basis: 'auto',
-                    grow: 0,
-                    shrink: 1,
+                    shrink: 0,
                 },
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-start',
-                flexWrap: 'wrap',
-                '@media': {
-                    'print': {
-                        display: 'none',
+                alignSelf: 'center',
+                align: {
+                    items: 'center',
+                },
+                gap: '0.75rem',
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    gap: '0.5rem',
+                    minHeight: '2.75rem',
+                    padding: {
+                        top: '0.375rem',
+                        bottom: '0.375rem',
+                        left: '0.375rem',
+                        right: '0.375rem',
+                    },
+                    Tools: {
+                        gap: '0.5rem',
                     },
                 },
             },
-            Body: {
-                flex: {
-                    grow: 1000,
-                    shrink: 1,
-                    basis: per(100),
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_archive_arrow_down) = class $mol_icon_archive_arrow_down extends ($.$mol_icon) {
+		path(){
+			return "M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_archive_arrow_up) = class $mol_icon_archive_arrow_up extends ($.$mol_icon) {
+		path(){
+			return "M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_menu) = class $bog_gram_menu extends ($.$bog_gram_page) {
+		Status(){
+			const obj = new this.$.$giper_baza_status();
+			return obj;
+		}
+		Compose_open_icon(){
+			const obj = new this.$.$mol_icon_message_plus();
+			return obj;
+		}
+		Compose_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Новый диалог");
+			(obj.click) = (next) => ((this.compose(next)));
+			(obj.sub) = () => ([(this.Compose_open_icon())]);
+			return obj;
+		}
+		Group_open_icon(){
+			const obj = new this.$.$mol_icon_account_multiple_plus();
+			return obj;
+		}
+		Group_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Новая группа");
+			(obj.click) = (next) => ((this.group(next)));
+			(obj.sub) = () => ([(this.Group_open_icon())]);
+			return obj;
+		}
+		Music_open_icon(){
+			const obj = new this.$.$mol_icon_music();
+			return obj;
+		}
+		Music_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Музыка");
+			(obj.click) = (next) => ((this.music(next)));
+			(obj.sub) = () => ([(this.Music_open_icon())]);
+			return obj;
+		}
+		Settings_open_icon(){
+			const obj = new this.$.$mol_icon_cog();
+			return obj;
+		}
+		Settings_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Настройки");
+			(obj.click) = (next) => ((this.settings(next)));
+			(obj.sub) = () => ([(this.Settings_open_icon())]);
+			return obj;
+		}
+		Lights(){
+			const obj = new this.$.$bog_theme_toggle();
+			(obj.theme_auto) = () => ((this.Theme()));
+			return obj;
+		}
+		Invite_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.invite_plate_text()));
+			return obj;
+		}
+		Invite_drop_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Invite_drop(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отменить");
+			(obj.click) = (next) => ((this.invite_drop(next)));
+			(obj.sub) = () => ([(this.Invite_drop_icon())]);
+			return obj;
+		}
+		Invite_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Invite_plate_text()), (this.Invite_drop())]);
+			return obj;
+		}
+		Ask_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.ask_plate_text()));
+			return obj;
+		}
+		Ask_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Ask_plate_text())]);
+			return obj;
+		}
+		dialog_rows(){
+			return [];
+		}
+		Dialogs_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.dialog_rows()));
+			return obj;
+		}
+		Dialogs_empty_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Пока нет диалогов");
+			return obj;
+		}
+		pick(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		unread_label(id){
+			return "";
+		}
+		archive_hint(id){
+			return "";
+		}
+		archive_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_icons(id){
+			return [];
+		}
+		Dialog_archive(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.archive_hint(id)));
+			(obj.click) = (next) => ((this.archive_click(id, next)));
+			(obj.sub) = () => ((this.archive_icons(id)));
+			return obj;
+		}
+		delete_hint(id){
+			return "";
+		}
+		delete_armed(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		delete_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Dialog_delete_icon(id){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		Dialog_delete(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.delete_hint(id)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed(id))});
+			(obj.click) = (next) => ((this.delete_click(id, next)));
+			(obj.sub) = () => ([(this.Dialog_delete_icon(id))]);
+			return obj;
+		}
+		request_accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Request_accept_icon(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		request_reject(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Request_reject_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		saved_pick(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Saved_icon(){
+			const obj = new this.$.$mol_icon_bookmark();
+			return obj;
+		}
+		archive_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Archive_icon(){
+			const obj = new this.$.$mol_icon_archive();
+			return obj;
+		}
+		archive_note(){
+			return "";
+		}
+		archive_unread_label(){
+			return "";
+		}
+		requests_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Requests_icon(){
+			const obj = new this.$.$mol_icon_account_question();
+			return obj;
+		}
+		requests_count_label(){
+			return "";
+		}
+		title(){
+			return "Gram";
+		}
+		Theme(){
+			const obj = new this.$.$bog_theme_auto();
+			return obj;
+		}
+		compose(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		music(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		settings(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		invite_plate_text(){
+			return "";
+		}
+		invite_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ask_plate_text(){
+			return "";
+		}
+		visible(){
+			return [];
+		}
+		archived(){
+			return [];
+		}
+		requests(){
+			return [];
+		}
+		dialog_title(id){
+			return "";
+		}
+		dialog_time(id){
+			return "";
+		}
+		dialog_preview(id){
+			return "";
+		}
+		dialog_avatar_id(id){
+			return "";
+		}
+		dialog_tint(id){
+			return 0;
+		}
+		unread(id){
+			return 0;
+		}
+		current_is(id){
+			return false;
+		}
+		request_is(id){
+			return false;
+		}
+		archive_is(id){
+			return false;
+		}
+		select(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		unarchive(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		saved_title(){
+			return "";
+		}
+		saved_time(){
+			return "";
+		}
+		saved_preview(){
+			return "";
+		}
+		saved_current(){
+			return false;
+		}
+		saved_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [
+				(this.Status()), 
+				(this.Compose_open()), 
+				(this.Group_open()), 
+				(this.Music_open()), 
+				(this.Settings_open()), 
+				(this.Lights())
+			];
+		}
+		body(){
+			return [
+				(this.Invite_plate()), 
+				(this.Ask_plate()), 
+				(this.Dialogs_list())
+			];
+		}
+		Dialogs_empty(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Dialogs_empty_text())]);
+			return obj;
+		}
+		Dialog_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.size) = () => ("large");
+			(obj.click) = (next) => ((this.pick(id, next)));
+			(obj.current) = () => ((this.current_is(id)));
+			(obj.avatar_id) = () => ((this.dialog_avatar_id(id)));
+			(obj.tint) = () => ((this.dialog_tint(id)));
+			(obj.title) = () => ((this.dialog_title(id)));
+			(obj.time) = () => ((this.dialog_time(id)));
+			(obj.note) = () => ((this.dialog_preview(id)));
+			(obj.badge) = () => ((this.unread_label(id)));
+			(obj.tools) = () => ([(this.Dialog_archive(id)), (this.Dialog_delete(id))]);
+			return obj;
+		}
+		Dialog_archive_icon(id){
+			const obj = new this.$.$mol_icon_archive_arrow_down();
+			return obj;
+		}
+		Dialog_unarchive_icon(id){
+			const obj = new this.$.$mol_icon_archive_arrow_up();
+			return obj;
+		}
+		Request_accept(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Принять");
+			(obj.click) = (next) => ((this.request_accept(id, next)));
+			(obj.sub) = () => ([(this.Request_accept_icon(id))]);
+			return obj;
+		}
+		Request_reject(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отклонить");
+			(obj.click) = (next) => ((this.request_reject(id, next)));
+			(obj.sub) = () => ([(this.Request_reject_icon(id))]);
+			return obj;
+		}
+		Saved_row(){
+			const obj = new this.$.$bog_gram_row();
+			(obj.size) = () => ("large");
+			(obj.hint) = () => ("Заметки для себя");
+			(obj.click) = (next) => ((this.saved_pick(next)));
+			(obj.current) = () => ((this.saved_current()));
+			(obj.Icon) = () => ((this.Saved_icon()));
+			(obj.title) = () => ((this.saved_title()));
+			(obj.time) = () => ((this.saved_time()));
+			(obj.note) = () => ((this.saved_preview()));
+			return obj;
+		}
+		Archive_row(){
+			const obj = new this.$.$bog_gram_row();
+			(obj.size) = () => ("large");
+			(obj.hint) = () => ("Спрятанные диалоги");
+			(obj.click) = (next) => ((this.archive_toggle(next)));
+			(obj.Icon) = () => ((this.Archive_icon()));
+			(obj.title) = () => ("Архив");
+			(obj.note) = () => ((this.archive_note()));
+			(obj.badge) = () => ((this.archive_unread_label()));
+			return obj;
+		}
+		Requests_row(){
+			const obj = new this.$.$bog_gram_row();
+			(obj.size) = () => ("large");
+			(obj.hint) = () => ("Запросы на переписку");
+			(obj.click) = (next) => ((this.requests_toggle(next)));
+			(obj.Icon) = () => ((this.Requests_icon()));
+			(obj.title) = () => ("Запросы");
+			(obj.note) = () => ("Хотят вам написать");
+			(obj.badge) = () => ((this.requests_count_label()));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_menu.prototype), "Status"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Compose_open_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Compose_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Group_open_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Group_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Music_open_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Music_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Settings_open_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Settings_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Lights"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Invite_plate_text"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Invite_drop_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Invite_drop"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Invite_plate"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Ask_plate_text"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Ask_plate"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Dialogs_list"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Dialogs_empty_text"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "pick"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "archive_click"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_archive"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "delete_armed"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "delete_click"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_delete_icon"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_delete"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "request_accept"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Request_accept_icon"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "request_reject"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Request_reject_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "saved_pick"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Saved_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "archive_toggle"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Archive_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "requests_toggle"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Requests_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Theme"));
+	($mol_mem(($.$bog_gram_menu.prototype), "compose"));
+	($mol_mem(($.$bog_gram_menu.prototype), "group"));
+	($mol_mem(($.$bog_gram_menu.prototype), "music"));
+	($mol_mem(($.$bog_gram_menu.prototype), "settings"));
+	($mol_mem(($.$bog_gram_menu.prototype), "invite_drop"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "select"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "archive"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "unarchive"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "drop"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "accept"));
+	($mol_mem(($.$bog_gram_menu.prototype), "saved_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Dialogs_empty"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_row"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_archive_icon"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_unarchive_icon"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Request_accept"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "Request_reject"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Saved_row"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Archive_row"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Requests_row"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_count extends $mol_object {
+        static plural(count, one, few, many) {
+            const tens = count % 100;
+            const ones = count % 10;
+            if (tens < 11 || tens > 14) {
+                if (ones === 1)
+                    return count + ' ' + one;
+                if (ones >= 2 && ones <= 4)
+                    return count + ' ' + few;
+            }
+            return count + ' ' + many;
+        }
+        static people(count) {
+            return this.plural(count, 'участник', 'участника', 'участников');
+        }
+        static dialogs(count) {
+            return this.plural(count, 'диалог', 'диалога', 'диалогов');
+        }
+    }
+    $.$bog_gram_count = $bog_gram_count;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $bog_gram_soft(task, fallback) {
+        try {
+            return task();
+        }
+        catch (error) {
+            if (!$mol_promise_like(error))
+                $mol_fail_log(error);
+            return fallback;
+        }
+    }
+    $.$bog_gram_soft = $bog_gram_soft;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_menu extends $.$bog_gram_menu {
+            archive_opened(next) {
+                return next ?? false;
+            }
+            requests_opened(next) {
+                return next ?? false;
+            }
+            dialog_rows() {
+                const archived = this.archived();
+                const requests = this.requests();
+                const visible = this.visible();
+                const empty = !visible.length && !archived.length && !requests.length;
+                return [
+                    ...archived.length ? [this.Archive_row()] : [],
+                    ...this.archive_opened() ? archived.map(id => this.Dialog_row(id)) : [],
+                    this.Saved_row(),
+                    ...visible.map(id => this.Dialog_row(id)),
+                    ...empty ? [this.Dialogs_empty()] : [],
+                    ...requests.length ? [this.Requests_row()] : [],
+                    ...this.requests_opened() ? requests.map(id => this.Dialog_row(id)) : [],
+                ];
+            }
+            Invite_plate() {
+                return this.invite_plate_text() ? super.Invite_plate() : null;
+            }
+            Ask_plate() {
+                return this.ask_plate_text() ? super.Ask_plate() : null;
+            }
+            unread_label(id) {
+                const count = this.unread(id);
+                return count ? String(count) : '';
+            }
+            armed(next) {
+                return next ?? '';
+            }
+            delete_armed(id, next) {
+                if (next !== undefined)
+                    this.armed(next ? id : '');
+                return this.armed() === id;
+            }
+            delete_hint(id) {
+                return this.delete_armed(id) ? 'Точно удалить?' : 'Удалить диалог';
+            }
+            pick(id, next) {
+                this.armed('');
+                this.select(id, null);
+                return null;
+            }
+            saved_pick(next) {
+                this.armed('');
+                this.saved_open(null);
+                return null;
+            }
+            delete_click(id, next) {
+                if (!id)
+                    return null;
+                if (!this.delete_armed(id)) {
+                    this.delete_armed(id, true);
+                    return null;
+                }
+                this.armed('');
+                this.drop(id, null);
+                return null;
+            }
+            archive_click(id, next) {
+                if (!id)
+                    return null;
+                this.armed('');
+                if (this.archive_is(id))
+                    this.unarchive(id, null);
+                else
+                    this.archive(id, null);
+                return null;
+            }
+            archive_hint(id) {
+                return this.archive_is(id) ? 'Вернуть из архива' : 'В архив';
+            }
+            archive_icons(id) {
+                return [this.archive_is(id) ? this.Dialog_unarchive_icon(id) : this.Dialog_archive_icon(id)];
+            }
+            archive_toggle(next) {
+                this.armed('');
+                this.archive_opened(!this.archive_opened());
+                return null;
+            }
+            requests_toggle(next) {
+                this.armed('');
+                this.requests_opened(!this.requests_opened());
+                return null;
+            }
+            archive_note() {
+                return $bog_gram_count.dialogs(this.archived().length);
+            }
+            archive_unread_label() {
+                let count = 0;
+                for (const id of this.archived())
+                    count += $bog_gram_soft(() => this.unread(id), 0);
+                return count ? String(count) : '';
+            }
+            requests_count_label() {
+                return String(this.requests().length);
+            }
+            Dialog_archive(id) {
+                if (this.request_is(id))
+                    return this.Request_accept(id);
+                return super.Dialog_archive(id);
+            }
+            Dialog_delete(id) {
+                if (this.request_is(id))
+                    return this.Request_reject(id);
+                return super.Dialog_delete(id);
+            }
+            request_accept(id, next) {
+                if (!id)
+                    return null;
+                this.accept(id, null);
+                return null;
+            }
+            request_reject(id, next) {
+                if (!id)
+                    return null;
+                this.drop(id, null);
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "archive_opened", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "requests_opened", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "dialog_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "armed", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "pick", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "saved_pick", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "delete_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "archive_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "archive_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "requests_toggle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "archive_unread_label", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "request_accept", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_menu.prototype, "request_reject", null);
+        $$.$bog_gram_menu = $bog_gram_menu;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const plate = {
+            align: {
+                items: 'center',
+            },
+            gap: '0.5rem',
+            minWidth: 0,
+            padding: {
+                top: '0.5rem',
+                bottom: '0.5rem',
+                left: '0.75rem',
+                right: '0.75rem',
+            },
+            background: {
+                color: $bog_gram_tone.veil,
+            },
+            borderRadius: '0.75rem',
+        };
+        const plate_text = {
+            flex: {
+                grow: 1,
+                shrink: 1,
+            },
+            minWidth: 0,
+            font: {
+                size: '0.875rem',
+            },
+            color: $mol_theme.shade,
+        };
+        $mol_style_define($bog_gram_menu, {
+            width: '24rem',
+            background: {
+                color: $mol_theme.back,
+            },
+            Title: {
+                font: {
+                    family: $bog_builderui_tokens.font_head,
+                    size: '1.5rem',
+                    weight: 500,
                 },
             },
-            Body_content: {
-                padding: $mol_gap.block,
-                minHeight: 0,
-                minWidth: 0,
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                    grow: 1,
-                },
-                justify: {
-                    self: 'stretch',
-                },
+            Invite_plate: plate,
+            Invite_plate_text: plate_text,
+            Ask_plate: plate,
+            Ask_plate_text: plate_text,
+            Dialogs_list: {
+                gap: '0.125rem',
             },
-            Foot: {
-                display: 'flex',
-                justifyContent: 'space-between',
-                flex: 'none',
-                margin: 0,
-                background: {
-                    color: $mol_theme.card,
-                },
-                border: {
-                    radius: $mol_gap.round,
-                },
-                box: {
-                    shadow: [
-                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
-                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
-                    ],
-                },
+            Dialogs_empty: {
                 padding: $mol_gap.block,
-                ':empty': {
-                    display: 'none',
+                color: $mol_theme.shade,
+            },
+            Saved_icon: {
+                color: $mol_theme.control,
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    Dialogs_list: {
+                        gap: 0,
+                    },
                 },
             },
         });
@@ -22304,6 +23602,107 @@ var $;
                     grow: 1,
                 },
                 width: '100%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/string/button/button.view.css", "[mol_string_button]:not(:placeholder-shown):not(:focus):not(:hover):not(:disabled) {\n\tcolor: var(--mol_theme_control);\n\tbackground: transparent;\n\tbox-shadow: none;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
+		path(){
+			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_field) = class $bog_gram_field extends ($.$mol_view) {
+		Field(){
+			const obj = new this.$.$mol_string_button();
+			(obj.hint) = () => ((this.hint()));
+			(obj.value) = (next) => ((this.value(next)));
+			return obj;
+		}
+		Edit_icon(){
+			const obj = new this.$.$mol_icon_pencil();
+			return obj;
+		}
+		hint(){
+			return "";
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		sub(){
+			return [(this.Field()), (this.Edit_icon())];
+		}
+	};
+	($mol_mem(($.$bog_gram_field.prototype), "Field"));
+	($mol_mem(($.$bog_gram_field.prototype), "Edit_icon"));
+	($mol_mem(($.$bog_gram_field.prototype), "value"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_field, {
+            position: 'relative',
+            align: {
+                items: 'center',
+            },
+            minWidth: 0,
+            maxWidth: '100%',
+            Field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.375rem',
+                    right: '1.5rem',
+                },
+            },
+            Edit_icon: {
+                position: 'absolute',
+                right: '0.375rem',
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+                color: $mol_theme.shade,
+                pointerEvents: 'none',
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
@@ -23465,7 +24864,7 @@ var $;
             tick() {
                 if (!this.scanning())
                     return null;
-                $mol_state_time.now(250);
+                this.$.$mol_state_time.now(250);
                 const video = this.Camera().dom_node();
                 const width = video.videoWidth;
                 const height = video.videoHeight;
@@ -23479,7 +24878,7 @@ var $;
                 const found = qr_read(context.getImageData(0, 0, width, height).data, width, height);
                 if (!found?.data.includes(this.prefix()))
                     return null;
-                setTimeout(() => {
+                new this.$.$mol_after_tick(() => {
                     this.scanning(false);
                     this.found(found.data);
                 });
@@ -23520,9 +24919,9 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_delete) = class $mol_icon_delete extends ($.$mol_icon) {
+	($.$mol_icon_download) = class $mol_icon_download extends ($.$mol_icon) {
 		path(){
-			return "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
+			return "M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z";
 		}
 	};
 
@@ -23532,11 +24931,235 @@ var $;
 
 
 ;
-	($.$mol_icon_bookmark) = class $mol_icon_bookmark extends ($.$mol_icon) {
-		path(){
-			return "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
+	($.$mol_button_download) = class $mol_button_download extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_download();
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		blob(){
+			return null;
+		}
+		uri(){
+			return "";
+		}
+		file_name(){
+			return "blob.bin";
+		}
+		sub(){
+			return [(this.Icon()), (this.title())];
 		}
 	};
+	($mol_mem(($.$mol_button_download.prototype), "Icon"));
+
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Button download file from uri() or a blob()
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_download extends $.$mol_button_download {
+            uri() {
+                return URL.createObjectURL(this.blob());
+            }
+            click() {
+                const a = $mol_jsx("a", { href: this.uri(), download: this.file_name() });
+                a.click();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_button_download.prototype, "uri", null);
+        $$.$mol_button_download = $mol_button_download;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_settings_key) = class $bog_gram_settings_key extends ($.$mol_view) {
+		rows(){
+			return [];
+		}
+		toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		toggle_label(){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		Text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.text()));
+			return obj;
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.text()));
+			return obj;
+		}
+		Qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.text()));
+			(obj.gradient_stops) = () => (["#e14b4b", "#f0a04b"]);
+			return obj;
+		}
+		blob(){
+			return null;
+		}
+		input(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Ключ аккаунта");
+			(obj.value) = (next) => ((this.input(next)));
+			return obj;
+		}
+		Load_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Или загрузите файл с ключом");
+			return obj;
+		}
+		file(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Open(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ("Выбрать файл");
+			(obj.accept) = () => (".key,text/plain");
+			(obj.multiple) = () => (false);
+			(obj.files) = (next) => ((this.file(next)));
+			return obj;
+		}
+		Load_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Load_hint()), (this.Open())]);
+			return obj;
+		}
+		scanned(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Scan(){
+			const obj = new this.$.$bog_gram_scan();
+			(obj.found) = (next) => ((this.scanned(next)));
+			return obj;
+		}
+		armed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		import(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		import_label(){
+			return "";
+		}
+		Import(){
+			const obj = new this.$.$mol_button_major();
+			(obj.attr) = () => ({...(this.$.$mol_button_major.prototype.attr.call(obj)), "bog_gram_armed": (this.armed())});
+			(obj.click) = (next) => ((this.import(next)));
+			(obj.sub) = () => ([(this.import_label())]);
+			return obj;
+		}
+		error(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.error()));
+			return obj;
+		}
+		notify_on(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		sub(){
+			return (this.rows());
+		}
+		Toggle(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.toggle(next)));
+			(obj.sub) = () => ([(this.toggle_label())]);
+			return obj;
+		}
+		Warning(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.");
+			return obj;
+		}
+		Row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Text()), (this.Copy())]);
+			return obj;
+		}
+		Qr_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Qr())]);
+			return obj;
+		}
+		Save(){
+			const obj = new this.$.$mol_button_download();
+			(obj.title) = () => ("Скачать файл");
+			(obj.file_name) = () => ("gram-account.key");
+			(obj.blob) = () => ((this.blob()));
+			return obj;
+		}
+		Import_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Field()), 
+				(this.Load_row()), 
+				(this.Scan()), 
+				(this.Import()), 
+				(this.Error())
+			]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_settings_key.prototype), "toggle"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Text"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Copy"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Qr"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "input"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Field"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Load_hint"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "file"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Open"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Load_row"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "scanned"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Scan"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "armed"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "import"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Import"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "error"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Error"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "notify_on"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Toggle"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Warning"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Row"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Qr_box"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Save"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Import_form"));
 
 
 ;
@@ -23544,11 +25167,1377 @@ var $;
 
 
 ;
-	($.$mol_icon_archive) = class $mol_icon_archive extends ($.$mol_icon) {
-		path(){
-			return "M3,3H21V7H3V3M4,8H20V21H4V8M9.5,11A0.5,0.5 0 0,0 9,11.5V13H15V11.5A0.5,0.5 0 0,0 14.5,11H9.5Z";
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_settings_key extends $.$bog_gram_settings_key {
+            text() {
+                const auth = this.$.$giper_baza_auth.current();
+                return auth.toString() + auth.toStringPrivate();
+            }
+            blob() {
+                return new Blob([this.text()], { type: 'text/plain' });
+            }
+            shown(next) {
+                return next ?? false;
+            }
+            toggle_label() {
+                return this.shown() ? 'Скрыть ключ' : 'Показать ключ';
+            }
+            toggle(next) {
+                this.shown(!this.shown());
+                return null;
+            }
+            rows() {
+                if (!this.shown())
+                    return [this.Toggle(), this.Import_form()];
+                return [this.Toggle(), this.Warning(), this.Row(), this.Qr_box(), this.Save(), this.Import_form()];
+            }
+            Error() {
+                return this.error() ? super.Error() : null;
+            }
+            import_label() {
+                return this.armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу';
+            }
+            auth_from(str) {
+                try {
+                    const auth = this.$.$giper_baza_auth.from(str);
+                    return auth.byteLength === 128 ? auth : null;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    return null;
+                }
+            }
+            import(next) {
+                const str = this.input().trim();
+                if (!str) {
+                    this.error('Вставьте ключ или загрузите файл');
+                    return null;
+                }
+                const auth = this.auth_from(str);
+                if (!auth) {
+                    this.armed(false);
+                    this.error('Это не похоже на ключ аккаунта');
+                    return null;
+                }
+                if (!this.armed()) {
+                    this.error('');
+                    this.armed(true);
+                    return null;
+                }
+                this.notify_on(false);
+                this.$.$giper_baza_auth.current(auth);
+                this.$.$mol_dom_context.location.reload();
+                return null;
+            }
+            file(next) {
+                const file = next?.[0];
+                if (file)
+                    $mol_wire_async(this).file_read(file);
+                return next ?? null;
+            }
+            file_read(file) {
+                this.input($mol_wire_sync(file).text().trim());
+                this.armed(false);
+                this.error('');
+                return true;
+            }
+            scanned(next) {
+                if (next === undefined)
+                    return '';
+                const str = next.trim();
+                this.input(str);
+                this.armed(false);
+                this.error(this.auth_from(str) ? '' : 'В QR не ключ аккаунта');
+                return str;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_settings_key.prototype, "shown", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_settings_key.prototype, "toggle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_settings_key.prototype, "rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_settings_key.prototype, "import", null);
+        $$.$bog_gram_settings_key = $bog_gram_settings_key;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const shrink = {
+            alignSelf: 'stretch',
+            flex: {
+                direction: 'column',
+                shrink: 1,
+            },
+            align: {
+                items: 'stretch',
+            },
+            gap: '0.5rem',
+            minWidth: 0,
+            maxWidth: '100%',
+        };
+        const qr_box = {
+            alignSelf: 'center',
+            maxWidth: '100%',
+            justify: {
+                content: 'center',
+            },
+            background: {
+                color: '#ffffff',
+            },
+            padding: '0.5rem',
+            borderRadius: '0.75rem',
+        };
+        $mol_style_define($bog_gram_settings_key, {
+            ...shrink,
+            Warning: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $bog_gram_tone.alert,
+            },
+            Row: shrink,
+            Text: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
+                minWidth: 0,
+                maxWidth: '100%',
+                maxHeight: '8rem',
+                overflow: {
+                    y: 'auto',
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Copy: {
+                alignSelf: 'flex-start',
+            },
+            Save: {
+                alignSelf: 'flex-start',
+            },
+            Qr_box: qr_box,
+            Qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '12rem',
+                height: '12rem',
+                maxWidth: '100%',
+            },
+            Import_form: shrink,
+            Load_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Load_hint: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Error: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $bog_gram_tone.alert,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_settings) = class $bog_gram_settings extends ($.$bog_gram_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Name_field(){
+			const obj = new this.$.$bog_gram_field();
+			(obj.hint) = () => ("Ваше имя");
+			(obj.value) = (next) => ((this.user_name(next)));
+			return obj;
+		}
+		My_id_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.my_lord()));
+			return obj;
+		}
+		My_id_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.my_lord()));
+			return obj;
+		}
+		My_id(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Мой ID");
+			(obj.content) = () => ([(this.My_id_text()), (this.My_id_copy())]);
+			return obj;
+		}
+		Invite_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Отправьте эту ссылку — у собеседника сразу откроется диалог с вами");
+			return obj;
+		}
+		Invite_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.invite_link()));
+			return obj;
+		}
+		Invite_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.invite_link()));
+			return obj;
+		}
+		Invite_qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.invite_link()));
+			(obj.gradient_stops) = () => (["#229ED9", "#5ED0F5"]);
+			return obj;
+		}
+		Invite_qr_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Invite_qr())]);
+			return obj;
+		}
+		Invite_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Invite_hint()), 
+				(this.Invite_text()), 
+				(this.Invite_copy()), 
+				(this.Invite_qr_box())
+			]);
+			return obj;
+		}
+		Invite(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Ссылка на меня");
+			(obj.content) = () => ([(this.Invite_body())]);
+			return obj;
+		}
+		Notify_status(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.notify_status()));
+			return obj;
+		}
+		Notify_toggle(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.notify_toggle(next)));
+			(obj.sub) = () => ([(this.notify_label())]);
+			return obj;
+		}
+		Notify_body(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Notify_status()), (this.Notify_toggle())]);
+			return obj;
+		}
+		Notify(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Уведомления");
+			(obj.content) = () => ([(this.Notify_body())]);
+			return obj;
+		}
+		registry_content(){
+			return [];
+		}
+		Registry_block(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Реестры");
+			(obj.content) = () => ((this.registry_content()));
+			return obj;
+		}
+		Key(){
+			const obj = new this.$.$bog_gram_settings_key();
+			(obj.notify_on) = (next) => ((this.notify_on(next)));
+			return obj;
+		}
+		Account(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Аккаунт");
+			(obj.content) = () => ([(this.Key())]);
+			return obj;
+		}
+		version(){
+			return "";
+		}
+		Version_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.version()));
+			return obj;
+		}
+		Version(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Версия");
+			(obj.content) = () => ([(this.Version_text())]);
+			return obj;
+		}
+		registry_rows(){
+			return [];
+		}
+		Registry_share_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ссылка-приглашение в активный реестр");
+			return obj;
+		}
+		Registry_share_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать ссылку");
+			(obj.text) = () => ((this.registry_uri()));
+			return obj;
+		}
+		Registry_name(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название реестра");
+			(obj.value) = (next) => ((this.registry_name(next)));
+			(obj.submit) = (next) => ((this.registry_make(next)));
+			return obj;
+		}
+		Registry_make(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.registry_make(next)));
+			(obj.sub) = () => (["Создать реестр"]);
+			return obj;
+		}
+		Registry_join(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Вступить в реестр");
+			(obj.click) = (next) => ((this.registry_join(id, next)));
+			(obj.sub) = () => (["Вступить"]);
+			return obj;
+		}
+		Registry_drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Registry_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать из своего списка");
+			(obj.click) = (next) => ((this.registry_forget(id, next)));
+			(obj.sub) = () => ([(this.Registry_drop_icon(id))]);
+			return obj;
+		}
+		title(){
+			return "Настройки";
+		}
+		user_name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		my_lord(){
+			return "";
+		}
+		invite_link(){
+			return "";
+		}
+		notify_status(){
+			return "";
+		}
+		notify_label(){
+			return "";
+		}
+		notify_supported(){
+			return false;
+		}
+		notify_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		notify_on(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		registry_ids(){
+			return [];
+		}
+		registry_active(){
+			return "";
+		}
+		registry_uri(){
+			return "";
+		}
+		registry_name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		registry_make(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		registry_title(id){
+			return "";
+		}
+		registry_status(id){
+			return "";
+		}
+		registry_joined(id){
+			return false;
+		}
+		registry_active_is(id){
+			return false;
+		}
+		registry_open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		registry_join(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		registry_forget(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.Name_field()), 
+				(this.My_id()), 
+				(this.Invite()), 
+				(this.Notify()), 
+				(this.Registry_block()), 
+				(this.Account()), 
+				(this.Version())
+			];
+		}
+		Registry_empty(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Вы не состоите ни в одном реестре");
+			return obj;
+		}
+		Registry_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.registry_rows()));
+			return obj;
+		}
+		Registry_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.");
+			return obj;
+		}
+		Registry_share(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Registry_share_text()), (this.Registry_share_copy())]);
+			return obj;
+		}
+		Registry_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Registry_name()), (this.Registry_make())]);
+			return obj;
+		}
+		Registry_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.faced) = () => (false);
+			(obj.click) = (next) => ((this.registry_open(id, next)));
+			(obj.current) = () => ((this.registry_active_is(id)));
+			(obj.title) = () => ((this.registry_title(id)));
+			(obj.note) = () => ((this.registry_status(id)));
+			(obj.tools) = () => ([(this.Registry_join(id)), (this.Registry_drop(id))]);
+			return obj;
 		}
 	};
+	($mol_mem(($.$bog_gram_settings.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
+	($mol_mem(($.$bog_gram_settings.prototype), "My_id_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "My_id_copy"));
+	($mol_mem(($.$bog_gram_settings.prototype), "My_id"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_hint"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_copy"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr_box"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite_body"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Invite"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Notify_status"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Notify_toggle"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Notify_body"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Notify"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_block"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Key"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Account"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_copy"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_name"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_make"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "Registry_join"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "Registry_drop_icon"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "Registry_drop"));
+	($mol_mem(($.$bog_gram_settings.prototype), "user_name"));
+	($mol_mem(($.$bog_gram_settings.prototype), "notify_toggle"));
+	($mol_mem(($.$bog_gram_settings.prototype), "notify_on"));
+	($mol_mem(($.$bog_gram_settings.prototype), "registry_name"));
+	($mol_mem(($.$bog_gram_settings.prototype), "registry_make"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "registry_open"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "registry_join"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "registry_forget"));
+	($mol_mem(($.$bog_gram_settings.prototype), "close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_empty"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_list"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_note"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Registry_form"));
+	($mol_mem_key(($.$bog_gram_settings.prototype), "Registry_row"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_gram_version = '1.0.94';
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_settings extends $.$bog_gram_settings {
+            version() {
+                return $bog_gram_version;
+            }
+            Notify_toggle() {
+                return this.notify_supported() ? super.Notify_toggle() : null;
+            }
+            Registry_join(id) {
+                return this.registry_joined(id) ? null : super.Registry_join(id);
+            }
+            registry_rows() {
+                return this.registry_ids().map(id => this.Registry_row(id));
+            }
+            registry_content() {
+                if (!this.registry_ids().length)
+                    return [this.Registry_empty(), this.Registry_form()];
+                return [
+                    this.Registry_list(),
+                    this.Registry_note(),
+                    ...this.registry_active() ? [this.Registry_share()] : [],
+                    this.Registry_form(),
+                ];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_settings.prototype, "registry_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_settings.prototype, "registry_content", null);
+        $$.$bog_gram_settings = $bog_gram_settings;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const column = {
+            alignSelf: 'stretch',
+            flex: {
+                direction: 'column',
+                shrink: 1,
+            },
+            align: {
+                items: 'stretch',
+            },
+            gap: '0.5rem',
+            minWidth: 0,
+            maxWidth: '100%',
+        };
+        const hint = {
+            font: {
+                size: '0.875rem',
+            },
+            color: $mol_theme.shade,
+        };
+        const note = {
+            font: {
+                size: '0.75rem',
+            },
+            color: $mol_theme.shade,
+        };
+        $mol_style_define($bog_gram_settings, {
+            Name_field: {
+                alignSelf: 'stretch',
+            },
+            My_id: {
+                Content: {
+                    align: {
+                        items: 'center',
+                    },
+                },
+            },
+            My_id_text: {
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                minWidth: 0,
+                overflow: {
+                    x: 'auto',
+                },
+                whiteSpace: 'nowrap',
+            },
+            Invite: {
+                Content: {
+                    alignSelf: 'stretch',
+                    minWidth: 0,
+                    flex: {
+                        shrink: 1,
+                    },
+                },
+            },
+            Invite_body: column,
+            Invite_hint: hint,
+            Invite_text: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
+                minWidth: 0,
+                maxWidth: '100%',
+                maxHeight: '6rem',
+                overflow: {
+                    y: 'auto',
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Invite_copy: {
+                alignSelf: 'flex-start',
+            },
+            Invite_qr_box: {
+                alignSelf: 'center',
+                maxWidth: '100%',
+                justify: {
+                    content: 'center',
+                },
+                background: {
+                    color: '#ffffff',
+                },
+                padding: '0.5rem',
+                borderRadius: '0.75rem',
+            },
+            Invite_qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '14rem',
+                height: '14rem',
+                maxWidth: '100%',
+            },
+            Notify_body: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Notify_status: hint,
+            Registry_block: {
+                Content: column,
+            },
+            Registry_list: {
+                gap: '0.125rem',
+            },
+            Registry_row: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                maxWidth: '100%',
+                Title: {
+                    font: {
+                        weight: 'bold',
+                    },
+                },
+            },
+            Registry_join: {
+                font: {
+                    size: '0.75rem',
+                },
+            },
+            Registry_note: note,
+            Registry_empty: hint,
+            Registry_share: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Registry_share_text: {
+                ...note,
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+            },
+            Registry_share_copy: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Registry_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Account: {
+                Content: {
+                    alignSelf: 'stretch',
+                    minWidth: 0,
+                    flex: {
+                        shrink: 1,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_compose) = class $bog_gram_compose extends ($.$bog_gram_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		peer(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Peer_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("ID собеседника");
+			(obj.value) = (next) => ((this.peer(next)));
+			(obj.submit) = (next) => ((this.start(next)));
+			return obj;
+		}
+		Peer_start(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.start(next)));
+			(obj.sub) = () => (["Начать диалог"]);
+			return obj;
+		}
+		Peer_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Peer_field()), (this.Peer_start())]);
+			return obj;
+		}
+		Users_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Пользователи");
+			return obj;
+		}
+		Join_plate_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Вас нет в этом реестре — другие вас тут не найдут");
+			return obj;
+		}
+		Join_plate_button(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.join(next)));
+			(obj.sub) = () => (["Вступить"]);
+			return obj;
+		}
+		Join_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Join_plate_text()), (this.Join_plate_button())]);
+			return obj;
+		}
+		user_rows(){
+			return [];
+		}
+		Users_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.user_rows()));
+			return obj;
+		}
+		users_empty_text(){
+			return "";
+		}
+		Users_empty_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.users_empty_text()));
+			return obj;
+		}
+		pick(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		user_lord(id){
+			return "";
+		}
+		user_tint(id){
+			return 0;
+		}
+		title(){
+			return "Новый диалог";
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		users(){
+			return [];
+		}
+		user_title(id){
+			return "";
+		}
+		user_source(id){
+			return "";
+		}
+		registry_ids(){
+			return [];
+		}
+		join_needed(){
+			return false;
+		}
+		join(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.Peer_form()), 
+				(this.Users_title()), 
+				(this.Join_plate()), 
+				(this.Users_list())
+			];
+		}
+		Users_empty(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Users_empty_text())]);
+			return obj;
+		}
+		User_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.click) = (next) => ((this.pick(id, next)));
+			(obj.avatar_id) = () => ((this.user_lord(id)));
+			(obj.tint) = () => ((this.user_tint(id)));
+			(obj.title) = () => ((this.user_title(id)));
+			(obj.note) = () => ((this.user_source(id)));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_compose.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Close"));
+	($mol_mem(($.$bog_gram_compose.prototype), "peer"));
+	($mol_mem(($.$bog_gram_compose.prototype), "start"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Peer_field"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Peer_start"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Peer_form"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Users_title"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Join_plate_text"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Join_plate_button"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Join_plate"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Users_list"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Users_empty_text"));
+	($mol_mem_key(($.$bog_gram_compose.prototype), "pick"));
+	($mol_mem(($.$bog_gram_compose.prototype), "close"));
+	($mol_mem_key(($.$bog_gram_compose.prototype), "open"));
+	($mol_mem(($.$bog_gram_compose.prototype), "join"));
+	($mol_mem(($.$bog_gram_compose.prototype), "Users_empty"));
+	($mol_mem_key(($.$bog_gram_compose.prototype), "User_row"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_lord extends $mol_object {
+        static short(lord) {
+            if (lord.length <= 14)
+                return lord;
+            return lord.slice(0, 6) + '…' + lord.slice(-4);
+        }
+        static label(lord, note, name) {
+            if (!lord)
+                return '';
+            return note || name || this.short(lord);
+        }
+        static tint(lord) {
+            let hash = 0;
+            for (const symbol of lord)
+                hash = (hash * 31 + symbol.charCodeAt(0)) % 7;
+            return hash;
+        }
+        static check(lord) {
+            if (!$giper_baza_link.check(lord))
+                return false;
+            const link = new $giper_baza_link(lord);
+            return link.lord().str === link.str;
+        }
+    }
+    $.$bog_gram_lord = $bog_gram_lord;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_compose extends $.$bog_gram_compose {
+            start(next) {
+                const peer = this.peer().trim();
+                if (!peer)
+                    return null;
+                this.peer('');
+                this.open(peer, null);
+                return null;
+            }
+            pick(lord, next) {
+                if (!lord)
+                    return null;
+                this.peer('');
+                this.open(lord, null);
+                return null;
+            }
+            Join_plate() {
+                return this.join_needed() ? super.Join_plate() : null;
+            }
+            user_rows() {
+                const users = this.users();
+                if (!users.length)
+                    return [this.Users_empty()];
+                return users.map(lord => this.User_row(lord));
+            }
+            users_empty_text() {
+                if (!this.registry_ids().length)
+                    return 'Вы не состоите ни в одном реестре. Создайте свой в настройках';
+                return 'Кроме вас в реестрах пока никого нет';
+            }
+            user_lord(lord) {
+                return lord;
+            }
+            user_tint(lord) {
+                return $bog_gram_lord.tint(lord);
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_gram_compose.prototype, "start", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_compose.prototype, "pick", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_compose.prototype, "user_rows", null);
+        $$.$bog_gram_compose = $bog_gram_compose;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_compose, {
+            Peer_form: {
+                flex: {
+                    direction: 'column',
+                },
+                gap: $mol_gap.block,
+            },
+            Users_title: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Users_list: {
+                gap: '0.125rem',
+            },
+            Users_empty: {
+                padding: $mol_gap.block,
+                color: $mol_theme.shade,
+            },
+            Join_plate: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                borderRadius: '0.75rem',
+            },
+            Join_plate_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Join_plate_button: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    Users_list: {
+                        gap: 0,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_group) = class $bog_gram_group extends ($.$bog_gram_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Name_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название группы");
+			(obj.value) = (next) => ((this.name(next)));
+			return obj;
+		}
+		chosen_head(){
+			return "";
+		}
+		Chosen_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.chosen_head()));
+			return obj;
+		}
+		chosen_rows(){
+			return [];
+		}
+		Chosen_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.chosen_rows()));
+			return obj;
+		}
+		lost_note(){
+			return "";
+		}
+		Lost_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.lost_note()));
+			return obj;
+		}
+		make_label(){
+			return "";
+		}
+		Make(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.make(next)));
+			(obj.sub) = () => ([(this.make_label())]);
+			return obj;
+		}
+		Id_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("ID участника");
+			(obj.value) = (next) => ((this.id(next)));
+			(obj.submit) = (next) => ((this.id_add(next)));
+			return obj;
+		}
+		Id_add(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.id_add(next)));
+			(obj.sub) = () => (["Добавить"]);
+			return obj;
+		}
+		Id_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Id_field()), (this.Id_add())]);
+			return obj;
+		}
+		Id_error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.id_error()));
+			return obj;
+		}
+		Pick_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Кого позвать");
+			return obj;
+		}
+		pick_rows(){
+			return [];
+		}
+		Pick_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.pick_rows()));
+			return obj;
+		}
+		picked_is(id){
+			return false;
+		}
+		person(id){
+			return "";
+		}
+		tint(id){
+			return 0;
+		}
+		Pick_mark(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		Chosen_drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Chosen_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать из списка");
+			(obj.click) = (next) => ((this.drop(id, next)));
+			(obj.sub) = () => ([(this.Chosen_drop_icon(id))]);
+			return obj;
+		}
+		title(){
+			return "Новая группа";
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		picked(){
+			return [];
+		}
+		lost(){
+			return [];
+		}
+		id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		id_error(){
+			return "";
+		}
+		pick(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		id_add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		make(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		label(id){
+			return "";
+		}
+		contact_lords(){
+			return [];
+		}
+		contact_source(id){
+			return "";
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.Name_field()), 
+				(this.Chosen_head()), 
+				(this.Chosen_list()), 
+				(this.Lost_note()), 
+				(this.Make()), 
+				(this.Id_form()), 
+				(this.Id_error()), 
+				(this.Pick_head()), 
+				(this.Pick_list())
+			];
+		}
+		Pick_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.click) = (next) => ((this.pick(id, next)));
+			(obj.current) = () => ((this.picked_is(id)));
+			(obj.avatar_id) = () => ((this.person(id)));
+			(obj.tint) = () => ((this.tint(id)));
+			(obj.title) = () => ((this.label(id)));
+			(obj.note) = () => ((this.contact_source(id)));
+			(obj.marks) = () => ([(this.Pick_mark(id))]);
+			return obj;
+		}
+		Chosen_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.enabled) = () => (false);
+			(obj.size) = () => ("tiny");
+			(obj.avatar_id) = () => ((this.person(id)));
+			(obj.tint) = () => ((this.tint(id)));
+			(obj.title) = () => ((this.label(id)));
+			(obj.tools) = () => ([(this.Chosen_drop(id))]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_group.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_group.prototype), "Close"));
+	($mol_mem(($.$bog_gram_group.prototype), "Name_field"));
+	($mol_mem(($.$bog_gram_group.prototype), "Chosen_head"));
+	($mol_mem(($.$bog_gram_group.prototype), "Chosen_list"));
+	($mol_mem(($.$bog_gram_group.prototype), "Lost_note"));
+	($mol_mem(($.$bog_gram_group.prototype), "Make"));
+	($mol_mem(($.$bog_gram_group.prototype), "Id_field"));
+	($mol_mem(($.$bog_gram_group.prototype), "Id_add"));
+	($mol_mem(($.$bog_gram_group.prototype), "Id_form"));
+	($mol_mem(($.$bog_gram_group.prototype), "Id_error"));
+	($mol_mem(($.$bog_gram_group.prototype), "Pick_head"));
+	($mol_mem(($.$bog_gram_group.prototype), "Pick_list"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "Pick_mark"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "Chosen_drop_icon"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "Chosen_drop"));
+	($mol_mem(($.$bog_gram_group.prototype), "close"));
+	($mol_mem(($.$bog_gram_group.prototype), "name"));
+	($mol_mem(($.$bog_gram_group.prototype), "id"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "pick"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "drop"));
+	($mol_mem(($.$bog_gram_group.prototype), "id_add"));
+	($mol_mem(($.$bog_gram_group.prototype), "make"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "Pick_row"));
+	($mol_mem_key(($.$bog_gram_group.prototype), "Chosen_row"));
 
 
 ;
@@ -23556,28 +26545,130 @@ var $;
 
 
 ;
-	($.$mol_icon_account_question) = class $mol_icon_account_question extends ($.$mol_icon) {
-		path(){
-			return "M13,8A4,4 0 0,1 9,12A4,4 0 0,1 5,8A4,4 0 0,1 9,4A4,4 0 0,1 13,8M17,18V20H1V18C1,15.79 4.58,14 9,14C13.42,14 17,15.79 17,18M20.5,14.5V16H19V14.5H20.5M18.5,9.5H17V9A3,3 0 0,1 20,6A3,3 0 0,1 23,9C23,9.97 22.5,10.88 21.71,11.41L21.41,11.6C20.84,12 20.5,12.61 20.5,13.3V13.5H19V13.3C19,12.11 19.6,11 20.59,10.35L20.88,10.16C21.27,9.9 21.5,9.47 21.5,9A1.5,1.5 0 0,0 20,7.5A1.5,1.5 0 0,0 18.5,9V9.5Z";
-		}
-	};
-
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_group extends $.$bog_gram_group {
+            person(lord) {
+                return lord;
+            }
+            tint(lord) {
+                return $bog_gram_lord.tint(lord);
+            }
+            picked_is(lord) {
+                return this.picked().includes(lord);
+            }
+            Pick_mark(lord) {
+                return this.picked_is(lord) ? super.Pick_mark(lord) : null;
+            }
+            pick_rows() {
+                return this.contact_lords().map(lord => this.Pick_row(lord));
+            }
+            chosen_rows() {
+                return this.picked().map(lord => this.Chosen_row(lord));
+            }
+            chosen_head() {
+                const count = this.picked().length;
+                if (!count)
+                    return 'Пока никого не выбрали';
+                return $bog_gram_count.people(count);
+            }
+            lost_note() {
+                const lost = this.lost();
+                if (!lost.length)
+                    return '';
+                const names = lost.map(lord => this.label(lord)).join(', ');
+                return 'Не нашли ключей: ' + names + '. Без ключа человек не прочитает переписку — группу можно создать без него.';
+            }
+            Lost_note() {
+                return this.lost().length ? super.Lost_note() : null;
+            }
+            make_label() {
+                return this.lost().length ? 'Создать без них' : 'Создать группу';
+            }
+            Id_error() {
+                return this.id_error() ? super.Id_error() : null;
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_group.prototype, "picked_is", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_group.prototype, "pick_rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_group.prototype, "chosen_rows", null);
+        $$.$bog_gram_group = $bog_gram_group;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
 
 ;
 "use strict";
-
-
-;
-	($.$mol_icon_check) = class $mol_icon_check extends ($.$mol_icon) {
-		path(){
-			return "M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z";
-		}
-	};
-
-
-;
-"use strict";
-
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const head = {
+            font: {
+                weight: 'bold',
+            },
+            color: $mol_theme.shade,
+            padding: {
+                top: $mol_gap.block,
+                bottom: 0,
+                left: 0,
+                right: 0,
+            },
+        };
+        const alarm = {
+            font: {
+                size: '0.875rem',
+            },
+            color: $bog_gram_tone.alert,
+        };
+        $mol_style_define($bog_gram_group, {
+            Name_field: {
+                alignSelf: 'stretch',
+            },
+            Chosen_head: head,
+            Chosen_list: {
+                gap: '0.125rem',
+            },
+            Lost_note: alarm,
+            Make: {
+                alignSelf: 'stretch',
+                justify: {
+                    content: 'center',
+                },
+            },
+            Id_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Id_error: alarm,
+            Pick_head: head,
+            Pick_list: {
+                gap: '0.125rem',
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    Pick_list: {
+                        gap: 0,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
 
 ;
 	($.$mol_icon_shield) = class $mol_icon_shield extends ($.$mol_icon) {
@@ -23628,2799 +26719,7 @@ var $;
 
 
 ;
-	($.$mol_icon_pencil) = class $mol_icon_pencil extends ($.$mol_icon) {
-		path(){
-			return "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_archive_arrow_down) = class $mol_icon_archive_arrow_down extends ($.$mol_icon) {
-		path(){
-			return "M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_archive_arrow_up) = class $mol_icon_archive_arrow_up extends ($.$mol_icon) {
-		path(){
-			return "M4 21H20V8H4M14 15V18H10V15H7L12 10L17 15M3 3H21V7H3";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/string/button/button.view.css", "[mol_string_button]:not(:placeholder-shown):not(:focus):not(:hover):not(:disabled) {\n\tcolor: var(--mol_theme_control);\n\tbackground: transparent;\n\tbox-shadow: none;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_arrow_left) = class $mol_icon_arrow_left extends ($.$mol_icon) {
-		path(){
-			return "M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_reply) = class $mol_icon_reply extends ($.$mol_icon) {
-		path(){
-			return "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_paperclip) = class $mol_icon_paperclip extends ($.$mol_icon) {
-		path(){
-			return "M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
-		path(){
-			return "M2,21L23,12L2,3V10L17,12L2,14V21Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_microphone) = class $mol_icon_microphone extends ($.$mol_icon) {
-		path(){
-			return "M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_image) = class $mol_image extends ($.$mol_view) {
-		uri(){
-			return "";
-		}
-		title(){
-			return "";
-		}
-		loading(){
-			return "lazy";
-		}
-		decoding(){
-			return "async";
-		}
-		cors(){
-			return null;
-		}
-		natural_width(){
-			return 0;
-		}
-		natural_height(){
-			return 0;
-		}
-		load(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dom_name(){
-			return "img";
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"src": (this.uri()), 
-				"title": (this.hint()), 
-				"alt": (this.title()), 
-				"loading": (this.loading()), 
-				"decoding": (this.decoding()), 
-				"crossOrigin": (this.cors()), 
-				"width": (this.natural_width()), 
-				"height": (this.natural_height())
-			};
-		}
-		event(){
-			return {"load": (next) => (this.load(next))};
-		}
-		minimal_width(){
-			return 16;
-		}
-		minimal_height(){
-			return 16;
-		}
-	};
-	($mol_mem(($.$mol_image.prototype), "load"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_image extends $.$mol_image {
-            natural_width(next) {
-                const dom = this.dom_node();
-                if (dom.naturalWidth)
-                    return dom.naturalWidth;
-                const found = this.uri().match(/\bwidth=(\d+)/);
-                return found ? Number(found[1]) : null;
-            }
-            natural_height(next) {
-                const dom = this.dom_node();
-                if (dom.naturalHeight)
-                    return dom.naturalHeight;
-                const found = this.uri().match(/\bheight=(\d+)/);
-                return found ? Number(found[1]) : null;
-            }
-            load() {
-                this.natural_width(null);
-                this.natural_height(null);
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_image.prototype, "natural_width", null);
-        __decorate([
-            $mol_mem
-        ], $mol_image.prototype, "natural_height", null);
-        $$.$mol_image = $mol_image;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
-		path(){
-			return "M8,5.14V19.14L19,12.14L8,5.14Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_pause) = class $mol_icon_pause extends ($.$mol_icon) {
-		path(){
-			return "M14,19H18V5H14M6,19H10V5H6V19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$bog_gram) = class $bog_gram extends ($.$mol_book2) {
-		lights(){
-			return "system";
-		}
-		Skin(){
-			const obj = new this.$.$bog_builderui_skin();
-			(obj.lights) = () => ((this.lights()));
-			(obj.base) = () => ("zinc");
-			(obj.font_head) = () => ("eb-garamond");
-			return obj;
-		}
-		Theme(){
-			const obj = new this.$.$bog_theme_auto();
-			return obj;
-		}
-		Intro_title(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Выберите диалог");
-			return obj;
-		}
-		Intro_hint(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Или начните новый: кнопка в шапке списка");
-			return obj;
-		}
-		Intro_plate(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Intro_title()), (this.Intro_hint())]);
-			return obj;
-		}
-		Intro(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Intro_plate())]);
-			return obj;
-		}
-		Status(){
-			const obj = new this.$.$giper_baza_status();
-			return obj;
-		}
-		compose_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Compose_open_icon(){
-			const obj = new this.$.$mol_icon_message_plus();
-			return obj;
-		}
-		Compose_open(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Новый диалог");
-			(obj.click) = (next) => ((this.compose_open(next)));
-			(obj.sub) = () => ([(this.Compose_open_icon())]);
-			return obj;
-		}
-		group_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Group_open_icon(){
-			const obj = new this.$.$mol_icon_account_multiple_plus();
-			return obj;
-		}
-		Group_open(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Новая группа");
-			(obj.click) = (next) => ((this.group_open(next)));
-			(obj.sub) = () => ([(this.Group_open_icon())]);
-			return obj;
-		}
-		music_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Music_open_icon(){
-			const obj = new this.$.$mol_icon_music();
-			return obj;
-		}
-		Music_open(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Музыка");
-			(obj.click) = (next) => ((this.music_open(next)));
-			(obj.sub) = () => ([(this.Music_open_icon())]);
-			return obj;
-		}
-		settings_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Settings_open_icon(){
-			const obj = new this.$.$mol_icon_cog();
-			return obj;
-		}
-		Settings_open(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Настройки");
-			(obj.click) = (next) => ((this.settings_open(next)));
-			(obj.sub) = () => ([(this.Settings_open_icon())]);
-			return obj;
-		}
-		Lights(){
-			const obj = new this.$.$bog_theme_toggle();
-			(obj.theme_auto) = () => ((this.Theme()));
-			return obj;
-		}
-		invite_plate_text(){
-			return "";
-		}
-		Invite_plate_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.invite_plate_text()));
-			return obj;
-		}
-		invite_drop(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Invite_drop_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Invite_drop(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить");
-			(obj.click) = (next) => ((this.invite_drop(next)));
-			(obj.sub) = () => ([(this.Invite_drop_icon())]);
-			return obj;
-		}
-		Invite_plate(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Invite_plate_text()), (this.Invite_drop())]);
-			return obj;
-		}
-		ask_plate_text(){
-			return "";
-		}
-		Ask_plate_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.ask_plate_text()));
-			return obj;
-		}
-		Ask_plate(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Ask_plate_text())]);
-			return obj;
-		}
-		dialog_rows(){
-			return [];
-		}
-		Dialogs_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.dialog_rows()));
-			return obj;
-		}
-		Menu(){
-			const obj = new this.$.$mol_page();
-			(obj.title) = () => ("Gram");
-			(obj.tools) = () => ([
-				(this.Status()), 
-				(this.Compose_open()), 
-				(this.Group_open()), 
-				(this.Music_open()), 
-				(this.Settings_open()), 
-				(this.Lights())
-			]);
-			(obj.body) = () => ([
-				(this.Invite_plate()), 
-				(this.Ask_plate()), 
-				(this.Dialogs_list())
-			]);
-			return obj;
-		}
-		music_hidden(){
-			return false;
-		}
-		music_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Music_page(){
-			const obj = new this.$.$bog_gram_music();
-			(obj.hidden) = () => ((this.music_hidden()));
-			(obj.close) = (next) => ((this.music_close(next)));
-			return obj;
-		}
-		settings_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Settings_close_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Settings_close(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
-			(obj.click) = (next) => ((this.settings_close(next)));
-			(obj.sub) = () => ([(this.Settings_close_icon())]);
-			return obj;
-		}
-		user_name(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Name_field(){
-			const obj = new this.$.$bog_gram_field();
-			(obj.hint) = () => ("Ваше имя");
-			(obj.value) = (next) => ((this.user_name(next)));
-			return obj;
-		}
-		my_lord(){
-			return "";
-		}
-		My_id_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.my_lord()));
-			return obj;
-		}
-		My_id_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
-			(obj.text) = () => ((this.my_lord()));
-			return obj;
-		}
-		My_id(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Мой ID");
-			(obj.content) = () => ([(this.My_id_text()), (this.My_id_copy())]);
-			return obj;
-		}
-		Invite_hint(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Отправьте эту ссылку — у собеседника сразу откроется диалог с вами");
-			return obj;
-		}
-		invite_link(){
-			return "";
-		}
-		Invite_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.invite_link()));
-			return obj;
-		}
-		Invite_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
-			(obj.text) = () => ((this.invite_link()));
-			return obj;
-		}
-		Invite_qr(){
-			const obj = new this.$.$bog_qr();
-			(obj.uri) = () => ((this.invite_link()));
-			(obj.gradient_stops) = () => (["#229ED9", "#5ED0F5"]);
-			return obj;
-		}
-		Invite_qr_box(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Invite_qr())]);
-			return obj;
-		}
-		Invite_body(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Invite_hint()), 
-				(this.Invite_text()), 
-				(this.Invite_copy()), 
-				(this.Invite_qr_box())
-			]);
-			return obj;
-		}
-		Invite(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Ссылка на меня");
-			(obj.content) = () => ([(this.Invite_body())]);
-			return obj;
-		}
-		notify_status(){
-			return "";
-		}
-		Notify_status(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.notify_status()));
-			return obj;
-		}
-		notify_toggle(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		notify_label(){
-			return "";
-		}
-		Notify_toggle(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.notify_toggle(next)));
-			(obj.sub) = () => ([(this.notify_label())]);
-			return obj;
-		}
-		Notify_body(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Notify_status()), (this.Notify_toggle())]);
-			return obj;
-		}
-		Notify(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Уведомления");
-			(obj.content) = () => ([(this.Notify_body())]);
-			return obj;
-		}
-		registry_content(){
-			return [];
-		}
-		Registry_block(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Реестры");
-			(obj.content) = () => ((this.registry_content()));
-			return obj;
-		}
-		account_rows(){
-			return [];
-		}
-		Account_body(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.account_rows()));
-			return obj;
-		}
-		Account(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Аккаунт");
-			(obj.content) = () => ([(this.Account_body())]);
-			return obj;
-		}
-		version(){
-			return "";
-		}
-		Version_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.version()));
-			return obj;
-		}
-		Version(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Версия");
-			(obj.content) = () => ([(this.Version_text())]);
-			return obj;
-		}
-		Settings_page(){
-			const obj = new this.$.$mol_page();
-			(obj.title) = () => ("Настройки");
-			(obj.tools) = () => ([(this.Settings_close())]);
-			(obj.body) = () => ([
-				(this.Name_field()), 
-				(this.My_id()), 
-				(this.Invite()), 
-				(this.Notify()), 
-				(this.Registry_block()), 
-				(this.Account()), 
-				(this.Version())
-			]);
-			return obj;
-		}
-		compose_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Compose_close_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Compose_close(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
-			(obj.click) = (next) => ((this.compose_close(next)));
-			(obj.sub) = () => ([(this.Compose_close_icon())]);
-			return obj;
-		}
-		peer_lord(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		dialog_start(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Peer_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID собеседника");
-			(obj.value) = (next) => ((this.peer_lord(next)));
-			(obj.submit) = (next) => ((this.dialog_start(next)));
-			return obj;
-		}
-		Peer_start(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.dialog_start(next)));
-			(obj.sub) = () => (["Начать диалог"]);
-			return obj;
-		}
-		Peer_form(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Peer_field()), (this.Peer_start())]);
-			return obj;
-		}
-		Users_title(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Пользователи");
-			return obj;
-		}
-		Join_plate_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Вас нет в этом реестре — другие вас тут не найдут");
-			return obj;
-		}
-		registry_join_active(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Join_plate_button(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.registry_join_active(next)));
-			(obj.sub) = () => (["Вступить"]);
-			return obj;
-		}
-		Join_plate(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Join_plate_text()), (this.Join_plate_button())]);
-			return obj;
-		}
-		user_rows(){
-			return [];
-		}
-		Users_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.user_rows()));
-			return obj;
-		}
-		Compose_page(){
-			const obj = new this.$.$mol_page();
-			(obj.title) = () => ("Новый диалог");
-			(obj.tools) = () => ([(this.Compose_close())]);
-			(obj.body) = () => ([
-				(this.Peer_form()), 
-				(this.Users_title()), 
-				(this.Join_plate()), 
-				(this.Users_list())
-			]);
-			return obj;
-		}
-		group_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Group_close_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Group_close(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
-			(obj.click) = (next) => ((this.group_close(next)));
-			(obj.sub) = () => ([(this.Group_close_icon())]);
-			return obj;
-		}
-		group_name(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Group_name_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Название группы");
-			(obj.value) = (next) => ((this.group_name(next)));
-			return obj;
-		}
-		group_chosen_head(){
-			return "";
-		}
-		Group_chosen_head(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.group_chosen_head()));
-			return obj;
-		}
-		group_chosen_rows(){
-			return [];
-		}
-		Group_chosen_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.group_chosen_rows()));
-			return obj;
-		}
-		group_lost_note(){
-			return "";
-		}
-		Group_lost_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.group_lost_note()));
-			return obj;
-		}
-		group_make(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		group_make_label(){
-			return "";
-		}
-		Group_make(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.group_make(next)));
-			(obj.sub) = () => ([(this.group_make_label())]);
-			return obj;
-		}
-		group_id(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		group_id_add(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Group_id_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID участника");
-			(obj.value) = (next) => ((this.group_id(next)));
-			(obj.submit) = (next) => ((this.group_id_add(next)));
-			return obj;
-		}
-		Group_id_add(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.group_id_add(next)));
-			(obj.sub) = () => (["Добавить"]);
-			return obj;
-		}
-		Group_id_form(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Group_id_field()), (this.Group_id_add())]);
-			return obj;
-		}
-		group_id_error(){
-			return "";
-		}
-		Group_id_error(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.group_id_error()));
-			return obj;
-		}
-		Group_pick_head(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Кого позвать");
-			return obj;
-		}
-		group_pick_rows(){
-			return [];
-		}
-		Group_pick_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.group_pick_rows()));
-			return obj;
-		}
-		Group_page(){
-			const obj = new this.$.$mol_page();
-			(obj.title) = () => ("Новая группа");
-			(obj.tools) = () => ([(this.Group_close())]);
-			(obj.body) = () => ([
-				(this.Group_name_field()), 
-				(this.Group_chosen_head()), 
-				(this.Group_chosen_list()), 
-				(this.Group_lost_note()), 
-				(this.Group_make()), 
-				(this.Group_id_form()), 
-				(this.Group_id_error()), 
-				(this.Group_pick_head()), 
-				(this.Group_pick_list())
-			]);
-			return obj;
-		}
-		members_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Members_close_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Members_close(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
-			(obj.click) = (next) => ((this.members_close(next)));
-			(obj.sub) = () => ([(this.Members_close_icon())]);
-			return obj;
-		}
-		member_rows(){
-			return [];
-		}
-		Members_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.member_rows()));
-			return obj;
-		}
-		Members_drop_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.");
-			return obj;
-		}
-		members_add_rows(){
-			return [];
-		}
-		Members_add_block(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.members_add_rows()));
-			return obj;
-		}
-		Members_leave_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.");
-			return obj;
-		}
-		leave_armed(){
-			return false;
-		}
-		group_leave_click(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		group_leave_label(){
-			return "";
-		}
-		Members_leave(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать группу из своего списка");
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.leave_armed())});
-			(obj.click) = (next) => ((this.group_leave_click(next)));
-			(obj.sub) = () => ([(this.group_leave_label())]);
-			return obj;
-		}
-		Members_page(){
-			const obj = new this.$.$mol_page();
-			(obj.title) = () => ("Участники");
-			(obj.tools) = () => ([(this.Members_close())]);
-			(obj.body) = () => ([
-				(this.Members_list()), 
-				(this.Members_drop_note()), 
-				(this.Members_add_block()), 
-				(this.Members_leave_note()), 
-				(this.Members_leave())
-			]);
-			return obj;
-		}
-		chat_title(){
-			return "";
-		}
-		chat_dialog(){
-			return "";
-		}
-		chat_focus_row(){
-			return null;
-		}
-		chat_members_shown(){
-			return false;
-		}
-		members_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		chat_note(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		chat_note_hint(){
-			return "";
-		}
-		chat_note_editable(){
-			return false;
-		}
-		chat_rows(){
-			return [];
-		}
-		edit_mode(){
-			return false;
-		}
-		message_text(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		message_send(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		edit_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		reply_mode(){
-			return false;
-		}
-		reply_title(){
-			return "";
-		}
-		reply_text(){
-			return "";
-		}
-		reply_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dialog_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_files(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_paste(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_over(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_drop(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		zoom_uri(){
-			return "";
-		}
-		zoom_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_on(){
-			return false;
-		}
-		voice_ready(){
-			return false;
-		}
-		voice_clock(){
-			return "";
-		}
-		voice_hint(){
-			return "";
-		}
-		voice_press(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_release(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_abort(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_menu(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Chat_page(){
-			const obj = new this.$.$bog_gram_chat();
-			(obj.title) = () => ((this.chat_title()));
-			(obj.focus_key) = () => ((this.chat_dialog()));
-			(obj.focus_row) = () => ((this.chat_focus_row()));
-			(obj.members_shown) = () => ((this.chat_members_shown()));
-			(obj.members) = (next) => ((this.members_open(next)));
-			(obj.note) = (next) => ((this.chat_note(next)));
-			(obj.note_hint) = () => ((this.chat_note_hint()));
-			(obj.note_editable) = () => ((this.chat_note_editable()));
-			(obj.rows) = () => ((this.chat_rows()));
-			(obj.edit_mode) = () => ((this.edit_mode()));
-			(obj.message_text) = (next) => ((this.message_text(next)));
-			(obj.message_send) = (next) => ((this.message_send(next)));
-			(obj.edit_cancel) = (next) => ((this.edit_cancel(next)));
-			(obj.reply_mode) = () => ((this.reply_mode()));
-			(obj.reply_title) = () => ((this.reply_title()));
-			(obj.reply_text) = () => ((this.reply_text()));
-			(obj.reply_cancel) = (next) => ((this.reply_cancel(next)));
-			(obj.close) = (next) => ((this.dialog_close(next)));
-			(obj.image_files) = (next) => ((this.image_files(next)));
-			(obj.image_paste) = (next) => ((this.image_paste(next)));
-			(obj.image_over) = (next) => ((this.image_over(next)));
-			(obj.image_drop) = (next) => ((this.image_drop(next)));
-			(obj.zoom_uri) = () => ((this.zoom_uri()));
-			(obj.zoom_close) = (next) => ((this.zoom_close(next)));
-			(obj.voice_on) = () => ((this.voice_on()));
-			(obj.voice_ready) = () => ((this.voice_ready()));
-			(obj.voice_clock) = () => ((this.voice_clock()));
-			(obj.voice_hint) = () => ((this.voice_hint()));
-			(obj.voice_press) = (next) => ((this.voice_press(next)));
-			(obj.voice_release) = (next) => ((this.voice_release(next)));
-			(obj.voice_abort) = (next) => ((this.voice_abort(next)));
-			(obj.voice_cancel) = (next) => ((this.voice_cancel(next)));
-			(obj.voice_menu) = (next) => ((this.voice_menu(next)));
-			return obj;
-		}
-		Dialogs_empty_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Пока нет диалогов");
-			return obj;
-		}
-		users_empty_text(){
-			return "";
-		}
-		Users_empty_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.users_empty_text()));
-			return obj;
-		}
-		registry_rows(){
-			return [];
-		}
-		Registry_share_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ссылка-приглашение в активный реестр");
-			return obj;
-		}
-		registry_uri(){
-			return "";
-		}
-		Registry_share_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать ссылку");
-			(obj.text) = () => ((this.registry_uri()));
-			return obj;
-		}
-		registry_name(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		registry_make(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Registry_name(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Название реестра");
-			(obj.value) = (next) => ((this.registry_name(next)));
-			(obj.submit) = (next) => ((this.registry_make(next)));
-			return obj;
-		}
-		Registry_make(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.registry_make(next)));
-			(obj.sub) = () => (["Создать реестр"]);
-			return obj;
-		}
-		registry_open(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		registry_active_is(id){
-			return false;
-		}
-		registry_title(id){
-			return "";
-		}
-		Registry_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.registry_title(id))]);
-			return obj;
-		}
-		registry_status(id){
-			return "";
-		}
-		Registry_status(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.registry_status(id))]);
-			return obj;
-		}
-		Registry_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Registry_title(id)), (this.Registry_status(id))]);
-			return obj;
-		}
-		registry_join(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Registry_join(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Вступить в реестр");
-			(obj.click) = (next) => ((this.registry_join(id, next)));
-			(obj.sub) = () => (["Вступить"]);
-			return obj;
-		}
-		registry_forget(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Registry_drop_icon(id){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Registry_drop(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать из своего списка");
-			(obj.click) = (next) => ((this.registry_forget(id, next)));
-			(obj.sub) = () => ([(this.Registry_drop_icon(id))]);
-			return obj;
-		}
-		key_toggle(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		key_toggle_label(){
-			return "";
-		}
-		key_text(){
-			return "";
-		}
-		Key_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.key_text()));
-			return obj;
-		}
-		Key_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
-			(obj.text) = () => ((this.key_text()));
-			return obj;
-		}
-		Key_qr(){
-			const obj = new this.$.$bog_qr();
-			(obj.uri) = () => ((this.key_text()));
-			(obj.gradient_stops) = () => (["#e14b4b", "#f0a04b"]);
-			return obj;
-		}
-		key_save(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		key_input(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Key_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Ключ аккаунта");
-			(obj.value) = (next) => ((this.key_input(next)));
-			return obj;
-		}
-		Key_load_hint(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Или загрузите файл с ключом");
-			return obj;
-		}
-		key_file(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Key_open(){
-			const obj = new this.$.$mol_button_open();
-			(obj.hint) = () => ("Выбрать файл");
-			(obj.accept) = () => (".key,text/plain");
-			(obj.multiple) = () => (false);
-			(obj.files) = (next) => ((this.key_file(next)));
-			return obj;
-		}
-		Key_load_row(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Key_load_hint()), (this.Key_open())]);
-			return obj;
-		}
-		key_scanned(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Key_scan(){
-			const obj = new this.$.$bog_gram_scan();
-			(obj.found) = (next) => ((this.key_scanned(next)));
-			return obj;
-		}
-		import_armed(){
-			return false;
-		}
-		key_import(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		key_import_label(){
-			return "";
-		}
-		Key_import(){
-			const obj = new this.$.$mol_button_major();
-			(obj.attr) = () => ({...(this.$.$mol_button_major.prototype.attr.call(obj)), "bog_gram_armed": (this.import_armed())});
-			(obj.click) = (next) => ((this.key_import(next)));
-			(obj.sub) = () => ([(this.key_import_label())]);
-			return obj;
-		}
-		key_error(){
-			return "";
-		}
-		Key_error(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.key_error()));
-			return obj;
-		}
-		dialog_select(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dialog_current_is(id){
-			return false;
-		}
-		dialog_avatar_id(id){
-			return "";
-		}
-		dialog_tint(id){
-			return 0;
-		}
-		Dialog_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.dialog_avatar_id(id)));
-			(obj.tint) = () => ((this.dialog_tint(id)));
-			return obj;
-		}
-		dialog_title(id){
-			return "";
-		}
-		Dialog_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.dialog_title(id))]);
-			return obj;
-		}
-		dialog_time(id){
-			return "";
-		}
-		Dialog_time(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.dialog_time(id))]);
-			return obj;
-		}
-		Dialog_top(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Dialog_title(id)), (this.Dialog_time(id))]);
-			return obj;
-		}
-		dialog_preview(id){
-			return "";
-		}
-		Dialog_preview(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.dialog_preview(id))]);
-			return obj;
-		}
-		unread_label(id){
-			return "";
-		}
-		Unread_badge(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.unread_label(id))]);
-			return obj;
-		}
-		Dialog_bottom(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Dialog_preview(id)), (this.Unread_badge(id))]);
-			return obj;
-		}
-		Dialog_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Dialog_top(id)), (this.Dialog_bottom(id))]);
-			return obj;
-		}
-		archive_hint(id){
-			return "";
-		}
-		dialog_archive_click(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		archive_icons(id){
-			return [];
-		}
-		Dialog_archive(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.archive_hint(id)));
-			(obj.click) = (next) => ((this.dialog_archive_click(id, next)));
-			(obj.sub) = () => ((this.archive_icons(id)));
-			return obj;
-		}
-		delete_hint(id){
-			return "";
-		}
-		delete_armed(id){
-			return false;
-		}
-		dialog_delete_click(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Dialog_delete_icon(id){
-			const obj = new this.$.$mol_icon_delete();
-			return obj;
-		}
-		Dialog_delete(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.delete_hint(id)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.delete_armed(id))});
-			(obj.click) = (next) => ((this.dialog_delete_click(id, next)));
-			(obj.sub) = () => ([(this.Dialog_delete_icon(id))]);
-			return obj;
-		}
-		saved_open(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		saved_current_is(){
-			return false;
-		}
-		Saved_avatar_icon(){
-			const obj = new this.$.$mol_icon_bookmark();
-			return obj;
-		}
-		Saved_avatar(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Saved_avatar_icon())]);
-			return obj;
-		}
-		saved_title(){
-			return "";
-		}
-		Saved_title(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.saved_title())]);
-			return obj;
-		}
-		saved_time(){
-			return "";
-		}
-		Saved_time(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.saved_time())]);
-			return obj;
-		}
-		Saved_top(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Saved_title()), (this.Saved_time())]);
-			return obj;
-		}
-		saved_preview(){
-			return "";
-		}
-		Saved_preview(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.saved_preview())]);
-			return obj;
-		}
-		Saved_bottom(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Saved_preview())]);
-			return obj;
-		}
-		Saved_info(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Saved_top()), (this.Saved_bottom())]);
-			return obj;
-		}
-		archive_toggle(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Archive_avatar_icon(){
-			const obj = new this.$.$mol_icon_archive();
-			return obj;
-		}
-		Archive_avatar(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Archive_avatar_icon())]);
-			return obj;
-		}
-		Archive_title(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["Архив"]);
-			return obj;
-		}
-		archive_note(){
-			return "";
-		}
-		Archive_note(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.archive_note())]);
-			return obj;
-		}
-		Archive_info(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Archive_title()), (this.Archive_note())]);
-			return obj;
-		}
-		archive_unread_label(){
-			return "";
-		}
-		Archive_unread(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.archive_unread_label())]);
-			return obj;
-		}
-		requests_toggle(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Requests_avatar_icon(){
-			const obj = new this.$.$mol_icon_account_question();
-			return obj;
-		}
-		Requests_avatar(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Requests_avatar_icon())]);
-			return obj;
-		}
-		Requests_title(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["Запросы"]);
-			return obj;
-		}
-		Requests_note(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["Хотят вам написать"]);
-			return obj;
-		}
-		Requests_info(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Requests_title()), (this.Requests_note())]);
-			return obj;
-		}
-		requests_count_label(){
-			return "";
-		}
-		Requests_count(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.requests_count_label())]);
-			return obj;
-		}
-		request_accept(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Request_accept_icon(id){
-			const obj = new this.$.$mol_icon_check();
-			return obj;
-		}
-		request_reject(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Request_reject_icon(id){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		user_pick(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		user_lord(id){
-			return "";
-		}
-		user_tint(id){
-			return 0;
-		}
-		User_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.user_lord(id)));
-			(obj.tint) = () => ((this.user_tint(id)));
-			return obj;
-		}
-		user_title(id){
-			return "";
-		}
-		User_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.user_title(id))]);
-			return obj;
-		}
-		user_source(id){
-			return "";
-		}
-		User_source(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.user_source(id))]);
-			return obj;
-		}
-		User_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.User_title(id)), (this.User_source(id))]);
-			return obj;
-		}
-		group_pick(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		group_picked_is(id){
-			return false;
-		}
-		group_pick_lord(id){
-			return "";
-		}
-		group_pick_tint(id){
-			return 0;
-		}
-		Group_pick_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.group_pick_lord(id)));
-			(obj.tint) = () => ((this.group_pick_tint(id)));
-			return obj;
-		}
-		group_pick_title(id){
-			return "";
-		}
-		Group_pick_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.group_pick_title(id))]);
-			return obj;
-		}
-		group_pick_source(id){
-			return "";
-		}
-		Group_pick_source(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.group_pick_source(id))]);
-			return obj;
-		}
-		Group_pick_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Group_pick_title(id)), (this.Group_pick_source(id))]);
-			return obj;
-		}
-		Group_pick_mark(id){
-			const obj = new this.$.$mol_icon_check();
-			return obj;
-		}
-		group_chosen_lord(id){
-			return "";
-		}
-		group_chosen_tint(id){
-			return 0;
-		}
-		Group_chosen_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.group_chosen_lord(id)));
-			(obj.tint) = () => ((this.group_chosen_tint(id)));
-			return obj;
-		}
-		group_chosen_name(id){
-			return "";
-		}
-		Group_chosen_name(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.group_chosen_name(id))]);
-			return obj;
-		}
-		group_chosen_drop(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Group_chosen_drop_icon(id){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Group_chosen_drop(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать из списка");
-			(obj.click) = (next) => ((this.group_chosen_drop(id, next)));
-			(obj.sub) = () => ([(this.Group_chosen_drop_icon(id))]);
-			return obj;
-		}
-		Members_history_head(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Что увидит новый участник");
-			return obj;
-		}
-		history_open(){
-			return false;
-		}
-		members_history_all(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Members_history_all(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Выдать ключи от всех прошлых сообщений");
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_open())});
-			(obj.click) = (next) => ((this.members_history_all(next)));
-			(obj.sub) = () => (["Всю переписку"]);
-			return obj;
-		}
-		history_shut(){
-			return false;
-		}
-		members_history_new(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Members_history_new(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Завести новый отсек переписки");
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_shut())});
-			(obj.click) = (next) => ((this.members_history_new(next)));
-			(obj.sub) = () => (["Только новые"]);
-			return obj;
-		}
-		Members_history_row(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Members_history_all()), (this.Members_history_new())]);
-			return obj;
-		}
-		members_history_note(){
-			return "";
-		}
-		Members_history_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.members_history_note()));
-			return obj;
-		}
-		member_error(){
-			return "";
-		}
-		member_id(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		member_id_add(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Members_id_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID участника");
-			(obj.value) = (next) => ((this.member_id(next)));
-			(obj.submit) = (next) => ((this.member_id_add(next)));
-			return obj;
-		}
-		Members_id_add(){
-			const obj = new this.$.$mol_button_major();
-			(obj.click) = (next) => ((this.member_id_add(next)));
-			(obj.sub) = () => (["Добавить"]);
-			return obj;
-		}
-		member_pick_rows(){
-			return [];
-		}
-		Members_join_head(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ссылка-приглашение в группу");
-			return obj;
-		}
-		Members_join_hint(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо");
-			return obj;
-		}
-		join_link(){
-			return "";
-		}
-		Members_join_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.join_link()));
-			return obj;
-		}
-		Members_join_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
-			(obj.text) = () => ((this.join_link()));
-			return obj;
-		}
-		Members_join_qr(){
-			const obj = new this.$.$bog_qr();
-			(obj.uri) = () => ((this.join_link()));
-			(obj.gradient_stops) = () => (["#2f9e5f", "#8fd14f"]);
-			return obj;
-		}
-		Members_join_qr_box(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Members_join_qr())]);
-			return obj;
-		}
-		members_asks_head(){
-			return "";
-		}
-		members_ask_rows(){
-			return [];
-		}
-		ask_lord(id){
-			return "";
-		}
-		ask_tint(id){
-			return 0;
-		}
-		Ask_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.ask_lord(id)));
-			(obj.tint) = () => ((this.ask_tint(id)));
-			return obj;
-		}
-		ask_title(id){
-			return "";
-		}
-		Ask_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.ask_title(id))]);
-			return obj;
-		}
-		ask_status(id){
-			return "";
-		}
-		Ask_status(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.ask_status(id))]);
-			return obj;
-		}
-		Ask_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Ask_title(id)), (this.Ask_status(id))]);
-			return obj;
-		}
-		ask_accept(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Ask_accept_icon(id){
-			const obj = new this.$.$mol_icon_check();
-			return obj;
-		}
-		Ask_accept(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Принять в группу");
-			(obj.click) = (next) => ((this.ask_accept(id, next)));
-			(obj.sub) = () => ([(this.Ask_accept_icon(id))]);
-			return obj;
-		}
-		ask_reject(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Ask_reject_icon(id){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Ask_reject(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отклонить заявку");
-			(obj.click) = (next) => ((this.ask_reject(id, next)));
-			(obj.sub) = () => ([(this.Ask_reject_icon(id))]);
-			return obj;
-		}
-		member_lord(id){
-			return "";
-		}
-		member_tint(id){
-			return 0;
-		}
-		Member_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.member_lord(id)));
-			(obj.tint) = () => ((this.member_tint(id)));
-			return obj;
-		}
-		member_title(id){
-			return "";
-		}
-		Member_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.member_title(id))]);
-			return obj;
-		}
-		member_status(id){
-			return "";
-		}
-		Member_status(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.member_status(id))]);
-			return obj;
-		}
-		Member_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Member_title(id)), (this.Member_status(id))]);
-			return obj;
-		}
-		member_rule_click(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Member_rule_icon(id){
-			const obj = new this.$.$mol_icon_shield_crown();
-			return obj;
-		}
-		Member_rule(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Назначить админом");
-			(obj.click) = (next) => ((this.member_rule_click(id, next)));
-			(obj.sub) = () => ([(this.Member_rule_icon(id))]);
-			return obj;
-		}
-		member_drop_hint(id){
-			return "";
-		}
-		member_armed(id){
-			return false;
-		}
-		member_drop_click(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Member_drop_icon(id){
-			const obj = new this.$.$mol_icon_account_remove();
-			return obj;
-		}
-		Member_drop(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.member_drop_hint(id)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.member_armed(id))});
-			(obj.click) = (next) => ((this.member_drop_click(id, next)));
-			(obj.sub) = () => ([(this.Member_drop_icon(id))]);
-			return obj;
-		}
-		member_pick(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		member_pick_lord(id){
-			return "";
-		}
-		member_pick_tint(id){
-			return 0;
-		}
-		Member_pick_avatar(id){
-			const obj = new this.$.$bog_gram_avatar();
-			(obj.id) = () => ((this.member_pick_lord(id)));
-			(obj.tint) = () => ((this.member_pick_tint(id)));
-			return obj;
-		}
-		member_pick_title(id){
-			return "";
-		}
-		Member_pick_title(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.member_pick_title(id))]);
-			return obj;
-		}
-		member_pick_source(id){
-			return "";
-		}
-		Member_pick_source(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.member_pick_source(id))]);
-			return obj;
-		}
-		Member_pick_info(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Member_pick_title(id)), (this.Member_pick_source(id))]);
-			return obj;
-		}
-		Member_pick_mark(id){
-			const obj = new this.$.$mol_icon_account_plus();
-			return obj;
-		}
-		day_title(id){
-			return "";
-		}
-		Day_chip(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.day_title(id))]);
-			return obj;
-		}
-		message_out(id){
-			return false;
-		}
-		message_menu_is(id){
-			return false;
-		}
-		message_press(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		message_release(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		message_context(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		message_author_tint(id){
-			return 0;
-		}
-		message_author(id){
-			return "";
-		}
-		Message_author(id){
-			const obj = new this.$.$mol_view();
-			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_gram_tint": (this.message_author_tint(id))});
-			(obj.sub) = () => ([(this.message_author(id))]);
-			return obj;
-		}
-		message_quote_jump(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		message_quote_author(id){
-			return "";
-		}
-		Message_quote_author(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.message_quote_author(id))]);
-			return obj;
-		}
-		message_quote_text(id){
-			return "";
-		}
-		Message_quote_text(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.message_quote_text(id))]);
-			return obj;
-		}
-		Message_quote(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Перейти к сообщению");
-			(obj.click) = (next) => ((this.message_quote_jump(id, next)));
-			(obj.sub) = () => ([(this.Message_quote_author(id)), (this.Message_quote_text(id))]);
-			return obj;
-		}
-		message_shot_uri(id){
-			return "";
-		}
-		message_shot_width(id){
-			return "";
-		}
-		message_shot_ratio(id){
-			return "";
-		}
-		message_zoom(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Message_shot(id){
-			const obj = new this.$.$bog_gram_photo();
-			(obj.hint) = () => ("Открыть картинку");
-			(obj.uri) = () => ((this.message_shot_uri(id)));
-			(obj.box_width) = () => ((this.message_shot_width(id)));
-			(obj.box_ratio) = () => ((this.message_shot_ratio(id)));
-			(obj.click) = (next) => ((this.message_zoom(id, next)));
-			return obj;
-		}
-		message_sound_uri(id){
-			return "";
-		}
-		message_sound_span(id){
-			return 0;
-		}
-		message_sound_playing(id){
-			return false;
-		}
-		message_sound_toggle(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		message_sound_ended(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Message_sound(id){
-			const obj = new this.$.$bog_gram_sound();
-			(obj.uri) = () => ((this.message_sound_uri(id)));
-			(obj.span) = () => ((this.message_sound_span(id)));
-			(obj.playing) = () => ((this.message_sound_playing(id)));
-			(obj.toggle) = (next) => ((this.message_sound_toggle(id, next)));
-			(obj.ended) = (next) => ((this.message_sound_ended(id, next)));
-			return obj;
-		}
-		message_body(id){
-			return "";
-		}
-		Message_body(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.message_body(id)));
-			return obj;
-		}
-		message_time(id){
-			return "";
-		}
-		Message_time(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.message_time(id))]);
-			return obj;
-		}
-		Message_edited(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["изменено"]);
-			return obj;
-		}
-		message_checks(id){
-			return "";
-		}
-		Message_checks(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.message_checks(id))]);
-			return obj;
-		}
-		Message_meta(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Message_time(id)), 
-				(this.Message_edited(id)), 
-				(this.Message_checks(id))
-			]);
-			return obj;
-		}
-		message_edit(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Message_edit_icon(id){
-			const obj = new this.$.$mol_icon_pencil();
-			return obj;
-		}
-		Message_edit(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Редактировать");
-			(obj.click) = (next) => ((this.message_edit(id, next)));
-			(obj.sub) = () => ([(this.Message_edit_icon(id))]);
-			return obj;
-		}
-		message_delete(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Message_delete_icon(id){
-			const obj = new this.$.$mol_icon_delete();
-			return obj;
-		}
-		Message_delete(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Удалить");
-			(obj.click) = (next) => ((this.message_delete(id, next)));
-			(obj.sub) = () => ([(this.Message_delete_icon(id))]);
-			return obj;
-		}
-		Message_actions(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Message_edit(id)), (this.Message_delete(id))]);
-			return obj;
-		}
-		plugins(){
-			return [(this.Skin()), (this.Theme())];
-		}
-		Placeholder(){
-			return (this.Intro());
-		}
-		pages(){
-			return [
-				(this.Menu()), 
-				(this.Music_page()), 
-				(this.Settings_page()), 
-				(this.Compose_page()), 
-				(this.Group_page()), 
-				(this.Members_page()), 
-				(this.Chat_page())
-			];
-		}
-		Dialogs_empty(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Dialogs_empty_text())]);
-			return obj;
-		}
-		Users_empty(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Users_empty_text())]);
-			return obj;
-		}
-		Registry_empty(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Вы не состоите ни в одном реестре");
-			return obj;
-		}
-		Registry_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.registry_rows()));
-			return obj;
-		}
-		Registry_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.");
-			return obj;
-		}
-		Registry_share(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Registry_share_text()), (this.Registry_share_copy())]);
-			return obj;
-		}
-		Registry_form(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Registry_name()), (this.Registry_make())]);
-			return obj;
-		}
-		Registry_row(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.registry_open(id, next)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.registry_active_is(id))});
-			(obj.sub) = () => ([
-				(this.Registry_info(id)), 
-				(this.Registry_join(id)), 
-				(this.Registry_drop(id))
-			]);
-			return obj;
-		}
-		Key_toggle(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.key_toggle(next)));
-			(obj.sub) = () => ([(this.key_toggle_label())]);
-			return obj;
-		}
-		Key_warning(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.");
-			return obj;
-		}
-		Key_row(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Key_text()), (this.Key_copy())]);
-			return obj;
-		}
-		Key_qr_box(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Key_qr())]);
-			return obj;
-		}
-		Key_save(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.key_save(next)));
-			(obj.sub) = () => (["Скачать файл"]);
-			return obj;
-		}
-		Key_import_form(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Key_field()), 
-				(this.Key_load_row()), 
-				(this.Key_scan()), 
-				(this.Key_import()), 
-				(this.Key_error())
-			]);
-			return obj;
-		}
-		Dialog_row(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.dialog_select(id, next)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.dialog_current_is(id))});
-			(obj.sub) = () => ([
-				(this.Dialog_avatar(id)), 
-				(this.Dialog_info(id)), 
-				(this.Dialog_archive(id)), 
-				(this.Dialog_delete(id))
-			]);
-			return obj;
-		}
-		Dialog_archive_icon(id){
-			const obj = new this.$.$mol_icon_archive_arrow_down();
-			return obj;
-		}
-		Dialog_unarchive_icon(id){
-			const obj = new this.$.$mol_icon_archive_arrow_up();
-			return obj;
-		}
-		Saved_row(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Заметки для себя");
-			(obj.click) = (next) => ((this.saved_open(next)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.saved_current_is())});
-			(obj.sub) = () => ([(this.Saved_avatar()), (this.Saved_info())]);
-			return obj;
-		}
-		Archive_row(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Спрятанные диалоги");
-			(obj.click) = (next) => ((this.archive_toggle(next)));
-			(obj.sub) = () => ([
-				(this.Archive_avatar()), 
-				(this.Archive_info()), 
-				(this.Archive_unread())
-			]);
-			return obj;
-		}
-		Requests_row(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Запросы на переписку");
-			(obj.click) = (next) => ((this.requests_toggle(next)));
-			(obj.sub) = () => ([
-				(this.Requests_avatar()), 
-				(this.Requests_info()), 
-				(this.Requests_count())
-			]);
-			return obj;
-		}
-		Request_accept(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Принять");
-			(obj.click) = (next) => ((this.request_accept(id, next)));
-			(obj.sub) = () => ([(this.Request_accept_icon(id))]);
-			return obj;
-		}
-		Request_reject(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отклонить");
-			(obj.click) = (next) => ((this.request_reject(id, next)));
-			(obj.sub) = () => ([(this.Request_reject_icon(id))]);
-			return obj;
-		}
-		User_row(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.user_pick(id, next)));
-			(obj.sub) = () => ([(this.User_avatar(id)), (this.User_info(id))]);
-			return obj;
-		}
-		Group_pick_row(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.group_pick(id, next)));
-			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.group_picked_is(id))});
-			(obj.sub) = () => ([
-				(this.Group_pick_avatar(id)), 
-				(this.Group_pick_info(id)), 
-				(this.Group_pick_mark(id))
-			]);
-			return obj;
-		}
-		Group_chosen_row(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Group_chosen_avatar(id)), 
-				(this.Group_chosen_name(id)), 
-				(this.Group_chosen_drop(id))
-			]);
-			return obj;
-		}
-		Members_add_title(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Добавить участника");
-			return obj;
-		}
-		Members_history(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Members_history_head()), 
-				(this.Members_history_row()), 
-				(this.Members_history_note())
-			]);
-			return obj;
-		}
-		Members_error(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.member_error()));
-			return obj;
-		}
-		Members_id_form(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Members_id_field()), (this.Members_id_add())]);
-			return obj;
-		}
-		Members_pick_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.member_pick_rows()));
-			return obj;
-		}
-		Members_admin_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.");
-			return obj;
-		}
-		Members_join(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Members_join_head()), 
-				(this.Members_join_hint()), 
-				(this.Members_join_text()), 
-				(this.Members_join_copy()), 
-				(this.Members_join_qr_box())
-			]);
-			return obj;
-		}
-		Members_asks_head(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.members_asks_head()));
-			return obj;
-		}
-		Members_asks_list(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.members_ask_rows()));
-			return obj;
-		}
-		Ask_row(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Ask_avatar(id)), 
-				(this.Ask_info(id)), 
-				(this.Ask_accept(id)), 
-				(this.Ask_reject(id))
-			]);
-			return obj;
-		}
-		Member_row(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Member_avatar(id)), 
-				(this.Member_info(id)), 
-				(this.Member_rule(id)), 
-				(this.Member_drop(id))
-			]);
-			return obj;
-		}
-		Member_pick_row(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.click) = (next) => ((this.member_pick(id, next)));
-			(obj.sub) = () => ([
-				(this.Member_pick_avatar(id)), 
-				(this.Member_pick_info(id)), 
-				(this.Member_pick_mark(id))
-			]);
-			return obj;
-		}
-		Day_row(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Day_chip(id))]);
-			return obj;
-		}
-		Message_row(id){
-			const obj = new this.$.$mol_view();
-			(obj.attr) = () => ({
-				...(this.$.$mol_view.prototype.attr.call(obj)), 
-				"bog_gram_out": (this.message_out(id)), 
-				"bog_gram_menu": (this.message_menu_is(id))
-			});
-			(obj.event) = () => ({
-				...(this.$.$mol_view.prototype.event.call(obj)), 
-				"pointerdown": (next) => (this.message_press(id, next)), 
-				"pointerup": (next) => (this.message_release(id, next)), 
-				"pointercancel": (next) => (this.message_release(id, next)), 
-				"contextmenu": (next) => (this.message_context(id, next))
-			});
-			(obj.sub) = () => ([
-				(this.Message_author(id)), 
-				(this.Message_quote(id)), 
-				(this.Message_shot(id)), 
-				(this.Message_sound(id)), 
-				(this.Message_body(id)), 
-				(this.Message_meta(id)), 
-				(this.Message_actions(id))
-			]);
-			return obj;
-		}
-	};
-	($mol_mem(($.$bog_gram.prototype), "Skin"));
-	($mol_mem(($.$bog_gram.prototype), "Theme"));
-	($mol_mem(($.$bog_gram.prototype), "Intro_title"));
-	($mol_mem(($.$bog_gram.prototype), "Intro_hint"));
-	($mol_mem(($.$bog_gram.prototype), "Intro_plate"));
-	($mol_mem(($.$bog_gram.prototype), "Intro"));
-	($mol_mem(($.$bog_gram.prototype), "Status"));
-	($mol_mem(($.$bog_gram.prototype), "compose_open"));
-	($mol_mem(($.$bog_gram.prototype), "Compose_open_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Compose_open"));
-	($mol_mem(($.$bog_gram.prototype), "group_open"));
-	($mol_mem(($.$bog_gram.prototype), "Group_open_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Group_open"));
-	($mol_mem(($.$bog_gram.prototype), "music_open"));
-	($mol_mem(($.$bog_gram.prototype), "Music_open_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Music_open"));
-	($mol_mem(($.$bog_gram.prototype), "settings_open"));
-	($mol_mem(($.$bog_gram.prototype), "Settings_open_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Settings_open"));
-	($mol_mem(($.$bog_gram.prototype), "Lights"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_plate_text"));
-	($mol_mem(($.$bog_gram.prototype), "invite_drop"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_drop_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_drop"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_plate"));
-	($mol_mem(($.$bog_gram.prototype), "Ask_plate_text"));
-	($mol_mem(($.$bog_gram.prototype), "Ask_plate"));
-	($mol_mem(($.$bog_gram.prototype), "Dialogs_list"));
-	($mol_mem(($.$bog_gram.prototype), "Menu"));
-	($mol_mem(($.$bog_gram.prototype), "music_close"));
-	($mol_mem(($.$bog_gram.prototype), "Music_page"));
-	($mol_mem(($.$bog_gram.prototype), "settings_close"));
-	($mol_mem(($.$bog_gram.prototype), "Settings_close_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Settings_close"));
-	($mol_mem(($.$bog_gram.prototype), "user_name"));
-	($mol_mem(($.$bog_gram.prototype), "Name_field"));
-	($mol_mem(($.$bog_gram.prototype), "My_id_text"));
-	($mol_mem(($.$bog_gram.prototype), "My_id_copy"));
-	($mol_mem(($.$bog_gram.prototype), "My_id"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_hint"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_text"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_copy"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_qr"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_qr_box"));
-	($mol_mem(($.$bog_gram.prototype), "Invite_body"));
-	($mol_mem(($.$bog_gram.prototype), "Invite"));
-	($mol_mem(($.$bog_gram.prototype), "Notify_status"));
-	($mol_mem(($.$bog_gram.prototype), "notify_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Notify_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Notify_body"));
-	($mol_mem(($.$bog_gram.prototype), "Notify"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_block"));
-	($mol_mem(($.$bog_gram.prototype), "Account_body"));
-	($mol_mem(($.$bog_gram.prototype), "Account"));
-	($mol_mem(($.$bog_gram.prototype), "Version_text"));
-	($mol_mem(($.$bog_gram.prototype), "Version"));
-	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
-	($mol_mem(($.$bog_gram.prototype), "compose_close"));
-	($mol_mem(($.$bog_gram.prototype), "Compose_close_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Compose_close"));
-	($mol_mem(($.$bog_gram.prototype), "peer_lord"));
-	($mol_mem(($.$bog_gram.prototype), "dialog_start"));
-	($mol_mem(($.$bog_gram.prototype), "Peer_field"));
-	($mol_mem(($.$bog_gram.prototype), "Peer_start"));
-	($mol_mem(($.$bog_gram.prototype), "Peer_form"));
-	($mol_mem(($.$bog_gram.prototype), "Users_title"));
-	($mol_mem(($.$bog_gram.prototype), "Join_plate_text"));
-	($mol_mem(($.$bog_gram.prototype), "registry_join_active"));
-	($mol_mem(($.$bog_gram.prototype), "Join_plate_button"));
-	($mol_mem(($.$bog_gram.prototype), "Join_plate"));
-	($mol_mem(($.$bog_gram.prototype), "Users_list"));
-	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
-	($mol_mem(($.$bog_gram.prototype), "group_close"));
-	($mol_mem(($.$bog_gram.prototype), "Group_close_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Group_close"));
-	($mol_mem(($.$bog_gram.prototype), "group_name"));
-	($mol_mem(($.$bog_gram.prototype), "Group_name_field"));
-	($mol_mem(($.$bog_gram.prototype), "Group_chosen_head"));
-	($mol_mem(($.$bog_gram.prototype), "Group_chosen_list"));
-	($mol_mem(($.$bog_gram.prototype), "Group_lost_note"));
-	($mol_mem(($.$bog_gram.prototype), "group_make"));
-	($mol_mem(($.$bog_gram.prototype), "Group_make"));
-	($mol_mem(($.$bog_gram.prototype), "group_id"));
-	($mol_mem(($.$bog_gram.prototype), "group_id_add"));
-	($mol_mem(($.$bog_gram.prototype), "Group_id_field"));
-	($mol_mem(($.$bog_gram.prototype), "Group_id_add"));
-	($mol_mem(($.$bog_gram.prototype), "Group_id_form"));
-	($mol_mem(($.$bog_gram.prototype), "Group_id_error"));
-	($mol_mem(($.$bog_gram.prototype), "Group_pick_head"));
-	($mol_mem(($.$bog_gram.prototype), "Group_pick_list"));
-	($mol_mem(($.$bog_gram.prototype), "Group_page"));
-	($mol_mem(($.$bog_gram.prototype), "members_close"));
-	($mol_mem(($.$bog_gram.prototype), "Members_close_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Members_close"));
-	($mol_mem(($.$bog_gram.prototype), "Members_list"));
-	($mol_mem(($.$bog_gram.prototype), "Members_drop_note"));
-	($mol_mem(($.$bog_gram.prototype), "Members_add_block"));
-	($mol_mem(($.$bog_gram.prototype), "Members_leave_note"));
-	($mol_mem(($.$bog_gram.prototype), "group_leave_click"));
-	($mol_mem(($.$bog_gram.prototype), "Members_leave"));
-	($mol_mem(($.$bog_gram.prototype), "Members_page"));
-	($mol_mem(($.$bog_gram.prototype), "members_open"));
-	($mol_mem(($.$bog_gram.prototype), "chat_note"));
-	($mol_mem(($.$bog_gram.prototype), "message_text"));
-	($mol_mem(($.$bog_gram.prototype), "message_send"));
-	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
-	($mol_mem(($.$bog_gram.prototype), "reply_cancel"));
-	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
-	($mol_mem(($.$bog_gram.prototype), "image_files"));
-	($mol_mem(($.$bog_gram.prototype), "image_paste"));
-	($mol_mem(($.$bog_gram.prototype), "image_over"));
-	($mol_mem(($.$bog_gram.prototype), "image_drop"));
-	($mol_mem(($.$bog_gram.prototype), "zoom_close"));
-	($mol_mem(($.$bog_gram.prototype), "voice_press"));
-	($mol_mem(($.$bog_gram.prototype), "voice_release"));
-	($mol_mem(($.$bog_gram.prototype), "voice_abort"));
-	($mol_mem(($.$bog_gram.prototype), "voice_cancel"));
-	($mol_mem(($.$bog_gram.prototype), "voice_menu"));
-	($mol_mem(($.$bog_gram.prototype), "Chat_page"));
-	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty_text"));
-	($mol_mem(($.$bog_gram.prototype), "Users_empty_text"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_share_text"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_share_copy"));
-	($mol_mem(($.$bog_gram.prototype), "registry_name"));
-	($mol_mem(($.$bog_gram.prototype), "registry_make"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_name"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_make"));
-	($mol_mem_key(($.$bog_gram.prototype), "registry_open"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_status"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "registry_join"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_join"));
-	($mol_mem_key(($.$bog_gram.prototype), "registry_forget"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_drop_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_drop"));
-	($mol_mem(($.$bog_gram.prototype), "key_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Key_text"));
-	($mol_mem(($.$bog_gram.prototype), "Key_copy"));
-	($mol_mem(($.$bog_gram.prototype), "Key_qr"));
-	($mol_mem(($.$bog_gram.prototype), "key_save"));
-	($mol_mem(($.$bog_gram.prototype), "key_input"));
-	($mol_mem(($.$bog_gram.prototype), "Key_field"));
-	($mol_mem(($.$bog_gram.prototype), "Key_load_hint"));
-	($mol_mem(($.$bog_gram.prototype), "key_file"));
-	($mol_mem(($.$bog_gram.prototype), "Key_open"));
-	($mol_mem(($.$bog_gram.prototype), "Key_load_row"));
-	($mol_mem(($.$bog_gram.prototype), "key_scanned"));
-	($mol_mem(($.$bog_gram.prototype), "Key_scan"));
-	($mol_mem(($.$bog_gram.prototype), "key_import"));
-	($mol_mem(($.$bog_gram.prototype), "Key_import"));
-	($mol_mem(($.$bog_gram.prototype), "Key_error"));
-	($mol_mem_key(($.$bog_gram.prototype), "dialog_select"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_time"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_top"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_preview"));
-	($mol_mem_key(($.$bog_gram.prototype), "Unread_badge"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_bottom"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "dialog_archive_click"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_archive"));
-	($mol_mem_key(($.$bog_gram.prototype), "dialog_delete_click"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_delete"));
-	($mol_mem(($.$bog_gram.prototype), "saved_open"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_avatar_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_avatar"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_title"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_time"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_top"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_preview"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_bottom"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_info"));
-	($mol_mem(($.$bog_gram.prototype), "archive_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_avatar_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_avatar"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_title"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_note"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_info"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_unread"));
-	($mol_mem(($.$bog_gram.prototype), "requests_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_avatar_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_avatar"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_title"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_note"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_info"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_count"));
-	($mol_mem_key(($.$bog_gram.prototype), "request_accept"));
-	($mol_mem_key(($.$bog_gram.prototype), "Request_accept_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "request_reject"));
-	($mol_mem_key(($.$bog_gram.prototype), "Request_reject_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "user_pick"));
-	($mol_mem_key(($.$bog_gram.prototype), "User_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "User_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "User_source"));
-	($mol_mem_key(($.$bog_gram.prototype), "User_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "group_pick"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_source"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_mark"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_name"));
-	($mol_mem_key(($.$bog_gram.prototype), "group_chosen_drop"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_drop_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_drop"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history_head"));
-	($mol_mem(($.$bog_gram.prototype), "members_history_all"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history_all"));
-	($mol_mem(($.$bog_gram.prototype), "members_history_new"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history_new"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history_row"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history_note"));
-	($mol_mem(($.$bog_gram.prototype), "member_id"));
-	($mol_mem(($.$bog_gram.prototype), "member_id_add"));
-	($mol_mem(($.$bog_gram.prototype), "Members_id_field"));
-	($mol_mem(($.$bog_gram.prototype), "Members_id_add"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_head"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_hint"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_text"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_copy"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_qr"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join_qr_box"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_status"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "ask_accept"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_accept_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_accept"));
-	($mol_mem_key(($.$bog_gram.prototype), "ask_reject"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_reject_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_reject"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_status"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "member_rule_click"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_rule_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_rule"));
-	($mol_mem_key(($.$bog_gram.prototype), "member_drop_click"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_drop_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_drop"));
-	($mol_mem_key(($.$bog_gram.prototype), "member_pick"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_avatar"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_title"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_source"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_info"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_mark"));
-	($mol_mem_key(($.$bog_gram.prototype), "Day_chip"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_press"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_release"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_context"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_author"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_quote_jump"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_quote_author"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_quote_text"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_quote"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_zoom"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_shot"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_sound_toggle"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_sound_ended"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_sound"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_body"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_time"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_edited"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_checks"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_meta"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_edit"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_edit_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_edit"));
-	($mol_mem_key(($.$bog_gram.prototype), "message_delete"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_delete_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_delete"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_actions"));
-	($mol_mem(($.$bog_gram.prototype), "Dialogs_empty"));
-	($mol_mem(($.$bog_gram.prototype), "Users_empty"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_empty"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_list"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_note"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_share"));
-	($mol_mem(($.$bog_gram.prototype), "Registry_form"));
-	($mol_mem_key(($.$bog_gram.prototype), "Registry_row"));
-	($mol_mem(($.$bog_gram.prototype), "Key_toggle"));
-	($mol_mem(($.$bog_gram.prototype), "Key_warning"));
-	($mol_mem(($.$bog_gram.prototype), "Key_row"));
-	($mol_mem(($.$bog_gram.prototype), "Key_qr_box"));
-	($mol_mem(($.$bog_gram.prototype), "Key_save"));
-	($mol_mem(($.$bog_gram.prototype), "Key_import_form"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_archive_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Dialog_unarchive_icon"));
-	($mol_mem(($.$bog_gram.prototype), "Saved_row"));
-	($mol_mem(($.$bog_gram.prototype), "Archive_row"));
-	($mol_mem(($.$bog_gram.prototype), "Requests_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Request_accept"));
-	($mol_mem_key(($.$bog_gram.prototype), "Request_reject"));
-	($mol_mem_key(($.$bog_gram.prototype), "User_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_pick_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Group_chosen_row"));
-	($mol_mem(($.$bog_gram.prototype), "Members_add_title"));
-	($mol_mem(($.$bog_gram.prototype), "Members_history"));
-	($mol_mem(($.$bog_gram.prototype), "Members_error"));
-	($mol_mem(($.$bog_gram.prototype), "Members_id_form"));
-	($mol_mem(($.$bog_gram.prototype), "Members_pick_list"));
-	($mol_mem(($.$bog_gram.prototype), "Members_admin_note"));
-	($mol_mem(($.$bog_gram.prototype), "Members_join"));
-	($mol_mem(($.$bog_gram.prototype), "Members_asks_head"));
-	($mol_mem(($.$bog_gram.prototype), "Members_asks_list"));
-	($mol_mem_key(($.$bog_gram.prototype), "Ask_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Member_pick_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Day_row"));
-	($mol_mem_key(($.$bog_gram.prototype), "Message_row"));
-	($.$bog_gram_field) = class $bog_gram_field extends ($.$mol_view) {
-		value(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Field(){
-			const obj = new this.$.$mol_string_button();
-			(obj.hint) = () => ((this.hint()));
-			(obj.value) = (next) => ((this.value(next)));
-			return obj;
-		}
-		Edit_icon(){
-			const obj = new this.$.$mol_icon_pencil();
-			return obj;
-		}
-		hint(){
-			return "";
-		}
-		sub(){
-			return [(this.Field()), (this.Edit_icon())];
-		}
-	};
-	($mol_mem(($.$bog_gram_field.prototype), "value"));
-	($mol_mem(($.$bog_gram_field.prototype), "Field"));
-	($mol_mem(($.$bog_gram_field.prototype), "Edit_icon"));
-	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$mol_page) {
-		image_paste(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_over(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		image_drop(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		zoom_close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		note_hint(){
-			return "";
-		}
-		note(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		Note_field(){
-			const obj = new this.$.$bog_gram_field();
-			(obj.hint) = () => ((this.note_hint()));
-			(obj.value) = (next) => ((this.note(next)));
-			return obj;
-		}
-		Title_text(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.title())]);
-			return obj;
-		}
-		close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Back_icon(){
-			const obj = new this.$.$mol_icon_arrow_left();
-			return obj;
-		}
-		Back(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Назад");
-			(obj.click) = (next) => ((this.close(next)));
-			(obj.sub) = () => ([(this.Back_icon())]);
-			return obj;
-		}
-		members(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Members_icon(){
-			const obj = new this.$.$mol_icon_account_multiple();
-			return obj;
-		}
-		Members(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Участники");
-			(obj.click) = (next) => ((this.members(next)));
-			(obj.sub) = () => ([(this.Members_icon())]);
-			return obj;
-		}
+	($.$bog_gram_members) = class $bog_gram_members extends ($.$bog_gram_page) {
 		Close_icon(){
 			const obj = new this.$.$mol_icon_close();
 			return obj;
@@ -26432,526 +26731,479 @@ var $;
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
-		Messages(){
+		member_rows(){
+			return [];
+		}
+		List(){
 			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.rows()));
+			(obj.rows) = () => ((this.member_rows()));
 			return obj;
 		}
-		Reply_icon(){
-			const obj = new this.$.$mol_icon_reply();
-			return obj;
-		}
-		Reply_title(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.reply_title())]);
-			return obj;
-		}
-		Reply_text(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.reply_text())]);
-			return obj;
-		}
-		Reply_info(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Reply_title()), (this.Reply_text())]);
-			return obj;
-		}
-		reply_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Reply_cancel_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Reply_cancel(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить ответ");
-			(obj.click) = (next) => ((this.reply_cancel(next)));
-			(obj.sub) = () => ([(this.Reply_cancel_icon())]);
-			return obj;
-		}
-		Reply_banner(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Reply_icon()), 
-				(this.Reply_info()), 
-				(this.Reply_cancel())
-			]);
-			return obj;
-		}
-		Edit_banner_text(){
+		Drop_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Редактирование");
+			(obj.title) = () => ("«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.");
 			return obj;
 		}
-		edit_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Edit_cancel_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Edit_cancel(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить правку");
-			(obj.click) = (next) => ((this.edit_cancel(next)));
-			(obj.sub) = () => ([(this.Edit_cancel_icon())]);
-			return obj;
-		}
-		Edit_banner(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Edit_banner_text()), (this.Edit_cancel())]);
-			return obj;
-		}
-		Voice_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.voice_hint()));
-			return obj;
-		}
-		send_tools(){
+		add_rows(){
 			return [];
 		}
-		Send_row(){
+		Add_block(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.send_tools()));
+			(obj.sub) = () => ((this.add_rows()));
 			return obj;
 		}
-		Foot(){
+		Leave_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.");
+			return obj;
+		}
+		leave_armed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		leave_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		leave_label(){
+			return "";
+		}
+		Leave(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать группу из своего списка");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.leave_armed())});
+			(obj.click) = (next) => ((this.leave_click(next)));
+			(obj.sub) = () => ([(this.leave_label())]);
+			return obj;
+		}
+		History_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Что увидит новый участник");
+			return obj;
+		}
+		history_open(){
+			return false;
+		}
+		history_all(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		History_all(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Выдать ключи от всех прошлых сообщений");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_open())});
+			(obj.click) = (next) => ((this.history_all(next)));
+			(obj.sub) = () => (["Всю переписку"]);
+			return obj;
+		}
+		history_shut(){
+			return false;
+		}
+		history_new(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		History_new(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Завести новый отсек переписки");
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_shut())});
+			(obj.click) = (next) => ((this.history_new(next)));
+			(obj.sub) = () => (["Только новые"]);
+			return obj;
+		}
+		History_row(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Reply_banner()), 
-				(this.Edit_banner()), 
-				(this.Voice_note()), 
-				(this.Send_row())
-			]);
+			(obj.sub) = () => ([(this.History_all()), (this.History_new())]);
 			return obj;
 		}
-		image_files(next){
-			if(next !== undefined) return next;
-			return null;
+		history_note(){
+			return "";
 		}
-		Attach_icon(){
-			const obj = new this.$.$mol_icon_paperclip();
+		History_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.history_note()));
 			return obj;
 		}
-		message_text(next){
+		id(next){
 			if(next !== undefined) return next;
 			return "";
 		}
-		message_send(next){
+		id_add(next){
 			if(next !== undefined) return next;
 			return null;
 		}
-		Send_icon(){
-			const obj = new this.$.$mol_icon_send();
-			return obj;
-		}
-		voice_press(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_release(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_abort(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		voice_menu(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Voice_icon(){
-			const obj = new this.$.$mol_icon_microphone();
-			return obj;
-		}
-		Record_dot(){
-			const obj = new this.$.$mol_view();
-			return obj;
-		}
-		Record_time(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.voice_clock())]);
-			return obj;
-		}
-		voice_cancel(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Voice_cancel_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Voice_cancel_text(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["Отмена"]);
-			return obj;
-		}
-		rows(){
-			return [];
-		}
-		focus_key(){
-			return "";
-		}
-		focus_row(){
-			return null;
-		}
-		edit_mode(){
-			return false;
-		}
-		reply_mode(){
-			return false;
-		}
-		reply_title(){
-			return "";
-		}
-		reply_text(){
-			return "";
-		}
-		note_editable(){
-			return false;
-		}
-		members_shown(){
-			return false;
-		}
-		zoom_uri(){
-			return "";
-		}
-		voice_on(){
-			return false;
-		}
-		voice_ready(){
-			return false;
-		}
-		voice_clock(){
-			return "";
-		}
-		voice_hint(){
-			return "";
-		}
-		event(){
-			return {
-				...(super.event()), 
-				"paste": (next) => (this.image_paste(next)), 
-				"dragover": (next) => (this.image_over(next)), 
-				"drop": (next) => (this.image_drop(next))
-			};
-		}
-		Zoom(){
-			const obj = new this.$.$bog_gram_zoom();
-			(obj.uri) = () => ((this.zoom_uri()));
-			(obj.close) = (next) => ((this.zoom_close(next)));
-			return obj;
-		}
-		title_content(){
-			return [(this.Note_field()), (this.Title_text())];
-		}
-		head(){
-			return [
-				(this.Back()), 
-				(this.Title()), 
-				(this.Tools())
-			];
-		}
-		tools(){
-			return [(this.Members()), (this.Close())];
-		}
-		body(){
-			return [(this.Messages())];
-		}
-		foot(){
-			return [(this.Foot())];
-		}
-		Attach(){
-			const obj = new this.$.$mol_button_open();
-			(obj.hint) = () => ("Отправить картинку");
-			(obj.accept) = () => ("image/*");
-			(obj.multiple) = () => (false);
-			(obj.files) = (next) => ((this.image_files(next)));
-			(obj.Icon) = () => ((this.Attach_icon()));
-			return obj;
-		}
-		Message_field(){
+		Id_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Сообщение…");
-			(obj.value) = (next) => ((this.message_text(next)));
-			(obj.submit) = (next) => ((this.message_send(next)));
+			(obj.hint) = () => ("ID участника");
+			(obj.value) = (next) => ((this.id(next)));
+			(obj.submit) = (next) => ((this.id_add(next)));
 			return obj;
 		}
-		Send(){
+		Id_add(){
 			const obj = new this.$.$mol_button_major();
-			(obj.hint) = () => ("Отправить");
-			(obj.click) = (next) => ((this.message_send(next)));
-			(obj.sub) = () => ([(this.Send_icon())]);
+			(obj.click) = (next) => ((this.id_add(next)));
+			(obj.sub) = () => (["Добавить"]);
 			return obj;
 		}
-		Voice(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Удерживайте для записи");
-			(obj.event) = () => ({
-				...(this.$.$mol_button_minor.prototype.event.call(obj)), 
-				"pointerdown": (next) => (this.voice_press(next)), 
-				"pointerup": (next) => (this.voice_release(next)), 
-				"pointercancel": (next) => (this.voice_abort(next)), 
-				"contextmenu": (next) => (this.voice_menu(next))
-			});
-			(obj.sub) = () => ([(this.Voice_icon())]);
-			return obj;
-		}
-		Record_state(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Record_dot()), (this.Record_time())]);
-			return obj;
-		}
-		Voice_cancel(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отпустите здесь, чтобы отменить");
-			(obj.click) = (next) => ((this.voice_cancel(next)));
-			(obj.sub) = () => ([(this.Voice_cancel_icon()), (this.Voice_cancel_text())]);
-			return obj;
-		}
-	};
-	($mol_mem(($.$bog_gram_chat.prototype), "image_paste"));
-	($mol_mem(($.$bog_gram_chat.prototype), "image_over"));
-	($mol_mem(($.$bog_gram_chat.prototype), "image_drop"));
-	($mol_mem(($.$bog_gram_chat.prototype), "zoom_close"));
-	($mol_mem(($.$bog_gram_chat.prototype), "note"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Note_field"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "close"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Back"));
-	($mol_mem(($.$bog_gram_chat.prototype), "members"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Members_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_title"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_info"));
-	($mol_mem(($.$bog_gram_chat.prototype), "reply_cancel"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Reply_banner"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "edit_cancel"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice_note"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Foot"));
-	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
-	($mol_mem(($.$bog_gram_chat.prototype), "voice_release"));
-	($mol_mem(($.$bog_gram_chat.prototype), "voice_abort"));
-	($mol_mem(($.$bog_gram_chat.prototype), "voice_menu"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Record_dot"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Record_time"));
-	($mol_mem(($.$bog_gram_chat.prototype), "voice_cancel"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_icon"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_text"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel"));
-	($.$bog_gram_avatar) = class $bog_gram_avatar extends ($.$mol_avatar) {
-		id(){
-			return "";
-		}
-		tint(){
-			return 0;
-		}
-		attr(){
-			return {...(super.attr()), "bog_gram_tint": (this.tint())};
-		}
-	};
-	($.$bog_gram_photo) = class $bog_gram_photo extends ($.$mol_button) {
-		Image(){
-			const obj = new this.$.$mol_image();
-			(obj.uri) = () => ((this.uri()));
-			return obj;
-		}
-		uri(){
-			return "";
-		}
-		box_width(){
-			return "15rem";
-		}
-		box_ratio(){
-			return "1";
-		}
-		style(){
-			return {"width": (this.box_width()), "aspectRatio": (this.box_ratio())};
-		}
-		sub(){
-			return [(this.Image())];
-		}
-	};
-	($mol_mem(($.$bog_gram_photo.prototype), "Image"));
-	($.$bog_gram_sound) = class $bog_gram_sound extends ($.$mol_view) {
-		toggle(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		toggle_icons(){
+		pick_rows(){
 			return [];
 		}
-		Toggle(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Прослушать");
-			(obj.click) = (next) => ((this.toggle(next)));
-			(obj.sub) = () => ((this.toggle_icons()));
+		Join_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Ссылка-приглашение в группу");
 			return obj;
 		}
-		fill_width(){
-			return "0%";
+		Join_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо");
+			return obj;
 		}
-		Fill(){
+		Join_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.join_link()));
+			return obj;
+		}
+		Join_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать");
+			(obj.text) = () => ((this.join_link()));
+			return obj;
+		}
+		Join_qr(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.join_link()));
+			(obj.gradient_stops) = () => (["#2f9e5f", "#8fd14f"]);
+			return obj;
+		}
+		Join_qr_box(){
 			const obj = new this.$.$mol_view();
-			(obj.style) = () => ({"width": (this.fill_width())});
+			(obj.sub) = () => ([(this.Join_qr())]);
 			return obj;
 		}
-		Track(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Fill())]);
-			return obj;
-		}
-		stamp(){
+		asks_head(){
 			return "";
 		}
-		Stamp(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.stamp())]);
+		ask_rows(){
+			return [];
+		}
+		ask_tint(id){
+			return 0;
+		}
+		ask_title(id){
+			return "";
+		}
+		ask_status(id){
+			return "";
+		}
+		Ask_accept_icon(id){
+			const obj = new this.$.$mol_icon_check();
 			return obj;
 		}
-		ended(next){
+		Ask_accept(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Принять в группу");
+			(obj.click) = (next) => ((this.accept(id, next)));
+			(obj.sub) = () => ([(this.Ask_accept_icon(id))]);
+			return obj;
+		}
+		Ask_reject_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Ask_reject(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отклонить заявку");
+			(obj.click) = (next) => ((this.reject(id, next)));
+			(obj.sub) = () => ([(this.Ask_reject_icon(id))]);
+			return obj;
+		}
+		person(id){
+			return "";
+		}
+		tint(id){
+			return 0;
+		}
+		member_title(id){
+			return "";
+		}
+		rule_click(id, next){
 			if(next !== undefined) return next;
 			return null;
 		}
-		Node(){
-			const obj = new this.$.$bog_gram_sound_node();
-			(obj.uri) = () => ((this.uri()));
-			(obj.ended) = (next) => ((this.ended(next)));
+		Rule_icon(id){
+			const obj = new this.$.$mol_icon_shield_crown();
 			return obj;
 		}
-		uri(){
+		Rule(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Назначить админом");
+			(obj.click) = (next) => ((this.rule_click(id, next)));
+			(obj.sub) = () => ([(this.Rule_icon(id))]);
+			return obj;
+		}
+		drop_hint(id){
 			return "";
 		}
-		span(){
-			return 0;
-		}
-		playing(){
+		armed(id, next){
+			if(next !== undefined) return next;
 			return false;
 		}
-		sub(){
-			return [
-				(this.Toggle()), 
-				(this.Track()), 
-				(this.Stamp()), 
-				(this.Node())
-			];
-		}
-		Play_icon(){
-			const obj = new this.$.$mol_icon_play();
-			return obj;
-		}
-		Pause_icon(){
-			const obj = new this.$.$mol_icon_pause();
-			return obj;
-		}
-	};
-	($mol_mem(($.$bog_gram_sound.prototype), "toggle"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Toggle"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Fill"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Track"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Stamp"));
-	($mol_mem(($.$bog_gram_sound.prototype), "ended"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Node"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Play_icon"));
-	($mol_mem(($.$bog_gram_sound.prototype), "Pause_icon"));
-	($.$bog_gram_sound_node) = class $bog_gram_sound_node extends ($.$mol_view) {
-		retime(next){
+		drop_click(id, next){
 			if(next !== undefined) return next;
 			return null;
 		}
-		ended(next){
-			if(next !== undefined) return next;
-			return null;
+		Drop_icon(id){
+			const obj = new this.$.$mol_icon_account_remove();
+			return obj;
 		}
-		dom_name(){
-			return "audio";
+		Drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.drop_hint(id)));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.armed(id))});
+			(obj.click) = (next) => ((this.drop_click(id, next)));
+			(obj.sub) = () => ([(this.Drop_icon(id))]);
+			return obj;
 		}
-		uri(){
-			return "";
+		Pick_mark(id){
+			const obj = new this.$.$mol_icon_account_plus();
+			return obj;
 		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"src": (this.uri()), 
-				"preload": "metadata"
-			};
-		}
-		event(){
-			return {
-				...(super.event()), 
-				"timeupdate": (next) => (this.retime(next)), 
-				"ended": (next) => (this.ended(next))
-			};
-		}
-	};
-	($mol_mem(($.$bog_gram_sound_node.prototype), "retime"));
-	($mol_mem(($.$bog_gram_sound_node.prototype), "ended"));
-	($.$bog_gram_zoom) = class $bog_gram_zoom extends ($.$mol_view) {
-		tab_index(){
-			return 0;
+		title(){
+			return "Участники";
 		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
 		}
-		Hotkey(){
-			const obj = new this.$.$mol_hotkey();
-			(obj.key) = () => ({"escape": (next) => (this.close(next))});
-			return obj;
-		}
-		Shot(){
-			const obj = new this.$.$mol_image();
-			(obj.uri) = () => ((this.uri()));
-			return obj;
-		}
-		uri(){
+		me(){
 			return "";
 		}
-		attr(){
-			return {...(super.attr()), "tabindex": (this.tab_index())};
+		lords(){
+			return [];
 		}
-		event(){
-			return {...(super.event()), "click": (next) => (this.close(next))};
+		label(id){
+			return "";
 		}
-		plugins(){
-			return [(this.Hotkey())];
+		status(id){
+			return "";
 		}
-		sub(){
-			return [(this.Shot())];
+		admin(){
+			return false;
+		}
+		owner(){
+			return false;
+		}
+		admin_is(id){
+			return false;
+		}
+		error(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		join_link(){
+			return "";
+		}
+		asks(){
+			return [];
+		}
+		ask_lord(id){
+			return "";
+		}
+		accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		reject(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		candidates(){
+			return [];
+		}
+		contact_source(id){
+			return "";
+		}
+		history(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		add(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		part(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		promote(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.List()), 
+				(this.Drop_note()), 
+				(this.Add_block()), 
+				(this.Leave_note()), 
+				(this.Leave())
+			];
+		}
+		Add_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Добавить участника");
+			return obj;
+		}
+		History(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.History_head()), 
+				(this.History_row()), 
+				(this.History_note())
+			]);
+			return obj;
+		}
+		Error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.error()));
+			return obj;
+		}
+		Id_form(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Id_field()), (this.Id_add())]);
+			return obj;
+		}
+		Pick_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.pick_rows()));
+			return obj;
+		}
+		Admin_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.");
+			return obj;
+		}
+		Join(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Join_head()), 
+				(this.Join_hint()), 
+				(this.Join_text()), 
+				(this.Join_copy()), 
+				(this.Join_qr_box())
+			]);
+			return obj;
+		}
+		Asks_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.asks_head()));
+			return obj;
+		}
+		Asks_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.ask_rows()));
+			return obj;
+		}
+		Ask_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.enabled) = () => (false);
+			(obj.avatar_id) = () => ((this.ask_lord(id)));
+			(obj.tint) = () => ((this.ask_tint(id)));
+			(obj.title) = () => ((this.ask_title(id)));
+			(obj.note) = () => ((this.ask_status(id)));
+			(obj.tools) = () => ([(this.Ask_accept(id)), (this.Ask_reject(id))]);
+			return obj;
+		}
+		Member_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.enabled) = () => (false);
+			(obj.avatar_id) = () => ((this.person(id)));
+			(obj.tint) = () => ((this.tint(id)));
+			(obj.title) = () => ((this.member_title(id)));
+			(obj.note) = () => ((this.status(id)));
+			(obj.tools) = () => ([(this.Rule(id)), (this.Drop(id))]);
+			return obj;
+		}
+		Pick_row(id){
+			const obj = new this.$.$bog_gram_row();
+			(obj.click) = (next) => ((this.add(id, next)));
+			(obj.avatar_id) = () => ((this.person(id)));
+			(obj.tint) = () => ((this.tint(id)));
+			(obj.title) = () => ((this.label(id)));
+			(obj.note) = () => ((this.contact_source(id)));
+			(obj.marks) = () => ([(this.Pick_mark(id))]);
+			return obj;
 		}
 	};
-	($mol_mem(($.$bog_gram_zoom.prototype), "close"));
-	($mol_mem(($.$bog_gram_zoom.prototype), "Hotkey"));
-	($mol_mem(($.$bog_gram_zoom.prototype), "Shot"));
+	($mol_mem(($.$bog_gram_members.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_members.prototype), "Close"));
+	($mol_mem(($.$bog_gram_members.prototype), "List"));
+	($mol_mem(($.$bog_gram_members.prototype), "Drop_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "Add_block"));
+	($mol_mem(($.$bog_gram_members.prototype), "Leave_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "leave_armed"));
+	($mol_mem(($.$bog_gram_members.prototype), "leave_click"));
+	($mol_mem(($.$bog_gram_members.prototype), "Leave"));
+	($mol_mem(($.$bog_gram_members.prototype), "History_head"));
+	($mol_mem(($.$bog_gram_members.prototype), "history_all"));
+	($mol_mem(($.$bog_gram_members.prototype), "History_all"));
+	($mol_mem(($.$bog_gram_members.prototype), "history_new"));
+	($mol_mem(($.$bog_gram_members.prototype), "History_new"));
+	($mol_mem(($.$bog_gram_members.prototype), "History_row"));
+	($mol_mem(($.$bog_gram_members.prototype), "History_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "id"));
+	($mol_mem(($.$bog_gram_members.prototype), "id_add"));
+	($mol_mem(($.$bog_gram_members.prototype), "Id_field"));
+	($mol_mem(($.$bog_gram_members.prototype), "Id_add"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_head"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_hint"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_text"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_copy"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_qr"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join_qr_box"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_accept_icon"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_accept"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_reject_icon"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_reject"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "rule_click"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Rule_icon"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Rule"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "armed"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "drop_click"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Drop_icon"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Drop"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Pick_mark"));
+	($mol_mem(($.$bog_gram_members.prototype), "close"));
+	($mol_mem(($.$bog_gram_members.prototype), "error"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "accept"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "reject"));
+	($mol_mem(($.$bog_gram_members.prototype), "history"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "add"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "part"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "promote"));
+	($mol_mem(($.$bog_gram_members.prototype), "leave"));
+	($mol_mem(($.$bog_gram_members.prototype), "Add_title"));
+	($mol_mem(($.$bog_gram_members.prototype), "History"));
+	($mol_mem(($.$bog_gram_members.prototype), "Error"));
+	($mol_mem(($.$bog_gram_members.prototype), "Id_form"));
+	($mol_mem(($.$bog_gram_members.prototype), "Pick_list"));
+	($mol_mem(($.$bog_gram_members.prototype), "Admin_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "Join"));
+	($mol_mem(($.$bog_gram_members.prototype), "Asks_head"));
+	($mol_mem(($.$bog_gram_members.prototype), "Asks_list"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_row"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Member_row"));
+	($mol_mem_key(($.$bog_gram_members.prototype), "Pick_row"));
+
+
+;
+"use strict";
 
 
 ;
@@ -26960,16 +27212,192 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        /** Публичный профиль в home land: имя + ссылки на служебные ленды владельца. */
-        class $bog_gram_user extends $giper_baza_dict.with({
-            Name: $giper_baza_atom_text,
-            Inbox_land: $giper_baza_atom_text,
-            Dialogs_land: $giper_baza_atom_text,
-            Monitor_land: $giper_baza_atom_text,
-            Devices_land: $giper_baza_atom_text,
-        }) {
+        class $bog_gram_members extends $.$bog_gram_members {
+            person(lord) {
+                return lord;
+            }
+            tint(lord) {
+                return $bog_gram_lord.tint(lord);
+            }
+            member_rows() {
+                return this.lords().map(lord => this.Member_row(lord));
+            }
+            member_title(lord) {
+                if (lord === this.me())
+                    return 'Вы';
+                return this.label(lord);
+            }
+            Drop_note() {
+                return this.admin() ? super.Drop_note() : null;
+            }
+            Rule(lord) {
+                if (!this.owner())
+                    return null;
+                if (lord === this.me())
+                    return null;
+                if (this.admin_is(lord))
+                    return null;
+                return super.Rule(lord);
+            }
+            Drop(lord) {
+                if (!this.admin())
+                    return null;
+                if (lord === this.me())
+                    return null;
+                return super.Drop(lord);
+            }
+            drop_hint(lord) {
+                return this.armed(lord) ? 'Точно убрать? Прошлые сообщения у него останутся' : 'Убрать из группы';
+            }
+            disarm() {
+                for (const lord of this.lords())
+                    this.armed(lord, false);
+            }
+            drop_click(lord, next) {
+                if (!lord)
+                    return null;
+                if (!this.armed(lord)) {
+                    this.disarm();
+                    this.armed(lord, true);
+                    return null;
+                }
+                this.armed(lord, false);
+                this.part(lord, null);
+                return null;
+            }
+            rule_click(lord, next) {
+                if (!lord)
+                    return null;
+                this.promote(lord, null);
+                return null;
+            }
+            history_shut() {
+                return !this.history();
+            }
+            history_open() {
+                return this.history();
+            }
+            history_all(next) {
+                this.history(true);
+                return null;
+            }
+            history_new(next) {
+                this.history(false);
+                return null;
+            }
+            history_note() {
+                return this.history()
+                    ? 'Новый участник получит ключи от всех прошлых сообщений группы'
+                    : 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше';
+            }
+            pick_rows() {
+                return this.candidates().map(lord => this.Pick_row(lord));
+            }
+            id_add(next) {
+                const lord = this.id().trim();
+                if (!lord)
+                    return null;
+                if (lord === this.me()) {
+                    this.error('Это ваш собственный идентификатор');
+                    return null;
+                }
+                if (!$giper_baza_link.check(lord)) {
+                    this.error('Это не похоже на идентификатор');
+                    return null;
+                }
+                this.error('');
+                this.id('');
+                this.add(lord, null);
+                return null;
+            }
+            asks_head() {
+                return 'Заявки: ' + this.asks().length;
+            }
+            ask_rows() {
+                return this.asks().map(entry => this.Ask_row(entry));
+            }
+            ask_tint(entry) {
+                return $bog_gram_lord.tint(this.ask_lord(entry));
+            }
+            ask_title(entry) {
+                return this.label(this.ask_lord(entry));
+            }
+            ask_status(entry) {
+                return $bog_gram_lord.short(this.ask_lord(entry));
+            }
+            add_rows() {
+                if (!this.admin())
+                    return [];
+                return [
+                    this.Add_title(),
+                    this.History(),
+                    ...this.error() ? [this.Error()] : [],
+                    this.Join(),
+                    ...this.asks().length ? [this.Asks_head(), this.Asks_list()] : [],
+                    this.Id_form(),
+                    this.Pick_list(),
+                    ...this.owner() ? [this.Admin_note()] : [],
+                ];
+            }
+            leave_label() {
+                return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы';
+            }
+            leave_click(next) {
+                if (!this.leave_armed()) {
+                    this.leave_armed(true);
+                    return null;
+                }
+                this.leave_armed(false);
+                this.leave(null);
+                return null;
+            }
         }
-        $$.$bog_gram_user = $bog_gram_user;
+        __decorate([
+            $mol_mem
+        ], $bog_gram_members.prototype, "member_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_members.prototype, "member_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_members.prototype, "drop_hint", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "disarm", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "drop_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "rule_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "history_all", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "history_new", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_members.prototype, "pick_rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "id_add", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_members.prototype, "ask_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_members.prototype, "ask_title", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_members.prototype, "ask_status", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_members.prototype, "add_rows", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_members.prototype, "leave_click", null);
+        $$.$bog_gram_members = $bog_gram_members;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -26979,30 +27407,252 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        /** Лобби-ленд: писать могут все (с PoW), владелец читает инвайты в диалоги. */
-        class $bog_gram_inbox extends $giper_baza_dict.with({
-            Invites: $giper_baza_list_str,
-            /** Заявки в группу вида "группа|лорд|ключ". Отдельным списком от
-             * приглашений: приглашение — это готовый доступ, а заявка только
-             * просьба его выдать, и решение по ней принимает человек.
-             *
-             * Ключ едет прямо в записи: ленд группы шифрованный, право читать его
-             * заворачивается на ключ конкретного человека, и без ключа админу
-             * пришлось бы разыскивать просящего по реестрам. Подложить чужой ключ
-             * под чужой идентификатор это не даёт — идентификатор его хеш, и
-             * подмена ловится пересчётом на месте. */
-            Joins: $giper_baza_list_str,
-            /** Отказы по заявкам — ссылки на группы. Снятая из своего лобби заявка
-             * не оставляет просившему никакого следа, и она висела бы у него
-             * «ждём, пока примут» вечно. Поэтому решение кладём ему сюда: право
-             * писать в чужое лобби есть у всех, им и пользуемся.
-             *
-             * Отказ не бан: он снимает заявку из очереди и ничего не запрещает —
-             * по той же ссылке можно попроситься снова. */
-            Denies: $giper_baza_list_str,
-        }) {
-        }
-        $$.$bog_gram_inbox = $bog_gram_inbox;
+        const note = {
+            font: {
+                size: '0.75rem',
+            },
+            color: $mol_theme.shade,
+        };
+        const plate = {
+            padding: {
+                top: '0.5rem',
+                bottom: '0.5rem',
+                left: '0.75rem',
+                right: '0.75rem',
+            },
+            background: {
+                color: $bog_gram_tone.veil,
+            },
+            borderRadius: '0.75rem',
+        };
+        const choice = {
+            flex: {
+                grow: 1,
+                shrink: 1,
+            },
+            justify: {
+                content: 'center',
+            },
+            minWidth: 0,
+            font: {
+                size: '0.8rem',
+            },
+            padding: {
+                top: '0.25rem',
+                bottom: '0.25rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            borderRadius: '0.5rem',
+        };
+        $mol_style_define($bog_gram_members, {
+            List: {
+                gap: '0.125rem',
+            },
+            Drop_note: note,
+            Leave_note: {
+                ...note,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Add_block: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Add_title: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            History: {
+                ...plate,
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.375rem',
+                minWidth: 0,
+            },
+            History_head: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $mol_theme.shade,
+            },
+            History_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            History_all: choice,
+            History_new: choice,
+            History_note: note,
+            Error: {
+                font: {
+                    size: '0.875rem',
+                },
+                color: $bog_gram_tone.alert,
+            },
+            Id_form: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Pick_list: {
+                gap: '0.125rem',
+            },
+            Pick_mark: {
+                color: $mol_theme.shade,
+            },
+            Admin_note: note,
+            Join: {
+                ...plate,
+                alignSelf: 'stretch',
+                flex: {
+                    direction: 'column',
+                    shrink: 1,
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Join_head: {
+                font: {
+                    size: '0.875rem',
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            Join_hint: note,
+            Join_text: {
+                alignSelf: 'stretch',
+                flex: {
+                    shrink: 1,
+                },
+                width: '100%',
+                minWidth: 0,
+                maxWidth: '100%',
+                maxHeight: '6rem',
+                overflow: {
+                    y: 'auto',
+                },
+                font: {
+                    family: 'monospace',
+                    size: '0.75rem',
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                userSelect: 'all',
+                background: {
+                    color: $mol_theme.back,
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            Join_copy: {
+                alignSelf: 'flex-start',
+            },
+            Join_qr_box: {
+                alignSelf: 'center',
+                maxWidth: '100%',
+                justify: {
+                    content: 'center',
+                },
+                background: {
+                    color: '#ffffff',
+                },
+                padding: '0.5rem',
+                borderRadius: '0.75rem',
+            },
+            Join_qr: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '12rem',
+                height: '12rem',
+                maxWidth: '100%',
+            },
+            Asks_head: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
+            Asks_list: {
+                gap: '0.125rem',
+            },
+            Ask_row: {
+                Note: {
+                    font: {
+                        family: 'monospace',
+                    },
+                },
+            },
+            Leave: {
+                alignSelf: 'flex-start',
+                color: $bog_gram_tone.alert,
+                padding: {
+                    top: '0.375rem',
+                    bottom: '0.375rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+                borderRadius: '0.5rem',
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    List: {
+                        gap: 0,
+                    },
+                    Pick_list: {
+                        gap: 0,
+                    },
+                    Asks_list: {
+                        gap: 0,
+                    },
+                    History_all: {
+                        minHeight: '2.75rem',
+                    },
+                    History_new: {
+                        minHeight: '2.75rem',
+                    },
+                },
+            },
+        });
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -27010,156 +27660,763 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Личная подпись собеседника: как владелец назвал его для себя. */
-        class $bog_gram_note extends $giper_baza_dict.with({
-            Title: $giper_baza_atom_text,
-        }) {
-        }
-        $$.$bog_gram_note = $bog_gram_note;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_user extends $giper_baza_dict.with({
+        Name: $giper_baza_atom_text,
+        Inbox_land: $giper_baza_atom_text,
+        Dialogs_land: $giper_baza_atom_text,
+        Monitor_land: $giper_baza_atom_text,
+        Devices_land: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_user = $bog_gram_user;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Приватный (шифрованный ленд) список диалогов пользователя. */
-        class $bog_gram_dialogs extends $giper_baza_dict.with({
-            Dialogs: $giper_baza_list_str,
-            /** Неотправленные инвайты вида "lord|dialog" — шлются, когда доедут права чужого inbox */
-            Outbox: $giper_baza_list_str,
-            /** Очередь заявок в группы: ссылка на ленд группы. Отдельно от Outbox —
-             * тот ждёт первого сообщения в диалоге, а заявку шлют до всякого
-             * доступа к переписке, и общая проверка её просто заперла бы */
-            Asks: $giper_baza_list_str,
-            /** Заявки, уже доехавшие до чужого лобби. Второй раз их не шлём:
-             * отклонённую заявку админ из лобби убирает, и повтор возвращал бы её
-             * туда снова. Запись держится тут, пока не выдадут права, — по ней же
-             * рисуется «ждём подтверждения» */
-            Asked: $giper_baza_list_str,
-            /** Группы, по заявкам в которые пришёл отказ. Держим их тут, а не в
-             * лобби: запись из лобби снимается сразу, а сказать о решении надо —
-             * иначе заявка просто исчезнет с экрана без объяснений. Повторный
-             * переход по ссылке эту отметку снимает: отказ не бан */
-            Denied: $giper_baza_list_str,
-            /** Убранные из своего списка диалоги — иначе повторный инвайт вернул бы их обратно */
-            Hidden: $giper_baza_list_str,
-            /** Собеседники, с которыми владелец согласился переписываться: их диалоги
-             * идут в общий список, а не в запросы. Ключ — lord человека, а не ссылка
-             * на диалог: согласие даётся один раз и на все его будущие диалоги */
-            Accepted: $giper_baza_list_str,
-            /** Ссылки на известные владельцу реестры пользователей */
-            Registries: $giper_baza_list_str,
-            /** Ленд избранного — заметок для себя. Ссылка личная, поэтому лежит тут, а не в открытом профиле */
-            Saved_land: $giper_baza_atom_text,
-            /** Все заведённые ленды заметок. Ссылка выше — одна, и в ней побеждает
-             * та запись, что легла позже: два устройства, заведя избранное каждое
-             * своё (список диалогов приезжает не мгновенно, и пустая ссылка на нём
-             * выглядит как «ленда ещё нет»), проигравшую ссылку потеряли бы вместе
-             * со всеми заметками. Список же сливается, а не перетирается —
-             * читаем изо всех лендов, пишем в тот, на который указывает ссылка */
-            Saved_lands: $giper_baza_list_str,
-            /** Спрятанные из основного списка диалоги: в отличие от Hidden, возвращаются одним кликом */
-            Archived: $giper_baza_list_str,
-            /** Подписи собеседников «как я его назвал», ключ — lord собеседника.
-             * Ленд приватный, поэтому подпись видна только владельцу */
-            Notes: $giper_baza_dict_to($bog_gram_note),
-            Passes: $giper_baza_list_str,
-            Lobbies: $giper_baza_list_str,
-        }) {
-        }
-        $$.$bog_gram_dialogs = $bog_gram_dialogs;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_inbox extends $giper_baza_dict.with({
+        Invites: $giper_baza_list_str,
+        Joins: $giper_baza_list_str,
+        Denies: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_gram_inbox = $bog_gram_inbox;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Публичный список лендов, за которыми пуш-сервису надо следить. */
-        class $bog_gram_monitor extends $giper_baza_dict.with({
-            Watch: $giper_baza_list_str,
-        }) {
-        }
-        $$.$bog_gram_monitor = $bog_gram_monitor;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_note extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_note = $bog_gram_note;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Устройство пользователя с пуш-токеном. */
-        class $bog_gram_device extends $giper_baza_dict.with({
-            Title: $giper_baza_atom_text,
-            Token: $giper_baza_atom_text,
-        }) {
-        }
-        $$.$bog_gram_device = $bog_gram_device;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_dialogs extends $giper_baza_dict.with({
+        Dialogs: $giper_baza_list_str,
+        Outbox: $giper_baza_list_str,
+        Asks: $giper_baza_list_str,
+        Asked: $giper_baza_list_str,
+        Denied: $giper_baza_list_str,
+        Hidden: $giper_baza_list_str,
+        Accepted: $giper_baza_list_str,
+        Registries: $giper_baza_list_str,
+        Saved_land: $giper_baza_atom_text,
+        Saved_lands: $giper_baza_list_str,
+        Archived: $giper_baza_list_str,
+        Notes: $giper_baza_dict_to($bog_gram_note),
+        Passes: $giper_baza_list_str,
+        Lobbies: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_gram_dialogs = $bog_gram_dialogs;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Приватный реестр устройств пользователя. */
-        class $bog_gram_devices extends $giper_baza_dict.with({
-            Registry: $giper_baza_dict_to($bog_gram_device),
-        }) {
-        }
-        $$.$bog_gram_devices = $bog_gram_devices;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_monitor extends $giper_baza_dict.with({
+        Watch: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_gram_monitor = $bog_gram_monitor;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Шаренный между участниками ленд диалога: участники + ссылки на сессии-бакеты. */
-        class $bog_gram_dialog extends $giper_baza_dict.with({
-            Peers: $giper_baza_list_str,
-            Sessions: $giper_baza_list_str,
-            /** Кто завёл переписку. Королём ленда числится служебный ключ, выданный
-             * при захвате, поэтому по ленду создателя не узнать — пишем прямо. */
-            Owner: $giper_baza_atom_text,
-            /** Бакет, в который идёт запись. Порядок в списке задаётся слиянием,
-             * а не добавлением, поэтому «последний» там — не обязательно свежий. */
-            Session_last: $giper_baza_atom_text,
-            Created: $giper_baza_atom_real,
-            /** Название группы. У переписки вдвоём его нет: там заголовок — это
-             * личная подпись собеседника, и лежит она в приватном ленде. */
-            Title: $giper_baza_atom_text,
-            /** Кто может звать и убирать людей. Создатель — король ленда, и
-             * админом остаётся всегда, даже не числясь тут. */
-            Admins: $giper_baza_list_str,
-        }) {
-        }
-        $$.$bog_gram_dialog = $bog_gram_dialog;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_device extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+        Token: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_device = $bog_gram_device;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    /** Ссылка на пешку в чужом ленде, которая на чтении сама поднимает синк
-     * этого ленда. Базовый `remote()` только строит прокси, поэтому без
-     * такой обёртки содержимое отдельного ленда никогда не докачивается:
-     * ссылка есть, а данных по ней нет. Синк дёргается только на чтении —
-     * сразу после записи ленд ещё наш собственный и тянуть нечего. */
+    class $bog_gram_devices extends $giper_baza_dict.with({
+        Registry: $giper_baza_dict_to($bog_gram_device),
+    }) {
+    }
+    $.$bog_gram_devices = $bog_gram_devices;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_account extends $mol_object {
+        user_store() {
+            return this.$.$giper_baza_glob.home().land().Data($bog_gram_user);
+        }
+        my_lord() {
+            return this.$.$giper_baza_auth.current().pass().lord().str;
+        }
+        my_pass() {
+            return this.$.$giper_baza_auth.current().pass().toString();
+        }
+        user_name(next) {
+            if (next !== undefined)
+                this.user_store().Name('auto')?.val(next);
+            return this.user_store().Name()?.val() ?? '';
+        }
+        inbox_land() {
+            const home = this.$.$giper_baza_glob.Land(new $giper_baza_link(this.my_lord()));
+            return home.area_make($mol_hash_string('bog_gram_inbox'));
+        }
+        inbox_open() {
+            const land = this.inbox_land();
+            const rank = $giper_baza_rank_post('slow');
+            if (land.lord_rank(null) !== rank)
+                land.give(null, rank);
+            return true;
+        }
+        inbox_publish() {
+            const link = this.inbox_land().link().str;
+            const prev = String(this.user_store().Inbox_land()?.val() ?? '');
+            if (prev === link)
+                return link;
+            if (prev && !this.lobbies_old().includes(prev))
+                this.dialogs_store().Lobbies('auto').add(prev);
+            this.user_store().Inbox_land('auto')?.val(link);
+            return link;
+        }
+        lobbies_old() {
+            return (this.dialogs_store().Lobbies()?.items() ?? []).map(String);
+        }
+        inbox_stores() {
+            const old = $bog_gram_soft(() => this.lobbies_old(), []);
+            return [
+                this.inbox_store(),
+                ...old.map(link => this.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_gram_inbox)),
+            ];
+        }
+        inbox_items(pick) {
+            const all = [];
+            for (const store of this.inbox_stores()) {
+                try {
+                    for (const item of pick(store)?.items() ?? [])
+                        all.push(String(item));
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+            }
+            return [...new Set(all)];
+        }
+        inbox_cut(pick, entry) {
+            for (const store of this.inbox_stores()) {
+                try {
+                    if (!(pick(store)?.items() ?? []).map(String).includes(entry))
+                        continue;
+                    pick(store, 'auto').cut(entry);
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+            }
+        }
+        invites() {
+            return this.inbox_items(store => store.Invites());
+        }
+        joins() {
+            return this.inbox_items(store => store.Joins());
+        }
+        denies() {
+            return this.inbox_items(store => store.Denies());
+        }
+        joins_cut(entry) {
+            this.inbox_cut((store, auto) => store.Joins(auto), entry);
+        }
+        denies_cut(entry) {
+            this.inbox_cut((store, auto) => store.Denies(auto), entry);
+        }
+        land(str) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(str));
+        }
+        dialogs_land_make() {
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+            this.user_store().Dialogs_land('auto')?.val(land.link().str);
+            return land;
+        }
+        dialogs_land() {
+            const str = this.user_store().Dialogs_land()?.val();
+            return str ? this.land(String(str)) : this.dialogs_land_make();
+        }
+        monitor_land_make() {
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_read]]);
+            this.user_store().Monitor_land('auto')?.val(land.link().str);
+            return land;
+        }
+        monitor_land() {
+            const str = this.user_store().Monitor_land()?.val();
+            return str ? this.land(String(str)) : this.monitor_land_make();
+        }
+        devices_land_make() {
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+            this.user_store().Devices_land('auto')?.val(land.link().str);
+            return land;
+        }
+        devices_land() {
+            const str = this.user_store().Devices_land()?.val();
+            return str ? this.land(String(str)) : this.devices_land_make();
+        }
+        dialogs_store() {
+            return this.dialogs_land().Data($bog_gram_dialogs);
+        }
+        inbox_store() {
+            return this.inbox_land().Data($bog_gram_inbox);
+        }
+        monitor_store() {
+            return this.monitor_land().Data($bog_gram_monitor);
+        }
+        devices_store() {
+            return this.devices_land().Data($bog_gram_devices);
+        }
+        monitor_link() {
+            return this.monitor_land().link().str;
+        }
+        device_ready() {
+            const dev = this.devices_store().Registry('auto')?.key('web', 'auto');
+            if (dev && !dev.Title()?.val()) {
+                dev.Title('auto')?.val('Web client');
+                dev.Token('auto')?.val('stub');
+            }
+            return true;
+        }
+        ready() {
+            this.user_store();
+            this.inbox_open();
+            this.inbox_publish();
+            this.dialogs_land();
+            this.monitor_land();
+            this.device_ready();
+            return true;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "my_lord", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "my_pass", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "user_name", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "inbox_land", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "inbox_open", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "inbox_publish", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "lobbies_old", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "inbox_stores", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "invites", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "joins", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "denies", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "joins_cut", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "denies_cut", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "dialogs_land_make", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "monitor_land_make", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "devices_land_make", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "device_ready", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "ready", null);
+    $.$bog_gram_account = $bog_gram_account;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_key extends $giper_baza_dict.with({
+        Pass: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_key = $bog_gram_key;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_users extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+        Lords: $giper_baza_list_str,
+        Keys: $giper_baza_dict_to($bog_gram_key),
+    }) {
+    }
+    $.$bog_gram_users = $bog_gram_users;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const parsed = new Map();
+    class $bog_gram_pass extends $mol_object {
+        static parse(str) {
+            let pass = parsed.get(str);
+            if (pass)
+                return pass;
+            pass = $giper_baza_auth_pass.from(str);
+            parsed.set(str, pass);
+            return pass;
+        }
+        static verified(lord, str) {
+            if (!lord || !str)
+                return null;
+            try {
+                const pass = this.parse(str);
+                if (pass.lord().str === lord)
+                    return pass;
+                $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
+                return null;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return null;
+            }
+        }
+    }
+    $.$bog_gram_pass = $bog_gram_pass;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_registry extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        active() {
+            return this.$.$mol_state_arg.value('users') ?? '';
+        }
+        ids() {
+            return (this.Account().dialogs_store().Registries()?.items() ?? []).map(String);
+        }
+        land(id) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+        }
+        store(id) {
+            return this.land(id).Data($bog_gram_users);
+        }
+        lords(id) {
+            return $bog_gram_soft(() => (this.store(id).Lords()?.items() ?? []).map(String), []);
+        }
+        title(id) {
+            return $bog_gram_soft(() => String(this.store(id).Title()?.val() ?? ''), '') || $bog_gram_lord.short(id);
+        }
+        joined(id) {
+            return this.lords(id).includes(this.Account().my_lord());
+        }
+        active_is(id) {
+            return this.active() === id;
+        }
+        status(id) {
+            const mine = this.joined(id) ? 'вы в списке' : 'только смотрите';
+            return $bog_gram_count.people(this.lords(id).length) + ' · ' + mine;
+        }
+        uri() {
+            const id = this.active();
+            if (!id)
+                return '';
+            return this.$.$mol_state_arg.make_link({ users: id });
+        }
+        key_put(id) {
+            if (!id)
+                return;
+            const store = this.store(id);
+            const my = this.Account().my_lord();
+            const str = this.Account().my_pass();
+            if (String(store.Keys()?.key(my)?.Pass()?.val() ?? '') === str)
+                return;
+            store.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val(str);
+        }
+        keys_fill() {
+            let count = 0;
+            for (const id of this.ids()) {
+                if (!this.joined(id))
+                    continue;
+                count += $bog_gram_soft(() => (this.key_put(id), 1), 0);
+            }
+            return count;
+        }
+        name(next) {
+            return next ?? '';
+        }
+        make(next) {
+            const title = this.name().trim();
+            const my = this.Account().my_lord();
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('slow')]]);
+            const id = land.link().str;
+            const store = land.Data($bog_gram_users);
+            if (title)
+                store.Title('auto')?.val(title);
+            store.Lords('auto')?.add(my);
+            store.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val(this.Account().my_pass());
+            land.units_saving();
+            this.Account().dialogs_store().Registries('auto').add(id);
+            this.name('');
+            this.$.$mol_state_arg.value('users', id);
+            return null;
+        }
+        remember() {
+            const id = this.active();
+            if (!id)
+                return '';
+            if (!this.ids().includes(id))
+                this.Account().dialogs_store().Registries('auto').add(id);
+            return id;
+        }
+        join(id, next) {
+            if (!id)
+                return null;
+            const my = this.Account().my_lord();
+            if (!this.ids().includes(id))
+                this.Account().dialogs_store().Registries('auto').add(id);
+            if (!this.lords(id).includes(my))
+                this.store(id).Lords('auto')?.add(my);
+            this.key_put(id);
+            this.land(id).units_saving();
+            return null;
+        }
+        join_active(next) {
+            this.join(this.active());
+            return null;
+        }
+        forget(id, next) {
+            if (!id)
+                return null;
+            this.Account().dialogs_store().Registries('auto').cut(id);
+            if (this.active() === id)
+                this.$.$mol_state_arg.value('users', null);
+            return null;
+        }
+        open(id, next) {
+            if (!id)
+                return null;
+            this.$.$mol_state_arg.value('users', id);
+            return null;
+        }
+        join_needed() {
+            const id = this.active();
+            if (!id)
+                return false;
+            return !this.joined(id);
+        }
+        sources() {
+            const sources = {};
+            const my = this.Account().my_lord();
+            for (const id of this.ids()) {
+                for (const lord of this.lords(id)) {
+                    if (lord === my)
+                        continue;
+                    if (sources[lord])
+                        continue;
+                    sources[lord] = id;
+                }
+            }
+            return sources;
+        }
+        people() {
+            return Object.keys(this.sources());
+        }
+        source_title(lord) {
+            if (this.ids().length < 2)
+                return '';
+            const id = this.sources()[lord];
+            return id ? this.title(id) : '';
+        }
+        pass_of(lord) {
+            for (const id of this.ids()) {
+                const str = () => String(this.store(id).Keys()?.key(lord)?.Pass()?.val() ?? '');
+                const pass = $bog_gram_soft(() => $bog_gram_pass.verified(lord, str()), null);
+                if (pass)
+                    return pass;
+            }
+            return null;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "ids", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "lords", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "title", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "joined", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "active_is", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "status", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "keys_fill", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "name", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_registry.prototype, "make", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "remember", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_registry.prototype, "join", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_registry.prototype, "join_active", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_registry.prototype, "forget", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_registry.prototype, "open", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "join_needed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "sources", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "people", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_registry.prototype, "source_title", null);
+    $.$bog_gram_registry = $bog_gram_registry;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_people extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        Registry() {
+            return this.$.$bog_gram_registry.make({ $: this.$ });
+        }
+        store(lord) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(lord)).Data($bog_gram_user);
+        }
+        name(lord) {
+            return $bog_gram_soft(() => this.store(lord).Name()?.val() ?? '', '');
+        }
+        inbox(lord) {
+            return String(this.store(lord).Inbox_land()?.val() ?? '');
+        }
+        note(lord) {
+            if (!lord)
+                return '';
+            return this.Account().dialogs_store().Notes()?.key(lord)?.Title()?.val() ?? '';
+        }
+        note_set(lord, next) {
+            if (!lord)
+                return null;
+            const title = next ?? '';
+            const notes = this.Account().dialogs_store().Notes('auto');
+            if (!notes)
+                return null;
+            if (!title && !notes.key(lord))
+                return null;
+            notes.key(lord, 'auto')?.Title('auto')?.val(title);
+            return null;
+        }
+        label(lord) {
+            return $bog_gram_lord.label(lord, this.note(lord), this.name(lord));
+        }
+        accepted() {
+            return (this.Account().dialogs_store().Accepted()?.items() ?? []).map(String);
+        }
+        known(lord) {
+            if (!lord)
+                return false;
+            if (this.accepted().includes(lord))
+                return true;
+            return Boolean(this.Registry().sources()[lord]);
+        }
+        accept(lord) {
+            if (!lord)
+                return null;
+            if (lord === this.Account().my_lord())
+                return null;
+            if (!$giper_baza_link.check(lord))
+                return null;
+            if (this.accepted().includes(lord))
+                return null;
+            this.Account().dialogs_store().Accepted('auto').add(lord);
+            return null;
+        }
+        pass_given(lord, next) {
+            return next ?? null;
+        }
+        pass_stored(lord) {
+            for (const str of this.Account().dialogs_store().Passes()?.items() ?? []) {
+                try {
+                    const pass = $bog_gram_pass.parse(String(str));
+                    if (pass.lord().str === lord)
+                        return pass;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                }
+            }
+            return null;
+        }
+        pass_learn(lord, key) {
+            if (!lord || !key)
+                return null;
+            const pass = $bog_gram_pass.verified(lord, key);
+            if (!pass)
+                return null;
+            this.pass_given(lord, pass);
+            if (!this.pass_stored(lord))
+                this.Account().dialogs_store().Passes('auto').add(pass.toString());
+            return pass;
+        }
+        pass_of(lord) {
+            if (!lord)
+                return null;
+            const given = this.pass_given(lord);
+            if (given)
+                return given;
+            try {
+                const stored = this.pass_stored(lord);
+                if (stored)
+                    return stored;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+            }
+            const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
+            $bog_gram_soft(() => (land.sync(), true), false);
+            return land.king_pass() ?? this.Registry().pass_of(lord);
+        }
+        passes_of(lords) {
+            const passes = [];
+            for (const lord of lords) {
+                const pass = this.pass_of(lord);
+                if (pass)
+                    passes.push(pass);
+            }
+            return passes;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "Registry", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "name", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "note", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_people.prototype, "note_set", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "accepted", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "known", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_people.prototype, "accept", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "pass_given", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "pass_stored", null);
+    $.$bog_gram_people = $bog_gram_people;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_dialog extends $giper_baza_dict.with({
+        Peers: $giper_baza_list_str,
+        Sessions: $giper_baza_list_str,
+        Owner: $giper_baza_atom_text,
+        Session_last: $giper_baza_atom_text,
+        Created: $giper_baza_atom_real,
+        Title: $giper_baza_atom_text,
+        Admins: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_gram_dialog = $bog_gram_dialog;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     function $bog_gram_link_synced(Value) {
         const Base = $giper_baza_atom_link.to(Value);
         class $bog_gram_link_synced extends Base {
@@ -27169,9 +28426,6 @@ var $;
                     this.target_sync();
                 return target;
             }
-            /** Ленд, на который смотрит ссылка, тянется в фоне: обещание
-             * ловим и гасим, потому что ждать его тут нечем — чтение
-             * реактивно и повторится само, когда данные приедут. */
             target_sync() {
                 const link = this.val();
                 if (!link)
@@ -27194,86 +28448,437 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Сообщение: порядок задаётся полем Moment в самих данных, а не порядком доставки. */
-        class $bog_gram_message extends $giper_baza_dict.with({
-            Text: $giper_baza_atom_text,
-            Author: $giper_baza_atom_text,
-            Moment: $giper_baza_atom_real,
-            /** Момент последней правки, отсутствует — сообщение не правилось. */
-            Edited: $giper_baza_atom_real,
-            /** Момент удаления, отсутствует — сообщение живое. */
-            Deleted: $giper_baza_atom_real,
-            /** Картинка лежит в своём ленде: переписка синкается налегке, а
-             * тяжёлый кадр приезжает отдельно и только когда его показывают. */
-            Image: $bog_gram_link_synced(() => $giper_baza_file),
-            /** Размеры кадра в пикселях: место под него в ленте занимается
-             * заранее, и приехавшая картинка ничего под собой не сдвигает. */
-            Image_width: $giper_baza_atom_real,
-            Image_height: $giper_baza_atom_real,
-            /** Голосовое лежит в своём ленде, как и картинка: переписка
-             * синкается налегке, а звук приезжает отдельно. */
-            Voice: $bog_gram_link_synced(() => $giper_baza_file),
-            /** Длительность записи в секундах. Едет вместе с сообщением, до
-             * самого звука: длину пузырь показывает сразу. */
-            Voice_span: $giper_baza_atom_real,
-            /** Ссылка на сообщение, на которое это — ответ. */
-            Reply: $giper_baza_atom_text,
-        }) {
-        }
-        $$.$bog_gram_message = $bog_gram_message;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_message extends $giper_baza_dict.with({
+        Text: $giper_baza_atom_text,
+        Author: $giper_baza_atom_text,
+        Moment: $giper_baza_atom_real,
+        Edited: $giper_baza_atom_real,
+        Deleted: $giper_baza_atom_real,
+        Image: $bog_gram_link_synced(() => $giper_baza_file),
+        Image_width: $giper_baza_atom_real,
+        Image_height: $giper_baza_atom_real,
+        Voice: $bog_gram_link_synced(() => $giper_baza_file),
+        Voice_span: $giper_baza_atom_real,
+        Reply: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_message = $bog_gram_message;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Позиция прочтения участника: Moment последнего прочитанного сообщения. */
-        class $bog_gram_read extends $giper_baza_dict.with({
-            Moment: $giper_baza_atom_real,
-        }) {
-        }
-        $$.$bog_gram_read = $bog_gram_read;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_read extends $giper_baza_dict.with({
+        Moment: $giper_baza_atom_real,
+    }) {
+    }
+    $.$bog_gram_read = $bog_gram_read;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Сессия-бакет: живёт в отдельном ленде вместе со своими сообщениями. */
-        class $bog_gram_session extends $giper_baza_dict.with({
-            Dialog_land: $giper_baza_atom_text,
-            Messages: $giper_baza_list_link_to(() => $bog_gram_message),
-            /** Позиции прочтения участников, ключ — lord собеседника. */
-            Reads: $giper_baza_dict_to($bog_gram_read),
-        }) {
-        }
-        $$.$bog_gram_session = $bog_gram_session;
-    })($$ = $.$$ || ($.$$ = {}));
+    class $bog_gram_session extends $giper_baza_dict.with({
+        Dialog_land: $giper_baza_atom_text,
+        Messages: $giper_baza_list_link_to(() => $bog_gram_message),
+        Reads: $giper_baza_dict_to($bog_gram_read),
+    }) {
+    }
+    $.$bog_gram_session = $bog_gram_session;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    const passes = new Map();
+    const day = 24 * 60 * 60 * 1000;
+    class $bog_gram_clock extends $mol_object {
+        static day_key(moment) {
+            if (!moment)
+                return '';
+            return new Date(moment).toDateString();
+        }
+        static day_title(key) {
+            if (!key)
+                return '';
+            const now = new Date();
+            if (key === now.toDateString())
+                return 'Сегодня';
+            if (key === new Date(now.getTime() - day).toDateString())
+                return 'Вчера';
+            return new Date(key).toLocaleDateString('ru');
+        }
+        static time(moment) {
+            const date = new Date(moment);
+            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+        }
+        static brief(moment) {
+            if (!moment)
+                return '';
+            const date = new Date(moment);
+            if (date.toDateString() === new Date().toDateString())
+                return this.time(moment);
+            return String(date.getDate()).padStart(2, '0') + '.' + String(date.getMonth() + 1).padStart(2, '0');
+        }
+    }
+    $.$bog_gram_clock = $bog_gram_clock;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_talk extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        People() {
+            return this.$.$bog_gram_people.make({ $: this.$ });
+        }
+        my() {
+            return this.Account().my_lord();
+        }
+        land(id) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+        }
+        saved_title() {
+            return 'Избранное';
+        }
+        saved_land_make() {
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+            const store = this.Account().dialogs_store();
+            const str = store.Saved_land()?.val();
+            if (str)
+                return this.land(String(str));
+            const link = land.link().str;
+            store.Saved_land('auto')?.val(link);
+            store.Saved_lands('auto').add(link);
+            return land;
+        }
+        saved_land() {
+            const str = this.Account().dialogs_store().Saved_land()?.val();
+            return str ? this.land(String(str)) : this.saved_land_make();
+        }
+        saved_id() {
+            return String(this.Account().dialogs_store().Saved_land()?.val() ?? '');
+        }
+        saved_links() {
+            const current = this.saved_id();
+            const all = $bog_gram_soft(() => (this.Account().dialogs_store().Saved_lands()?.items() ?? []).map(String), []);
+            const rest = all.filter(link => link && link !== current);
+            return current ? [...rest, current] : rest;
+        }
+        saved_is(id) {
+            if (!id)
+                return false;
+            return this.saved_links().includes(id);
+        }
+        store(id) {
+            return this.land(id).Data($bog_gram_dialog);
+        }
+        lords(id) {
+            if (!id)
+                return [];
+            if (this.saved_is(id))
+                return [];
+            return (this.store(id).Peers()?.items() ?? []).map(String);
+        }
+        mates(id) {
+            const my = this.my();
+            return this.lords(id).filter(lord => lord !== my);
+        }
+        peer(id) {
+            if (this.saved_is(id))
+                return '';
+            const peers = this.lords(id);
+            return peers.find(lord => lord !== this.my()) ?? peers[0] ?? '';
+        }
+        group_title(id) {
+            if (!id)
+                return '';
+            if (this.saved_is(id))
+                return '';
+            return $bog_gram_soft(() => String(this.store(id).Title()?.val() ?? ''), '');
+        }
+        group_is(id) {
+            if (!id)
+                return false;
+            if (this.saved_is(id))
+                return false;
+            if ($bog_gram_soft(() => this.lords(id).length > 2, false))
+                return true;
+            return Boolean(this.group_title(id));
+        }
+        group_name_auto(id) {
+            const mates = $bog_gram_soft(() => this.mates(id), []);
+            if (!mates.length)
+                return $bog_gram_lord.short(id);
+            return mates.map(lord => this.People().label(lord)).join(', ');
+        }
+        group_title_set(id, next) {
+            if (!id)
+                return null;
+            if (!this.admin_me(id))
+                return null;
+            this.store(id).Title('auto')?.val(next ?? '');
+            return null;
+        }
+        admins(id) {
+            if (!id)
+                return [];
+            return $bog_gram_soft(() => (this.store(id).Admins()?.items() ?? []).map(String), []);
+        }
+        admin_is(id, lord) {
+            if (!id || !lord)
+                return false;
+            if (this.owner(id) === lord)
+                return true;
+            if (lord === this.my() && this.own(id))
+                return true;
+            return this.admins(id).includes(lord);
+        }
+        admin_me(id) {
+            return this.admin_is(id, this.my());
+        }
+        member_rank(id, lord) {
+            return this.admin_is(id, lord) ? $giper_baza_rank_rule : $giper_baza_rank_post('fast');
+        }
+        owner(id) {
+            if (!id)
+                return '';
+            try {
+                return String(this.store(id).Owner()?.val() ?? '');
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return '';
+            }
+        }
+        own(id) {
+            if (!id)
+                return false;
+            return $bog_gram_soft(() => {
+                const owner = this.owner(id);
+                if (owner)
+                    return owner === this.my();
+                return this.land(id).lord_rank(new $giper_baza_link(this.my())) === $giper_baza_rank_rule;
+            }, false);
+        }
+        title(id) {
+            if (this.saved_is(id))
+                return this.saved_title();
+            if (this.group_is(id))
+                return this.group_title(id) || this.group_name_auto(id);
+            const peer = this.peer(id);
+            if (!peer)
+                return $bog_gram_lord.short(id);
+            return this.People().label(peer);
+        }
+        avatar_id(id) {
+            return $bog_gram_soft(() => this.group_is(id) ? id : this.peer(id), '');
+        }
+        tint(id) {
+            return $bog_gram_soft(() => $bog_gram_lord.tint(this.avatar_id(id)), 0);
+        }
+        moment(id) {
+            return $bog_gram_soft(() => {
+                const messages = this.messages_alive_of(id);
+                const last = messages[messages.length - 1];
+                if (last)
+                    return Number(last.Moment()?.val() ?? 0);
+                return Number(this.store(id).Created()?.val() ?? 0);
+            }, 0);
+        }
+        fresh_first(ids) {
+            return [...ids].sort((a, b) => this.moment(b) - this.moment(a));
+        }
+        alive(id) {
+            return $bog_gram_soft(() => this.messages_alive_of(id).length > 0, false);
+        }
+        links_of(id) {
+            if (!id)
+                return [];
+            if (this.saved_is(id))
+                return this.saved_links();
+            return (this.store(id).Sessions()?.items() ?? []).map(String);
+        }
+        lands_of(id) {
+            return this.links_of(id).map(link => this.land(link));
+        }
+        land_of(id) {
+            const links = this.links_of(id);
+            if (!links.length)
+                return null;
+            if (!this.saved_is(id)) {
+                const marked = String(this.store(id).Session_last()?.val() ?? '');
+                if (marked && links.includes(marked))
+                    return this.land(marked);
+            }
+            return this.land(links[links.length - 1]);
+        }
+        session(id) {
+            return this.land_of(id)?.Data($bog_gram_session) ?? null;
+        }
+        messages_merge(buckets) {
+            const all = [];
+            for (const bucket of buckets)
+                all.push(...bucket);
+            return all.sort((a, b) => {
+                const shift = Number(a.Moment()?.val() ?? 0) - Number(b.Moment()?.val() ?? 0);
+                if (shift)
+                    return shift;
+                const left = a.link().str;
+                const right = b.link().str;
+                return left < right ? -1 : left > right ? 1 : 0;
+            });
+        }
+        messages_of(id) {
+            return this.messages_merge(this.lands_of(id).map(land => $bog_gram_soft(() => land.Data($bog_gram_session).Messages()?.remote_list() ?? [], [])));
+        }
+        messages_alive_of(id) {
+            return this.messages_of(id).filter(message => !message.Deleted()?.val());
+        }
+        read_moment_of(id, lord) {
+            let last = 0;
+            for (const land of this.lands_of(id)) {
+                try {
+                    const moment = Number(land.Data($bog_gram_session).Reads()?.key(lord)?.Moment()?.val() ?? 0);
+                    if (moment > last)
+                        last = moment;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+            }
+            return last;
+        }
+        unread(id) {
+            if (!id)
+                return 0;
+            if (this.saved_is(id))
+                return 0;
+            const my = this.my();
+            const seen = this.read_moment_of(id, my);
+            return this.messages_alive_of(id).filter(message => {
+                if (String(message.Author()?.val() ?? '') === my)
+                    return false;
+                return Number(message.Moment()?.val() ?? 0) > seen;
+            }).length;
+        }
+        preview(id) {
+            const messages = this.messages_alive_of(id);
+            const last = messages[messages.length - 1];
+            if (!last)
+                return '';
+            const text = String(last.Text()?.val() ?? '');
+            const kind = last.Image()?.val() ? 'Фото'
+                : last.Voice()?.val() ? 'Голосовое сообщение'
+                    : '';
+            const body = kind ? (text ? kind + ' · ' + text : kind) : text;
+            if (this.saved_is(id))
+                return body;
+            const author = String(last.Author()?.val() ?? '');
+            if (author === this.my())
+                return 'Вы: ' + body;
+            if (author && this.group_is(id))
+                return this.People().label(author) + ': ' + body;
+            return body;
+        }
+        time(id) {
+            const messages = this.messages_alive_of(id);
+            return $bog_gram_clock.brief(Number(messages[messages.length - 1]?.Moment()?.val() ?? 0));
+        }
+        mine_among(messages, my) {
+            return messages.some(message => String(message.Author()?.val() ?? '') === my);
+        }
+        mine_wrote(id) {
+            return $bog_gram_soft(() => this.mine_among(this.messages_alive_of(id), this.my()), false);
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_talk.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_talk.prototype, "People", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_talk.prototype, "saved_land_make", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_talk.prototype, "saved_id", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_talk.prototype, "saved_links", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "peer", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "group_title", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "group_is", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "group_name_auto", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_talk.prototype, "group_title_set", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "admins", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "own", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "title", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "avatar_id", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "tint", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "moment", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "alive", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "messages_of", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "messages_alive_of", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "unread", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "preview", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "time", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "mine_wrote", null);
+    $.$bog_gram_talk = $bog_gram_talk;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     class $bog_gram_seal extends $mol_object {
         static prefix = 'seal';
-        static pass(str) {
-            let pass = passes.get(str);
-            if (pass)
-                return pass;
-            pass = $giper_baza_auth_pass.from(str);
-            passes.set(str, pass);
-            return pass;
-        }
         static nonce(kind, open) {
             return $mol_crypto2_hash($mol_charset_encode(kind + '|' + open)).slice(0, 16);
         }
@@ -27298,7 +28903,7 @@ var $;
             if (parts.length !== 4)
                 return null;
             try {
-                const pass = this.pass(parts[1]);
+                const pass = $bog_gram_pass.parse(parts[1]);
                 const nonce = $mol_base64_url_decode(parts[2]);
                 const code = $mol_base64_url_decode(parts[3]);
                 const secret = auth.secret_mutual(pass);
@@ -27322,319 +28927,1093 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /** Предел большей стороны кадра в пикселях. Оригинал с телефона весит
-     * мегабайты и в пузыре всё равно показывается мелким, а по сети едет
-     * целиком и целиком же оседает в памяти мастера. */
-    const side_limit = 1600;
-    /** Предел веса готового кадра в байтах. */
-    const weight_limit = 1.5 * 1024 * 1024;
-    /** Качество кодирования: с чего начинаем и ниже чего не опускаемся —
-     * дальше картинка идёт квадратами, и лучше отдать её потяжелее. */
-    const quality_max = 0.8;
-    const quality_min = 0.5;
-    const quality_step = 0.15;
-    /** Во сколько ужимаем сторону, когда качество уже на нижнем пределе. */
-    const scale_step = 0.75;
-    /** Сколько заходов пытаемся уложиться в вес: дальше отдаём что вышло. */
-    const tries_limit = 6;
-    function encode(canvas, type, quality) {
-        return new Promise(done => canvas.toBlob(done, type, quality));
-    }
-    /** Всё пережатие — один промис на вызов, и это принципиально: фибра
-     * перезапускается на каждом ожидании, а холст на новом заходе был бы
-     * уже другим объектом — то есть другой задачей, и так до бесконечности.
-     * Внутри же обычный async без фибр, поэтому холстов можно сколько угодно. */
-    const api = {
-        async shrink(file, side, weight) {
-            const bitmap = await createImageBitmap(file);
-            try {
-                const fit = $bog_gram_shrink.fit(bitmap.width, bitmap.height, side);
-                const same = fit.width === bitmap.width && fit.height === bitmap.height;
-                // Мелкий кадр не трогаем: перекодирование только испортило бы его
-                if (same && file.size <= weight)
-                    return {
-                        bytes: new Uint8Array(await file.arrayBuffer()),
-                        type: file.type || 'image/jpeg',
-                        width: bitmap.width,
-                        height: bitmap.height,
-                    };
-                let width = fit.width;
-                let height = fit.height;
-                let quality = quality_max;
-                let best = null;
-                for (let step = 0; step < tries_limit; ++step) {
-                    const canvas = $mol_dom_context.document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const paper = canvas.getContext('2d');
-                    if (!paper)
-                        break;
-                    paper.drawImage(bitmap, 0, 0, width, height);
-                    // Тип результата проверяем всегда: браузер без WebP молча
-                    // отдаёт PNG, а он тяжелее исходной фотографии
-                    let blob = await encode(canvas, 'image/webp', quality);
-                    if (blob?.type !== 'image/webp')
-                        blob = await encode(canvas, 'image/jpeg', quality);
-                    if (!blob)
-                        break;
-                    best = blob;
-                    if (blob.size <= weight)
-                        break;
-                    if (quality > quality_min) {
-                        quality = Math.max(quality_min, quality - quality_step);
-                    }
-                    else {
-                        const next = $bog_gram_shrink.fit(width, height, Math.round(Math.max(width, height) * scale_step));
-                        if (next.width === width && next.height === height)
-                            break;
-                        width = next.width;
-                        height = next.height;
-                    }
-                }
-                // Ни холст, ни кодек не дались: отправляем оригинал — это всё
-                // же лучше, чем сообщение без картинки
-                if (!best)
-                    return {
-                        bytes: new Uint8Array(await file.arrayBuffer()),
-                        type: file.type || 'image/jpeg',
-                        width: bitmap.width,
-                        height: bitmap.height,
-                    };
-                return {
-                    bytes: new Uint8Array(await best.arrayBuffer()),
-                    type: best.type || 'image/jpeg',
-                    width,
-                    height,
-                };
-            }
-            finally {
-                bitmap.close();
-            }
-        },
-    };
-    /** Пережатие картинки перед отправкой. */
-    class $bog_gram_shrink extends $mol_object {
-        /** Вписывает размеры в квадрат со стороной limit, сохраняя пропорции.
-         * То, что уже помещается, оставляем как есть: растянутый кадр только
-         * потяжелеет и станет мыльным. */
-        static fit(width, height, limit) {
-            const side = Math.max(width, height);
-            if (!(limit > 0) || !(side > limit))
-                return { width, height };
-            const scale = limit / side;
-            return {
-                width: Math.max(1, Math.round(width * scale)),
-                height: Math.max(1, Math.round(height * scale)),
-            };
+    class $bog_gram_roster extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
         }
-        /** Это картинка, а не документ и не видео. */
-        static image_is(file) {
-            return file.type.startsWith('image/');
+        People() {
+            return this.$.$bog_gram_people.make({ $: this.$ });
         }
-        /** Готовый к отправке кадр. Зовётся только из фибры: внутри промисы. */
-        static shrink(file) {
-            return $mol_wire_sync(api).shrink(file, side_limit, weight_limit);
+        Talk() {
+            return this.$.$bog_gram_talk.make({ $: this.$ });
         }
-    }
-    $.$bog_gram_shrink = $bog_gram_shrink;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Голосу хватает скромного потока: на такой скорости запись звучит как
-     * телефонный разговор, а минута весит четверть мегабайта. Дожимать её
-     * нечем и незачем — опус и так плотнее любого нашего пережатия. */
-    const rate = 32000;
-    /** Форматы по убыванию желанности: опус компактнее всех, но у Safari
-     * своего опуса нет, и там остаётся только контейнер от четвёртого мпега. */
-    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'];
-    /** Потолок длительности в секундах: на нём запись останавливается сама.
-     * Получасовой монолог никто не дослушает, а микрофон, забытый включённым,
-     * лучше выключить за пользователя. */
-    const span_limit = 5 * 60;
-    /** Короче этого удержание считаем промахом по кнопке, а не сообщением. */
-    const span_min = 0.7;
-    /** Запись голоса с микрофона: один объект — одна запись. Начало и конец
-     * приходят разными событиями, поэтому она не может жить ни в меме, ни
-     * внутри одной фибры: фибра нажатия к моменту отпускания давно кончилась. */
-    class $bog_gram_voice extends $mol_object {
-        /** Длительность строкой: семь секунд — это «0:07», а не «7». */
-        static stamp(span) {
-            const whole = Math.max(0, Math.round(span));
-            const min = Math.floor(whole / 60);
-            const sec = whole % 60;
-            return min + ':' + String(sec).padStart(2, '0');
+        store() {
+            return this.Account().dialogs_store();
         }
-        /** Формат, который здешний браузер умеет писать. Пусто — не умеет ни
-         * одного из наших, и микрофон показывать незачем. */
-        static type() {
-            const maker = $mol_dom_context.MediaRecorder;
-            if (!maker)
+        ids() {
+            return (this.store().Dialogs()?.items() ?? []).map(String);
+        }
+        hidden() {
+            return (this.store().Hidden()?.items() ?? []).map(String);
+        }
+        sort(own, alive, known) {
+            if (own)
+                return 'plain';
+            if (!alive)
+                return 'skip';
+            return known ? 'plain' : 'request';
+        }
+        kind(id) {
+            if (this.archive_is(id))
+                return 'plain';
+            const talk = this.Talk();
+            const known = this.People().known(talk.owner(id)) || talk.mine_wrote(id);
+            return this.sort(talk.own(id), talk.alive(id), known);
+        }
+        requests() {
+            const dropped = new Set(this.hidden());
+            return this.Talk().fresh_first(this.ids().filter(id => {
+                if (dropped.has(id))
+                    return false;
+                return this.kind(id) === 'request';
+            }));
+        }
+        archive_links() {
+            return (this.store().Archived()?.items() ?? []).map(String);
+        }
+        archived() {
+            const alive = new Set(this.ids());
+            const dropped = new Set(this.hidden());
+            return this.archive_links().filter(id => alive.has(id) && !dropped.has(id));
+        }
+        archive_is(id) {
+            return this.archive_links().includes(id);
+        }
+        visible() {
+            const folded = new Set(this.archived());
+            const asked = new Set(this.requests());
+            return this.Talk().fresh_first(this.ids().filter(id => {
+                if (folded.has(id))
+                    return false;
+                if (asked.has(id))
+                    return false;
+                return this.kind(id) !== 'skip';
+            }));
+        }
+        archive(id) {
+            if (!id)
+                return;
+            if (this.Talk().saved_is(id))
+                return;
+            this.store().Archived('auto').add(id);
+        }
+        unarchive(id) {
+            if (!id)
+                return;
+            this.store().Archived('auto').cut(id);
+        }
+        drop(id) {
+            if (!id)
+                return;
+            if (this.Talk().saved_is(id))
+                return;
+            const store = this.store();
+            store.Dialogs('auto').cut(id);
+            store.Hidden('auto').add(id);
+            if (this.archive_is(id))
+                store.Archived('auto').cut(id);
+            $bog_gram_soft(() => {
+                const sessions = this.Talk().links_of(id);
+                const watch = this.Account().monitor_store().Watch('auto');
+                for (const link of sessions)
+                    watch.cut(link);
+                return true;
+            }, false);
+        }
+        with(peer) {
+            if (!peer)
                 return '';
-            return types.find(type => maker.isTypeSupported(type)) ?? '';
-        }
-        static supported() {
-            if (!$mol_dom_context.navigator?.mediaDevices?.getUserMedia)
-                return false;
-            return Boolean(this.type());
-        }
-        /** Кого позвать, когда запись упёрлась в потолок длительности. */
-        filled = () => { };
-        /** Итог отдаём одним и тем же промисом, и это принципиально: фибра
-         * перезапускается на каждом ожидании, а новый промис на каждом её
-         * заходе означал бы запись, которая никогда не кончается. */
-        done = (take) => { };
-        result = new Promise(done => { this.done = done; });
-        /** Микрофон просим тоже ровно один раз — по той же причине. */
-        opening = null;
-        stream = null;
-        recorder = null;
-        /** Просили остановиться. Взводится и до того, как браузер отдал
-         * микрофон: тогда его сразу же и возвращаем. */
-        asked = false;
-        /** Момент, с которого пошла запись: по нему считается её длина. */
-        moment = 0;
-        limit = null;
-        open() {
-            return this.opening ??= this.open_run();
-        }
-        /** Разрешение спрашивает браузер, и ответа можно ждать сколько
-         * угодно, поэтому внутри обычный async без фибр. */
-        async open_run() {
-            const type = $bog_gram_voice.type();
-            if (!type)
-                throw new Error('Запись звука тут не поддерживается');
-            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true });
-            // Палец отпустили, пока браузер спрашивал разрешение: микрофон
-            // возвращаем сразу, записывать уже нечего
-            if (this.asked) {
-                this.hush(stream);
-                this.done(null);
-                return false;
+            const talk = this.Talk();
+            for (const id of this.ids()) {
+                const found = $bog_gram_soft(() => !talk.group_is(id) && talk.peer(id) === peer, false);
+                if (found)
+                    return id;
             }
-            const chunks = [];
-            const recorder = new $mol_dom_context.MediaRecorder(stream, {
-                mimeType: type,
-                audioBitsPerSecond: rate,
-            });
-            recorder.ondataavailable = event => {
-                if (event.data.size)
-                    chunks.push(event.data);
-            };
-            recorder.onstop = () => {
-                this.hush(stream);
-                const span = (Date.now() - this.moment) / 1000;
-                if (span < span_min || !chunks.length)
-                    return this.done(null);
-                void this.pack(chunks, type, span);
-            };
-            this.stream = stream;
-            this.recorder = recorder;
-            this.moment = Date.now();
-            recorder.start();
-            this.limit = $mol_dom_context.setTimeout(() => this.filled(), span_limit * 1000);
+            return '';
+        }
+        create(peer) {
+            const exist = this.with(peer);
+            if (exist)
+                return exist;
+            const pass = this.People().pass_of(peer);
+            if (!pass)
+                return '';
+            const glob = this.$.$giper_baza_glob;
+            const my = this.Account().my_lord();
+            const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+            const session_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
+            dialog_land.give(pass, $giper_baza_rank_post('fast'));
+            session_land.give(pass, $giper_baza_rank_post('fast'));
+            const id = dialog_land.link().str;
+            const session = session_land.link().str;
+            const dialog = dialog_land.Data($bog_gram_dialog);
+            dialog.Peers('auto').add(my);
+            dialog.Peers('auto').add(peer);
+            dialog.Sessions('auto').add(session);
+            dialog.Session_last('auto')?.val(session);
+            dialog.Created('auto')?.val(Date.now());
+            dialog.Owner('auto')?.val(my);
+            session_land.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+            this.store().Dialogs('auto').add(id);
+            this.Account().monitor_store().Watch('auto').add(session);
+            this.store().Outbox('auto').add(peer + '|' + id);
+            return id;
+        }
+        invites_merge() {
+            const invites = this.Account().invites();
+            if (!invites.length)
+                return 0;
+            const have = new Set(this.ids());
+            const hidden = new Set(this.hidden());
+            for (const entry of invites) {
+                const link = this.invite_open(entry);
+                if (!link)
+                    continue;
+                if (have.has(link))
+                    continue;
+                if (hidden.has(link))
+                    continue;
+                this.store().Dialogs('auto').add(link);
+            }
+            return invites.length;
+        }
+        invite_open(entry) {
+            if (!$bog_gram_seal.is(entry))
+                return entry;
+            return this.sealed(entry)?.open ?? '';
+        }
+        sealed(entry) {
+            return $bog_gram_seal.open(this.$.$giper_baza_auth.current(), 'invite', entry);
+        }
+        contacts() {
+            const sources = {};
+            const my = this.Account().my_lord();
+            const talk = this.Talk();
+            for (const id of this.ids()) {
+                if (talk.group_is(id))
+                    continue;
+                const peer = $bog_gram_soft(() => talk.peer(id), '');
+                if (!peer || peer === my || sources[peer])
+                    continue;
+                sources[peer] = 'из переписки';
+            }
+            const registry = this.People().Registry();
+            const registries = registry.sources();
+            for (const lord of Object.keys(registries)) {
+                if (sources[lord])
+                    continue;
+                sources[lord] = registry.title(registries[lord]);
+            }
+            return sources;
+        }
+        contact_lords() {
+            return Object.keys(this.contacts());
+        }
+        contact_source(lord) {
+            return this.contacts()[lord] ?? '';
+        }
+        watch_fill() {
+            const watch = this.Account().monitor_store();
+            const have = new Set((watch.Watch()?.items() ?? []).map(String));
+            for (const id of this.ids()) {
+                for (const link of this.Talk().links_of(id)) {
+                    if (have.has(link))
+                        continue;
+                    watch.Watch('auto').add(link);
+                }
+            }
             return true;
         }
-        /** Кодировщик отдаёт запись кусками, а ленду нужен цельный буфер. */
-        async pack(chunks, type, span) {
-            try {
-                const blob = new $mol_blob(chunks, { type });
-                const bytes = new Uint8Array(await blob.arrayBuffer());
-                this.done({ bytes, type: blob.type || type, span });
-            }
-            catch (error) {
-                $mol_fail_log(error);
-                this.done(null);
-            }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "People", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "Talk", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "ids", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "hidden", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_roster.prototype, "kind", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "requests", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "archive_links", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "archived", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_roster.prototype, "archive_is", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "visible", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_roster.prototype, "archive", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_roster.prototype, "unarchive", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_roster.prototype, "drop", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "invites_merge", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_roster.prototype, "sealed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "contacts", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "contact_lords", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_roster.prototype, "contact_source", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "watch_fill", null);
+    $.$bog_gram_roster = $bog_gram_roster;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_crew extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
         }
-        /** Микрофон отпускаем сразу, как запись кончилась: иначе на телефоне
-         * так и останется гореть индикатор записи. */
-        hush(stream) {
-            for (const track of stream?.getTracks() ?? [])
-                track.stop();
+        People() {
+            return this.$.$bog_gram_people.make({ $: this.$ });
         }
-        /** Остановка синхронная и повторов не боится: палец могли отпустить
-         * ровно тогда же, когда сработал потолок длительности. */
-        stop() {
-            if (this.asked)
-                return;
-            this.asked = true;
-            if (this.limit !== null)
-                $mol_dom_context.clearTimeout(this.limit);
-            this.limit = null;
-            const recorder = this.recorder;
-            // Микрофон ещё не отдали: разрешение доедет и само всё уберёт
-            if (!recorder)
-                return;
-            if (recorder.state === 'inactive') {
-                this.hush(this.stream);
-                this.done(null);
+        Talk() {
+            return this.$.$bog_gram_talk.make({ $: this.$ });
+        }
+        error(next) {
+            return next ?? '';
+        }
+        history(next) {
+            return next ?? true;
+        }
+        draft_name(next) {
+            return next ?? '';
+        }
+        draft_picked(next) {
+            return next ?? [];
+        }
+        draft_lost(next) {
+            return next ?? [];
+        }
+        draft_id(next) {
+            return next ?? '';
+        }
+        draft_error(next) {
+            return next ?? '';
+        }
+        draft_pick(lord, next) {
+            if (!lord)
+                return null;
+            const picked = this.draft_picked();
+            this.draft_lost([]);
+            this.draft_picked(picked.includes(lord) ? picked.filter(item => item !== lord) : [...picked, lord]);
+            return null;
+        }
+        draft_drop(lord, next) {
+            if (!lord)
+                return null;
+            this.draft_lost([]);
+            this.draft_picked(this.draft_picked().filter(item => item !== lord));
+            return null;
+        }
+        draft_id_add(next) {
+            const lord = this.draft_id().trim();
+            if (!lord)
+                return null;
+            if (lord === this.Account().my_lord()) {
+                this.draft_error('Это ваш собственный идентификатор');
+                return null;
+            }
+            if (!$giper_baza_link.check(lord)) {
+                this.draft_error('Это не похоже на идентификатор');
+                return null;
+            }
+            this.draft_error('');
+            this.draft_id('');
+            if (!this.draft_picked().includes(lord))
+                this.draft_pick(lord);
+            return null;
+        }
+        draft_build(title, lords, forced) {
+            const { id, lost } = this.group_make(title, lords, forced);
+            this.draft_lost(lost);
+            if (!id)
+                return '';
+            this.draft_picked([]);
+            this.draft_name('');
+            this.draft_id('');
+            this.draft_error('');
+            return id;
+        }
+        grab() {
+            return this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+        }
+        watch(link) {
+            this.Account().monitor_store().Watch('auto').add(link);
+        }
+        invite(lord, id) {
+            this.People().accept(lord);
+            this.Account().dialogs_store().Outbox('auto').add(lord + '|' + id);
+        }
+        stay(id, lord) {
+            const mates = this.Talk().mates(id).filter(mate => mate !== lord);
+            const stay = [];
+            for (const mate of mates) {
+                const pass = this.People().pass_of(mate);
+                if (pass)
+                    stay.push([mate, pass]);
+            }
+            return stay.length < mates.length ? null : stay;
+        }
+        group_make(title, lords, forced) {
+            const my = this.Account().my_lord();
+            const known = [];
+            const passes = [];
+            const lost = [];
+            for (const lord of lords) {
+                if (!lord || lord === my)
+                    continue;
+                const pass = this.People().pass_of(lord);
+                if (pass) {
+                    known.push(lord);
+                    passes.push(pass);
+                }
+                else {
+                    lost.push(lord);
+                }
+            }
+            if (lost.length && !forced)
+                return { id: '', lost };
+            if (!known.length)
+                return { id: '', lost: [] };
+            const dialog_land = this.grab();
+            const session_land = this.grab();
+            for (const pass of passes) {
+                dialog_land.give(pass, $giper_baza_rank_post('fast'));
+                session_land.give(pass, $giper_baza_rank_post('fast'));
+            }
+            const id = dialog_land.link().str;
+            const session = session_land.link().str;
+            const dialog = dialog_land.Data($bog_gram_dialog);
+            dialog.Peers('auto').add(my);
+            for (const lord of known)
+                dialog.Peers('auto').add(lord);
+            dialog.Sessions('auto').add(session);
+            dialog.Session_last('auto')?.val(session);
+            dialog.Created('auto')?.val(Date.now());
+            dialog.Owner('auto')?.val(my);
+            if (title)
+                dialog.Title('auto')?.val(title);
+            session_land.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+            this.Account().dialogs_store().Dialogs('auto').add(id);
+            this.watch(session);
+            for (const lord of known)
+                this.invite(lord, id);
+            return { id, lost: [] };
+        }
+        join(id, lord, history, known) {
+            const talk = this.Talk();
+            if (!id || !lord)
+                return '';
+            if (lord === this.Account().my_lord())
+                return '';
+            if (!talk.admin_me(id))
+                return '';
+            const pass = known ?? this.People().pass_of(lord);
+            if (!pass) {
+                this.error('Не нашли ключ этого человека: без ключа он не прочитает переписку');
+                return '';
+            }
+            const links = talk.links_of(id);
+            const stay = history ? [] : this.stay(id, lord);
+            if (!stay) {
+                this.error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                return '';
+            }
+            const fresh = history ? null : this.grab();
+            const dialog_land = talk.land(id);
+            dialog_land.give(pass, talk.member_rank(id, lord));
+            if (fresh) {
+                for (const [mate, mate_pass] of stay)
+                    fresh.give(mate_pass, talk.member_rank(id, mate));
+                fresh.give(pass, talk.member_rank(id, lord));
             }
             else {
-                recorder.stop();
+                for (const link of links)
+                    talk.land(link).give(pass, talk.member_rank(id, lord));
             }
+            const dialog = dialog_land.Data($bog_gram_dialog);
+            dialog.Peers('auto').add(lord);
+            if (fresh) {
+                dialog.Sessions('auto').add(fresh.link().str);
+                dialog.Session_last('auto')?.val(fresh.link().str);
+                fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+                this.watch(fresh.link().str);
+            }
+            this.invite(lord, id);
+            this.error('');
+            return lord;
         }
-        /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
-        drop() {
-            this.stop();
-            this.done(null);
+        part(id, lord) {
+            const talk = this.Talk();
+            if (!id || !lord)
+                return '';
+            if (lord === this.Account().my_lord())
+                return '';
+            if (!talk.admin_me(id))
+                return '';
+            const stay = this.stay(id, lord);
+            if (!stay) {
+                this.error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                return '';
+            }
+            const fresh = this.grab();
+            for (const [mate, mate_pass] of stay)
+                fresh.give(mate_pass, talk.member_rank(id, mate));
+            const dialog = talk.store(id);
+            dialog.Sessions('auto').add(fresh.link().str);
+            dialog.Session_last('auto')?.val(fresh.link().str);
+            dialog.Peers('auto').cut(lord);
+            if (talk.admins(id).includes(lord))
+                dialog.Admins('auto').cut(lord);
+            fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
+            this.watch(fresh.link().str);
+            this.error('');
+            return lord;
         }
-        /** Итог записи. Пусто — записывать было нечего или вышло короче
-         * случайного тычка в кнопку. */
-        take() {
-            return this.result;
+        promote(id, lord) {
+            const talk = this.Talk();
+            if (!id || !lord)
+                return '';
+            if (!talk.own(id))
+                return '';
+            const pass = this.People().pass_of(lord);
+            if (!pass) {
+                this.error('Не нашли ключ этого человека: права ему не выдать');
+                return '';
+            }
+            const links = talk.links_of(id);
+            const dialog_land = talk.land(id);
+            dialog_land.give(pass, $giper_baza_rank_rule);
+            for (const link of links)
+                talk.land(link).give(pass, $giper_baza_rank_rule);
+            dialog_land.Data($bog_gram_dialog).Admins('auto').add(lord);
+            this.error('');
+            return lord;
         }
     }
-    $.$bog_gram_voice = $bog_gram_voice;
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "People", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "Talk", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "error", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "history", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "draft_name", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "draft_picked", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "draft_lost", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "draft_id", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "draft_error", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_crew.prototype, "draft_pick", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_crew.prototype, "draft_drop", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_crew.prototype, "draft_id_add", null);
+    $.$bog_gram_crew = $bog_gram_crew;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        /** Публичный ключ участника. Ленды диалога шифрованные, и право читать их
-         * заворачивается на ключ конкретного человека — по одному лишь его
-         * идентификатору выдать это право нечем. Идентификатор — хеш ключа,
-         * поэтому чужой ключ, подложенный под чужую же запись, отличается от
-         * настоящего пересчётом на месте, без всякой сети. */
-        class $bog_gram_key extends $giper_baza_dict.with({
-            Pass: $giper_baza_atom_text,
-        }) {
+    class $bog_gram_lobby extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
         }
-        $$.$bog_gram_key = $bog_gram_key;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /** Публичный реестр пользователей (для обнаружения и пуш-сервиса). */
-        class $bog_gram_users extends $giper_baza_dict.with({
-            /** Название реестра: задаёт создатель, видят все. */
-            Title: $giper_baza_atom_text,
-            Lords: $giper_baza_list_str,
-            /** Публичные ключи участников, ключ словаря — лорд участника. Со
-             * скачанным реестром диалог заводится без сети: одного идентификатора
-             * для шифрованного ленда мало, нужен сам ключ. */
-            Keys: $giper_baza_dict_to($bog_gram_key),
-        }) {
+        People() {
+            return this.$.$bog_gram_people.make({ $: this.$ });
         }
-        $$.$bog_gram_users = $bog_gram_users;
-    })($$ = $.$$ || ($.$$ = {}));
+        Talk() {
+            return this.$.$bog_gram_talk.make({ $: this.$ });
+        }
+        Roster() {
+            return this.$.$bog_gram_roster.make({ $: this.$ });
+        }
+        Crew() {
+            return this.$.$bog_gram_crew.make({ $: this.$ });
+        }
+        store() {
+            return this.Account().dialogs_store();
+        }
+        inbox_of(lord) {
+            const link = this.People().inbox(lord);
+            if (!link)
+                return null;
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_gram_inbox);
+        }
+        sealed_close([kind, pass, open]) {
+            return $bog_gram_seal.close(this.$.$giper_baza_auth.current(), $bog_gram_pass.parse(pass), kind, open);
+        }
+        sealed_open([kind, entry]) {
+            return $bog_gram_seal.open(this.$.$giper_baza_auth.current(), kind, entry);
+        }
+        invite_ready(id) {
+            if (!id)
+                return false;
+            const talk = this.Talk();
+            if (talk.group_is(id))
+                return talk.alive(id);
+            return talk.mine_wrote(id);
+        }
+        outbox_flush() {
+            const entries = (this.store().Outbox()?.items() ?? []).map(String);
+            if (!entries.length)
+                return 0;
+            this.$.$mol_state_time.now(3000);
+            for (const entry of entries) {
+                const [peer, dialog] = entry.split('|');
+                if (!this.invite_ready(dialog))
+                    continue;
+                try {
+                    const inbox = this.inbox_of(peer);
+                    if (!inbox)
+                        continue;
+                    const pass = this.People().pass_of(peer);
+                    if (!pass)
+                        continue;
+                    const sealed = this.sealed_close(['invite', pass.toString(), dialog]);
+                    const invites = inbox.Invites('auto');
+                    if (!invites)
+                        continue;
+                    invites.add(sealed);
+                    const sent = (inbox.Invites()?.items() ?? []).map(String).includes(sealed);
+                    if (sent)
+                        this.store().Outbox('auto').cut(entry);
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+            }
+            return entries.length;
+        }
+        entry(group, lord, pass) {
+            return group + '|' + lord + '|' + pass;
+        }
+        parse(entry) {
+            if ($bog_gram_seal.is(entry)) {
+                const sealed = this.sealed_open(['join', entry]);
+                if (!sealed?.open)
+                    return null;
+                return { group: sealed.open, lord: sealed.lord, pass: sealed.pass };
+            }
+            const parts = String(entry ?? '').split('|');
+            if (parts.length !== 3)
+                return null;
+            const [group, lord, pass] = parts;
+            if (!group || !lord || !pass)
+                return null;
+            return { group, lord, pass };
+        }
+        asks_all() {
+            return $bog_gram_soft(() => this.Account().joins(), []);
+        }
+        asks_of(id) {
+            if (!id)
+                return [];
+            const inside = new Set($bog_gram_soft(() => this.Talk().lords(id), []));
+            return this.asks_all().filter(entry => {
+                const ask = this.parse(entry);
+                if (!ask)
+                    return false;
+                if (ask.group !== id)
+                    return false;
+                return !inside.has(ask.lord);
+            });
+        }
+        lord_of(entry) {
+            return this.parse(entry)?.lord ?? '';
+        }
+        forget(entry) {
+            if (!entry)
+                return;
+            this.Account().joins_cut(entry);
+        }
+        deny(entry) {
+            const ask = this.parse(entry);
+            if (!ask) {
+                this.forget(entry);
+                return '';
+            }
+            try {
+                const inbox = this.inbox_of(ask.lord);
+                const pass = $bog_gram_pass.verified(ask.lord, ask.pass);
+                if (inbox && pass)
+                    inbox.Denies('auto')?.add(this.sealed_close(['deny', pass.toString(), ask.group]));
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+            }
+            this.forget(entry);
+            return ask.group;
+        }
+        apply(entry, history) {
+            const ask = this.parse(entry);
+            if (!ask) {
+                this.forget(entry);
+                return '';
+            }
+            if (!this.Talk().admin_me(ask.group))
+                return '';
+            const pass = $bog_gram_pass.verified(ask.lord, ask.pass);
+            if (!pass) {
+                this.Crew().error('Ключ в заявке не сходится со своим владельцем: заявка отклонена');
+                this.forget(entry);
+                return '';
+            }
+            const joined = this.Crew().join(ask.group, ask.lord, history, pass);
+            if (!joined)
+                return '';
+            this.forget(entry);
+            return joined;
+        }
+        join_owner_of(id) {
+            const owner = this.Talk().owner(id);
+            if (owner)
+                return owner;
+            return this.Talk().own(id) ? this.Account().my_lord() : '';
+        }
+        join_uri(id) {
+            if (!id)
+                return '';
+            const owner = this.join_owner_of(id);
+            return this.$.$mol_state_arg.make_link(owner ? { join: id, by: owner } : { join: id });
+        }
+        join_id() {
+            return this.$.$mol_state_arg.value('join') ?? '';
+        }
+        join_by() {
+            return this.$.$mol_state_arg.value('by') ?? '';
+        }
+        lost(next) {
+            return next ?? '';
+        }
+        join_plan(id, my, member) {
+            if (!id)
+                return 'skip';
+            if (id === my)
+                return 'skip';
+            if (!$giper_baza_link.check(id))
+                return 'skip';
+            return member ? 'open' : 'ask';
+        }
+        join_take(id, by) {
+            const plan = this.join_plan(id, this.Account().my_lord(), this.Roster().ids().includes(id));
+            if (plan === 'ask') {
+                const owner = by || this.join_owner_of(id);
+                this.lost(owner ? '' : id);
+                if (owner)
+                    this.send(id, owner);
+            }
+            this.$.$mol_state_arg.value('join', null);
+            this.$.$mol_state_arg.value('by', null);
+            return plan;
+        }
+        task(group, owner) {
+            return owner ? group + '|' + owner : group;
+        }
+        task_group(entry) {
+            return String(entry ?? '').split('|')[0] ?? '';
+        }
+        task_owner(entry) {
+            return String(entry ?? '').split('|')[1] ?? '';
+        }
+        send(id, owner) {
+            if (!id || !owner)
+                return;
+            const store = this.store();
+            if (this.Roster().hidden().includes(id))
+                store.Hidden('auto').cut(id);
+            if (this.denied().includes(id))
+                store.Denied('auto').cut(id);
+            if (this.groups().includes(id))
+                return;
+            store.Asks('auto').add(this.task(id, owner));
+        }
+        queued() {
+            return $bog_gram_soft(() => (this.store().Asks()?.items() ?? []).map(String), []);
+        }
+        sent() {
+            return $bog_gram_soft(() => (this.store().Asked()?.items() ?? []).map(String), []);
+        }
+        denied() {
+            return $bog_gram_soft(() => (this.store().Denied()?.items() ?? []).map(String), []);
+        }
+        groups() {
+            return [...this.queued(), ...this.sent()].map(entry => this.task_group(entry));
+        }
+        waiting(entries) {
+            const have = new Set($bog_gram_soft(() => this.Roster().ids(), []));
+            const all = new Set(entries.map(entry => this.task_group(entry)));
+            return [...all].filter(id => !have.has(id));
+        }
+        pending_queued() {
+            return this.waiting(this.queued());
+        }
+        pending_sent() {
+            return this.waiting(this.sent());
+        }
+        denies_merge() {
+            const entries = $bog_gram_soft(() => this.Account().denies(), []);
+            if (!entries.length)
+                return 0;
+            const store = this.store();
+            const mine = [...this.queued(), ...this.sent()];
+            for (const entry of entries) {
+                const group = $bog_gram_seal.is(entry)
+                    ? this.sealed_open(['deny', entry])?.open ?? ''
+                    : entry;
+                for (const task of mine) {
+                    if (!group)
+                        break;
+                    if (this.task_group(task) !== group)
+                        continue;
+                    store.Asks('auto').cut(task);
+                    store.Asked('auto').cut(task);
+                    if (!this.denied().includes(group))
+                        store.Denied('auto').add(group);
+                }
+                this.Account().denies_cut(entry);
+            }
+            return entries.length;
+        }
+        plate() {
+            if (this.lost())
+                return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
+            const denied = this.denied().length;
+            if (denied === 1)
+                return 'Заявку отклонили — попроситься снова можно по той же ссылке';
+            if (denied)
+                return 'Заявок отклонено: ' + denied + ' — попроситься снова можно по тем же ссылкам';
+            const queued = this.pending_queued().length;
+            if (queued === 1)
+                return 'Заявка отправляется — это не мгновенно';
+            if (queued)
+                return 'Отправляется заявок: ' + queued;
+            const sent = this.pending_sent().length;
+            if (sent === 1)
+                return 'Заявка отправлена — ждём, пока её примут';
+            if (sent)
+                return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут';
+            return '';
+        }
+        taken(entry) {
+            const id = this.task_group(entry);
+            const inside = $bog_gram_soft(() => this.Talk().lords(id).includes(this.Account().my_lord()), false);
+            if (!inside)
+                return false;
+            const store = this.store();
+            const roster = this.Roster();
+            if (!roster.ids().includes(id) && !roster.hidden().includes(id))
+                store.Dialogs('auto').add(id);
+            store.Asks('auto').cut(entry);
+            store.Asked('auto').cut(entry);
+            return true;
+        }
+        asks_flush() {
+            const queued = this.queued();
+            const sent = this.sent();
+            if (!queued.length && !sent.length)
+                return 0;
+            for (const task of sent)
+                this.taken(task);
+            if (!queued.length)
+                return sent.length;
+            this.$.$mol_state_time.now(3000);
+            const store = this.store();
+            for (const task of queued) {
+                if (this.taken(task))
+                    continue;
+                try {
+                    const id = this.task_group(task);
+                    const owner = this.task_owner(task) || this.Talk().owner(id);
+                    if (!owner) {
+                        store.Asks('auto').cut(task);
+                        continue;
+                    }
+                    const inbox = this.inbox_of(owner);
+                    if (!inbox)
+                        continue;
+                    const owner_pass = this.People().pass_of(owner);
+                    if (!owner_pass)
+                        continue;
+                    const entry = this.sealed_close(['join', owner_pass.toString(), id]);
+                    const joins = inbox.Joins('auto');
+                    if (!joins)
+                        continue;
+                    joins.add(entry);
+                    const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
+                    if (!delivered)
+                        continue;
+                    store.Asked('auto').add(task);
+                    store.Asks('auto').cut(task);
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                }
+            }
+            return queued.length + sent.length;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "People", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "Talk", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "Roster", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "Crew", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_lobby.prototype, "sealed_close", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_lobby.prototype, "sealed_open", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_lobby.prototype, "invite_ready", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "outbox_flush", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "asks_all", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_lobby.prototype, "asks_of", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_lobby.prototype, "forget", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "lost", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_lobby.prototype, "send", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "queued", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "sent", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "denied", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "groups", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "pending_queued", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "pending_sent", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "denies_merge", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "plate", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "asks_flush", null);
+    $.$bog_gram_lobby = $bog_gram_lobby;
 })($ || ($ = {}));
 
 ;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.71';
+    const wait = 15000;
+    class $bog_gram_invite extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        People() {
+            return this.$.$bog_gram_people.make({ $: this.$ });
+        }
+        Roster() {
+            return this.$.$bog_gram_roster.make({ $: this.$ });
+        }
+        uri(lord, key) {
+            if (!lord)
+                return '';
+            return this.$.$mol_state_arg.make_link(key ? { invite: lord, key } : { invite: lord });
+        }
+        link() {
+            return this.uri(this.Account().my_lord(), this.Account().my_pass());
+        }
+        lord() {
+            return this.$.$mol_state_arg.value('invite') ?? '';
+        }
+        key() {
+            return this.$.$mol_state_arg.value('key') ?? '';
+        }
+        plan(lord, my, exist) {
+            if (!lord)
+                return 'skip';
+            if (lord === my)
+                return 'skip';
+            if (!$bog_gram_lord.check(lord))
+                return 'bad';
+            return exist ? 'open' : 'start';
+        }
+        lost(next) {
+            return next ?? '';
+        }
+        pending(next) {
+            return next ?? '';
+        }
+        late(next) {
+            return next ?? '';
+        }
+        timer() {
+            const peer = this.pending();
+            if (!peer)
+                return null;
+            return new this.$.$mol_after_timeout(wait, () => this.late(peer));
+        }
+        take(lord, key) {
+            if (!lord)
+                return { plan: 'skip', exist: '' };
+            const exist = this.Roster().with(lord);
+            const plan = this.plan(lord, this.Account().my_lord(), exist);
+            this.lost(plan === 'bad' ? lord : '');
+            if (plan === 'open' || plan === 'start') {
+                this.People().pass_learn(lord, key);
+                this.People().accept(lord);
+            }
+            if (plan === 'start')
+                this.pending(lord);
+            else
+                this.done();
+            return { plan, exist };
+        }
+        ready() {
+            const peer = this.pending();
+            if (!peer)
+                return '';
+            return this.People().pass_of(peer) ? peer : '';
+        }
+        done() {
+            this.late('');
+            this.$.$mol_state_arg.value('invite', null);
+            this.$.$mol_state_arg.value('key', null);
+        }
+        drop(next) {
+            this.pending('');
+            this.lost('');
+            this.done();
+            return null;
+        }
+        plate() {
+            if (this.lost())
+                return 'Ссылка на диалог битая — попросите свежую';
+            const peer = this.pending();
+            if (!peer)
+                return '';
+            if (this.late() !== peer)
+                return 'Открываем диалог — ищем ключ собеседника';
+            return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку';
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "People", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "Roster", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "lost", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "pending", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "late", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "timer", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "ready", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_invite.prototype, "drop", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "plate", null);
+    $.$bog_gram_invite = $bog_gram_invite;
 })($ || ($ = {}));
 
 ;
@@ -27828,8 +30207,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /** Промисные браузерные API одной кучей: фибра дёргает их через
-     * синхронную обёртку, поэтому здесь только голые await-ы без логики. */
     const api = {
         async permission_ask() {
             return await Notification.requestPermission();
@@ -27850,7 +30227,6 @@ var $;
             return await sub.unsubscribe();
         },
     };
-    /** Ключ демона приезжает в base64url, а браузер ждёт сырые байты. */
     function key_bytes(key) {
         const tail = '='.repeat((4 - key.length % 4) % 4);
         const raw = atob((key + tail).replace(/-/g, '+').replace(/_/g, '/'));
@@ -27859,13 +30235,8 @@ var $;
             bytes[i] = raw.charCodeAt(i);
         return bytes;
     }
-    /** Клиент пуш-демона: подписка браузера плюс её регистрация на сервере.
-     * Демон держит endpoint у себя, а не в ленде: в публичном ленде ключи
-     * подписки означали бы, что слать пуши может любой прохожий. */
     class $bog_gram_notify extends $mol_object {
         static base = 'https://push.91-188-212-151.ip.giper.dev';
-        /** По http воркер не регистрируется, а ожидание готового так и висит:
-         * лучше честно сказать «не поддерживается», чем подвесить кнопку. */
         static supported() {
             if (typeof window === 'undefined')
                 return false;
@@ -27882,10 +30253,6 @@ var $;
                 return 'default';
             return Notification.permission;
         }
-        /** Живой жест пользователя. Без него Safari и Firefox запрос разрешения
-         * отклоняют не спрашивая, а Chrome показывает тихую плашку, которую
-         * почти никто не замечает — и всё это выглядит как «нажал, и ничего».
-         * Где свойства нет, полагаемся на сам браузер и не мешаем. */
         static activated() {
             if (typeof navigator === 'undefined')
                 return false;
@@ -27894,10 +30261,6 @@ var $;
                 return true;
             return Boolean(activation.isActive);
         }
-        /** Только запрос разрешения, без подписки. Отдельно от `subscribe`,
-         * потому что успеть его надо ПЕРВЫМ действием фибры: любое подвисшее
-         * чтение до него перезапустит фибру уже в микрозадаче, а жест
-         * пользователя к тому моменту протухнет. */
         static permission_request() {
             try {
                 if (!this.supported())
@@ -27911,16 +30274,12 @@ var $;
                 return 'default';
             }
         }
-        /** Тело POST-ов шлём без заголовка типа: строка уходит как text/plain,
-         * это простой CORS-запрос без preflight, а демон всё равно парсит JSON. */
         static send(path, body) {
             return this.$.$mol_fetch.success(this.base + path, {
                 method: 'POST',
                 body: JSON.stringify(body),
             });
         }
-        /** Разрешение, подписка в браузере и отправка её демону. Наружу не роняем:
-         * при отказе кнопка в настройках просто останется выключенной. */
         static subscribe(lord, monitor) {
             try {
                 if (!lord || !monitor)
@@ -27930,15 +30289,12 @@ var $;
                 if ($mol_wire_sync(api).permission_ask() !== 'granted')
                     return false;
                 const reg = $mol_wire_sync(api).registration();
-                // Ключ мог смениться вместе с томом демона, поэтому не кэшируем
                 const answer = this.$.$mol_fetch.json(this.base + '/push/key', {
                     cache: 'no-store',
                 });
                 const key = answer?.key;
                 if (!key)
                     return false;
-                // Старая подписка могла быть выпущена под другой ключ: обновить
-                // такую браузер не даст, поэтому сперва снимаем её целиком
                 const stale = $mol_wire_sync(api).subscription_get(reg);
                 if (stale)
                     $mol_wire_sync(api).subscription_drop(stale);
@@ -27957,8 +30313,6 @@ var $;
                 return false;
             }
         }
-        /** Снимаем подписку с обеих сторон. Браузерная может уже не существовать —
-         * это не повод не сказать демону, что слать больше некому. */
         static unsubscribe(lord) {
             try {
                 let endpoint = '';
@@ -27993,6 +30347,4239 @@ var $;
     ], $bog_gram_notify, "unsubscribe", null);
     $.$bog_gram_notify = $bog_gram_notify;
 })($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_alerts extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        supported() {
+            return this.$.$bog_gram_notify.supported();
+        }
+        permission(next) {
+            return next ?? this.$.$bog_gram_notify.permission();
+        }
+        on(next) {
+            return this.$.$mol_state_local.value('bog_gram_notify', next) ?? false;
+        }
+        off(next) {
+            return this.$.$mol_state_local.value('bog_gram_notify_off', next) ?? false;
+        }
+        asked(next) {
+            return this.$.$mol_state_local.value('bog_gram_notify_asked', next) ?? false;
+        }
+        plan(supported, permission, on, off, asked) {
+            if (!supported)
+                return 'skip';
+            if (off)
+                return 'skip';
+            if (permission === 'granted')
+                return 'subscribe';
+            if (permission === 'denied')
+                return 'skip';
+            return asked ? 'skip' : 'ask';
+        }
+        plan_now() {
+            return this.plan(this.supported(), this.permission(), this.on(), this.off(), this.asked());
+        }
+        auto() {
+            if (this.plan_now() !== 'subscribe')
+                return false;
+            if (!this.Account().monitor_link())
+                return false;
+            $mol_wire_async(this).apply(true);
+            return true;
+        }
+        offer() {
+            if (this.plan_now() !== 'ask')
+                return false;
+            if (!this.$.$bog_gram_notify.activated())
+                return false;
+            this.asked(true);
+            $mol_wire_async(this).grant();
+            return true;
+        }
+        grant() {
+            const answer = this.$.$bog_gram_notify.permission_request();
+            this.permission(answer);
+            return answer === 'granted';
+        }
+        label() {
+            return this.on() ? 'Выключить' : 'Включить уведомления';
+        }
+        status() {
+            if (!this.supported())
+                return 'Не поддерживается этим браузером';
+            if (this.permission() === 'denied')
+                return 'Запрещены в браузере';
+            if (this.on())
+                return 'Уведомления включены';
+            if (this.off())
+                return 'Выключены';
+            return 'Спросим разрешение, когда откроете диалог';
+        }
+        toggle(next) {
+            $mol_wire_async(this).apply(!this.on());
+            return null;
+        }
+        apply(on) {
+            const notify = this.$.$bog_gram_notify;
+            const lord = this.Account().my_lord();
+            if (!on) {
+                notify.unsubscribe(lord);
+                this.on(false);
+                this.off(true);
+                return false;
+            }
+            const ok = notify.subscribe(lord, this.Account().monitor_link());
+            this.permission(notify.permission());
+            this.on(ok);
+            if (ok)
+                this.off(false);
+            return ok;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_alerts.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_alerts.prototype, "permission", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_alerts.prototype, "auto", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_alerts.prototype, "offer", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_alerts.prototype, "toggle", null);
+    $.$bog_gram_alerts = $bog_gram_alerts;
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_arrow_left) = class $mol_icon_arrow_left extends ($.$mol_icon) {
+		path(){
+			return "M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_reply) = class $mol_icon_reply extends ($.$mol_icon) {
+		path(){
+			return "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_paperclip) = class $mol_icon_paperclip extends ($.$mol_icon) {
+		path(){
+			return "M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
+		path(){
+			return "M2,21L23,12L2,3V10L17,12L2,14V21Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_microphone) = class $mol_icon_microphone extends ($.$mol_icon) {
+		path(){
+			return "M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_image) = class $mol_image extends ($.$mol_view) {
+		uri(){
+			return "";
+		}
+		title(){
+			return "";
+		}
+		loading(){
+			return "lazy";
+		}
+		decoding(){
+			return "async";
+		}
+		cors(){
+			return null;
+		}
+		natural_width(){
+			return 0;
+		}
+		natural_height(){
+			return 0;
+		}
+		load(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "img";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"src": (this.uri()), 
+				"title": (this.hint()), 
+				"alt": (this.title()), 
+				"loading": (this.loading()), 
+				"decoding": (this.decoding()), 
+				"crossOrigin": (this.cors()), 
+				"width": (this.natural_width()), 
+				"height": (this.natural_height())
+			};
+		}
+		event(){
+			return {"load": (next) => (this.load(next))};
+		}
+		minimal_width(){
+			return 16;
+		}
+		minimal_height(){
+			return 16;
+		}
+	};
+	($mol_mem(($.$mol_image.prototype), "load"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_image extends $.$mol_image {
+            natural_width(next) {
+                const dom = this.dom_node();
+                if (dom.naturalWidth)
+                    return dom.naturalWidth;
+                const found = this.uri().match(/\bwidth=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            natural_height(next) {
+                const dom = this.dom_node();
+                if (dom.naturalHeight)
+                    return dom.naturalHeight;
+                const found = this.uri().match(/\bheight=(\d+)/);
+                return found ? Number(found[1]) : null;
+            }
+            load() {
+                this.natural_width(null);
+                this.natural_height(null);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_width", null);
+        __decorate([
+            $mol_mem
+        ], $mol_image.prototype, "natural_height", null);
+        $$.$mol_image = $mol_image;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/image/image.view.css", "[mol_image] {\n\tborder-radius: var(--mol_gap_round);\n\toverflow: hidden;\n\tflex: 0 1 auto;\n\tmax-width: 100%;\n\tobject-fit: cover;\n\theight: fit-content;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_zoom) = class $bog_gram_zoom extends ($.$mol_view) {
+		tab_index(){
+			return 0;
+		}
+		Hotkey(){
+			const obj = new this.$.$mol_hotkey();
+			(obj.key) = () => ({"escape": (next) => (this.close(next))});
+			return obj;
+		}
+		Shot(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "tabindex": (this.tab_index())};
+		}
+		event(){
+			return {...(super.event()), "click": (next) => (this.close(next))};
+		}
+		plugins(){
+			return [(this.Hotkey())];
+		}
+		sub(){
+			return [(this.Shot())];
+		}
+	};
+	($mol_mem(($.$bog_gram_zoom.prototype), "Hotkey"));
+	($mol_mem(($.$bog_gram_zoom.prototype), "Shot"));
+	($mol_mem(($.$bog_gram_zoom.prototype), "close"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/zoom/zoom.view.css", "[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_zoom, {
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            zIndex: 2,
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            padding: '1rem',
+            background: {
+                color: '#000000cc',
+            },
+            outline: 'none',
+            cursor: 'zoom-out',
+            Shot: {
+                maxWidth: '100%',
+                maxHeight: '100%',
+                borderRadius: '0.5rem',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_attach) = class $bog_gram_attach extends ($.$mol_button_open) {
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		files_handled(next){
+			return (this.files(next));
+		}
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		Native(){
+			const obj = new this.$.$bog_gram_attach_native();
+			(obj.files) = (next) => ((this.files_handled(next)));
+			(obj.accept) = () => ((this.accept()));
+			(obj.multiple) = () => ((this.multiple()));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_attach.prototype), "files"));
+	($mol_mem(($.$bog_gram_attach.prototype), "Native"));
+	($.$bog_gram_attach_native) = class $bog_gram_attach_native extends ($.$mol_button_open_native) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_attach_native extends $.$bog_gram_attach_native {
+            picked() {
+                super.picked();
+                this.dom_node().value = '';
+                return null;
+            }
+        }
+        $$.$bog_gram_attach_native = $bog_gram_attach_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_hold) = class $bog_gram_hold extends ($.$mol_button_minor) {
+		down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		menu(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		release(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		abort(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"pointerdown": (next) => (this.down(next)), 
+				"pointerup": (next) => (this.release(next)), 
+				"pointercancel": (next) => (this.abort(next)), 
+				"contextmenu": (next) => (this.menu(next))
+			};
+		}
+	};
+	($mol_mem(($.$bog_gram_hold.prototype), "down"));
+	($mol_mem(($.$bog_gram_hold.prototype), "menu"));
+	($mol_mem(($.$bog_gram_hold.prototype), "press"));
+	($mol_mem(($.$bog_gram_hold.prototype), "release"));
+	($mol_mem(($.$bog_gram_hold.prototype), "abort"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_hold extends $.$bog_gram_hold {
+            down(next) {
+                if (next?.pointerId !== undefined)
+                    this.dom_node().setPointerCapture?.(next.pointerId);
+                this.press(next);
+                return null;
+            }
+            menu(next) {
+                next?.preventDefault();
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_gram_hold.prototype, "down", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_hold.prototype, "menu", null);
+        $$.$bog_gram_hold = $bog_gram_hold;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_photo) = class $bog_gram_photo extends ($.$mol_button) {
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		box_width(){
+			return "15rem";
+		}
+		box_ratio(){
+			return "1";
+		}
+		style(){
+			return {"width": (this.box_width()), "aspectRatio": (this.box_ratio())};
+		}
+		sub(){
+			return [(this.Image())];
+		}
+	};
+	($mol_mem(($.$bog_gram_photo.prototype), "Image"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_photo extends $.$bog_gram_photo {
+            Image() {
+                return this.uri() ? super.Image() : null;
+            }
+        }
+        $$.$bog_gram_photo = $bog_gram_photo;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/photo/photo.view.css", "[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_photo, {
+            display: 'block',
+            flex: {
+                shrink: 0,
+            },
+            maxWidth: '100%',
+            padding: 0,
+            overflow: 'hidden',
+            borderRadius: '0.5rem',
+            background: {
+                color: $bog_gram_tone.veil,
+            },
+            Image: {
+                display: 'block',
+                width: '100%',
+                height: '100%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_sound_node) = class $bog_gram_sound_node extends ($.$mol_view) {
+		retime(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ended(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "audio";
+		}
+		uri(){
+			return "";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"src": (this.uri()), 
+				"preload": "metadata"
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"timeupdate": (next) => (this.retime(next)), 
+				"ended": (next) => (this.ended(next))
+			};
+		}
+	};
+	($mol_mem(($.$bog_gram_sound_node.prototype), "retime"));
+	($mol_mem(($.$bog_gram_sound_node.prototype), "ended"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_sound_node extends $.$bog_gram_sound_node {
+            dom_node(next) {
+                return super.dom_node(next);
+            }
+            time() {
+                this.retime();
+                return this.dom_node().currentTime;
+            }
+            start() {
+                const node = this.dom_node();
+                if (node.ended)
+                    node.currentTime = 0;
+                node.play().catch(error => $mol_fail_log(error));
+            }
+            stop() {
+                const node = this.dom_node();
+                if (!node.paused)
+                    node.pause();
+            }
+            destructor() {
+                $mol_wire_probe(() => this.dom_node())?.pause();
+                super.destructor();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound_node.prototype, "time", null);
+        $$.$bog_gram_sound_node = $bog_gram_sound_node;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_play) = class $mol_icon_play extends ($.$mol_icon) {
+		path(){
+			return "M8,5.14V19.14L19,12.14L8,5.14Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_pause) = class $mol_icon_pause extends ($.$mol_icon) {
+		path(){
+			return "M14,19H18V5H14M6,19H10V5H6V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_sound) = class $bog_gram_sound extends ($.$mol_view) {
+		toggle_icons(){
+			return [];
+		}
+		Toggle(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Прослушать");
+			(obj.click) = (next) => ((this.toggle(next)));
+			(obj.sub) = () => ((this.toggle_icons()));
+			return obj;
+		}
+		fill_width(){
+			return "0%";
+		}
+		Fill(){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"width": (this.fill_width())});
+			return obj;
+		}
+		Track(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Fill())]);
+			return obj;
+		}
+		stamp(){
+			return "";
+		}
+		Stamp(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.stamp())]);
+			return obj;
+		}
+		Node(){
+			const obj = new this.$.$bog_gram_sound_node();
+			(obj.uri) = () => ((this.uri()));
+			(obj.ended) = (next) => ((this.ended(next)));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		span(){
+			return 0;
+		}
+		playing(){
+			return false;
+		}
+		toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ended(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		sub(){
+			return [
+				(this.Toggle()), 
+				(this.Track()), 
+				(this.Stamp()), 
+				(this.Node())
+			];
+		}
+		Play_icon(){
+			const obj = new this.$.$mol_icon_play();
+			return obj;
+		}
+		Pause_icon(){
+			const obj = new this.$.$mol_icon_pause();
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_sound.prototype), "Toggle"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Fill"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Track"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Stamp"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Node"));
+	($mol_mem(($.$bog_gram_sound.prototype), "toggle"));
+	($mol_mem(($.$bog_gram_sound.prototype), "ended"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Play_icon"));
+	($mol_mem(($.$bog_gram_sound.prototype), "Pause_icon"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const rate = 32000;
+    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'];
+    const span_limit = 5 * 60;
+    const span_min = 0.7;
+    class $bog_gram_voice extends $mol_object {
+        static stamp(span) {
+            const whole = Math.max(0, Math.round(span));
+            const min = Math.floor(whole / 60);
+            const sec = whole % 60;
+            return min + ':' + String(sec).padStart(2, '0');
+        }
+        static type() {
+            const maker = $mol_dom_context.MediaRecorder;
+            if (!maker)
+                return '';
+            return types.find(type => maker.isTypeSupported(type)) ?? '';
+        }
+        static supported() {
+            if (!$mol_dom_context.navigator?.mediaDevices?.getUserMedia)
+                return false;
+            return Boolean(this.type());
+        }
+        filled = () => { };
+        done = (take) => { };
+        result = new Promise(done => { this.done = done; });
+        opening = null;
+        stream = null;
+        recorder = null;
+        asked = false;
+        moment = 0;
+        limit = null;
+        open() {
+            return this.opening ??= this.open_run();
+        }
+        async open_run() {
+            const type = $bog_gram_voice.type();
+            if (!type)
+                throw new Error('Запись звука тут не поддерживается');
+            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true });
+            if (this.asked) {
+                this.hush(stream);
+                this.done(null);
+                return false;
+            }
+            const chunks = [];
+            const recorder = new $mol_dom_context.MediaRecorder(stream, {
+                mimeType: type,
+                audioBitsPerSecond: rate,
+            });
+            recorder.ondataavailable = event => {
+                if (event.data.size)
+                    chunks.push(event.data);
+            };
+            recorder.onstop = () => {
+                this.hush(stream);
+                const span = (Date.now() - this.moment) / 1000;
+                if (span < span_min || !chunks.length)
+                    return this.done(null);
+                void this.pack(chunks, type, span);
+            };
+            this.stream = stream;
+            this.recorder = recorder;
+            this.moment = Date.now();
+            recorder.start();
+            this.limit = $mol_dom_context.setTimeout(() => this.filled(), span_limit * 1000);
+            return true;
+        }
+        async pack(chunks, type, span) {
+            try {
+                const blob = new $mol_blob(chunks, { type });
+                const bytes = new Uint8Array(await blob.arrayBuffer());
+                this.done({ bytes, type: blob.type || type, span });
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                this.done(null);
+            }
+        }
+        hush(stream) {
+            for (const track of stream?.getTracks() ?? [])
+                track.stop();
+        }
+        stop() {
+            if (this.asked)
+                return;
+            this.asked = true;
+            if (this.limit !== null)
+                $mol_dom_context.clearTimeout(this.limit);
+            this.limit = null;
+            const recorder = this.recorder;
+            if (!recorder)
+                return;
+            if (recorder.state === 'inactive') {
+                this.hush(this.stream);
+                this.done(null);
+            }
+            else {
+                recorder.stop();
+            }
+        }
+        drop() {
+            this.stop();
+            this.done(null);
+        }
+        take() {
+            return this.result;
+        }
+    }
+    $.$bog_gram_voice = $bog_gram_voice;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_sound extends $.$bog_gram_sound {
+            Node() {
+                return this.uri() ? super.Node() : null;
+            }
+            node() {
+                return this.Node();
+            }
+            moment() {
+                return $bog_gram_soft(() => this.node()?.time() ?? 0, 0);
+            }
+            stamp() {
+                return this.$.$bog_gram_voice.stamp(this.playing() ? this.moment() : this.span());
+            }
+            fill_width() {
+                const span = this.span();
+                if (!span)
+                    return '0%';
+                const share = Math.max(0, Math.min(1, this.moment() / span));
+                return (share * 100).toFixed(1) + '%';
+            }
+            toggle_icons() {
+                return [this.playing() ? this.Pause_icon() : this.Play_icon()];
+            }
+            start() {
+                this.node()?.start();
+            }
+            stop() {
+                this.node()?.stop();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "moment", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "stamp", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_sound.prototype, "fill_width", null);
+        $$.$bog_gram_sound = $bog_gram_sound;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_sound, {
+            align: {
+                items: 'center',
+            },
+            gap: '0.5rem',
+            minWidth: 0,
+            maxWidth: '100%',
+            padding: {
+                top: '0.125rem',
+                bottom: '0.125rem',
+                left: 0,
+                right: 0,
+            },
+            Toggle: {
+                flex: {
+                    shrink: 0,
+                },
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                minWidth: '2rem',
+                minHeight: '2rem',
+                padding: 0,
+                borderRadius: '50%',
+                background: {
+                    color: $mol_theme.control,
+                },
+                color: '#ffffff',
+            },
+            Play_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            Pause_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            Track: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: '3rem',
+                height: '0.25rem',
+                borderRadius: '0.25rem',
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                overflow: 'hidden',
+            },
+            Fill: {
+                height: '100%',
+                background: {
+                    color: $mol_theme.control,
+                },
+            },
+            Stamp: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    size: '0.75rem',
+                },
+                opacity: .65,
+                whiteSpace: 'nowrap',
+            },
+            Node: {
+                display: 'none',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
+		mouse_down(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Author(){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_gram_tint": (this.author_tint())});
+			(obj.sub) = () => ([(this.author())]);
+			return obj;
+		}
+		Quote_author(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.quote_author())]);
+			return obj;
+		}
+		Quote_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.quote_text())]);
+			return obj;
+		}
+		Quote(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Перейти к сообщению");
+			(obj.click) = (next) => ((this.quote_jump(next)));
+			(obj.sub) = () => ([(this.Quote_author()), (this.Quote_text())]);
+			return obj;
+		}
+		Shot(){
+			const obj = new this.$.$bog_gram_photo();
+			(obj.hint) = () => ("Открыть картинку");
+			(obj.uri) = () => ((this.shot_uri()));
+			(obj.box_width) = () => ((this.shot_width()));
+			(obj.box_ratio) = () => ((this.shot_ratio()));
+			(obj.click) = (next) => ((this.zoom(next)));
+			return obj;
+		}
+		Sound(){
+			const obj = new this.$.$bog_gram_sound();
+			(obj.uri) = () => ((this.sound_uri()));
+			(obj.span) = () => ((this.sound_span()));
+			(obj.playing) = () => ((this.sound_playing()));
+			(obj.toggle) = (next) => ((this.sound_toggle(next)));
+			(obj.ended) = (next) => ((this.sound_ended(next)));
+			return obj;
+		}
+		Body(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.body()));
+			return obj;
+		}
+		Time(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.time())]);
+			return obj;
+		}
+		Edited(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["изменено"]);
+			return obj;
+		}
+		Checks(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.checks())]);
+			return obj;
+		}
+		Meta(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Time()), 
+				(this.Edited()), 
+				(this.Checks())
+			]);
+			return obj;
+		}
+		actions_touch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Edit_icon(){
+			const obj = new this.$.$mol_icon_pencil();
+			return obj;
+		}
+		Edit(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Редактировать");
+			(obj.click) = (next) => ((this.edit(next)));
+			(obj.sub) = () => ([(this.Edit_icon())]);
+			return obj;
+		}
+		Delete_icon(){
+			const obj = new this.$.$mol_icon_delete();
+			return obj;
+		}
+		Delete(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Удалить");
+			(obj.click) = (next) => ((this.delete(next)));
+			(obj.sub) = () => ([(this.Delete_icon())]);
+			return obj;
+		}
+		Actions(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				...(this.$.$mol_view.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.actions_touch(next)), 
+				"pointerup": (next) => (this.actions_touch(next))
+			});
+			(obj.sub) = () => ([(this.Edit()), (this.Delete())]);
+			return obj;
+		}
+		out(){
+			return false;
+		}
+		menu(){
+			return false;
+		}
+		author(){
+			return "";
+		}
+		author_tint(){
+			return 0;
+		}
+		quote_shown(){
+			return false;
+		}
+		quote_author(){
+			return "";
+		}
+		quote_text(){
+			return "";
+		}
+		quote_jump(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		shot(){
+			return false;
+		}
+		shot_uri(){
+			return "";
+		}
+		shot_width(){
+			return "";
+		}
+		shot_ratio(){
+			return "";
+		}
+		zoom(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		sound(){
+			return false;
+		}
+		sound_uri(){
+			return "";
+		}
+		sound_span(){
+			return 0;
+		}
+		sound_playing(){
+			return false;
+		}
+		sound_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		sound_ended(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		body(){
+			return "";
+		}
+		time(){
+			return "";
+		}
+		edited(){
+			return false;
+		}
+		checks(){
+			return "";
+		}
+		edit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		delete(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		release(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		context(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"bog_gram_bubble_out": (this.out()), 
+				"bog_gram_bubble_menu": (this.menu())
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"pointerdown": (next) => (this.press(next)), 
+				"pointerup": (next) => (this.release(next)), 
+				"pointercancel": (next) => (this.release(next)), 
+				"contextmenu": (next) => (this.context(next)), 
+				"mousedown": (next) => (this.mouse_down(next))
+			};
+		}
+		sub(){
+			return [
+				(this.Author()), 
+				(this.Quote()), 
+				(this.Shot()), 
+				(this.Sound()), 
+				(this.Body()), 
+				(this.Meta()), 
+				(this.Actions())
+			];
+		}
+	};
+	($mol_mem(($.$bog_gram_bubble.prototype), "mouse_down"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Author"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Quote_author"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Quote_text"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Quote"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Shot"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Sound"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "actions_touch"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Edit_icon"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Edit"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Delete_icon"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Delete"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Actions"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "quote_jump"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "zoom"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "sound_toggle"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "sound_ended"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "edit"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "delete"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "press"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "release"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "context"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_bubble extends $.$bog_gram_bubble {
+            Author() {
+                return this.author() ? super.Author() : null;
+            }
+            Quote() {
+                return this.quote_shown() ? super.Quote() : null;
+            }
+            Shot() {
+                return this.shot() ? super.Shot() : null;
+            }
+            Sound() {
+                return this.sound() ? super.Sound() : null;
+            }
+            Body() {
+                return this.body() ? super.Body() : null;
+            }
+            Edited() {
+                return this.edited() ? super.Edited() : null;
+            }
+            Checks() {
+                return this.checks() ? super.Checks() : null;
+            }
+            Actions() {
+                return this.out() ? super.Actions() : null;
+            }
+            sound_start() {
+                this.Sound()?.start();
+            }
+            sound_stop() {
+                this.Sound()?.stop();
+            }
+            actions_touch(next) {
+                next?.stopPropagation();
+                return null;
+            }
+            mouse_down(next) {
+                if ((next?.detail ?? 0) > 1)
+                    next.preventDefault();
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_gram_bubble.prototype, "actions_touch", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_bubble.prototype, "mouse_down", null);
+        $$.$bog_gram_bubble = $bog_gram_bubble;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const control = {
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            minWidth: '2rem',
+            minHeight: '2rem',
+            padding: '0.25rem',
+            borderRadius: '0.5rem',
+        };
+        const line = {
+            maxWidth: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        };
+        $mol_style_define($bog_gram_bubble, {
+            position: 'relative',
+            flex: {
+                direction: 'column',
+            },
+            gap: '0.125rem',
+            maxWidth: '70%',
+            minWidth: 0,
+            alignSelf: 'flex-start',
+            padding: {
+                top: '0.375rem',
+                bottom: '0.375rem',
+                left: '0.625rem',
+                right: '0.625rem',
+            },
+            borderRadius: '0.75rem',
+            touchAction: 'manipulation',
+            '@': {
+                bog_gram_bubble_out: {
+                    true: {
+                        alignSelf: 'flex-end',
+                    },
+                },
+            },
+            Author: {
+                ...line,
+                display: 'block',
+                alignSelf: 'stretch',
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                    weight: 'bold',
+                },
+                '@': {
+                    bog_gram_tint: $bog_gram_tone.tints,
+                },
+            },
+            Quote: {
+                display: 'flex',
+                flex: {
+                    direction: 'column',
+                },
+                alignSelf: 'stretch',
+                alignItems: 'flex-start',
+                minWidth: 0,
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                margin: {
+                    bottom: '0.25rem',
+                },
+                border: {
+                    left: {
+                        width: '2px',
+                        style: 'solid',
+                        color: $mol_theme.control,
+                    },
+                },
+                borderRadius: '0.25rem',
+                background: {
+                    color: $mol_theme.hover,
+                },
+                font: {
+                    size: '0.8rem',
+                },
+                textAlign: 'left',
+            },
+            Quote_author: {
+                ...line,
+                color: $mol_theme.control,
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Quote_text: {
+                ...line,
+                color: $mol_theme.shade,
+            },
+            Body: {
+                minWidth: 0,
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+            },
+            Shot: {
+                alignSelf: 'flex-start',
+                maxWidth: '100%',
+            },
+            Sound: {
+                alignSelf: 'stretch',
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Meta: {
+                alignSelf: 'flex-end',
+                align: {
+                    items: 'center',
+                },
+                justify: {
+                    content: 'flex-end',
+                },
+                gap: '0.25rem',
+                font: {
+                    size: '0.7rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Time: {
+                whiteSpace: 'nowrap',
+            },
+            Edited: {
+                font: {
+                    style: 'italic',
+                },
+            },
+            Checks: {
+                color: $mol_theme.control,
+                whiteSpace: 'nowrap',
+            },
+            Actions: {
+                display: 'none',
+                position: 'absolute',
+                right: '0.25rem',
+                bottom: '0.25rem',
+                zIndex: 1,
+                align: {
+                    items: 'center',
+                },
+                gap: '0.25rem',
+                padding: '0.125rem',
+                borderRadius: '1rem',
+                background: {
+                    color: $mol_theme.card,
+                },
+                box: {
+                    shadow: [
+                        { x: 0, y: '0.125rem', blur: '0.5rem', spread: 0, color: '#00000040' },
+                    ],
+                },
+            },
+            Edit: control,
+            Delete: control,
+            Edit_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            Delete_icon: {
+                width: '1.125rem',
+                height: '1.125rem',
+            },
+            '@media': {
+                '(max-width: 30rem)': {
+                    maxWidth: '85%',
+                    Edit: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    Delete: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_chat) = class $bog_gram_chat extends ($.$bog_gram_page) {
+		image_paste(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_over(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		image_drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		zoom_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Hotkey(){
+			const obj = new this.$.$mol_hotkey();
+			(obj.key) = () => ({"escape": (next) => (this.zoom_close(next))});
+			return obj;
+		}
+		Note_field(){
+			const obj = new this.$.$bog_gram_field();
+			(obj.hint) = () => ((this.note_hint()));
+			(obj.value) = (next) => ((this.note(next)));
+			return obj;
+		}
+		Title_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
+		Back_icon(){
+			const obj = new this.$.$mol_icon_arrow_left();
+			return obj;
+		}
+		Back(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Назад");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Back_icon())]);
+			return obj;
+		}
+		Members_icon(){
+			const obj = new this.$.$mol_icon_account_multiple();
+			return obj;
+		}
+		Members(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Участники");
+			(obj.click) = (next) => ((this.members(next)));
+			(obj.sub) = () => ([(this.Members_icon())]);
+			return obj;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		rows(){
+			return [];
+		}
+		Messages(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.rows()));
+			return obj;
+		}
+		Reply_icon(){
+			const obj = new this.$.$mol_icon_reply();
+			return obj;
+		}
+		Reply_title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.reply_title())]);
+			return obj;
+		}
+		Reply_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.reply_text())]);
+			return obj;
+		}
+		Reply_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Reply_title()), (this.Reply_text())]);
+			return obj;
+		}
+		reply_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Reply_cancel_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Reply_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отменить ответ");
+			(obj.click) = (next) => ((this.reply_cancel(next)));
+			(obj.sub) = () => ([(this.Reply_cancel_icon())]);
+			return obj;
+		}
+		Reply_banner(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Reply_icon()), 
+				(this.Reply_info()), 
+				(this.Reply_cancel())
+			]);
+			return obj;
+		}
+		Edit_banner_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Редактирование");
+			return obj;
+		}
+		edit_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Edit_cancel_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Edit_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отменить правку");
+			(obj.click) = (next) => ((this.edit_cancel(next)));
+			(obj.sub) = () => ([(this.Edit_cancel_icon())]);
+			return obj;
+		}
+		Edit_banner(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Edit_banner_text()), (this.Edit_cancel())]);
+			return obj;
+		}
+		Voice_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.voice_hint()));
+			return obj;
+		}
+		send_tools(){
+			return [];
+		}
+		Send_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.send_tools()));
+			return obj;
+		}
+		image_files(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Attach_icon(){
+			const obj = new this.$.$mol_icon_paperclip();
+			return obj;
+		}
+		message_send(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Send_icon(){
+			const obj = new this.$.$mol_icon_send();
+			return obj;
+		}
+		voice_press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_release(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		voice_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Voice_icon(){
+			const obj = new this.$.$mol_icon_microphone();
+			return obj;
+		}
+		Record_dot(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		Record_time(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.voice_clock())]);
+			return obj;
+		}
+		Voice_cancel_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Voice_cancel_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => (["Отмена"]);
+			return obj;
+		}
+		day_title(id){
+			return "";
+		}
+		Day_chip(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.day_title(id))]);
+			return obj;
+		}
+		message_out(id){
+			return false;
+		}
+		message_menu_is(id){
+			return false;
+		}
+		message_author(id){
+			return "";
+		}
+		message_author_tint(id){
+			return 0;
+		}
+		message_quote_shown(id){
+			return false;
+		}
+		message_quote_author(id){
+			return "";
+		}
+		message_quote_text(id){
+			return "";
+		}
+		message_quote_jump(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_shot(id){
+			return false;
+		}
+		message_shot_uri(id){
+			return "";
+		}
+		message_shot_width(id){
+			return "";
+		}
+		message_shot_ratio(id){
+			return "";
+		}
+		message_zoom(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_sound(id){
+			return false;
+		}
+		message_sound_uri(id){
+			return "";
+		}
+		message_sound_span(id){
+			return 0;
+		}
+		message_sound_playing(id){
+			return false;
+		}
+		message_sound_toggle(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_sound_ended(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_body(id){
+			return "";
+		}
+		message_time(id){
+			return "";
+		}
+		message_edited(id){
+			return false;
+		}
+		message_checks(id){
+			return "";
+		}
+		message_edit(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_delete(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_press(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_release(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_context(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dialog(){
+			return "";
+		}
+		my_lord(){
+			return "";
+		}
+		Talk(){
+			const obj = new this.$.$bog_gram_talk();
+			return obj;
+		}
+		People(){
+			const obj = new this.$.$bog_gram_people();
+			return obj;
+		}
+		Alerts(){
+			const obj = new this.$.$bog_gram_alerts();
+			return obj;
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		members(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		note(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		note_hint(){
+			return "";
+		}
+		note_editable(){
+			return false;
+		}
+		members_shown(){
+			return false;
+		}
+		edit_mode(){
+			return false;
+		}
+		reply_mode(){
+			return false;
+		}
+		reply_title(){
+			return "";
+		}
+		reply_text(){
+			return "";
+		}
+		message_text(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		zoom_uri(){
+			return "";
+		}
+		voice_ready(){
+			return false;
+		}
+		voice_on(){
+			return false;
+		}
+		voice_clock(){
+			return "";
+		}
+		voice_hint(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		edit_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		reply_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		message_menu(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		zoom_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		voice_start(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		voice_playing(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		stick_end(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		rows_seen(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"paste": (next) => (this.image_paste(next)), 
+				"dragover": (next) => (this.image_over(next)), 
+				"drop": (next) => (this.image_drop(next))
+			};
+		}
+		plugins(){
+			return [(this.Hotkey())];
+		}
+		Zoom(){
+			const obj = new this.$.$bog_gram_zoom();
+			(obj.uri) = () => ((this.zoom_uri()));
+			(obj.close) = (next) => ((this.zoom_close(next)));
+			return obj;
+		}
+		title_content(){
+			return [(this.Note_field()), (this.Title_text())];
+		}
+		head(){
+			return [
+				(this.Back()), 
+				(this.Title()), 
+				(this.Tools())
+			];
+		}
+		tools(){
+			return [(this.Members()), (this.Close())];
+		}
+		body(){
+			return [(this.Messages())];
+		}
+		foot(){
+			return [
+				(this.Reply_banner()), 
+				(this.Edit_banner()), 
+				(this.Voice_note()), 
+				(this.Send_row())
+			];
+		}
+		Attach(){
+			const obj = new this.$.$bog_gram_attach();
+			(obj.hint) = () => ("Отправить картинку");
+			(obj.accept) = () => ("image/*");
+			(obj.multiple) = () => (false);
+			(obj.files) = (next) => ((this.image_files(next)));
+			(obj.Icon) = () => ((this.Attach_icon()));
+			return obj;
+		}
+		Message_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Сообщение…");
+			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.submit) = (next) => ((this.message_send(next)));
+			return obj;
+		}
+		Send(){
+			const obj = new this.$.$mol_button_major();
+			(obj.hint) = () => ("Отправить");
+			(obj.click) = (next) => ((this.message_send(next)));
+			(obj.sub) = () => ([(this.Send_icon())]);
+			return obj;
+		}
+		Voice(){
+			const obj = new this.$.$bog_gram_hold();
+			(obj.hint) = () => ("Удерживайте для записи");
+			(obj.press) = (next) => ((this.voice_press(next)));
+			(obj.release) = (next) => ((this.voice_release(next)));
+			(obj.abort) = (next) => ((this.voice_cancel(next)));
+			(obj.sub) = () => ([(this.Voice_icon())]);
+			return obj;
+		}
+		Record_state(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Record_dot()), (this.Record_time())]);
+			return obj;
+		}
+		Voice_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отпустите здесь, чтобы отменить");
+			(obj.click) = (next) => ((this.voice_cancel(next)));
+			(obj.sub) = () => ([(this.Voice_cancel_icon()), (this.Voice_cancel_text())]);
+			return obj;
+		}
+		Day_row(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Day_chip(id))]);
+			return obj;
+		}
+		Bubble(id){
+			const obj = new this.$.$bog_gram_bubble();
+			(obj.out) = () => ((this.message_out(id)));
+			(obj.menu) = () => ((this.message_menu_is(id)));
+			(obj.author) = () => ((this.message_author(id)));
+			(obj.author_tint) = () => ((this.message_author_tint(id)));
+			(obj.quote_shown) = () => ((this.message_quote_shown(id)));
+			(obj.quote_author) = () => ((this.message_quote_author(id)));
+			(obj.quote_text) = () => ((this.message_quote_text(id)));
+			(obj.quote_jump) = (next) => ((this.message_quote_jump(id, next)));
+			(obj.shot) = () => ((this.message_shot(id)));
+			(obj.shot_uri) = () => ((this.message_shot_uri(id)));
+			(obj.shot_width) = () => ((this.message_shot_width(id)));
+			(obj.shot_ratio) = () => ((this.message_shot_ratio(id)));
+			(obj.zoom) = (next) => ((this.message_zoom(id, next)));
+			(obj.sound) = () => ((this.message_sound(id)));
+			(obj.sound_uri) = () => ((this.message_sound_uri(id)));
+			(obj.sound_span) = () => ((this.message_sound_span(id)));
+			(obj.sound_playing) = () => ((this.message_sound_playing(id)));
+			(obj.sound_toggle) = (next) => ((this.message_sound_toggle(id, next)));
+			(obj.sound_ended) = (next) => ((this.message_sound_ended(id, next)));
+			(obj.body) = () => ((this.message_body(id)));
+			(obj.time) = () => ((this.message_time(id)));
+			(obj.edited) = () => ((this.message_edited(id)));
+			(obj.checks) = () => ((this.message_checks(id)));
+			(obj.edit) = (next) => ((this.message_edit(id, next)));
+			(obj.delete) = (next) => ((this.message_delete(id, next)));
+			(obj.press) = (next) => ((this.message_press(id, next)));
+			(obj.release) = (next) => ((this.message_release(id, next)));
+			(obj.context) = (next) => ((this.message_context(id, next)));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_chat.prototype), "image_paste"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_over"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_drop"));
+	($mol_mem(($.$bog_gram_chat.prototype), "zoom_close"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Hotkey"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Note_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Back"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Members_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_title"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_info"));
+	($mol_mem(($.$bog_gram_chat.prototype), "reply_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_banner"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "edit_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_note"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
+	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_release"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_dot"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_time"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_text"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_chip"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_quote_jump"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_zoom"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_toggle"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_ended"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_edit"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_delete"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_press"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_release"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_context"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Talk"));
+	($mol_mem(($.$bog_gram_chat.prototype), "People"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Alerts"));
+	($mol_mem(($.$bog_gram_chat.prototype), "close"));
+	($mol_mem(($.$bog_gram_chat.prototype), "members"));
+	($mol_mem(($.$bog_gram_chat.prototype), "note"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_hint"));
+	($mol_mem(($.$bog_gram_chat.prototype), "edit_id"));
+	($mol_mem(($.$bog_gram_chat.prototype), "reply_id"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_menu"));
+	($mol_mem(($.$bog_gram_chat.prototype), "zoom_id"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_start"));
+	($mol_mem(($.$bog_gram_chat.prototype), "voice_playing"));
+	($mol_mem(($.$bog_gram_chat.prototype), "stick_end"));
+	($mol_mem(($.$bog_gram_chat.prototype), "rows_seen"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_row"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Bubble"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const side_limit = 1600;
+    const weight_limit = 1.5 * 1024 * 1024;
+    const quality_max = 0.8;
+    const quality_min = 0.5;
+    const quality_step = 0.15;
+    const scale_step = 0.75;
+    const tries_limit = 6;
+    function encode(canvas, type, quality) {
+        return new Promise(done => canvas.toBlob(done, type, quality));
+    }
+    async function original(file, bitmap) {
+        return {
+            bytes: new Uint8Array(await file.arrayBuffer()),
+            type: file.type || 'image/jpeg',
+            width: bitmap.width,
+            height: bitmap.height,
+        };
+    }
+    const api = {
+        async shrink(file, side, weight) {
+            const bitmap = await createImageBitmap(file);
+            try {
+                const fit = $bog_gram_shrink.fit(bitmap.width, bitmap.height, side);
+                const same = fit.width === bitmap.width && fit.height === bitmap.height;
+                if (same && file.size <= weight)
+                    return await original(file, bitmap);
+                let width = fit.width;
+                let height = fit.height;
+                let quality = quality_max;
+                let best = null;
+                for (let step = 0; step < tries_limit; ++step) {
+                    const canvas = $mol_dom_context.document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const paper = canvas.getContext('2d');
+                    if (!paper)
+                        break;
+                    paper.drawImage(bitmap, 0, 0, width, height);
+                    let blob = await encode(canvas, 'image/webp', quality);
+                    if (blob?.type !== 'image/webp')
+                        blob = await encode(canvas, 'image/jpeg', quality);
+                    if (!blob)
+                        break;
+                    best = blob;
+                    if (blob.size <= weight)
+                        break;
+                    if (quality > quality_min) {
+                        quality = Math.max(quality_min, quality - quality_step);
+                    }
+                    else {
+                        const next = $bog_gram_shrink.fit(width, height, Math.round(Math.max(width, height) * scale_step));
+                        if (next.width === width && next.height === height)
+                            break;
+                        width = next.width;
+                        height = next.height;
+                    }
+                }
+                if (!best)
+                    return await original(file, bitmap);
+                return {
+                    bytes: new Uint8Array(await best.arrayBuffer()),
+                    type: best.type || 'image/jpeg',
+                    width,
+                    height,
+                };
+            }
+            finally {
+                bitmap.close();
+            }
+        },
+    };
+    class $bog_gram_shrink extends $mol_object {
+        static fit(width, height, limit) {
+            const side = Math.max(width, height);
+            if (!(limit > 0) || !(side > limit))
+                return { width, height };
+            const scale = limit / side;
+            return {
+                width: Math.max(1, Math.round(width * scale)),
+                height: Math.max(1, Math.round(height * scale)),
+            };
+        }
+        static image_is(file) {
+            return file.type.startsWith('image/');
+        }
+        static shrink(file) {
+            return $mol_wire_sync(api).shrink(file, side_limit, weight_limit);
+        }
+    }
+    $.$bog_gram_shrink = $bog_gram_shrink;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const press_delay = 400;
+        const double_tap_delay = 350;
+        const shot_side = 15;
+        const rem_px = 16;
+        const clock_tick = 200;
+        const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
+        const voice_short = 'Слишком коротко — запись отменена';
+        class $bog_gram_chat extends $.$bog_gram_chat {
+            saved() {
+                return this.Talk().saved_is(this.dialog());
+            }
+            group() {
+                return this.Talk().group_is(this.dialog());
+            }
+            title() {
+                return this.Talk().title(this.dialog());
+            }
+            peer() {
+                if (this.saved())
+                    return '';
+                if (this.group())
+                    return '';
+                return this.Talk().peer(this.dialog());
+            }
+            note_editable() {
+                if (this.group())
+                    return this.Talk().admin_me(this.dialog());
+                return Boolean(this.peer());
+            }
+            note_hint() {
+                if (this.group())
+                    return this.Talk().group_name_auto(this.dialog());
+                const lord = this.peer();
+                if (!lord)
+                    return '';
+                return this.People().name(lord) || $bog_gram_lord.short(lord);
+            }
+            note(next) {
+                const id = this.dialog();
+                if (this.group()) {
+                    if (next !== undefined)
+                        this.Talk().group_title_set(id, next);
+                    return this.Talk().group_title(id);
+                }
+                const lord = this.peer();
+                if (!lord)
+                    return '';
+                if (next !== undefined)
+                    this.People().note_set(lord, next);
+                return this.People().note(lord);
+            }
+            Note_field() {
+                return this.note_editable() ? super.Note_field() : null;
+            }
+            Title_text() {
+                return this.note_editable() ? null : super.Title_text();
+            }
+            members_shown() {
+                return this.group();
+            }
+            Members() {
+                return this.members_shown() ? super.Members() : null;
+            }
+            messages() {
+                return this.Talk().messages_alive_of(this.dialog());
+            }
+            message_pawn(id) {
+                return this.messages().find(message => message.link().str === id) ?? null;
+            }
+            message_lord(id) {
+                return String(this.message_pawn(id)?.Author()?.val() ?? '');
+            }
+            message_moment(id) {
+                return Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
+            }
+            day_title(key) {
+                return $bog_gram_clock.day_title(key);
+            }
+            rows() {
+                let last_day = '';
+                return this.messages().flatMap(message => {
+                    const day = $bog_gram_clock.day_key(Number(message.Moment()?.val() ?? 0));
+                    const head = day && day !== last_day ? [this.Day_row(day)] : [];
+                    last_day = day;
+                    return [...head, this.Bubble(message.link().str)];
+                });
+            }
+            message_body(id) {
+                return this.message_pawn(id)?.Text()?.val() ?? '';
+            }
+            message_out(id) {
+                return this.message_lord(id) === this.my_lord();
+            }
+            message_time(id) {
+                const moment = this.message_moment(id);
+                return moment ? $bog_gram_clock.time(moment) : '';
+            }
+            message_edited(id) {
+                return Boolean(this.message_pawn(id)?.Edited()?.val());
+            }
+            read_tally(reads, mates, moment) {
+                return mates.filter(lord => (reads[lord] ?? 0) >= moment).length;
+            }
+            message_checks(id) {
+                if (!this.message_out(id))
+                    return '';
+                if (this.saved())
+                    return '';
+                const dialog = this.dialog();
+                const moment = this.message_moment(id);
+                if (this.group()) {
+                    const mates = $bog_gram_soft(() => this.Talk().mates(dialog), []);
+                    if (!mates.length)
+                        return '';
+                    const reads = {};
+                    for (const lord of mates)
+                        reads[lord] = this.Talk().read_moment_of(dialog, lord);
+                    return 'Прочитали ' + this.read_tally(reads, mates, moment) + ' из ' + mates.length;
+                }
+                const peer = this.Talk().peer(dialog);
+                if (!peer)
+                    return '✓';
+                return this.Talk().read_moment_of(dialog, peer) >= moment ? '✓✓' : '✓';
+            }
+            message_author(id) {
+                if (this.message_out(id))
+                    return '';
+                if (!this.group())
+                    return '';
+                const lord = this.message_lord(id);
+                return lord ? this.People().label(lord) : '';
+            }
+            message_author_tint(id) {
+                const lord = this.message_lord(id);
+                return lord ? $bog_gram_lord.tint(lord) : 0;
+            }
+            message_menu_is(id) {
+                return this.message_menu() === id;
+            }
+            press_timer = null;
+            press_row = '';
+            press_held = false;
+            tap_row = '';
+            tap_at = 0;
+            press_stop() {
+                this.press_timer?.destructor();
+                this.press_timer = null;
+            }
+            message_press(id, next) {
+                this.press_stop();
+                this.press_row = id;
+                this.press_held = false;
+                if (!this.message_out(id))
+                    return null;
+                this.press_timer = new this.$.$mol_after_timeout(press_delay, () => this.message_hold(id));
+                return null;
+            }
+            message_hold(id) {
+                this.press_timer = null;
+                this.press_held = true;
+                this.message_menu(id);
+                return null;
+            }
+            message_release(id, next) {
+                const held = this.press_held && this.press_row === id;
+                this.press_stop();
+                this.press_held = false;
+                if (held)
+                    return null;
+                if (this.message_menu() === id)
+                    this.message_menu('');
+                if (next?.type === 'pointerup' && this.message_double_tap(id, Date.now()))
+                    this.message_reply(id);
+                return null;
+            }
+            message_double_tap(id, now) {
+                const double = this.tap_row === id && now - this.tap_at < double_tap_delay;
+                this.tap_row = double ? '' : id;
+                this.tap_at = double ? 0 : now;
+                return double;
+            }
+            message_context(id, next) {
+                if (!this.message_out(id))
+                    return null;
+                next?.preventDefault();
+                this.press_stop();
+                this.press_held = true;
+                this.message_menu(id);
+                return null;
+            }
+            edit_mode() {
+                return Boolean(this.edit_id());
+            }
+            reply_mode() {
+                return Boolean(this.reply_id()) && !this.edit_mode();
+            }
+            Edit_banner() {
+                return this.edit_mode() ? super.Edit_banner() : null;
+            }
+            Reply_banner() {
+                return this.reply_mode() ? super.Reply_banner() : null;
+            }
+            field_focus() {
+                if (!this.$.$mol_media.match('(pointer: fine)'))
+                    return false;
+                this.Message_field().bring();
+                return true;
+            }
+            message_reply(id) {
+                this.message_menu('');
+                if (this.edit_id()) {
+                    this.edit_id('');
+                    this.message_text('');
+                }
+                this.reply_id(id);
+                this.Message_field().bring();
+                return null;
+            }
+            reply_cancel(next) {
+                this.reply_id('');
+                return null;
+            }
+            quote_author(id) {
+                const lord = this.message_lord(id);
+                if (!lord)
+                    return '';
+                if (lord === this.my_lord())
+                    return 'Вы';
+                return this.People().label(lord);
+            }
+            quote_text(id) {
+                const pawn = this.message_pawn(id);
+                if (!pawn)
+                    return '';
+                const text = String(pawn.Text()?.val() ?? '').replace(/\s+/g, ' ').trim();
+                if (text)
+                    return text;
+                if (pawn.Image()?.val())
+                    return 'Фото';
+                if (pawn.Voice()?.val())
+                    return 'Голосовое сообщение';
+                return '';
+            }
+            reply_title() {
+                return 'Ответ ' + this.quote_author(this.reply_id());
+            }
+            reply_text() {
+                return this.quote_text(this.reply_id());
+            }
+            message_quote_id(id) {
+                const target = String(this.message_pawn(id)?.Reply()?.val() ?? '');
+                if (!target)
+                    return '';
+                return this.message_pawn(target) ? target : '';
+            }
+            message_quote_shown(id) {
+                return Boolean(this.message_quote_id(id));
+            }
+            message_quote_author(id) {
+                return this.quote_author(this.message_quote_id(id));
+            }
+            message_quote_text(id) {
+                return this.quote_text(this.message_quote_id(id));
+            }
+            message_quote_jump(id, next) {
+                const target = this.message_quote_id(id);
+                if (target)
+                    this.reveal(this.Bubble(target), 'center');
+                return null;
+            }
+            message_edit(id, next) {
+                this.message_menu('');
+                this.reply_id('');
+                this.edit_id(id);
+                this.message_text(this.message_body(id));
+                return null;
+            }
+            edit_cancel(next) {
+                this.edit_id('');
+                this.message_text('');
+                return null;
+            }
+            message_delete(id, next) {
+                this.message_menu('');
+                const pawn = this.message_pawn(id);
+                if (!pawn)
+                    return null;
+                pawn.Deleted('auto')?.val(Date.now());
+                if (this.edit_id() === id) {
+                    this.edit_id('');
+                    this.message_text('');
+                }
+                return null;
+            }
+            message_send(next) {
+                this.Alerts().offer();
+                this.message_menu('');
+                const text = this.message_text().trim();
+                const editing = this.edit_id();
+                if (editing) {
+                    if (!text)
+                        return null;
+                    const pawn = this.message_pawn(editing);
+                    if (pawn) {
+                        pawn.Text('auto')?.val(text);
+                        pawn.Edited('auto')?.val(Date.now());
+                    }
+                    this.edit_id('');
+                    this.message_text('');
+                    return null;
+                }
+                if (!text)
+                    return null;
+                const session = this.Talk().session(this.dialog());
+                if (!session)
+                    return null;
+                const message = session.Messages('auto').make(null);
+                message.Text('auto')?.val(text);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                const reply = this.reply_id();
+                if (reply)
+                    message.Reply('auto')?.val(reply);
+                this.reply_id('');
+                this.message_text('');
+                return null;
+            }
+            message_shot(id) {
+                return Boolean(this.message_pawn(id)?.Image()?.val());
+            }
+            message_shot_size(id) {
+                const pawn = this.message_pawn(id);
+                const width = Number(pawn?.Image_width()?.val() ?? 0);
+                const height = Number(pawn?.Image_height()?.val() ?? 0);
+                if (!width || !height)
+                    return { width: 1, height: 1 };
+                return { width, height };
+            }
+            message_shot_ratio(id) {
+                const size = this.message_shot_size(id);
+                return size.width + ' / ' + size.height;
+            }
+            message_shot_width(id) {
+                const size = this.message_shot_size(id);
+                const side = Math.max(size.width, size.height);
+                const limit = Math.min(shot_side, side / rem_px);
+                return (limit * size.width / side).toFixed(2) + 'rem';
+            }
+            file_uri(file) {
+                if (!file)
+                    return '';
+                if (!file.buffer().byteLength)
+                    return '';
+                return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
+            }
+            message_shot_uri(id) {
+                return $bog_gram_soft(() => this.file_uri(this.message_pawn(id)?.Image()?.remote()), '');
+            }
+            zoom_uri() {
+                const id = this.zoom_id();
+                if (!id)
+                    return '';
+                return this.message_shot_uri(id);
+            }
+            message_zoom(id, next) {
+                if (this.message_menu() === id)
+                    return null;
+                if (!this.message_shot_uri(id))
+                    return null;
+                this.zoom_id(id);
+                return null;
+            }
+            zoom_close(next) {
+                this.zoom_id('');
+                return null;
+            }
+            sub() {
+                if (!this.zoom_uri())
+                    return super.sub();
+                return [...super.sub(), this.Zoom()];
+            }
+            image_files(next) {
+                const file = (next ?? []).find(item => this.$.$bog_gram_shrink.image_is(item));
+                if (file)
+                    this.image_start(file);
+                return next ?? null;
+            }
+            image_paste(next) {
+                const event = next;
+                const items = event?.clipboardData?.items;
+                if (!items)
+                    return null;
+                for (let i = 0; i < items.length; ++i) {
+                    const file = items[i].getAsFile();
+                    if (!file)
+                        continue;
+                    if (!this.$.$bog_gram_shrink.image_is(file))
+                        continue;
+                    event?.preventDefault();
+                    this.image_start(file);
+                    break;
+                }
+                return null;
+            }
+            image_over(next) {
+                next?.preventDefault();
+                return null;
+            }
+            image_drop(next) {
+                const event = next;
+                event?.preventDefault();
+                const files = event?.dataTransfer?.files;
+                if (!files)
+                    return null;
+                const file = Array.from(files).find(item => this.$.$bog_gram_shrink.image_is(item));
+                if (file)
+                    this.image_start(file);
+                return null;
+            }
+            image_start(file) {
+                if (this.edit_id()) {
+                    this.edit_id('');
+                    this.message_text('');
+                }
+                $mol_wire_async(this).image_send(file);
+            }
+            passes() {
+                const mates = this.saved() ? [] : this.Talk().mates(this.dialog());
+                const passes = this.People().passes_of(mates);
+                return passes.length < mates.length ? null : passes;
+            }
+            land_closed(bytes, type, passes) {
+                const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+                const store = land.Data($giper_baza_file);
+                store.buffer(bytes);
+                store.type(type);
+                for (const pass of passes)
+                    land.give(pass, $giper_baza_rank_read);
+                land.sync();
+                return store;
+            }
+            image_send(file) {
+                const session = this.Talk().session(this.dialog());
+                if (!session)
+                    return '';
+                const passes = this.passes();
+                if (!passes)
+                    return '';
+                const shot = this.$.$bog_gram_shrink.shrink(file);
+                const store = this.land_closed(shot.bytes, shot.type, passes);
+                const text = this.message_text().trim();
+                const message = session.Messages('auto').make(null);
+                message.Image('auto').remote(store);
+                message.Image_width('auto')?.val(shot.width);
+                message.Image_height('auto')?.val(shot.height);
+                if (text)
+                    message.Text('auto')?.val(text);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.message_text('');
+                return message.link().str;
+            }
+            voice_ready() {
+                return this.$.$bog_gram_voice.supported();
+            }
+            voice_live = null;
+            voice_on() {
+                return Boolean(this.voice_start());
+            }
+            voice_clock() {
+                const start = this.voice_start();
+                if (!start)
+                    return '';
+                const now = this.$.$mol_state_time.now(clock_tick);
+                return this.$.$bog_gram_voice.stamp((now - start) / 1000);
+            }
+            Voice_note() {
+                return this.voice_hint() ? super.Voice_note() : null;
+            }
+            send_is() {
+                if (this.edit_mode())
+                    return true;
+                if (!this.voice_ready())
+                    return true;
+                return Boolean(this.message_text().trim());
+            }
+            Send() {
+                return this.send_is() ? super.Send() : null;
+            }
+            Voice() {
+                return this.send_is() ? null : super.Voice();
+            }
+            send_tools() {
+                if (this.voice_on())
+                    return [this.Record_state(), this.Voice_cancel(), this.Voice()];
+                return [this.Attach(), this.Message_field(), this.Send(), this.Voice()];
+            }
+            voice_press(next) {
+                if (this.voice_live)
+                    return null;
+                if (!this.voice_ready())
+                    return null;
+                const take = this.$.$bog_gram_voice.make({
+                    filled: () => this.voice_finish(),
+                });
+                this.voice_live = take;
+                this.voice_hint('');
+                this.voice_start(Date.now());
+                $mol_wire_async(this).voice_open(take);
+                return null;
+            }
+            voice_open(take) {
+                try {
+                    $mol_wire_sync(take).open();
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    $mol_fail_log(error);
+                    if (this.voice_live === take) {
+                        this.voice_live = null;
+                        this.voice_start(0);
+                    }
+                    this.voice_hint(voice_denied);
+                    return false;
+                }
+                return true;
+            }
+            cancel_rect() {
+                if (!this.voice_on())
+                    return null;
+                return this.Voice_cancel().view_rect();
+            }
+            voice_on_cancel(next) {
+                const event = next;
+                if (event?.clientX === undefined)
+                    return false;
+                const rect = this.cancel_rect();
+                if (!rect)
+                    return false;
+                if (event.clientX < rect.left || event.clientX > rect.right)
+                    return false;
+                if (event.clientY < rect.top || event.clientY > rect.bottom)
+                    return false;
+                return true;
+            }
+            voice_release(next) {
+                if (!this.voice_live)
+                    return null;
+                if (this.voice_on_cancel(next))
+                    return this.voice_cancel();
+                return this.voice_finish();
+            }
+            voice_finish() {
+                const take = this.voice_live;
+                if (!take)
+                    return null;
+                this.voice_live = null;
+                this.voice_start(0);
+                take.stop();
+                $mol_wire_async(this).voice_send(take);
+                return null;
+            }
+            voice_cancel(next) {
+                const take = this.voice_live;
+                this.voice_live = null;
+                this.voice_start(0);
+                take?.drop();
+                return null;
+            }
+            voice_send(take) {
+                const session = this.Talk().session(this.dialog());
+                if (!session)
+                    return '';
+                const passes = this.passes();
+                if (!passes)
+                    return '';
+                const sound = $mol_wire_sync(take).take();
+                if (!sound) {
+                    this.voice_hint(voice_short);
+                    return '';
+                }
+                const store = this.land_closed(sound.bytes, sound.type, passes);
+                const message = session.Messages('auto').make(null);
+                message.Voice('auto').remote(store);
+                message.Voice_span('auto')?.val(sound.span);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.voice_hint('');
+                return message.link().str;
+            }
+            message_sound(id) {
+                return Boolean(this.message_pawn(id)?.Voice()?.val());
+            }
+            message_sound_span(id) {
+                return Number(this.message_pawn(id)?.Voice_span()?.val() ?? 0);
+            }
+            message_sound_uri(id) {
+                return $bog_gram_soft(() => this.file_uri(this.message_pawn(id)?.Voice()?.remote()), '');
+            }
+            message_sound_playing(id) {
+                return this.voice_playing() === id;
+            }
+            bubble(id) {
+                return this.Bubble(id);
+            }
+            message_sound_toggle(id, next) {
+                const now = this.voice_playing();
+                if (now)
+                    this.bubble(now).sound_stop();
+                if (now === id || !this.message_sound_uri(id)) {
+                    this.voice_playing('');
+                    return null;
+                }
+                this.voice_playing(id);
+                this.bubble(id).sound_start();
+                return null;
+            }
+            message_sound_ended(id, next) {
+                if (this.voice_playing() === id)
+                    this.voice_playing('');
+                return null;
+            }
+            unread_first(list, my, seen) {
+                return list.findIndex(item => item.author !== my && item.moment > seen);
+            }
+            focus() {
+                const prev = $mol_wire_probe(() => this.focus());
+                if (typeof prev === 'string')
+                    return prev;
+                const messages = this.messages();
+                if (!messages.length)
+                    return null;
+                if (this.saved())
+                    return '';
+                const my = this.my_lord();
+                const list = messages.map(message => ({
+                    moment: Number(message.Moment()?.val() ?? 0),
+                    author: String(message.Author()?.val() ?? ''),
+                }));
+                const index = this.unread_first(list, my, this.Talk().read_moment_of(this.dialog(), my));
+                return index < 0 ? '' : messages[index].link().str;
+            }
+            read_sync() {
+                if (this.saved())
+                    return 0;
+                const id = this.dialog();
+                const my = this.my_lord();
+                let last = 0;
+                for (const message of this.messages()) {
+                    if (String(message.Author()?.val() ?? '') === my)
+                        continue;
+                    const moment = Number(message.Moment()?.val() ?? 0);
+                    if (moment > last)
+                        last = moment;
+                }
+                if (!last)
+                    return 0;
+                const seen = this.Talk().read_moment_of(id, my);
+                if (seen >= last)
+                    return seen;
+                this.Talk().session(id)?.Reads('auto')?.key(my, 'auto')?.Moment('auto')?.val(last);
+                return last;
+            }
+            follow() {
+                const rows = this.rows();
+                if (!rows.length)
+                    return;
+                const last = rows[rows.length - 1];
+                if (!this.rows_seen()) {
+                    const focus = this.focus();
+                    const row = focus ? this.Bubble(focus) : last;
+                    this.rows_seen(rows.length);
+                    this.reveal(row, focus ? 'start' : 'end');
+                    return;
+                }
+                if (rows.length > this.rows_seen())
+                    this.reveal(last, 'end');
+                this.rows_seen(rows.length);
+            }
+            reveal(row, align) {
+                this.stick_end(false);
+                new this.$.$mol_after_tick(() => {
+                    $mol_wire_async(this).ensure_visible(row, align)
+                        .then(() => this.stick_end(align === 'end'))
+                        .catch($mol_fail_log);
+                });
+            }
+            stick_watch() {
+                const top = this.Body().scroll_top();
+                const last = $mol_wire_probe(() => this.stick_watch()) ?? top;
+                if (top < last - 4)
+                    this.stick_end(false);
+                return top;
+            }
+            content_height() {
+                return this.Body_content().view_rect()?.height ?? 0;
+            }
+            stick_hold() {
+                const height = this.content_height();
+                if (!height)
+                    return 0;
+                if (!this.stick_end())
+                    return 0;
+                return this.Body().scroll_top(height);
+            }
+            auto() {
+                super.auto();
+                $bog_gram_soft(() => this.read_sync(), 0);
+                $bog_gram_soft(() => this.field_focus(), false);
+                $bog_gram_soft(() => this.stick_watch(), 0);
+                $bog_gram_soft(() => this.stick_hold(), 0);
+                $bog_gram_soft(() => this.cancel_rect(), null);
+                $bog_gram_soft(() => this.follow(), undefined);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "peer", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "note", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "messages", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_body", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_out", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_time", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_edited", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_checks", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_author", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_author_tint", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_menu_is", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_press", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_hold", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_release", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_context", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "field_focus", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_reply", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "reply_cancel", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_quote_jump", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_edit", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "edit_cancel", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_delete", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_send", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shot", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shot_size", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shot_ratio", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shot_width", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shot_uri", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_zoom", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "zoom_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "image_files", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "image_paste", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "image_over", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "image_drop", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "voice_clock", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "send_tools", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "voice_press", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "cancel_rect", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "voice_release", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "voice_finish", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "voice_cancel", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_sound", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_sound_span", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_sound_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_sound_playing", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_sound_toggle", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_sound_ended", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "focus", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "read_sync", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "stick_watch", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "content_height", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "stick_hold", null);
+        $$.$bog_gram_chat = $bog_gram_chat;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const round = {
+            flex: {
+                shrink: 0,
+            },
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            minWidth: '2.5rem',
+            minHeight: '2.5rem',
+            padding: 0,
+            borderRadius: '50%',
+        };
+        const square = {
+            flex: {
+                shrink: 0,
+            },
+            justify: {
+                content: 'center',
+            },
+            align: {
+                items: 'center',
+            },
+            minWidth: '2.5rem',
+            minHeight: '2.5rem',
+            padding: '0.25rem',
+            borderRadius: '0.5rem',
+        };
+        const banner = {
+            align: {
+                items: 'center',
+            },
+            gap: '0.5rem',
+            padding: {
+                top: '0.25rem',
+                bottom: '0.25rem',
+                left: '0.5rem',
+                right: '0.5rem',
+            },
+            background: {
+                color: $mol_theme.hover,
+            },
+            border: {
+                left: {
+                    width: '2px',
+                    style: 'solid',
+                    color: $mol_theme.control,
+                },
+            },
+            borderRadius: '0.25rem',
+        };
+        const line = {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        };
+        const finger = {
+            minWidth: '2.75rem',
+            minHeight: '2.75rem',
+        };
+        $mol_style_define($bog_gram_chat, {
+            width: '30rem',
+            flex: {
+                grow: 1,
+            },
+            background: {
+                color: $mol_theme.back,
+            },
+            Head: {
+                align: {
+                    items: 'center',
+                },
+            },
+            Title: {
+                minWidth: 0,
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Note_field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Title_text: {
+                ...line,
+                display: 'block',
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxWidth: '100%',
+            },
+            Back: {
+                ...square,
+                display: 'none',
+            },
+            Back_icon: {
+                width: '1.5rem',
+                height: '1.5rem',
+            },
+            Members: square,
+            Members_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
+            },
+            Body: {
+                background: {
+                    color: $mol_theme.back,
+                },
+            },
+            Body_content: {
+                minWidth: 0,
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.75rem',
+                    right: '0.75rem',
+                },
+            },
+            Messages: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                },
+                gap: '0.25rem',
+                minWidth: 0,
+                alignSelf: 'stretch',
+            },
+            Day_row: {
+                justify: {
+                    content: 'center',
+                },
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Day_chip: {
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                color: $mol_theme.shade,
+                font: {
+                    size: '0.75rem',
+                },
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '1rem',
+            },
+            Foot: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: $mol_style_func.calc('0.5rem + env(safe-area-inset-bottom)'),
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+            },
+            Edit_banner: banner,
+            Reply_banner: banner,
+            Reply_icon: {
+                color: $mol_theme.control,
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Reply_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                },
+            },
+            Reply_title: {
+                ...line,
+                color: $mol_theme.control,
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Reply_text: {
+                ...line,
+                color: $mol_theme.shade,
+            },
+            Edit_banner_text: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Send_row: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Message_field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                borderRadius: '1rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.875rem',
+                    right: '0.875rem',
+                },
+            },
+            Send: {
+                ...round,
+                background: {
+                    color: $mol_theme.control,
+                },
+                color: '#ffffff',
+            },
+            Attach: {
+                ...round,
+                color: $mol_theme.shade,
+                overflow: 'hidden',
+            },
+            Attach_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
+            },
+            Voice: {
+                ...round,
+                color: $mol_theme.shade,
+            },
+            Voice_icon: {
+                width: '1.25rem',
+                height: '1.25rem',
+            },
+            Record_state: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.5rem',
+                    bottom: '0.5rem',
+                    left: '0.875rem',
+                    right: '0.875rem',
+                },
+            },
+            Record_dot: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '0.625rem',
+                height: '0.625rem',
+                borderRadius: '50%',
+                background: {
+                    color: $bog_gram_tone.alert,
+                },
+            },
+            Record_time: {
+                flex: {
+                    shrink: 0,
+                },
+                font: {
+                    family: 'monospace',
+                },
+                whiteSpace: 'nowrap',
+            },
+            Voice_cancel: {
+                flex: {
+                    shrink: 0,
+                },
+                align: {
+                    items: 'center',
+                },
+                gap: '0.25rem',
+                minHeight: '2.5rem',
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.625rem',
+                    right: '0.625rem',
+                },
+                borderRadius: '1rem',
+                color: $bog_gram_tone.alert,
+            },
+            Voice_cancel_icon: {
+                flex: {
+                    shrink: 0,
+                },
+                width: '1rem',
+                height: '1rem',
+            },
+            Voice_cancel_text: {
+                whiteSpace: 'nowrap',
+            },
+            Voice_note: {
+                font: {
+                    size: '0.8rem',
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: 0,
+                    bottom: 0,
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+            },
+            '@media': {
+                '(max-width: 54rem)': {
+                    Back: {
+                        display: 'flex',
+                    },
+                    Close: {
+                        display: 'none',
+                    },
+                },
+                '(max-width: 30rem)': {
+                    Members: finger,
+                    Attach: finger,
+                    Voice: finger,
+                    Voice_cancel: {
+                        minHeight: '2.75rem',
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram) = class $bog_gram extends ($.$mol_book2) {
+		lights(){
+			return "system";
+		}
+		Skin(){
+			const obj = new this.$.$bog_builderui_skin();
+			(obj.lights) = () => ((this.lights()));
+			(obj.base) = () => ("zinc");
+			(obj.font_head) = () => ("eb-garamond");
+			return obj;
+		}
+		Theme(){
+			const obj = new this.$.$bog_theme_auto();
+			return obj;
+		}
+		my_lord(){
+			return (this.Account().my_lord());
+		}
+		my_pass(){
+			return (this.Account().my_pass());
+		}
+		user_name(next){
+			return (this.Account().user_name(next));
+		}
+		dialogs_store(){
+			return (this.Account().dialogs_store());
+		}
+		monitor_store(){
+			return (this.Account().monitor_store());
+		}
+		monitor_link(){
+			return (this.Account().monitor_link());
+		}
+		account_ready(){
+			return (this.Account().ready());
+		}
+		registry_ids(){
+			return (this.Registry().ids());
+		}
+		registry_active(){
+			return (this.Registry().active());
+		}
+		registry_title(id){
+			return (this.Registry().title(id));
+		}
+		registry_status(id){
+			return (this.Registry().status(id));
+		}
+		registry_joined(id){
+			return (this.Registry().joined(id));
+		}
+		registry_active_is(id){
+			return (this.Registry().active_is(id));
+		}
+		registry_uri(){
+			return (this.Registry().uri());
+		}
+		registry_name(next){
+			return (this.Registry().name(next));
+		}
+		registry_make(next){
+			return (this.Registry().make(next));
+		}
+		registry_open(id, next){
+			return (this.Registry().open(id, next));
+		}
+		registry_join(id, next){
+			return (this.Registry().join(id, next));
+		}
+		registry_join_active(next){
+			return (this.Registry().join_active(next));
+		}
+		registry_forget(id, next){
+			return (this.Registry().forget(id, next));
+		}
+		registry_join_needed(){
+			return (this.Registry().join_needed());
+		}
+		user_sources(){
+			return (this.Registry().sources());
+		}
+		user_lords(){
+			return (this.Registry().people());
+		}
+		user_source(id){
+			return (this.Registry().source_title(id));
+		}
+		registry_remember(){
+			return (this.Registry().remember());
+		}
+		registry_keys_fill(){
+			return (this.Registry().keys_fill());
+		}
+		peer_name(id){
+			return (this.People().name(id));
+		}
+		peer_note(id){
+			return (this.People().note(id));
+		}
+		peer_label(id){
+			return (this.People().label(id));
+		}
+		peer_known(id){
+			return (this.People().known(id));
+		}
+		peer_accept(id){
+			return (this.People().accept(id));
+		}
+		peer_pass_of(id){
+			return (this.People().pass_of(id));
+		}
+		saved_title(){
+			return (this.Talk().saved_title());
+		}
+		saved_id(){
+			return (this.Talk().saved_id());
+		}
+		saved_links(){
+			return (this.Talk().saved_links());
+		}
+		saved_is(id){
+			return (this.Talk().saved_is(id));
+		}
+		saved_land(){
+			return (this.Talk().saved_land());
+		}
+		dialog_store(id){
+			return (this.Talk().store(id));
+		}
+		dialog_lords(id){
+			return (this.Talk().lords(id));
+		}
+		dialog_mates(id){
+			return (this.Talk().mates(id));
+		}
+		dialog_peer(id){
+			return (this.Talk().peer(id));
+		}
+		group_title(id){
+			return (this.Talk().group_title(id));
+		}
+		group_is(id){
+			return (this.Talk().group_is(id));
+		}
+		group_name_auto(id){
+			return (this.Talk().group_name_auto(id));
+		}
+		admin_lords(id){
+			return (this.Talk().admins(id));
+		}
+		admin_me(id){
+			return (this.Talk().admin_me(id));
+		}
+		dialog_owner(id){
+			return (this.Talk().owner(id));
+		}
+		dialog_own(id){
+			return (this.Talk().own(id));
+		}
+		dialog_title(id){
+			return (this.Talk().title(id));
+		}
+		dialog_avatar_id(id){
+			return (this.Talk().avatar_id(id));
+		}
+		dialog_tint(id){
+			return (this.Talk().tint(id));
+		}
+		dialog_moment(id){
+			return (this.Talk().moment(id));
+		}
+		dialog_alive(id){
+			return (this.Talk().alive(id));
+		}
+		session_links_of(id){
+			return (this.Talk().links_of(id));
+		}
+		session_land_by(id){
+			return (this.Talk().land(id));
+		}
+		session_lands_of(id){
+			return (this.Talk().lands_of(id));
+		}
+		session_land_of(id){
+			return (this.Talk().land_of(id));
+		}
+		session_store_last(id){
+			return (this.Talk().session(id));
+		}
+		messages_of(id){
+			return (this.Talk().messages_of(id));
+		}
+		messages_alive_of(id){
+			return (this.Talk().messages_alive_of(id));
+		}
+		unread_total(id){
+			return (this.Talk().unread(id));
+		}
+		dialog_preview(id){
+			return (this.Talk().preview(id));
+		}
+		dialog_time(id){
+			return (this.Talk().time(id));
+		}
+		mine_wrote(id){
+			return (this.Talk().mine_wrote(id));
+		}
+		dialog_ids(){
+			return (this.Roster().ids());
+		}
+		hidden_ids(){
+			return (this.Roster().hidden());
+		}
+		dialog_kind(id){
+			return (this.Roster().kind(id));
+		}
+		request_ids(){
+			return (this.Roster().requests());
+		}
+		archive_ids(){
+			return (this.Roster().archived());
+		}
+		archive_is(id){
+			return (this.Roster().archive_is(id));
+		}
+		dialog_visible(){
+			return (this.Roster().visible());
+		}
+		dialog_with(id){
+			return (this.Roster().with(id));
+		}
+		inbox_merge(){
+			return (this.Roster().invites_merge());
+		}
+		monitor_fill(){
+			return (this.Roster().watch_fill());
+		}
+		contact_lords(){
+			return (this.Roster().contact_lords());
+		}
+		contact_source(id){
+			return (this.Roster().contact_source(id));
+		}
+		member_error(next){
+			return (this.Crew().error(next));
+		}
+		member_history(next){
+			return (this.Crew().history(next));
+		}
+		group_name(next){
+			return (this.Crew().draft_name(next));
+		}
+		group_picked(){
+			return (this.Crew().draft_picked());
+		}
+		group_lost(){
+			return (this.Crew().draft_lost());
+		}
+		group_id(next){
+			return (this.Crew().draft_id(next));
+		}
+		group_id_error(){
+			return (this.Crew().draft_error());
+		}
+		group_pick(id, next){
+			return (this.Crew().draft_pick(id, next));
+		}
+		group_chosen_drop(id, next){
+			return (this.Crew().draft_drop(id, next));
+		}
+		group_id_add(next){
+			return (this.Crew().draft_id_add(next));
+		}
+		outbox_flush(){
+			return (this.Lobby().outbox_flush());
+		}
+		denies_merge(){
+			return (this.Lobby().denies_merge());
+		}
+		asks_flush(){
+			return (this.Lobby().asks_flush());
+		}
+		ask_plate_text(){
+			return (this.Lobby().plate());
+		}
+		ask_lord(id){
+			return (this.Lobby().lord_of(id));
+		}
+		invite_link(){
+			return (this.Invite().link());
+		}
+		invite_plate_text(){
+			return (this.Invite().plate());
+		}
+		dialog_pending(next){
+			return (this.Invite().pending(next));
+		}
+		invite_drop(next){
+			return (this.Invite().drop(next));
+		}
+		pending_timer(){
+			return (this.Invite().timer());
+		}
+		notify_supported(){
+			return (this.Alerts().supported());
+		}
+		notify_status(){
+			return (this.Alerts().status());
+		}
+		notify_label(){
+			return (this.Alerts().label());
+		}
+		notify_toggle(next){
+			return (this.Alerts().toggle(next));
+		}
+		notify_on(next){
+			return (this.Alerts().on(next));
+		}
+		notify_auto(){
+			return (this.Alerts().auto());
+		}
+		Intro_title(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Выберите диалог");
+			return obj;
+		}
+		Intro_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Или начните новый: кнопка в шапке списка");
+			return obj;
+		}
+		Intro_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Intro_title()), (this.Intro_hint())]);
+			return obj;
+		}
+		Intro(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Intro_plate())]);
+			return obj;
+		}
+		compose_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		music_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		settings_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		archive_fresh(){
+			return [];
+		}
+		unread_count(id){
+			return 0;
+		}
+		dialog_current_is(id){
+			return false;
+		}
+		request_is(id){
+			return false;
+		}
+		dialog_select(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dialog_archive(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dialog_unarchive(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dialog_delete(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		request_accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		saved_time(){
+			return "";
+		}
+		saved_preview(){
+			return "";
+		}
+		saved_current_is(){
+			return false;
+		}
+		saved_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Menu(){
+			const obj = new this.$.$bog_gram_menu();
+			(obj.Theme) = () => ((this.Theme()));
+			(obj.compose) = (next) => ((this.compose_open(next)));
+			(obj.group) = (next) => ((this.group_open(next)));
+			(obj.music) = (next) => ((this.music_open(next)));
+			(obj.settings) = (next) => ((this.settings_open(next)));
+			(obj.invite_plate_text) = () => ((this.invite_plate_text()));
+			(obj.invite_drop) = (next) => ((this.invite_drop(next)));
+			(obj.ask_plate_text) = () => ((this.ask_plate_text()));
+			(obj.visible) = () => ((this.dialog_visible()));
+			(obj.archived) = () => ((this.archive_fresh()));
+			(obj.requests) = () => ((this.request_ids()));
+			(obj.dialog_title) = (id) => ((this.dialog_title(id)));
+			(obj.dialog_time) = (id) => ((this.dialog_time(id)));
+			(obj.dialog_preview) = (id) => ((this.dialog_preview(id)));
+			(obj.dialog_avatar_id) = (id) => ((this.dialog_avatar_id(id)));
+			(obj.dialog_tint) = (id) => ((this.dialog_tint(id)));
+			(obj.unread) = (id) => ((this.unread_count(id)));
+			(obj.current_is) = (id) => ((this.dialog_current_is(id)));
+			(obj.request_is) = (id) => ((this.request_is(id)));
+			(obj.archive_is) = (id) => ((this.archive_is(id)));
+			(obj.select) = (id, next) => ((this.dialog_select(id, next)));
+			(obj.archive) = (id, next) => ((this.dialog_archive(id, next)));
+			(obj.unarchive) = (id, next) => ((this.dialog_unarchive(id, next)));
+			(obj.drop) = (id, next) => ((this.dialog_delete(id, next)));
+			(obj.accept) = (id, next) => ((this.request_accept(id, next)));
+			(obj.saved_title) = () => ((this.saved_title()));
+			(obj.saved_time) = () => ((this.saved_time()));
+			(obj.saved_preview) = () => ((this.saved_preview()));
+			(obj.saved_current) = () => ((this.saved_current_is()));
+			(obj.saved_open) = (next) => ((this.saved_open(next)));
+			return obj;
+		}
+		music_hidden(){
+			return false;
+		}
+		music_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Music_page(){
+			const obj = new this.$.$bog_gram_music();
+			(obj.hidden) = () => ((this.music_hidden()));
+			(obj.close) = (next) => ((this.music_close(next)));
+			return obj;
+		}
+		settings_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Settings_page(){
+			const obj = new this.$.$bog_gram_settings();
+			(obj.close) = (next) => ((this.settings_close(next)));
+			(obj.user_name) = (next) => ((this.user_name(next)));
+			(obj.my_lord) = () => ((this.my_lord()));
+			(obj.invite_link) = () => ((this.invite_link()));
+			(obj.notify_status) = () => ((this.notify_status()));
+			(obj.notify_label) = () => ((this.notify_label()));
+			(obj.notify_supported) = () => ((this.notify_supported()));
+			(obj.notify_toggle) = (next) => ((this.notify_toggle(next)));
+			(obj.notify_on) = (next) => ((this.notify_on(next)));
+			(obj.registry_ids) = () => ((this.registry_ids()));
+			(obj.registry_active) = () => ((this.registry_active()));
+			(obj.registry_uri) = () => ((this.registry_uri()));
+			(obj.registry_name) = (next) => ((this.registry_name(next)));
+			(obj.registry_make) = (next) => ((this.registry_make(next)));
+			(obj.registry_title) = (id) => ((this.registry_title(id)));
+			(obj.registry_status) = (id) => ((this.registry_status(id)));
+			(obj.registry_joined) = (id) => ((this.registry_joined(id)));
+			(obj.registry_active_is) = (id) => ((this.registry_active_is(id)));
+			(obj.registry_open) = (id, next) => ((this.registry_open(id, next)));
+			(obj.registry_join) = (id, next) => ((this.registry_join(id, next)));
+			(obj.registry_forget) = (id, next) => ((this.registry_forget(id, next)));
+			return obj;
+		}
+		compose_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dialog_open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Compose_page(){
+			const obj = new this.$.$bog_gram_compose();
+			(obj.close) = (next) => ((this.compose_close(next)));
+			(obj.open) = (id, next) => ((this.dialog_open(id, next)));
+			(obj.users) = () => ((this.user_lords()));
+			(obj.user_title) = (id) => ((this.peer_label(id)));
+			(obj.user_source) = (id) => ((this.user_source(id)));
+			(obj.registry_ids) = () => ((this.registry_ids()));
+			(obj.join_needed) = () => ((this.registry_join_needed()));
+			(obj.join) = (next) => ((this.registry_join_active(next)));
+			return obj;
+		}
+		group_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_make(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Group_page(){
+			const obj = new this.$.$bog_gram_group();
+			(obj.close) = (next) => ((this.group_close(next)));
+			(obj.make) = (next) => ((this.group_make(next)));
+			(obj.name) = (next) => ((this.group_name(next)));
+			(obj.picked) = () => ((this.group_picked()));
+			(obj.lost) = () => ((this.group_lost()));
+			(obj.id) = (next) => ((this.group_id(next)));
+			(obj.id_error) = () => ((this.group_id_error()));
+			(obj.pick) = (id, next) => ((this.group_pick(id, next)));
+			(obj.drop) = (id, next) => ((this.group_chosen_drop(id, next)));
+			(obj.id_add) = (next) => ((this.group_id_add(next)));
+			(obj.label) = (id) => ((this.peer_label(id)));
+			(obj.contact_lords) = () => ((this.contact_lords()));
+			(obj.contact_source) = (id) => ((this.contact_source(id)));
+			return obj;
+		}
+		members_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		member_lords(){
+			return [];
+		}
+		member_status(id){
+			return "";
+		}
+		members_admin(){
+			return false;
+		}
+		members_owner(){
+			return false;
+		}
+		member_admin(id){
+			return false;
+		}
+		join_link(){
+			return "";
+		}
+		members_asks(){
+			return [];
+		}
+		ask_accept(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ask_reject(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		member_candidates(){
+			return [];
+		}
+		member_add(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		member_drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		member_raise(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		group_leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Members_page(){
+			const obj = new this.$.$bog_gram_members();
+			(obj.close) = (next) => ((this.members_close(next)));
+			(obj.me) = () => ((this.my_lord()));
+			(obj.lords) = () => ((this.member_lords()));
+			(obj.label) = (id) => ((this.peer_label(id)));
+			(obj.status) = (id) => ((this.member_status(id)));
+			(obj.admin) = () => ((this.members_admin()));
+			(obj.owner) = () => ((this.members_owner()));
+			(obj.admin_is) = (id) => ((this.member_admin(id)));
+			(obj.error) = (next) => ((this.member_error(next)));
+			(obj.join_link) = () => ((this.join_link()));
+			(obj.asks) = () => ((this.members_asks()));
+			(obj.ask_lord) = (id) => ((this.ask_lord(id)));
+			(obj.accept) = (id, next) => ((this.ask_accept(id, next)));
+			(obj.reject) = (id, next) => ((this.ask_reject(id, next)));
+			(obj.candidates) = () => ((this.member_candidates()));
+			(obj.contact_source) = (id) => ((this.contact_source(id)));
+			(obj.history) = (next) => ((this.member_history(next)));
+			(obj.add) = (id, next) => ((this.member_add(id, next)));
+			(obj.part) = (id, next) => ((this.member_drop(id, next)));
+			(obj.promote) = (id, next) => ((this.member_raise(id, next)));
+			(obj.leave) = (next) => ((this.group_leave(next)));
+			return obj;
+		}
+		chat_dialog(id){
+			return "";
+		}
+		dialog_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		members_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		plugins(){
+			return [(this.Skin()), (this.Theme())];
+		}
+		Account(){
+			const obj = new this.$.$bog_gram_account();
+			return obj;
+		}
+		Registry(){
+			const obj = new this.$.$bog_gram_registry();
+			(obj.Account) = () => ((this.Account()));
+			return obj;
+		}
+		People(){
+			const obj = new this.$.$bog_gram_people();
+			(obj.Account) = () => ((this.Account()));
+			(obj.Registry) = () => ((this.Registry()));
+			return obj;
+		}
+		Talk(){
+			const obj = new this.$.$bog_gram_talk();
+			(obj.Account) = () => ((this.Account()));
+			(obj.People) = () => ((this.People()));
+			return obj;
+		}
+		Roster(){
+			const obj = new this.$.$bog_gram_roster();
+			(obj.Account) = () => ((this.Account()));
+			(obj.People) = () => ((this.People()));
+			(obj.Talk) = () => ((this.Talk()));
+			return obj;
+		}
+		Crew(){
+			const obj = new this.$.$bog_gram_crew();
+			(obj.Account) = () => ((this.Account()));
+			(obj.People) = () => ((this.People()));
+			(obj.Talk) = () => ((this.Talk()));
+			return obj;
+		}
+		Lobby(){
+			const obj = new this.$.$bog_gram_lobby();
+			(obj.Account) = () => ((this.Account()));
+			(obj.People) = () => ((this.People()));
+			(obj.Talk) = () => ((this.Talk()));
+			(obj.Roster) = () => ((this.Roster()));
+			(obj.Crew) = () => ((this.Crew()));
+			return obj;
+		}
+		Invite(){
+			const obj = new this.$.$bog_gram_invite();
+			(obj.Account) = () => ((this.Account()));
+			(obj.People) = () => ((this.People()));
+			(obj.Roster) = () => ((this.Roster()));
+			return obj;
+		}
+		Alerts(){
+			const obj = new this.$.$bog_gram_alerts();
+			(obj.Account) = () => ((this.Account()));
+			return obj;
+		}
+		Placeholder(){
+			return (this.Intro());
+		}
+		pages(){
+			return [
+				(this.Menu()), 
+				(this.Music_page()), 
+				(this.Settings_page()), 
+				(this.Compose_page()), 
+				(this.Group_page()), 
+				(this.Members_page())
+			];
+		}
+		Chat_page(id){
+			const obj = new this.$.$bog_gram_chat();
+			(obj.dialog) = () => ((this.chat_dialog(id)));
+			(obj.my_lord) = () => ((this.my_lord()));
+			(obj.Talk) = () => ((this.Talk()));
+			(obj.People) = () => ((this.People()));
+			(obj.Alerts) = () => ((this.Alerts()));
+			(obj.close) = (next) => ((this.dialog_close(next)));
+			(obj.members) = (next) => ((this.members_open(next)));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram.prototype), "Skin"));
+	($mol_mem(($.$bog_gram.prototype), "Theme"));
+	($mol_mem(($.$bog_gram.prototype), "Intro_title"));
+	($mol_mem(($.$bog_gram.prototype), "Intro_hint"));
+	($mol_mem(($.$bog_gram.prototype), "Intro_plate"));
+	($mol_mem(($.$bog_gram.prototype), "Intro"));
+	($mol_mem(($.$bog_gram.prototype), "compose_open"));
+	($mol_mem(($.$bog_gram.prototype), "group_open"));
+	($mol_mem(($.$bog_gram.prototype), "music_open"));
+	($mol_mem(($.$bog_gram.prototype), "settings_open"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_select"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_archive"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_unarchive"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_delete"));
+	($mol_mem_key(($.$bog_gram.prototype), "request_accept"));
+	($mol_mem(($.$bog_gram.prototype), "saved_open"));
+	($mol_mem(($.$bog_gram.prototype), "Menu"));
+	($mol_mem(($.$bog_gram.prototype), "music_close"));
+	($mol_mem(($.$bog_gram.prototype), "Music_page"));
+	($mol_mem(($.$bog_gram.prototype), "settings_close"));
+	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
+	($mol_mem(($.$bog_gram.prototype), "compose_close"));
+	($mol_mem_key(($.$bog_gram.prototype), "dialog_open"));
+	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
+	($mol_mem(($.$bog_gram.prototype), "group_close"));
+	($mol_mem(($.$bog_gram.prototype), "group_make"));
+	($mol_mem(($.$bog_gram.prototype), "Group_page"));
+	($mol_mem(($.$bog_gram.prototype), "members_close"));
+	($mol_mem_key(($.$bog_gram.prototype), "ask_accept"));
+	($mol_mem_key(($.$bog_gram.prototype), "ask_reject"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_add"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_drop"));
+	($mol_mem_key(($.$bog_gram.prototype), "member_raise"));
+	($mol_mem(($.$bog_gram.prototype), "group_leave"));
+	($mol_mem(($.$bog_gram.prototype), "Members_page"));
+	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
+	($mol_mem(($.$bog_gram.prototype), "members_open"));
+	($mol_mem(($.$bog_gram.prototype), "Account"));
+	($mol_mem(($.$bog_gram.prototype), "Registry"));
+	($mol_mem(($.$bog_gram.prototype), "People"));
+	($mol_mem(($.$bog_gram.prototype), "Talk"));
+	($mol_mem(($.$bog_gram.prototype), "Roster"));
+	($mol_mem(($.$bog_gram.prototype), "Crew"));
+	($mol_mem(($.$bog_gram.prototype), "Lobby"));
+	($mol_mem(($.$bog_gram.prototype), "Invite"));
+	($mol_mem(($.$bog_gram.prototype), "Alerts"));
+	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
+
 
 ;
 "use strict";
@@ -28113,715 +34700,51 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const day_ms = 24 * 60 * 60 * 1000;
-        /** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
-         * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
-         * с перебором подписей — на слабом телефоне это заметные секунды. */
-        const pending_wait = 15000;
-        /** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
-        const notify_key = 'bog_gram_notify';
-        /** Явное «выключить» из настроек. Без отдельной отметки «выключено»
-         * неотличимо от «ещё не включали», и автоподписка возвращала бы то,
-         * что человек только что выключил руками. */
-        const notify_off_key = 'bog_gram_notify_off';
-        /** Разрешение в этом браузере уже спрашивали. Отвергнутый запрос
-         * оставляет разрешение в состоянии «default», так что без отметки мы
-         * лезли бы с ним при каждом открытии диалога. */
-        const notify_asked_key = 'bog_gram_notify_asked';
-        /** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
-        const auth_size = 128;
-        /** Имя файла, в который сохраняется ключ аккаунта. */
-        const auth_file = 'gram-account.key';
-        /** Заголовок избранного: он же в списке, он же в шапке чата. */
-        const saved_name = 'Избранное';
-        /** Сколько держать палец на своём пузыре, чтобы под ним раскрылись
-         * правка и удаление: короче — срабатывает на обычном тапе, длиннее —
-         * ощущается как зависший интерфейс. */
-        const press_delay = 400;
-        /** Два отпускания на одном пузыре чаще этого — двойной тап, ответ. */
-        const double_tap_delay = 350;
-        /** Предел большей стороны кадра в пузыре. Крупнее — и переписка
-         * превращается в ленту плакатов, где текста уже не видно. */
-        const shot_side = 15;
-        /** Пикселей в одном rem: по нему понимаем, не мельче ли сама картинка
-         * отведённой ей коробки — растягивать мелкий кадр незачем. */
-        const rem_px = 16;
-        /** Как часто перерисовывается таймер записи: чаще человек всё равно не
-         * заметит, а реже секунды начинают перескакивать через одну. */
-        const clock_tick = 200;
-        /** Разобранные ключи участников: одной и той же строке должен отвечать
-         * один и тот же объект. Выдача права на шифрованный ленд считает общий
-         * секрет и держит его при самом объекте ключа, а фибра перезапускается с
-         * начала на каждом ожидании — свежий разбор на каждой попытке заводил бы
-         * счёт заново, и попытки не кончились бы никогда. */
-        const pass_parsed = new Map();
-        /** Что показать под полем ввода, когда с записью не сложилось. Ни
-         * модалок, ни системных окон — одна строка на месте. */
-        const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
-        const voice_short = 'Слишком коротко — запись отменена';
         class $bog_gram extends $.$bog_gram {
-            // ===== Текущий пользователь =====
-            user_store() {
-                return this.$.$giper_baza_glob.home().land().Data($bog_gram_user);
-            }
-            my_lord() {
-                return this.$.$giper_baza_auth.current().pass().lord().str;
-            }
-            /** Публичная часть своего ключа строкой. Приватная сюда не попадает:
-             * это ровно то, что можно класть в открытый реестр — по нему мне и
-             * выдадут право читать шифрованный ленд диалога. */
-            my_pass_str() {
-                return this.$.$giper_baza_auth.current().pass().toString();
-            }
-            user_name(next) {
-                if (next !== undefined)
-                    this.user_store().Name('auto')?.val(next);
-                return this.user_store().Name()?.val() ?? '';
-            }
-            // ===== Служебные ленды пользователя (ссылки хранятся в профиле) =====
-            inbox_land() {
-                const home = this.$.$giper_baza_glob.Land(new $giper_baza_link(this.my_lord()));
-                return home.area_make($mol_hash_string('bog_gram_inbox'));
-            }
-            inbox_open() {
-                const land = this.inbox_land();
-                const rank = $giper_baza_rank_post('slow');
-                if (land.lord_rank(null) !== rank)
-                    land.give(null, rank);
-                return true;
-            }
-            inbox_publish() {
-                const link = this.inbox_land().link().str;
-                const prev = String(this.user_store().Inbox_land()?.val() ?? '');
-                if (prev === link)
-                    return link;
-                if (prev && !this.lobbies_old().includes(prev))
-                    this.dialogs_store().Lobbies('auto').add(prev);
-                this.user_store().Inbox_land('auto')?.val(link);
-                return link;
-            }
-            lobbies_old() {
-                return (this.dialogs_store().Lobbies()?.items() ?? []).map(String);
-            }
-            inbox_stores() {
-                let old = [];
-                try {
-                    old = this.lobbies_old();
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                return [
-                    this.inbox_store(),
-                    ...old.map(link => this.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_gram_inbox)),
-                ];
-            }
-            inbox_items(pick) {
-                const all = [];
-                for (const store of this.inbox_stores()) {
-                    try {
-                        for (const item of pick(store)?.items() ?? [])
-                            all.push(String(item));
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                        $mol_fail_log(error);
-                    }
-                }
-                return [...new Set(all)];
-            }
-            inbox_cut(pick, entry) {
-                for (const store of this.inbox_stores()) {
-                    try {
-                        if (!(pick(store)?.items() ?? []).map(String).includes(entry))
-                            continue;
-                        pick(store, 'auto').cut(entry);
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                        $mol_fail_log(error);
-                    }
-                }
-                return null;
-            }
-            dialogs_land_make() {
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_deny],
-                ]);
-                this.user_store().Dialogs_land('auto')?.val(land.link().str);
-                return land;
-            }
-            dialogs_land() {
-                const str = this.user_store().Dialogs_land()?.val();
-                if (!str)
-                    return this.dialogs_land_make();
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-            }
-            monitor_land_make() {
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_read],
-                ]);
-                this.user_store().Monitor_land('auto')?.val(land.link().str);
-                return land;
-            }
-            monitor_land() {
-                const str = this.user_store().Monitor_land()?.val();
-                if (!str)
-                    return this.monitor_land_make();
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-            }
-            devices_land_make() {
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_deny],
-                ]);
-                this.user_store().Devices_land('auto')?.val(land.link().str);
-                return land;
-            }
-            devices_land() {
-                const str = this.user_store().Devices_land()?.val();
-                if (!str)
-                    return this.devices_land_make();
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-            }
-            dialogs_store() {
-                return this.dialogs_land().Data($bog_gram_dialogs);
-            }
-            inbox_store() {
-                return this.inbox_land().Data($bog_gram_inbox);
-            }
-            monitor_store() {
-                return this.monitor_land().Data($bog_gram_monitor);
-            }
-            devices_store() {
-                return this.devices_land().Data($bog_gram_devices);
-            }
-            device_ready() {
-                const dev = this.devices_store().Registry('auto')?.key('web', 'auto');
-                if (dev && !dev.Title()?.val()) {
-                    dev.Title('auto')?.val('Web client');
-                    dev.Token('auto')?.val('stub');
-                }
-                return true;
-            }
-            // ===== Чужие профили =====
-            peer_store(lord) {
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(lord)).Data($bog_gram_user);
-            }
-            /** Имя человек хранит в своём ленде, и тот приезжает не сразу — а с
-             * ключом из реестра диалог заводится и вовсе без сети. Ждать имени
-             * поэтому нельзя: пока его нет, показываем сокращённый идентификатор,
-             * подписка на приход ленда сохраняется, и имя проявится само. */
-            peer_name(lord) {
-                try {
-                    return this.peer_store(lord).Name()?.val() ?? '';
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            // ===== Свои подписи собеседников =====
-            /** Как я назвал человека для себя. Подписи лежат в том же приватном
-             * ленде, что и список диалогов, поэтому собеседник их не видит и
-             * своего имени в профиле из-за них не теряет. */
-            peer_note(lord) {
-                if (!lord)
-                    return '';
-                return this.dialogs_store().Notes()?.key(lord)?.Title()?.val() ?? '';
-            }
-            /** Пустая подпись означает «показывать настоящее имя»: ради неё запись
-             * в словаре не заводим, а уже заведённую просто очищаем. */
-            peer_note_set(lord, next) {
-                if (!lord)
-                    return null;
-                const title = next ?? '';
-                const notes = this.dialogs_store().Notes('auto');
-                if (!notes)
-                    return null;
-                if (!title && !notes.key(lord))
-                    return null;
-                notes.key(lord, 'auto')?.Title('auto')?.val(title);
-                return null;
-            }
-            /** Порядок один на всё приложение: моя подпись важнее имени из чужого
-             * профиля, а безымянного и неподписанного показываем сокращённым
-             * идентификатором. Аватар при этом остаётся привязан к лорду —
-             * от переименования человек не должен менять лицо. */
-            label_pick(lord, note, name) {
-                if (!lord)
-                    return '';
-                return note || name || this.lord_short(lord);
-            }
-            peer_label(lord) {
-                return this.label_pick(lord, this.peer_note(lord), this.peer_name(lord));
-            }
-            // ===== Аватары =====
-            /** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
-            avatar_tint(lord) {
-                let hash = 0;
-                for (const symbol of lord)
-                    hash = (hash * 31 + symbol.charCodeAt(0)) % 7;
-                return hash;
-            }
-            /** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
-             * весь список, поэтому пока рисуем пустой кружок — подписка
-             * сохраняется, узор и цвет проявятся сами.
-             *
-             * У группы собеседника нет, зато есть свой ленд: по его ссылке узор и
-             * рисуем — он у группы один на всех участников. */
-            dialog_avatar_id(id) {
-                try {
-                    if (this.group_is(id))
-                        return id;
-                    return this.dialog_peer(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            dialog_tint(id) {
-                try {
-                    return this.avatar_tint(this.dialog_avatar_id(id));
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return 0;
-                }
-            }
-            user_tint(lord) {
-                return this.avatar_tint(lord);
-            }
-            // ===== Избранное: диалог с самим собой =====
-            /** Заметки для себя лежат в приватном шифрованном ленде, как и список
-             * диалогов: ссылка на него хранится там же, а не в открытом профиле.
-             * Захват небыстрый, и клик по строке может позвать сюда второй раз —
-             * поэтому уже записанная ссылка всегда важнее только что захваченной.
-             *
-             * Заводим ленд только отсюда, то есть по явному клику: список диалогов
-             * приезжает не мгновенно, и на свежем устройстве пустая ссылка какое-то
-             * время выглядит как «ленда ещё нет». Захват на старте приложения
-             * попадал в это окно всегда. */
-            saved_land_make() {
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_deny],
-                ]);
-                const str = this.dialogs_store().Saved_land()?.val();
-                if (str)
-                    return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-                const link = land.link().str;
-                this.dialogs_store().Saved_land('auto')?.val(link);
-                this.dialogs_store().Saved_lands('auto').add(link);
-                return land;
-            }
-            saved_land() {
-                const str = this.dialogs_store().Saved_land()?.val();
-                if (!str)
-                    return this.saved_land_make();
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(String(str)));
-            }
-            /** Ссылка на уже заведённый ленд: строка избранного рисуется с первого
-             * кадра, а захват ленда идёт своим чередом — ждать его список не должен. */
-            saved_id() {
-                return String(this.dialogs_store().Saved_land()?.val() ?? '');
-            }
-            /** Все ленды заметок, какие про этот аккаунт известны, и указанный
-             * последним. Их больше одного, если избранное успело завестись на двух
-             * устройствах сразу: заметки при этом разъезжаются по разным лендам, и
-             * терять один из них только потому, что ссылка указывает на другой,
-             * незачем — читаем изо всех, а пишем всегда в указанный. */
-            saved_links() {
-                const current = this.saved_id();
-                let all = [];
-                try {
-                    all = (this.dialogs_store().Saved_lands()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                const rest = all.filter(link => link && link !== current);
-                return current ? [...rest, current] : rest;
-            }
-            /** Единственная развилка на всё приложение: у избранного нет собеседника,
-             * поэтому ни галочек прочтения, ни счётчика непрочитанных, ни «вы:»
-             * в превью ему не полагается.
-             *
-             * Заброшенный ленд заметок остаётся избранным наравне с указанным:
-             * иначе открытая с него страница схлопывалась бы сама, а отправка с
-             * неё молча ничего не делала. */
-            saved_is(id) {
-                if (!id)
-                    return false;
-                return this.saved_links().includes(id);
-            }
-            saved_title() {
-                return saved_name;
-            }
-            /** На новом устройстве ленд избранного приезжает не мгновенно: пока он
-             * в пути, строка стоит с пустым превью, а не вешает весь список. */
             saved_preview() {
                 const id = this.saved_id();
                 if (!id)
                     return '';
-                try {
-                    return this.dialog_preview(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
+                return $bog_gram_soft(() => this.dialog_preview(id), '');
             }
             saved_time() {
                 const id = this.saved_id();
                 if (!id)
                     return '';
-                try {
-                    return this.dialog_time(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
+                return $bog_gram_soft(() => this.dialog_time(id), '');
             }
             saved_current_is() {
                 return this.saved_is(this.dialog_active());
             }
-            /** Клик по строке заводит ленд, если его ещё нет: действие живёт в фибре,
-             * поэтому захват с его перебором степеней тут уместен. */
             saved_open(next) {
                 this.dialog_select(this.saved_land().link().str);
                 return null;
             }
-            // ===== Диалоги =====
-            dialog_ids() {
-                return (this.dialogs_store().Dialogs()?.items() ?? []).map(String);
-            }
-            /** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
-             * иначе собеседник вернул бы диалог обратно на следующем же синке. */
-            hidden_ids() {
-                return (this.dialogs_store().Hidden()?.items() ?? []).map(String);
-            }
-            dialog_store(id) {
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id)).Data($bog_gram_dialog);
-            }
-            dialog_peer(id) {
-                if (this.saved_is(id))
-                    return '';
-                const peers = this.dialog_lords(id);
-                return peers.find(lord => lord !== this.my_lord()) ?? peers[0] ?? '';
-            }
-            /** Все участники диалога, включая меня. Ленд может быть ещё не
-             * засинкан — тогда чтение приостанавливается, и это правильно: по
-             * этому списку выдаются права, и неполным он быть не должен. Места,
-             * где ждать нечем, прикрываются сами. */
-            dialog_lords(id) {
-                if (!id)
-                    return [];
-                if (this.saved_is(id))
-                    return [];
-                return (this.dialog_store(id).Peers()?.items() ?? []).map(String);
-            }
-            /** Все, кроме меня: кому выдавать права и чьи прочтения считать. */
-            dialog_mates(id) {
-                const my = this.my_lord();
-                return this.dialog_lords(id).filter(lord => lord !== my);
-            }
-            /** Ключи участников одним списком. Неполный список — это отказ: писать
-             * в ленд, который часть группы никогда не откроет, незачем. Ключи
-             * умеют ждать, поэтому зовётся только из фибры. */
-            passes_of(lords) {
-                const passes = [];
-                for (const lord of lords) {
-                    const pass = this.peer_pass_of(lord);
-                    if (pass)
-                        passes.push(pass);
-                }
-                return passes;
-            }
-            /** Безымянного собеседника показываем началом и концом идентификатора:
-             * у одного только начала первые символы у разных людей совпадают глазом. */
-            lord_short(lord) {
-                if (lord.length <= 14)
-                    return lord;
-                return lord.slice(0, 6) + '…' + lord.slice(-4);
-            }
-            // ===== Группы =====
-            /** Название группы. Пустое — группу не назвали, и подписываться она
-             * будет своими участниками. Ленд может быть ещё не засинкан: заголовок
-             * это косметика, ждать её незачем — подписка сохраняется, название
-             * проявится само. */
-            group_title(id) {
-                if (!id)
-                    return '';
-                if (this.saved_is(id))
-                    return '';
-                try {
-                    return String(this.dialog_store(id).Title()?.val() ?? '');
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            /** Группа отличается от переписки вдвоём числом участников: третий
-             * человек делает её группой. Названная — тоже группа, даже если в ней
-             * пока двое: название заводят осознанно, и от того, что кто-то вышел,
-             * группа обратно в личную переписку превращаться не должна. */
-            group_is(id) {
-                if (!id)
-                    return false;
-                if (this.saved_is(id))
-                    return false;
-                try {
-                    if (this.dialog_lords(id).length > 2)
-                        return true;
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                return Boolean(this.group_title(id));
-            }
-            /** Группа без названия подписывается своими участниками: список имён
-             * говорит больше, чем «5 участников». */
-            group_name_auto(id) {
-                let mates = [];
-                try {
-                    mates = this.dialog_mates(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                if (!mates.length)
-                    return this.lord_short(id);
-                return mates.map(lord => this.peer_label(lord)).join(', ');
-            }
-            admin_lords(id) {
-                if (!id)
-                    return [];
-                try {
-                    return (this.dialog_store(id).Admins()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            /** Создатель группы — король её ленда, и админом остаётся всегда:
-             * отдельной записи для него не нужно. */
-            admin_is(id, lord) {
-                if (!id || !lord)
-                    return false;
-                if (this.dialog_owner(id) === lord)
-                    return true;
-                if (lord === this.my_lord() && this.dialog_own(id))
-                    return true;
-                return this.admin_lords(id).includes(lord);
-            }
-            admin_me(id) {
-                return this.admin_is(id, this.my_lord());
-            }
-            /** Назначает админов создатель: раздавать право раздавать права — его
-             * решение, а не решение назначенного. */
             owner_me(id) {
                 return this.dialog_own(id);
             }
-            /** Ранг участника в лендах группы. Чтобы админ мог выдать право новому
-             * человеку, ему самому нужно полное управление лендом — а вместе с ним
-             * он получает и возможность менять чужие права: разделить эти
-             * способности в Базе нечем. */
-            member_rank(id, lord) {
-                return this.admin_is(id, lord) ? $giper_baza_rank_rule : $giper_baza_rank_post('fast');
+            admin_is(id, lord) {
+                return this.Talk().admin_is(id, lord);
             }
-            dialog_title(id) {
-                if (this.saved_is(id))
-                    return saved_name;
-                if (this.group_is(id))
-                    return this.group_title(id) || this.group_name_auto(id);
-                const peer = this.dialog_peer(id);
-                if (!peer)
-                    return this.lord_short(id);
-                return this.peer_label(peer);
+            archive_fresh() {
+                return this.Talk().fresh_first(this.archive_ids());
             }
-            /** Момент последней активности — по нему диалоги сортируются в списке.
-             * Ленды могут быть ещё не засинканы: suspend любого из них не должен
-             * вешать весь список, поэтому недоступное заменяем нулём — подписка
-             * на приход данных при этом сохраняется, список пересортируется сам. */
-            dialog_moment(id) {
-                try {
-                    const messages = this.messages_alive_of(id);
-                    const last = messages[messages.length - 1];
-                    if (last)
-                        return Number(last.Moment()?.val() ?? 0);
-                    return Number(this.dialog_store(id).Created()?.val() ?? 0);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return 0;
-                }
+            request_is(id) {
+                return this.dialog_kind(id) === 'request';
             }
-            /** Порядок один и тот же и в основном списке, и в архиве: свежие сверху. */
-            fresh_first(ids) {
-                return [...ids].sort((a, b) => this.dialog_moment(b) - this.dialog_moment(a));
-            }
-            // ===== Кого пускать в список =====
-            /** Создатель диалога — лорд его ленда: ленд заводит тот, кто начал
-             * переписку. Ссылка приезжает из инбокса, открытого на запись всем,
-             * поэтому мусор вместо неё — обычное дело: разбор его отвергает, и
-             * весь список из-за одной такой строки падать не должен. */
-            dialog_owner(id) {
-                if (!id)
-                    return '';
-                try {
-                    return String(this.dialog_store(id).Owner()?.val() ?? '');
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                    return '';
-                }
-            }
-            /** Моя ли это переписка. У заведённых до появления записи о создателе
-             * спрашивать некого, поэтому смотрим на права: полное управление лендом
-             * получает тот, кто его захватил, а в старых диалогах админов не было. */
-            dialog_own(id) {
-                if (!id)
-                    return false;
-                try {
-                    const owner = this.dialog_owner(id);
-                    if (owner)
-                        return owner === this.my_lord();
-                    const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
-                    return land.lord_rank(new $giper_baza_link(this.my_lord())) === $giper_baza_rank_rule;
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return false;
-                }
-            }
-            /** Есть ли в диалоге хоть одно живое сообщение — чьё угодно. Ленд может
-             * быть ещё не засинкан: тогда сообщений «нет», и чужой диалог просто
-             * подождёт снаружи списка. Подписка на приход данных сохраняется, так
-             * что строка появится сама вместе с первым сообщением. */
-            dialog_alive(id) {
-                try {
-                    return this.messages_alive_of(id).length > 0;
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return false;
-                }
-            }
-            /** Собеседники, с которыми я согласился переписываться. Список свой,
-             * приватный: собеседник не знает ни что попал в запросы, ни что вышел
-             * из них. */
-            accepted_lords() {
-                return (this.dialogs_store().Accepted()?.items() ?? []).map(String);
-            }
-            /** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
-             * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
-             * его приход сохраняется, и запрос уедет в общий список сам. */
-            peer_known(lord) {
-                if (!lord)
-                    return false;
-                if (this.accepted_lords().includes(lord))
-                    return true;
-                return Boolean(this.user_sources()[lord]);
-            }
-            /** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
-             * ним не должен оказаться в запросах, даже если ленд под него завёл он.
-             * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
-             * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
-             * Запись идемпотентна — обработчик события перезапускается на каждом
-             * ожидании, и повторный заход не должен ничего дописывать. */
-            peer_accept(lord) {
-                if (!lord)
-                    return null;
-                if (lord === this.my_lord())
-                    return null;
-                if (!$giper_baza_link.check(lord))
-                    return null;
-                if (this.accepted_lords().includes(lord))
-                    return null;
-                this.dialogs_store().Accepted('auto').add(lord);
+            dialog_archive(id, next) {
+                this.Roster().archive(id);
                 return null;
             }
-            /** Куда попадает диалог в списке. Свой показываем всегда — пустым его
-             * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
-             * человек мог открыть диалог со мной и передумать, а строка от него
-             * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
-             * уходит в запросы: знакомство предлагают, а не назначают. */
-            dialog_sort(own, alive, known) {
-                if (own)
-                    return 'plain';
-                if (!alive)
-                    return 'skip';
-                return known ? 'plain' : 'request';
+            dialog_unarchive(id, next) {
+                this.Roster().unarchive(id);
+                return null;
             }
-            /** То же по ссылке на диалог. Заархивированный не разбираем: он уже
-             * прошёл через мои руки, и второй раз спрашивать про него незачем.
-             * Свой ответ в диалоге — то же согласие, только данное молча: иначе
-             * давняя переписка с человеком не из реестра уехала бы в запросы. */
-            dialog_kind(id) {
-                if (this.archive_is(id))
-                    return 'plain';
-                const lord = this.dialog_owner(id);
-                const own = this.dialog_own(id);
-                const known = this.peer_known(lord) || this.mine_wrote(id);
-                return this.dialog_sort(own, this.dialog_alive(id), known);
-            }
-            /** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
-             * я нигде не встречал. Убранные из списка сюда не попадают — отказ
-             * такое же решение, как и согласие. */
-            request_ids() {
-                const dropped = new Set(this.hidden_ids());
-                return this.fresh_first(this.dialog_ids().filter(id => {
-                    if (dropped.has(id))
-                        return false;
-                    return this.dialog_kind(id) === 'request';
-                }));
-            }
-            /** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
-             * последними и только пока им есть что показать; развёрнутый раздел
-             * досыпает строки туда же. */
-            dialog_rows() {
-                const archived = this.archive_ids();
-                const folded = new Set(archived);
-                const requests = this.request_ids();
-                const asked = new Set(requests);
-                const visible = this.fresh_first(this.dialog_ids().filter(id => {
-                    if (folded.has(id))
-                        return false;
-                    if (asked.has(id))
-                        return false;
-                    return this.dialog_kind(id) !== 'skip';
-                }));
-                const empty = !visible.length && !archived.length && !requests.length;
-                return [
-                    ...archived.length ? [this.Archive_row()] : [],
-                    ...this.archive_opened() ? this.fresh_first(archived).map(id => this.Dialog_row(id)) : [],
-                    this.Saved_row(),
-                    ...visible.map(id => this.Dialog_row(id)),
-                    ...empty ? [this.Dialogs_empty()] : [],
-                    ...requests.length ? [this.Requests_row()] : [],
-                    ...this.requests_opened() ? requests.map(id => this.Dialog_row(id)) : [],
-                ];
+            request_accept(id, next) {
+                if (!id)
+                    return null;
+                this.peer_accept(this.dialog_owner(id));
+                return null;
             }
             dialog_current(next) {
                 return next ?? '';
@@ -28830,300 +34753,30 @@ var $;
                 return this.dialog_active() === id;
             }
             dialog_select(id, next) {
-                // Открыл переписку — самое время спросить про уведомления. Метод
-                // зовут и фибры со ссылки-приглашения, но там жеста нет, и
-                // предложение само себя пропустит
-                this.notify_offer();
-                this.sound_hush();
+                this.Alerts().offer();
                 this.compose_opened(false);
                 this.settings_opened(false);
                 this.group_opened(false);
                 this.members_opened(false);
-                this.leave_armed(false);
-                this.account_reset();
-                this.edit_id('');
-                this.reply_id('');
-                this.message_text('');
-                this.message_menu('');
-                this.zoom_id('');
-                this.delete_disarm();
                 this.dialog_current(id);
-                this.chat_bring();
-                this.field_focus();
-                this.chat_focus_reset(id);
                 return null;
             }
-            /** Отметка прочтения после перезагрузки ещё едет, и пересчёт фокуса
-             * ждёт её. Тап по диалогу ждать не должен: решение досчитается само,
-             * когда отметка приедет. */
-            chat_focus_reset(id) {
-                try {
-                    this.chat_focus(id, null);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-            }
-            /** С мышью и клавиатурой открытый диалог сразу принимает текст. На
-             * сенсорном экране фокус вытащил бы клавиатуру на пол-экрана поверх
-             * переписки, которую человек открыл почитать. */
-            field_focus() {
-                if (!this.$.$mol_media.match('(pointer: fine)'))
-                    return;
-                new this.$.$mol_after_tick(() => {
-                    try {
-                        this.Chat_page().Message_field().focused(true);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                });
-            }
-            /** Книга доводит страницу до края сама только когда та появляется
-             * впервые. При переходе между диалогами страница чата уже открыта и
-             * лишь меняет содержимое, поэтому на узком экране пользователь
-             * оставался на списке и дальше листал руками. Досылаем прокрутку
-             * после отрисовки, когда размеры страницы уже известны. */
-            chat_bring() {
-                this.page_bring(() => this.Chat_page());
-            }
-            /** Новую страницу книга показывает сама. Ехать к ней отсюда можно
-             * только когда она уже стоит в книге: до отрисовки смещение у неё
-             * нулевое, и такая прокрутка сбивает прокрутку самой книги. */
-            page_bring(target) {
-                new this.$.$mol_after_tick(() => {
-                    try {
-                        const book = this.dom_node();
-                        const page = target().dom_node();
-                        if (page.parentNode !== book)
-                            return;
-                        book.scroll({
-                            left: page.offsetLeft + page.offsetWidth - book.offsetWidth,
-                            behavior: 'smooth',
-                        });
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            return;
-                        $mol_fail_log(error);
-                    }
-                });
-            }
             dialog_close(next) {
-                this.sound_hush();
-                this.edit_id('');
-                this.message_text('');
-                this.message_menu('');
-                this.zoom_id('');
-                this.delete_disarm();
                 this.members_opened(false);
-                this.leave_armed(false);
                 this.dialog_current('');
                 return null;
             }
-            // ===== Удаление диалога из своего списка =====
-            /** Взвод корзины живёт на своей строке: первый клик красит её,
-             * второй удаляет — без модалок и системных алертов. */
-            delete_armed(id, next) {
-                return next ?? false;
-            }
-            delete_hint(id) {
-                return this.delete_armed(id) ? 'Точно удалить?' : 'Удалить диалог';
-            }
-            /** Красной ждёт подтверждения максимум одна строка: любой другой клик
-             * по списку снимает взвод, чтобы забытая корзина не сработала потом. */
-            delete_disarm(next) {
-                for (const id of this.dialog_ids())
-                    this.delete_armed(id, false);
-                return null;
-            }
-            /** Корзина лежит внутри кликабельной строки, поэтому первым делом гасим
-             * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
-            dialog_delete_click(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                if (!this.delete_armed(id)) {
-                    this.delete_disarm();
-                    this.delete_armed(id, true);
-                    return null;
-                }
-                this.dialog_delete(id);
-                return null;
-            }
-            /** Диалог живёт в шаренном ленде и у собеседника остаётся:
-             * убираем только свою ссылку и свою слежку за сессиями. */
             dialog_delete(id, next) {
                 if (!id)
                     return null;
                 if (this.saved_is(id))
                     return null;
                 const active = this.dialog_current() === id;
-                const store = this.dialogs_store();
-                store.Dialogs('auto').cut(id);
-                store.Hidden('auto').add(id);
-                if (this.archive_is(id))
-                    store.Archived('auto').cut(id);
-                // Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
-                // но выкидывание из своего списка важнее — просто не чистим монитор
-                try {
-                    const sessions = this.session_links_of(id);
-                    const watch = this.monitor_store().Watch('auto');
-                    for (const link of sessions)
-                        watch.cut(link);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                if (active) {
-                    this.edit_id('');
-                    this.message_text('');
+                this.Roster().drop(id);
+                if (active)
                     this.dialog_current('');
-                }
-                this.delete_armed(id, false);
                 return null;
             }
-            // ===== Архив: спрятанные, но живые диалоги =====
-            /** Сырые ссылки из хранилища: по ним рисуется состояние кнопки в строке,
-             * даже когда сам диалог из списка уже выпал. */
-            archive_links() {
-                return (this.dialogs_store().Archived()?.items() ?? []).map(String);
-            }
-            /** В архиве показываем только живые диалоги: удалённый осел в Hidden
-             * и вернуться на экран не должен ни в списке, ни в архиве. */
-            archive_ids() {
-                const alive = new Set(this.dialog_ids());
-                const dropped = new Set(this.hidden_ids());
-                return this.archive_links().filter(id => alive.has(id) && !dropped.has(id));
-            }
-            archive_is(id) {
-                return this.archive_links().includes(id);
-            }
-            archive_opened(next) {
-                return next ?? false;
-            }
-            /** Архив разворачивается прямо в списке: отдельная страница ради
-             * пары спрятанных диалогов — лишний шаг навигации. */
-            archive_toggle(next) {
-                this.delete_disarm();
-                this.archive_opened(!this.archive_opened());
-                return null;
-            }
-            /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-             * всплытие: иначе тот же клик ещё и открыл бы прячущийся диалог.
-             * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
-            dialog_archive_click(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                this.delete_disarm();
-                if (this.archive_is(id))
-                    this.dialog_unarchive(id);
-                else
-                    this.dialog_archive(id);
-                return null;
-            }
-            /** Диалог остаётся в своём списке и продолжает принимать сообщения:
-             * архив — это только вторая полка, а не удаление. */
-            dialog_archive(id, next) {
-                if (!id)
-                    return null;
-                if (this.saved_is(id))
-                    return null;
-                this.dialogs_store().Archived('auto').add(id);
-                return null;
-            }
-            dialog_unarchive(id, next) {
-                if (!id)
-                    return null;
-                this.dialogs_store().Archived('auto').cut(id);
-                return null;
-            }
-            archive_hint(id) {
-                return this.archive_is(id) ? 'Вернуть из архива' : 'В архив';
-            }
-            /** Одна и та же кнопка прячет и возвращает, поэтому и стрелка на ней
-             * смотрит в ту сторону, куда уедет диалог. */
-            archive_icons(id) {
-                return [this.archive_is(id) ? this.Dialog_unarchive_icon(id) : this.Dialog_archive_icon(id)];
-            }
-            archive_note() {
-                return this.plural(this.archive_ids().length, 'диалог', 'диалога', 'диалогов');
-            }
-            /** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
-             * диалогов. Ленд любого из них может быть ещё в пути — такой не считаем. */
-            archive_unread() {
-                let count = 0;
-                for (const id of this.archive_ids()) {
-                    try {
-                        count += this.unread_count(id);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                }
-                return count;
-            }
-            archive_unread_label() {
-                return this.archive_unread() ? String(this.archive_unread()) : '';
-            }
-            Archive_unread() {
-                return this.archive_unread() ? super.Archive_unread() : null;
-            }
-            // ===== Запросы на переписку =====
-            requests_opened(next) {
-                return next ?? false;
-            }
-            /** Запросы разворачиваются прямо в списке, как и архив: отдельная
-             * страница ради пары незнакомцев — лишний шаг навигации. */
-            requests_toggle(next) {
-                this.delete_disarm();
-                this.requests_opened(!this.requests_opened());
-                return null;
-            }
-            requests_count_label() {
-                return String(this.request_ids().length);
-            }
-            /** В строке запроса на месте архива и корзины стоят согласие и отказ:
-             * прятать на вторую полку то, о чём решение ещё не принято, незачем.
-             * Сама строка остаётся обычной строкой диалога — по клику она так же
-             * открывает переписку, и прочитать её до решения это нормально. */
-            Dialog_archive(id) {
-                if (this.dialog_kind(id) === 'request')
-                    return this.Request_accept(id);
-                return super.Dialog_archive(id);
-            }
-            Dialog_delete(id) {
-                if (this.dialog_kind(id) === 'request')
-                    return this.Request_reject(id);
-                return super.Dialog_delete(id);
-            }
-            /** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-             * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
-             * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
-            request_accept(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                this.peer_accept(this.dialog_owner(id));
-                return null;
-            }
-            /** Отказ — то же самое, что удаление диалога из своего списка: ссылка
-             * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
-             * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
-            request_reject(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                this.dialog_delete(id);
-                return null;
-            }
-            /** Только явно выбранный диалог: на узком экране чат не должен открываться сам.
-             * Избранного нет в списке диалогов, но открывается оно так же. */
             dialog_active() {
                 const current = this.dialog_current();
                 if (!current)
@@ -29134,85 +34787,26 @@ var $;
                     return current;
                 return '';
             }
-            chat_title() {
-                const id = this.dialog_active();
-                if (!id)
-                    return 'Выберите диалог';
-                return this.dialog_title(id);
+            chat_dialog(id) {
+                return id;
             }
-            /** Собеседник открытого диалога: ни у избранного, ни у группы его нет,
-             * поэтому и подписывать там некого. */
-            chat_peer() {
-                const id = this.dialog_active();
-                if (!id)
-                    return '';
-                if (this.saved_is(id))
-                    return '';
-                if (this.group_is(id))
-                    return '';
-                return this.dialog_peer(id);
-            }
-            /** Заголовок чата правится прямо в шапке. В переписке вдвоём это моя
-             * подпись собеседника, в группе — её название, и менять его может
-             * админ. У избранного заголовок фиксированный, поля там нет. */
-            chat_note_editable() {
-                const id = this.dialog_active();
-                if (id && this.group_is(id))
-                    return this.admin_me(id);
-                return Boolean(this.chat_peer());
-            }
-            /** Пустое поле не должно выглядеть потерей имени: подсказкой в нём
-             * стоит то, как человек назвал себя сам, а у неназванной группы —
-             * её участники. */
-            chat_note_hint() {
-                const id = this.dialog_active();
-                if (id && this.group_is(id))
-                    return this.group_name_auto(id);
-                const lord = this.chat_peer();
-                if (!lord)
-                    return '';
-                return this.peer_name(lord) || this.lord_short(lord);
-            }
-            chat_note(next) {
-                const id = this.dialog_active();
-                if (id && this.group_is(id)) {
-                    if (next !== undefined)
-                        this.group_title_set(id, next);
-                    return this.group_title(id);
-                }
-                const lord = this.chat_peer();
-                if (!lord)
-                    return '';
-                if (next !== undefined)
-                    this.peer_note_set(lord, next);
-                return this.peer_note(lord);
-            }
-            /** Название лежит в общем ленде группы, поэтому и видят его все.
-             * Менять его может тот, у кого есть право писать в этот ленд, — админ;
-             * поле у остальных и не показывается, но решение принимается тут. */
-            group_title_set(id, next) {
-                if (!id)
-                    return null;
-                if (!this.admin_me(id))
-                    return null;
-                this.dialog_store(id).Title('auto')?.val(next ?? '');
-                return null;
-            }
-            // ===== Страницы буклета =====
             compose_opened(next) {
                 return next ?? false;
             }
             settings_opened(next) {
                 return next ?? false;
             }
-            /** Кнопка в шапке работает как переключатель: повторный клик
-             * закрывает уже открытую страницу, а не оставляет её висеть. */
+            group_opened(next) {
+                return next ?? false;
+            }
+            members_opened(next) {
+                return next ?? false;
+            }
             compose_open(next) {
                 const open = !this.compose_opened();
                 this.settings_opened(false);
                 this.group_opened(false);
                 this.compose_opened(open);
-                this.account_reset();
                 return null;
             }
             compose_close(next) {
@@ -29224,40 +34818,39 @@ var $;
                 this.compose_opened(false);
                 this.group_opened(false);
                 this.settings_opened(open);
-                this.account_reset();
                 return null;
             }
             settings_close(next) {
                 this.settings_opened(false);
-                this.account_reset();
                 return null;
             }
-            lights() {
-                const theme = this.Theme();
-                if (theme.mode() === 'system')
-                    return 'system';
-                return theme.is_light_now() ? 'light' : 'dark';
+            group_open(next) {
+                const open = !this.group_opened();
+                this.compose_opened(false);
+                this.settings_opened(false);
+                this.group_opened(open);
+                return null;
             }
-            pages() {
-                return [
-                    this.Menu(),
-                    ...this.settings_opened() ? [this.Settings_page()] : [],
-                    ...this.compose_opened() ? [this.Compose_page()] : [],
-                    ...this.group_opened() ? [this.Group_page()] : [],
-                    ...this.dialog_active() ? [this.Chat_page()] : [],
-                    ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
-                    ...this.music_alive() ? [this.Music_page()] : [],
-                ];
+            group_close(next) {
+                this.group_opened(false);
+                return null;
             }
-            Placeholder() {
-                return this.dialog_active() || this.music_opened() ? null : super.Placeholder();
+            members_shown() {
+                const id = this.dialog_active();
+                return Boolean(id) && this.group_is(id);
+            }
+            members_open(next) {
+                this.members_opened(!this.members_opened());
+                this.member_error('');
+                return null;
+            }
+            members_close(next) {
+                this.members_opened(false);
+                return null;
             }
             music_opened(next) {
                 return next ?? false;
             }
-            /** Фрейм музыки, убранный из документа, выгружается вместе с плеером,
-             * поэтому после первого открытия страница остаётся в книге и при
-             * закрытии только прячется: музыка играет дальше. */
             music_alive(next) {
                 return next ?? false;
             }
@@ -29269,345 +34862,60 @@ var $;
                 this.music_alive(true);
                 this.music_opened(open);
                 if (open)
-                    this.page_bring(() => this.Music_page());
+                    this.Music_page().bring();
                 return null;
             }
             music_close(next) {
                 this.music_opened(false);
                 return null;
             }
-            // ===== Создание диалога =====
-            /** Уже существующий диалог с этим собеседником — повторный старт
-             * не должен плодить новые ленды, а должен открывать старый.
-             * Незасинканный диалог считаем несовпадением, чтобы не виснуть.
-             * Группы тут не в счёт: человек может быть в общей группе и всё равно
-             * не иметь с тобой личной переписки. */
-            dialog_with(peer) {
-                if (!peer)
-                    return '';
-                for (const id of this.dialog_ids()) {
-                    try {
-                        if (this.group_is(id))
-                            continue;
-                        if (this.dialog_peer(id) === peer)
-                            return id;
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                }
-                return '';
+            lights() {
+                const theme = this.Theme();
+                if (theme.mode() === 'system')
+                    return 'system';
+                return theme.is_light_now() ? 'light' : 'dark';
             }
-            dialog_pending(next) {
-                return next ?? '';
+            pages() {
+                const active = this.dialog_active();
+                return [
+                    this.Menu(),
+                    ...this.settings_opened() ? [this.Settings_page()] : [],
+                    ...this.compose_opened() ? [this.Compose_page()] : [],
+                    ...this.group_opened() ? [this.Group_page()] : [],
+                    ...active ? [this.Chat_page(active)] : [],
+                    ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
+                    ...this.music_alive() ? [this.Music_page()] : [],
+                ];
             }
-            dialog_start(next) {
-                const peer = this.peer_lord().trim();
-                if (!peer)
-                    return null;
-                this.peer_accept(peer);
-                this.peer_lord('');
-                const exist = this.dialog_with(peer);
-                if (exist) {
-                    this.dialog_select(exist);
-                    return null;
-                }
-                this.dialog_pending(peer);
-                return null;
+            Placeholder() {
+                return this.dialog_active() || this.music_opened() ? null : super.Placeholder();
             }
-            /** Разбор ключа из недоверенного источника с проверкой подлинности:
-             * так приезжают ключи из реестра, из заявки в группу и из ссылки-
-             * приглашения. Реестр открыт на запись всем, ссылку по дороге тоже
-             * могли подменить — и тогда диалог, заведённый для одного человека,
-             * открылся бы совсем другому. Идентификатор это хеш ключа, так что
-             * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
-             * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
-             * исключение, и оно не должно мешать заводить диалог. */
-            pass_verified(lord, str) {
-                if (!lord || !str)
-                    return null;
-                try {
-                    let pass = pass_parsed.get(str);
-                    if (!pass) {
-                        pass = $giper_baza_auth_pass.from(str);
-                        pass_parsed.set(str, pass);
-                    }
-                    if (pass.lord().str === lord)
-                        return pass;
-                    $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
-                    return null;
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                    return null;
-                }
-            }
-            /** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
-             * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
-             * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
-             * ленд ждёт сети — но у человека из реестра ключ лежит ещё и там,
-             * поэтому запрос ленда шлём, а доставки не дожидаемся. */
-            peer_pass_of(lord) {
+            dialog_open(lord, next) {
                 if (!lord)
                     return null;
-                // Ключ из ссылки-приглашения уже проверен пересчётом лорда, так
-                // что сеть ради него дёргать незачем: диалог заводится сразу и
-                // даже офлайн, а домашний ленд собеседника подъедет потом сам
-                const given = this.peer_pass_given(lord);
-                if (given)
-                    return given;
-                try {
-                    const stored = this.peer_pass_stored(lord);
-                    if (stored)
-                        return stored;
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                }
-                const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
-                try {
-                    land.sync();
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                const own = land.king_pass();
-                if (own)
-                    return own;
-                for (const id of this.registry_ids()) {
-                    try {
-                        const str = String(this.registry_store(id).Keys()?.key(lord)?.Pass()?.val() ?? '');
-                        const pass = this.pass_verified(lord, str);
-                        if (pass)
-                            return pass;
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                }
+                this.peer_accept(lord);
+                const exist = this.dialog_with(lord);
+                if (exist)
+                    this.dialog_select(exist);
+                else
+                    this.dialog_pending(lord);
                 return null;
             }
-            // Ждём реактивно, пока ключ собеседника не окажется под рукой, и только
-            // тогда создаём диалог. Имени не ждём: оно косметика и подъедет само
             dialog_autocreate() {
-                const peer = this.dialog_pending();
-                if (!peer)
-                    return '';
-                const pass = this.peer_pass_of(peer);
-                if (!pass)
-                    return '';
-                $mol_wire_async(this).dialog_create(peer);
+                const peer = this.Invite().ready();
+                if (peer)
+                    $mol_wire_async(this).dialog_create(peer);
                 return peer;
             }
             dialog_create(peer) {
-                // Гонка: пока ждали ключ, диалог мог появиться (или второй клик)
-                const exist = this.dialog_with(peer);
-                if (exist) {
-                    this.dialog_current(exist);
-                    this.compose_opened(false);
-                    this.dialog_pending('');
-                    this.invite_done();
-                    this.chat_bring();
-                    return exist;
-                }
-                const glob = this.$.$giper_baza_glob;
-                // Имя собеседника тут не читаем: оно живёт в его ленде и офлайн
-                // подвесило бы фибру целиком, хотя для самого диалога не нужно
-                const peer_pass = this.peer_pass_of(peer);
-                if (!peer_pass)
+                const id = this.Roster().create(peer);
+                if (!id)
                     return null;
-                const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                const session_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                // Ранг задаёт цену записи: на `just` подпись принимается с первой
-                // попытки, то есть работы ноль и поток сообщений ничем не ограничен.
-                // Берём следующую ступень — сотни подписей на сообщение: человек
-                // разницы не заметит, а заливать тысячами станет невыгодно.
-                dialog_land.give(peer_pass, $giper_baza_rank_post('fast'));
-                session_land.give(peer_pass, $giper_baza_rank_post('fast'));
-                const dialog = dialog_land.Data($bog_gram_dialog);
-                dialog.Peers('auto').add(this.my_lord());
-                dialog.Peers('auto').add(peer);
-                dialog.Sessions('auto').add(session_land.link().str);
-                dialog.Session_last('auto')?.val(session_land.link().str);
-                dialog.Created('auto')?.val(Date.now());
-                dialog.Owner('auto')?.val(this.my_lord());
-                const session = session_land.Data($bog_gram_session);
-                session.Dialog_land('auto')?.val(dialog_land.link().str);
-                this.dialogs_store().Dialogs('auto').add(dialog_land.link().str);
-                this.monitor_store().Watch('auto').add(session_land.link().str);
-                this.dialogs_store().Outbox('auto').add(peer + '|' + dialog_land.link().str);
-                this.dialog_current(dialog_land.link().str);
-                this.chat_bring();
+                this.dialog_current(id);
                 this.compose_opened(false);
                 this.dialog_pending('');
-                this.invite_done();
-                return dialog_land.link().str;
-            }
-            // ===== Создание группы =====
-            group_opened(next) {
-                return next ?? false;
-            }
-            /** Кнопка в шапке работает переключателем, как и у нового диалога:
-             * повторный клик закрывает уже открытую страницу. */
-            group_open(next) {
-                const open = !this.group_opened();
-                this.compose_opened(false);
-                this.settings_opened(false);
-                this.group_opened(open);
-                this.account_reset();
-                return null;
-            }
-            group_close(next) {
-                this.group_opened(false);
-                return null;
-            }
-            /** Кого можно позвать: собеседники своих переписок и участники
-             * реестров. Ключи первых уже лежат в их лендах, поэтому такой список
-             * работает и без сети. Один человек — одна строка, даже если он
-             * встречается в обоих источниках: подписью берём переписку, она ближе.
-             * Незасинканный диалог просто не даёт своего собеседника — весь список
-             * из-за одного такого молчать не должен. */
-            group_sources() {
-                const sources = {};
-                const my = this.my_lord();
-                for (const id of this.dialog_ids()) {
-                    if (this.group_is(id))
-                        continue;
-                    let peer = '';
-                    try {
-                        peer = this.dialog_peer(id);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                    if (!peer || peer === my)
-                        continue;
-                    if (sources[peer])
-                        continue;
-                    sources[peer] = 'из переписки';
-                }
-                const registries = this.user_sources();
-                for (const lord of Object.keys(registries)) {
-                    if (sources[lord])
-                        continue;
-                    sources[lord] = this.registry_title(registries[lord]);
-                }
-                return sources;
-            }
-            group_picked(next) {
-                return next ?? [];
-            }
-            /** Список ненайденных ключей относился к прежнему составу: любая
-             * правка выбора его снимает, и кнопка возвращается к обычной. */
-            group_pick(lord, next) {
-                if (!lord)
-                    return null;
-                const picked = this.group_picked();
-                this.group_lost([]);
-                this.group_picked(picked.includes(lord)
-                    ? picked.filter(item => item !== lord)
-                    : [...picked, lord]);
-                return null;
-            }
-            group_chosen_drop(lord, next) {
-                next?.stopPropagation();
-                if (!lord)
-                    return null;
-                this.group_lost([]);
-                this.group_picked(this.group_picked().filter(item => item !== lord));
-                return null;
-            }
-            group_id_error(next) {
-                return next ?? '';
-            }
-            Group_id_error() {
-                return this.group_id_error() ? super.Group_id_error() : null;
-            }
-            /** Идентификатор руками. Заведомую опечатку отсеиваем сразу: группа с
-             * несуществующим участником всё равно бы его не дождалась. */
-            group_id_add(next) {
-                const lord = this.group_id().trim();
-                if (!lord)
-                    return null;
-                if (lord === this.my_lord()) {
-                    this.group_id_error('Это ваш собственный идентификатор');
-                    return null;
-                }
-                if (!$giper_baza_link.check(lord)) {
-                    this.group_id_error('Это не похоже на идентификатор');
-                    return null;
-                }
-                this.group_id_error('');
-                this.group_id('');
-                if (!this.group_picked().includes(lord)) {
-                    this.group_lost([]);
-                    this.group_picked([...this.group_picked(), lord]);
-                }
-                return null;
-            }
-            group_pick_rows() {
-                return Object.keys(this.group_sources()).map(lord => this.Group_pick_row(lord));
-            }
-            group_pick_lord(lord) {
-                return lord;
-            }
-            group_pick_tint(lord) {
-                return this.avatar_tint(lord);
-            }
-            group_pick_title(lord) {
-                return this.peer_label(lord);
-            }
-            group_pick_source(lord) {
-                return this.group_sources()[lord] ?? '';
-            }
-            group_picked_is(lord) {
-                return this.group_picked().includes(lord);
-            }
-            Group_pick_mark(lord) {
-                return this.group_picked_is(lord) ? super.Group_pick_mark(lord) : null;
-            }
-            group_chosen_rows() {
-                return this.group_picked().map(lord => this.Group_chosen_row(lord));
-            }
-            group_chosen_head() {
-                const count = this.group_picked().length;
-                if (!count)
-                    return 'Пока никого не выбрали';
-                return this.people_count(count);
-            }
-            group_chosen_lord(lord) {
-                return lord;
-            }
-            group_chosen_tint(lord) {
-                return this.avatar_tint(lord);
-            }
-            group_chosen_name(lord) {
-                return this.peer_label(lord);
-            }
-            group_lost(next) {
-                return next ?? [];
-            }
-            group_lost_note() {
-                const lost = this.group_lost();
-                if (!lost.length)
-                    return '';
-                const names = lost.map(lord => this.peer_label(lord)).join(', ');
-                return 'Не нашли ключей: ' + names
-                    + '. Без ключа человек не прочитает переписку — группу можно создать без него.';
-            }
-            Group_lost_note() {
-                return this.group_lost().length ? super.Group_lost_note() : null;
-            }
-            group_make_label() {
-                return this.group_lost().length ? 'Создать без них' : 'Создать группу';
+                this.Invite().done();
+                return id;
             }
             group_make(next) {
                 const picked = this.group_picked();
@@ -29616,144 +34924,20 @@ var $;
                 $mol_wire_async(this).group_create(this.group_name().trim(), picked, this.group_lost().length > 0);
                 return null;
             }
-            /** Создание группы целиком. Порядок здесь не косметика: всё, что умеет
-             * ждать — ключи участников, захват лендов, выдача прав, — стоит до
-             * первой записи. Фибра перезапускается с начала на каждом ожидании, и
-             * заведённая раньше группа завелась бы заново, оставив в списке пустые
-             * копии. Название и состав приезжают сюда аргументами по той же
-             * причине: очищенные поля следующий заход прочитал бы уже пустыми.
-             *
-             * Ключ может не найтись ни в ленде человека, ни в реестрах: без него
-             * шифрованный ленд ему не открыть, и группа с ним вышла бы молча
-             * кривой. Поэтому первый заход только показывает, кого не удалось
-             * добавить, а создаёт уже второй — когда с потерей согласились. */
             group_create(title, lords, forced) {
-                const my = this.my_lord();
-                const known = [];
-                const passes = [];
-                const lost = [];
-                for (const lord of lords) {
-                    if (!lord || lord === my)
-                        continue;
-                    const pass = this.peer_pass_of(lord);
-                    if (pass) {
-                        known.push(lord);
-                        passes.push(pass);
-                    }
-                    else {
-                        lost.push(lord);
-                    }
-                }
-                if (lost.length && !forced) {
-                    this.group_lost(lost);
+                const id = this.Crew().draft_build(title, lords, forced);
+                if (!id)
                     return '';
-                }
-                if (!known.length)
-                    return '';
-                const glob = this.$.$giper_baza_glob;
-                const dialog_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                const session_land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                // Ранг тот же, что и в переписке вдвоём: сотни подписей на сообщение
-                // человек не заметит, а заливать группу тысячами станет невыгодно.
-                // Создатель — король обоих лендов, полное управление у него и так
-                for (const pass of passes) {
-                    dialog_land.give(pass, $giper_baza_rank_post('fast'));
-                    session_land.give(pass, $giper_baza_rank_post('fast'));
-                }
-                const dialog = dialog_land.Data($bog_gram_dialog);
-                dialog.Peers('auto').add(my);
-                for (const lord of known)
-                    dialog.Peers('auto').add(lord);
-                dialog.Sessions('auto').add(session_land.link().str);
-                dialog.Session_last('auto')?.val(session_land.link().str);
-                dialog.Created('auto')?.val(Date.now());
-                dialog.Owner('auto')?.val(this.my_lord());
-                if (title)
-                    dialog.Title('auto')?.val(title);
-                const session = session_land.Data($bog_gram_session);
-                session.Dialog_land('auto')?.val(dialog_land.link().str);
-                const id = dialog_land.link().str;
-                this.dialogs_store().Dialogs('auto').add(id);
-                this.monitor_store().Watch('auto').add(session_land.link().str);
-                for (const lord of known) {
-                    this.peer_accept(lord);
-                    this.dialogs_store().Outbox('auto').add(lord + '|' + id);
-                }
-                this.group_picked([]);
-                this.group_lost([]);
-                this.group_name('');
-                this.group_id('');
-                this.group_id_error('');
                 this.group_opened(false);
                 this.dialog_current(id);
-                this.chat_bring();
                 return id;
             }
-            // ===== Участники группы =====
-            members_opened(next) {
-                return next ?? false;
-            }
-            /** Экран участников есть только у группы: в переписке вдвоём
-             * перечислять некого. */
-            members_shown() {
-                const id = this.dialog_active();
-                return Boolean(id) && this.group_is(id);
-            }
-            chat_members_shown() {
-                return this.members_shown();
-            }
-            members_open(next) {
-                this.members_opened(!this.members_opened());
-                this.member_error('');
-                this.leave_armed(false);
-                return null;
-            }
-            members_close(next) {
-                this.members_opened(false);
-                this.leave_armed(false);
-                return null;
-            }
-            member_error(next) {
-                return next ?? '';
-            }
-            /** Что значит «убрать», объясняем на месте и только тому, кто может
-             * убирать: остальным эта кнопка и не показывается. Прятать пояснение
-             * в подсказку кнопки нельзя — на телефоне её никто не увидит, а
-             * операция необратимая. */
-            Members_drop_note() {
-                return this.admin_me(this.dialog_active()) ? super.Members_drop_note() : null;
-            }
-            /** Ленд группы может быть ещё не засинкан: список участников тогда
-             * пуст, а подписка на его приход сохраняется — строки дорисуются. */
             member_lords() {
                 const id = this.dialog_active();
                 if (!id)
                     return [];
-                try {
-                    return this.dialog_lords(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
+                return $bog_gram_soft(() => this.dialog_lords(id), []);
             }
-            member_rows() {
-                return this.member_lords().map(lord => this.Member_row(lord));
-            }
-            member_lord(lord) {
-                return lord;
-            }
-            member_tint(lord) {
-                return this.avatar_tint(lord);
-            }
-            member_title(lord) {
-                if (lord === this.my_lord())
-                    return 'Вы';
-                return this.peer_label(lord);
-            }
-            /** Создателя отмечаем отдельно от назначенных админов: его права никто
-             * не отберёт — он король ленда. */
             member_status(lord) {
                 const id = this.dialog_active();
                 if (!id)
@@ -29762,2887 +34946,112 @@ var $;
                     return 'создатель';
                 return this.admin_is(id, lord) ? 'админ' : '';
             }
-            Member_status(lord) {
-                return this.member_status(lord) ? super.Member_status(lord) : null;
+            members_admin() {
+                return this.admin_me(this.dialog_active());
             }
-            /** Назначает админов создатель, и только тех, кто им ещё не стал. */
-            Member_rule(lord) {
-                const id = this.dialog_active();
-                if (!this.owner_me(id))
-                    return null;
-                if (lord === this.my_lord())
-                    return null;
-                if (this.admin_is(id, lord))
-                    return null;
-                return super.Member_rule(lord);
+            members_owner() {
+                return this.owner_me(this.dialog_active());
             }
-            /** Убирает людей админ. Себя убрать нельзя: для этого есть выход из
-             * группы, он не трогает остальных. */
-            Member_drop(lord) {
-                const id = this.dialog_active();
-                if (!this.admin_me(id))
-                    return null;
-                if (lord === this.my_lord())
-                    return null;
-                return super.Member_drop(lord);
+            member_admin(lord) {
+                return this.admin_is(this.dialog_active(), lord);
             }
-            member_armed(lord, next) {
-                return next ?? false;
+            members_asks() {
+                return this.Lobby().asks_of(this.dialog_active());
             }
-            member_drop_hint(lord) {
-                return this.member_armed(lord)
-                    ? 'Точно убрать? Прошлые сообщения у него останутся'
-                    : 'Убрать из группы';
-            }
-            member_disarm(next) {
-                for (const lord of this.member_lords())
-                    this.member_armed(lord, false);
-                return null;
-            }
-            /** Первый клик взводит кнопку, второй убирает человека — как корзина в
-             * списке диалогов. Строка участника не кликабельна, но всплытие гасим
-             * так же: кнопка лежит внутри неё. */
-            member_drop_click(lord, next) {
-                next?.stopPropagation();
-                if (!lord)
-                    return null;
-                if (!this.member_armed(lord)) {
-                    this.member_disarm();
-                    this.member_armed(lord, true);
-                    return null;
-                }
-                this.member_armed(lord, false);
-                const id = this.dialog_active();
-                if (id)
-                    $mol_wire_async(this).member_part(id, lord);
-                return null;
-            }
-            member_rule_click(lord, next) {
-                next?.stopPropagation();
-                const id = this.dialog_active();
-                if (!id || !lord)
-                    return null;
-                $mol_wire_async(this).member_promote(id, lord);
-                return null;
-            }
-            /** Что достанется новому участнику: ключи от всех бакетов группы или
-             * только от свежего. */
-            history_open(next) {
-                return next ?? true;
-            }
-            history_shut() {
-                return !this.history_open();
-            }
-            members_history_all(next) {
-                this.history_open(true);
-                return null;
-            }
-            members_history_new(next) {
-                this.history_open(false);
-                return null;
-            }
-            members_history_note() {
-                return this.history_open()
-                    ? 'Новый участник получит ключи от всех прошлых сообщений группы'
-                    : 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше';
-            }
-            /** Кого ещё можно позвать: те же источники, что и при создании, минус
-             * те, кто в группе уже есть. */
-            member_pick_lords() {
+            member_candidates() {
                 const inside = new Set(this.member_lords());
-                return Object.keys(this.group_sources()).filter(lord => !inside.has(lord));
+                return this.contact_lords().filter(lord => !inside.has(lord));
             }
-            member_pick_rows() {
-                return this.member_pick_lords().map(lord => this.Member_pick_row(lord));
-            }
-            member_pick_lord(lord) {
-                return lord;
-            }
-            member_pick_tint(lord) {
-                return this.avatar_tint(lord);
-            }
-            member_pick_title(lord) {
-                return this.peer_label(lord);
-            }
-            member_pick_source(lord) {
-                return this.group_sources()[lord] ?? '';
-            }
-            Member_pick_source(lord) {
-                return this.member_pick_source(lord) ? super.Member_pick_source(lord) : null;
-            }
-            member_pick(lord, next) {
+            member_add(lord, next) {
                 const id = this.dialog_active();
                 if (!id || !lord)
                     return null;
-                $mol_wire_async(this).member_join(id, lord, this.history_open());
+                $mol_wire_async(this.Crew()).join(id, lord, this.member_history());
                 return null;
             }
-            member_id_add(next) {
+            member_drop(lord, next) {
                 const id = this.dialog_active();
-                const lord = this.member_id().trim();
                 if (!id || !lord)
                     return null;
-                if (lord === this.my_lord()) {
-                    this.member_error('Это ваш собственный идентификатор');
-                    return null;
-                }
-                if (!$giper_baza_link.check(lord)) {
-                    this.member_error('Это не похоже на идентификатор');
-                    return null;
-                }
-                this.member_error('');
-                this.member_id('');
-                $mol_wire_async(this).member_join(id, lord, this.history_open());
+                $mol_wire_async(this.Crew()).part(id, lord);
                 return null;
             }
-            /** Звать людей может админ, поэтому у остальных этого блока нет вовсе —
-             * вместе со ссылкой-приглашением и заявками по ней: принять заявку
-             * всё равно некому, а ссылка без приёма бесполезна.
-             *
-             * Выбор истории стоит наверху блока и распространяется на все способы
-             * добавить человека сразу: и на заявку, и на ссылку из реестра, и на
-             * набранный руками идентификатор. */
-            members_add_rows() {
+            member_raise(lord, next) {
                 const id = this.dialog_active();
-                if (!this.admin_me(id))
-                    return [];
-                const asks = this.ask_entries(id);
-                return [
-                    this.Members_add_title(),
-                    this.Members_history(),
-                    ...this.member_error() ? [this.Members_error()] : [],
-                    this.Members_join(),
-                    ...asks.length ? [this.Members_asks_head(), this.Members_asks_list()] : [],
-                    this.Members_id_form(),
-                    this.Members_pick_list(),
-                    ...this.owner_me(id) ? [this.Members_admin_note()] : [],
-                ];
-            }
-            leave_armed(next) {
-                return next ?? false;
-            }
-            group_leave_label() {
-                return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы';
-            }
-            /** Выход — то же самое, что удаление диалога из своего списка: ленд
-             * остаётся у остальных, а свою ссылку и слежку за бакетами мы снимаем.
-             * Из списка участников при этом не вычёркиваемся: сделать это можно
-             * только записью в тот же ленд, а писать в группу, из которой уходишь,
-             * — лишнее. */
-            group_leave_click(next) {
-                if (!this.leave_armed()) {
-                    this.leave_armed(true);
+                if (!id || !lord)
                     return null;
-                }
+                $mol_wire_async(this.Crew()).promote(id, lord);
+                return null;
+            }
+            ask_accept(entry, next) {
+                if (!entry)
+                    return null;
+                $mol_wire_async(this.Lobby()).apply(entry, this.member_history());
+                return null;
+            }
+            ask_reject(entry, next) {
+                if (!entry)
+                    return null;
+                $mol_wire_async(this.Lobby()).deny(entry);
+                return null;
+            }
+            group_leave(next) {
                 const id = this.dialog_active();
-                this.leave_armed(false);
                 this.members_opened(false);
                 this.dialog_delete(id);
                 return null;
             }
-            /** Добавление участника. Всё, что умеет ждать — ключ человека, ключи
-             * остальных, захват свежего бакета, выдача прав, — стоит до первой
-             * записи: фибра перезапускается с начала на каждом ожидании.
-             *
-             * С историей: выдаём право на все бакеты, что уже есть, и новичок
-             * читает переписку с самого начала. Без истории: заводим свежий бакет,
-             * открываем его нынешним участникам и новичку, а старые ему не
-             * открываем вовсе — ключей от них у него не появится.
-             *
-             * Готовый ключ приходит сюда из заявки: там он приезжает вместе с
-             * просьбой, уже проверенный пересчётом, и разыскивать человека по
-             * реестрам не нужно. Во всех остальных местах ключ ищется как прежде. */
-            member_join(id, lord, history, known) {
-                if (!id || !lord)
-                    return '';
-                if (lord === this.my_lord())
-                    return '';
-                if (!this.admin_me(id))
-                    return '';
-                const pass = known ?? this.peer_pass_of(lord);
-                if (!pass) {
-                    this.member_error('Не нашли ключ этого человека: без ключа он не прочитает переписку');
-                    return '';
-                }
-                const links = this.session_links_of(id);
-                const mates = this.dialog_mates(id).filter(mate => mate !== lord);
-                // Ключи остающихся нужны только свежему бакету: старым права уже
-                // выданы, и трогать их незачем
-                const stay = [];
-                if (!history) {
-                    for (const mate of mates) {
-                        const mate_pass = this.peer_pass_of(mate);
-                        if (mate_pass)
-                            stay.push([mate, mate_pass]);
-                    }
-                    if (stay.length < mates.length) {
-                        this.member_error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
-                        return '';
-                    }
-                }
-                const glob = this.$.$giper_baza_glob;
-                const fresh = history ? null : glob.land_grab([[null, $giper_baza_rank_deny]]);
-                const dialog_land = glob.Land(new $giper_baza_link(id));
-                dialog_land.give(pass, this.member_rank(id, lord));
-                if (fresh) {
-                    for (const [mate, mate_pass] of stay)
-                        fresh.give(mate_pass, this.member_rank(id, mate));
-                    fresh.give(pass, this.member_rank(id, lord));
-                }
-                else {
-                    for (const link of links) {
-                        this.session_land_by(link).give(pass, this.member_rank(id, lord));
-                    }
-                }
-                const dialog = dialog_land.Data($bog_gram_dialog);
-                dialog.Peers('auto').add(lord);
-                if (fresh) {
-                    dialog.Sessions('auto').add(fresh.link().str);
-                    dialog.Session_last('auto')?.val(fresh.link().str);
-                    fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
-                    this.monitor_store().Watch('auto').add(fresh.link().str);
-                }
-                this.peer_accept(lord);
-                this.dialogs_store().Outbox('auto').add(lord + '|' + id);
-                this.member_error('');
-                return lord;
-            }
-            /** Исключение — это свежий бакет без исключённого. Ключ от уже выданных
-             * бакетов отобрать нельзя: прошлые сообщения у него остаются навсегда,
-             * а новых он не увидит — права на свежий бакет ему не выдают.
-             *
-             * Порядок тот же: ключи остающихся и захват бакета умеют ждать и стоят
-             * до первой записи. */
-            member_part(id, lord) {
-                if (!id || !lord)
-                    return '';
-                if (lord === this.my_lord())
-                    return '';
-                if (!this.admin_me(id))
-                    return '';
-                const mates = this.dialog_mates(id).filter(mate => mate !== lord);
-                const stay = [];
-                for (const mate of mates) {
-                    const mate_pass = this.peer_pass_of(mate);
-                    if (mate_pass)
-                        stay.push([mate, mate_pass]);
-                }
-                if (stay.length < mates.length) {
-                    this.member_error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
-                    return '';
-                }
-                const glob = this.$.$giper_baza_glob;
-                const fresh = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                for (const [mate, mate_pass] of stay)
-                    fresh.give(mate_pass, this.member_rank(id, mate));
-                const dialog = glob.Land(new $giper_baza_link(id)).Data($bog_gram_dialog);
-                dialog.Sessions('auto').add(fresh.link().str);
-                dialog.Session_last('auto')?.val(fresh.link().str);
-                dialog.Peers('auto').cut(lord);
-                if (this.admin_lords(id).includes(lord))
-                    dialog.Admins('auto').cut(lord);
-                fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
-                this.monitor_store().Watch('auto').add(fresh.link().str);
-                this.member_error('');
-                return lord;
-            }
-            /** Назначение админом. Право звать людей — это право управлять лендом,
-             * поэтому выдаётся оно и на ленд группы, и на каждый её бакет: иначе
-             * новый админ не смог бы открыть бакет новому человеку. Вместе с ним
-             * он получает и возможность менять чужие права — разделить эти
-             * способности в Базе нечем, и в интерфейсе об этом сказано прямо. */
-            member_promote(id, lord) {
-                if (!id || !lord)
-                    return '';
-                if (!this.owner_me(id))
-                    return '';
-                const pass = this.peer_pass_of(lord);
-                if (!pass) {
-                    this.member_error('Не нашли ключ этого человека: права ему не выдать');
-                    return '';
-                }
-                const glob = this.$.$giper_baza_glob;
-                const links = this.session_links_of(id);
-                const dialog_land = glob.Land(new $giper_baza_link(id));
-                dialog_land.give(pass, $giper_baza_rank_rule);
-                for (const link of links)
-                    this.session_land_by(link).give(pass, $giper_baza_rank_rule);
-                dialog_land.Data($bog_gram_dialog).Admins('auto').add(lord);
-                this.member_error('');
-                return lord;
-            }
-            // ===== Заявки в группу: сторона админа =====
-            /** Все заявки, что долетели в моё лобби. Лобби открыто на запись всем,
-             * поэтому мусор там обычное дело: разбор его отвергает, а на новом
-             * устройстве ленд может быть ещё в пути — подписка на его приход
-             * сохраняется, и заявки дорисуются сами. */
-            ask_all() {
-                try {
-                    return this.inbox_items(store => store.Joins());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            /** Заявки в конкретную группу. Того, кто уже внутри, не показываем: его
-             * заявку либо приняли, либо он пришёл своим путём — и принимать её
-             * второй раз незачем. */
-            ask_entries(id) {
-                if (!id)
-                    return [];
-                let inside = new Set();
-                try {
-                    inside = new Set(this.dialog_lords(id));
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                return this.ask_all().filter(entry => {
-                    const ask = this.ask_parse(entry);
-                    if (!ask)
-                        return false;
-                    if (ask.group !== id)
-                        return false;
-                    return !inside.has(ask.lord);
-                });
-            }
-            members_asks_head() {
-                return 'Заявки: ' + this.ask_entries(this.dialog_active()).length;
-            }
-            members_ask_rows() {
-                return this.ask_entries(this.dialog_active()).map(entry => this.Ask_row(entry));
-            }
-            /** Строка заявки ключуется самой записью: одна и та же запись должна
-             * дать один и тот же ряд, а лорда из неё достаёт разбор. */
-            ask_lord(entry) {
-                return this.ask_parse(entry)?.lord ?? '';
-            }
-            ask_tint(entry) {
-                return this.avatar_tint(this.ask_lord(entry));
-            }
-            ask_title(entry) {
-                return this.peer_label(this.ask_lord(entry));
-            }
-            /** Под именем стоит сокращённый идентификатор: имя человек задаёт себе
-             * сам, и по одному только имени понять, того ли впускаешь, нельзя. */
-            ask_status(entry) {
-                return this.lord_short(this.ask_lord(entry));
-            }
-            /** Выдача прав — это криптография с перебором степеней, поэтому из
-             * обработчика уходим в фибру. */
-            ask_accept(entry, next) {
-                next?.stopPropagation();
-                if (!entry)
-                    return null;
-                $mol_wire_async(this).ask_apply(entry);
-                return null;
-            }
-            /** Отказ — тоже криптография с перебором степеней: решение уезжает в
-             * лобби просящего, а туда пишут с работой. Поэтому в фибру. */
-            ask_reject(entry, next) {
-                next?.stopPropagation();
-                if (!entry)
-                    return null;
-                $mol_wire_async(this).ask_deny(entry);
-                return null;
-            }
-            /** Снять запись из своего лобби мало: у просившего заявка так и висела
-             * бы «ждём, пока примут» — отказ не оставляет никакого следа, а
-             * отсутствие записи в лобби и «лобби ещё не приехало» с его стороны
-             * неотличимы. Поэтому решение кладём ему прямо в лобби, открытое на
-             * запись всем. Своё чистим уже после доставки: пока она идёт, строка
-             * заявки остаётся на экране.
-             *
-             * Повторную заявку это не блокирует: отказ не бан, а нерешение. */
-            ask_deny(entry) {
-                const ask = this.ask_parse(entry);
-                if (!ask) {
-                    this.ask_forget(entry);
-                    return '';
-                }
-                try {
-                    const inbox_link = this.peer_store(ask.lord).Inbox_land()?.val();
-                    const pass = this.pass_verified(ask.lord, ask.pass);
-                    // Лобби у просящего может быть ещё не заведено — сказать ему
-                    // нечем, но и держать заявку у себя из-за этого незачем
-                    if (inbox_link && pass) {
-                        this.$.$giper_baza_glob
-                            .Land(new $giper_baza_link(String(inbox_link)))
-                            .Data($bog_gram_inbox)
-                            .Denies('auto')?.add(this.sealed_close(['deny', pass.toString(), ask.group]));
-                    }
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                }
-                this.ask_forget(entry);
-                return ask.group;
-            }
-            /** Обработанную заявку убираем из лобби, чтобы они не копились. Лобби
-             * моё, я его король — снять из него запись есть чем. */
-            ask_forget(entry) {
-                if (!entry)
-                    return null;
-                this.inbox_cut((store, auto) => store.Joins(auto), entry);
-                return null;
-            }
-            /** Приём заявки. Ключ проверяем пересчётом до всего остального: лобби
-             * открыто на запись всем, и свой ключ под чужим идентификатором может
-             * положить кто угодно — тогда в группу попал бы он, а не тот, кого
-             * туда позвали. Не сошлось — заявку отклоняем с пояснением.
-             *
-             * Дальше это обычное добавление участника: тем же кодом, с тем же
-             * выбором истории, что и при добавлении руками. Ключ передаём готовым —
-             * он приехал вместе с заявкой, и разыскивать человека по реестрам,
-             * которых у меня может и не быть, не приходится. */
-            ask_apply(entry) {
-                const ask = this.ask_parse(entry);
-                if (!ask) {
-                    this.ask_forget(entry);
-                    return '';
-                }
-                if (!this.admin_me(ask.group))
-                    return '';
-                const pass = this.pass_verified(ask.lord, ask.pass);
-                if (!pass) {
-                    this.member_error('Ключ в заявке не сходится со своим владельцем: заявка отклонена');
-                    this.ask_forget(entry);
-                    return '';
-                }
-                const joined = this.member_join(ask.group, ask.lord, this.history_open(), pass);
-                if (!joined)
-                    return '';
-                this.ask_forget(entry);
-                return joined;
-            }
-            /** Есть ли среди сообщений хоть одно моё. Отсюда два вывода сразу:
-             * приглашение до первого своего сообщения никуда не едет, а диалог,
-             * в котором я уже отвечал, никаким запросом быть не может. */
-            mine_among(messages, my) {
-                return messages.some(message => String(message.Author()?.val() ?? '') === my);
-            }
-            /** То же по ссылке на диалог. Ленд может быть ещё не засинкан: тогда
-             * считаем, что писать было нечего — приглашение подождёт, а подписка
-             * на приход данных сохраняется, и флаш вернётся сам. */
-            mine_wrote(id) {
-                try {
-                    return this.mine_among(this.messages_alive_of(id), this.my_lord());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return false;
-                }
-            }
-            /** Когда приглашение можно отправлять. В переписке вдвоём — после
-             * первого своего сообщения: пустой диалог собеседнику показывать
-             * незачем, он мог быть и заведён по ошибке. В группе довольно любого
-             * сообщения: человека туда позвали осознанно, и ждать, пока напишет
-             * именно позвавший, нелепо — переписка там уже идёт. */
-            invite_ready(id) {
-                if (!id)
-                    return false;
-                if (this.group_is(id))
-                    return this.dialog_alive(id);
-                return this.mine_wrote(id);
-            }
-            // Доставка инвайтов: ретраим, пока не приедут права чужого inbox-ленда
-            outbox_flush() {
-                const entries = (this.dialogs_store().Outbox()?.items() ?? []).map(String);
-                if (!entries.length)
-                    return 0;
-                this.$.$mol_state_time.now(3000);
-                for (const entry of entries) {
-                    const [peer, dialog_link] = entry.split('|');
-                    if (!this.invite_ready(dialog_link))
-                        continue;
-                    try {
-                        const inbox_link = this.peer_store(peer).Inbox_land()?.val();
-                        if (!inbox_link)
-                            continue;
-                        const pass = this.peer_pass_of(peer);
-                        if (!pass)
-                            continue;
-                        const sealed = this.sealed_close(['invite', pass.toString(), dialog_link]);
-                        const inbox = this.$.$giper_baza_glob
-                            .Land(new $giper_baza_link(String(inbox_link)))
-                            .Data($bog_gram_inbox);
-                        const invites = inbox.Invites('auto');
-                        if (!invites)
-                            continue;
-                        invites.add(sealed);
-                        const sent = (inbox.Invites()?.items() ?? []).map(String).includes(sealed);
-                        if (sent)
-                            this.dialogs_store().Outbox('auto').cut(entry);
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                        $mol_fail_log(error);
-                    }
-                }
-                return entries.length;
-            }
-            // ===== Входящие инвайты =====
-            sealed_close([kind, pass, open]) {
-                return $bog_gram_seal.close(this.$.$giper_baza_auth.current(), $bog_gram_seal.pass(pass), kind, open);
-            }
-            sealed_open([kind, entry]) {
-                return $bog_gram_seal.open(this.$.$giper_baza_auth.current(), kind, entry);
-            }
-            invite_open(entry) {
-                if (!$bog_gram_seal.is(entry))
-                    return entry;
-                return this.sealed_open(['invite', entry])?.open ?? '';
-            }
-            inbox_merge() {
-                const invites = this.inbox_items(store => store.Invites());
-                if (!invites.length)
-                    return 0;
-                const have = new Set(this.dialog_ids());
-                const hidden = new Set(this.hidden_ids());
-                for (const entry of invites) {
-                    const link = this.invite_open(entry);
-                    if (!link)
-                        continue;
-                    if (have.has(link))
-                        continue;
-                    if (hidden.has(link))
-                        continue;
-                    this.dialogs_store().Dialogs('auto').add(link);
-                }
-                return invites.length;
-            }
-            monitor_fill() {
-                const watch = this.monitor_store();
-                const have = new Set((watch.Watch()?.items() ?? []).map(String));
-                for (const id of this.dialog_ids()) {
-                    for (const link of this.session_links_of(id)) {
-                        if (have.has(link))
-                            continue;
-                        watch.Watch('auto').add(link);
-                    }
-                }
-                return true;
-            }
-            // ===== Сессии-бакеты =====
-            /** Ссылки на все бакеты диалога. Бакетов больше одного, когда кого-то
-             * убрали из группы или добавили без истории: ключ от уже выданного
-             * бакета отобрать нельзя, поэтому переписка продолжается в свежем.
-             * Читаем изо всех, до каких дотягиваемся, а пишем всегда в последний.
-             * У избранного делить нечего и не с кем, поэтому его ленд сам себе
-             * единственный бакет — остальной код от этого ничем не отличается. */
-            session_links_of(id) {
-                if (!id)
-                    return [];
-                if (this.saved_is(id))
-                    return this.saved_links();
-                return (this.dialog_store(id).Sessions()?.items() ?? []).map(String);
-            }
-            session_land_by(link) {
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(link));
-            }
-            session_lands_of(id) {
-                return this.session_links_of(id).map(link => this.session_land_by(link));
-            }
-            /** Свежий бакет: в него уходит вся запись — сообщения, картинки,
-             * голосовые, отметки прочтения.
-             *
-             * Берём его по явному указателю, а не по хвосту списка: порядок в
-             * списке определяется слиянием, а не тем, что добавили позже, и после
-             * ротации запись легко ушла бы в покинутый бакет. Хвост оставлен
-             * запасным путём для диалогов, заведённых до появления указателя. */
-            session_land_of(id) {
-                const links = this.session_links_of(id);
-                if (!links.length)
-                    return null;
-                if (!this.saved_is(id)) {
-                    const marked = String(this.dialog_store(id).Session_last()?.val() ?? '');
-                    if (marked && links.includes(marked))
-                        return this.session_land_by(marked);
-                }
-                return this.session_land_by(links[links.length - 1]);
-            }
-            session_land_active() {
-                return this.session_land_of(this.dialog_active());
-            }
-            session_store_last(id) {
-                const land = this.session_land_of(id);
-                if (!land)
-                    return null;
-                return land.Data($bog_gram_session);
-            }
-            // ===== Сообщения =====
-            /** Склейка лент нескольких бакетов. Порядок задаётся полем момента в
-             * самих данных, а не порядком доставки, поэтому склейка — это просто
-             * сортировка. Совпавшие моменты разводим ссылкой: без этого два
-             * сообщения, отправленные в одну миллисекунду, менялись бы местами от
-             * синка к синку. */
-            messages_merge(buckets) {
-                const all = [];
-                for (const bucket of buckets)
-                    all.push(...bucket);
-                return all.sort((a, b) => {
-                    const shift = Number(a.Moment()?.val() ?? 0) - Number(b.Moment()?.val() ?? 0);
-                    if (shift)
-                        return shift;
-                    const left = a.link().str;
-                    const right = b.link().str;
-                    return left < right ? -1 : left > right ? 1 : 0;
-                });
-            }
-            /** Бакет, который не читается — не приехал, не расшифровался, прав на
-             * него не выдавали, — молча пропускаем: один недоступный не должен
-             * уносить с собой всю остальную переписку. Подписка на его приход при
-             * этом сохраняется, и лента дособерётся сама. */
-            messages_of(id) {
-                const buckets = [];
-                for (const land of this.session_lands_of(id)) {
-                    try {
-                        buckets.push(land.Data($bog_gram_session).Messages()?.remote_list() ?? []);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                }
-                return this.messages_merge(buckets);
-            }
-            messages_alive_of(id) {
-                return this.messages_of(id).filter(message => !message.Deleted()?.val());
-            }
-            messages() {
-                return this.messages_alive_of(this.dialog_active());
-            }
-            message_pawn(id) {
-                return this.messages().find(message => message.link().str === id) ?? null;
-            }
-            day_key(moment) {
-                if (!moment)
-                    return '';
-                return new Date(moment).toDateString();
-            }
-            day_title(key) {
-                if (!key)
-                    return '';
-                const now = new Date();
-                if (key === now.toDateString())
-                    return 'Сегодня';
-                if (key === new Date(now.getTime() - day_ms).toDateString())
-                    return 'Вчера';
-                return new Date(key).toLocaleDateString('ru');
-            }
-            time_hm(moment) {
-                const date = new Date(moment);
-                return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
-            }
-            /** Лента чата: пузыри вперемешку с разделителями календарных дней. */
-            chat_rows() {
-                let last_day = '';
-                return this.messages().flatMap(message => {
-                    const day = this.day_key(Number(message.Moment()?.val() ?? 0));
-                    const head = day && day !== last_day ? [this.Day_row(day)] : [];
-                    last_day = day;
-                    return [...head, this.Message_row(message.link().str)];
-                });
-            }
-            message_body(id) {
-                return this.message_pawn(id)?.Text()?.val() ?? '';
-            }
-            message_out(id) {
-                return String(this.message_pawn(id)?.Author()?.val() ?? '') === this.my_lord();
-            }
-            message_time(id) {
-                const moment = Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
-                return moment ? this.time_hm(moment) : '';
-            }
-            message_edited(id) {
-                return Boolean(this.message_pawn(id)?.Edited()?.val());
-            }
-            Message_edited(id) {
-                return this.message_edited(id) ? super.Message_edited(id) : null;
-            }
-            /** Сколько участников успело прочитать сообщение. Автора не считаем ни
-             * в числителе, ни в знаменателе: своё сообщение он не читает. */
-            read_tally(reads, mates, moment) {
-                return mates.filter(lord => (reads[lord] ?? 0) >= moment).length;
-            }
-            /** Одна галочка — доставлено, две — собеседник прочитал. В группе
-             * галочки не годятся: прочитавших там сколько угодно, поэтому вместо
-             * них счёт. Только для своих сообщений и только там, где есть кому
-             * читать: в избранном отметок нет. */
-            message_checks(id) {
-                if (!this.message_out(id))
-                    return '';
-                const dialog = this.dialog_active();
-                if (this.saved_is(dialog))
-                    return '';
-                const moment = Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
-                if (this.group_is(dialog)) {
-                    let mates = [];
-                    try {
-                        mates = this.dialog_mates(dialog);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                    if (!mates.length)
-                        return '';
-                    const reads = {};
-                    for (const lord of mates)
-                        reads[lord] = this.read_moment_of(dialog, lord);
-                    return 'Прочитали ' + this.read_tally(reads, mates, moment) + ' из ' + mates.length;
-                }
-                const peer = this.dialog_peer(dialog);
-                if (!peer)
-                    return '✓';
-                return this.read_moment_of(dialog, peer) >= moment ? '✓✓' : '✓';
-            }
-            Message_checks(id) {
-                return this.message_checks(id) ? super.Message_checks(id) : null;
-            }
-            /** Имя отправителя стоит только в группе и только над чужим пузырём:
-             * в переписке вдвоём оно ничего не добавляет — там и так двое. Порядок
-             * тот же, что и везде: моя подпись, потом его имя, потом сокращённый
-             * идентификатор. */
-            message_author(id) {
-                if (this.message_out(id))
-                    return '';
-                if (!this.group_is(this.dialog_active()))
-                    return '';
-                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
-                if (!lord)
-                    return '';
-                return this.peer_label(lord);
-            }
-            /** Цвет подписи — тот же, что у аватара автора: в длинной группе имена
-             * различаются ещё и на глаз, не только буквами. */
-            message_author_tint(id) {
-                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
-                return lord ? this.avatar_tint(lord) : 0;
-            }
-            Message_author(id) {
-                return this.message_author(id) ? super.Message_author(id) : null;
-            }
-            // ===== Действия над сообщением =====
-            /** Чужое сообщение править и удалять нечем: панель есть только у своих. */
-            Message_actions(id) {
-                return this.message_out(id) ? super.Message_actions(id) : null;
-            }
-            /** Пузырь с раскрытой панелью ровно один: второе долгое нажатие
-             * переносит её на новое сообщение, а не плодит вторую. */
-            message_menu(next) {
-                return next ?? '';
-            }
-            message_menu_is(id) {
-                return this.message_menu() === id;
-            }
-            /** Отсчёт удержания живёт между двумя разными обработчиками, поэтому это
-             * обычные поля, а не мемы: мем сбросился бы вместе с фиброй предыдущего
-             * события, и отпускание пальца не увидело бы, что нажатие было долгим. */
-            press_timer = null;
-            press_row = '';
-            press_held = false;
-            tap_row = '';
-            tap_at = 0;
-            press_stop() {
-                if (this.press_timer !== null)
-                    this.$.$mol_dom_context.clearTimeout(this.press_timer);
-                this.press_timer = null;
-            }
-            message_press(id, next) {
-                this.press_stop();
-                this.press_row = id;
-                this.press_held = false;
-                if (!this.message_out(id))
-                    return null;
-                this.press_timer = this.$.$mol_dom_context.setTimeout(() => this.message_hold(id), press_delay);
-                return null;
-            }
-            message_hold(id) {
-                this.press_timer = null;
-                this.press_held = true;
-                this.message_menu(id);
-                return null;
-            }
-            /** Отпускание пальца внутри самой панели: по нему прятать её нельзя.
-             * Клик браузер шлёт уже после отпускания, и кнопка, успевшая пропасть
-             * из вёрстки, его не получит — правка и удаление просто не сработают. */
-            press_on_actions(next) {
-                const spot = next?.target;
-                if (!(spot instanceof this.$.$mol_dom_context.Element))
-                    return false;
-                return Boolean(spot.closest('[bog_gram_message_actions]'));
-            }
-            /** Короткий тап по своему пузырю прячет раскрытую панель обратно. Отмена
-             * жеста (палец поехал прокручивать ленту) приходит сюда же и делает то
-             * же самое, а вот отпускание после сработавшего удержания — нет, иначе
-             * панель закрывалась бы в тот же момент, когда открылась. */
-            message_release(id, next) {
-                const held = this.press_held && this.press_row === id;
-                this.press_stop();
-                this.press_held = false;
-                if (held)
-                    return null;
-                if (this.press_on_actions(next))
-                    return null;
-                if (this.message_menu() === id)
-                    this.message_menu('');
-                if (next?.type === 'pointerup' && this.message_double_tap(id, Date.now())) {
-                    this.$.$mol_dom_context.getSelection?.()?.removeAllRanges();
-                    this.message_reply(id);
-                }
-                return null;
-            }
-            /** Двойной тап узнаём сами по двум отпусканиям подряд: dblclick на
-             * телефонах приходит не везде, а отпускание пальца — всегда. */
-            message_double_tap(id, now) {
-                const double = this.tap_row === id && now - this.tap_at < double_tap_delay;
-                this.tap_row = double ? '' : id;
-                this.tap_at = double ? 0 : now;
-                return double;
-            }
-            /** На телефоне это тот же долгий тап, на десктопе — правый клик.
-             * Показываем свою панель, поэтому системное меню гасим. */
-            message_context(id, next) {
-                if (!this.message_out(id))
-                    return null;
-                next?.preventDefault();
-                this.press_stop();
-                this.press_held = true;
-                this.message_menu(id);
-                return null;
-            }
-            // ===== Отправка, правка, удаление =====
-            edit_id(next) {
-                return next ?? '';
-            }
-            edit_mode() {
-                return Boolean(this.edit_id());
-            }
-            reply_id(next) {
-                return next ?? '';
-            }
-            reply_mode() {
-                return Boolean(this.reply_id()) && !this.edit_mode();
-            }
-            message_reply(id) {
-                this.message_menu('');
-                if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
-                }
-                this.reply_id(id);
-                new this.$.$mol_after_tick(() => {
-                    try {
-                        this.Chat_page().Message_field().focused(true);
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                });
-                return null;
-            }
-            reply_cancel(next) {
-                this.reply_id('');
-                return null;
-            }
-            /** Кто написал сообщение, на которое отвечают: в цитате это видно
-             * и в переписке вдвоём, иначе непонятно, чьи слова процитированы. */
-            quote_author(id) {
-                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
-                if (!lord)
-                    return '';
-                if (lord === this.my_lord())
-                    return 'Вы';
-                return this.peer_label(lord);
-            }
-            quote_text(id) {
-                const pawn = this.message_pawn(id);
-                if (!pawn)
-                    return '';
-                const text = String(pawn.Text()?.val() ?? '').replace(/\s+/g, ' ').trim();
-                if (text)
-                    return text;
-                if (pawn.Image()?.val())
-                    return 'Фото';
-                if (pawn.Voice()?.val())
-                    return 'Голосовое сообщение';
-                return '';
-            }
-            reply_title() {
-                return 'Ответ ' + this.quote_author(this.reply_id());
-            }
-            reply_text() {
-                return this.quote_text(this.reply_id());
-            }
-            message_quote_id(id) {
-                const target = String(this.message_pawn(id)?.Reply()?.val() ?? '');
-                if (!target)
-                    return '';
-                return this.message_pawn(target) ? target : '';
-            }
-            Message_quote(id) {
-                return this.message_quote_id(id) ? super.Message_quote(id) : null;
-            }
-            message_quote_author(id) {
-                return this.quote_author(this.message_quote_id(id));
-            }
-            message_quote_text(id) {
-                return this.quote_text(this.message_quote_id(id));
-            }
-            message_quote_jump(id, next) {
-                const target = this.message_quote_id(id);
-                if (target)
-                    this.Chat_page().reveal(this.Message_row(target), 'center');
-                return null;
-            }
-            message_edit(id, next) {
-                this.message_menu('');
-                this.reply_id('');
-                this.edit_id(id);
-                this.message_text(this.message_body(id));
-                return null;
-            }
-            edit_cancel(next) {
-                this.edit_id('');
-                this.message_text('');
-                return null;
-            }
-            message_delete(id, next) {
-                this.message_menu('');
-                const pawn = this.message_pawn(id);
-                if (!pawn)
-                    return null;
-                pawn.Deleted('auto')?.val(Date.now());
-                if (this.edit_id() === id) {
-                    this.edit_id('');
-                    this.message_text('');
-                }
-                return null;
-            }
-            message_send(next) {
-                this.notify_offer();
-                this.message_menu('');
-                const text = this.message_text().trim();
-                const editing = this.edit_id();
-                if (editing) {
-                    if (!text)
-                        return null;
-                    const pawn = this.message_pawn(editing);
-                    if (pawn) {
-                        pawn.Text('auto')?.val(text);
-                        pawn.Edited('auto')?.val(Date.now());
-                    }
-                    this.edit_id('');
-                    this.message_text('');
-                    return null;
-                }
-                if (!text)
-                    return null;
-                const session = this.session_store_last(this.dialog_active());
-                if (!session)
-                    return null;
-                const message = session.Messages('auto').make(null);
-                message.Text('auto')?.val(text);
-                message.Author('auto')?.val(this.my_lord());
-                message.Moment('auto')?.val(Date.now());
-                const reply = this.reply_id();
-                if (reply)
-                    message.Reply('auto')?.val(reply);
-                this.reply_id('');
-                this.message_text('');
-                return null;
-            }
-            // ===== Картинки =====
-            /** Кадр есть, если у сообщения есть ссылка на его ленд. Сама
-             * картинка при этом может быть ещё в пути — коробку под неё
-             * рисуем всё равно, иначе лента дёрнется при её появлении. */
-            message_shot(id) {
-                return Boolean(this.message_pawn(id)?.Image()?.val());
-            }
-            Message_shot(id) {
-                return this.message_shot(id) ? super.Message_shot(id) : null;
-            }
-            /** Картинка без подписи — обычное дело, и пустой абзац под ней
-             * оставлял бы в пузыре лишнюю полосу. */
-            Message_body(id) {
-                return this.message_body(id) ? super.Message_body(id) : null;
-            }
-            /** Размеры кадра приезжают вместе с сообщением, до самой картинки.
-             * Пока их нет, считаем кадр квадратным: перепрыгнуть один раз при
-             * загрузке лучше, чем схлопнуть пузырь в ноль. */
-            message_shot_size(id) {
-                const pawn = this.message_pawn(id);
-                const width = Number(pawn?.Image_width()?.val() ?? 0);
-                const height = Number(pawn?.Image_height()?.val() ?? 0);
-                if (!width || !height)
-                    return { width: 1, height: 1 };
-                return { width, height };
-            }
-            message_shot_ratio(id) {
-                const size = this.message_shot_size(id);
-                return size.width + ' / ' + size.height;
-            }
-            /** В предел упирается большая сторона, меньшая считается от неё по
-             * пропорциям. Кадр мельче предела показываем как есть. */
-            message_shot_width(id) {
-                const size = this.message_shot_size(id);
-                const side = Math.max(size.width, size.height);
-                const limit = Math.min(shot_side, side / rem_px);
-                return (limit * size.width / side).toFixed(2) + 'rem';
-            }
-            /** Ленд картинки приезжает отдельно от переписки: пока буфер пуст,
-             * отдаём пустую ссылку — место уже занято коробкой, а подписка на
-             * приход ленда сохраняется, и кадр проявится сам. */
-            message_shot_uri(id) {
-                try {
-                    const file = this.message_pawn(id)?.Image()?.remote();
-                    if (!file)
-                        return '';
-                    if (!file.buffer().byteLength)
-                        return '';
-                    return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            // ===== Развёрнутый кадр =====
-            zoom_id(next) {
-                return next ?? '';
-            }
-            zoom_uri() {
-                const id = this.zoom_id();
-                if (!id)
-                    return '';
-                return this.message_shot_uri(id);
-            }
-            /** Долгое нажатие уже раскрыло под пузырём правку с удалением —
-             * тот же жест не должен вдобавок разворачивать картинку. */
-            message_zoom(id, next) {
-                if (this.message_menu() === id)
-                    return null;
-                if (!this.message_shot_uri(id))
-                    return null;
-                this.zoom_id(id);
-                this.zoom_focus();
-                return null;
-            }
-            zoom_close(next) {
-                this.zoom_id('');
-                return null;
-            }
-            /** Слой ловит Esc, только пока на нём фокус, а в разметке он
-             * появляется лишь следующим кадром — тогда же его и фокусируем. */
-            zoom_focus() {
-                new this.$.$mol_after_tick(() => {
-                    try {
-                        const node = this.Chat_page().Zoom().dom_node();
-                        node.focus();
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            return;
-                        $mol_fail_log(error);
-                    }
-                });
-            }
-            // ===== Отправка картинки =====
-            /** Кнопка со скрепкой. Из выбранного берём первую картинку:
-             * множественный выбор в поле отключён, но система может подсунуть
-             * заодно и что-нибудь постороннее. */
-            image_files(next) {
-                const file = (next ?? []).find(item => this.$.$bog_gram_shrink.image_is(item));
-                if (file)
-                    this.image_start(file);
-                this.attach_reset();
-                return next ?? null;
-            }
-            /** Поле выбора файла помнит прошлый выбор и о повторе того же самого
-             * файла уже не сообщает: без сброса одну картинку нельзя было бы
-             * отправить дважды. */
-            attach_reset() {
-                new this.$.$mol_after_tick(() => {
-                    try {
-                        const node = this.Chat_page().Attach().Native().dom_node();
-                        node.value = '';
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            return;
-                        $mol_fail_log(error);
-                    }
-                });
-            }
-            /** Вставка из буфера. Картинку достаём синхронно, пока событие живо,
-             * и тут же уходим в фибру: ждать прямо в обработчике нельзя — mol
-             * перезапускает его на каждом ожидании, а каждый перезапуск доставал
-             * бы из буфера новый файл, то есть отправлял бы копию. */
-            image_paste(next) {
-                const event = next;
-                const items = event?.clipboardData?.items;
-                if (!items)
-                    return null;
-                for (let i = 0; i < items.length; ++i) {
-                    const file = items[i].getAsFile();
-                    if (!file)
-                        continue;
-                    if (!this.$.$bog_gram_shrink.image_is(file))
-                        continue;
-                    event?.preventDefault();
-                    this.image_start(file);
-                    break;
-                }
-                return null;
-            }
-            /** Без отмены умолчания браузер откроет брошенный файл вместо
-             * страницы — и переписка просто исчезнет с экрана. */
-            image_over(next) {
-                next?.preventDefault();
-                return null;
-            }
-            image_drop(next) {
-                const event = next;
-                event?.preventDefault();
-                const files = event?.dataTransfer?.files;
-                if (!files)
-                    return null;
-                const file = Array.from(files).find(item => this.$.$bog_gram_shrink.image_is(item));
-                if (file)
-                    this.image_start(file);
-                return null;
-            }
-            /** Пережатие, захват ленда и подпись — это криптография с перебором
-             * степеней: из обработчика уходим в фибру, иначе каждое ожидание
-             * начинало бы перебор заново, а интерфейс всё это время стоял бы. */
-            image_start(file) {
-                // Картинка — всегда новое сообщение, а начатая правка держит в поле
-                // чужой текст: подписью к кадру он стать не должен
-                if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
-                }
-                $mol_wire_async(this).image_send(file);
-            }
-            /** Кадр едет в своём ленде, закрытом так же, как ленд диалога: право
-             * читать выдаём каждому участнику, для всех остальных — включая
-             * мастера — там шифрованный мусор. В избранном выдавать право некому,
-             * ленд просто остаётся закрытым.
-             *
-             * Порядок здесь не косметика. Всё, что умеет ждать — пережатие,
-             * захват ленда, выдача права, — стоит до создания сообщения: фибра
-             * перезапускается с начала на каждом ожидании, и созданное раньше
-             * сообщение она завела бы заново, оставив в переписке копии. */
-            image_send(file) {
-                const id = this.dialog_active();
-                if (!id)
-                    return '';
-                const session = this.session_store_last(id);
-                if (!session)
-                    return '';
-                const glob = this.$.$giper_baza_glob;
-                const mates = this.saved_is(id) ? [] : this.dialog_mates(id);
-                // Ключи участников приезжают вместе с их лендами. Пока хоть одного
-                // нет, не пишем ничего: кадр в закрытом ленде он не прочитал бы
-                // никогда, а так отправку можно просто повторить
-                const passes = this.passes_of(mates);
-                if (passes.length < mates.length)
-                    return '';
-                const shot = this.$.$bog_gram_shrink.shrink(file);
-                const land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                const store = land.Data($giper_baza_file);
-                store.buffer(shot.bytes);
-                store.type(shot.type);
-                for (const pass of passes)
-                    land.give(pass, $giper_baza_rank_read);
-                // Ленд кадра лежит в стороне от переписки, поэтому пуш на мастер
-                // зовём сами — сам он туда не поедет
-                land.sync();
-                const text = this.message_text().trim();
-                const message = session.Messages('auto').make(null);
-                message.Image('auto').remote(store);
-                message.Image_width('auto')?.val(shot.width);
-                message.Image_height('auto')?.val(shot.height);
-                if (text)
-                    message.Text('auto')?.val(text);
-                message.Author('auto')?.val(this.my_lord());
-                message.Moment('auto')?.val(Date.now());
-                this.message_text('');
-                return message.link().str;
-            }
-            // ===== Голосовые: запись =====
-            /** Микрофон показываем, только если браузер умеет писать звук: иначе
-             * кнопка обещала бы то, чего не будет. */
-            voice_ready() {
-                return this.$.$bog_gram_voice.supported();
-            }
-            /** Живая запись между двумя событиями: нажатие её заводит, отпускание
-             * забирает результат. Это обычное поле, а не мем — фибра нажатия к
-             * моменту отпускания давно кончилась, и мем обнулился бы вместе с ней. */
-            voice_live = null;
-            /** Момент начала записи, ноль — не пишем. По нему же идёт таймер. */
-            voice_start(next) {
-                return next ?? 0;
-            }
-            voice_on() {
-                return Boolean(this.voice_start());
-            }
-            voice_hint(next) {
-                return next ?? '';
-            }
-            /** Растущий таймер. Пока не пишем, время не читаем вовсе: иначе вся
-             * страница пересчитывалась бы пять раз в секунду впустую. */
-            voice_clock() {
-                const start = this.voice_start();
-                if (!start)
-                    return '';
-                const now = this.$.$mol_state_time.now(clock_tick);
-                return this.$.$bog_gram_voice.stamp((now - start) / 1000);
-            }
-            /** Нажали микрофон. Разрешение и кодировщик умеют ждать, поэтому
-             * уходим в фибру: держать обработчик события нельзя, mol перезапускает
-             * его на каждом ожидании. */
-            voice_press(next) {
-                if (this.voice_live)
-                    return null;
-                if (!this.voice_ready())
-                    return null;
-                const take = this.$.$bog_gram_voice.make({
-                    filled: () => this.voice_finish(),
-                });
-                this.voice_live = take;
-                this.voice_hint('');
-                this.voice_start(Date.now());
-                this.voice_grab(next);
-                $mol_wire_async(this).voice_open(take);
-                return null;
-            }
-            /** Палец может съехать с кнопки, а мышь — уйти вообще со страницы:
-             * без захвата указателя отпускание пришло бы другому элементу, и
-             * запись осталась бы висеть включённой. */
-            voice_grab(next) {
-                try {
-                    const event = next;
-                    if (event?.pointerId === undefined)
-                        return;
-                    this.Chat_page().Voice().dom_node().setPointerCapture(event.pointerId);
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        return;
-                    $mol_fail_log(error);
-                }
-            }
-            /** Разрешение спрашивает браузер, и ответа можно ждать сколько угодно.
-             * Отказ объясняем строкой над полем ввода, ничего не отправляя. */
-            voice_open(take) {
-                try {
-                    $mol_wire_sync(take).open();
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                    if (this.voice_live === take) {
-                        this.voice_live = null;
-                        this.voice_start(0);
-                    }
-                    this.voice_hint(voice_denied);
-                    return false;
-                }
-                return true;
-            }
-            /** Отпустили палец. На крестике это отмена: во время удержания все
-             * события указателя захвачены самим микрофоном, и дотянуться до
-             * крестика можно только отпустив палец над ним. */
-            voice_release(next) {
-                if (!this.voice_live)
-                    return null;
-                if (this.voice_on_cancel(next))
-                    return this.voice_cancel();
-                return this.voice_finish();
-            }
-            /** Смотрим точку отпускания, а не цель события: цель захвачена кнопкой
-             * микрофона и на всё время жеста остаётся ею же. */
-            voice_on_cancel(next) {
-                const event = next;
-                if (!event)
-                    return false;
-                const spot = this.$.$mol_dom_context.document.elementFromPoint(event.clientX, event.clientY);
-                if (!spot)
-                    return false;
-                return Boolean(spot.closest('[bog_gram_chat_voice_cancel]'));
-            }
-            /** Конец записи: останавливаем её прямо здесь, синхронно. Уйди
-             * остановка в фибру — микрофон писал бы всё время, пока та ждёт
-             * права собеседника, и в сообщение попала бы лишняя тишина. */
-            voice_finish(next) {
-                const take = this.voice_live;
-                if (!take)
-                    return null;
-                this.voice_live = null;
-                this.voice_start(0);
-                take.stop();
-                $mol_wire_async(this).voice_send(take);
-                return null;
-            }
-            /** Отмена: микрофон отпускаем так же, а записанное выкидываем. */
-            voice_cancel(next) {
-                const take = this.voice_live;
-                this.voice_live = null;
-                this.voice_start(0);
-                take?.drop();
-                return null;
-            }
-            /** Жест прервала система — входящий звонок, переключение окна. */
-            voice_abort(next) {
-                return this.voice_cancel();
-            }
-            /** Долгое нажатие на тач-экране — это ещё и вызов системного меню,
-             * а на мыши правый клик. Здесь и то, и другое только мешает. */
-            voice_menu(next) {
-                next?.preventDefault();
-                return null;
-            }
-            /** Запись едет в своём ленде, закрытом так же, как ленд диалога: право
-             * читать выдаём каждому участнику, для всех остальных — включая
-             * мастера — там шифрованный мусор. В избранном выдавать право некому,
-             * ленд просто остаётся закрытым.
-             *
-             * Порядок тот же, что и у кадра, и по той же причине: всё, что умеет
-             * ждать, стоит до создания сообщения — фибра перезапускается с начала
-             * на каждом ожидании, и созданное раньше сообщение она завела бы
-             * заново, оставив в переписке копии. */
-            voice_send(take) {
-                const id = this.dialog_active();
-                if (!id)
-                    return '';
-                const session = this.session_store_last(id);
-                if (!session)
-                    return '';
-                const glob = this.$.$giper_baza_glob;
-                const mates = this.saved_is(id) ? [] : this.dialog_mates(id);
-                // Ключи участников приезжают вместе с их лендами. Пока хоть одного
-                // нет, не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
-                const passes = this.passes_of(mates);
-                if (passes.length < mates.length)
-                    return '';
-                const sound = $mol_wire_sync(take).take();
-                if (!sound) {
-                    this.voice_hint(voice_short);
-                    return '';
-                }
-                const land = glob.land_grab([[null, $giper_baza_rank_deny]]);
-                const store = land.Data($giper_baza_file);
-                store.buffer(sound.bytes);
-                store.type(sound.type);
-                for (const pass of passes)
-                    land.give(pass, $giper_baza_rank_read);
-                // Ленд записи лежит в стороне от переписки, поэтому пуш на мастер
-                // зовём сами — сам он туда не поедет
-                land.sync();
-                const message = session.Messages('auto').make(null);
-                message.Voice('auto').remote(store);
-                message.Voice_span('auto')?.val(sound.span);
-                message.Author('auto')?.val(this.my_lord());
-                message.Moment('auto')?.val(Date.now());
-                this.voice_hint('');
-                return message.link().str;
-            }
-            // ===== Голосовые: воспроизведение =====
-            /** Голос есть, если у сообщения есть ссылка на его ленд. Сам звук при
-             * этом может быть ещё в пути: строку с кнопкой и длиной рисуем всё
-             * равно, иначе лента дёрнется при её появлении. */
-            message_sound(id) {
-                return Boolean(this.message_pawn(id)?.Voice()?.val());
-            }
-            Message_sound(id) {
-                return this.message_sound(id) ? super.Message_sound(id) : null;
-            }
-            /** Длина приезжает вместе с сообщением, до самой записи: пузырь
-             * сообщает её сразу, ещё до того, как звук можно включить. */
-            message_sound_span(id) {
-                return Number(this.message_pawn(id)?.Voice_span()?.val() ?? 0);
-            }
-            /** Ленд записи приезжает отдельно от переписки: пока буфер пуст,
-             * отдаём пустую ссылку — подписка на приход ленда сохраняется, и
-             * звук включится сам, как только доедет. */
-            message_sound_uri(id) {
-                try {
-                    const file = this.message_pawn(id)?.Voice()?.remote();
-                    if (!file)
-                        return '';
-                    if (!file.buffer().byteLength)
-                        return '';
-                    return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            /** Звучит ровно одно сообщение на всё приложение. */
-            voice_playing(next) {
-                return next ?? '';
-            }
-            message_sound_playing(id) {
-                return this.voice_playing() === id;
-            }
-            /** Включение нового гасит предыдущее: два голоса разом — это шум. */
-            message_sound_toggle(id, next) {
-                const now = this.voice_playing();
-                if (now)
-                    this.sound_stop(now);
-                if (now === id) {
-                    this.voice_playing('');
-                    return null;
-                }
-                // Записи ещё нет — включать нечего, и подсвечивать паузу незачем
-                if (!this.message_sound_uri(id)) {
-                    this.voice_playing('');
-                    return null;
-                }
-                this.voice_playing(id);
-                this.sound_start(id);
-                return null;
-            }
-            /** Дослушали до конца: кнопка возвращается к треугольнику сама. */
-            message_sound_ended(id, next) {
-                if (this.voice_playing() === id)
-                    this.voice_playing('');
-                return null;
-            }
-            /** Пузырь мог уехать из ленты вместе со своим сообщением: тогда
-             * управлять уже нечем, и это не ошибка. */
-            sound_start(id) {
-                try {
-                    this.Message_sound(id)?.start();
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        return;
-                    $mol_fail_log(error);
-                }
-            }
-            sound_stop(id) {
-                try {
-                    this.Message_sound(id)?.stop();
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        return;
-                    $mol_fail_log(error);
-                }
-            }
-            /** Смена диалога не должна оставлять голос звучать из закрытой
-             * переписки. Зовётся только из действий, поэтому обычный метод. */
-            sound_hush() {
-                const now = this.voice_playing();
-                if (!now)
-                    return;
-                this.sound_stop(now);
-                this.voice_playing('');
-            }
-            // ===== Прочтения =====
-            /** Отметка прочтения участника. Своя отметка пишется в последний бакет,
-             * но человек читает переписку целиком, а не по отсекам: у прошлых
-             * бакетов остались свои отметки, и дальняя из них и есть ответ.
-             * Недоступный бакет пропускаем — он ничего не добавит. */
-            read_moment_of(id, lord) {
-                let last = 0;
-                for (const land of this.session_lands_of(id)) {
-                    try {
-                        const moment = Number(land.Data($bog_gram_session).Reads()?.key(lord)?.Moment()?.val() ?? 0);
-                        if (moment > last)
-                            last = moment;
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                        $mol_fail_log(error);
-                    }
-                }
-                return last;
-            }
-            /** Первое непрочитанное чужое сообщение: его номер в ленте или -1, если читать нечего. */
-            unread_first(list, my, seen) {
-                return list.findIndex(item => item.author !== my && item.moment > seen);
-            }
-            /** С какого сообщения открыть диалог: с первого непрочитанного, а без них
-             * с конца (пустая строка). Решение запоминается до следующего открытия:
-             * отметка прочтения сдвигается сразу, и без этого лента тут же уехала бы вниз.
-             * Пока сообщений нет, решения нет (null), и запоминать нечего. */
-            chat_focus(id, reset) {
-                if (reset === undefined) {
-                    const prev = $mol_wire_probe(() => this.chat_focus(id));
-                    if (typeof prev === 'string')
-                        return prev;
-                }
-                if (!id)
-                    return null;
-                const messages = this.messages_alive_of(id);
-                if (!messages.length)
-                    return null;
-                if (this.saved_is(id))
-                    return '';
-                const my = this.my_lord();
-                const list = messages.map(message => ({
-                    moment: Number(message.Moment()?.val() ?? 0),
-                    author: String(message.Author()?.val() ?? ''),
-                }));
-                const index = this.unread_first(list, my, this.read_moment_of(id, my));
-                return index < 0 ? '' : messages[index].link().str;
-            }
-            chat_dialog() {
-                return this.dialog_active();
-            }
-            chat_focus_row() {
-                const id = this.dialog_active();
-                const focus = id ? this.chat_focus(id) : null;
-                return focus ? this.Message_row(focus) : null;
-            }
-            /** Двигаем свою отметку прочтения только вперёд и только по открытому диалогу. */
-            read_sync() {
-                const id = this.dialog_active();
-                if (!id)
-                    return 0;
-                if (this.saved_is(id))
-                    return 0;
-                const my = this.my_lord();
-                let last = 0;
-                for (const message of this.messages_alive_of(id)) {
-                    if (String(message.Author()?.val() ?? '') === my)
-                        continue;
-                    const moment = Number(message.Moment()?.val() ?? 0);
-                    if (moment > last)
-                        last = moment;
-                }
-                if (!last)
-                    return 0;
-                const seen = this.read_moment_of(id, my);
-                if (seen >= last)
-                    return seen;
-                const session = this.session_store_last(id);
-                session?.Reads('auto')?.key(my, 'auto')?.Moment('auto')?.val(last);
-                return last;
-            }
             unread_count(id) {
-                if (!id)
-                    return 0;
-                if (this.saved_is(id))
-                    return 0;
                 if (id === this.dialog_active())
                     return 0;
-                const my = this.my_lord();
-                const seen = this.read_moment_of(id, my);
-                return this.messages_alive_of(id).filter(message => {
-                    if (String(message.Author()?.val() ?? '') === my)
-                        return false;
-                    return Number(message.Moment()?.val() ?? 0) > seen;
-                }).length;
+                return this.unread_total(id);
             }
-            unread_label(id) {
-                const count = this.unread_count(id);
-                return count ? String(count) : '';
-            }
-            Unread_badge(id) {
-                return this.unread_count(id) ? super.Unread_badge(id) : null;
-            }
-            // ===== Превью в списке диалогов =====
-            /** Вложение в строке списка называем словом: ни кадра, ни звука там
-             * показать негде, а подпись под ними, если она есть, идёт следом.
-             * В группе перед текстом стоит имя написавшего: без него непонятно,
-             * кто из пятерых сейчас говорит. */
-            dialog_preview(id) {
-                const messages = this.messages_alive_of(id);
-                const last = messages[messages.length - 1];
-                if (!last)
-                    return '';
-                const text = String(last.Text()?.val() ?? '');
-                const kind = last.Image()?.val() ? 'Фото'
-                    : last.Voice()?.val() ? 'Голосовое сообщение'
-                        : '';
-                const body = kind ? (text ? kind + ' · ' + text : kind) : text;
-                if (this.saved_is(id))
-                    return body;
-                const author = String(last.Author()?.val() ?? '');
-                if (author === this.my_lord())
-                    return 'Вы: ' + body;
-                if (author && this.group_is(id))
-                    return this.peer_label(author) + ': ' + body;
-                return body;
-            }
-            dialog_time(id) {
-                const messages = this.messages_alive_of(id);
-                const last = messages[messages.length - 1];
-                const moment = Number(last?.Moment()?.val() ?? 0);
-                if (!moment)
-                    return '';
-                const date = new Date(moment);
-                if (date.toDateString() === new Date().toDateString())
-                    return this.time_hm(moment);
-                return String(date.getDate()).padStart(2, '0') + '.' + String(date.getMonth() + 1).padStart(2, '0');
-            }
-            // ===== Реестры пользователей =====
-            /** Реестр из адреса страницы: по такой ссылке зовут в реестр, а свой
-             * список известных реестров ведётся отдельно, в приватном ленде. */
-            registry_active() {
-                return this.$.$mol_state_arg.value('users') ?? '';
-            }
-            registry_ids() {
-                return (this.dialogs_store().Registries()?.items() ?? []).map(String);
-            }
-            registry_land(id) {
-                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
-            }
-            registry_store(id) {
-                return this.registry_land(id).Data($bog_gram_users);
-            }
-            /** Чужой реестр может быть ещё не засинкан: подписка на его приход
-             * сохраняется, а пустой список не даёт одному ленду подвесить весь
-             * экран настроек — строка дорисуется сама. */
-            registry_lords(id) {
-                try {
-                    return (this.registry_store(id).Lords()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            /** Название задаёт создатель. Пока оно не приехало (или его не задали),
-             * показываем сокращённую ссылку — молчащая строка хуже. */
-            registry_title(id) {
-                try {
-                    return String(this.registry_store(id).Title()?.val() ?? '') || this.lord_short(id);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return this.lord_short(id);
-                }
-            }
-            registry_size(id) {
-                return this.registry_lords(id).length;
-            }
-            registry_joined(id) {
-                return this.registry_lords(id).includes(this.my_lord());
-            }
-            registry_active_is(id) {
-                return this.registry_active() === id;
-            }
-            /** Русское склонение числительных: 1 диалог, 2 диалога, 5 диалогов. */
-            plural(count, one, few, many) {
-                const tens = count % 100;
-                const ones = count % 10;
-                if (tens < 11 || tens > 14) {
-                    if (ones === 1)
-                        return count + ' ' + one;
-                    if (ones >= 2 && ones <= 4)
-                        return count + ' ' + few;
-                }
-                return count + ' ' + many;
-            }
-            people_count(count) {
-                return this.plural(count, 'участник', 'участника', 'участников');
-            }
-            registry_status(id) {
-                const mine = this.registry_joined(id) ? 'вы в списке' : 'только смотрите';
-                return this.people_count(this.registry_size(id)) + ' · ' + mine;
-            }
-            Registry_join(id) {
-                return this.registry_joined(id) ? null : super.Registry_join(id);
-            }
-            registry_rows() {
-                return this.registry_ids().map(id => this.Registry_row(id));
-            }
-            /** Приглашение — адрес страницы с одним лишь реестром: остальные
-             * параметры (свой мастер, открытый диалог) чужому человеку не нужны. */
-            registry_uri() {
-                const id = this.registry_active();
-                if (!id)
-                    return '';
-                const location = this.$.$mol_dom_context.location;
-                return location.origin + location.pathname + '#!users=' + id;
-            }
-            registry_content() {
-                if (!this.registry_ids().length)
-                    return [this.Registry_empty(), this.Registry_form()];
-                return [
-                    this.Registry_list(),
-                    this.Registry_note(),
-                    ...this.registry_active() ? [this.Registry_share()] : [],
-                    this.Registry_form(),
-                ];
-            }
-            /** Свой ключ рядом со своей записью: по одному идентификатору диалог со
-             * мной не завести, а так скачанного реестра собеседнику хватает.
-             * Запись идемпотентна — уже лежащий там ключ второй раз не пишем,
-             * поэтому звать её можно и из действия, и из реактивной дозаписи. */
-            registry_key_put(id) {
-                if (!id)
-                    return null;
-                const store = this.registry_store(id);
-                const my = this.my_lord();
-                const str = this.my_pass_str();
-                if (String(store.Keys()?.key(my)?.Pass()?.val() ?? '') === str)
-                    return null;
-                store.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val(str);
-                return null;
-            }
-            /** Реестры, куда я вступил до появления ключей: там лежит только мой
-             * идентификатор, и собеседник без сети диалог со мной не заведёт.
-             * Дописываем ключ туда, где я уже числюсь. Чужой реестр может быть ещё
-             * не засинкан — подписка на его приход сохраняется, дозапись случится
-             * сама, а один незасинканный не должен мешать остальным. */
-            registry_keys_fill() {
-                let count = 0;
-                for (const id of this.registry_ids()) {
-                    if (!this.registry_joined(id))
-                        continue;
-                    try {
-                        this.registry_key_put(id);
-                        ++count;
-                    }
-                    catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
-                    }
-                }
-                return count;
-            }
-            /** Создатель реестра сразу и его участник: свой реестр без себя бессмыслен. */
-            registry_make(next) {
-                const title = this.registry_name().trim();
-                const land = this.$.$giper_baza_glob.land_grab([
-                    [null, $giper_baza_rank_post('slow')],
-                ]);
-                const id = land.link().str;
-                const store = land.Data($bog_gram_users);
-                if (title)
-                    store.Title('auto')?.val(title);
-                store.Lords('auto')?.add(this.my_lord());
-                store.Keys('auto')?.key(this.my_lord(), 'auto')?.Pass('auto')?.val(this.my_pass_str());
-                /** Дожидаемся, пока записи подпишутся и осядут в хранилище. Ждём не
-                 * ради вида: право писать всем выдаётся отдельной записью, и пока
-                 * та не подписана, чужой клиент её не примет — люди приходили бы в
-                 * реестр, где им можно только смотреть. Заодно обработчик всё это
-                 * время висит в фибре, и кнопка сама мигает.
-                 *
-                 * Стоит до очистки поля с названием: фибра перезапускается с начала
-                 * на каждом ожидании, а очищенное название следующий заход прочитал
-                 * бы уже пустым. */
-                land.units_saving();
-                this.dialogs_store().Registries('auto').add(id);
-                this.registry_name('');
-                this.$.$mol_state_arg.value('users', id);
-                return null;
-            }
-            /** Открытая ссылка только запоминает реестр: попасть в чужой список
-             * людей — отдельное решение, поэтому лорд туда не дописывается. */
-            registry_remember() {
-                const id = this.registry_active();
-                if (!id)
-                    return '';
-                if (!this.registry_ids().includes(id)) {
-                    this.dialogs_store().Registries('auto').add(id);
-                }
-                return id;
-            }
-            /** Кнопка вступления лежит внутри кликабельной строки, поэтому первым
-             * делом гасим всплытие: иначе тот же клик ещё и переключил бы реестр.
-             *
-             * Дописать запись мало: подпись с перебором степеней и сохранение
-             * уезжают в фон, действие кончается мгновенно, и человек видит, что
-             * ничего не произошло. Поэтому подтверждения дожидаемся тут же, не
-             * выходя из фибры: обработчик приостанавливается, кнопка мигает сама,
-             * пока запись не осядет, и перестаёт, когда та подтвердилась.
-             *
-             * Перезапуск фибры при этом ничего не задваивает: список сам отказывает
-             * уже лежащему в нём значению, а ключ пишется только когда отличается
-             * от записанного. */
-            registry_join(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                if (!this.registry_ids().includes(id)) {
-                    this.dialogs_store().Registries('auto').add(id);
-                }
-                if (!this.registry_lords(id).includes(this.my_lord())) {
-                    this.registry_store(id).Lords('auto')?.add(this.my_lord());
-                }
-                this.registry_key_put(id);
-                this.registry_land(id).units_saving();
-                return null;
-            }
-            registry_join_active(next) {
-                this.registry_join(this.registry_active());
-                return null;
-            }
-            /** Убрать — значит забыть ссылку у себя: запись в самом реестре остаётся,
-             * выйти из него нельзя. Заодно снимаем реестр с адреса, иначе он
-             * вернулся бы в список на ближайшем же заходе. */
-            registry_forget(id, next) {
-                next?.stopPropagation();
-                if (!id)
-                    return null;
-                this.dialogs_store().Registries('auto').cut(id);
-                if (this.registry_active() === id)
-                    this.$.$mol_state_arg.value('users', null);
-                return null;
-            }
-            registry_open(id, next) {
-                if (!id)
-                    return null;
-                this.$.$mol_state_arg.value('users', id);
-                return null;
-            }
-            /** Открытый чужой реестр, в котором нет твоей записи: собеседники
-             * листают его список и тебя там не видят. */
-            registry_join_needed() {
-                const id = this.registry_active();
-                if (!id)
-                    return false;
-                return !this.registry_joined(id);
-            }
-            Join_plate() {
-                return this.registry_join_needed() ? super.Join_plate() : null;
-            }
-            // ===== Люди из реестров =====
-            /** Один человек — одна строка, даже если он числится в нескольких
-             * реестрах: подписью берём тот, где он встретился первым. */
-            user_sources() {
-                const sources = {};
-                const my = this.my_lord();
-                for (const id of this.registry_ids()) {
-                    for (const lord of this.registry_lords(id)) {
-                        if (lord === my)
-                            continue;
-                        if (sources[lord])
-                            continue;
-                        sources[lord] = id;
-                    }
-                }
-                return sources;
-            }
-            user_lords() {
-                return Object.keys(this.user_sources());
-            }
-            user_rows() {
-                const lords = this.user_lords();
-                if (!lords.length)
-                    return [this.Users_empty()];
-                return lords.map(lord => this.User_row(lord));
-            }
-            users_empty_text() {
-                if (!this.registry_ids().length)
-                    return 'Вы не состоите ни в одном реестре. Создайте свой в настройках';
-                return 'Кроме вас в реестрах пока никого нет';
-            }
-            /** Строка человека ключуется его же лордом — по нему и рисуется узор. */
-            user_lord(lord) {
-                return lord;
-            }
-            user_title(lord) {
-                return this.peer_label(lord);
-            }
-            /** Пока реестр один, называть его в каждой строке незачем. */
-            user_source(lord) {
-                if (this.registry_ids().length < 2)
-                    return '';
-                const id = this.user_sources()[lord];
-                return id ? this.registry_title(id) : '';
-            }
-            User_source(lord) {
-                return this.user_source(lord) ? super.User_source(lord) : null;
-            }
-            user_pick(lord, next) {
-                if (!lord)
-                    return null;
-                this.peer_accept(lord);
-                this.peer_lord('');
-                const exist = this.dialog_with(lord);
-                if (exist) {
-                    this.dialog_select(exist);
-                    return null;
-                }
-                this.dialog_pending(lord);
-                return null;
-            }
-            // ===== Личная ссылка-приглашение =====
-            /** Свой публичный ключ строкой — тот же вид, в котором он лежит в
-             * реестрах и уезжает в заявке в группу. */
-            my_pass() {
-                return this.$.$giper_baza_auth.current().pass().toString();
-            }
-            /** Приглашение — адрес страницы с лордом и публичным ключом хозяина.
-             * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны,
-             * а вот ключ нужен: без него диалог не завести, и приложение уходит
-             * ждать, пока домашний ленд приглашающего доедет по сети. С ключом в
-             * ссылке ждать нечего — диалог открывается сразу и даже офлайн.
-             *
-             * Класть ключ в ссылку безопасно: он публичный, лежит в открытом
-             * ленде и в реестрах. Подменить его в ссылке нельзя — лорд рядом
-             * это хеш ключа, и `pass_verified` пересчитывает его. */
-            invite_uri(lord, key) {
-                if (!lord)
-                    return '';
-                const location = this.$.$mol_dom_context.location;
-                const tail = key ? '/key=' + key : '';
-                return location.origin + location.pathname + '#!invite=' + lord + tail;
-            }
-            version() {
-                return $bog_gram_version;
-            }
-            invite_link() {
-                return this.invite_uri(this.my_lord(), this.my_pass());
-            }
-            /** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
-            invite_lord() {
-                return this.$.$mol_state_arg.value('invite') ?? '';
-            }
-            /** Ключ приглашающего из адреса страницы. У ссылок, выданных до его
-             * появления, его нет — для них остаётся прежний путь через сеть. */
-            invite_key() {
-                return this.$.$mol_state_arg.value('key') ?? '';
-            }
-            /** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
-             * Лордом считаем только полный идентификатор владельца — ссылка на
-             * чей-то ленд личным диалогом не открывается, и ждать по ней нечего.
-             * Проверка формата тут ровно та же, что у ссылки в группу. */
-            invite_lord_ok(lord) {
-                if (!$giper_baza_link.check(lord))
-                    return false;
-                const link = new $giper_baza_link(lord);
-                return link.lord().str === link.str;
-            }
-            /** Своя же ссылка диалога не заводит, знакомый собеседник просто
-             * открывается, а незнакомый уходит обычным путём — через ожидание. */
-            invite_plan(lord, my, exist) {
-                if (!lord)
-                    return 'skip';
-                if (lord === my)
-                    return 'skip';
-                if (!this.invite_lord_ok(lord))
-                    return 'bad';
-                return exist ? 'open' : 'start';
-            }
-            /** Битая ссылка: как и у групп, говорим об этом на экране. Молчание
-             * тут неотличимо от «ничего не произошло». */
-            invite_lost(next) {
-                return next ?? '';
-            }
-            /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
-             * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
             invite_handle() {
-                const lord = this.invite_lord();
+                const lord = this.Invite().lord();
                 if (!lord)
                     return '';
-                $mol_wire_async(this).invite_accept(lord, this.invite_key());
+                $mol_wire_async(this).invite_accept(lord, this.Invite().key());
                 return lord;
             }
-            /** Ключ, приехавший в ссылке. Проверка та же, что у ключа из реестра:
-             * лорд это хеш ключа, поэтому подмена ловится пересчётом. Не сошлось —
-             * считаем, что ключа в ссылке не было, и дальше работает обычный путь
-             * через домашний ленд приглашающего.
-             *
-             * Разобранный ключ `pass_verified` отдаёт из своего кэша одним и тем
-             * же объектом, так что повторный заход перезапущенной фибры пишет в
-             * ячейку то же значение и никого не будит. */
-            peer_pass_learn(lord, key) {
-                if (!lord || !key)
-                    return null;
-                const pass = this.pass_verified(lord, key);
-                if (!pass)
-                    return null;
-                this.peer_pass_given(lord, pass);
-                if (!this.peer_pass_stored(lord))
-                    this.dialogs_store().Passes('auto').add(pass.toString());
-                return pass;
-            }
-            /** Ключи, добытые не из сети: пока их источник — только ссылка. */
-            peer_pass_stored(lord) {
-                for (const str of this.dialogs_store().Passes()?.items() ?? []) {
-                    try {
-                        const pass = $bog_gram_seal.pass(String(str));
-                        if (pass.lord().str === lord)
-                            return pass;
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                    }
-                }
-                return null;
-            }
-            peer_pass_given(lord, next) {
-                return next ?? null;
-            }
-            /** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
-             * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
-             * снятый заранее параметр означал бы, что перезагрузка страницы в
-             * этот момент теряет приглашение насовсем, и экран после неё молчит.
-             * Снимет его `invite_done`, когда диалог действительно заведён. */
             invite_accept(lord, key) {
-                if (!lord)
-                    return 'skip';
-                const exist = this.dialog_with(lord);
-                const plan = this.invite_plan(lord, this.my_lord(), exist);
-                this.invite_lost(plan === 'bad' ? lord : '');
-                /** По ссылке приходят сами: человек, чьё приглашение я открыл,
-                 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
-                if (plan === 'open' || plan === 'start') {
-                    this.peer_pass_learn(lord, key);
-                    this.peer_accept(lord);
-                }
+                const { plan, exist } = this.Invite().take(lord, key);
                 if (plan === 'open')
                     this.dialog_select(exist);
-                if (plan === 'start')
-                    this.dialog_pending(lord);
-                if (plan !== 'start')
-                    this.invite_done();
                 return plan;
-            }
-            /** Приглашение отработало: снимаем параметры из адреса и метку
-             * долгого ожидания. */
-            invite_done() {
-                this.pending_late('');
-                this.$.$mol_state_arg.value('invite', null);
-                this.$.$mol_state_arg.value('key', null);
-            }
-            /** Ключ собеседника приезжает не мгновенно, а иногда не приезжает
-             * вовсе: человек мог не заходить в приложение или сидеть на другом
-             * мастере. Через `pending_wait` молчание превращаем в объяснение.
-             *
-             * Таймер ВОЗВРАЩАЕМ из ячейки: объект, созданный внутри @$mol_mem и
-             * не отданный наружу, уборка уничтожает сразу, и он не сработает. */
-            pending_timer() {
-                const peer = this.dialog_pending();
-                if (!peer)
-                    return null;
-                return new this.$.$mol_after_timeout(pending_wait, () => this.pending_late(peer));
-            }
-            /** Собеседник, ключ которого ждём непозволительно долго. Держим тут
-             * именно лорда, а не флаг: следующее приглашение начинает ожидание
-             * заново, и старая метка не должна на него налипать. */
-            pending_late(next) {
-                return next ?? '';
-            }
-            /** Ждать человека, который в приложение не заходил, можно вечно,
-             * поэтому ожидание должно сниматься руками. */
-            invite_drop(next) {
-                this.dialog_pending('');
-                this.invite_lost('');
-                this.invite_done();
-                return null;
-            }
-            /** Строка над списком диалогов, пока диалога по ссылке ещё нет. Без
-             * неё переход по приглашению выглядит как будто ничего не произошло:
-             * список пустой, ошибки нет, ждать непонятно чего. */
-            invite_plate_text() {
-                if (this.invite_lost())
-                    return 'Ссылка на диалог битая — попросите свежую';
-                const peer = this.dialog_pending();
-                if (!peer)
-                    return '';
-                if (this.pending_late() !== peer)
-                    return 'Открываем диалог — ищем ключ собеседника';
-                return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку';
-            }
-            Invite_plate() {
-                return this.invite_plate_text() ? super.Invite_plate() : null;
-            }
-            // ===== Ссылка-приглашение в группу =====
-            /** Приглашение в группу — адрес страницы со ссылкой на её ленд и лордом
-             * создателя. Вступить по ней мгновенно нельзя: ленд группы шифрованный,
-             * и ключ от него заворачивается на ключ конкретного человека тем, у
-             * кого есть права. Поэтому ссылка ведёт к заявке.
-             *
-             * Создатель едет вторым параметром, и без него ссылка бесполезна:
-             * заявку несут в его лобби, а взять его из ленда группы просящему
-             * неоткуда — прав на неё у него ещё нет, и ленд ему не читается вовсе.
-             * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны. */
-            join_uri(id) {
-                if (!id)
-                    return '';
-                const location = this.$.$mol_dom_context.location;
-                const owner = this.join_owner_of(id);
-                const tail = owner ? '/by=' + owner : '';
-                return location.origin + location.pathname + '#!join=' + id + tail;
-            }
-            /** Создателя берём из ленда группы: у того, кто копирует ссылку, права
-             * на неё есть. У групп, заведённых до появления явной записи о
-             * создателе, её нет — там на него указывает полное управление лендом,
-             * и такую ссылку может дать только он сам. */
-            join_owner_of(id) {
-                const owner = this.dialog_owner(id);
-                if (owner)
-                    return owner;
-                return this.dialog_own(id) ? this.my_lord() : '';
             }
             join_link() {
-                return this.join_uri(this.dialog_active());
+                return this.Lobby().join_uri(this.dialog_active());
             }
-            /** Группа из адреса страницы: по такой ссылке просятся в группу. */
-            join_id() {
-                return this.$.$mol_state_arg.value('join') ?? '';
-            }
-            /** Создатель группы из адреса страницы. */
-            join_by() {
-                return this.$.$mol_state_arg.value('by') ?? '';
-            }
-            /** Ссылка без создателя: нести заявку некому, и молчать об этом нельзя —
-             * иначе переход по ссылке выглядит как будто ничего не произошло. */
-            join_lost(next) {
-                return next ?? '';
-            }
-            /** Уже участнику показываем группу, остальным заводим заявку. Мусор
-             * вместо ссылки отсеиваем сразу: заявка в несуществующую группу
-             * осела бы в приватном ленде навсегда и никуда бы не уехала. */
-            join_plan(id, my, member) {
-                if (!id)
-                    return 'skip';
-                if (id === my)
-                    return 'skip';
-                if (!$giper_baza_link.check(id))
-                    return 'skip';
-                return member ? 'open' : 'ask';
-            }
-            /** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
-             * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
             join_handle() {
-                const id = this.join_id();
+                const id = this.Lobby().join_id();
                 if (!id)
                     return '';
-                $mol_wire_async(this).join_request(id, this.join_by());
+                $mol_wire_async(this).join_request(id, this.Lobby().join_by());
                 return id;
             }
-            /** Параметры из адреса снимаем в любом случае: иначе перезагрузка
-             * страницы просилась бы в ту же группу снова и снова. */
             join_request(id, by) {
-                const plan = this.join_plan(id, this.my_lord(), this.dialog_ids().includes(id));
+                const plan = this.Lobby().join_take(id, by);
                 if (plan === 'open')
                     this.dialog_select(id);
-                if (plan === 'ask') {
-                    // Своими правами создателя пользуемся, только если ссылка о нём
-                    // умолчала: в ней он приезжает от того, у кого права уже есть
-                    const owner = by || this.join_owner_of(id);
-                    this.join_lost(owner ? '' : id);
-                    if (owner)
-                        this.ask_send(id, owner);
-                }
-                this.$.$mol_state_arg.value('join', null);
-                this.$.$mol_state_arg.value('by', null);
                 return plan;
-            }
-            /** Запись заявки: группа, лорд просящего и его ключ. Разделитель тот
-             * же, что в отложенной доставке приглашений. */
-            ask_entry(group, lord, pass) {
-                return group + '|' + lord + '|' + pass;
-            }
-            /** Запись очереди: группа и лорд её создателя. Лорд оседает тут же,
-             * потому что взять его больше неоткуда — ленд группы просящему не
-             * читается, а очередь переживает перезагрузку страницы, после которой
-             * от ссылки-приглашения уже ничего не остаётся. */
-            ask_task(group, owner) {
-                return owner ? group + '|' + owner : group;
-            }
-            ask_task_group(entry) {
-                return String(entry ?? '').split('|')[0] ?? '';
-            }
-            /** У заявок, заведённых до появления лорда в записи, его нет: для них
-             * остаётся прежний путь — прочитать создателя из ленда группы, если
-             * права на неё за это время всё же выдали. */
-            ask_task_owner(entry) {
-                return String(entry ?? '').split('|')[1] ?? '';
-            }
-            /** Лобби открыто на запись всем, поэтому мусор туда долетает наравне
-             * с заявками: разбор отвергает всё, что не сходится по числу частей
-             * или недосчитывается любой из них. */
-            ask_parse(entry) {
-                if ($bog_gram_seal.is(entry)) {
-                    const sealed = this.sealed_open(['join', entry]);
-                    if (!sealed?.open)
-                        return null;
-                    return { group: sealed.open, lord: sealed.lord, pass: sealed.pass };
-                }
-                const parts = String(entry ?? '').split('|');
-                if (parts.length !== 3)
-                    return null;
-                const [group, lord, pass] = parts;
-                if (!group || !lord || !pass)
-                    return null;
-                return { group, lord, pass };
-            }
-            /** Заявка встаёт в свою очередь, а уезжает отдельным потоком: право
-             * писать в чужое лобби приезжает не сразу, и с первого раза запись
-             * может не пройти. Повтор ничего не задваивает — ни очередь, ни
-             * отправленное второй ссылки не примут. */
-            ask_send(id, owner) {
-                if (!id || !owner)
-                    return null;
-                // По ссылке приходят сами: однажды убранная из своего списка группа
-                // не должна молча отказать во второй попытке в неё попасть
-                if (this.hidden_ids().includes(id))
-                    this.dialogs_store().Hidden('auto').cut(id);
-                // Отказ не бан: пришли по ссылке снова — снимаем прошлое решение,
-                // иначе плашка так и говорила бы про отклонённую заявку
-                if (this.ask_denied().includes(id))
-                    this.dialogs_store().Denied('auto').cut(id);
-                if (this.ask_groups().includes(id))
-                    return null;
-                this.dialogs_store().Asks('auto').add(this.ask_task(id, owner));
-                return null;
-            }
-            /** Свой приватный ленд шифрованный и на новом устройстве приезжает не
-             * мгновенно. Строка ожидания стоит прямо в теле страницы списка, и
-             * suspend тут подвесил бы её целиком: пока ленда нет, заявок «нет»,
-             * а подписка на его приход сохраняется — строка появится сама. */
-            ask_queued() {
-                try {
-                    return (this.dialogs_store().Asks()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            ask_sent() {
-                try {
-                    return (this.dialogs_store().Asked()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            /** Группы, в которые уже просимся — и те, что ждут отправки, и те, что
-             * уже доехали. Записи очереди несут ещё и лорда, поэтому сравнивать с
-             * ссылками на группы можно только их первую половину. */
-            ask_groups() {
-                const all = [...this.ask_queued(), ...this.ask_sent()];
-                return all.map(entry => this.ask_task_group(entry));
-            }
-            /** Заявки, на которые ещё не ответили. Принятая уходит отсюда сама:
-             * группа появляется в списке диалогов, и записи там больше нечего
-             * ждать. */
-            ask_waiting(entries) {
-                let have = new Set();
-                try {
-                    have = new Set(this.dialog_ids());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                }
-                const all = new Set(entries.map(entry => this.ask_task_group(entry)));
-                return [...all].filter(id => !have.has(id));
-            }
-            ask_pending_queued() {
-                return this.ask_waiting(this.ask_queued());
-            }
-            ask_pending_sent() {
-                return this.ask_waiting(this.ask_sent());
-            }
-            ask_denied() {
-                try {
-                    return (this.dialogs_store().Denied()?.items() ?? []).map(String);
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return [];
-                }
-            }
-            /** Отказы, доехавшие в моё лобби. Лобби открыто на запись всем, поэтому
-             * запись туда может положить кто угодно: заявку снимаем только если
-             * сами в эту группу просились. Худшее, что даёт подлог — чужая заявка
-             * снимется раньше времени, и человек попросится по ссылке заново.
-             *
-             * Саму запись из лобби убираем в любом случае, иначе отказы копились бы
-             * там навсегда: лобби моё, я его король. */
-            denies_merge() {
-                let entries = [];
-                try {
-                    entries = this.inbox_items(store => store.Denies());
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return 0;
-                }
-                if (!entries.length)
-                    return 0;
-                const store = this.dialogs_store();
-                const mine = [...this.ask_queued(), ...this.ask_sent()];
-                for (const entry of entries) {
-                    const group = $bog_gram_seal.is(entry)
-                        ? this.sealed_open(['deny', entry])?.open ?? ''
-                        : entry;
-                    for (const task of mine) {
-                        if (!group)
-                            break;
-                        if (this.ask_task_group(task) !== group)
-                            continue;
-                        store.Asks('auto').cut(task);
-                        store.Asked('auto').cut(task);
-                        if (!this.ask_denied().includes(group))
-                            store.Denied('auto').add(group);
-                    }
-                    this.inbox_cut((store, auto) => store.Denies(auto), entry);
-                }
-                return entries.length;
-            }
-            /** Ссылка привела к заявке, а не к группе: без этой строки экран после
-             * перехода по ссылке просто молчал бы. Ссылка без создателя молчала бы
-             * так же, поэтому и о ней говорим прямо.
-             *
-             * Отправку и отправленное разводим: запись в чужое лобби идёт с
-             * перебором подписей и занимает время. Пока она не доехала, обещать
-             * «отправлена» нельзя — человек пойдёт спрашивать у владельца группы,
-             * а у того ещё пусто, и оба решат, что сломалось. */
-            ask_plate_text() {
-                if (this.join_lost())
-                    return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
-                const denied = this.ask_denied().length;
-                if (denied === 1)
-                    return 'Заявку отклонили — попроситься снова можно по той же ссылке';
-                if (denied)
-                    return 'Заявок отклонено: ' + denied + ' — попроситься снова можно по тем же ссылкам';
-                const queued = this.ask_pending_queued().length;
-                if (queued === 1)
-                    return 'Заявка отправляется — это не мгновенно';
-                if (queued)
-                    return 'Отправляется заявок: ' + queued;
-                const sent = this.ask_pending_sent().length;
-                if (sent === 1)
-                    return 'Заявка отправлена — ждём, пока её примут';
-                if (sent)
-                    return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут';
-                return '';
-            }
-            Ask_plate() {
-                return this.ask_plate_text() ? super.Ask_plate() : null;
-            }
-            /** Заявку приняли: права на ленд группы приехали, и в списке участников
-             * уже стоит мой идентификатор. Ленд без выданных прав не читается
-             * вовсе — это обычное состояние ожидания, а не ошибка. */
-            ask_taken(entry) {
-                const store = this.dialogs_store();
-                const id = this.ask_task_group(entry);
-                try {
-                    if (!this.dialog_lords(id).includes(this.my_lord()))
-                        return false;
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return false;
-                }
-                if (!this.dialog_ids().includes(id) && !this.hidden_ids().includes(id)) {
-                    store.Dialogs('auto').add(id);
-                }
-                store.Asks('auto').cut(entry);
-                store.Asked('auto').cut(entry);
-                return true;
-            }
-            /** Доставка заявок. Повторами ретраится только очередь: право писать в
-             * чужое лобби приезжает не сразу, и с первого раза запись может не
-             * пройти. Доехавшую заявку второй раз не шлём — отклонённую админ из
-             * лобби убирает, и повтор возвращал бы её туда снова, сводя отказ на
-             * нет. Отправленные при этом остаются под присмотром без всякого
-             * таймера: чтение ленда группы подписывает на его приход, и выданные
-             * права разбудят этот пересчёт сами. */
-            asks_flush() {
-                const queued = this.ask_queued();
-                const sent = this.ask_sent();
-                if (!queued.length && !sent.length)
-                    return 0;
-                for (const task of sent)
-                    this.ask_taken(task);
-                if (!queued.length)
-                    return sent.length;
-                this.$.$mol_state_time.now(3000);
-                const store = this.dialogs_store();
-                for (const task of queued) {
-                    if (this.ask_taken(task))
-                        continue;
-                    try {
-                        const id = this.ask_task_group(task);
-                        // Записанный лорд важнее ленда группы: пока прав нет, ленд
-                        // не читается, и спрашивать его о создателе бесполезно.
-                        // Прочитать его удаётся только у старых записей — там лорда
-                        // нет, зато права к этому времени могли и выдать
-                        const owner = this.ask_task_owner(task) || this.dialog_owner(id);
-                        if (!owner) {
-                            store.Asks('auto').cut(task);
-                            continue;
-                        }
-                        const inbox_link = this.peer_store(owner).Inbox_land()?.val();
-                        if (!inbox_link)
-                            continue;
-                        const inbox = this.$.$giper_baza_glob
-                            .Land(new $giper_baza_link(String(inbox_link)))
-                            .Data($bog_gram_inbox);
-                        const owner_pass = this.peer_pass_of(owner);
-                        if (!owner_pass)
-                            continue;
-                        const entry = this.sealed_close(['join', owner_pass.toString(), id]);
-                        const joins = inbox.Joins('auto');
-                        if (!joins)
-                            continue;
-                        joins.add(entry);
-                        const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
-                        if (!delivered)
-                            continue;
-                        store.Asked('auto').add(task);
-                        store.Asks('auto').cut(task);
-                    }
-                    catch (error) {
-                        if ($mol_promise_like(error))
-                            $mol_fail_hidden(error);
-                        $mol_fail_log(error);
-                    }
-                }
-                return queued.length + sent.length;
-            }
-            // ===== Уведомления =====
-            notify_supported() {
-                return this.$.$bog_gram_notify.supported();
-            }
-            Notify_toggle() {
-                return this.notify_supported() ? super.Notify_toggle() : null;
-            }
-            /** Разрешение браузера само о себе не сообщает: держим копию в меме
-             * и обновляем её после запроса, иначе подпись останется старой. */
-            notify_permission(next) {
-                return next ?? this.$.$bog_gram_notify.permission();
-            }
-            /** Сам браузер о живой подписке расскажет только через воркер, а демон
-             * помнит её по лорду — нам достаточно своей отметки в хранилище. */
-            notify_on(next) {
-                return this.$.$mol_state_local.value(notify_key, next) ?? false;
-            }
-            /** Уведомления выключены руками: сами больше не включаются. */
-            notify_off(next) {
-                return this.$.$mol_state_local.value(notify_off_key, next) ?? false;
-            }
-            /** Разрешение в этом браузере уже спрашивали. */
-            notify_asked(next) {
-                return this.$.$mol_state_local.value(notify_asked_key, next) ?? false;
-            }
-            /** Что делать с уведомлениями при заходе. Решение тут не про браузер,
-             * а про то, чего человек хотел, поэтому и живёт отдельно от возни с
-             * разрешениями и подписками.
-             *
-             * Явное «выключить» бьёт всё остальное: без этого автоподписка
-             * возвращала бы уведомления на следующем же открытии страницы. */
-            notify_plan(supported, permission, on, off, asked) {
-                if (!supported)
-                    return 'skip';
-                if (off)
-                    return 'skip';
-                if (permission === 'granted')
-                    return 'subscribe';
-                if (permission === 'denied')
-                    return 'skip';
-                return asked ? 'skip' : 'ask';
-            }
-            notify_plan_now() {
-                return this.notify_plan(this.notify_supported(), this.notify_permission(), this.notify_on(), this.notify_off(), this.notify_asked());
-            }
-            /** Разрешение уже выдано — значит уведомления человек хотел, и гонять
-             * его за ними в настройки незачем: подписываемся сами. Так же ведёт
-             * себя переустановка приложения и вход другим ключом: разрешение у
-             * браузера остаётся, подписка поднимается заново без единого клика. */
-            notify_auto() {
-                if (this.notify_plan_now() !== 'subscribe')
-                    return false;
-                // Ленд монитора нужен самой подписке: демон следит именно за ним.
-                // До его приезда лезть в браузер незачем — подписка уехала бы
-                // демону с пустой ссылкой, и следить ему было бы не за чем
-                const monitor = this.monitor_land().link().str;
-                if (!monitor)
-                    return false;
-                $mol_wire_async(this).notify_apply(true);
-                return true;
-            }
-            /** Разрешения ещё нет. Просить его на старте нельзя: без живого жеста
-             * Safari и Firefox запрос отклоняют молча, а Chrome прячет его в тихую
-             * плашку. Поэтому спрашиваем ровно тогда, когда человек сам что-то
-             * сделал — открыл диалог или отправил сообщение.
-             *
-             * Один раз на браузер: отказ переспрашивать невежливо, а для
-             * передумавших остаётся тумблер в настройках. */
-            notify_offer() {
-                if (this.notify_plan_now() !== 'ask')
-                    return false;
-                // Тот же метод зовут и фибры приглашения со ссылки, у которых
-                // никакого жеста за спиной нет: там запрос только сжёг бы
-                // единственную попытку, ничего не показав
-                if (!this.$.$bog_gram_notify.activated())
-                    return false;
-                this.notify_asked(true);
-                $mol_wire_async(this).notify_grant();
-                return true;
-            }
-            /** Запрос разрешения — ПЕРВЫМ делом, до любого подвисающего чтения:
-             * иначе фибра перезапустится в микрозадаче, и жест пользователя к
-             * моменту запроса протухнет.
-             *
-             * Подписку отсюда не заводим, хотя руки чешутся: выданное разрешение
-             * увидит `notify_auto` и сделает всё сам. Делали бы оба — на одно
-             * согласие уходило бы две подписки сразу. */
-            notify_grant() {
-                const answer = this.$.$bog_gram_notify.permission_request();
-                this.notify_permission(answer);
-                return answer === 'granted';
-            }
-            notify_label() {
-                return this.notify_on() ? 'Выключить' : 'Включить уведомления';
-            }
-            notify_status() {
-                if (!this.notify_supported())
-                    return 'Не поддерживается этим браузером';
-                if (this.notify_permission() === 'denied')
-                    return 'Запрещены в браузере';
-                if (this.notify_on())
-                    return 'Уведомления включены';
-                if (this.notify_off())
-                    return 'Выключены';
-                return 'Спросим разрешение, когда откроете диалог';
-            }
-            notify_toggle(next) {
-                $mol_wire_async(this).notify_apply(!this.notify_on());
-                return null;
-            }
-            /** Разрешение и сеть ждать из обработчика клика нечем, поэтому вся
-             * работа уезжает в фибру, а сюда возвращается уже итог. */
-            notify_apply(on) {
-                const notify = this.$.$bog_gram_notify;
-                if (!on) {
-                    notify.unsubscribe(this.my_lord());
-                    this.notify_on(false);
-                    // Решение человека, а не стечение обстоятельств: без этой
-                    // отметки автоподписка включила бы всё обратно на следующем
-                    // же открытии страницы
-                    this.notify_off(true);
-                    return false;
-                }
-                const ok = notify.subscribe(this.my_lord(), this.monitor_land().link().str);
-                this.notify_permission(notify.permission());
-                this.notify_on(ok);
-                if (ok)
-                    this.notify_off(false);
-                return ok;
-            }
-            // ===== Ключ аккаунта: показ и экспорт =====
-            /** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
-             * не уезжает: только на экран и только по явной просьбе. */
-            key_text() {
-                const auth = this.$.$giper_baza_auth.current();
-                return auth.toString() + auth.toStringPrivate();
-            }
-            key_shown(next) {
-                return next ?? false;
-            }
-            key_toggle_label() {
-                return this.key_shown() ? 'Скрыть ключ' : 'Показать ключ';
-            }
-            key_toggle(next) {
-                this.key_shown(!this.key_shown());
-                return null;
-            }
-            /** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
-             * останется на экране, а следующий одиночный клик сменит аккаунт. */
-            account_reset() {
-                this.key_shown(false);
-                this.import_armed(false);
-                this.key_error('');
-            }
-            /** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
-             * ни QR — в дереве компонентов их просто нет. */
-            account_rows() {
-                if (!this.key_shown())
-                    return [this.Key_toggle(), this.Key_import_form()];
-                return [
-                    this.Key_toggle(),
-                    this.Key_warning(),
-                    this.Key_row(),
-                    this.Key_qr_box(),
-                    this.Key_save(),
-                    this.Key_import_form(),
-                ];
-            }
-            /** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
-             * программно и тут же освобождаем, в документе она не остаётся. */
-            key_save(next) {
-                const context = this.$.$mol_dom_context;
-                const blob = new Blob([this.key_text()], { type: 'text/plain' });
-                const uri = context.URL.createObjectURL(blob);
-                const link = context.document.createElement('a');
-                link.href = uri;
-                link.download = auth_file;
-                context.document.body.appendChild(link);
-                link.click();
-                link.remove();
-                context.URL.revokeObjectURL(uri);
-                return null;
-            }
-            // ===== Вход по чужому ключу =====
-            key_error(next) {
-                return next ?? '';
-            }
-            Key_error() {
-                return this.key_error() ? super.Key_error() : null;
-            }
-            import_armed(next) {
-                return next ?? false;
-            }
-            key_import_label() {
-                return this.import_armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу';
-            }
-            /** Ключом считаем только строку полного размера: обрезок или случайный
-             * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
-            auth_from(str) {
-                try {
-                    const auth = this.$.$giper_baza_auth.from(str);
-                    return auth.byteLength === auth_size ? auth : null;
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    return null;
-                }
-            }
-            /** Первый клик взводит кнопку, второй применяет — как корзина в списке диалогов.
-             * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
-            key_import(next) {
-                const str = this.key_input().trim();
-                if (!str) {
-                    this.key_error('Вставьте ключ или загрузите файл');
-                    return null;
-                }
-                const auth = this.auth_from(str);
-                if (!auth) {
-                    this.import_armed(false);
-                    this.key_error('Это не похоже на ключ аккаунта');
-                    return null;
-                }
-                if (!this.import_armed()) {
-                    this.key_error('');
-                    this.import_armed(true);
-                    return null;
-                }
-                // Подписка на пуши выдана прежнему лорду и новому уже не подходит:
-                // снимаем отметку, чтобы настройки не обещали то, чего нет
-                this.notify_on(false);
-                this.$.$giper_baza_auth.current(auth);
-                // Весь граф данных завязан на текущий ключ, поэтому проще начать страницу заново
-                this.$.$mol_dom_context.location.reload();
-                return null;
-            }
-            /** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
-            key_file(next) {
-                const file = next?.[0];
-                if (file)
-                    $mol_wire_async(this).key_file_read(file);
-                return next ?? null;
-            }
-            key_scanned(next) {
-                if (next === undefined)
-                    return '';
-                const str = next.trim();
-                this.key_input(str);
-                this.import_armed(false);
-                this.key_error(this.auth_from(str) ? '' : 'В QR не ключ аккаунта');
-                return str;
-            }
-            key_file_read(file) {
-                const text = $mol_wire_sync(file).text();
-                this.key_input(text.trim());
-                this.import_armed(false);
-                this.key_error('');
-                return true;
-            }
-            // ===== Автозапуск =====
-            /** Ленд заметок тут не заводим: он нужен не раньше первого клика по
-             * строке избранного, а на старте список диалогов ещё в пути, и захват
-             * попадал бы в окно, когда своей ссылки на него как бы нет. */
-            setup_ready() {
-                this.user_store();
-                this.inbox_open();
-                this.inbox_publish();
-                this.dialogs_land();
-                this.monitor_land();
-                this.device_ready();
-                return true;
             }
             auto() {
                 super.auto();
-                try {
-                    this.setup_ready();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.registry_remember();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.registry_keys_fill();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.invite_handle();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.join_handle();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.dialog_autocreate();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.pending_timer();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.notify_auto();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.outbox_flush();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.asks_flush();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.denies_merge();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.inbox_merge();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.monitor_fill();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
-                try {
-                    this.read_sync();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
+                $bog_gram_soft(() => this.account_ready(), null);
+                $bog_gram_soft(() => this.registry_remember(), null);
+                $bog_gram_soft(() => this.registry_keys_fill(), null);
+                $bog_gram_soft(() => this.invite_handle(), '');
+                $bog_gram_soft(() => this.join_handle(), '');
+                $bog_gram_soft(() => this.dialog_autocreate(), '');
+                $bog_gram_soft(() => this.pending_timer(), null);
+                $bog_gram_soft(() => this.notify_auto(), null);
+                $bog_gram_soft(() => this.outbox_flush(), null);
+                $bog_gram_soft(() => this.asks_flush(), null);
+                $bog_gram_soft(() => this.denies_merge(), null);
+                $bog_gram_soft(() => this.inbox_merge(), null);
+                $bog_gram_soft(() => this.monitor_fill(), null);
             }
         }
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "my_lord", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "my_pass_str", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "user_name", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "inbox_land", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "inbox_open", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "inbox_publish", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "lobbies_old", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "inbox_stores", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "inbox_cut", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "dialogs_land_make", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "monitor_land_make", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "devices_land_make", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "device_ready", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "peer_name", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "peer_note", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "peer_note_set", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_avatar_id", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_tint", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "saved_land_make", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "saved_id", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "saved_links", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "saved_preview", null);
@@ -32657,55 +35066,16 @@ var $;
         ], $bog_gram.prototype, "saved_open", null);
         __decorate([
             $mol_mem
-        ], $bog_gram.prototype, "dialog_ids", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "hidden_ids", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_peer", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_is", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_name_auto", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "admin_lords", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_moment", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_own", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_alive", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "accepted_lords", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "peer_known", null);
+        ], $bog_gram.prototype, "archive_fresh", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "peer_accept", null);
+        ], $bog_gram.prototype, "dialog_archive", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_kind", null);
+            $mol_action
+        ], $bog_gram.prototype, "dialog_unarchive", null);
         __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "request_ids", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "dialog_rows", null);
+            $mol_action
+        ], $bog_gram.prototype, "request_accept", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_current", null);
@@ -32719,77 +35089,11 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "dialog_close", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "delete_armed", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "delete_disarm", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "dialog_delete_click", null);
-        __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialog_delete", null);
         __decorate([
             $mol_mem
-        ], $bog_gram.prototype, "archive_links", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "archive_ids", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "archive_is", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "archive_opened", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "archive_toggle", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "dialog_archive_click", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "dialog_archive", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "dialog_unarchive", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "archive_hint", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "archive_icons", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "archive_unread", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "requests_opened", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "requests_toggle", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "request_accept", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "request_reject", null);
-        __decorate([
-            $mol_mem
         ], $bog_gram.prototype, "dialog_active", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "chat_title", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "chat_peer", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "chat_note", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_title_set", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "compose_opened", null);
@@ -32797,9 +35101,13 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "settings_opened", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "group_opened", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_opened", null);
+        __decorate([
             $mol_action
-            /** Кнопка в шапке работает как переключатель: повторный клик
-             * закрывает уже открытую страницу, а не оставляет её висеть. */
         ], $bog_gram.prototype, "compose_open", null);
         __decorate([
             $mol_action
@@ -32810,6 +35118,18 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "settings_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "group_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "members_close", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "music_opened", null);
@@ -32823,155 +35143,32 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "music_close", null);
         __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "dialog_pending", null);
-        __decorate([
             $mol_action
-        ], $bog_gram.prototype, "dialog_start", null);
+        ], $bog_gram.prototype, "dialog_open", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "dialog_autocreate", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_opened", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_open", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_close", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_sources", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_picked", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_pick", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_chosen_drop", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_id_error", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_id_add", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_pick_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_pick_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_pick_source", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_picked_is", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_chosen_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "group_chosen_name", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "group_lost", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "group_make", null);
         __decorate([
             $mol_mem
-        ], $bog_gram.prototype, "members_opened", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "members_open", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "members_close", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "member_error", null);
-        __decorate([
-            $mol_mem
         ], $bog_gram.prototype, "member_lords", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "member_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "member_title", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "member_status", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "member_armed", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "member_drop_hint", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "member_disarm", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "member_drop_click", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "member_rule_click", null);
-        __decorate([
             $mol_mem
-        ], $bog_gram.prototype, "history_open", null);
+        ], $bog_gram.prototype, "member_candidates", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "members_history_all", null);
+        ], $bog_gram.prototype, "member_add", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "members_history_new", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "member_pick_lords", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "member_pick_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "member_pick_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "member_pick_source", null);
+        ], $bog_gram.prototype, "member_drop", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "member_pick", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "member_id_add", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "members_add_rows", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "leave_armed", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "group_leave_click", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_all", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "ask_entries", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "members_ask_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "ask_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "ask_status", null);
+        ], $bog_gram.prototype, "member_raise", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "ask_accept", null);
@@ -32980,659 +35177,17 @@ var $;
         ], $bog_gram.prototype, "ask_reject", null);
         __decorate([
             $mol_action
-        ], $bog_gram.prototype, "ask_forget", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "mine_wrote", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "invite_ready", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "outbox_flush", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "sealed_close", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "sealed_open", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "inbox_merge", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "monitor_fill", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "messages_of", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "messages_alive_of", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "messages", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "chat_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_body", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_out", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_time", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_edited", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_checks", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_author", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_author_tint", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "message_menu", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_menu_is", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_press", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_hold", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_release", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_context", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "edit_id", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "reply_id", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_reply", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "reply_cancel", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_quote_jump", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_edit", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "edit_cancel", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_delete", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_send", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_shot", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_shot_size", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_shot_ratio", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_shot_width", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_shot_uri", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "zoom_id", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_zoom", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "zoom_close", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "image_files", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "image_paste", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "image_over", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "image_drop", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "voice_start", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "voice_hint", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "voice_clock", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_press", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_release", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_finish", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_cancel", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_abort", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "voice_menu", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_sound", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_sound_span", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_sound_uri", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "voice_playing", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "message_sound_playing", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_sound_toggle", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "message_sound_ended", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "chat_focus", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "chat_focus_row", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "read_sync", null);
+        ], $bog_gram.prototype, "group_leave", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "unread_count", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "unread_label", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_preview", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "dialog_time", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_ids", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_lords", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_size", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_joined", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_active_is", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "registry_status", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_rows", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_content", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_keys_fill", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "registry_make", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_remember", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "registry_join", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "registry_join_active", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "registry_forget", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "registry_open", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "registry_join_needed", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "user_sources", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "user_lords", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "user_rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "user_title", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "user_source", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "user_pick", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "my_pass", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "invite_lost", null);
-        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "invite_handle", null);
         __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "peer_pass_stored", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram.prototype, "peer_pass_given", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "pending_timer", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "pending_late", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "invite_drop", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "join_lost", null);
-        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "join_handle", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "ask_send", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_queued", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_sent", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_groups", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_pending_queued", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_pending_sent", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "ask_denied", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "denies_merge", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "asks_flush", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "notify_permission", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "notify_auto", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "notify_offer", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "notify_toggle", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "key_shown", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "key_toggle", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "account_rows", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "key_save", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "key_error", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "import_armed", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "key_import", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "setup_ready", null);
         $$.$bog_gram = $bog_gram;
-        class $bog_gram_avatar extends $.$bog_gram_avatar {
-            /** Базовый узор кладёт точки с шагом 2.7 при их толщине 3.5 — они
-             * перекрываются, и у длинных идентификаторов картинка сливается в
-             * сплошное пятно. Берём шаг крупнее толщины: точек меньше, зато
-             * узор читается и остаётся узнаваемым.
-             *
-             * Сетка прямоугольная, а рамка круглая, поэтому угловые точки
-             * срезались краем. Вписываем узор в окружность: точку, которая не
-             * помещается целиком, просто не рисуем — обрезков не остаётся,
-             * а сам узор становится круглым, как и аватар. */
-            path() {
-                const id = $mol_hash_string(this.id());
-                const start = 4;
-                const step = 4;
-                const center = 12;
-                /** Радиус точки — половина её толщины, плюс небольшой зазор от края. */
-                const limit = center - 2.5;
-                let path = '';
-                for (let x = 0; x < 3; ++x) {
-                    for (let y = 0; y < 5; ++y) {
-                        if (!((id >> (x + y * 3)) & 1))
-                            continue;
-                        const px = step * x + start;
-                        const py = step * y + start;
-                        const dx = px - center;
-                        const dy = py - center;
-                        if (Math.sqrt(dx * dx + dy * dy) > limit)
-                            continue;
-                        path += `M ${px} ${py} l 0 0 ` + `M ${24 - px} ${py} l 0 0 `;
-                    }
-                }
-                return path;
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_avatar.prototype, "path", null);
-        $$.$bog_gram_avatar = $bog_gram_avatar;
-        class $bog_gram_photo extends $.$bog_gram_photo {
-            /** Пока кадр не докачался, коробка стоит пустой: картинку с пустым
-             * адресом браузер рисует значком битой. */
-            Image() {
-                return this.uri() ? super.Image() : null;
-            }
-        }
-        $$.$bog_gram_photo = $bog_gram_photo;
-        /** Строка голосового в пузыре: кнопка, полоса и длина. Сам элемент
-         * звука лежит тут же, просто не показывается. */
-        class $bog_gram_sound extends $.$bog_gram_sound {
-            /** Пока запись не приехала, элемент звука не заводим: пустой адрес
-             * источника браузер честно пытается загрузить — и ругается. */
-            Node() {
-                return this.uri() ? super.Node() : null;
-            }
-            /** Сколько уже прозвучало. Ленд может быть ещё в пути, а разметка —
-             * не отрисована: тогда просто стоим в начале. */
-            moment() {
-                try {
-                    return this.Node()?.time() ?? 0;
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return 0;
-                }
-            }
-            /** Молчит — показываем общую длину, на ходу — сколько прозвучало. */
-            stamp() {
-                const span = this.playing() ? this.moment() : this.span();
-                return this.$.$bog_gram_voice.stamp(span);
-            }
-            fill_width() {
-                const span = this.span();
-                if (!span)
-                    return '0%';
-                const share = Math.max(0, Math.min(1, this.moment() / span));
-                return (share * 100).toFixed(1) + '%';
-            }
-            toggle_icons() {
-                return [this.playing() ? this.Pause_icon() : this.Play_icon()];
-            }
-            /** Играет ровно то, что решил список: решение принимается снаружи,
-             * иначе два голосовых заговорили бы разом.
-             *
-             * Управление объявлено в наследнике, а свойство отдаёт тип базы —
-             * отсюда приведение: без него сборка не видит этих методов. */
-            start() {
-                this.Node()?.start();
-            }
-            stop() {
-                this.Node()?.stop();
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_sound.prototype, "moment", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_sound.prototype, "stamp", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_sound.prototype, "fill_width", null);
-        $$.$bog_gram_sound = $bog_gram_sound;
-        class $bog_gram_sound_node extends $.$bog_gram_sound_node {
-            dom_node(next) {
-                return super.dom_node(next);
-            }
-            /** Позиция звучания: событие сдвига объявляет её устаревшей, и полоса
-             * прогресса едет сама. */
-            time() {
-                this.retime();
-                return this.dom_node().currentTime;
-            }
-            /** Обещание запуска не ждём: браузер отказывает, только когда звук
-             * включают без участия человека, а тут за кнопкой стоит его нажатие.
-             * Дослушанное до конца начинаем сначала. */
-            start() {
-                const node = this.dom_node();
-                if (node.ended)
-                    node.currentTime = 0;
-                node.play().catch(error => $mol_fail_log(error));
-            }
-            stop() {
-                const node = this.dom_node();
-                if (!node.paused)
-                    node.pause();
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_sound_node.prototype, "time", null);
-        $$.$bog_gram_sound_node = $bog_gram_sound_node;
-        class $bog_gram_chat extends $.$bog_gram_chat {
-            /** Заголовок чата — это подпись собеседника, поэтому он и правится
-             * прямо на месте. Подписывать, однако, есть кого не всегда: у избранного
-             * заголовок остаётся обычной строкой. */
-            Note_field() {
-                return this.note_editable() ? super.Note_field() : null;
-            }
-            Title_text() {
-                return this.note_editable() ? null : super.Title_text();
-            }
-            /** Список участников есть только у группы: в переписке вдвоём
-             * перечислять некого. */
-            Members() {
-                return this.members_shown() ? super.Members() : null;
-            }
-            Edit_banner() {
-                return this.edit_mode() ? super.Edit_banner() : null;
-            }
-            Reply_banner() {
-                return this.reply_mode() ? super.Reply_banner() : null;
-            }
-            Voice_note() {
-                return this.voice_hint() ? super.Voice_note() : null;
-            }
-            /** Микрофон стоит на месте отправки, пока писать нечего — как в телеге.
-             * В правке его нет: она про текст. Нет и там, где браузер не умеет
-             * писать звук: тогда отправка остаётся единственной кнопкой. */
-            send_is() {
-                if (this.edit_mode())
-                    return true;
-                if (!this.voice_ready())
-                    return true;
-                return Boolean(this.message_text().trim());
-            }
-            Send() {
-                return this.send_is() ? super.Send() : null;
-            }
-            Voice() {
-                return this.send_is() ? null : super.Voice();
-            }
-            /** Пока идёт запись, поле ввода со скрепкой уступают место таймеру и
-             * отмене. Сам микрофон при этом остаётся на месте и той же кнопкой:
-             * палец всё ещё лежит на ней, и отпускание должно прийти именно туда. */
-            send_tools() {
-                if (this.voice_on())
-                    return [this.Record_state(), this.Voice_cancel(), this.Voice()];
-                return [this.Attach(), this.Message_field(), this.Send(), this.Voice()];
-            }
-            /** Развёрнутый кадр лежит поверх всей страницы, а не внутри ленты:
-             * в ленте он ездил бы вместе с прокруткой переписки. */
-            sub() {
-                if (!this.zoom_uri())
-                    return super.sub();
-                return [...super.sub(), this.Zoom()];
-            }
-            focus_done(next) {
-                return next ?? '';
-            }
-            rows_seen(next) {
-                return next ?? 0;
-            }
-            /** Открытый диалог встаёт на первое непрочитанное, без них — на последнее
-             * сообщение; дальше лента едет вниз только за новыми сообщениями. Список
-             * ленивый: scrollHeight знает лишь отрисованную часть, поэтому к строке
-             * ведёт ensure_visible, он сам дорисует окно списка до неё. */
-            auto() {
-                super.auto();
-                try {
-                    this.stick_watch();
-                    const key = this.focus_key();
-                    if (!key) {
-                        this.focus_done('');
-                        return;
-                    }
-                    const rows = this.rows();
-                    if (!rows.length)
-                        return;
-                    const last = rows[rows.length - 1];
-                    if (key !== this.focus_done()) {
-                        const focus = this.focus_row();
-                        this.focus_done(key);
-                        this.rows_seen(rows.length);
-                        this.reveal(focus ?? last, focus ? 'start' : 'end');
-                        return;
-                    }
-                    if (rows.length > this.rows_seen())
-                        this.reveal(last, 'end');
-                    this.rows_seen(rows.length);
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        return;
-                    $mol_fail_log(error);
-                }
-            }
-            /** Первый показ строки после перезагрузки ждёт расшифровки ленда:
-             * ensure_visible приостанавливается, и без повтора лента оставалась
-             * наверху. Фибра доводит прокрутку, когда данные приедут. */
-            reveal(row, align) {
-                this.stick_end(false);
-                new this.$.$mol_after_tick(() => {
-                    $mol_wire_async(this).ensure_visible(row, align)
-                        .then(() => this.stick_end(align === 'end'))
-                        .catch($mol_fail_log);
-                });
-            }
-            stick_end(next) {
-                return next ?? false;
-            }
-            /** Строки дорисовываются после прокрутки: тексты расшифровываются
-             * по одному, и лента растёт уже под открытым диалогом. Пока человек
-             * сам не ушёл вверх, держим её прижатой к последнему сообщению. */
-            stick_watch() {
-                if (typeof ResizeObserver === 'undefined')
-                    return null;
-                const body = this.Body().dom_node();
-                const content = this.Body_content().dom_node();
-                let last = body.scrollTop;
-                const scrolled = () => {
-                    if (body.scrollTop < last - 4)
-                        this.stick_end(false);
-                    last = body.scrollTop;
-                };
-                const observer = new ResizeObserver(() => {
-                    if (this.stick_end())
-                        body.scrollTop = body.scrollHeight;
-                });
-                observer.observe(content);
-                body.addEventListener('scroll', scrolled, { passive: true });
-                return {
-                    destructor: () => {
-                        observer.disconnect();
-                        body.removeEventListener('scroll', scrolled);
-                    },
-                };
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "send_tools", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "focus_done", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "rows_seen", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "stick_end", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "stick_watch", null);
-        $$.$bog_gram_chat = $bog_gram_chat;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -33640,7 +35195,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_message_row] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_message_row][bog_gram_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная.\n   Подпись у кнопки лежит во вложенной вьюхе со своим цветом, поэтому\n   её перекрашиваем отдельно — иначе текст сливается с красным фоном. */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button],\n[bog_gram_message_row] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -33649,114 +35204,10 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const tg_blue = $mol_theme.control;
-        /** Нейтральная полупрозрачная заливка: чуть темнее на светлой теме, чуть светлее на тёмной. */
-        const veil = '#8888881a';
-        /** Красный для опасных мест: тот же, что у взведённой корзины в gram.view.css. */
-        const alert_red = '#e14b4b';
-        /** Палитра по номеру из хеша идентификатора: один и тот же лорд всегда
-         * красится одинаково — и узором кружка в списке, и подписью над своим
-         * пузырём в группе. */
-        const tint_rules = {
-            '0': { color: '#e17076' },
-            '1': { color: '#faa774' },
-            '2': { color: '#a695e7' },
-            '3': { color: '#7bc862' },
-            '4': { color: '#6ec9cb' },
-            '5': { color: '#65aadd' },
-            '6': { color: '#ee7aae' },
-        };
-        /** Шапка страницы прижата к верху экрана, а на айфоне там статус-бар и
-         * вырез камеры: свой отступ складываем с системным. Вне телефона добавка
-         * нулевая, и вёрстка остаётся ровно той же. */
-        const head_pad = {
-            top: $mol_style_func.calc(`${$mol_gap.block} + env(safe-area-inset-top)`),
-            bottom: $mol_gap.block,
-            left: $mol_gap.block,
-            right: $mol_gap.block,
-        };
-        /** То же снизу: последняя строка страницы не должна уезжать под
-         * системную полоску-«домой». */
-        const body_pad = {
-            top: $mol_gap.block,
-            bottom: $mol_style_func.calc(`${$mol_gap.block} + env(safe-area-inset-bottom)`),
-            left: $mol_gap.block,
-            right: $mol_gap.block,
-        };
         $mol_style_define($bog_gram, {
-            // ===== Страницы буклета =====
-            // Книга сама даёт страницам flex-shrink: 0, а $mol_page — maxWidth: 100%.
-            // Поэтому страницам задаётся ТОЛЬКО width: на телефоне она упирается
-            // в 100% вьюпорта и буклет листается горизонтальным снапом; любые
-            // shrink/grow/minWidth поверх этого ломают адаптивность.
-            Menu: {
-                width: '24rem',
-                background: {
-                    color: $mol_theme.back,
-                },
-                Head: {
-                    padding: head_pad,
-                },
-                Title: {
-                    font: {
-                        family: $bog_builderui_tokens.font_head,
-                        size: '1.5rem',
-                        weight: 500,
-                    },
-                },
-                Body_content: {
-                    padding: body_pad,
-                },
-            },
-            Chat_page: {
-                width: '30rem',
-                flex: {
-                    grow: 1,
-                },
-                background: {
-                    color: $mol_theme.back,
-                },
-            },
-            Settings_page: {
-                width: '26rem',
-                Head: {
-                    padding: head_pad,
-                },
-                Body_content: {
-                    padding: body_pad,
-                },
-            },
-            Compose_page: {
-                width: '26rem',
-                Head: {
-                    padding: head_pad,
-                },
-                Body_content: {
-                    padding: body_pad,
-                },
-            },
-            Group_page: {
-                width: '26rem',
-                Head: {
-                    padding: head_pad,
-                },
-                Body_content: {
-                    padding: body_pad,
-                },
-            },
             Music_page: {
                 width: '30rem',
             },
-            Members_page: {
-                width: '26rem',
-                Head: {
-                    padding: head_pad,
-                },
-                Body_content: {
-                    padding: body_pad,
-                },
-            },
-            // ===== Заглушка при пустом выборе =====
             Intro: {
                 flex: {
                     grow: 1,
@@ -33778,7 +35229,7 @@ var $;
                     items: 'center',
                 },
                 background: {
-                    color: veil,
+                    color: $bog_gram_tone.veil,
                 },
                 color: $mol_theme.shade,
                 padding: {
@@ -33794,2864 +35245,6 @@ var $;
                 font: {
                     size: '0.875rem',
                 },
-            },
-            // ===== Диалог по ссылке ещё не заведён =====
-            // Ключ собеседника едет по сети, и до его приезда списку диалогов
-            // показать нечего. Плитка тут же объясняет, чего ждём.
-            Invite_plate: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                background: {
-                    color: veil,
-                },
-                borderRadius: '0.75rem',
-            },
-            Invite_plate_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            // ===== Заявка в группу отправлена =====
-            // Строка стоит над списком диалогов, пока заявку не приняли: после
-            // перехода по ссылке экран иначе просто молчит.
-            Ask_plate: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                background: {
-                    color: veil,
-                },
-                borderRadius: '0.75rem',
-            },
-            Ask_plate_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            // ===== Список диалогов =====
-            Dialogs_list: {
-                gap: '0.125rem',
-            },
-            Dialogs_empty: {
-                padding: $mol_gap.block,
-                color: $mol_theme.shade,
-            },
-            Dialog_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-                /* подсветка активного диалога — в gram.view.css: кастомный
-                атрибут на встроенной кнопке не проходит типизацию Attrs */
-            },
-            /* общий вид кружка — в блоке аватара ниже, здесь только размер:
-            в списке диалогов он крупнее, чем в реестре */
-            Dialog_avatar: {
-                width: '3rem',
-                height: '3rem',
-            },
-            Dialog_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                /* без нуля ellipsis не срабатывает: колонка распирается содержимым */
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Dialog_top: {
-                align: {
-                    items: 'baseline',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Dialog_title: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Dialog_time: {
-                flex: {
-                    shrink: 0,
-                },
-                font: {
-                    size: '0.75rem',
-                },
-                /* приглушаем прозрачностью, а не цветом: на выделенной строке текст белый */
-                opacity: .65,
-                whiteSpace: 'nowrap',
-            },
-            Dialog_bottom: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Dialog_preview: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Unread_badge: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                background: {
-                    color: tg_blue,
-                },
-                color: '#ffffff',
-                font: {
-                    size: '0.75rem',
-                    weight: 'bold',
-                },
-                lineHeight: '1.25rem',
-                minWidth: '1.25rem',
-                padding: {
-                    top: 0,
-                    bottom: 0,
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '1rem',
-            },
-            /* корзина не должна распирать строку: своя ширина, минимум отступов,
-            цвет наследуется от строки — на выбранной он белый */
-            Dialog_delete: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-                /* красная заливка взведённой корзины — в gram.view.css:
-                кастомный атрибут на встроенной кнопке не проходит типизацию Attrs */
-            },
-            Dialog_delete_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            /* кнопка архива стоит рядом с корзиной и повторяет её габариты:
-            две соседние операции не должны прыгать в строке */
-            Dialog_archive: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Dialog_archive_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            Dialog_unarchive_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            // ===== Избранное =====
-            // Первая строка списка, геометрия у неё ровно та же, что у обычной:
-            // отличается только кружок — вместо узора собеседника закладка.
-            Saved_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-            },
-            /* цвет закладки перебивается белым на выбранной строке — тем же
-            правилом из gram.view.css, что красит и остальной её текст */
-            Saved_avatar: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                width: '3rem',
-                height: '3rem',
-                borderRadius: '50%',
-                background: {
-                    color: veil,
-                },
-                color: tg_blue,
-            },
-            Saved_avatar_icon: {
-                width: '1.5rem',
-                height: '1.5rem',
-            },
-            Saved_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                /* без нуля ellipsis не срабатывает: колонка распирается содержимым */
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Saved_top: {
-                align: {
-                    items: 'baseline',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Saved_title: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Saved_time: {
-                flex: {
-                    shrink: 0,
-                },
-                font: {
-                    size: '0.75rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-            },
-            Saved_bottom: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Saved_preview: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            // ===== Вход в архив =====
-            // Последняя строка списка: тот же кружок и та же сетка, что у диалога,
-            // чтобы раскрытый архив читался продолжением списка, а не врезкой.
-            Archive_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-            },
-            Archive_avatar: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                width: '3rem',
-                height: '3rem',
-                borderRadius: '50%',
-                background: {
-                    color: veil,
-                },
-                color: $mol_theme.shade,
-            },
-            Archive_avatar_icon: {
-                width: '1.5rem',
-                height: '1.5rem',
-            },
-            Archive_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Archive_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Archive_note: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* свой бейдж вместо строчного: тот ключуется диалогом, а тут сумма по архиву */
-            Archive_unread: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                background: {
-                    color: tg_blue,
-                },
-                color: '#ffffff',
-                font: {
-                    size: '0.75rem',
-                    weight: 'bold',
-                },
-                lineHeight: '1.25rem',
-                minWidth: '1.25rem',
-                padding: {
-                    top: 0,
-                    bottom: 0,
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '1rem',
-            },
-            // ===== Вход в запросы на переписку =====
-            // Устроен как вход в архив: тот же кружок и та же сетка, чтобы
-            // раскрытые запросы читались продолжением списка, а не врезкой.
-            Requests_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-            },
-            Requests_avatar: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                width: '3rem',
-                height: '3rem',
-                borderRadius: '50%',
-                background: {
-                    color: veil,
-                },
-                color: $mol_theme.shade,
-            },
-            Requests_avatar_icon: {
-                width: '1.5rem',
-                height: '1.5rem',
-            },
-            Requests_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Requests_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Requests_note: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* сколько человек ждёт ответа: тот же бейдж, что и у непрочитанного */
-            Requests_count: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                background: {
-                    color: tg_blue,
-                },
-                color: '#ffffff',
-                font: {
-                    size: '0.75rem',
-                    weight: 'bold',
-                },
-                lineHeight: '1.25rem',
-                minWidth: '1.25rem',
-                padding: {
-                    top: 0,
-                    bottom: 0,
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '1rem',
-            },
-            /* согласие и отказ стоят на месте архива и корзины и повторяют их
-            габариты: строка запроса не должна отличаться от обычной ничем, кроме
-            самих значков. Цвет наследуется от строки — на выбранной он белый */
-            Request_accept: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Request_accept_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            Request_reject: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Request_reject_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            // ===== Реестр пользователей =====
-            Users_title: {
-                font: {
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-                padding: {
-                    top: $mol_gap.block,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Users_list: {
-                gap: '0.125rem',
-            },
-            Users_empty: {
-                padding: $mol_gap.block,
-                color: $mol_theme.shade,
-            },
-            User_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-            },
-            User_avatar: {
-                width: '2.5rem',
-                height: '2.5rem',
-            },
-            User_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                /* без нуля ellipsis не срабатывает: колонка распирается содержимым */
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            User_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* откуда человек: подпись появляется, только когда реестров несколько */
-            User_source: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* открыт чужой реестр, а записи в нём нет: зовём вступить прямо тут */
-            Join_plate: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                background: {
-                    color: veil,
-                },
-                borderRadius: '0.75rem',
-            },
-            Join_plate_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Join_plate_button: {
-                flex: {
-                    shrink: 0,
-                },
-            },
-            // ===== Создание группы =====
-            // Страница устроена как «новый диалог»: сверху название и уже
-            // выбранные, снизу — откуда выбирать. Строки выбора повторяют сетку
-            // строк реестра, чтобы список людей везде выглядел одинаково.
-            Group_name_field: {
-                alignSelf: 'stretch',
-            },
-            Group_chosen_head: {
-                font: {
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-                padding: {
-                    top: $mol_gap.block,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Group_chosen_list: {
-                gap: '0.125rem',
-            },
-            Group_chosen_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.375rem',
-                    bottom: '0.375rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                background: {
-                    color: veil,
-                },
-                minWidth: 0,
-            },
-            Group_chosen_avatar: {
-                width: '2rem',
-                height: '2rem',
-            },
-            /* имя длинное и должно ужиматься, а не распирать колонку: у вьюх
-            flex-shrink нулевой, поэтому и растяжение, и сжатие задаются явно */
-            Group_chosen_name: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Group_chosen_drop: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Group_chosen_drop_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            /* кого не удалось добавить: тревожная строка, а не молчание */
-            Group_lost_note: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: alert_red,
-            },
-            Group_make: {
-                alignSelf: 'stretch',
-                justify: {
-                    content: 'center',
-                },
-            },
-            Group_id_form: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Group_id_error: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: alert_red,
-            },
-            Group_pick_head: {
-                font: {
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-                padding: {
-                    top: $mol_gap.block,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Group_pick_list: {
-                gap: '0.125rem',
-            },
-            Group_pick_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-                /* заливка выбранной строки — в gram.view.css: тот же атрибут, что
-                и у выбранного диалога, кастомный attr на встроенной кнопке не
-                проходит типизацию Attrs */
-            },
-            Group_pick_avatar: {
-                width: '2.5rem',
-                height: '2.5rem',
-            },
-            Group_pick_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Group_pick_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Group_pick_source: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                /* приглушаем прозрачностью, а не цветом: на выбранной строке текст белый */
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Group_pick_mark: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '1.25rem',
-                height: '1.25rem',
-            },
-            // ===== Участники группы =====
-            Members_list: {
-                gap: '0.125rem',
-            },
-            Member_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                minWidth: 0,
-            },
-            Member_avatar: {
-                width: '2.5rem',
-                height: '2.5rem',
-            },
-            Member_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Member_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Member_status: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* назначение админом и исключение стоят рядом и повторяют габариты
-            архива с корзиной: две соседние операции не должны прыгать в строке */
-            Member_rule: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Member_drop: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-                /* красная заливка взведённой кнопки — в gram.view.css: кастомный
-                атрибут на встроенной кнопке не проходит типизацию Attrs */
-            },
-            Member_rule_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            Member_drop_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            /* Что на самом деле делает «убрать» и что делает «выйти». Строки
-            видны на месте, а не в подсказке кнопки: на телефоне подсказку никто
-            не покажет, а обе операции необратимы. */
-            Members_drop_note: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Members_leave_note: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-                padding: {
-                    top: $mol_gap.block,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Members_add_block: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                padding: {
-                    top: $mol_gap.block,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Members_add_title: {
-                font: {
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-            },
-            /* выбор истории: две кнопки-переключателя и строка о том, чем они
-            отличаются — решение необратимое, объяснять его надо на месте */
-            Members_history: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.375rem',
-                minWidth: 0,
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                background: {
-                    color: veil,
-                },
-                borderRadius: '0.75rem',
-            },
-            Members_history_head: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Members_history_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Members_history_all: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                justify: {
-                    content: 'center',
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.8rem',
-                },
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            Members_history_new: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                justify: {
-                    content: 'center',
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.8rem',
-                },
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            Members_history_note: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Members_error: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: alert_red,
-            },
-            Members_id_form: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Members_pick_list: {
-                gap: '0.125rem',
-            },
-            Member_pick_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-            },
-            Member_pick_avatar: {
-                width: '2.5rem',
-                height: '2.5rem',
-            },
-            Member_pick_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Member_pick_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Member_pick_source: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Member_pick_mark: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '1.25rem',
-                height: '1.25rem',
-                color: $mol_theme.shade,
-            },
-            /* честная строка про то, что вместе с правом звать людей админ
-            получает и право менять чужие права */
-            Members_admin_note: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            // ===== Ссылка-приглашение в группу =====
-            // Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink и
-            // нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка иначе
-            // распирает колонку участников вместо переноса внутри неё.
-            Members_join: {
-                alignSelf: 'stretch',
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                maxWidth: '100%',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                background: {
-                    color: veil,
-                },
-                borderRadius: '0.75rem',
-            },
-            Members_join_head: {
-                font: {
-                    size: '0.875rem',
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-            },
-            Members_join_hint: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            /* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
-            Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
-            Members_join_text: {
-                alignSelf: 'stretch',
-                flex: {
-                    shrink: 1,
-                },
-                width: '100%',
-                minWidth: 0,
-                maxWidth: '100%',
-                maxHeight: '6rem',
-                overflow: {
-                    y: 'auto',
-                },
-                font: {
-                    family: 'monospace',
-                    size: '0.75rem',
-                },
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
-                userSelect: 'all',
-                background: {
-                    color: $mol_theme.back,
-                },
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            Members_join_copy: {
-                alignSelf: 'flex-start',
-            },
-            /* Белая подложка обязательна: на тёмной теме цветной код выходит
-            светлее фона, и сканеры такой инверсный код берут не всякие. */
-            Members_join_qr_box: {
-                alignSelf: 'center',
-                maxWidth: '100%',
-                justify: {
-                    content: 'center',
-                },
-                background: {
-                    color: '#ffffff',
-                },
-                padding: '0.5rem',
-                borderRadius: '0.75rem',
-            },
-            /* свой размер вместо трёхсот пикселей по умолчанию: колонка узкая */
-            Members_join_qr: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '12rem',
-                height: '12rem',
-                maxWidth: '100%',
-            },
-            // ===== Заявки в группу =====
-            // Сетка та же, что у участника: под именем стоит сокращённый
-            // идентификатор, а согласие и отказ повторяют габариты соседних
-            // кнопок в списке участников.
-            Members_asks_head: {
-                font: {
-                    weight: 'bold',
-                },
-                color: $mol_theme.shade,
-            },
-            Members_asks_list: {
-                gap: '0.125rem',
-            },
-            Ask_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.75rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                minWidth: 0,
-            },
-            Ask_avatar: {
-                width: '2.5rem',
-                height: '2.5rem',
-            },
-            Ask_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Ask_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Ask_status: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    family: 'monospace',
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Ask_accept: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Ask_reject: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Ask_accept_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            Ask_reject_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            /* выход из группы — не разрушительная операция для остальных, но для
-            себя окончательная: держим её внизу и отдельно от всего */
-            Members_leave: {
-                alignSelf: 'flex-start',
-                color: alert_red,
-                padding: {
-                    top: '0.375rem',
-                    bottom: '0.375rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            // ===== Список реестров в настройках =====
-            Registry_block: {
-                Content: {
-                    alignSelf: 'stretch',
-                    flex: {
-                        direction: 'column',
-                        shrink: 1,
-                    },
-                    align: {
-                        items: 'stretch',
-                    },
-                    gap: '0.5rem',
-                    minWidth: 0,
-                },
-            },
-            Registry_list: {
-                gap: '0.125rem',
-            },
-            Registry_row: {
-                alignSelf: 'stretch',
-                flex: {
-                    shrink: 1,
-                },
-                maxWidth: '100%',
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.75rem',
-                color: $mol_theme.text,
-                minWidth: 0,
-                /* подсветка активного реестра — в gram.view.css: тот же атрибут,
-                что и у выбранного диалога, кастомный attr на встроенной кнопке
-                не проходит типизацию Attrs */
-            },
-            Registry_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                minWidth: 0,
-                gap: '0.125rem',
-            },
-            Registry_title: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Registry_status: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                /* приглушаем прозрачностью, а не цветом: на активной строке текст белый */
-                opacity: .65,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Registry_join: {
-                flex: {
-                    shrink: 0,
-                },
-                font: {
-                    size: '0.75rem',
-                },
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            /* крестик не должен распирать строку: своя ширина и минимум отступов */
-            Registry_drop: {
-                flex: {
-                    shrink: 0,
-                },
-                alignSelf: 'center',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '1.75rem',
-                minHeight: '1.75rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Registry_drop_icon: {
-                width: '1rem',
-                height: '1rem',
-            },
-            Registry_note: {
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Registry_empty: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Registry_share: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Registry_share_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.75rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Registry_share_copy: {
-                flex: {
-                    shrink: 0,
-                },
-            },
-            Registry_form: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            // ===== Настройки и новый диалог =====
-            Name_field: {
-                alignSelf: 'stretch',
-            },
-            Peer_form: {
-                flex: {
-                    direction: 'column',
-                },
-                gap: $mol_gap.block,
-            },
-            /* строка состояния над кнопкой, а не рядом: подпись длинная,
-            в одну строку с кнопкой она ломает узкую колонку настроек */
-            Notify_body: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'flex-start',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Notify_status: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            My_id: {
-                Content: {
-                    align: {
-                        items: 'center',
-                    },
-                },
-            },
-            My_id_text: {
-                font: {
-                    family: 'monospace',
-                    size: '0.75rem',
-                },
-                minWidth: 0,
-                overflow: {
-                    x: 'auto',
-                },
-                whiteSpace: 'nowrap',
-            },
-            // ===== Личная ссылка-приглашение =====
-            // Ссылка длинная и без пробелов, поэтому всей ветке нужен shrink
-            // и нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка
-            // иначе распирает колонку настроек вместо переноса внутри неё.
-            Invite: {
-                Content: {
-                    alignSelf: 'stretch',
-                    minWidth: 0,
-                    flex: {
-                        shrink: 1,
-                    },
-                },
-            },
-            Invite_body: {
-                alignSelf: 'stretch',
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            Invite_hint: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            /* Ломаем ссылку по символам, а не гоним в горизонтальный скролл.
-            Перенос рисуется стилем и в текст не попадает — копируется цельная строка. */
-            Invite_text: {
-                alignSelf: 'stretch',
-                flex: {
-                    shrink: 1,
-                },
-                width: '100%',
-                minWidth: 0,
-                maxWidth: '100%',
-                maxHeight: '6rem',
-                overflow: {
-                    y: 'auto',
-                },
-                font: {
-                    family: 'monospace',
-                    size: '0.75rem',
-                },
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
-                userSelect: 'all',
-                background: {
-                    color: veil,
-                },
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            Invite_copy: {
-                alignSelf: 'flex-start',
-            },
-            /* Белая подложка обязательна: на тёмной теме цветной код выходит
-            светлее фона, и сканеры такой инверсный код берут не всякие. */
-            Invite_qr_box: {
-                alignSelf: 'center',
-                maxWidth: '100%',
-                justify: {
-                    content: 'center',
-                },
-                background: {
-                    color: '#ffffff',
-                },
-                padding: '0.5rem',
-                borderRadius: '0.75rem',
-            },
-            /* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек
-               узкая. Меньше не делаем: с ключом в ссылке кода стало вдвое больше,
-               и на 12rem модуль ужимался до четырёх пикселей */
-            Invite_qr: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '14rem',
-                height: '14rem',
-                maxWidth: '100%',
-            },
-            // ===== Ключ аккаунта =====
-            /* Всей ветке нужен shrink и нулевой минимум: у вьюх по умолчанию
-            flex-shrink 0, поэтому длинный ключ иначе распирает колонку настроек
-            вместо того, чтобы переноситься внутри отведённой ширины. */
-            Account: {
-                Content: {
-                    alignSelf: 'stretch',
-                    minWidth: 0,
-                    flex: {
-                        shrink: 1,
-                    },
-                },
-            },
-            Account_body: {
-                alignSelf: 'stretch',
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            Key_warning: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: alert_red,
-            },
-            Key_row: {
-                alignSelf: 'stretch',
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            /* Ключ длинный и без пробелов. Ломаем его по символам, а не гоним
-            в горизонтальный скролл: так он не распирает колонку настроек.
-            Перенос рисуется стилем и в текст не попадает — копируется цельная
-            строка. Высоту ограничиваем, чтобы блок не занял пол-экрана. */
-            Key_text: {
-                alignSelf: 'stretch',
-                flex: {
-                    shrink: 1,
-                },
-                width: '100%',
-                minWidth: 0,
-                maxWidth: '100%',
-                maxHeight: '8rem',
-                overflow: {
-                    y: 'auto',
-                },
-                font: {
-                    family: 'monospace',
-                    size: '0.75rem',
-                },
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
-                userSelect: 'all',
-                background: {
-                    color: veil,
-                },
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '0.5rem',
-            },
-            Key_copy: {
-                alignSelf: 'flex-start',
-            },
-            /* Подложка — как у ссылки-приглашения: тревожный красный на тёмном
-            фоне без неё читается как инверсный код. */
-            Key_qr_box: {
-                alignSelf: 'center',
-                maxWidth: '100%',
-                justify: {
-                    content: 'center',
-                },
-                background: {
-                    color: '#ffffff',
-                },
-                padding: '0.5rem',
-                borderRadius: '0.75rem',
-            },
-            /* свой размер вместо трёхсот пикселей по умолчанию: колонка настроек узкая */
-            Key_qr: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '12rem',
-                height: '12rem',
-                maxWidth: '100%',
-            },
-            Key_import_form: {
-                alignSelf: 'stretch',
-                flex: {
-                    direction: 'column',
-                    shrink: 1,
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            Key_load_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Key_load_hint: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.875rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Key_error: {
-                font: {
-                    size: '0.875rem',
-                },
-                color: alert_red,
-            },
-            // ===== Разделитель дня =====
-            Day_row: {
-                justify: {
-                    content: 'center',
-                },
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: 0,
-                    right: 0,
-                },
-            },
-            Day_chip: {
-                background: {
-                    color: veil,
-                },
-                color: $mol_theme.shade,
-                font: {
-                    size: '0.75rem',
-                },
-                padding: {
-                    top: '0.125rem',
-                    bottom: '0.125rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '1rem',
-            },
-            // ===== Пузыри сообщений =====
-            Message_row: {
-                /* якорь для всплывающей панели действий */
-                position: 'relative',
-                flex: {
-                    direction: 'column',
-                },
-                gap: '0.125rem',
-                maxWidth: '70%',
-                minWidth: 0,
-                alignSelf: 'flex-start',
-                padding: {
-                    top: '0.375rem',
-                    bottom: '0.375rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '0.75rem',
-                background: {
-                    color: $mol_theme.card,
-                },
-                '@': {
-                    bog_gram_out: {
-                        true: {
-                            alignSelf: 'flex-end',
-                        },
-                    },
-                },
-            },
-            /* Имя отправителя стоит только в группе и только над чужим пузырём.
-            Цвет берётся из той же палитры, что и узор аватара: в длинной группе
-            имена различаются ещё и на глаз, а не только буквами. */
-            Message_author: {
-                display: 'block',
-                alignSelf: 'stretch',
-                minWidth: 0,
-                maxWidth: '100%',
-                font: {
-                    size: '0.8rem',
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                '@': {
-                    bog_gram_tint: tint_rules,
-                },
-            },
-            Message_quote: {
-                display: 'flex',
-                flex: {
-                    direction: 'column',
-                },
-                alignSelf: 'stretch',
-                alignItems: 'flex-start',
-                minWidth: 0,
-                padding: {
-                    top: '0.125rem',
-                    bottom: '0.125rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                margin: {
-                    bottom: '0.25rem',
-                },
-                border: {
-                    left: {
-                        width: '2px',
-                        style: 'solid',
-                        color: tg_blue,
-                    },
-                },
-                borderRadius: '0.25rem',
-                background: {
-                    color: $mol_theme.hover,
-                },
-                font: {
-                    size: '0.8rem',
-                },
-                textAlign: 'left',
-            },
-            Message_quote_author: {
-                color: tg_blue,
-                font: {
-                    weight: 'bold',
-                },
-                maxWidth: '100%',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Message_quote_text: {
-                color: $mol_theme.shade,
-                maxWidth: '100%',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Message_body: {
-                minWidth: 0,
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
-            },
-            /* Размеры коробки приходят из данных сообщения (style в view.tree),
-            здесь только предел по ширине пузыря: на узком экране кадр ужимается
-            вместе с ним, а не вылезает наружу. */
-            Message_shot: {
-                alignSelf: 'flex-start',
-                maxWidth: '100%',
-            },
-            /* Строка голосового растягивается на всю ширину пузыря: кнопка,
-            полоса и длина иначе жались бы в комок у левого края. */
-            Message_sound: {
-                alignSelf: 'stretch',
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            Message_meta: {
-                alignSelf: 'flex-end',
-                align: {
-                    items: 'center',
-                },
-                justify: {
-                    content: 'flex-end',
-                },
-                gap: '0.25rem',
-                font: {
-                    size: '0.7rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Message_time: {
-                whiteSpace: 'nowrap',
-            },
-            Message_edited: {
-                font: {
-                    style: 'italic',
-                },
-            },
-            Message_checks: {
-                color: tg_blue,
-                whiteSpace: 'nowrap',
-            },
-            /* Панель правки и удаления: в пузыре её не видно, пока сообщение
-            не выбрано долгим нажатием (на мыши — наведением). Показ включается
-            в gram.view.css: там селектор по двум атрибутам сразу, а тут правило
-            одноатрибутное и проиграло бы ему по специфичности.
-            Из потока панель вынута и всплывает над нижним правым углом своего же
-            пузыря: стань она обычной строкой, каждое наведение мыши сдвигало бы
-            вниз всю переписку под сообщением. */
-            Message_actions: {
-                display: 'none',
-                position: 'absolute',
-                right: '0.25rem',
-                bottom: '0.25rem',
-                zIndex: 1,
-                align: {
-                    items: 'center',
-                },
-                gap: '0.25rem',
-                padding: '0.125rem',
-                borderRadius: '1rem',
-                background: {
-                    color: $mol_theme.card,
-                },
-                box: {
-                    shadow: [
-                        { x: 0, y: '0.125rem', blur: '0.5rem', spread: 0, color: '#00000040' },
-                    ],
-                },
-            },
-            Message_edit: {
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2rem',
-                minHeight: '2rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Message_delete: {
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2rem',
-                minHeight: '2rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Message_edit_icon: {
-                width: '1.125rem',
-                height: '1.125rem',
-            },
-            Message_delete_icon: {
-                width: '1.125rem',
-                height: '1.125rem',
-            },
-            // ===== Телефон =====
-            // Страница занимает вьюпорт целиком, место дороже воздуха: строкам
-            // списка режем отступы, а кнопкам внутри них, наоборот, добавляем —
-            // 2.75rem это 44 точки, минимум под палец по гайдлайну Apple.
-            // Блок последний: специфичность та же, что у базовых правил,
-            // решает порядок.
-            '@media': {
-                '(max-width: 30rem)': {
-                    Dialogs_list: {
-                        gap: 0,
-                    },
-                    Users_list: {
-                        gap: 0,
-                    },
-                    Dialog_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Saved_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Archive_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Requests_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    User_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Group_pick_list: {
-                        gap: 0,
-                    },
-                    Members_pick_list: {
-                        gap: 0,
-                    },
-                    Members_list: {
-                        gap: 0,
-                    },
-                    Members_asks_list: {
-                        gap: 0,
-                    },
-                    Ask_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    /* согласие и отказ стоят вплотную, поэтому обеим кнопкам нужен
-                    свой запас по краям: иначе палец накрывает сразу две */
-                    Ask_accept: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Ask_reject: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Ask_accept_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Ask_reject_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Group_pick_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Member_pick_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    Member_row: {
-                        gap: '0.5rem',
-                        minHeight: '2.75rem',
-                        padding: '0.375rem',
-                    },
-                    /* назначение админом и исключение стоят вплотную, поэтому
-                    обеим кнопкам нужен свой запас по краям: иначе палец накрывает
-                    сразу две */
-                    Member_rule: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Member_drop: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Member_rule_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Member_drop_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Group_chosen_drop: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Members_history_all: {
-                        minHeight: '2.75rem',
-                    },
-                    Members_history_new: {
-                        minHeight: '2.75rem',
-                    },
-                    /* корзина и архив стоят вплотную, поэтому обеим нужен свой
-                    запас по краям: иначе палец накрывает сразу две */
-                    Dialog_archive: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Dialog_delete: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Dialog_archive_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Dialog_unarchive_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Dialog_delete_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    /* согласие и отказ стоят на тех же местах, что архив и корзина,
-                    и запас под палец им нужен тот же */
-                    Request_accept: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Request_reject: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Request_accept_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Request_reject_icon: {
-                        width: '1.125rem',
-                        height: '1.125rem',
-                    },
-                    Registry_drop: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    /* пузырю можно шире: соседней колонки на телефоне всё равно нет */
-                    Message_row: {
-                        maxWidth: '85%',
-                    },
-                    Message_edit: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Message_delete: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                },
-            },
-        });
-        // ===== Аватар-кружок с инициалом =====
-        // Общий вид держим на самом компоненте: список диалогов и реестр
-        // отличаются только размером, а палитра нужна обоим одинаковая.
-        // Размер и кегль задаются на месте использования: селекторы тут
-        // одной специфичности, повтори мы их здесь — перебили бы место вызова.
-        /* Поле с карандашом: заполненное выглядит обычной строкой текста, пока в
-        него не ткнули, а иконка подсказывает, что строку можно править. Иконку
-        кладём поверх правого края, чтобы поле оставалось цельным элементом и
-        переиспользовалось и в настройках, и в шапке чата. */
-        $mol_style_define($bog_gram_field, {
-            position: 'relative',
-            align: {
-                items: 'center',
-            },
-            minWidth: 0,
-            maxWidth: '100%',
-            Field: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                maxWidth: '100%',
-                padding: {
-                    top: '0.125rem',
-                    bottom: '0.125rem',
-                    left: '0.375rem',
-                    right: '1.5rem',
-                },
-            },
-            Edit_icon: {
-                position: 'absolute',
-                right: '0.375rem',
-                flex: {
-                    shrink: 0,
-                },
-                width: '1rem',
-                height: '1rem',
-                color: $mol_theme.shade,
-                pointerEvents: 'none',
-            },
-        });
-        $mol_style_define($bog_gram_avatar, {
-            flex: {
-                shrink: 0,
-            },
-            borderRadius: '50%',
-            background: {
-                color: veil,
-            },
-            padding: '0.25rem',
-            // Узор рисуется обводкой currentColor, поэтому цвет из палитры
-            // красит сами точки, а не подложку
-            '@': {
-                bog_gram_tint: tint_rules,
-            },
-        });
-        $mol_style_define($bog_gram_chat, {
-            Head: {
-                align: {
-                    items: 'center',
-                },
-                padding: head_pad,
-            },
-            /* Место в шапке поделено со стрелкой «назад» и кнопками, поэтому
-            заголовку нужен нулевой минимум: без него длинная подпись распирает
-            шапку вместо того, чтобы ужиматься в отведённой ей ширине. */
-            Title: {
-                minWidth: 0,
-                font: {
-                    weight: 'bold',
-                },
-            },
-            /* Подпись собеседника правится прямо в заголовке тем же полем, что и
-            имя в настройках. У вьюх по умолчанию flex-shrink 0, поэтому полю
-            нужен и shrink, и нулевой минимум — иначе оно распирает шапку. */
-            Note_field: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                maxWidth: '100%',
-            },
-            /* Заголовок без поля: подписывать некого, поэтому просто строка
-            с многоточием на конце. */
-            Title_text: {
-                display: 'block',
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                maxWidth: '100%',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            /* Стрелка «назад» слева от имени собеседника — так закрывают чат на
-            телефоне. На широком экране рядом лежит открытый список диалогов,
-            возвращаться некуда, и вместо стрелки работает крестик справа. */
-            Back: {
-                display: 'none',
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2.5rem',
-                minHeight: '2.5rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Back_icon: {
-                width: '1.5rem',
-                height: '1.5rem',
-            },
-            /* Вход в список участников: справа от заголовка, на месте крестика и
-            того же роста. У переписки вдвоём этой кнопки нет вовсе. */
-            Members: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2.5rem',
-                minHeight: '2.5rem',
-                padding: '0.25rem',
-                borderRadius: '0.5rem',
-            },
-            Members_icon: {
-                width: '1.25rem',
-                height: '1.25rem',
-            },
-            Body: {
-                background: {
-                    color: $mol_theme.back,
-                },
-            },
-            Body_content: {
-                minWidth: 0,
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.75rem',
-                    right: '0.75rem',
-                },
-            },
-            Messages: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                },
-                gap: '0.25rem',
-                minWidth: 0,
-                alignSelf: 'stretch',
-            },
-            /* Панель ввода стоит у самого низа экрана, а на айфоне там системная
-            полоска-«домой»: её высоту добавляем к своему отступу. */
-            Foot: {
-                flex: {
-                    direction: 'column',
-                },
-                align: {
-                    items: 'stretch',
-                },
-                gap: '0.5rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: $mol_style_func.calc('0.5rem + env(safe-area-inset-bottom)'),
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-            },
-            Edit_banner: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                background: {
-                    color: $mol_theme.hover,
-                },
-                border: {
-                    left: {
-                        width: '2px',
-                        style: 'solid',
-                        color: tg_blue,
-                    },
-                },
-                borderRadius: '0.25rem',
-            },
-            Reply_banner: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-                background: {
-                    color: $mol_theme.hover,
-                },
-                border: {
-                    left: {
-                        width: '2px',
-                        style: 'solid',
-                        color: tg_blue,
-                    },
-                },
-                borderRadius: '0.25rem',
-            },
-            Reply_icon: {
-                color: tg_blue,
-                flex: {
-                    shrink: 0,
-                },
-            },
-            Reply_info: {
-                flex: {
-                    direction: 'column',
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.8rem',
-                },
-            },
-            Reply_title: {
-                color: tg_blue,
-                font: {
-                    weight: 'bold',
-                },
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Reply_text: {
-                color: $mol_theme.shade,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            Edit_banner_text: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                font: {
-                    size: '0.8rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Send_row: {
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                minWidth: 0,
-            },
-            Message_field: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                borderRadius: '1rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.875rem',
-                    right: '0.875rem',
-                },
-            },
-            Send: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2.5rem',
-                minHeight: '2.5rem',
-                padding: 0,
-                borderRadius: '50%',
-                background: {
-                    color: tg_blue,
-                },
-                color: '#ffffff',
-            },
-            /* Скрепка — такой же круглый пятачок, что и отправка, только без
-            заливки: две кнопки по краям поля ввода должны быть одного роста. */
-            Attach: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2.5rem',
-                minHeight: '2.5rem',
-                padding: 0,
-                borderRadius: '50%',
-                color: $mol_theme.shade,
-                /* Скрытое поле выбора файла вдвое выше своей кнопки и без обрезки
-                перехватывало бы клики по строке правки над ней. */
-                overflow: 'hidden',
-            },
-            Attach_icon: {
-                width: '1.25rem',
-                height: '1.25rem',
-            },
-            /* Микрофон занимает место отправки, когда писать нечего, поэтому и
-            габариты у него те же: строка ввода не должна дёргаться от того,
-            что в поле появилась буква. */
-            Voice: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2.5rem',
-                minHeight: '2.5rem',
-                padding: 0,
-                borderRadius: '50%',
-                color: $mol_theme.shade,
-                /* запрет выделения и системного меню — в gram.view.css: долгое
-                нажатие тут жест, а не вызов лупы */
-            },
-            Voice_icon: {
-                width: '1.25rem',
-                height: '1.25rem',
-            },
-            /* Состояние записи занимает место поля ввода: мигающая точка и
-            растущий таймер. */
-            Record_state: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: 0,
-                align: {
-                    items: 'center',
-                },
-                gap: '0.5rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.875rem',
-                    right: '0.875rem',
-                },
-            },
-            Record_dot: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '0.625rem',
-                height: '0.625rem',
-                borderRadius: '50%',
-                background: {
-                    color: alert_red,
-                },
-                /* мигание — в gram.view.css: ключевые кадры в типизированные
-                стили не входят */
-            },
-            Record_time: {
-                flex: {
-                    shrink: 0,
-                },
-                font: {
-                    family: 'monospace',
-                },
-                whiteSpace: 'nowrap',
-            },
-            /* Крестик — цель для пальца, съехавшего с микрофона: отпускание над
-            ним отменяет запись, поэтому кнопка широкая и подписанная. */
-            Voice_cancel: {
-                flex: {
-                    shrink: 0,
-                },
-                align: {
-                    items: 'center',
-                },
-                gap: '0.25rem',
-                minHeight: '2.5rem',
-                padding: {
-                    top: '0.25rem',
-                    bottom: '0.25rem',
-                    left: '0.625rem',
-                    right: '0.625rem',
-                },
-                borderRadius: '1rem',
-                color: alert_red,
-            },
-            Voice_cancel_icon: {
-                flex: {
-                    shrink: 0,
-                },
-                width: '1rem',
-                height: '1rem',
-            },
-            Voice_cancel_text: {
-                whiteSpace: 'nowrap',
-            },
-            /* Отказ микрофона и промах по кнопке объясняются строкой над полем
-            ввода: ни модалок, ни системных окон. */
-            Voice_note: {
-                font: {
-                    size: '0.8rem',
-                },
-                color: $mol_theme.shade,
-                padding: {
-                    top: 0,
-                    bottom: 0,
-                    left: '0.5rem',
-                    right: '0.5rem',
-                },
-            },
-            // ===== Одна страница на экран =====
-            // Ниже этой ширины список диалогов (24rem) и чат (30rem) рядом уже
-            // не помещаются, буклет листается по одной странице — и чат закрывает
-            // стрелка слева, а не крестик справа. Обе кнопки зовут один и тот же
-            // обработчик, поэтому лишнюю просто прячем. Блок последний:
-            // специфичность та же, что у базовых правил, решает порядок.
-            '@media': {
-                '(max-width: 54rem)': {
-                    Back: {
-                        display: 'flex',
-                    },
-                    Close: {
-                        display: 'none',
-                    },
-                },
-                /* Скрепка стоит вплотную к полю ввода, поэтому на телефоне ей
-                нужен тот же запас под палец, что и остальным кнопкам списка. */
-                '(max-width: 30rem)': {
-                    Members: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Attach: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Voice: {
-                        minWidth: '2.75rem',
-                        minHeight: '2.75rem',
-                    },
-                    Voice_cancel: {
-                        minHeight: '2.75rem',
-                    },
-                },
-            },
-        });
-        /* Коробка кадра: размер задаётся в разметке из данных сообщения, здесь
-        только вид. Пока картинка не приехала, коробка стоит пустой заливкой —
-        лента уже разложена и от появления кадра не дёрнется. */
-        $mol_style_define($bog_gram_photo, {
-            display: 'block',
-            flex: {
-                shrink: 0,
-            },
-            maxWidth: '100%',
-            padding: 0,
-            overflow: 'hidden',
-            borderRadius: '0.5rem',
-            background: {
-                color: veil,
-            },
-            Image: {
-                display: 'block',
-                width: '100%',
-                height: '100%',
-                /* object-fit нет в словаре типизированных стилей — правило
-                лежит в gram.view.css */
-            },
-        });
-        /* Голосовое в пузыре: кнопка, полоса прогресса и длина одной строкой.
-        Сам элемент звука лежит тут же и не показывается — играть это ему не
-        мешает. */
-        $mol_style_define($bog_gram_sound, {
-            align: {
-                items: 'center',
-            },
-            gap: '0.5rem',
-            minWidth: 0,
-            maxWidth: '100%',
-            padding: {
-                top: '0.125rem',
-                bottom: '0.125rem',
-                left: 0,
-                right: 0,
-            },
-            Toggle: {
-                flex: {
-                    shrink: 0,
-                },
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                minWidth: '2rem',
-                minHeight: '2rem',
-                padding: 0,
-                borderRadius: '50%',
-                background: {
-                    color: tg_blue,
-                },
-                color: '#ffffff',
-            },
-            Play_icon: {
-                width: '1.125rem',
-                height: '1.125rem',
-            },
-            Pause_icon: {
-                width: '1.125rem',
-                height: '1.125rem',
-            },
-            /* Полоса тянется на всё свободное место, но не схлопывается в точку
-            на узком пузыре: у вьюх flex-shrink нулевой, поэтому и растяжение, и
-            сжатие задаются явно. */
-            Track: {
-                flex: {
-                    grow: 1,
-                    shrink: 1,
-                },
-                minWidth: '3rem',
-                height: '0.25rem',
-                borderRadius: '0.25rem',
-                background: {
-                    color: veil,
-                },
-                overflow: 'hidden',
-            },
-            Fill: {
-                height: '100%',
-                background: {
-                    color: tg_blue,
-                },
-            },
-            Stamp: {
-                flex: {
-                    shrink: 0,
-                },
-                font: {
-                    size: '0.75rem',
-                },
-                opacity: .65,
-                whiteSpace: 'nowrap',
-            },
-            Node: {
-                display: 'none',
-            },
-        });
-        /* Развёрнутый кадр: слой на всю страницу чата, а не на весь экран —
-        на широком мониторе список диалогов остаётся видимым. */
-        $mol_style_define($bog_gram_zoom, {
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            zIndex: 2,
-            justify: {
-                content: 'center',
-            },
-            align: {
-                items: 'center',
-            },
-            padding: '1rem',
-            background: {
-                color: '#000000cc',
-            },
-            outline: 'none',
-            Shot: {
-                maxWidth: '100%',
-                maxHeight: '100%',
-                borderRadius: '0.5rem',
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
