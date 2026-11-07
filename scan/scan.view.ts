@@ -20,7 +20,7 @@ namespace $.$$ {
 		@ $mol_mem
 		tick() {
 			if( !this.scanning() ) return null
-			$mol_state_time.now( 250 )
+			this.$.$mol_state_time.now( 250 )
 			const video = this.Camera().dom_node() as HTMLVideoElement
 			const width = video.videoWidth
 			const height = video.videoHeight
@@ -32,7 +32,7 @@ namespace $.$$ {
 			context.drawImage( video, 0, 0, width, height )
 			const found = qr_read( context.getImageData( 0, 0, width, height ).data, width, height )
 			if( !found?.data.includes( this.prefix() ) ) return null
-			setTimeout( () => {
+			new this.$.$mol_after_tick( ()=> {
 				this.scanning( false )
 				this.found( found.data )
 			} )
