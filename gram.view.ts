@@ -2924,7 +2924,7 @@ namespace $.$$ {
 		@$mol_action
 		message_quote_jump( id: string, next?: any ) {
 			const target = this.message_quote_id( id )
-			if( target ) this.Chat_page().reveal( this.Message_row( target ), 'center' )
+			if( target ) ( this.Chat_page() as $$.$bog_gram_chat ).reveal( this.Message_row( target ), 'center' )
 			return null
 		}
 
