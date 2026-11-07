@@ -46,13 +46,17 @@ webpush.setVapidDetails('mailto:noreply@giper.dev', keys.publicKey, keys.private
 
 // ===== Подписки =====
 
-/** lord → { lord, monitor, subscription, seen: { "session|peer": summ } } */
+/** lord → { lord, monitor, subscriptions: [ PushSubscription ], seen: { "session|peer": summ } } */
 let subs = {}
 
 function subs_load() {
 	if (!fs.existsSync(subs_file)) return
 	try {
 		subs = JSON.parse(fs.readFileSync(subs_file, 'utf8'))
+		for (const sub of Object.values(subs)) {
+			if (!sub.subscriptions) sub.subscriptions = sub.subscription ? [sub.subscription] : []
+			delete sub.subscription
+		}
 		log('subs loaded:', Object.keys(subs).length)
 	} catch (error) {
 		log('subs load failed:', error.message)
@@ -216,18 +220,28 @@ async function notify(sub, names) {
 		body,
 		url: APP_URL,
 	})
-	try {
-		await webpush.sendNotification(sub.subscription, payload)
-		log('pushed', sub.lord.slice(0, 8), body)
-	} catch (error) {
-		const code = error?.statusCode
-		log('push failed', sub.lord.slice(0, 8), code, error?.body ?? error?.message)
-		// 404/410 — подписка мертва (браузер отозвал), выкидываем
-		if (code === 404 || code === 410) {
-			delete subs[sub.lord]
-			subs_save()
+	for (const subscription of [...sub.subscriptions]) {
+		try {
+			await webpush.sendNotification(subscription, payload)
+			log('pushed', sub.lord.slice(0, 8), body)
+		} catch (error) {
+			const code = error?.statusCode
+			log('push failed', sub.lord.slice(0, 8), code, error?.body ?? error?.message)
+			if (code === 404 || code === 410) {
+				endpoint_drop(sub.lord, subscription.endpoint)
+				subs_save()
+			}
 		}
 	}
+}
+
+const DEVICES = 8
+
+function endpoint_drop(lord, endpoint) {
+	const sub = subs[lord]
+	if (!sub) return
+	sub.subscriptions = sub.subscriptions.filter(item => item.endpoint !== endpoint)
+	if (!sub.subscriptions.length) delete subs[lord]
 }
 
 let ticks = 0
@@ -390,9 +404,11 @@ const server = http.createServer(async (req, res) => {
 			if (!lord || !monitor || !subscription?.endpoint) return json(res, 400, { error: 'lord, monitor, subscription required' })
 
 			const prev = subs[lord]
-			subs[lord] = { lord, monitor, subscription, seen: prev?.seen ?? {} }
+			const others = (prev?.subscriptions ?? []).filter(item => item.endpoint !== subscription.endpoint)
+			const subscriptions = [...others, subscription].slice(-DEVICES)
+			subs[lord] = { lord, monitor, subscriptions, seen: prev?.seen ?? {}, primed: prev?.primed }
 			subs_save()
-			log('subscribed', lord.slice(0, 8), 'monitor', monitor.slice(0, 8))
+			log('subscribed', lord.slice(0, 8), 'monitor', monitor.slice(0, 8), 'devices', subscriptions.length)
 			return json(res, 200, { ok: true })
 		} catch (error) {
 			return json(res, 400, { error: String(error?.message ?? error) })
@@ -403,7 +419,12 @@ const server = http.createServer(async (req, res) => {
 		try {
 			const data = await body_read(req)
 			const lord = String(data.lord ?? '')
-			if (subs[lord]) { delete subs[lord]; subs_save() }
+			const endpoint = String(data.endpoint ?? '')
+			if (subs[lord]) {
+				if (endpoint) endpoint_drop(lord, endpoint)
+				else delete subs[lord]
+				subs_save()
+			}
 			return json(res, 200, { ok: true })
 		} catch (error) {
 			return json(res, 400, { error: String(error?.message ?? error) })

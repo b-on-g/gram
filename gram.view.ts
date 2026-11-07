@@ -4565,7 +4565,6 @@ namespace $.$$ {
 		): 'skip' | 'subscribe' | 'ask' {
 			if( !supported ) return 'skip'
 			if( off ) return 'skip'
-			if( on ) return 'skip'
 			if( permission === 'granted' ) return 'subscribe'
 			if( permission === 'denied' ) return 'skip'
 			return asked ? 'skip' : 'ask'

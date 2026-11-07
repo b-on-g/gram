@@ -1011,9 +1011,12 @@ namespace $.$$ {
 			$mol_assert_equal( plan( 'default', false, false, false ), 'ask' )
 			$mol_assert_equal( plan( 'default', false, false, true ), 'skip' )
 
-			// Запрет браузера и живая подписка одинаково не требуют ничего
 			$mol_assert_equal( plan( 'denied', false, false, false ), 'skip' )
-			$mol_assert_equal( plan( 'granted', true, false, false ), 'skip' )
+
+			// Включённые переподписываются на каждом заходе: демон мог выкинуть
+			// протухшую подписку, а сам браузер об этом не узнает
+			$mol_assert_equal( plan( 'granted', true, false, false ), 'subscribe' )
+			$mol_assert_equal( plan( 'denied', true, false, false ), 'skip' )
 
 			// Выключенное руками не включается обратно ни при каком разрешении
 			$mol_assert_equal( plan( 'granted', false, true, false ), 'skip' )

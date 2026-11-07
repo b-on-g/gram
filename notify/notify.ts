@@ -146,13 +146,18 @@ namespace $ {
 		static unsubscribe( lord: string ) {
 			try {
 
+				let endpoint = ''
+
 				if( this.supported() ) {
 					const reg = $mol_wire_sync( api ).registration()
 					const sub = $mol_wire_sync( api ).subscription_get( reg )
-					if( sub ) $mol_wire_sync( api ).subscription_drop( sub )
+					if( sub ) {
+						endpoint = sub.endpoint
+						$mol_wire_sync( api ).subscription_drop( sub )
+					}
 				}
 
-				if( lord ) this.send( '/push/unsubscribe', { lord } )
+				if( lord ) this.send( '/push/unsubscribe', { lord, endpoint } )
 
 				return true
 
