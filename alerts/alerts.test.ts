@@ -1,6 +1,45 @@
 namespace $ {
 
+	class Alerts_switch extends $mol_object {
+
+		@ $mol_mem
+		static on( next?: boolean ) {
+			return next ?? false
+		}
+
+	}
+
 	$mol_test({
+
+		async 'Подписка поднимается один раз, даже когда сама включает уведомления'( $ ) {
+
+			let applied = 0
+
+			const alerts = $bog_gram_alerts.make({ $,
+				supported: ()=> true,
+				permission: ()=> 'granted' as NotificationPermission,
+				on: ( next?: boolean )=> Alerts_switch.on( next ),
+				off: ()=> false,
+				asked: ()=> false,
+				Account: ()=> ({ monitor_link: ()=> 'Monitor', my_lord: ()=> 'Lord' }) as any,
+				apply: ( on: boolean )=> {
+					++ applied
+					Promise.resolve().then( ()=> alerts.on( on ) )
+					return on
+				},
+			})
+
+			alerts.auto()
+			await Promise.resolve()
+			await Promise.resolve()
+			$mol_assert_equal( applied, 1 )
+			$mol_assert_equal( alerts.on(), true )
+
+			alerts.auto()
+			await Promise.resolve()
+			$mol_assert_equal( applied, 1 )
+
+		},
 
 		'Уведомления включаются сами, но выключенные руками не возвращаются'( $ ) {
 

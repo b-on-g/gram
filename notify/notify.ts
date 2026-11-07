@@ -35,6 +35,14 @@ namespace $ {
 		return bytes
 	}
 
+	function key_same( sub: PushSubscription, bytes: Uint8Array ) {
+		const own = sub.options?.applicationServerKey
+		if( !own ) return false
+		const view = new Uint8Array( own )
+		if( view.length !== bytes.length ) return false
+		return view.every( ( byte, index )=> byte === bytes[ index ] )
+	}
+
 	export class $bog_gram_notify extends $mol_object {
 
 		static base = 'https://push.91-188-212-151.ip.giper.dev'
@@ -97,10 +105,13 @@ namespace $ {
 				const key = answer?.key
 				if( !key ) return false
 
-				const stale = $mol_wire_sync( api ).subscription_get( reg )
-				if( stale ) $mol_wire_sync( api ).subscription_drop( stale )
+				const bytes = key_bytes( key )
 
-				const sub = $mol_wire_sync( api ).subscription_make( reg, key_bytes( key ) )
+				const current = $mol_wire_sync( api ).subscription_get( reg )
+				const same = current && key_same( current, bytes )
+				if( current && !same ) $mol_wire_sync( api ).subscription_drop( current )
+
+				const sub = same ? current : $mol_wire_sync( api ).subscription_make( reg, bytes )
 
 				this.send( '/push/subscribe', {
 					lord,

@@ -49,7 +49,13 @@ namespace $ {
 		@ $mol_mem
 		auto() {
 			if( this.plan_now() !== 'subscribe' ) return false
-			if( !this.Account().monitor_link() ) return false
+			const monitor = this.Account().monitor_link()
+			if( !monitor ) return false
+			return this.raised( this.Account().my_lord() + '/' + monitor )
+		}
+
+		@ $mol_mem_key
+		raised( key: string ) {
 			$mol_wire_async( this ).apply( true )
 			return true
 		}
