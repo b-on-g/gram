@@ -47053,7 +47053,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.96";
+    const $bog_gram_version = "1.0.97";
 }
 
 declare namespace $ {
@@ -54953,8 +54953,10 @@ declare namespace $ {
         messages_merge(buckets: readonly (readonly $bog_gram_message[])[]): $bog_gram_message[];
         messages_of(id: string): $bog_gram_message[];
         messages_alive_of(id: string): $bog_gram_message[];
+        last(id: string): $bog_gram_message | null;
         read_moment_of(id: string, lord: string): number;
         unread(id: string): number;
+        unread_since(messages: readonly $bog_gram_message[], my: string, seen: number, limit?: number): number;
         preview(id: string): string;
         time(id: string): string;
         mine_among(messages: readonly $bog_gram_message[], my: string): boolean;
@@ -56057,147 +56059,157 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_54 = $mol_type_enforce<
+	type $mol_view__minimal_height_bog_gram_chat_54 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_view['minimal_height'] >
+	>
+	type $mol_view__sub_bog_gram_chat_55 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['line_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_56 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_bubble__out_bog_gram_chat_55 = $mol_type_enforce<
+	type $bog_gram_bubble__out_bog_gram_chat_57 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_out'] >
 		,
 		ReturnType< $bog_gram_bubble['out'] >
 	>
-	type $bog_gram_bubble__menu_bog_gram_chat_56 = $mol_type_enforce<
+	type $bog_gram_bubble__menu_bog_gram_chat_58 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_menu_is'] >
 		,
 		ReturnType< $bog_gram_bubble['menu'] >
 	>
-	type $bog_gram_bubble__author_bog_gram_chat_57 = $mol_type_enforce<
+	type $bog_gram_bubble__author_bog_gram_chat_59 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author'] >
 		,
 		ReturnType< $bog_gram_bubble['author'] >
 	>
-	type $bog_gram_bubble__author_tint_bog_gram_chat_58 = $mol_type_enforce<
+	type $bog_gram_bubble__author_tint_bog_gram_chat_60 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author_tint'] >
 		,
 		ReturnType< $bog_gram_bubble['author_tint'] >
 	>
-	type $bog_gram_bubble__quote_shown_bog_gram_chat_59 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_61 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_shown'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_shown'] >
 	>
-	type $bog_gram_bubble__quote_author_bog_gram_chat_60 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_author_bog_gram_chat_62 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_author'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_author'] >
 	>
-	type $bog_gram_bubble__quote_text_bog_gram_chat_61 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_text_bog_gram_chat_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_text'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_text'] >
 	>
-	type $bog_gram_bubble__quote_jump_bog_gram_chat_62 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_64 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_jump'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_jump'] >
 	>
-	type $bog_gram_bubble__shot_bog_gram_chat_63 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_bog_gram_chat_65 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot'] >
 		,
 		ReturnType< $bog_gram_bubble['shot'] >
 	>
-	type $bog_gram_bubble__shot_uri_bog_gram_chat_64 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_uri'] >
 	>
-	type $bog_gram_bubble__shot_width_bog_gram_chat_65 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_width_bog_gram_chat_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_width'] >
 	>
-	type $bog_gram_bubble__shot_ratio_bog_gram_chat_66 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_68 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_ratio'] >
 	>
-	type $bog_gram_bubble__zoom_bog_gram_chat_67 = $mol_type_enforce<
+	type $bog_gram_bubble__zoom_bog_gram_chat_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_zoom'] >
 		,
 		ReturnType< $bog_gram_bubble['zoom'] >
 	>
-	type $bog_gram_bubble__sound_bog_gram_chat_68 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_bog_gram_chat_70 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound'] >
 		,
 		ReturnType< $bog_gram_bubble['sound'] >
 	>
-	type $bog_gram_bubble__sound_uri_bog_gram_chat_69 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_71 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_uri'] >
 	>
-	type $bog_gram_bubble__sound_span_bog_gram_chat_70 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_span_bog_gram_chat_72 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_span'] >
 	>
-	type $bog_gram_bubble__sound_playing_bog_gram_chat_71 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_playing'] >
 	>
-	type $bog_gram_bubble__sound_toggle_bog_gram_chat_72 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_toggle'] >
 	>
-	type $bog_gram_bubble__sound_ended_bog_gram_chat_73 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_75 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_ended'] >
 	>
-	type $bog_gram_bubble__body_bog_gram_chat_74 = $mol_type_enforce<
+	type $bog_gram_bubble__body_bog_gram_chat_76 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_body'] >
 		,
 		ReturnType< $bog_gram_bubble['body'] >
 	>
-	type $bog_gram_bubble__time_bog_gram_chat_75 = $mol_type_enforce<
+	type $bog_gram_bubble__time_bog_gram_chat_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_time'] >
 		,
 		ReturnType< $bog_gram_bubble['time'] >
 	>
-	type $bog_gram_bubble__edited_bog_gram_chat_76 = $mol_type_enforce<
+	type $bog_gram_bubble__edited_bog_gram_chat_78 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edited'] >
 		,
 		ReturnType< $bog_gram_bubble['edited'] >
 	>
-	type $bog_gram_bubble__checks_bog_gram_chat_77 = $mol_type_enforce<
+	type $bog_gram_bubble__checks_bog_gram_chat_79 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_checks'] >
 		,
 		ReturnType< $bog_gram_bubble['checks'] >
 	>
-	type $bog_gram_bubble__edit_bog_gram_chat_78 = $mol_type_enforce<
+	type $bog_gram_bubble__edit_bog_gram_chat_80 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edit'] >
 		,
 		ReturnType< $bog_gram_bubble['edit'] >
 	>
-	type $bog_gram_bubble__delete_bog_gram_chat_79 = $mol_type_enforce<
+	type $bog_gram_bubble__delete_bog_gram_chat_81 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_delete'] >
 		,
 		ReturnType< $bog_gram_bubble['delete'] >
 	>
-	type $bog_gram_bubble__press_bog_gram_chat_80 = $mol_type_enforce<
+	type $bog_gram_bubble__press_bog_gram_chat_82 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_press'] >
 		,
 		ReturnType< $bog_gram_bubble['press'] >
 	>
-	type $bog_gram_bubble__release_bog_gram_chat_81 = $mol_type_enforce<
+	type $bog_gram_bubble__release_bog_gram_chat_83 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_release'] >
 		,
 		ReturnType< $bog_gram_bubble['release'] >
 	>
-	type $bog_gram_bubble__context_bog_gram_chat_82 = $mol_type_enforce<
+	type $bog_gram_bubble__context_bog_gram_chat_84 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_context'] >
 		,
 		ReturnType< $bog_gram_bubble['context'] >
@@ -56246,6 +56258,7 @@ declare namespace $ {
 		Record_time( ): $mol_view
 		Voice_cancel_icon( ): $mol_icon_close
 		Voice_cancel_text( ): $mol_view
+		line_content( id: any): readonly(any)[]
 		day_title( id: any): string
 		Day_chip( id: any): $mol_view
 		message_out( id: any): boolean
@@ -56323,6 +56336,7 @@ declare namespace $ {
 		Voice( ): $bog_gram_hold
 		Record_state( ): $mol_view
 		Voice_cancel( ): $mol_button_minor
+		Line( id: any): $mol_view
 		Day_row( id: any): $mol_view
 		Bubble( id: any): $bog_gram_bubble
 	}
@@ -56344,11 +56358,17 @@ declare namespace $.$$ {
         members_shown(): boolean;
         Members(): $mol_button_minor;
         messages(): $bog_gram_message[];
+        messages_index(): Map<string, number>;
         message_pawn(id: string): $bog_gram_message | null;
+        message_dead(id: string): boolean;
+        message_alive(id: string): boolean;
+        message_day(id: string): string;
+        message_day_head(id: string): string;
+        line_content(id: string): ($mol_view | $.$bog_gram_bubble)[];
         message_lord(id: string): string;
         message_moment(id: string): number;
         day_title(key: string): string;
-        rows(): ($mol_view | $.$bog_gram_bubble)[];
+        rows(): $mol_view[];
         message_body(id: string): string;
         message_out(id: string): boolean;
         message_time(id: string): string;
@@ -56441,10 +56461,7 @@ declare namespace $.$$ {
         bubble(id: string): $.$$.$bog_gram_bubble;
         message_sound_toggle(id: string, next?: any): null;
         message_sound_ended(id: string, next?: any): null;
-        unread_first(list: readonly {
-            moment: number;
-            author: string;
-        }[], my: string, seen: number): number;
+        unread_first(messages: readonly $bog_gram_message[], my: string, seen: number): string;
         focus(): string | null;
         read_sync(): number;
         follow(): void;

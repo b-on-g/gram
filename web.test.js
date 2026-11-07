@@ -8172,7 +8172,7 @@ var $;
             $mol_assert_equal(sorted[1].Author().val(), lord_b);
             $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
         },
-        async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
+        async 'Каждое сообщение хранит свой Moment независимо от места в списке'($) {
             const land = $giper_baza_land.make({ $ });
             const session = land.Data($bog_gram_session);
             const moments = [3000, 1000, 2000];
@@ -8650,18 +8650,18 @@ var $;
             $mol_assert_equal(talk.links_of(second).join(), links.join());
             $mol_assert_equal(talk.links_of(first).join(), links.join());
         },
-        'Сообщения из разных бакетов сливаются по моменту'($) {
+        'Бакеты идут друг за другом по первому сообщению, внутри порядок списка'($) {
             const talk = $bog_gram_talk.make({ $ });
             const early = $giper_baza_land.make({ $ });
             const late = $giper_baza_land.make({ $ });
             write(early, 1000, 'первое');
-            write(early, 3000, 'третье');
-            write(late, 2000, 'второе');
-            write(late, 4000, 'четвёртое');
+            write(early, 900, 'второе');
+            write(late, 5000, 'третье');
+            write(late, 6000, 'четвёртое');
             const text = (list) => list.map(item => item.Text().val()).join(' ');
             $mol_assert_equal(text(talk.messages_merge([list_of(early), list_of(late)])), 'первое второе третье четвёртое');
             $mol_assert_equal(text(talk.messages_merge([list_of(late), list_of(early)])), 'первое второе третье четвёртое');
-            $mol_assert_equal(text(talk.messages_merge([[], list_of(early), []])), 'первое третье');
+            $mol_assert_equal(text(talk.messages_merge([[], list_of(early), []])), 'первое второе');
             $mol_assert_equal(talk.messages_merge([]).length, 0);
             const tie_one = $giper_baza_land.make({ $ });
             const tie_two = $giper_baza_land.make({ $ });
@@ -8678,8 +8678,20 @@ var $;
             const mine = write(land, 2000, 'Привет', 'LordMine');
             $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), true);
             mine.Deleted('auto')?.val(3000);
-            const alive = list_of(land).filter(message => !message.Deleted()?.val());
-            $mol_assert_equal(talk.mine_among(alive, 'LordMine'), false);
+            $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), false);
+        },
+        'Непрочитанные считаются с хвоста до своей отметки, свои и удалённые не в счёт'($) {
+            const land = $giper_baza_land.make({ $ });
+            const talk = $bog_gram_talk.make({ $ });
+            write(land, 1000, 'старое', 'LordPeer');
+            write(land, 2000, 'моё', 'LordMine');
+            write(land, 3000, 'новое', 'LordPeer');
+            write(land, 4000, 'ещё', 'LordPeer').Deleted('auto')?.val(4500);
+            write(land, 5000, 'последнее', 'LordPeer');
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0), 3);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 2000), 2);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 5000), 0);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0, 2), 2);
         },
         'Пока отметка прочтения едет, её чтение ждёт, а не отдаёт ноль'($) {
             const wait = new Promise(() => { });
@@ -9241,16 +9253,26 @@ var $;
         $mol_test({
             'Открывается с первого непрочитанного чужого сообщения'($) {
                 const chat = $bog_gram_chat.make({ $ });
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const write = (moment, author) => {
+                    const message = session.Messages('auto').make(null);
+                    message.Moment('auto')?.val(moment);
+                    message.Author('auto')?.val(author);
+                    return message;
+                };
                 const list = [
-                    { moment: 1000, author: 'Peer' },
-                    { moment: 2000, author: 'Me' },
-                    { moment: 3000, author: 'Peer' },
-                    { moment: 4000, author: 'Peer' },
+                    write(1000, 'Peer'),
+                    write(2000, 'Me'),
+                    write(3000, 'Peer'),
+                    write(4000, 'Peer'),
                 ];
-                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), 2);
-                $mol_assert_equal(chat.unread_first(list.slice(0, 2), 'Me', 1000), -1);
-                $mol_assert_equal(chat.unread_first(list, 'Me', 4000), -1);
-                $mol_assert_equal(chat.unread_first(list, 'Me', 0), 0);
+                const id = (index) => list[index].link().str;
+                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), id(2));
+                $mol_assert_equal(chat.unread_first(list.slice(0, 2), 'Me', 1000), '');
+                $mol_assert_equal(chat.unread_first(list, 'Me', 4000), '');
+                $mol_assert_equal(chat.unread_first(list, 'Me', 0), id(0));
+                list[2].Deleted('auto')?.val(5000);
+                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), id(3));
             },
             'Ответ вызывается двумя тапами по одному пузырю, а не по разным'($) {
                 const chat = $bog_gram_chat.make({ $ });

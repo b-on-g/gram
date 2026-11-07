@@ -23072,6 +23072,8 @@ var $;
             }
             unread_label(id) {
                 const count = this.unread(id);
+                if (count > 99)
+                    return '99+';
                 return count ? String(count) : '';
             }
             armed(next) {
@@ -25732,7 +25734,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.96';
+    $.$bog_gram_version = '1.0.97';
 })($ || ($ = {}));
 
 ;
@@ -28677,8 +28679,7 @@ var $;
         }
         moment(id) {
             return $bog_gram_soft(() => {
-                const messages = this.messages_alive_of(id);
-                const last = messages[messages.length - 1];
+                const last = this.last(id);
                 if (last)
                     return Number(last.Moment()?.val() ?? 0);
                 return Number(this.store(id).Created()?.val() ?? 0);
@@ -28688,7 +28689,7 @@ var $;
             return [...ids].sort((a, b) => this.moment(b) - this.moment(a));
         }
         alive(id) {
-            return $bog_gram_soft(() => this.messages_alive_of(id).length > 0, false);
+            return $bog_gram_soft(() => Boolean(this.last(id)), false);
         }
         links_of(id) {
             if (!id)
@@ -28715,23 +28716,29 @@ var $;
             return this.land_of(id)?.Data($bog_gram_session) ?? null;
         }
         messages_merge(buckets) {
-            const all = [];
-            for (const bucket of buckets)
-                all.push(...bucket);
-            return all.sort((a, b) => {
-                const shift = Number(a.Moment()?.val() ?? 0) - Number(b.Moment()?.val() ?? 0);
-                if (shift)
-                    return shift;
-                const left = a.link().str;
-                const right = b.link().str;
-                return left < right ? -1 : left > right ? 1 : 0;
-            });
+            return buckets
+                .filter(bucket => bucket.length)
+                .map(bucket => ({
+                bucket,
+                start: Number(bucket[0].Moment()?.val() ?? 0),
+                link: bucket[0].link().str,
+            }))
+                .sort((a, b) => (a.start - b.start) || (a.link < b.link ? -1 : a.link > b.link ? 1 : 0))
+                .flatMap(item => item.bucket);
         }
         messages_of(id) {
             return this.messages_merge(this.lands_of(id).map(land => $bog_gram_soft(() => land.Data($bog_gram_session).Messages()?.remote_list() ?? [], [])));
         }
         messages_alive_of(id) {
             return this.messages_of(id).filter(message => !message.Deleted()?.val());
+        }
+        last(id) {
+            const all = this.messages_of(id);
+            for (let i = all.length - 1; i >= 0; --i) {
+                if (!all[i].Deleted()?.val())
+                    return all[i];
+            }
+            return null;
         }
         read_moment_of(id, lord) {
             let last = 0;
@@ -28756,15 +28763,24 @@ var $;
                 return 0;
             const my = this.my();
             const seen = this.read_moment_of(id, my);
-            return this.messages_alive_of(id).filter(message => {
+            return this.unread_since(this.messages_of(id), my, seen);
+        }
+        unread_since(messages, my, seen, limit = 100) {
+            let count = 0;
+            for (let i = messages.length - 1; i >= 0 && count < limit; --i) {
+                const message = messages[i];
+                if (Number(message.Moment()?.val() ?? 0) <= seen)
+                    break;
+                if (message.Deleted()?.val())
+                    continue;
                 if (String(message.Author()?.val() ?? '') === my)
-                    return false;
-                return Number(message.Moment()?.val() ?? 0) > seen;
-            }).length;
+                    continue;
+                ++count;
+            }
+            return count;
         }
         preview(id) {
-            const messages = this.messages_alive_of(id);
-            const last = messages[messages.length - 1];
+            const last = this.last(id);
             if (!last)
                 return '';
             const text = String(last.Text()?.val() ?? '');
@@ -28782,14 +28798,20 @@ var $;
             return body;
         }
         time(id) {
-            const messages = this.messages_alive_of(id);
-            return $bog_gram_clock.brief(Number(messages[messages.length - 1]?.Moment()?.val() ?? 0));
+            return $bog_gram_clock.brief(Number(this.last(id)?.Moment()?.val() ?? 0));
         }
         mine_among(messages, my) {
-            return messages.some(message => String(message.Author()?.val() ?? '') === my);
+            for (let i = messages.length - 1; i >= 0; --i) {
+                const message = messages[i];
+                if (String(message.Author()?.val() ?? '') !== my)
+                    continue;
+                if (!message.Deleted()?.val())
+                    return true;
+            }
+            return false;
         }
         mine_wrote(id) {
-            return $bog_gram_soft(() => this.mine_among(this.messages_alive_of(id), this.my()), false);
+            return $bog_gram_soft(() => this.mine_among(this.messages_of(id), this.my()), false);
         }
     }
     __decorate([
@@ -28849,6 +28871,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "messages_alive_of", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "last", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "unread", null);
@@ -32080,6 +32105,9 @@ var $;
 			(obj.sub) = () => (["Отмена"]);
 			return obj;
 		}
+		line_content(id){
+			return [];
+		}
 		day_title(id){
 			return "";
 		}
@@ -32369,6 +32397,12 @@ var $;
 			(obj.sub) = () => ([(this.Voice_cancel_icon()), (this.Voice_cancel_text())]);
 			return obj;
 		}
+		Line(id){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (48);
+			(obj.sub) = () => ((this.line_content(id)));
+			return obj;
+		}
 		Day_row(id){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.Day_chip(id))]);
@@ -32481,6 +32515,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Line"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Bubble"));
 
@@ -32693,10 +32728,42 @@ var $;
                 return this.members_shown() ? super.Members() : null;
             }
             messages() {
-                return this.Talk().messages_alive_of(this.dialog());
+                return this.Talk().messages_of(this.dialog());
+            }
+            messages_index() {
+                return new Map(this.messages().map((message, index) => [message.link().str, index]));
             }
             message_pawn(id) {
-                return this.messages().find(message => message.link().str === id) ?? null;
+                const index = this.messages_index().get(id);
+                return index === undefined ? null : this.messages()[index];
+            }
+            message_dead(id) {
+                return Boolean(this.message_pawn(id)?.Deleted()?.val());
+            }
+            message_alive(id) {
+                return Boolean(this.message_pawn(id)) && !this.message_dead(id);
+            }
+            message_day(id) {
+                return $bog_gram_clock.day_key(this.message_moment(id));
+            }
+            message_day_head(id) {
+                const day = this.message_day(id);
+                if (!day)
+                    return '';
+                const messages = this.messages();
+                for (let i = (this.messages_index().get(id) ?? 0) - 1; i >= 0; --i) {
+                    const prev = messages[i].link().str;
+                    if (this.message_dead(prev))
+                        continue;
+                    return this.message_day(prev) === day ? '' : day;
+                }
+                return day;
+            }
+            line_content(id) {
+                if (!this.message_alive(id))
+                    return [];
+                const day = this.message_day_head(id);
+                return [...day ? [this.Day_row(day)] : [], this.Bubble(id)];
             }
             message_lord(id) {
                 return String(this.message_pawn(id)?.Author()?.val() ?? '');
@@ -32708,13 +32775,7 @@ var $;
                 return $bog_gram_clock.day_title(key);
             }
             rows() {
-                let last_day = '';
-                return this.messages().flatMap(message => {
-                    const day = $bog_gram_clock.day_key(Number(message.Moment()?.val() ?? 0));
-                    const head = day && day !== last_day ? [this.Day_row(day)] : [];
-                    last_day = day;
-                    return [...head, this.Bubble(message.link().str)];
-                });
+                return this.messages().map(message => this.Line(message.link().str));
             }
             message_body(id) {
                 return this.message_pawn(id)?.Text()?.val() ?? '';
@@ -32882,7 +32943,7 @@ var $;
                 const target = String(this.message_pawn(id)?.Reply()?.val() ?? '');
                 if (!target)
                     return '';
-                return this.message_pawn(target) ? target : '';
+                return this.message_alive(target) ? target : '';
             }
             message_quote_shown(id) {
                 return Boolean(this.message_quote_id(id));
@@ -32896,7 +32957,7 @@ var $;
             message_quote_jump(id, next) {
                 const target = this.message_quote_id(id);
                 if (target)
-                    this.reveal(this.Bubble(target), 'center');
+                    this.reveal(this.Line(target), 'center');
                 return null;
             }
             message_edit(id, next) {
@@ -33252,8 +33313,18 @@ var $;
                     this.voice_playing('');
                 return null;
             }
-            unread_first(list, my, seen) {
-                return list.findIndex(item => item.author !== my && item.moment > seen);
+            unread_first(messages, my, seen) {
+                let found = '';
+                for (let i = messages.length - 1; i >= 0; --i) {
+                    const message = messages[i];
+                    if (Number(message.Moment()?.val() ?? 0) <= seen)
+                        break;
+                    if (message.Deleted()?.val())
+                        continue;
+                    if (String(message.Author()?.val() ?? '') !== my)
+                        found = message.link().str;
+                }
+                return found;
             }
             focus() {
                 const prev = $mol_wire_probe(() => this.focus());
@@ -33265,12 +33336,7 @@ var $;
                 if (this.saved())
                     return '';
                 const my = this.my_lord();
-                const list = messages.map(message => ({
-                    moment: Number(message.Moment()?.val() ?? 0),
-                    author: String(message.Author()?.val() ?? ''),
-                }));
-                const index = this.unread_first(list, my, this.Talk().read_moment_of(this.dialog(), my));
-                return index < 0 ? '' : messages[index].link().str;
+                return this.unread_first(messages, my, this.Talk().read_moment_of(this.dialog(), my));
             }
             read_sync() {
                 if (this.saved())
@@ -33279,13 +33345,15 @@ var $;
                     return 0;
                 const id = this.dialog();
                 const my = this.my_lord();
+                const messages = this.messages();
                 let last = 0;
-                for (const message of this.messages()) {
-                    if (String(message.Author()?.val() ?? '') === my)
+                for (let i = messages.length - 1; i >= 0; --i) {
+                    if (String(messages[i].Author()?.val() ?? '') === my)
                         continue;
-                    const moment = Number(message.Moment()?.val() ?? 0);
-                    if (moment > last)
-                        last = moment;
+                    if (messages[i].Deleted()?.val())
+                        continue;
+                    last = Number(messages[i].Moment()?.val() ?? 0);
+                    break;
                 }
                 if (!last)
                     return 0;
@@ -33302,7 +33370,7 @@ var $;
                 const last = rows[rows.length - 1];
                 if (!this.rows_seen()) {
                     const focus = this.focus();
-                    const row = focus ? this.Bubble(focus) : last;
+                    const row = focus ? this.Line(focus) : last;
                     this.rows_seen(rows.length);
                     this.reveal(row, focus ? 'start' : 'end');
                     return;
@@ -33355,7 +33423,13 @@ var $;
         ], $bog_gram_chat.prototype, "note", null);
         __decorate([
             $mol_mem
-        ], $bog_gram_chat.prototype, "messages", null);
+        ], $bog_gram_chat.prototype, "messages_index", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_day_head", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "line_content", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "rows", null);
@@ -33514,7 +33588,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
+    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_line]:empty {\n\tpadding: 0;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -33654,9 +33728,19 @@ var $;
                     direction: 'column',
                     grow: 1,
                 },
-                gap: '0.25rem',
                 minWidth: 0,
                 alignSelf: 'stretch',
+            },
+            Line: {
+                flex: {
+                    direction: 'column',
+                },
+                gap: '0.25rem',
+                minWidth: 0,
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                },
             },
             Day_row: {
                 justify: {
@@ -43017,7 +43101,7 @@ var $;
             $mol_assert_equal(sorted[1].Author().val(), lord_b);
             $mol_assert_equal(sorted[1].Text().val(), 'Привет, A!');
         },
-        async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'($) {
+        async 'Каждое сообщение хранит свой Moment независимо от места в списке'($) {
             const land = $giper_baza_land.make({ $ });
             const session = land.Data($bog_gram_session);
             const moments = [3000, 1000, 2000];
@@ -43495,18 +43579,18 @@ var $;
             $mol_assert_equal(talk.links_of(second).join(), links.join());
             $mol_assert_equal(talk.links_of(first).join(), links.join());
         },
-        'Сообщения из разных бакетов сливаются по моменту'($) {
+        'Бакеты идут друг за другом по первому сообщению, внутри порядок списка'($) {
             const talk = $bog_gram_talk.make({ $ });
             const early = $giper_baza_land.make({ $ });
             const late = $giper_baza_land.make({ $ });
             write(early, 1000, 'первое');
-            write(early, 3000, 'третье');
-            write(late, 2000, 'второе');
-            write(late, 4000, 'четвёртое');
+            write(early, 900, 'второе');
+            write(late, 5000, 'третье');
+            write(late, 6000, 'четвёртое');
             const text = (list) => list.map(item => item.Text().val()).join(' ');
             $mol_assert_equal(text(talk.messages_merge([list_of(early), list_of(late)])), 'первое второе третье четвёртое');
             $mol_assert_equal(text(talk.messages_merge([list_of(late), list_of(early)])), 'первое второе третье четвёртое');
-            $mol_assert_equal(text(talk.messages_merge([[], list_of(early), []])), 'первое третье');
+            $mol_assert_equal(text(talk.messages_merge([[], list_of(early), []])), 'первое второе');
             $mol_assert_equal(talk.messages_merge([]).length, 0);
             const tie_one = $giper_baza_land.make({ $ });
             const tie_two = $giper_baza_land.make({ $ });
@@ -43523,8 +43607,20 @@ var $;
             const mine = write(land, 2000, 'Привет', 'LordMine');
             $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), true);
             mine.Deleted('auto')?.val(3000);
-            const alive = list_of(land).filter(message => !message.Deleted()?.val());
-            $mol_assert_equal(talk.mine_among(alive, 'LordMine'), false);
+            $mol_assert_equal(talk.mine_among(list_of(land), 'LordMine'), false);
+        },
+        'Непрочитанные считаются с хвоста до своей отметки, свои и удалённые не в счёт'($) {
+            const land = $giper_baza_land.make({ $ });
+            const talk = $bog_gram_talk.make({ $ });
+            write(land, 1000, 'старое', 'LordPeer');
+            write(land, 2000, 'моё', 'LordMine');
+            write(land, 3000, 'новое', 'LordPeer');
+            write(land, 4000, 'ещё', 'LordPeer').Deleted('auto')?.val(4500);
+            write(land, 5000, 'последнее', 'LordPeer');
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0), 3);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 2000), 2);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 5000), 0);
+            $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0, 2), 2);
         },
         'Пока отметка прочтения едет, её чтение ждёт, а не отдаёт ноль'($) {
             const wait = new Promise(() => { });
@@ -44100,16 +44196,26 @@ var $;
         $mol_test({
             'Открывается с первого непрочитанного чужого сообщения'($) {
                 const chat = $bog_gram_chat.make({ $ });
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const write = (moment, author) => {
+                    const message = session.Messages('auto').make(null);
+                    message.Moment('auto')?.val(moment);
+                    message.Author('auto')?.val(author);
+                    return message;
+                };
                 const list = [
-                    { moment: 1000, author: 'Peer' },
-                    { moment: 2000, author: 'Me' },
-                    { moment: 3000, author: 'Peer' },
-                    { moment: 4000, author: 'Peer' },
+                    write(1000, 'Peer'),
+                    write(2000, 'Me'),
+                    write(3000, 'Peer'),
+                    write(4000, 'Peer'),
                 ];
-                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), 2);
-                $mol_assert_equal(chat.unread_first(list.slice(0, 2), 'Me', 1000), -1);
-                $mol_assert_equal(chat.unread_first(list, 'Me', 4000), -1);
-                $mol_assert_equal(chat.unread_first(list, 'Me', 0), 0);
+                const id = (index) => list[index].link().str;
+                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), id(2));
+                $mol_assert_equal(chat.unread_first(list.slice(0, 2), 'Me', 1000), '');
+                $mol_assert_equal(chat.unread_first(list, 'Me', 4000), '');
+                $mol_assert_equal(chat.unread_first(list, 'Me', 0), id(0));
+                list[2].Deleted('auto')?.val(5000);
+                $mol_assert_equal(chat.unread_first(list, 'Me', 2000), id(3));
             },
             'Ответ вызывается двумя тапами по одному пузырю, а не по разным'($) {
                 const chat = $bog_gram_chat.make({ $ });
