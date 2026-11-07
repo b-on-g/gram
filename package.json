@@ -427,6 +427,7 @@
     "$bog_gram_inbox",
     "$bog_gram_dialogs",
     "$bog_gram_note",
+    "$bog_gram_join",
     "$bog_gram_monitor",
     "$bog_gram_devices",
     "$bog_gram_device",

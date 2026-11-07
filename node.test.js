@@ -25734,7 +25734,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.99';
+    $.$bog_gram_version = '1.0.100';
 })($ || ($ = {}));
 
 ;
@@ -27692,6 +27692,18 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $bog_gram_join extends $giper_baza_dict.with({
+        Owner: $giper_baza_atom_text,
+        State: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_gram_join = $bog_gram_join;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     class $bog_gram_dialogs extends $giper_baza_dict.with({
         Dialogs: $giper_baza_list_str,
         Outbox: $giper_baza_list_str,
@@ -27707,6 +27719,8 @@ var $;
         Notes: $giper_baza_dict_to($bog_gram_note),
         Passes: $giper_baza_list_str,
         Lobbies: $giper_baza_list_str,
+        Joining: $giper_baza_dict_to($bog_gram_join),
+        Schema: $giper_baza_atom_real,
     }) {
     }
     $.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -28072,12 +28086,19 @@ var $;
             store.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val(str);
         }
         keys_fill() {
+            const store = this.Account().dialogs_store();
+            if (Number(store.Schema()?.val() ?? 0) >= 2)
+                return 0;
+            const my = this.Account().my_lord();
             let count = 0;
             for (const id of this.ids()) {
-                if (!this.joined(id))
+                const lords = (this.store(id).Lords()?.items() ?? []).map(String);
+                if (!lords.includes(my))
                     continue;
-                count += $bog_gram_soft(() => (this.key_put(id), 1), 0);
+                this.key_put(id);
+                ++count;
             }
+            store.Schema('auto')?.val(2);
             return count;
         }
         name(next) {
@@ -28957,7 +28978,21 @@ var $;
             return this.Account().dialogs_store();
         }
         ids() {
-            return (this.store().Dialogs()?.items() ?? []).map(String);
+            const all = new Set((this.store().Dialogs()?.items() ?? []).map(String));
+            const hidden = new Set(this.hidden());
+            for (const link of this.invited())
+                if (!hidden.has(link))
+                    all.add(link);
+            return [...all];
+        }
+        invited() {
+            const links = [];
+            for (const entry of $bog_gram_soft(() => this.Account().invites(), [])) {
+                const link = $bog_gram_soft(() => this.invite_open(entry), '');
+                if (link && $giper_baza_link.check(link))
+                    links.push(link);
+            }
+            return links;
         }
         hidden() {
             return (this.store().Hidden()?.items() ?? []).map(String);
@@ -29075,24 +29110,6 @@ var $;
             this.store().Outbox('auto').add(peer + '|' + id);
             return id;
         }
-        invites_merge() {
-            const invites = this.Account().invites();
-            if (!invites.length)
-                return 0;
-            const have = new Set(this.ids());
-            const hidden = new Set(this.hidden());
-            for (const entry of invites) {
-                const link = this.invite_open(entry);
-                if (!link)
-                    continue;
-                if (have.has(link))
-                    continue;
-                if (hidden.has(link))
-                    continue;
-                this.store().Dialogs('auto').add(link);
-            }
-            return invites.length;
-        }
         invite_open(entry) {
             if (!$bog_gram_seal.is(entry))
                 return entry;
@@ -29155,6 +29172,9 @@ var $;
     ], $bog_gram_roster.prototype, "ids", null);
     __decorate([
         $mol_mem
+    ], $bog_gram_roster.prototype, "invited", null);
+    __decorate([
+        $mol_mem
     ], $bog_gram_roster.prototype, "hidden", null);
     __decorate([
         $mol_mem_key
@@ -29183,9 +29203,6 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_roster.prototype, "drop", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_roster.prototype, "invites_merge", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_roster.prototype, "sealed", null);
@@ -29691,29 +29708,118 @@ var $;
         task_owner(entry) {
             return String(entry ?? '').split('|')[1] ?? '';
         }
+        queued_old() {
+            return $bog_gram_soft(() => (this.store().Asks()?.items() ?? []).map(String), []);
+        }
+        sent_old() {
+            return $bog_gram_soft(() => (this.store().Asked()?.items() ?? []).map(String), []);
+        }
+        denied_old() {
+            return $bog_gram_soft(() => (this.store().Denied()?.items() ?? []).map(String), []);
+        }
+        asks() {
+            const out = {};
+            const put = (group, owner, state) => {
+                if (!group)
+                    return;
+                const prev = out[group];
+                out[group] = {
+                    owner: owner || prev?.owner || '',
+                    state: prev?.state === 'sent' ? 'sent' : state,
+                };
+            };
+            for (const task of this.queued_old())
+                put(this.task_group(task), this.task_owner(task), 'queued');
+            for (const task of this.sent_old())
+                put(this.task_group(task), this.task_owner(task), 'sent');
+            const joining = $bog_gram_soft(() => this.store().Joining(), null);
+            for (const key of $bog_gram_soft(() => joining?.keys() ?? [], [])) {
+                const group = String(key);
+                const join = $bog_gram_soft(() => joining.key(group), null);
+                const owner = $bog_gram_soft(() => String(join?.Owner()?.val() ?? ''), '');
+                const state = $bog_gram_soft(() => String(join?.State()?.val() ?? ''), '');
+                put(group, owner, state === 'sent' ? 'sent' : 'queued');
+            }
+            return out;
+        }
+        groups() {
+            return Object.keys(this.asks());
+        }
+        denials() {
+            const groups = [];
+            for (const entry of $bog_gram_soft(() => this.Account().denies(), [])) {
+                const group = this.denial_group(entry);
+                if (group)
+                    groups.push(group);
+            }
+            return groups;
+        }
+        denial_group(entry) {
+            if (!$bog_gram_seal.is(entry))
+                return entry;
+            return $bog_gram_soft(() => this.sealed_open(['deny', entry])?.open ?? '', '');
+        }
+        denied() {
+            const asks = this.asks();
+            const out = new Set(this.denied_old());
+            for (const group of this.denials())
+                if (asks[group])
+                    out.add(group);
+            return [...out];
+        }
+        queued() {
+            const asks = this.asks();
+            const denied = new Set(this.denied());
+            return this.groups().filter(group => asks[group].state === 'queued' && !denied.has(group));
+        }
+        sent() {
+            const asks = this.asks();
+            const denied = new Set(this.denied());
+            return this.groups().filter(group => asks[group].state === 'sent' && !denied.has(group));
+        }
+        join_put(group, owner, state) {
+            const join = this.store().Joining('auto')?.key(group, 'auto');
+            if (owner)
+                join?.Owner('auto')?.val(owner);
+            join?.State('auto')?.val(state);
+        }
+        join_drop(group) {
+            const joining = this.store().Joining();
+            if ((joining?.keys() ?? []).map(String).includes(group))
+                this.store().Joining('auto').cut(group);
+            this.old_drop(group);
+        }
+        old_drop(group) {
+            const store = this.store();
+            for (const task of this.queued_old())
+                if (this.task_group(task) === group)
+                    store.Asks('auto').cut(task);
+            for (const task of this.sent_old())
+                if (this.task_group(task) === group)
+                    store.Asked('auto').cut(task);
+        }
+        denial_drop(group) {
+            if (this.denied_old().includes(group))
+                this.store().Denied('auto').cut(group);
+            for (const entry of $bog_gram_soft(() => this.Account().denies(), [])) {
+                if (this.denial_group(entry) === group)
+                    this.Account().denies_cut(entry);
+            }
+        }
         send(id, owner) {
             if (!id || !owner)
                 return;
             const store = this.store();
             if (this.Roster().hidden().includes(id))
                 store.Hidden('auto').cut(id);
-            if (this.denied().includes(id))
-                store.Denied('auto').cut(id);
-            if (this.groups().includes(id))
+            const was_denied = this.denied().includes(id);
+            if (was_denied)
+                this.denial_drop(id);
+            if (this.groups().includes(id) && !was_denied)
                 return;
+            this.join_put(id, owner, 'queued');
+            this.old_drop(id);
             store.Asks('auto').add(this.task(id, owner));
-        }
-        queued() {
-            return $bog_gram_soft(() => (this.store().Asks()?.items() ?? []).map(String), []);
-        }
-        sent() {
-            return $bog_gram_soft(() => (this.store().Asked()?.items() ?? []).map(String), []);
-        }
-        denied() {
-            return $bog_gram_soft(() => (this.store().Denied()?.items() ?? []).map(String), []);
-        }
-        groups() {
-            return [...this.queued(), ...this.sent()].map(entry => this.task_group(entry));
         }
         waiting(entries) {
             const have = new Set($bog_gram_soft(() => this.Roster().ids(), []));
@@ -29725,30 +29831,6 @@ var $;
         }
         pending_sent() {
             return this.waiting(this.sent());
-        }
-        denies_merge() {
-            const entries = $bog_gram_soft(() => this.Account().denies(), []);
-            if (!entries.length)
-                return 0;
-            const store = this.store();
-            const mine = [...this.queued(), ...this.sent()];
-            for (const entry of entries) {
-                const group = $bog_gram_seal.is(entry)
-                    ? this.sealed_open(['deny', entry])?.open ?? ''
-                    : entry;
-                for (const task of mine) {
-                    if (!group)
-                        break;
-                    if (this.task_group(task) !== group)
-                        continue;
-                    store.Asks('auto').cut(task);
-                    store.Asked('auto').cut(task);
-                    if (!this.denied().includes(group))
-                        store.Denied('auto').add(group);
-                }
-                this.Account().denies_cut(entry);
-            }
-            return entries.length;
         }
         plate() {
             if (this.lost())
@@ -29770,56 +29852,53 @@ var $;
                 return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут';
             return '';
         }
-        taken(entry) {
-            const id = this.task_group(entry);
+        taken(id) {
             const inside = $bog_gram_soft(() => this.Talk().lords(id).includes(this.Account().my_lord()), false);
             if (!inside)
                 return false;
-            const store = this.store();
             const roster = this.Roster();
             if (!roster.ids().includes(id) && !roster.hidden().includes(id))
-                store.Dialogs('auto').add(id);
-            store.Asks('auto').cut(entry);
-            store.Asked('auto').cut(entry);
+                this.store().Dialogs('auto').add(id);
+            this.join_drop(id);
             return true;
         }
+        deliver(id, owner) {
+            const inbox = this.inbox_of(owner);
+            if (!inbox)
+                return false;
+            const owner_pass = this.People().pass_of(owner);
+            if (!owner_pass)
+                return false;
+            const entry = this.sealed_close(['join', owner_pass.toString(), id]);
+            const joins = inbox.Joins('auto');
+            if (!joins)
+                return false;
+            joins.add(entry);
+            return (inbox.Joins()?.items() ?? []).map(String).includes(entry);
+        }
         asks_flush() {
-            const queued = this.queued();
-            const sent = this.sent();
-            if (!queued.length && !sent.length)
+            const groups = [...this.queued(), ...this.sent()];
+            if (!groups.length)
                 return 0;
-            for (const task of sent)
-                this.taken(task);
-            if (!queued.length)
-                return sent.length;
-            this.$.$mol_state_time.now(3000);
-            const store = this.store();
-            for (const task of queued) {
-                if (this.taken(task))
+            const asks = this.asks();
+            let waiting = 0;
+            for (const id of groups) {
+                if (this.taken(id))
                     continue;
+                if (asks[id].state !== 'queued')
+                    continue;
+                ++waiting;
                 try {
-                    const id = this.task_group(task);
-                    const owner = this.task_owner(task) || this.Talk().owner(id);
+                    const owner = asks[id].owner || this.Talk().owner(id);
                     if (!owner) {
-                        store.Asks('auto').cut(task);
+                        this.join_drop(id);
                         continue;
                     }
-                    const inbox = this.inbox_of(owner);
-                    if (!inbox)
+                    if (!this.deliver(id, owner))
                         continue;
-                    const owner_pass = this.People().pass_of(owner);
-                    if (!owner_pass)
-                        continue;
-                    const entry = this.sealed_close(['join', owner_pass.toString(), id]);
-                    const joins = inbox.Joins('auto');
-                    if (!joins)
-                        continue;
-                    joins.add(entry);
-                    const delivered = (inbox.Joins()?.items() ?? []).map(String).includes(entry);
-                    if (!delivered)
-                        continue;
-                    store.Asked('auto').add(task);
-                    store.Asks('auto').cut(task);
+                    this.join_put(id, owner, 'sent');
+                    this.old_drop(id);
+                    this.store().Asked('auto').add(this.task(id, owner));
                 }
                 catch (error) {
                     if ($mol_promise_like(error))
@@ -29827,7 +29906,9 @@ var $;
                     $mol_fail_log(error);
                 }
             }
-            return queued.length + sent.length;
+            if (waiting)
+                this.$.$mol_state_time.now(3000);
+            return groups.length;
         }
     }
     __decorate([
@@ -29870,8 +29951,26 @@ var $;
         $mol_mem
     ], $bog_gram_lobby.prototype, "lost", null);
     __decorate([
-        $mol_action
-    ], $bog_gram_lobby.prototype, "send", null);
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "queued_old", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "sent_old", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "denied_old", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "asks", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "groups", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "denials", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "denied", null);
     __decorate([
         $mol_mem
     ], $bog_gram_lobby.prototype, "queued", null);
@@ -29879,20 +29978,14 @@ var $;
         $mol_mem
     ], $bog_gram_lobby.prototype, "sent", null);
     __decorate([
-        $mol_mem
-    ], $bog_gram_lobby.prototype, "denied", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_lobby.prototype, "groups", null);
+        $mol_action
+    ], $bog_gram_lobby.prototype, "send", null);
     __decorate([
         $mol_mem
     ], $bog_gram_lobby.prototype, "pending_queued", null);
     __decorate([
         $mol_mem
     ], $bog_gram_lobby.prototype, "pending_sent", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_lobby.prototype, "denies_merge", null);
     __decorate([
         $mol_mem
     ], $bog_gram_lobby.prototype, "plate", null);
@@ -34218,9 +34311,6 @@ var $;
 		dialog_with(id){
 			return (this.Roster().with(id));
 		}
-		inbox_merge(){
-			return (this.Roster().invites_merge());
-		}
 		monitor_fill(){
 			return (this.Roster().watch_fill());
 		}
@@ -34262,9 +34352,6 @@ var $;
 		}
 		outbox_flush(){
 			return (this.Lobby().outbox_flush());
-		}
-		denies_merge(){
-			return (this.Lobby().denies_merge());
 		}
 		asks_flush(){
 			return (this.Lobby().asks_flush());
@@ -35197,8 +35284,6 @@ var $;
                 $bog_gram_soft(() => this.notify_auto(), null);
                 $bog_gram_soft(() => this.outbox_flush(), null);
                 $bog_gram_soft(() => this.asks_flush(), null);
-                $bog_gram_soft(() => this.denies_merge(), null);
-                $bog_gram_soft(() => this.inbox_merge(), null);
                 $bog_gram_soft(() => this.monitor_fill(), null);
             }
         }
@@ -43439,6 +43524,29 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        'Ключ в старые реестры кладётся один раз, потом схема помечена и проход молчит'($) {
+            const my = 'LordMine';
+            const pass = 'PassMine';
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const joined = $giper_baza_land.make({ $ }).Data($bog_gram_users);
+            const foreign = $giper_baza_land.make({ $ }).Data($bog_gram_users);
+            const account = $bog_gram_account.make({ $, my_lord: () => my, my_pass: () => pass, dialogs_store: () => dialogs });
+            const start = () => $bog_gram_registry.make({ $,
+                Account: () => account,
+                store: (id) => id === 'Joined' ? joined : foreign,
+            });
+            const registry = start();
+            dialogs.Registries('auto').add('Joined');
+            dialogs.Registries('auto').add('Foreign');
+            joined.Lords('auto').add(my);
+            $mol_assert_equal(registry.keys_fill(), 1);
+            $mol_assert_equal(String(joined.Keys()?.key(my)?.Pass()?.val() ?? ''), pass);
+            $mol_assert_equal(foreign.Keys()?.key(my) ?? null, null);
+            $mol_assert_equal(dialogs.Schema()?.val(), 2);
+            joined.Keys('auto')?.key(my, 'auto')?.Pass('auto')?.val('Stale');
+            $mol_assert_equal(start().keys_fill(), 0);
+            $mol_assert_equal(String(joined.Keys()?.key(my)?.Pass()?.val() ?? ''), 'Stale');
+        },
         async 'Люди из реестров собираются без меня, их ключ находится по лорду'($) {
             const me = await $.$giper_baza_auth._generate();
             const ann = await $.$giper_baza_auth._generate();
@@ -43724,25 +43832,27 @@ var $;
             $mol_assert_equal(roster.archived(), []);
             $mol_assert_equal(roster.visible(), ['Folded', 'Mine']);
         },
-        'Убранный диалог прячется и не возвращается приглашением'($) {
+        'Приглашённый диалог виден без копирования, убранный не возвращается, мусор отсеивается'($) {
+            const keep = 'AAAAAAAA_BBBBBBBB';
+            const drop = 'CCCCCCCC_DDDDDDDD';
+            const fresh = 'EEEEEEEE_FFFFFFFF';
             const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const monitor = $giper_baza_land.make({ $ }).Data($bog_gram_monitor);
             const account = $bog_gram_account.make({ $,
                 dialogs_store: () => store,
                 monitor_store: () => monitor,
-                invites: () => ['Keep', 'Drop', 'Fresh'],
+                invites: () => [keep, drop, fresh, 'не ссылка'],
             });
             const talk = $bog_gram_talk.make({ $, Account: () => account, links_of: () => [] });
             const roster = $bog_gram_roster.make({ $, Account: () => account, Talk: () => talk });
-            store.Dialogs('auto').add('Keep');
-            store.Dialogs('auto').add('Drop');
-            store.Archived('auto').add('Drop');
-            roster.drop('Drop');
-            $mol_assert_equal(roster.ids(), ['Keep']);
-            $mol_assert_equal(roster.hidden(), ['Drop']);
+            store.Dialogs('auto').add(keep);
+            store.Archived('auto').add(drop);
+            $mol_assert_equal([...roster.ids()].sort(), [keep, drop, fresh].sort());
+            roster.drop(drop);
+            $mol_assert_equal([...roster.ids()].sort(), [keep, fresh].sort());
+            $mol_assert_equal(roster.hidden(), [drop]);
             $mol_assert_equal(roster.archive_links(), []);
-            roster.invites_merge();
-            $mol_assert_equal([...roster.ids()].sort(), ['Fresh', 'Keep']);
+            $mol_assert_equal(store.Dialogs().items().map(String), [keep]);
         },
     });
 })($ || ($ = {}));
@@ -43878,10 +43988,10 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    function lobby_with(context, inbox, store) {
+    function lobby_with(context, inbox, store, rest = {}) {
         const account = $bog_gram_account.make({ $: context, inbox_store: () => inbox, dialogs_store: () => store });
         const roster = $bog_gram_roster.make({ $: context, Account: () => account });
-        return $bog_gram_lobby.make({ $: context, Account: () => account, Roster: () => roster });
+        return $bog_gram_lobby.make({ $: context, Account: () => account, Roster: () => roster, ...rest });
     }
     $mol_test({
         async 'Ссылка в группу несёт создателя: участника открывает, остальных ведёт к заявке'($) {
@@ -43929,7 +44039,7 @@ var $;
             lost.lost(group);
             $mol_assert_equal(lost.plate(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
         },
-        'Отказ доезжает до просящего и снимает заявку, но не банит'($) {
+        'Отказ выводится из лобби без перекладывания, повторная заявка его снимает'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
             const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const lobby = lobby_with($, inbox, store);
@@ -43939,26 +44049,57 @@ var $;
             store.Asked('auto').add(task);
             $mol_assert_equal(lobby.plate(), 'Заявка отправлена — ждём, пока её примут');
             inbox.Denies('auto').add(group);
-            lobby.denies_merge();
-            $mol_assert_equal(store.Asked().items().length, 0);
-            $mol_assert_equal(inbox.Denies().items().length, 0);
-            $mol_assert_equal(lobby.denied().join(), group);
+            $mol_assert_equal(lobby.denied(), [group]);
             $mol_assert_equal(lobby.plate(), 'Заявку отклонили — попроситься снова можно по той же ссылке');
+            $mol_assert_equal(store.Asked().items().map(String), [task]);
+            $mol_assert_equal(inbox.Denies().items().map(String), [group]);
             lobby.send(group, owner);
-            $mol_assert_equal(lobby.denied().length, 0);
-            $mol_assert_equal(store.Asks().items().map(String).join(), task);
+            $mol_assert_equal(lobby.denied(), []);
+            $mol_assert_equal(inbox.Denies().items().length, 0);
+            $mol_assert_equal(lobby.asks()[group], { owner, state: 'queued' });
+            $mol_assert_equal(store.Asks().items().map(String), [task]);
+            $mol_assert_equal(store.Asked().items().length, 0);
             $mol_assert_equal(lobby.plate(), 'Заявка отправляется — это не мгновенно');
         },
-        'Чужой отказ снимает только свою заявку, а мусор из лобби убирается'($) {
+        'Чужой отказ не трогает заявку'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
             const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const lobby = lobby_with($, inbox, store);
             store.Asked('auto').add(lobby.task('AAAAAAAA_BBBBBBBB', 'CCCCCCCC_DDDDDDDD'));
             inbox.Denies('auto').add('EEEEEEEE_FFFFFFFF');
-            lobby.denies_merge();
-            $mol_assert_equal(store.Asked().items().length, 1);
-            $mol_assert_equal(lobby.denied().length, 0);
-            $mol_assert_equal(inbox.Denies().items().length, 0);
+            $mol_assert_equal(lobby.denied(), []);
+            $mol_assert_equal(lobby.sent(), ['AAAAAAAA_BBBBBBBB']);
+        },
+        'Заявки из словаря и старых списков сливаются, доставленное не откатывается'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store);
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const old_queued = 'AAAAAAAA_AAAAAAAA';
+            const fresh_sent = 'BBBBBBBB_BBBBBBBB';
+            const both = 'EEEEEEEE_EEEEEEEE';
+            store.Asks('auto').add(lobby.task(old_queued, owner));
+            lobby.join_put(fresh_sent, owner, 'sent');
+            lobby.join_put(both, owner, 'queued');
+            store.Asked('auto').add(lobby.task(both, owner));
+            $mol_assert_equal(lobby.asks()[old_queued], { owner, state: 'queued' });
+            $mol_assert_equal(lobby.asks()[fresh_sent], { owner, state: 'sent' });
+            $mol_assert_equal(lobby.asks()[both], { owner, state: 'sent' });
+            $mol_assert_equal(lobby.queued(), [old_queued]);
+        },
+        'Доставленная заявка переходит в отправленные и в словаре, и в старых списках'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store, { deliver: () => true });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const task = lobby.task(group, owner);
+            lobby.send(group, owner);
+            $mol_assert_equal(lobby.queued(), [group]);
+            lobby.asks_flush();
+            $mol_assert_equal(lobby.asks()[group], { owner, state: 'sent' });
+            $mol_assert_equal(store.Asks().items().length, 0);
+            $mol_assert_equal(store.Asked().items().map(String), [task]);
         },
         async 'Заявка собирается и разбирается, мусор и подложенный ключ отсекаются'($) {
             const lobby = $bog_gram_lobby.make({ $ });
