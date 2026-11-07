@@ -386,7 +386,7 @@ namespace $.$$ {
 
 		@ $mol_mem_key
 		unread_count( id: string ) {
-			if( id === this.dialog_active() ) return 0
+			if( id === this.dialog_active() && this.$.$bog_gram_awake.active() ) return 0
 			return this.unread_total( id )
 		}
 

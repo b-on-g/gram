@@ -841,6 +841,7 @@ namespace $.$$ {
 		read_sync() {
 
 			if( this.saved() ) return 0
+			if( !this.$.$bog_gram_awake.active() ) return 0
 
 			const id = this.dialog()
 			const my = this.my_lord()
