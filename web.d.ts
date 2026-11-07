@@ -47053,7 +47053,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.98";
+    const $bog_gram_version = "1.0.99";
 }
 
 declare namespace $ {
