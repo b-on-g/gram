@@ -25,6 +25,10 @@ namespace $ {
 			return await sub.unsubscribe()
 		},
 
+		async sign( auth: $giper_baza_auth, data: Uint8Array< ArrayBuffer > ) {
+			return new Uint8Array( await auth.signer().sign( data ) )
+		},
+
 	}
 
 	function key_bytes( key: string ) {
@@ -80,6 +84,17 @@ namespace $ {
 			}
 		}
 
+		static proof( action: string, lord: string, monitor: string, endpoint: string, time: number ) {
+			return [ 'gram-push', action, lord, monitor, endpoint, String( time ) ].join( '\n' )
+		}
+
+		static signed( action: string, lord: string, monitor: string, endpoint: string ) {
+			const auth = this.$.$giper_baza_auth.current()
+			const time = Date.now()
+			const sign = $mol_wire_sync( api ).sign( auth, $mol_charset_encode( this.proof( action, lord, monitor, endpoint, time ) ) )
+			return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode( sign ) }
+		}
+
 		static send( path: string, body: object ) {
 			return this.$.$mol_fetch.success( this.base + path, {
 				method: 'POST',
@@ -117,6 +132,7 @@ namespace $ {
 					lord,
 					monitor,
 					subscription: sub.toJSON(),
+					... this.signed( 'subscribe', lord, monitor, sub.endpoint ),
 				} )
 
 				return true
@@ -143,7 +159,11 @@ namespace $ {
 					}
 				}
 
-				if( lord ) this.send( '/push/unsubscribe', { lord, endpoint } )
+				if( lord ) this.send( '/push/unsubscribe', {
+					lord,
+					endpoint,
+					... this.signed( 'unsubscribe', lord, '', endpoint ),
+				} )
 
 				return true
 

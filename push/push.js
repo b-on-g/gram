@@ -179,8 +179,9 @@ function client_make() {
 
 	const ops = {
 		/** Ссылки на session-ленды из публичного monitor-ленда подписчика. */
-		watch_list(monitor) {
+		watch_list(monitor, lord) {
 			const land = held(monitor)
+			if (land.lord_rank(new $.$giper_baza_link(lord)) !== $.$giper_baza_rank_rule) return []
 			const list = land.Data($.$bog_gram_monitor).Watch()?.items() ?? []
 			return [...list].map(String)
 		},
@@ -340,7 +341,7 @@ async function tick() {
 		for (const sub of Object.values(subs)) {
 			try {
 				const sessions = await settle(
-					() => $.$mol_wire_async(client.ops).watch_list(sub.monitor),
+					() => $.$mol_wire_async(client.ops).watch_list(sub.monitor, sub.lord),
 					list => list.length > 0,
 				)
 				debug('watch', sub.lord.slice(0, 8), 'sessions:', sessions.length)
@@ -449,6 +450,25 @@ function body_read(req) {
 	})
 }
 
+const PROOF_AGE = 10 * 60 * 1000
+
+async function proven(action, data, monitor, endpoint) {
+	const lord = String(data.lord ?? '')
+	const time = Number(data.time ?? 0)
+	if (!(Math.abs(Date.now() - time) <= PROOF_AGE)) return 'stale proof'
+	let pass
+	try {
+		pass = $.$giper_baza_auth_pass.from(String(data.pass ?? ''))
+	} catch (error) {
+		return 'bad pass'
+	}
+	if (pass.lord().str !== lord) return 'pass is not of lord'
+	const text = ['gram-push', action, lord, monitor, endpoint, String(time)].join('\n')
+	const sign = new Uint8Array(Buffer.from(String(data.sign ?? ''), 'base64url'))
+	const ok = await pass.auditor().verify(new Uint8Array(Buffer.from(text, 'utf8')), sign).catch(() => false)
+	return ok ? '' : 'bad sign'
+}
+
 const server = http.createServer(async (req, res) => {
 	const url = new URL(req.url, 'http://localhost')
 
@@ -464,6 +484,12 @@ const server = http.createServer(async (req, res) => {
 			const monitor = String(data.monitor ?? '')
 			const subscription = data.subscription
 			if (!lord || !monitor || !subscription?.endpoint) return json(res, 400, { error: 'lord, monitor, subscription required' })
+
+			const denied = await proven('subscribe', data, monitor, String(subscription.endpoint))
+			if (denied) {
+				log('subscribe denied', lord.slice(0, 8), denied)
+				return json(res, 403, { error: denied })
+			}
 
 			const prev = subs[lord]
 			const others = (prev?.subscriptions ?? []).filter(item => item.endpoint !== subscription.endpoint)
@@ -482,6 +508,13 @@ const server = http.createServer(async (req, res) => {
 			const data = await body_read(req)
 			const lord = String(data.lord ?? '')
 			const endpoint = String(data.endpoint ?? '')
+
+			const denied = await proven('unsubscribe', data, '', endpoint)
+			if (denied) {
+				log('unsubscribe denied', lord.slice(0, 8), denied)
+				return json(res, 403, { error: denied })
+			}
+
 			if (subs[lord]) {
 				if (endpoint) endpoint_drop(lord, endpoint)
 				else delete subs[lord]
