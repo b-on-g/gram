@@ -58,8 +58,8 @@
 
 [bog_gram_row] > [mol_icon] {
 	flex-shrink: 0;
-	width: 1.25rem;
-	height: 1.25rem;
+	width: 3rem;
+	height: 3rem;
 }
 
 @media ( max-width: 30rem ) {
