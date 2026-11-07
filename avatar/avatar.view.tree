@@ -1,0 +1,6 @@
+$bog_gram_avatar $mol_avatar
+	id \
+	tint 0
+	attr *
+		^
+		bog_gram_tint <= tint

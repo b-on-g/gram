@@ -1,0 +1,13 @@
+$bog_gram_sound_node $mol_view
+	dom_name \audio
+	uri \
+	retime? null
+	ended? null
+	attr *
+		^
+		src <= uri
+		preload \metadata
+	event *
+		^
+		timeupdate? <=> retime? null
+		ended? <=> ended? null

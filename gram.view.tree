@@ -351,15 +351,6 @@ $bog_gram $mol_book2
 						sub /
 							<= Message_delete_icon* $mol_icon_delete
 
-$bog_gram_field $mol_view
-	hint \
-	value? \
-	sub /
-		<= Field $mol_string_button
-			hint <= hint
-			value? <=> value? \
-		<= Edit_icon $mol_icon_pencil
-
 $bog_gram_chat $mol_page
 	rows /$mol_view
 	focus_key \
@@ -500,75 +491,3 @@ $bog_gram_chat $mol_page
 				sub /
 					\Отмена
 
-$bog_gram_avatar $mol_avatar
-	id \
-	tint 0
-	attr *
-		^
-		bog_gram_tint <= tint
-
-$bog_gram_photo $mol_button
-	uri \
-	box_width \15rem
-	box_ratio \1
-	style *
-		width <= box_width
-		aspectRatio <= box_ratio
-	sub /
-		<= Image $mol_image
-			uri <= uri
-
-$bog_gram_sound $mol_view
-	uri \
-	span 0
-	playing false
-	toggle? null
-	ended? null
-	sub /
-		<= Toggle $mol_button_minor
-			hint \Прослушать
-			click? <=> toggle? null
-			sub <= toggle_icons /
-		<= Track $mol_view
-			sub /
-				<= Fill $mol_view
-					style *
-						width <= fill_width \0%
-		<= Stamp $mol_view
-			sub /
-				<= stamp \
-		<= Node $bog_gram_sound_node
-			uri <= uri
-			ended? <=> ended? null
-	Play_icon $mol_icon_play
-	Pause_icon $mol_icon_pause
-
-$bog_gram_sound_node $mol_view
-	dom_name \audio
-	uri \
-	retime? null
-	ended? null
-	attr *
-		^
-		src <= uri
-		preload \metadata
-	event *
-		^
-		timeupdate? <=> retime? null
-		ended? <=> ended? null
-
-$bog_gram_zoom $mol_view
-	uri \
-	close? null
-	attr *
-		^
-		tabindex <= tab_index 0
-	event *
-		^
-		click? <=> close? null
-	plugins /
-		<= Hotkey $mol_hotkey
-			key * escape? <=> close? null
-	sub /
-		<= Shot $mol_image
-			uri <= uri

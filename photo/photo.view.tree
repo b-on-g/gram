@@ -1,0 +1,10 @@
+$bog_gram_photo $mol_button
+	uri \
+	box_width \15rem
+	box_ratio \1
+	style *
+		width <= box_width
+		aspectRatio <= box_ratio
+	sub /
+		<= Image $mol_image
+			uri <= uri
