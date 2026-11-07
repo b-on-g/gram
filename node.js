@@ -22354,7 +22354,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1.25rem;\n\theight: 1.25rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n");
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -25743,7 +25743,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.102';
+    $.$bog_gram_version = '1.0.104';
 })($ || ($ = {}));
 
 ;
@@ -30309,6 +30309,9 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function proof(action, lord, monitor, endpoint, time) {
+        return ['gram-push', action, lord, monitor, endpoint, String(time)].join('\n');
+    }
     const api = {
         async permission_ask() {
             return await Notification.requestPermission();
@@ -30328,8 +30331,11 @@ var $;
         async subscription_drop(sub) {
             return await sub.unsubscribe();
         },
-        async sign(auth, data) {
-            return new Uint8Array(await auth.signer().sign(data));
+        async signed(auth, action, lord, monitor, endpoint) {
+            const time = Date.now();
+            const data = $mol_charset_encode(proof(action, lord, monitor, endpoint, time));
+            const sign = new Uint8Array(await auth.signer().sign(data));
+            return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode(sign) };
         },
     };
     function key_bytes(key) {
@@ -30389,13 +30395,11 @@ var $;
             }
         }
         static proof(action, lord, monitor, endpoint, time) {
-            return ['gram-push', action, lord, monitor, endpoint, String(time)].join('\n');
+            return proof(action, lord, monitor, endpoint, time);
         }
         static signed(action, lord, monitor, endpoint) {
             const auth = this.$.$giper_baza_auth.current();
-            const time = Date.now();
-            const sign = $mol_wire_sync(api).sign(auth, $mol_charset_encode(this.proof(action, lord, monitor, endpoint, time)));
-            return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode(sign) };
+            return $mol_wire_sync(api).signed(auth, action, lord, monitor, endpoint);
         }
         static send(path, body) {
             return this.$.$mol_fetch.success(this.base + path, {

@@ -9202,6 +9202,30 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            class Notify extends $bog_gram_notify {
+                static $ = $.$mol_ambient({
+                    $giper_baza_auth: { current: () => auth },
+                });
+            }
+            const later = {
+                async tick() {
+                    await Promise.resolve();
+                    return true;
+                },
+            };
+            const proofs = [];
+            const proof = await $mol_wire_async(() => {
+                const proof = Notify.signed('subscribe', lord, 'Monitor', 'https://push.example/1');
+                proofs.push(proof);
+                $mol_wire_sync(later).tick();
+                return proof;
+            })();
+            $mol_assert_equal(proofs.length, 2);
+            $mol_assert_equal(proofs[0], proof);
+        },
         async 'Подпись запроса к демону сходится с ключом владельца и ломается от подмены'($) {
             const auth = await $.$giper_baza_auth._generate();
             const other = await $.$giper_baza_auth._generate();
