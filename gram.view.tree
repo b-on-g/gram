@@ -42,6 +42,41 @@ $bog_gram $mol_book2
 		known* => peer_known*
 		accept* => peer_accept*
 		pass_of* => peer_pass_of*
+	Talk $bog_gram_talk
+		Account <= Account
+		People <= People
+		saved_title => saved_title
+		saved_id => saved_id
+		saved_links => saved_links
+		saved_is* => saved_is*
+		saved_land => saved_land
+		store* => dialog_store*
+		lords* => dialog_lords*
+		mates* => dialog_mates*
+		peer* => dialog_peer*
+		group_title* => group_title*
+		group_is* => group_is*
+		group_name_auto* => group_name_auto*
+		admins* => admin_lords*
+		admin_me* => admin_me*
+		owner* => dialog_owner*
+		own* => dialog_own*
+		title* => dialog_title*
+		avatar_id* => dialog_avatar_id*
+		tint* => dialog_tint*
+		moment* => dialog_moment*
+		alive* => dialog_alive*
+		links_of* => session_links_of*
+		land* => session_land_by*
+		lands_of* => session_lands_of*
+		land_of* => session_land_of*
+		session* => session_store_last*
+		messages_of* => messages_of*
+		messages_alive_of* => messages_alive_of*
+		unread* => unread_total*
+		preview* => dialog_preview*
+		time* => dialog_time*
+		mine_wrote* => mine_wrote*
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -388,11 +423,11 @@ $bog_gram $mol_book2
 		size \large
 		click? <=> dialog_select*? null
 		current <= dialog_current_is* false
-		avatar_id <= dialog_avatar_id* \
-		tint <= dialog_tint* 0
-		title <= dialog_title* \
-		time <= dialog_time* \
-		note <= dialog_preview* \
+		avatar_id <= dialog_avatar_id*
+		tint <= dialog_tint*
+		title <= dialog_title*
+		time <= dialog_time*
+		note <= dialog_preview*
 		badge <= unread_label* \
 		tools /
 			<= Dialog_archive* $mol_button_minor
@@ -415,7 +450,7 @@ $bog_gram $mol_book2
 		click? <=> saved_open? null
 		current <= saved_current_is false
 		Icon <= Saved_icon $mol_icon_bookmark
-		title <= saved_title \
+		title <= saved_title
 		time <= saved_time \
 		note <= saved_preview \
 	Archive_row $bog_gram_row

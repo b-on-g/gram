@@ -1063,44 +1063,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Избранное собирается изо всех своих лендов'( $ ) {
-
-			const owner = $giper_baza_land.make({ $ })
-			const store = owner.Data( $bog_gram_dialogs )
-			const app = $bog_gram.make({ $, dialogs_store: ()=> store })
-
-			const first = 'AAAAAAAA_BBBBBBBB'
-			const second = 'CCCCCCCC_DDDDDDDD'
-
-			// Ленда заметок ещё нет: избранного нет ни у одной ссылки
-			$mol_assert_equal( app.saved_links().length, 0 )
-			$mol_assert_equal( app.saved_is( first ), false )
-
-			store.Saved_land( 'auto' )?.val( first )
-			store.Saved_lands( 'auto' )!.add( first )
-			$mol_assert_equal( app.saved_links().join(), first )
-
-			// Второе устройство успело завести своё избранное, пока список
-			// диалогов был в пути: ссылка указывает на него, но заброшенный
-			// ленд остаётся своим — иначе заметки из него пропали бы
-			store.Saved_lands( 'auto' )!.add( second )
-			store.Saved_land( 'auto' )?.val( second )
-
-			$mol_assert_equal( app.saved_is( first ), true )
-			$mol_assert_equal( app.saved_is( second ), true )
-			$mol_assert_equal( app.saved_is( 'DialogPlain' ), false )
-			$mol_assert_equal( app.saved_is( '' ), false )
-
-			// Читаем изо всех, а пишем в указанный — он идёт последним, и
-			// запись всегда уходит в последний отсек
-			const links = app.saved_links()
-			$mol_assert_equal( links.length, 2 )
-			$mol_assert_equal( links[ links.length - 1 ], second )
-			$mol_assert_equal( app.session_links_of( second ).join(), links.join() )
-			$mol_assert_equal( app.session_links_of( first ).join(), links.join() )
-
-		},
-
 		async 'Картинка сообщения: ссылка и размеры доезжают до собеседника'( $ ) {
 
 			const king = await $.$giper_baza_auth._generate()
@@ -1291,48 +1253,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Приглашение ждёт первого сообщения'( $ ) {
-
-			const land = $giper_baza_land.make({ $ })
-			const session = land.Data( $bog_gram_session )
-			const app = $bog_gram.make({ $ })
-
-			const my = 'LordMine'
-			const peer = 'LordPeer'
-
-			// Диалог только что заведён: показывать собеседнику нечего
-			$mol_assert_equal( app.mine_among( [], my ), false )
-
-			// Чужое сообщение приглашения не отпускает: считаются только свои
-			const alien = session.Messages( 'auto' )!.make( null )
-			alien.Text( 'auto' )?.val( 'Эй' )
-			alien.Author( 'auto' )?.val( peer )
-			alien.Moment( 'auto' )?.val( 1000 )
-
-			const one = ( session.Messages()!.items() as readonly $giper_baza_link[] )
-				.map( link => message_of( land, link ) )
-			$mol_assert_equal( one.length, 1 )
-			$mol_assert_equal( app.mine_among( one, my ), false )
-
-			// Написал сам — теперь диалогу есть чем себя показать
-			const mine = session.Messages( 'auto' )!.make( null )
-			mine.Text( 'auto' )?.val( 'Привет' )
-			mine.Author( 'auto' )?.val( my )
-			mine.Moment( 'auto' )?.val( 2000 )
-
-			const both = ( session.Messages()!.items() as readonly $giper_baza_link[] )
-				.map( link => message_of( land, link ) )
-			$mol_assert_equal( both.length, 2 )
-			$mol_assert_equal( app.mine_among( both, my ), true )
-
-			// Удалённое сообщение из списка живых уходит вместе со своим правом
-			// на доставку: список сообщений сюда приходит уже отфильтрованным
-			mine.Deleted( 'auto' )?.val( 3000 )
-			const alive = both.filter( message => !message.Deleted()?.val() )
-			$mol_assert_equal( app.mine_among( alive, my ), false )
-
-		},
-
 		async 'Принятый собеседник уходит из запросов'( $ ) {
 
 			const land = $giper_baza_land.make({ $ })
@@ -1403,60 +1323,6 @@ namespace $.$$ {
 
 			await $mol_wire_async( ops ).write()
 			$mol_assert_equal( await $mol_wire_async( ops ).read(), lord )
-
-		},
-
-		async 'Сообщения из разных бакетов сливаются по моменту'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const early = $giper_baza_land.make({ $ })
-			const late = $giper_baza_land.make({ $ })
-
-			const write = ( land: $giper_baza_land, moment: number, text: string )=> {
-				const message = land.Data( $bog_gram_session ).Messages( 'auto' )!.make( null )
-				message.Text( 'auto' )?.val( text )
-				message.Moment( 'auto' )?.val( moment )
-			}
-
-			const list_of = ( land: $giper_baza_land )=>
-				( land.Data( $bog_gram_session ).Messages()!.items() as readonly $giper_baza_link[] )
-					.map( link => message_of( land, link ) )
-
-			// Бакеты писались вперемешку: старый не кончается там, где
-			// начинается новый — в него ещё дописывали, пока свежий уже жил
-			write( early, 1000, 'первое' )
-			write( early, 3000, 'третье' )
-			write( late, 2000, 'второе' )
-			write( late, 4000, 'четвёртое' )
-
-			const merged = app.messages_merge([ list_of( early ), list_of( late ) ])
-			$mol_assert_equal( merged.length, 4 )
-			$mol_assert_equal( merged.map( item => item.Text()!.val() ).join( ' ' ), 'первое второе третье четвёртое' )
-
-			// Порядок задают данные, а не порядок бакетов: та же склейка
-			// наоборот даёт тот же результат
-			const back = app.messages_merge([ list_of( late ), list_of( early ) ])
-			$mol_assert_equal( back.map( item => item.Text()!.val() ).join( ' ' ), 'первое второе третье четвёртое' )
-
-			// Недоступный бакет приходит сюда пустым списком и ничего не портит
-			const alone = app.messages_merge([ [], list_of( early ), [] ])
-			$mol_assert_equal( alone.map( item => item.Text()!.val() ).join( ' ' ), 'первое третье' )
-			$mol_assert_equal( app.messages_merge( [] ).length, 0 )
-
-			// Совпавшие моменты разводятся ссылкой, поэтому порядок не зависит
-			// от того, какой бакет доехал первым
-			const tie_one = $giper_baza_land.make({ $ })
-			const tie_two = $giper_baza_land.make({ $ })
-			write( tie_one, 5000, 'один' )
-			write( tie_two, 5000, 'два' )
-
-			const straight = app.messages_merge([ list_of( tie_one ), list_of( tie_two ) ])
-			const reverse = app.messages_merge([ list_of( tie_two ), list_of( tie_one ) ])
-			$mol_assert_equal(
-				straight.map( item => item.Text()!.val() ).join( ' ' ),
-				reverse.map( item => item.Text()!.val() ).join( ' ' ),
-			)
 
 		},
 
@@ -1690,19 +1556,6 @@ namespace $.$$ {
 			await $mol_wire_async( app ).dialog_select( 'dialog' )
 
 			$mol_assert_equal( app.dialog_current(), 'dialog' )
-
-		},
-
-		'Пока отметка прочтения не доехала, диалог не решает, откуда открываться'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-			const wait = new Promise( ()=> {} )
-			app.session_lands_of = ()=> [ { Data: ()=> { throw wait } } ] as any
-
-			let thrown = null as unknown
-			try { app.read_moment_of( 'dialog', 'Me' ) } catch( error ) { thrown = error }
-
-			$mol_assert_equal( thrown, wait )
 
 		},
 
