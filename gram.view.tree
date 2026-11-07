@@ -13,6 +13,26 @@ $bog_gram $mol_book2
 		monitor_store => monitor_store
 		monitor_link => monitor_link
 		ready => account_ready
+	Registry $bog_gram_registry
+		Account <= Account
+		ids => registry_ids
+		active => registry_active
+		title* => registry_title*
+		status* => registry_status*
+		joined* => registry_joined*
+		active_is* => registry_active_is*
+		uri => registry_uri
+		name? => registry_name?
+		make? => registry_make?
+		open*? => registry_open*?
+		join*? => registry_join*?
+		join_active? => registry_join_active?
+		forget*? => registry_forget*?
+		join_needed => registry_join_needed
+		sources => user_sources
+		source_title* => user_source*
+		remember => registry_remember
+		keys_fill => registry_keys_fill
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -156,7 +176,7 @@ $bog_gram $mol_book2
 						<= Join_plate_text $mol_paragraph
 							title \Вас нет в этом реестре — другие вас тут не найдут
 						<= Join_plate_button $mol_button_major
-							click? <=> registry_join_active? null
+							click? <=> registry_join_active?
 							sub /
 								\Вступить
 				<= Users_list $mol_list
@@ -278,32 +298,32 @@ $bog_gram $mol_book2
 				title \Ссылка-приглашение в активный реестр
 			<= Registry_share_copy $mol_button_copy
 				title \Скопировать ссылку
-				text <= registry_uri \
+				text <= registry_uri
 	Registry_form $mol_view
 		sub /
 			<= Registry_name $mol_string
 				hint \Название реестра
-				value? <=> registry_name? \
-				submit? <=> registry_make? null
+				value? <=> registry_name?
+				submit? <=> registry_make?
 			<= Registry_make $mol_button_major
-				click? <=> registry_make? null
+				click? <=> registry_make?
 				sub /
 					\Создать реестр
 	Registry_row* $bog_gram_row
 		faced false
-		click? <=> registry_open*? null
-		current <= registry_active_is* false
-		title <= registry_title* \
-		note <= registry_status* \
+		click? <=> registry_open*?
+		current <= registry_active_is*
+		title <= registry_title*
+		note <= registry_status*
 		tools /
 			<= Registry_join* $mol_button_minor
 				hint \Вступить в реестр
-				click? <=> registry_join*? null
+				click? <=> registry_join*?
 				sub /
 					\Вступить
 			<= Registry_drop* $mol_button_minor
 				hint \Убрать из своего списка
-				click? <=> registry_forget*? null
+				click? <=> registry_forget*?
 				sub /
 					<= Registry_drop_icon* $mol_icon_close
 	Key_toggle $mol_button_minor
@@ -420,7 +440,7 @@ $bog_gram $mol_book2
 		avatar_id <= user_lord* \
 		tint <= user_tint* 0
 		title <= user_title* \
-		note <= user_source* \
+		note <= user_source*
 	Group_pick_row* $bog_gram_row
 		click? <=> group_pick*? null
 		current <= group_picked_is* false
