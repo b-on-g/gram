@@ -807,11 +807,22 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.zoom_id( '' )
 			this.delete_disarm()
-			this.chat_focus( id, null )
 			this.dialog_current( id )
 			this.chat_bring()
 			this.field_focus()
+			this.chat_focus_reset( id )
 			return null
+		}
+
+		/** Отметка прочтения после перезагрузки ещё едет, и пересчёт фокуса
+		 * ждёт её. Тап по диалогу ждать не должен: решение досчитается само,
+		 * когда отметка приедет. */
+		chat_focus_reset( id: string ) {
+			try {
+				this.chat_focus( id, null )
+			} catch( error ) {
+				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+			}
 		}
 
 		/** С мышью и клавиатурой открытый диалог сразу принимает текст. На
