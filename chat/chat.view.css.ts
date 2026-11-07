@@ -148,9 +148,20 @@ namespace $.$$ {
 				direction: 'column',
 				grow: 1,
 			},
-			gap: '0.25rem',
 			minWidth: 0,
 			alignSelf: 'stretch',
+		},
+
+		Line: {
+			flex: {
+				direction: 'column',
+			},
+			gap: '0.25rem',
+			minWidth: 0,
+			padding: {
+				top: '0.125rem',
+				bottom: '0.125rem',
+			},
 		},
 
 		Day_row: {

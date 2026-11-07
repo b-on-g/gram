@@ -179,8 +179,7 @@ namespace $ {
 		@ $mol_mem_key
 		moment( id: string ) {
 			return $bog_gram_soft( ()=> {
-				const messages = this.messages_alive_of( id )
-				const last = messages[ messages.length - 1 ]
+				const last = this.last( id )
 				if( last ) return Number( last.Moment()?.val() ?? 0 )
 				return Number( this.store( id ).Created()?.val() ?? 0 )
 			}, 0 )
@@ -192,7 +191,7 @@ namespace $ {
 
 		@ $mol_mem_key
 		alive( id: string ) {
-			return $bog_gram_soft( ()=> this.messages_alive_of( id ).length > 0, false )
+			return $bog_gram_soft( ()=> Boolean( this.last( id ) ), false )
 		}
 
 		links_of( id: string ): readonly string[] {
@@ -223,15 +222,15 @@ namespace $ {
 		}
 
 		messages_merge( buckets: readonly ( readonly $bog_gram_message[] )[] ) {
-			const all: $bog_gram_message[] = []
-			for( const bucket of buckets ) all.push( ... bucket )
-			return all.sort( ( a, b )=> {
-				const shift = Number( a.Moment()?.val() ?? 0 ) - Number( b.Moment()?.val() ?? 0 )
-				if( shift ) return shift
-				const left = a.link().str
-				const right = b.link().str
-				return left < right ? -1 : left > right ? 1 : 0
-			} )
+			return buckets
+				.filter( bucket => bucket.length )
+				.map( bucket => ({
+					bucket,
+					start: Number( bucket[0].Moment()?.val() ?? 0 ),
+					link: bucket[0].link().str,
+				}) )
+				.sort( ( a, b )=> ( a.start - b.start ) || ( a.link < b.link ? -1 : a.link > b.link ? 1 : 0 ) )
+				.flatMap( item => item.bucket )
 		}
 
 		@ $mol_mem_key
@@ -245,6 +244,15 @@ namespace $ {
 		@ $mol_mem_key
 		messages_alive_of( id: string ) {
 			return this.messages_of( id ).filter( message => !message.Deleted()?.val() )
+		}
+
+		@ $mol_mem_key
+		last( id: string ) {
+			const all = this.messages_of( id )
+			for( let i = all.length - 1; i >= 0; -- i ) {
+				if( !all[ i ].Deleted()?.val() ) return all[ i ]
+			}
+			return null
 		}
 
 		read_moment_of( id: string, lord: string ) {
@@ -267,17 +275,25 @@ namespace $ {
 			if( this.saved_is( id ) ) return 0
 			const my = this.my()
 			const seen = this.read_moment_of( id, my )
-			return this.messages_alive_of( id ).filter( message => {
-				if( String( message.Author()?.val() ?? '' ) === my ) return false
-				return Number( message.Moment()?.val() ?? 0 ) > seen
-			} ).length
+			return this.unread_since( this.messages_of( id ), my, seen )
+		}
+
+		unread_since( messages: readonly $bog_gram_message[], my: string, seen: number, limit = 100 ) {
+			let count = 0
+			for( let i = messages.length - 1; i >= 0 && count < limit; -- i ) {
+				const message = messages[ i ]
+				if( Number( message.Moment()?.val() ?? 0 ) <= seen ) break
+				if( message.Deleted()?.val() ) continue
+				if( String( message.Author()?.val() ?? '' ) === my ) continue
+				++ count
+			}
+			return count
 		}
 
 		@ $mol_mem_key
 		preview( id: string ) {
 
-			const messages = this.messages_alive_of( id )
-			const last = messages[ messages.length - 1 ]
+			const last = this.last( id )
 			if( !last ) return ''
 
 			const text = String( last.Text()?.val() ?? '' )
@@ -296,17 +312,21 @@ namespace $ {
 
 		@ $mol_mem_key
 		time( id: string ) {
-			const messages = this.messages_alive_of( id )
-			return $bog_gram_clock.brief( Number( messages[ messages.length - 1 ]?.Moment()?.val() ?? 0 ) )
+			return $bog_gram_clock.brief( Number( this.last( id )?.Moment()?.val() ?? 0 ) )
 		}
 
 		mine_among( messages: readonly $bog_gram_message[], my: string ) {
-			return messages.some( message => String( message.Author()?.val() ?? '' ) === my )
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+				const message = messages[ i ]
+				if( String( message.Author()?.val() ?? '' ) !== my ) continue
+				if( !message.Deleted()?.val() ) return true
+			}
+			return false
 		}
 
 		@ $mol_mem_key
 		mine_wrote( id: string ) {
-			return $bog_gram_soft( ()=> this.mine_among( this.messages_alive_of( id ), this.my() ), false )
+			return $bog_gram_soft( ()=> this.mine_among( this.messages_of( id ), this.my() ), false )
 		}
 
 	}

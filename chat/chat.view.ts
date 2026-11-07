@@ -80,13 +80,53 @@ namespace $.$$ {
 			return this.members_shown() ? super.Members() : null!
 		}
 
-		@ $mol_mem
 		messages() {
-			return this.Talk().messages_alive_of( this.dialog() )
+			return this.Talk().messages_of( this.dialog() )
+		}
+
+		@ $mol_mem
+		messages_index() {
+			return new Map( this.messages().map( ( message, index )=> [ message.link().str, index ] ) )
 		}
 
 		message_pawn( id: string ) {
-			return this.messages().find( message => message.link().str === id ) ?? null
+			const index = this.messages_index().get( id )
+			return index === undefined ? null : this.messages()[ index ]
+		}
+
+		message_dead( id: string ) {
+			return Boolean( this.message_pawn( id )?.Deleted()?.val() )
+		}
+
+		message_alive( id: string ) {
+			return Boolean( this.message_pawn( id ) ) && !this.message_dead( id )
+		}
+
+		message_day( id: string ) {
+			return $bog_gram_clock.day_key( this.message_moment( id ) )
+		}
+
+		@ $mol_mem_key
+		message_day_head( id: string ) {
+
+			const day = this.message_day( id )
+			if( !day ) return ''
+
+			const messages = this.messages()
+			for( let i = ( this.messages_index().get( id ) ?? 0 ) - 1; i >= 0; -- i ) {
+				const prev = messages[ i ].link().str
+				if( this.message_dead( prev ) ) continue
+				return this.message_day( prev ) === day ? '' : day
+			}
+
+			return day
+		}
+
+		@ $mol_mem_key
+		override line_content( id: string ) {
+			if( !this.message_alive( id ) ) return []
+			const day = this.message_day_head( id )
+			return [ ... day ? [ this.Day_row( day ) ] : [], this.Bubble( id ) ]
 		}
 
 		message_lord( id: string ) {
@@ -103,13 +143,7 @@ namespace $.$$ {
 
 		@ $mol_mem
 		override rows() {
-			let last_day = ''
-			return this.messages().flatMap( message => {
-				const day = $bog_gram_clock.day_key( Number( message.Moment()?.val() ?? 0 ) )
-				const head = day && day !== last_day ? [ this.Day_row( day ) ] : []
-				last_day = day
-				return [ ... head, this.Bubble( message.link().str ) ]
-			} )
+			return this.messages().map( message => this.Line( message.link().str ) )
 		}
 
 		@ $mol_mem_key
@@ -330,7 +364,7 @@ namespace $.$$ {
 		message_quote_id( id: string ) {
 			const target = String( this.message_pawn( id )?.Reply()?.val() ?? '' )
 			if( !target ) return ''
-			return this.message_pawn( target ) ? target : ''
+			return this.message_alive( target ) ? target : ''
 		}
 
 		override message_quote_shown( id: string ) {
@@ -348,7 +382,7 @@ namespace $.$$ {
 		@ $mol_action
 		override message_quote_jump( id: string, next?: any ) {
 			const target = this.message_quote_id( id )
-			if( target ) this.reveal( this.Bubble( target ), 'center' )
+			if( target ) this.reveal( this.Line( target ), 'center' )
 			return null
 		}
 
@@ -812,8 +846,18 @@ namespace $.$$ {
 			return null
 		}
 
-		unread_first( list: readonly { moment: number, author: string }[], my: string, seen: number ) {
-			return list.findIndex( item => item.author !== my && item.moment > seen )
+		unread_first( messages: readonly $bog_gram_message[], my: string, seen: number ) {
+
+			let found = ''
+
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+				const message = messages[ i ]
+				if( Number( message.Moment()?.val() ?? 0 ) <= seen ) break
+				if( message.Deleted()?.val() ) continue
+				if( String( message.Author()?.val() ?? '' ) !== my ) found = message.link().str
+			}
+
+			return found
 		}
 
 		@ $mol_mem
@@ -827,14 +871,8 @@ namespace $.$$ {
 			if( this.saved() ) return ''
 
 			const my = this.my_lord()
-			const list = messages.map( message => ({
-				moment: Number( message.Moment()?.val() ?? 0 ),
-				author: String( message.Author()?.val() ?? '' ),
-			}) )
 
-			const index = this.unread_first( list, my, this.Talk().read_moment_of( this.dialog(), my ) )
-
-			return index < 0 ? '' : messages[ index ].link().str
+			return this.unread_first( messages, my, this.Talk().read_moment_of( this.dialog(), my ) )
 		}
 
 		@ $mol_mem
@@ -846,11 +884,14 @@ namespace $.$$ {
 			const id = this.dialog()
 			const my = this.my_lord()
 
+			const messages = this.messages()
+
 			let last = 0
-			for( const message of this.messages() ) {
-				if( String( message.Author()?.val() ?? '' ) === my ) continue
-				const moment = Number( message.Moment()?.val() ?? 0 )
-				if( moment > last ) last = moment
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+				if( String( messages[ i ].Author()?.val() ?? '' ) === my ) continue
+				if( messages[ i ].Deleted()?.val() ) continue
+				last = Number( messages[ i ].Moment()?.val() ?? 0 )
+				break
 			}
 			if( !last ) return 0
 
@@ -871,7 +912,7 @@ namespace $.$$ {
 
 			if( !this.rows_seen() ) {
 				const focus = this.focus()
-				const row = focus ? this.Bubble( focus ) : last
+				const row = focus ? this.Line( focus ) : last
 				this.rows_seen( rows.length )
 				this.reveal( row, focus ? 'start' : 'end' )
 				return

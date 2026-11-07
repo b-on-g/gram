@@ -5,18 +5,31 @@ namespace $.$$ {
 		'Открывается с первого непрочитанного чужого сообщения'( $ ) {
 
 			const chat = $bog_gram_chat.make({ $ })
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+
+			const write = ( moment: number, author: string )=> {
+				const message = session.Messages( 'auto' )!.make( null )
+				message.Moment( 'auto' )?.val( moment )
+				message.Author( 'auto' )?.val( author )
+				return message
+			}
 
 			const list = [
-				{ moment: 1000, author: 'Peer' },
-				{ moment: 2000, author: 'Me' },
-				{ moment: 3000, author: 'Peer' },
-				{ moment: 4000, author: 'Peer' },
+				write( 1000, 'Peer' ),
+				write( 2000, 'Me' ),
+				write( 3000, 'Peer' ),
+				write( 4000, 'Peer' ),
 			]
 
-			$mol_assert_equal( chat.unread_first( list, 'Me', 2000 ), 2 )
-			$mol_assert_equal( chat.unread_first( list.slice( 0, 2 ), 'Me', 1000 ), -1 )
-			$mol_assert_equal( chat.unread_first( list, 'Me', 4000 ), -1 )
-			$mol_assert_equal( chat.unread_first( list, 'Me', 0 ), 0 )
+			const id = ( index: number )=> list[ index ].link().str
+
+			$mol_assert_equal( chat.unread_first( list, 'Me', 2000 ), id( 2 ) )
+			$mol_assert_equal( chat.unread_first( list.slice( 0, 2 ), 'Me', 1000 ), '' )
+			$mol_assert_equal( chat.unread_first( list, 'Me', 4000 ), '' )
+			$mol_assert_equal( chat.unread_first( list, 'Me', 0 ), id( 0 ) )
+
+			list[ 2 ].Deleted( 'auto' )?.val( 5000 )
+			$mol_assert_equal( chat.unread_first( list, 'Me', 2000 ), id( 3 ) )
 
 		},
 

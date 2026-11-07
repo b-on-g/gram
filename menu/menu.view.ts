@@ -42,6 +42,7 @@ namespace $.$$ {
 
 		override unread_label( id: string ) {
 			const count = this.unread( id )
+			if( count > 99 ) return '99+'
 			return count ? String( count ) : ''
 		}
 

@@ -51,7 +51,7 @@ namespace $ {
 
 		},
 
-		'Сообщения из разных бакетов сливаются по моменту'( $ ) {
+		'Бакеты идут друг за другом по первому сообщению, внутри порядок списка'( $ ) {
 
 			const talk = $bog_gram_talk.make({ $ })
 
@@ -59,15 +59,15 @@ namespace $ {
 			const late = $giper_baza_land.make({ $ })
 
 			write( early, 1000, 'первое' )
-			write( early, 3000, 'третье' )
-			write( late, 2000, 'второе' )
-			write( late, 4000, 'четвёртое' )
+			write( early, 900, 'второе' )
+			write( late, 5000, 'третье' )
+			write( late, 6000, 'четвёртое' )
 
 			const text = ( list: readonly $bog_gram_message[] )=> list.map( item => item.Text()!.val() ).join( ' ' )
 
 			$mol_assert_equal( text( talk.messages_merge([ list_of( early ), list_of( late ) ]) ), 'первое второе третье четвёртое' )
 			$mol_assert_equal( text( talk.messages_merge([ list_of( late ), list_of( early ) ]) ), 'первое второе третье четвёртое' )
-			$mol_assert_equal( text( talk.messages_merge([ [], list_of( early ), [] ]) ), 'первое третье' )
+			$mol_assert_equal( text( talk.messages_merge([ [], list_of( early ), [] ]) ), 'первое второе' )
 			$mol_assert_equal( talk.messages_merge( [] ).length, 0 )
 
 			const tie_one = $giper_baza_land.make({ $ })
@@ -96,8 +96,25 @@ namespace $ {
 			$mol_assert_equal( talk.mine_among( list_of( land ), 'LordMine' ), true )
 
 			mine.Deleted( 'auto' )?.val( 3000 )
-			const alive = list_of( land ).filter( message => !message.Deleted()?.val() )
-			$mol_assert_equal( talk.mine_among( alive, 'LordMine' ), false )
+			$mol_assert_equal( talk.mine_among( list_of( land ), 'LordMine' ), false )
+
+		},
+
+		'Непрочитанные считаются с хвоста до своей отметки, свои и удалённые не в счёт'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const talk = $bog_gram_talk.make({ $ })
+
+			write( land, 1000, 'старое', 'LordPeer' )
+			write( land, 2000, 'моё', 'LordMine' )
+			write( land, 3000, 'новое', 'LordPeer' )
+			write( land, 4000, 'ещё', 'LordPeer' ).Deleted( 'auto' )?.val( 4500 )
+			write( land, 5000, 'последнее', 'LordPeer' )
+
+			$mol_assert_equal( talk.unread_since( list_of( land ), 'LordMine', 0 ), 3 )
+			$mol_assert_equal( talk.unread_since( list_of( land ), 'LordMine', 2000 ), 2 )
+			$mol_assert_equal( talk.unread_since( list_of( land ), 'LordMine', 5000 ), 0 )
+			$mol_assert_equal( talk.unread_since( list_of( land ), 'LordMine', 0, 2 ), 2 )
 
 		},
 

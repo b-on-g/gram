@@ -90,7 +90,7 @@ namespace $ {
 
 		},
 
-		async 'Порядок сообщений задаётся полем Moment, а не порядком доставки'( $ ) {
+		async 'Каждое сообщение хранит свой Moment независимо от места в списке'( $ ) {
 
 			const land = $giper_baza_land.make({ $ })
 			const session = land.Data( $bog_gram_session )

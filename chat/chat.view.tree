@@ -134,6 +134,9 @@ $bog_gram_chat $bog_gram_page
 			<= Voice_cancel_text $mol_view
 				sub /
 					\Отмена
+	Line* $mol_view
+		minimal_height 48
+		sub <= line_content* /
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view
