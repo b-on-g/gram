@@ -3454,7 +3454,8 @@ namespace $.$$ {
 					const moment = Number( land.Data( $bog_gram_session ).Reads()?.key( lord )?.Moment()?.val() ?? 0 )
 					if( moment > last ) last = moment
 				} catch( error ) {
-					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+					$mol_fail_log( error )
 				}
 			}
 			return last
