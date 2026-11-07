@@ -173,6 +173,11 @@ namespace $ {
 			return sources
 		}
 
+		@ $mol_mem
+		people() {
+			return Object.keys( this.sources() )
+		}
+
 		@ $mol_mem_key
 		source_title( lord: string ) {
 			if( this.ids().length < 2 ) return ''

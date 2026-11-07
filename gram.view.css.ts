@@ -78,16 +78,6 @@ namespace $.$$ {
 			},
 		},
 
-		Compose_page: {
-			width: '26rem',
-			Head: {
-				padding: head_pad,
-			},
-			Body_content: {
-				padding: body_pad,
-			},
-		},
-
 		Group_page: {
 			width: '26rem',
 			Head: {
@@ -236,67 +226,6 @@ namespace $.$$ {
 
 		Saved_icon: {
 			color: tg_blue,
-		},
-
-		// ===== Реестр пользователей =====
-
-		Users_title: {
-			font: {
-				weight: 'bold',
-			},
-			color: $mol_theme.shade,
-			padding: {
-				top: $mol_gap.block,
-				bottom: 0,
-				left: 0,
-				right: 0,
-			},
-		},
-
-		Users_list: {
-			gap: '0.125rem',
-		},
-
-		Users_empty: {
-			padding: $mol_gap.block,
-			color: $mol_theme.shade,
-		},
-
-		/* открыт чужой реестр, а записи в нём нет: зовём вступить прямо тут */
-		Join_plate: {
-			align: {
-				items: 'center',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-			padding: {
-				top: '0.5rem',
-				bottom: '0.5rem',
-				left: '0.75rem',
-				right: '0.75rem',
-			},
-			background: {
-				color: veil,
-			},
-			borderRadius: '0.75rem',
-		},
-
-		Join_plate_text: {
-			flex: {
-				grow: 1,
-				shrink: 1,
-			},
-			minWidth: 0,
-			font: {
-				size: '0.875rem',
-			},
-			color: $mol_theme.shade,
-		},
-
-		Join_plate_button: {
-			flex: {
-				shrink: 0,
-			},
 		},
 
 		// ===== Создание группы =====
@@ -694,13 +623,6 @@ namespace $.$$ {
 			borderRadius: '0.5rem',
 		},
 
-		Peer_form: {
-			flex: {
-				direction: 'column',
-			},
-			gap: $mol_gap.block,
-		},
-
 		// ===== Разделитель дня =====
 
 		Day_row: {
@@ -969,10 +891,6 @@ namespace $.$$ {
 			'(max-width: 30rem)': {
 
 				Dialogs_list: {
-					gap: 0,
-				},
-
-				Users_list: {
 					gap: 0,
 				},
 

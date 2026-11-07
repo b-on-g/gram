@@ -35,10 +35,6 @@ namespace $.$$ {
 			return $bog_gram_lord.short( lord )
 		}
 
-		user_tint( lord: string ) {
-			return this.avatar_tint( lord )
-		}
-
 		/** На новом устройстве ленд избранного приезжает не мгновенно: пока он
 		 * в пути, строка стоит с пустым превью, а не вешает весь список. */
 		@$mol_mem
@@ -544,17 +540,12 @@ namespace $.$$ {
 		// ===== Создание диалога =====
 
 		@$mol_action
-		dialog_start( next?: any ) {
-			const peer = this.peer_lord().trim()
-			if( !peer ) return null
-			this.peer_accept( peer )
-			this.peer_lord( '' )
-			const exist = this.dialog_with( peer )
-			if( exist ) {
-				this.dialog_select( exist )
-				return null
-			}
-			this.dialog_pending( peer )
+		override dialog_open( lord: string, next?: any ) {
+			if( !lord ) return null
+			this.peer_accept( lord )
+			const exist = this.dialog_with( lord )
+			if( exist ) this.dialog_select( exist )
+			else this.dialog_pending( lord )
 			return null
 		}
 
@@ -2194,55 +2185,6 @@ namespace $.$$ {
 		unread_label( id: string ) {
 			const count = this.unread_count( id )
 			return count ? String( count ) : ''
-		}
-
-		// ===== Реестры пользователей =====
-
-		override Join_plate() {
-			return this.registry_join_needed() ? super.Join_plate() : null!
-		}
-
-		// ===== Люди из реестров =====
-
-		@$mol_mem
-		user_lords() {
-			return Object.keys( this.user_sources() )
-		}
-
-		@$mol_mem
-		user_rows() {
-			const lords = this.user_lords()
-			if( !lords.length ) return [ this.Users_empty() ]
-			return lords.map( lord => this.User_row( lord ) )
-		}
-
-		override users_empty_text() {
-			if( !this.registry_ids().length ) return 'Вы не состоите ни в одном реестре. Создайте свой в настройках'
-			return 'Кроме вас в реестрах пока никого нет'
-		}
-
-		/** Строка человека ключуется его же лордом — по нему и рисуется узор. */
-		user_lord( lord: string ) {
-			return lord
-		}
-
-		@$mol_mem_key
-		user_title( lord: string ) {
-			return this.peer_label( lord )
-		}
-
-		@$mol_action
-		user_pick( lord: string, next?: any ) {
-			if( !lord ) return null
-			this.peer_accept( lord )
-			this.peer_lord( '' )
-			const exist = this.dialog_with( lord )
-			if( exist ) {
-				this.dialog_select( exist )
-				return null
-			}
-			this.dialog_pending( lord )
-			return null
 		}
 
 		// ===== Личная ссылка-приглашение =====

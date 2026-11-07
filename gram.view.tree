@@ -30,6 +30,7 @@ $bog_gram $mol_book2
 		forget*? => registry_forget*?
 		join_needed => registry_join_needed
 		sources => user_sources
+		people => user_lords
 		source_title* => user_source*
 		remember => registry_remember
 		keys_fill => registry_keys_fill
@@ -200,37 +201,15 @@ $bog_gram $mol_book2
 			registry_open*? <=> registry_open*?
 			registry_join*? <=> registry_join*?
 			registry_forget*? <=> registry_forget*?
-		<= Compose_page $mol_page
-			title \Новый диалог
-			tools /
-				<= Compose_close $mol_button_minor
-					hint \Закрыть
-					click? <=> compose_close? null
-					sub /
-						<= Compose_close_icon $mol_icon_close
-			body /
-				<= Peer_form $mol_view
-					sub /
-						<= Peer_field $mol_string
-							hint \ID собеседника
-							value? <=> peer_lord? \
-							submit? <=> dialog_start? null
-						<= Peer_start $mol_button_major
-							click? <=> dialog_start? null
-							sub /
-								\Начать диалог
-				<= Users_title $mol_paragraph
-					title \Пользователи
-				<= Join_plate $mol_view
-					sub /
-						<= Join_plate_text $mol_paragraph
-							title \Вас нет в этом реестре — другие вас тут не найдут
-						<= Join_plate_button $mol_button_major
-							click? <=> registry_join_active?
-							sub /
-								\Вступить
-				<= Users_list $mol_list
-					rows <= user_rows /
+		<= Compose_page $bog_gram_compose
+			close? <=> compose_close? null
+			open*? <=> dialog_open*? null
+			users <= user_lords
+			user_title* <= peer_label*
+			user_source* <= user_source*
+			registry_ids <= registry_ids
+			join_needed <= registry_join_needed
+			join? <=> registry_join_active?
 		<= Group_page $mol_page
 			title \Новая группа
 			tools /
@@ -332,10 +311,6 @@ $bog_gram $mol_book2
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
 				title \Пока нет диалогов
-	Users_empty $mol_view
-		sub /
-			<= Users_empty_text $mol_paragraph
-				title <= users_empty_text \
 	Dialog_row* $bog_gram_row
 		size \large
 		click? <=> dialog_select*? null
@@ -396,12 +371,6 @@ $bog_gram $mol_book2
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
-	User_row* $bog_gram_row
-		click? <=> user_pick*? null
-		avatar_id <= user_lord* \
-		tint <= user_tint* 0
-		title <= user_title* \
-		note <= user_source*
 	Group_pick_row* $bog_gram_row
 		click? <=> group_pick*? null
 		current <= group_picked_is* false

@@ -1,0 +1,49 @@
+$bog_gram_compose $bog_gram_page
+	title \Новый диалог
+	close? null
+	open*? null
+	users /string
+	user_title* \
+	user_source* \
+	registry_ids /string
+	join_needed false
+	join? null
+	tools /
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Peer_form $mol_view
+			sub /
+				<= Peer_field $mol_string
+					hint \ID собеседника
+					value? <=> peer? \
+					submit? <=> start? null
+				<= Peer_start $mol_button_major
+					click? <=> start? null
+					sub /
+						\Начать диалог
+		<= Users_title $mol_paragraph
+			title \Пользователи
+		<= Join_plate $mol_view
+			sub /
+				<= Join_plate_text $mol_paragraph
+					title \Вас нет в этом реестре — другие вас тут не найдут
+				<= Join_plate_button $mol_button_major
+					click? <=> join?
+					sub /
+						\Вступить
+		<= Users_list $mol_list
+			rows <= user_rows /
+	Users_empty $mol_view
+		sub /
+			<= Users_empty_text $mol_paragraph
+				title <= users_empty_text \
+	User_row* $bog_gram_row
+		click? <=> pick*? null
+		avatar_id <= user_lord* \
+		tint <= user_tint* 0
+		title <= user_title*
+		note <= user_source*
