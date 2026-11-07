@@ -1,11 +1,5 @@
 namespace $.$$ {
 
-	/** Полный размер ключа аккаунта в байтах: публичная часть плюс приватная. */
-	const auth_size = 128
-
-	/** Имя файла, в который сохраняется ключ аккаунта. */
-	const auth_file = 'gram-account.key'
-
 	/** Сколько держать палец на своём пузыре, чтобы под ним раскрылись
 	 * правка и удаление: короче — срабатывает на обычном тапе, длиннее —
 	 * ощущается как зависший интерфейс. */
@@ -136,7 +130,6 @@ namespace $.$$ {
 			this.group_opened( false )
 			this.members_opened( false )
 			this.leave_armed( false )
-			this.account_reset()
 			this.edit_id( '' )
 			this.reply_id( '' )
 			this.message_text( '' )
@@ -470,7 +463,6 @@ namespace $.$$ {
 			this.settings_opened( false )
 			this.group_opened( false )
 			this.compose_opened( open )
-			this.account_reset()
 			return null
 		}
 
@@ -486,14 +478,12 @@ namespace $.$$ {
 			this.compose_opened( false )
 			this.group_opened( false )
 			this.settings_opened( open )
-			this.account_reset()
 			return null
 		}
 
 		@$mol_action
 		settings_close( next?: any ) {
 			this.settings_opened( false )
-			this.account_reset()
 			return null
 		}
 
@@ -604,7 +594,6 @@ namespace $.$$ {
 			this.compose_opened( false )
 			this.settings_opened( false )
 			this.group_opened( open )
-			this.account_reset()
 			return null
 		}
 
@@ -2209,26 +2198,6 @@ namespace $.$$ {
 
 		// ===== Реестры пользователей =====
 
-		override Registry_join( id: string ) {
-			return this.registry_joined( id ) ? null! : super.Registry_join( id )
-		}
-
-		@$mol_mem
-		registry_rows() {
-			return this.registry_ids().map( id => this.Registry_row( id ) )
-		}
-
-		@$mol_mem
-		registry_content() {
-			if( !this.registry_ids().length ) return [ this.Registry_empty(), this.Registry_form() ]
-			return [
-				this.Registry_list(),
-				this.Registry_note(),
-				... this.registry_active() ? [ this.Registry_share() ] : [],
-				this.Registry_form(),
-			]
-		}
-
 		override Join_plate() {
 			return this.registry_join_needed() ? super.Join_plate() : null!
 		}
@@ -2278,10 +2247,6 @@ namespace $.$$ {
 
 		// ===== Личная ссылка-приглашение =====
 
-		override version() {
-			return $bog_gram_version
-		}
-
 		@$mol_mem
 		invite_handle() {
 			const lord = this.Invite().lord()
@@ -2322,173 +2287,6 @@ namespace $.$$ {
 
 		override Ask_plate() {
 			return this.ask_plate_text() ? super.Ask_plate() : null!
-		}
-
-		// ===== Уведомления =====
-
-		override Notify_toggle() {
-			return this.notify_supported() ? super.Notify_toggle() : null!
-		}
-
-		// ===== Ключ аккаунта: показ и экспорт =====
-
-		/** Строка ключа — это полный доступ к аккаунту, поэтому она никуда
-		 * не уезжает: только на экран и только по явной просьбе. */
-		override key_text() {
-			const auth = this.$.$giper_baza_auth.current()
-			return auth.toString() + auth.toStringPrivate()
-		}
-
-		@$mol_mem
-		key_shown( next?: boolean ) {
-			return next ?? false
-		}
-
-		override key_toggle_label() {
-			return this.key_shown() ? 'Скрыть ключ' : 'Показать ключ'
-		}
-
-		@$mol_action
-		key_toggle( next?: any ) {
-			this.key_shown( !this.key_shown() )
-			return null
-		}
-
-		/** Уходя из настроек, прячем ключ и снимаем взвод импорта: иначе секрет
-		 * останется на экране, а следующий одиночный клик сменит аккаунт. */
-		account_reset() {
-			this.key_shown( false )
-			this.import_armed( false )
-			this.key_error( '' )
-		}
-
-		/** Пока ключ скрыт, его не читает никто: ни абзац, ни кнопка копирования,
-		 * ни QR — в дереве компонентов их просто нет. */
-		@$mol_mem
-		account_rows() {
-			if( !this.key_shown() ) return [ this.Key_toggle(), this.Key_import_form() ]
-			return [
-				this.Key_toggle(),
-				this.Key_warning(),
-				this.Key_row(),
-				this.Key_qr_box(),
-				this.Key_save(),
-				this.Key_import_form(),
-			]
-		}
-
-		/** Ключ уезжает в файл через временный объектный URL: ссылку кликаем
-		 * программно и тут же освобождаем, в документе она не остаётся. */
-		@$mol_action
-		key_save( next?: any ) {
-
-			const context = this.$.$mol_dom_context
-			const blob = new Blob( [ this.key_text() ], { type: 'text/plain' } )
-			const uri = context.URL.createObjectURL( blob )
-
-			const link = context.document.createElement( 'a' )
-			link.href = uri
-			link.download = auth_file
-
-			context.document.body.appendChild( link )
-			link.click()
-			link.remove()
-
-			context.URL.revokeObjectURL( uri )
-
-			return null
-		}
-
-		// ===== Вход по чужому ключу =====
-
-		@$mol_mem
-		key_error( next?: string ) {
-			return next ?? ''
-		}
-
-		override Key_error() {
-			return this.key_error() ? super.Key_error() : null!
-		}
-
-		@$mol_mem
-		import_armed( next?: boolean ) {
-			return next ?? false
-		}
-
-		override key_import_label() {
-			return this.import_armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу'
-		}
-
-		/** Ключом считаем только строку полного размера: обрезок или случайный
-		 * текст молча увели бы пользователя в пустой аккаунт без диалогов. */
-		auth_from( str: string ) {
-			try {
-				const auth = this.$.$giper_baza_auth.from( str )
-				return auth.byteLength === auth_size ? auth : null
-			} catch( error ) {
-				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-				return null
-			}
-		}
-
-		/** Первый клик взводит кнопку, второй применяет — как корзина в списке диалогов.
-		 * Заведомый мусор до подтверждения не доходит: строка проверяется сразу. */
-		@$mol_action
-		key_import( next?: any ) {
-
-			const str = this.key_input().trim()
-			if( !str ) {
-				this.key_error( 'Вставьте ключ или загрузите файл' )
-				return null
-			}
-
-			const auth = this.auth_from( str )
-			if( !auth ) {
-				this.import_armed( false )
-				this.key_error( 'Это не похоже на ключ аккаунта' )
-				return null
-			}
-
-			if( !this.import_armed() ) {
-				this.key_error( '' )
-				this.import_armed( true )
-				return null
-			}
-
-			// Подписка на пуши выдана прежнему лорду и новому уже не подходит:
-			// снимаем отметку, чтобы настройки не обещали то, чего нет
-			this.Alerts().on( false )
-
-			this.$.$giper_baza_auth.current( auth )
-
-			// Весь граф данных завязан на текущий ключ, поэтому проще начать страницу заново
-			this.$.$mol_dom_context.location.reload()
-
-			return null
-		}
-
-		/** Файл читается асинхронно, поэтому из обработчика уезжаем в фибру. */
-		key_file( next?: readonly File[] ) {
-			const file = next?.[ 0 ]
-			if( file ) $mol_wire_async( this ).key_file_read( file )
-			return next ?? null
-		}
-
-		override key_scanned( next?: string ) {
-			if( next === undefined ) return ''
-			const str = next.trim()
-			this.key_input( str )
-			this.import_armed( false )
-			this.key_error( this.auth_from( str ) ? '' : 'В QR не ключ аккаунта' )
-			return str
-		}
-
-		key_file_read( file: File ) {
-			const text = $mol_wire_sync( file ).text()
-			this.key_input( text.trim() )
-			this.import_armed( false )
-			this.key_error( '' )
-			return true
 		}
 
 		// ===== Автозапуск =====

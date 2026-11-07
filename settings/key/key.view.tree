@@ -1,0 +1,52 @@
+$bog_gram_settings_key $mol_view
+	notify_on? false
+	sub <= rows /
+	Toggle $mol_button_minor
+		click? <=> toggle? null
+		sub /
+			<= toggle_label \
+	Warning $mol_paragraph
+		title \Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.
+	Row $mol_view
+		sub /
+			<= Text $mol_paragraph
+				title <= text \
+			<= Copy $mol_button_copy
+				title \Скопировать
+				text <= text
+	Qr_box $mol_view
+		sub /
+			<= Qr $bog_qr
+				uri <= text
+				gradient_stops /
+					\#e14b4b
+					\#f0a04b
+	Save $mol_button_download
+		title \Скачать файл
+		file_name \gram-account.key
+		blob <= blob null Blob
+	Import_form $mol_view
+		sub /
+			<= Field $mol_string
+				hint \Ключ аккаунта
+				value? <=> input? \
+			<= Load_row $mol_view
+				sub /
+					<= Load_hint $mol_paragraph
+						title \Или загрузите файл с ключом
+					<= Open $mol_button_open
+						hint \Выбрать файл
+						accept \.key,text/plain
+						multiple false
+						files? <=> file? null
+			<= Scan $bog_gram_scan
+				found? <=> scanned? \
+			<= Import $mol_button_major
+				attr *
+					^
+					bog_gram_armed <= armed? false
+				click? <=> import? null
+				sub /
+					<= import_label \
+			<= Error $mol_paragraph
+				title <= error? \

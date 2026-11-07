@@ -122,6 +122,7 @@ $bog_gram $mol_book2
 		status => notify_status
 		label => notify_label
 		toggle? => notify_toggle?
+		on? => notify_on?
 		auto => notify_auto
 	Placeholder <= Intro $mol_view
 		sub /
@@ -177,69 +178,28 @@ $bog_gram $mol_book2
 		<= Music_page $bog_gram_music
 			hidden <= music_hidden false
 			close? <=> music_close? null
-		<= Settings_page $mol_page
-			title \Настройки
-			tools /
-				<= Settings_close $mol_button_minor
-					hint \Закрыть
-					click? <=> settings_close? null
-					sub /
-						<= Settings_close_icon $mol_icon_close
-			body /
-				<= Name_field $bog_gram_field
-					hint \Ваше имя
-					value? <=> user_name?
-				<= My_id $mol_labeler
-					title \Мой ID
-					content /
-						<= My_id_text $mol_paragraph
-							title <= my_lord
-						<= My_id_copy $mol_button_copy
-							title \Скопировать
-							text <= my_lord
-				<= Invite_block $mol_labeler
-					title \Ссылка на меня
-					content /
-						<= Invite_body $mol_view
-							sub /
-								<= Invite_hint $mol_paragraph
-									title \Отправьте эту ссылку — у собеседника сразу откроется диалог с вами
-								<= Invite_text $mol_paragraph
-									title <= invite_link
-								<= Invite_copy $mol_button_copy
-									title \Скопировать
-									text <= invite_link
-								<= Invite_qr_box $mol_view
-									sub /
-										<= Invite_qr $bog_qr
-											uri <= invite_link
-											gradient_stops /
-												\#229ED9
-												\#5ED0F5
-				<= Notify $mol_labeler
-					title \Уведомления
-					content /
-						<= Notify_body $mol_view
-							sub /
-								<= Notify_status $mol_paragraph
-									title <= notify_status
-								<= Notify_toggle $mol_button_major
-									click? <=> notify_toggle?
-									sub /
-										<= notify_label
-				<= Registry_block $mol_labeler
-					title \Реестры
-					content <= registry_content /
-				<= Account_block $mol_labeler
-					title \Аккаунт
-					content /
-						<= Account_body $mol_view
-							sub <= account_rows /
-				<= Version $mol_labeler
-					title \Версия
-					content /
-						<= Version_text $mol_paragraph
-							title <= version \
+		<= Settings_page $bog_gram_settings
+			close? <=> settings_close? null
+			user_name? <=> user_name?
+			my_lord <= my_lord
+			invite_link <= invite_link
+			notify_status <= notify_status
+			notify_label <= notify_label
+			notify_supported <= notify_supported
+			notify_toggle? <=> notify_toggle?
+			notify_on? <=> notify_on?
+			registry_ids <= registry_ids
+			registry_active <= registry_active
+			registry_uri <= registry_uri
+			registry_name? <=> registry_name?
+			registry_make? <=> registry_make?
+			registry_title* <= registry_title*
+			registry_status* <= registry_status*
+			registry_joined* <= registry_joined*
+			registry_active_is* <= registry_active_is*
+			registry_open*? <=> registry_open*?
+			registry_join*? <=> registry_join*?
+			registry_forget*? <=> registry_forget*?
 		<= Compose_page $mol_page
 			title \Новый диалог
 			tools /
@@ -376,95 +336,6 @@ $bog_gram $mol_book2
 		sub /
 			<= Users_empty_text $mol_paragraph
 				title <= users_empty_text \
-	Registry_empty $mol_paragraph
-		title \Вы не состоите ни в одном реестре
-	Registry_list $mol_list
-		rows <= registry_rows /
-	Registry_note $mol_paragraph
-		title \Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.
-	Registry_share $mol_view
-		sub /
-			<= Registry_share_text $mol_paragraph
-				title \Ссылка-приглашение в активный реестр
-			<= Registry_share_copy $mol_button_copy
-				title \Скопировать ссылку
-				text <= registry_uri
-	Registry_form $mol_view
-		sub /
-			<= Registry_name $mol_string
-				hint \Название реестра
-				value? <=> registry_name?
-				submit? <=> registry_make?
-			<= Registry_make $mol_button_major
-				click? <=> registry_make?
-				sub /
-					\Создать реестр
-	Registry_row* $bog_gram_row
-		faced false
-		click? <=> registry_open*?
-		current <= registry_active_is*
-		title <= registry_title*
-		note <= registry_status*
-		tools /
-			<= Registry_join* $mol_button_minor
-				hint \Вступить в реестр
-				click? <=> registry_join*?
-				sub /
-					\Вступить
-			<= Registry_drop* $mol_button_minor
-				hint \Убрать из своего списка
-				click? <=> registry_forget*?
-				sub /
-					<= Registry_drop_icon* $mol_icon_close
-	Key_toggle $mol_button_minor
-		click? <=> key_toggle? null
-		sub /
-			<= key_toggle_label \
-	Key_warning $mol_paragraph
-		title \Ключ — это полный доступ к аккаунту. Не показывайте его никому и не публикуйте.
-	Key_row $mol_view
-		sub /
-			<= Key_text $mol_paragraph
-				title <= key_text \
-			<= Key_copy $mol_button_copy
-				title \Скопировать
-				text <= key_text
-	Key_qr_box $mol_view
-		sub /
-			<= Key_qr $bog_qr
-				uri <= key_text
-				gradient_stops /
-					\#e14b4b
-					\#f0a04b
-	Key_save $mol_button_minor
-		click? <=> key_save? null
-		sub /
-			\Скачать файл
-	Key_import_form $mol_view
-		sub /
-			<= Key_field $mol_string
-				hint \Ключ аккаунта
-				value? <=> key_input? \
-			<= Key_load_row $mol_view
-				sub /
-					<= Key_load_hint $mol_paragraph
-						title \Или загрузите файл с ключом
-					<= Key_open $mol_button_open
-						hint \Выбрать файл
-						accept \.key,text/plain
-						multiple false
-						files? <=> key_file? null
-			<= Key_scan $bog_gram_scan
-				found? <=> key_scanned? \
-			<= Key_import $mol_button_major
-				attr *
-					^
-					bog_gram_armed <= import_armed false
-				click? <=> key_import? null
-				sub /
-					<= key_import_label \
-			<= Key_error $mol_paragraph
-				title <= key_error \
 	Dialog_row* $bog_gram_row
 		size \large
 		click? <=> dialog_select*? null
