@@ -33,6 +33,15 @@ $bog_gram $mol_book2
 		source_title* => user_source*
 		remember => registry_remember
 		keys_fill => registry_keys_fill
+	People $bog_gram_people
+		Account <= Account
+		Registry <= Registry
+		name* => peer_name*
+		note* => peer_note*
+		label* => peer_label*
+		known* => peer_known*
+		accept* => peer_accept*
+		pass_of* => peer_pass_of*
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view

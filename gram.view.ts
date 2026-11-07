@@ -54,53 +54,6 @@ namespace $.$$ {
 
 	export class $bog_gram extends $.$bog_gram {
 
-		// ===== Чужие профили =====
-
-		peer_store( lord: string ) {
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) ).Data( $bog_gram_user )
-		}
-
-		/** Имя человек хранит в своём ленде, и тот приезжает не сразу — а с
-		 * ключом из реестра диалог заводится и вовсе без сети. Ждать имени
-		 * поэтому нельзя: пока его нет, показываем сокращённый идентификатор,
-		 * подписка на приход ленда сохраняется, и имя проявится само. */
-		@$mol_mem_key
-		peer_name( lord: string ) {
-			return $bog_gram_soft( ()=> this.peer_store( lord ).Name()?.val() ?? '', '' )
-		}
-
-		// ===== Свои подписи собеседников =====
-
-		/** Как я назвал человека для себя. Подписи лежат в том же приватном
-		 * ленде, что и список диалогов, поэтому собеседник их не видит и
-		 * своего имени в профиле из-за них не теряет. */
-		@$mol_mem_key
-		peer_note( lord: string ) {
-			if( !lord ) return ''
-			return this.dialogs_store().Notes()?.key( lord )?.Title()?.val() ?? ''
-		}
-
-		/** Пустая подпись означает «показывать настоящее имя»: ради неё запись
-		 * в словаре не заводим, а уже заведённую просто очищаем. */
-		@$mol_action
-		peer_note_set( lord: string, next?: string ) {
-
-			if( !lord ) return null
-
-			const title = next ?? ''
-			const notes = this.dialogs_store().Notes( 'auto' )
-			if( !notes ) return null
-			if( !title && !notes.key( lord ) ) return null
-
-			notes.key( lord, 'auto' )?.Title( 'auto' )?.val( title )
-
-			return null
-		}
-
-		peer_label( lord: string ) {
-			return $bog_gram_lord.label( lord, this.peer_note( lord ), this.peer_name( lord ) )
-		}
-
 		avatar_tint( lord: string ) {
 			return $bog_gram_lord.tint( lord )
 		}
@@ -295,18 +248,6 @@ namespace $.$$ {
 			return this.dialog_lords( id ).filter( lord => lord !== my )
 		}
 
-		/** Ключи участников одним списком. Неполный список — это отказ: писать
-		 * в ленд, который часть группы никогда не откроет, незачем. Ключи
-		 * умеют ждать, поэтому зовётся только из фибры. */
-		passes_of( lords: readonly string[] ) {
-			const passes: $giper_baza_auth_pass[] = []
-			for( const lord of lords ) {
-				const pass = this.peer_pass_of( lord )
-				if( pass ) passes.push( pass )
-			}
-			return passes
-		}
-
 		// ===== Группы =====
 
 		/** Название группы. Пустое — группу не назвали, и подписываться она
@@ -473,40 +414,6 @@ namespace $.$$ {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return false
 			}
-		}
-
-		/** Собеседники, с которыми я согласился переписываться. Список свой,
-		 * приватный: собеседник не знает ни что попал в запросы, ни что вышел
-		 * из них. */
-		@$mol_mem
-		accepted_lords() {
-			return ( this.dialogs_store().Accepted()?.items() ?? [] ).map( String )
-		}
-
-		/** Знакомый — тот, кого я встречал в своих реестрах или принял руками.
-		 * Реестр может быть ещё не засинкан: чтение уже прикрыто, подписка на
-		 * его приход сохраняется, и запрос уедет в общий список сам. */
-		@$mol_mem_key
-		peer_known( lord: string ) {
-			if( !lord ) return false
-			if( this.accepted_lords().includes( lord ) ) return true
-			return Boolean( this.user_sources()[ lord ] )
-		}
-
-		/** Собеседник, к которому я пришёл сам, знаком по определению: диалог с
-		 * ним не должен оказаться в запросах, даже если ленд под него завёл он.
-		 * Сюда попадает и строка, набранная руками в поле собеседника, поэтому
-		 * заведомую опечатку отсеиваем: копить мусор в приватном ленде незачем.
-		 * Запись идемпотентна — обработчик события перезапускается на каждом
-		 * ожидании, и повторный заход не должен ничего дописывать. */
-		@$mol_action
-		peer_accept( lord: string ) {
-			if( !lord ) return null
-			if( lord === this.my_lord() ) return null
-			if( !$giper_baza_link.check( lord ) ) return null
-			if( this.accepted_lords().includes( lord ) ) return null
-			this.dialogs_store().Accepted( 'auto' )!.add( lord )
-			return null
 		}
 
 		/** Куда попадает диалог в списке. Свой показываем всегда — пустым его
@@ -961,7 +868,7 @@ namespace $.$$ {
 			}
 			const lord = this.chat_peer()
 			if( !lord ) return ''
-			if( next !== undefined ) this.peer_note_set( lord, next )
+			if( next !== undefined ) this.People().note_set( lord, next )
 			return this.peer_note( lord )
 		}
 
@@ -1115,43 +1022,6 @@ namespace $.$$ {
 			}
 			this.dialog_pending( peer )
 			return null
-		}
-
-		/** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
-		 * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
-		 * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
-		 * ленд ждёт сети — но у человека из реестра ключ лежит ещё и там,
-		 * поэтому запрос ленда шлём, а доставки не дожидаемся. */
-		peer_pass_of( lord: string ): $giper_baza_auth_pass | null {
-
-			if( !lord ) return null
-
-			// Ключ из ссылки-приглашения уже проверен пересчётом лорда, так
-			// что сеть ради него дёргать незачем: диалог заводится сразу и
-			// даже офлайн, а домашний ленд собеседника подъедет потом сам
-			const given = this.peer_pass_given( lord )
-			if( given ) return given
-
-			try {
-				const stored = this.peer_pass_stored( lord )
-				if( stored ) return stored
-			} catch( error ) {
-				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-				$mol_fail_log( error )
-			}
-
-			const land = this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) )
-
-			try {
-				land.sync()
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-			}
-
-			const own = land.king_pass()
-			if( own ) return own
-
-			return this.Registry().pass_of( lord )
 		}
 
 		// Ждём реактивно, пока ключ собеседника не окажется под рукой, и только
@@ -2062,7 +1932,7 @@ namespace $.$$ {
 
 			try {
 
-				const inbox_link = this.peer_store( ask.lord ).Inbox_land()?.val()
+				const inbox_link = this.People().inbox( ask.lord )
 				const pass = $bog_gram_pass.verified( ask.lord, ask.pass )
 
 				// Лобби у просящего может быть ещё не заведено — сказать ему
@@ -2169,7 +2039,7 @@ namespace $.$$ {
 				const [ peer, dialog_link ] = entry.split( '|' )
 				if( !this.invite_ready( dialog_link ) ) continue
 				try {
-					const inbox_link = this.peer_store( peer ).Inbox_land()?.val()
+					const inbox_link = this.People().inbox( peer )
 					if( !inbox_link ) continue
 					const pass = this.peer_pass_of( peer )
 					if( !pass ) continue
@@ -2928,7 +2798,7 @@ namespace $.$$ {
 			// Ключи участников приезжают вместе с их лендами. Пока хоть одного
 			// нет, не пишем ничего: кадр в закрытом ленде он не прочитал бы
 			// никогда, а так отправку можно просто повторить
-			const passes = this.passes_of( mates )
+			const passes = this.People().passes_of( mates )
 			if( passes.length < mates.length ) return ''
 
 			const shot = this.$.$bog_gram_shrink.shrink( file )
@@ -3138,7 +3008,7 @@ namespace $.$$ {
 
 			// Ключи участников приезжают вместе с их лендами. Пока хоть одного
 			// нет, не пишем ничего: запись в закрытом ленде он не прочитал бы никогда
-			const passes = this.passes_of( mates )
+			const passes = this.People().passes_of( mates )
 			if( passes.length < mates.length ) return ''
 
 			const sound = $mol_wire_sync( take ).take()
@@ -3547,42 +3417,6 @@ namespace $.$$ {
 			return lord
 		}
 
-		/** Ключ, приехавший в ссылке. Проверка та же, что у ключа из реестра:
-		 * лорд это хеш ключа, поэтому подмена ловится пересчётом. Не сошлось —
-		 * считаем, что ключа в ссылке не было, и дальше работает обычный путь
-		 * через домашний ленд приглашающего.
-		 *
-		 * Разобранный ключ `pass_verified` отдаёт из своего кэша одним и тем
-		 * же объектом, так что повторный заход перезапущенной фибры пишет в
-		 * ячейку то же значение и никого не будит. */
-		peer_pass_learn( lord: string, key: string ) {
-			if( !lord || !key ) return null
-			const pass = $bog_gram_pass.verified( lord, key )
-			if( !pass ) return null
-			this.peer_pass_given( lord, pass )
-			if( !this.peer_pass_stored( lord ) ) this.dialogs_store().Passes( 'auto' )!.add( pass.toString() )
-			return pass
-		}
-
-		/** Ключи, добытые не из сети: пока их источник — только ссылка. */
-		@$mol_mem_key
-		peer_pass_stored( lord: string ) {
-			for( const str of this.dialogs_store().Passes()?.items() ?? [] ) {
-				try {
-					const pass = $bog_gram_pass.parse( String( str ) )
-					if( pass.lord().str === lord ) return pass
-				} catch( error ) {
-					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-				}
-			}
-			return null
-		}
-
-		@$mol_mem_key
-		peer_pass_given( lord: string, next?: $giper_baza_auth_pass | null ) {
-			return next ?? null
-		}
-
 		/** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
 		 * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
 		 * снятый заранее параметр означал бы, что перезагрузка страницы в
@@ -3600,7 +3434,7 @@ namespace $.$$ {
 			/** По ссылке приходят сами: человек, чьё приглашение я открыл,
 			 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
 			if( plan === 'open' || plan === 'start' ) {
-				this.peer_pass_learn( lord, key )
+				this.People().pass_learn( lord, key )
 				this.peer_accept( lord )
 			}
 
@@ -4034,7 +3868,7 @@ namespace $.$$ {
 						continue
 					}
 
-					const inbox_link = this.peer_store( owner ).Inbox_land()?.val()
+					const inbox_link = this.People().inbox( owner )
 					if( !inbox_link ) continue
 
 					const inbox = this.$.$giper_baza_glob

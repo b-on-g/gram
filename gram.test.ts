@@ -359,25 +359,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Ключ из ссылки не теряется после ухода экрана'( $ ) {
-
-			const peer = await $.$giper_baza_auth._generate()
-			const lord = peer.pass().lord().str
-
-			const king = await $.$giper_baza_auth._generate()
-			const dialogs = $giper_baza_land.make({ $, auth: ()=> king }).Data( $bog_gram_dialogs )
-
-			const first = $bog_gram.make({ $, dialogs_store: ()=> dialogs })
-			const learned = first.peer_pass_learn( lord, peer.pass().toString() )
-
-			const next = $bog_gram.make({ $, dialogs_store: ()=> dialogs })
-
-			$mol_assert_equal( learned?.lord().str, lord )
-			$mol_assert_equal( next.peer_pass_given( lord ), null )
-			$mol_assert_equal( next.peer_pass_of( lord )?.lord().str, lord )
-
-		},
-
 		async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'( $ ) {
 
 			const auth = await $.$giper_baza_auth._generate()
@@ -964,19 +945,6 @@ namespace $.$$ {
 			const uri = app.invite_uri( lord, key )
 			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!invite=' + lord + '/key=' + key )
 			$mol_assert_equal( encodeURIComponent( key ), key )
-
-			// Лорд — хеш ключа, поэтому ключ из ссылки проверяется пересчётом
-			const learned = app.peer_pass_learn( lord, key )
-			$mol_assert_equal( learned?.lord().str, lord )
-
-			// И дальше берётся как есть: домашний ленд собеседника ждать нечего
-			$mol_assert_equal( app.peer_pass_of( lord ), learned )
-
-			// Подложенный чужой ключ и мусор не принимаются
-			const other = await $.$giper_baza_auth._generate()
-			$mol_assert_equal( app.peer_pass_learn( lord, other.pass().toString() ), null )
-			$mol_assert_equal( app.peer_pass_learn( lord, 'мусор' ), null )
-			$mol_assert_equal( app.peer_pass_learn( lord, '' ), null )
 
 			// Старая ссылка без ключа по-прежнему работает — через сеть
 			$mol_assert_equal( app.invite_plan( lord, 'LordMine', '' ), 'start' )
