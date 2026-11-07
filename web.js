@@ -32455,6 +32455,18 @@ var $;
 
 
 ;
+	($.$mol_icon_reply) = class $mol_icon_reply extends ($.$mol_icon) {
+		path(){
+			return "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_paperclip) = class $mol_icon_paperclip extends ($.$mol_icon) {
 		path(){
 			return "M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z";
@@ -44288,6 +44300,19 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		reply_mode(){
+			return false;
+		}
+		reply_title(){
+			return "";
+		}
+		reply_text(){
+			return "";
+		}
+		reply_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		dialog_close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -44362,6 +44387,10 @@ var $;
 			(obj.message_text) = (next) => ((this.message_text(next)));
 			(obj.message_send) = (next) => ((this.message_send(next)));
 			(obj.edit_cancel) = (next) => ((this.edit_cancel(next)));
+			(obj.reply_mode) = () => ((this.reply_mode()));
+			(obj.reply_title) = () => ((this.reply_title()));
+			(obj.reply_text) = () => ((this.reply_text()));
+			(obj.reply_cancel) = (next) => ((this.reply_cancel(next)));
 			(obj.close) = (next) => ((this.dialog_close(next)));
 			(obj.image_files) = (next) => ((this.image_files(next)));
 			(obj.image_paste) = (next) => ((this.image_paste(next)));
@@ -45277,6 +45306,33 @@ var $;
 			(obj.sub) = () => ([(this.message_author(id))]);
 			return obj;
 		}
+		message_quote_jump(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		message_quote_author(id){
+			return "";
+		}
+		Message_quote_author(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.message_quote_author(id))]);
+			return obj;
+		}
+		message_quote_text(id){
+			return "";
+		}
+		Message_quote_text(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.message_quote_text(id))]);
+			return obj;
+		}
+		Message_quote(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Перейти к сообщению");
+			(obj.click) = (next) => ((this.message_quote_jump(id, next)));
+			(obj.sub) = () => ([(this.Message_quote_author(id)), (this.Message_quote_text(id))]);
+			return obj;
+		}
 		message_shot_uri(id){
 			return "";
 		}
@@ -45695,6 +45751,7 @@ var $;
 			});
 			(obj.sub) = () => ([
 				(this.Message_author(id)), 
+				(this.Message_quote(id)), 
 				(this.Message_shot(id)), 
 				(this.Message_sound(id)), 
 				(this.Message_body(id)), 
@@ -45810,6 +45867,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "message_text"));
 	($mol_mem(($.$bog_gram.prototype), "message_send"));
 	($mol_mem(($.$bog_gram.prototype), "edit_cancel"));
+	($mol_mem(($.$bog_gram.prototype), "reply_cancel"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
 	($mol_mem(($.$bog_gram.prototype), "image_files"));
 	($mol_mem(($.$bog_gram.prototype), "image_paste"));
@@ -45960,6 +46018,10 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "message_release"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_context"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_author"));
+	($mol_mem_key(($.$bog_gram.prototype), "message_quote_jump"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_quote_author"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_quote_text"));
+	($mol_mem_key(($.$bog_gram.prototype), "Message_quote"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_zoom"));
 	($mol_mem_key(($.$bog_gram.prototype), "Message_shot"));
 	($mol_mem_key(($.$bog_gram.prototype), "message_sound_toggle"));
@@ -46122,6 +46184,49 @@ var $;
 			(obj.rows) = () => ((this.rows()));
 			return obj;
 		}
+		Reply_icon(){
+			const obj = new this.$.$mol_icon_reply();
+			return obj;
+		}
+		Reply_title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.reply_title())]);
+			return obj;
+		}
+		Reply_text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.reply_text())]);
+			return obj;
+		}
+		Reply_info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Reply_title()), (this.Reply_text())]);
+			return obj;
+		}
+		reply_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Reply_cancel_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Reply_cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Отменить ответ");
+			(obj.click) = (next) => ((this.reply_cancel(next)));
+			(obj.sub) = () => ([(this.Reply_cancel_icon())]);
+			return obj;
+		}
+		Reply_banner(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Reply_icon()), 
+				(this.Reply_info()), 
+				(this.Reply_cancel())
+			]);
+			return obj;
+		}
 		Edit_banner_text(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ("Редактирование");
@@ -46163,6 +46268,7 @@ var $;
 		Foot(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
+				(this.Reply_banner()), 
 				(this.Edit_banner()), 
 				(this.Voice_note()), 
 				(this.Send_row())
@@ -46242,6 +46348,15 @@ var $;
 		}
 		edit_mode(){
 			return false;
+		}
+		reply_mode(){
+			return false;
+		}
+		reply_title(){
+			return "";
+		}
+		reply_text(){
+			return "";
 		}
 		note_editable(){
 			return false;
@@ -46362,6 +46477,14 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_title"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_text"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_info"));
+	($mol_mem(($.$bog_gram_chat.prototype), "reply_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_cancel"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Reply_banner"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "edit_cancel"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_cancel_icon"));
@@ -46842,6 +46965,8 @@ var $;
             /** Длительность записи в секундах. Едет вместе с сообщением, до
              * самого звука: длину пузырь показывает сразу. */
             Voice_span: $giper_baza_atom_real,
+            /** Ссылка на сообщение, на которое это — ответ. */
+            Reply: $giper_baza_atom_text,
         }) {
         }
         $$.$bog_gram_message = $bog_gram_message;
@@ -47256,7 +47381,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.67';
+    $.$bog_gram_version = '1.0.69';
 })($ || ($ = {}));
 
 ;
@@ -47767,6 +47892,8 @@ var $;
          * правка и удаление: короче — срабатывает на обычном тапе, длиннее —
          * ощущается как зависший интерфейс. */
         const press_delay = 400;
+        /** Два отпускания на одном пузыре чаще этого — двойной тап, ответ. */
+        const double_tap_delay = 350;
         /** Предел большей стороны кадра в пузыре. Крупнее — и переписка
          * превращается в ленту плакатов, где текста уже не видно. */
         const shot_side = 15;
@@ -48469,6 +48596,7 @@ var $;
                 this.leave_armed(false);
                 this.account_reset();
                 this.edit_id('');
+                this.reply_id('');
                 this.message_text('');
                 this.message_menu('');
                 this.zoom_id('');
@@ -50172,6 +50300,8 @@ var $;
             press_timer = null;
             press_row = '';
             press_held = false;
+            tap_row = '';
+            tap_at = 0;
             press_stop() {
                 if (this.press_timer !== null)
                     this.$.$mol_dom_context.clearTimeout(this.press_timer);
@@ -50215,7 +50345,19 @@ var $;
                     return null;
                 if (this.message_menu() === id)
                     this.message_menu('');
+                if (next?.type === 'pointerup' && this.message_double_tap(id, Date.now())) {
+                    this.$.$mol_dom_context.getSelection?.()?.removeAllRanges();
+                    this.message_reply(id);
+                }
                 return null;
+            }
+            /** Двойной тап узнаём сами по двум отпусканиям подряд: dblclick на
+             * телефонах приходит не везде, а отпускание пальца — всегда. */
+            message_double_tap(id, now) {
+                const double = this.tap_row === id && now - this.tap_at < double_tap_delay;
+                this.tap_row = double ? '' : id;
+                this.tap_at = double ? 0 : now;
+                return double;
             }
             /** На телефоне это тот же долгий тап, на десктопе — правый клик.
              * Показываем свою панель, поэтому системное меню гасим. */
@@ -50235,8 +50377,87 @@ var $;
             edit_mode() {
                 return Boolean(this.edit_id());
             }
+            reply_id(next) {
+                return next ?? '';
+            }
+            reply_mode() {
+                return Boolean(this.reply_id()) && !this.edit_mode();
+            }
+            message_reply(id) {
+                this.message_menu('');
+                if (this.edit_id()) {
+                    this.edit_id('');
+                    this.message_text('');
+                }
+                this.reply_id(id);
+                new this.$.$mol_after_tick(() => {
+                    try {
+                        this.Chat_page().Message_field().focused(true);
+                    }
+                    catch (error) {
+                        if (!$mol_promise_like(error))
+                            $mol_fail_log(error);
+                    }
+                });
+                return null;
+            }
+            reply_cancel(next) {
+                this.reply_id('');
+                return null;
+            }
+            /** Кто написал сообщение, на которое отвечают: в цитате это видно
+             * и в переписке вдвоём, иначе непонятно, чьи слова процитированы. */
+            quote_author(id) {
+                const lord = String(this.message_pawn(id)?.Author()?.val() ?? '');
+                if (!lord)
+                    return '';
+                if (lord === this.my_lord())
+                    return 'Вы';
+                return this.peer_label(lord);
+            }
+            quote_text(id) {
+                const pawn = this.message_pawn(id);
+                if (!pawn)
+                    return '';
+                const text = String(pawn.Text()?.val() ?? '').replace(/\s+/g, ' ').trim();
+                if (text)
+                    return text;
+                if (pawn.Image()?.val())
+                    return 'Фото';
+                if (pawn.Voice()?.val())
+                    return 'Голосовое сообщение';
+                return '';
+            }
+            reply_title() {
+                return 'Ответ ' + this.quote_author(this.reply_id());
+            }
+            reply_text() {
+                return this.quote_text(this.reply_id());
+            }
+            message_quote_id(id) {
+                const target = String(this.message_pawn(id)?.Reply()?.val() ?? '');
+                if (!target)
+                    return '';
+                return this.message_pawn(target) ? target : '';
+            }
+            Message_quote(id) {
+                return this.message_quote_id(id) ? super.Message_quote(id) : null;
+            }
+            message_quote_author(id) {
+                return this.quote_author(this.message_quote_id(id));
+            }
+            message_quote_text(id) {
+                return this.quote_text(this.message_quote_id(id));
+            }
+            message_quote_jump(id, next) {
+                const target = this.message_quote_id(id);
+                if (target)
+                    this.Chat_page().reveal(this.Message_row(target), 'center');
+                return null;
+            }
             message_edit(id, next) {
                 this.message_menu('');
+                this.reply_id('');
                 this.edit_id(id);
                 this.message_text(this.message_body(id));
                 return null;
@@ -50284,6 +50505,10 @@ var $;
                 message.Text('auto')?.val(text);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
+                const reply = this.reply_id();
+                if (reply)
+                    message.Reply('auto')?.val(reply);
+                this.reply_id('');
                 this.message_text('');
                 return null;
             }
@@ -52583,6 +52808,18 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "edit_id", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "reply_id", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "message_reply", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "reply_cancel", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "message_quote_jump", null);
+        __decorate([
             $mol_action
         ], $bog_gram.prototype, "message_edit", null);
         __decorate([
@@ -53012,6 +53249,9 @@ var $;
             Edit_banner() {
                 return this.edit_mode() ? super.Edit_banner() : null;
             }
+            Reply_banner() {
+                return this.reply_mode() ? super.Reply_banner() : null;
+            }
             Voice_note() {
                 return this.voice_hint() ? super.Voice_note() : null;
             }
@@ -53151,7 +53391,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_message_row] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_message_row][bog_gram_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная.\n   Подпись у кнопки лежит во вложенной вьюхе со своим цветом, поэтому\n   её перекрашиваем отдельно — иначе текст сливается с красным фоном. */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "/* Состояния по кастомным атрибутам: типизация $mol_style_define\n   не знает чужих attr на встроенных компонентах, поэтому raw css. */\n\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_message_row] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_message_row][bog_gram_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n/* Выбранный диалог и активный реестр помечаются одинаково */\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Взведённая корзина: ждём второй клик, поэтому кнопка красная.\n   Подпись у кнопки лежит во вложенной вьюхе со своим цветом, поэтому\n   её перекрашиваем отдельно — иначе текст сливается с красным фоном. */\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает\n   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.\n   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,\n   поэтому порядок подключения файлов тут ни на что не влияет. */\n[bog_gram_message_row][bog_gram_menu=\"true\"] [bog_gram_message_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_message_row]:hover [bog_gram_message_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,\n   а не выделение текста: системную лупу и меню копирования гасим.\n   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */\n@media (hover: none) {\n\t[bog_gram_message_row][bog_gram_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n\n/* object-fit отсутствует в словаре типизированных стилей, поэтому обе\n   картинки настраиваются здесь. В пузыре коробка уже нарезана по\n   пропорциям кадра, и cover только подчищает округление до пикселя;\n   развёрнутый кадр, наоборот, вписывается в экран целиком. */\n[bog_gram_photo] [mol_image] {\n\tobject-fit: cover;\n}\n\n[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n\n/* Клик по затемнению возвращает к переписке — курсор об этом говорит. */\n[bog_gram_zoom] {\n\tcursor: zoom-out;\n}\n\n/* Точка записи мигает: неподвижный кружок читается как значок, а не как\n   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных\n   стилей нет, поэтому правило живёт здесь. */\n@keyframes bog_gram_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_pulse .8s ease-in-out infinite alternate;\n}\n\n/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа\n   с выделением: здесь они только мешают жесту. */\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n\n/* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */\n\n/* iOS увеличивает всю страницу, когда фокус уходит в поле со шрифтом\n   меньше 16px, и обратно уже не отматывает — пользователю приходится\n   разводить страницу пальцами, чтобы дотянуться до кнопки отправки.\n   Шестнадцать пикселей ровно — единственный способ это отключить,\n   не запрещая зум вообще (масштабирование пальцами остаётся). */\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n/* Резиновая прокрутка всей страницы и «потяни, чтобы обновить» выдают\n   веб-страницу: прокрутка должна упираться внутри списка. */\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n/* Серая вспышка по тапу и задержка двойного тапа — тоже приметы сайта. */\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button],\n[bog_gram_message_row] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -55223,6 +55463,56 @@ var $;
                     bog_gram_tint: tint_rules,
                 },
             },
+            Message_quote: {
+                display: 'flex',
+                flex: {
+                    direction: 'column',
+                },
+                alignSelf: 'stretch',
+                alignItems: 'flex-start',
+                minWidth: 0,
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                margin: {
+                    bottom: '0.25rem',
+                },
+                border: {
+                    left: {
+                        width: '2px',
+                        style: 'solid',
+                        color: tg_blue,
+                    },
+                },
+                borderRadius: '0.25rem',
+                background: {
+                    color: $mol_theme.hover,
+                },
+                font: {
+                    size: '0.8rem',
+                },
+                textAlign: 'left',
+            },
+            Message_quote_author: {
+                color: tg_blue,
+                font: {
+                    weight: 'bold',
+                },
+                maxWidth: '100%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Message_quote_text: {
+                color: $mol_theme.shade,
+                maxWidth: '100%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
             Message_body: {
                 minWidth: 0,
                 whiteSpace: 'pre-wrap',
@@ -55709,6 +55999,61 @@ var $;
                     },
                 },
                 borderRadius: '0.25rem',
+            },
+            Reply_banner: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                background: {
+                    color: $mol_theme.hover,
+                },
+                border: {
+                    left: {
+                        width: '2px',
+                        style: 'solid',
+                        color: tg_blue,
+                    },
+                },
+                borderRadius: '0.25rem',
+            },
+            Reply_icon: {
+                color: tg_blue,
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Reply_info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                font: {
+                    size: '0.8rem',
+                },
+            },
+            Reply_title: {
+                color: tg_blue,
+                font: {
+                    weight: 'bold',
+                },
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+            },
+            Reply_text: {
+                color: $mol_theme.shade,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
             },
             Edit_banner_text: {
                 flex: {

@@ -407,6 +407,7 @@
     "$mol_string_button",
     "$mol_icon_arrow_left",
     "$mol_icon_arrow",
+    "$mol_icon_reply",
     "$mol_icon_paperclip",
     "$mol_icon_send",
     "$mol_icon_microphone",
