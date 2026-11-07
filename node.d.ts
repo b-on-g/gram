@@ -41745,7 +41745,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.101";
+    const $bog_gram_version = "1.0.102";
 }
 
 declare namespace $ {
@@ -50109,6 +50109,7 @@ declare namespace $ {
             lord: string;
         } | null;
         invite_ready(id: string): boolean;
+        invite_send(peer: string, dialog: string): boolean;
         outbox_flush(): number;
         entry(group: string, lord: string, pass: string): string;
         parse(entry: string): {

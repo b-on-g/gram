@@ -9056,6 +9056,29 @@ var $;
             $mol_assert_equal(lobby.asks()[both], { owner, state: 'sent' });
             $mol_assert_equal(lobby.queued(), [old_queued]);
         },
+        'Приглашение уходит само, как только приехало лобби собеседника, без опроса по таймеру'($) {
+            class Peer extends $mol_object {
+                static reachable(next) {
+                    return next ?? false;
+                }
+            }
+            __decorate([
+                $mol_mem
+            ], Peer, "reachable", null);
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store, {
+                invite_ready: () => true,
+                invite_send: () => Peer.reachable(),
+            });
+            store.Outbox('auto').add('LordPeer|DialogLink');
+            store.Outbox('auto').add('LordOther|OtherLink');
+            lobby.outbox_flush();
+            $mol_assert_equal(store.Outbox().items().length, 2);
+            Peer.reachable(true);
+            lobby.outbox_flush();
+            $mol_assert_equal(store.Outbox().items().length, 0);
+        },
         'Доставленная заявка переходит в отправленные и в словаре, и в старых списках'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
             const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);

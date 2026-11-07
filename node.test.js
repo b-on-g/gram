@@ -25734,7 +25734,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.101';
+    $.$bog_gram_version = '1.0.102';
 })($ || ($ = {}));
 
 ;
@@ -29544,36 +29544,29 @@ var $;
                 return talk.alive(id);
             return talk.mine_wrote(id);
         }
+        invite_send(peer, dialog) {
+            const inbox = this.inbox_of(peer);
+            if (!inbox)
+                return false;
+            const pass = this.People().pass_of(peer);
+            if (!pass)
+                return false;
+            const sealed = this.sealed_close(['invite', pass.toString(), dialog]);
+            const invites = inbox.Invites('auto');
+            if (!invites)
+                return false;
+            invites.add(sealed);
+            return (inbox.Invites()?.items() ?? []).map(String).includes(sealed);
+        }
         outbox_flush() {
             const entries = (this.store().Outbox()?.items() ?? []).map(String);
-            if (!entries.length)
-                return 0;
-            this.$.$mol_state_time.now(3000);
             for (const entry of entries) {
                 const [peer, dialog] = entry.split('|');
-                if (!this.invite_ready(dialog))
+                if (!$bog_gram_soft(() => this.invite_ready(dialog), false))
                     continue;
-                try {
-                    const inbox = this.inbox_of(peer);
-                    if (!inbox)
-                        continue;
-                    const pass = this.People().pass_of(peer);
-                    if (!pass)
-                        continue;
-                    const sealed = this.sealed_close(['invite', pass.toString(), dialog]);
-                    const invites = inbox.Invites('auto');
-                    if (!invites)
-                        continue;
-                    invites.add(sealed);
-                    const sent = (inbox.Invites()?.items() ?? []).map(String).includes(sealed);
-                    if (sent)
-                        this.store().Outbox('auto').cut(entry);
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                }
+                if (!$bog_gram_soft(() => this.invite_send(peer, dialog), false))
+                    continue;
+                this.store().Outbox('auto').cut(entry);
             }
             return entries.length;
         }
@@ -29880,36 +29873,25 @@ var $;
         }
         asks_flush() {
             const groups = [...this.queued(), ...this.sent()];
-            if (!groups.length)
-                return 0;
             const asks = this.asks();
-            let waiting = 0;
             for (const id of groups) {
                 if (this.taken(id))
                     continue;
                 if (asks[id].state !== 'queued')
                     continue;
-                ++waiting;
-                try {
-                    const owner = asks[id].owner || this.Talk().owner(id);
-                    if (!owner) {
-                        this.join_drop(id);
-                        continue;
-                    }
-                    if (!this.deliver(id, owner))
-                        continue;
-                    this.join_put(id, owner, 'sent');
-                    this.old_drop(id);
-                    this.store().Asked('auto').add(this.task(id, owner));
+                const owner = asks[id].owner || $bog_gram_soft(() => this.Talk().owner(id), null);
+                if (owner === null)
+                    continue;
+                if (!owner) {
+                    this.join_drop(id);
+                    continue;
                 }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    $mol_fail_log(error);
-                }
+                if (!$bog_gram_soft(() => this.deliver(id, owner), false))
+                    continue;
+                this.join_put(id, owner, 'sent');
+                this.old_drop(id);
+                this.store().Asked('auto').add(this.task(id, owner));
             }
-            if (waiting)
-                this.$.$mol_state_time.now(3000);
             return groups.length;
         }
     }
@@ -45422,6 +45404,29 @@ var $;
             $mol_assert_equal(lobby.asks()[fresh_sent], { owner, state: 'sent' });
             $mol_assert_equal(lobby.asks()[both], { owner, state: 'sent' });
             $mol_assert_equal(lobby.queued(), [old_queued]);
+        },
+        'Приглашение уходит само, как только приехало лобби собеседника, без опроса по таймеру'($) {
+            class Peer extends $mol_object {
+                static reachable(next) {
+                    return next ?? false;
+                }
+            }
+            __decorate([
+                $mol_mem
+            ], Peer, "reachable", null);
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const lobby = lobby_with($, inbox, store, {
+                invite_ready: () => true,
+                invite_send: () => Peer.reachable(),
+            });
+            store.Outbox('auto').add('LordPeer|DialogLink');
+            store.Outbox('auto').add('LordOther|OtherLink');
+            lobby.outbox_flush();
+            $mol_assert_equal(store.Outbox().items().length, 2);
+            Peer.reachable(true);
+            lobby.outbox_flush();
+            $mol_assert_equal(store.Outbox().items().length, 0);
         },
         'Доставленная заявка переходит в отправленные и в словаре, и в старых списках'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
