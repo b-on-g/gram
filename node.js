@@ -27509,7 +27509,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.64';
+    $.$bog_gram_version = '1.0.65';
 })($ || ($ = {}));
 
 ;
