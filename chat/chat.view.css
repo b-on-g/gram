@@ -1,0 +1,14 @@
+@keyframes bog_gram_chat_pulse {
+	from { opacity: 1 }
+	to { opacity: .2 }
+}
+
+[bog_gram_chat_record_dot] {
+	animation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;
+}
+
+[bog_gram_chat_voice] {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+}

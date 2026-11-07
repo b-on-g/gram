@@ -1,0 +1,170 @@
+$bog_gram_chat $bog_gram_page
+	dialog \
+	my_lord \
+	Talk $bog_gram_talk
+	People $bog_gram_people
+	Alerts $bog_gram_alerts
+	close? null
+	members? null
+	note? \
+	note_hint \
+	note_editable false
+	members_shown false
+	edit_mode false
+	reply_mode false
+	reply_title \
+	reply_text \
+	message_text? \
+	zoom_uri \
+	voice_ready false
+	voice_on false
+	voice_clock \
+	voice_hint? \
+	edit_id? \
+	reply_id? \
+	message_menu? \
+	zoom_id? \
+	voice_start? 0
+	voice_playing? \
+	stick_end? false
+	rows_seen? 0
+	event *
+		^
+		paste? <=> image_paste? null
+		dragover? <=> image_over? null
+		drop? <=> image_drop? null
+	plugins /
+		<= Hotkey $mol_hotkey
+			key * escape? <=> zoom_close? null
+	Zoom $bog_gram_zoom
+		uri <= zoom_uri
+		close? <=> zoom_close?
+	title_content /
+		<= Note_field $bog_gram_field
+			hint <= note_hint
+			value? <=> note?
+		<= Title_text $mol_view
+			sub /
+				<= title
+	head /
+		<= Back $mol_button_minor
+			hint \Назад
+			click? <=> close?
+			sub /
+				<= Back_icon $mol_icon_arrow_left
+		<= Title
+		<= Tools
+	tools /
+		<= Members $mol_button_minor
+			hint \Участники
+			click? <=> members?
+			sub /
+				<= Members_icon $mol_icon_account_multiple
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Messages $mol_list
+			rows <= rows /$mol_view
+	foot /
+		<= Reply_banner $mol_view
+			sub /
+				<= Reply_icon $mol_icon_reply
+				<= Reply_info $mol_view
+					sub /
+						<= Reply_title $mol_view
+							sub /
+								<= reply_title
+						<= Reply_text $mol_view
+							sub /
+								<= reply_text
+				<= Reply_cancel $mol_button_minor
+					hint \Отменить ответ
+					click? <=> reply_cancel? null
+					sub /
+						<= Reply_cancel_icon $mol_icon_close
+		<= Edit_banner $mol_view
+			sub /
+				<= Edit_banner_text $mol_paragraph
+					title \Редактирование
+				<= Edit_cancel $mol_button_minor
+					hint \Отменить правку
+					click? <=> edit_cancel? null
+					sub /
+						<= Edit_cancel_icon $mol_icon_close
+		<= Voice_note $mol_paragraph
+			title <= voice_hint
+		<= Send_row $mol_view
+			sub <= send_tools /
+	Attach $bog_gram_attach
+		hint \Отправить картинку
+		accept \image/*
+		multiple false
+		files? <=> image_files? null
+		Icon <= Attach_icon $mol_icon_paperclip
+	Message_field $mol_string
+		hint \Сообщение…
+		value? <=> message_text?
+		submit? <=> message_send? null
+	Send $mol_button_major
+		hint \Отправить
+		click? <=> message_send?
+		sub /
+			<= Send_icon $mol_icon_send
+	Voice $bog_gram_hold
+		hint \Удерживайте для записи
+		press? <=> voice_press? null
+		release? <=> voice_release? null
+		abort? <=> voice_cancel? null
+		sub /
+			<= Voice_icon $mol_icon_microphone
+	Record_state $mol_view
+		sub /
+			<= Record_dot $mol_view
+			<= Record_time $mol_view
+				sub /
+					<= voice_clock
+	Voice_cancel $mol_button_minor
+		hint \Отпустите здесь, чтобы отменить
+		click? <=> voice_cancel?
+		sub /
+			<= Voice_cancel_icon $mol_icon_close
+			<= Voice_cancel_text $mol_view
+				sub /
+					\Отмена
+	Day_row* $mol_view
+		sub /
+			<= Day_chip* $mol_view
+				sub /
+					<= day_title* \
+	Bubble* $bog_gram_bubble
+		out <= message_out* false
+		menu <= message_menu_is* false
+		author <= message_author* \
+		author_tint <= message_author_tint* 0
+		quote_shown <= message_quote_shown* false
+		quote_author <= message_quote_author* \
+		quote_text <= message_quote_text* \
+		quote_jump? <=> message_quote_jump*? null
+		shot <= message_shot* false
+		shot_uri <= message_shot_uri* \
+		shot_width <= message_shot_width* \
+		shot_ratio <= message_shot_ratio* \
+		zoom? <=> message_zoom*? null
+		sound <= message_sound* false
+		sound_uri <= message_sound_uri* \
+		sound_span <= message_sound_span* 0
+		sound_playing <= message_sound_playing* false
+		sound_toggle? <=> message_sound_toggle*? null
+		sound_ended? <=> message_sound_ended*? null
+		body <= message_body* \
+		time <= message_time* \
+		edited <= message_edited* false
+		checks <= message_checks* \
+		edit? <=> message_edit*? null
+		delete? <=> message_delete*? null
+		press? <=> message_press*? null
+		release? <=> message_release*? null
+		context? <=> message_context*? null

@@ -23,6 +23,11 @@ namespace $.$$ {
 			if( !node.paused ) node.pause()
 		}
 
+		override destructor() {
+			$mol_wire_probe( ()=> this.dom_node() )?.pause()
+			super.destructor()
+		}
+
 	}
 
 }

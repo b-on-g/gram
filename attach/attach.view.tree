@@ -1,0 +1,7 @@
+$bog_gram_attach $mol_button_open
+	Native $bog_gram_attach_native
+		files? <=> files_handled? <=> files? /File
+		accept <= accept \
+		multiple <= multiple true
+
+$bog_gram_attach_native $mol_button_open_native

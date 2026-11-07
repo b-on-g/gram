@@ -1,0 +1,10 @@
+$bog_gram_hold $mol_button_minor
+	press? null
+	release? null
+	abort? null
+	event *
+		^
+		pointerdown? <=> down? null
+		pointerup? <=> release?
+		pointercancel? <=> abort?
+		contextmenu? <=> menu? null

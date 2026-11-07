@@ -1,0 +1,25 @@
+[bog_gram_bubble] {
+	background-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );
+}
+
+[bog_gram_bubble][bog_gram_bubble_out="true"] {
+	background-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );
+}
+
+[bog_gram_bubble][bog_gram_bubble_menu="true"] > [bog_gram_bubble_actions] {
+	display: flex;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {
+		display: flex;
+	}
+}
+
+@media (hover: none) {
+	[bog_gram_bubble][bog_gram_bubble_out="true"] {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		user-select: none;
+	}
+}

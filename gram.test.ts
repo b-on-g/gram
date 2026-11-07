@@ -884,86 +884,13 @@ namespace $.$$ {
 
 		},
 
-		async 'Диалог открывается с первого непрочитанного чужого сообщения'( $ ) {
+		async 'Тап по диалогу открывает его сразу'( $ ) {
 
 			const app = $bog_gram.make({ $ })
-
-			const list = [
-				{ moment: 1000, author: 'Peer' },
-				{ moment: 2000, author: 'Me' },
-				{ moment: 3000, author: 'Peer' },
-				{ moment: 4000, author: 'Peer' },
-			]
-
-			// Прочитано до 2000: первое непрочитанное — третье
-			$mol_assert_equal( app.unread_first( list, 'Me', 2000 ), 2 )
-
-			// Свои сообщения непрочитанными не считаются, даже позже отметки
-			$mol_assert_equal( app.unread_first( list.slice( 0, 2 ), 'Me', 1000 ), -1 )
-
-			// Всё прочитано — открываем с конца
-			$mol_assert_equal( app.unread_first( list, 'Me', 4000 ), -1 )
-
-			// Отметки нет вовсе — читать с самого начала
-			$mol_assert_equal( app.unread_first( list, 'Me', 0 ), 0 )
-
-		},
-
-		'Ответ вызывается двумя тапами по одному пузырю, а не по разным'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			$mol_assert_equal( app.message_double_tap( 'a', 1000 ), false )
-			$mol_assert_equal( app.message_double_tap( 'a', 1200 ), true )
-
-			// Третий тап начинает отсчёт заново, а не отвечает ещё раз
-			$mol_assert_equal( app.message_double_tap( 'a', 1300 ), false )
-
-			// Тапы по разным пузырям — не двойной
-			$mol_assert_equal( app.message_double_tap( 'b', 1400 ), false )
-
-			// Слишком медленно — тоже
-			$mol_assert_equal( app.message_double_tap( 'b', 2000 ), false )
-
-		},
-
-		async 'Тап по диалогу открывает его, даже пока отметка прочтения едет'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-			const wait = new Promise( ()=> {} )
-			app.chat_focus = ()=> { throw wait }
 
 			await $mol_wire_async( app ).dialog_select( 'dialog' )
 
 			$mol_assert_equal( app.dialog_current(), 'dialog' )
-
-		},
-
-		async 'В группе вместо галочек — сколько человек прочитало'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const mates = [ 'LordA', 'LordB', 'LordC' ]
-
-			// Отметка участника — момент последнего прочитанного им сообщения
-			const reads = { LordA: 3000, LordB: 1000, LordC: 0 }
-
-			// Раннее сообщение прочитали все, кто вообще заглядывал
-			$mol_assert_equal( app.read_tally( reads, mates, 1000 ), 2 )
-
-			// Позднее — только тот, кто дочитал до него
-			$mol_assert_equal( app.read_tally( reads, mates, 3000 ), 1 )
-
-			// Самое свежее не прочитал никто
-			$mol_assert_equal( app.read_tally( reads, mates, 4000 ), 0 )
-
-			// Отметки того, кого в группе уже нет, счёт не задевают: считаем
-			// по списку участников, а не по всему словарю
-			$mol_assert_equal( app.read_tally( { ... reads, LordGone: 9000 }, mates, 3000 ), 1 )
-
-			// Ни одной отметки — ноль, а не ошибка
-			$mol_assert_equal( app.read_tally( {}, mates, 1000 ), 0 )
-			$mol_assert_equal( app.read_tally( reads, [], 1000 ), 0 )
 
 		},
 

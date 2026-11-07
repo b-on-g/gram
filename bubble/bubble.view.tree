@@ -1,0 +1,98 @@
+$bog_gram_bubble $mol_view
+	out false
+	menu false
+	author \
+	author_tint 0
+	quote_shown false
+	quote_author \
+	quote_text \
+	quote_jump? null
+	shot false
+	shot_uri \
+	shot_width \
+	shot_ratio \
+	zoom? null
+	sound false
+	sound_uri \
+	sound_span 0
+	sound_playing false
+	sound_toggle? null
+	sound_ended? null
+	body \
+	time \
+	edited false
+	checks \
+	edit? null
+	delete? null
+	press? null
+	release? null
+	context? null
+	attr *
+		^
+		bog_gram_bubble_out <= out
+		bog_gram_bubble_menu <= menu
+	event *
+		^
+		pointerdown? <=> press?
+		pointerup? <=> release?
+		pointercancel? <=> release?
+		contextmenu? <=> context?
+		mousedown? <=> mouse_down? null
+	sub /
+		<= Author $mol_view
+			attr *
+				^
+				bog_gram_tint <= author_tint
+			sub /
+				<= author
+		<= Quote $mol_button_minor
+			hint \Перейти к сообщению
+			click? <=> quote_jump?
+			sub /
+				<= Quote_author $mol_view
+					sub /
+						<= quote_author
+				<= Quote_text $mol_view
+					sub /
+						<= quote_text
+		<= Shot $bog_gram_photo
+			hint \Открыть картинку
+			uri <= shot_uri
+			box_width <= shot_width
+			box_ratio <= shot_ratio
+			click? <=> zoom?
+		<= Sound $bog_gram_sound
+			uri <= sound_uri
+			span <= sound_span
+			playing <= sound_playing
+			toggle? <=> sound_toggle?
+			ended? <=> sound_ended?
+		<= Body $mol_paragraph
+			title <= body
+		<= Meta $mol_view
+			sub /
+				<= Time $mol_view
+					sub /
+						<= time
+				<= Edited $mol_view
+					sub /
+						\изменено
+				<= Checks $mol_view
+					sub /
+						<= checks
+		<= Actions $mol_view
+			event *
+				^
+				pointerdown? <=> actions_touch? null
+				pointerup? <=> actions_touch? null
+			sub /
+				<= Edit $mol_button_minor
+					hint \Редактировать
+					click? <=> edit?
+					sub /
+						<= Edit_icon $mol_icon_pencil
+				<= Delete $mol_button_minor
+					hint \Удалить
+					click? <=> delete?
+					sub /
+						<= Delete_icon $mol_icon_delete

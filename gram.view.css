@@ -52,14 +52,6 @@
 	box-shadow: none;
 }
 
-[bog_gram_message_row] {
-	background-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );
-}
-
-[bog_gram_message_row][bog_gram_out="true"] {
-	background-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );
-}
-
 /* Выбранный диалог и активный реестр помечаются одинаково */
 [bog_gram_current="true"] {
 	background-color: var(--mol_theme_control);
@@ -80,51 +72,6 @@
 
 [bog_gram_armed="true"] :where([mol_view]) {
 	color: #ffffff;
-}
-
-/* Правка и удаление не висят в каждом пузыре: на телефоне их вызывает
-   долгое нажатие (компонент ставит атрибут), на мыши хватает наведения.
-   Оба селектора весомее одноатрибутного `display: none` из view.css.ts,
-   поэтому порядок подключения файлов тут ни на что не влияет. */
-[bog_gram_message_row][bog_gram_menu="true"] [bog_gram_message_actions] {
-	display: flex;
-}
-
-@media (hover: hover) and (pointer: fine) {
-	[bog_gram_message_row]:hover [bog_gram_message_actions] {
-		display: flex;
-	}
-}
-
-/* На тач-экране долгое нажатие на своём пузыре — это вызов действий,
-   а не выделение текста: системную лупу и меню копирования гасим.
-   Чужие пузыри не трогаем, оттуда текст копируют как обычно. */
-@media (hover: none) {
-	[bog_gram_message_row][bog_gram_out="true"] {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		user-select: none;
-	}
-}
-
-/* Точка записи мигает: неподвижный кружок читается как значок, а не как
-   идущая прямо сейчас запись. Ключевых кадров в словаре типизированных
-   стилей нет, поэтому правило живёт здесь. */
-@keyframes bog_gram_pulse {
-	from { opacity: 1 }
-	to { opacity: .2 }
-}
-
-[bog_gram_chat_record_dot] {
-	animation: bog_gram_pulse .8s ease-in-out infinite alternate;
-}
-
-/* Микрофон держат долго, а долгое нажатие на тач-экране — это ещё и лупа
-   с выделением: здесь они только мешают жесту. */
-[bog_gram_chat_voice] {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	user-select: none;
 }
 
 /* Мобильные повадки браузера, из-за которых приложение ощущается сайтом. */
@@ -151,7 +98,6 @@
 	-webkit-tap-highlight-color: transparent;
 }
 
-[mol_button],
-[bog_gram_message_row] {
+[mol_button] {
 	touch-action: manipulation;
 }
