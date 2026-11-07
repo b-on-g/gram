@@ -860,7 +860,7 @@ namespace $.$$ {
 		// и нулевой минимум: у вьюх по умолчанию flex-shrink 0, и строка
 		// иначе распирает колонку настроек вместо переноса внутри неё.
 
-		Invite: {
+		Invite_block: {
 			Content: {
 				alignSelf: 'stretch',
 				minWidth: 0,

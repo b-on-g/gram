@@ -107,6 +107,15 @@ $bog_gram $mol_book2
 		asks_flush => asks_flush
 		plate => ask_plate_text
 		lord_of* => ask_lord*
+	Invite $bog_gram_invite
+		Account <= Account
+		People <= People
+		Roster <= Roster
+		link => invite_link
+		plate => invite_plate_text
+		pending? => dialog_pending?
+		drop? => invite_drop?
+		timer => pending_timer
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -146,10 +155,10 @@ $bog_gram $mol_book2
 				<= Invite_plate $mol_view
 					sub /
 						<= Invite_plate_text $mol_paragraph
-							title <= invite_plate_text \
+							title <= invite_plate_text
 						<= Invite_drop $mol_button_minor
 							hint \Отменить
-							click? <=> invite_drop? null
+							click? <=> invite_drop?
 							sub /
 								<= Invite_drop_icon $mol_icon_close
 				<= Ask_plate $mol_view
@@ -181,7 +190,7 @@ $bog_gram $mol_book2
 						<= My_id_copy $mol_button_copy
 							title \Скопировать
 							text <= my_lord
-				<= Invite $mol_labeler
+				<= Invite_block $mol_labeler
 					title \Ссылка на меня
 					content /
 						<= Invite_body $mol_view
@@ -189,7 +198,7 @@ $bog_gram $mol_book2
 								<= Invite_hint $mol_paragraph
 									title \Отправьте эту ссылку — у собеседника сразу откроется диалог с вами
 								<= Invite_text $mol_paragraph
-									title <= invite_link \
+									title <= invite_link
 								<= Invite_copy $mol_button_copy
 									title \Скопировать
 									text <= invite_link

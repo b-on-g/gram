@@ -1,10 +1,5 @@
 namespace $.$$ {
 
-	/** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
-	 * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
-	 * с перебором подписей — на слабом телефоне это заметные секунды. */
-	const pending_wait = 15000
-
 	/** Ключ локального хранилища: подписка на пуши переживает перезагрузку. */
 	const notify_key = 'bog_gram_notify'
 
@@ -574,11 +569,6 @@ namespace $.$$ {
 
 		// ===== Создание диалога =====
 
-		@$mol_mem
-		dialog_pending( next?: string ) {
-			return next ?? ''
-		}
-
 		@$mol_action
 		dialog_start( next?: any ) {
 			const peer = this.peer_lord().trim()
@@ -594,17 +584,10 @@ namespace $.$$ {
 			return null
 		}
 
-		// Ждём реактивно, пока ключ собеседника не окажется под рукой, и только
-		// тогда создаём диалог. Имени не ждём: оно косметика и подъедет само
 		@$mol_mem
 		dialog_autocreate() {
-			const peer = this.dialog_pending()
-			if( !peer ) return ''
-
-			const pass = this.peer_pass_of( peer )
-			if( !pass ) return ''
-
-			$mol_wire_async( this ).dialog_create( peer )
+			const peer = this.Invite().ready()
+			if( peer ) $mol_wire_async( this ).dialog_create( peer )
 			return peer
 		}
 
@@ -616,7 +599,7 @@ namespace $.$$ {
 			this.dialog_current( id )
 			this.compose_opened( false )
 			this.dialog_pending( '' )
-			this.invite_done()
+			this.Invite().done()
 			this.chat_bring()
 
 			return id
@@ -2311,148 +2294,22 @@ namespace $.$$ {
 
 		// ===== Личная ссылка-приглашение =====
 
-		/** Приглашение — адрес страницы с лордом и публичным ключом хозяина.
-		 * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны,
-		 * а вот ключ нужен: без него диалог не завести, и приложение уходит
-		 * ждать, пока домашний ленд приглашающего доедет по сети. С ключом в
-		 * ссылке ждать нечего — диалог открывается сразу и даже офлайн.
-		 *
-		 * Класть ключ в ссылку безопасно: он публичный, лежит в открытом
-		 * ленде и в реестрах. Подменить его в ссылке нельзя — лорд рядом
-		 * это хеш ключа, и `pass_verified` пересчитывает его. */
-		invite_uri( lord: string, key: string ) {
-			if( !lord ) return ''
-			const location = this.$.$mol_dom_context.location
-			const tail = key ? '/key=' + key : ''
-			return location.origin + location.pathname + '#!invite=' + lord + tail
-		}
-
 		override version() {
 			return $bog_gram_version
 		}
 
-		override invite_link() {
-			return this.invite_uri( this.my_lord(), this.my_pass() )
-		}
-
-		/** Лорд из адреса страницы: по такой ссылке зовут в личный диалог. */
-		invite_lord() {
-			return this.$.$mol_state_arg.value( 'invite' ) ?? ''
-		}
-
-		/** Ключ приглашающего из адреса страницы. У ссылок, выданных до его
-		 * появления, его нет — для них остаётся прежний путь через сеть. */
-		invite_key() {
-			return this.$.$mol_state_arg.value( 'key' ) ?? ''
-		}
-
-		/** Своя же ссылка диалога не заводит, знакомый собеседник просто
-		 * открывается, а незнакомый уходит обычным путём — через ожидание. */
-		invite_plan( lord: string, my: string, exist: string ): 'skip' | 'bad' | 'open' | 'start' {
-			if( !lord ) return 'skip'
-			if( lord === my ) return 'skip'
-			if( !$bog_gram_lord.check( lord ) ) return 'bad'
-			return exist ? 'open' : 'start'
-		}
-
-		/** Битая ссылка: как и у групп, говорим об этом на экране. Молчание
-		 * тут неотличимо от «ничего не произошло». */
-		@$mol_mem
-		invite_lost( next?: string ) {
-			return next ?? ''
-		}
-
-		/** Свой аккаунт и список диалогов поднимаются не мгновенно, поэтому
-		 * приём уезжает в фибру: она сама перезапустится, когда ленды приедут. */
 		@$mol_mem
 		invite_handle() {
-			const lord = this.invite_lord()
+			const lord = this.Invite().lord()
 			if( !lord ) return ''
-			$mol_wire_async( this ).invite_accept( lord, this.invite_key() )
+			$mol_wire_async( this ).invite_accept( lord, this.Invite().key() )
 			return lord
 		}
 
-		/** Параметр из адреса снимаем во всех случаях, кроме ожидания ключа.
-		 * Ожидание живёт только в памяти, а ключ собеседника едет по сети —
-		 * снятый заранее параметр означал бы, что перезагрузка страницы в
-		 * этот момент теряет приглашение насовсем, и экран после неё молчит.
-		 * Снимет его `invite_done`, когда диалог действительно заведён. */
 		invite_accept( lord: string, key: string ) {
-
-			if( !lord ) return 'skip'
-
-			const exist = this.dialog_with( lord )
-			const plan = this.invite_plan( lord, this.my_lord(), exist )
-
-			this.invite_lost( plan === 'bad' ? lord : '' )
-
-			/** По ссылке приходят сами: человек, чьё приглашение я открыл,
-			 * в запросах оказаться не должен, кто бы ни завёл ленд диалога. */
-			if( plan === 'open' || plan === 'start' ) {
-				this.People().pass_learn( lord, key )
-				this.peer_accept( lord )
-			}
-
+			const { plan, exist } = this.Invite().take( lord, key )
 			if( plan === 'open' ) this.dialog_select( exist )
-			if( plan === 'start' ) this.dialog_pending( lord )
-
-			if( plan !== 'start' ) this.invite_done()
-
 			return plan
-		}
-
-		/** Приглашение отработало: снимаем параметры из адреса и метку
-		 * долгого ожидания. */
-		invite_done() {
-			this.pending_late( '' )
-			this.$.$mol_state_arg.value( 'invite', null )
-			this.$.$mol_state_arg.value( 'key', null )
-		}
-
-		/** Ключ собеседника приезжает не мгновенно, а иногда не приезжает
-		 * вовсе: человек мог не заходить в приложение или сидеть на другом
-		 * мастере. Через `pending_wait` молчание превращаем в объяснение.
-		 *
-		 * Таймер ВОЗВРАЩАЕМ из ячейки: объект, созданный внутри @$mol_mem и
-		 * не отданный наружу, уборка уничтожает сразу, и он не сработает. */
-		@$mol_mem
-		pending_timer() {
-			const peer = this.dialog_pending()
-			if( !peer ) return null
-			return new this.$.$mol_after_timeout( pending_wait, ()=> this.pending_late( peer ) )
-		}
-
-		/** Собеседник, ключ которого ждём непозволительно долго. Держим тут
-		 * именно лорда, а не флаг: следующее приглашение начинает ожидание
-		 * заново, и старая метка не должна на него налипать. */
-		@$mol_mem
-		pending_late( next?: string ) {
-			return next ?? ''
-		}
-
-		/** Ждать человека, который в приложение не заходил, можно вечно,
-		 * поэтому ожидание должно сниматься руками. */
-		@$mol_action
-		invite_drop( next?: any ) {
-			this.dialog_pending( '' )
-			this.invite_lost( '' )
-			this.invite_done()
-			return null
-		}
-
-		/** Строка над списком диалогов, пока диалога по ссылке ещё нет. Без
-		 * неё переход по приглашению выглядит как будто ничего не произошло:
-		 * список пустой, ошибки нет, ждать непонятно чего. */
-		override invite_plate_text() {
-
-			if( this.invite_lost() ) return 'Ссылка на диалог битая — попросите свежую'
-
-			const peer = this.dialog_pending()
-			if( !peer ) return ''
-
-			if( this.pending_late() !== peer ) return 'Открываем диалог — ищем ключ собеседника'
-
-			return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку'
 		}
 
 		override Invite_plate() {

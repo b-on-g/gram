@@ -607,30 +607,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Приглашение не заводит диалог с самим собой'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const my = 'LordMine'
-			const other = 'LordOthr_Bbbbbbbb'
-
-			// Ссылка — адрес страницы с лордом приглашающего
-			const location = $.$mol_dom_context.location
-			const uri = app.invite_uri( my, '' )
-			$mol_assert_equal( uri, location.origin + location.pathname + '#!invite=' + my )
-			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!invite=LordMine' )
-			$mol_assert_equal( app.invite_uri( '', '' ), '' )
-
-			// Свою же ссылку и пустой параметр пропускаем мимо
-			$mol_assert_equal( app.invite_plan( my, my, '' ), 'skip' )
-			$mol_assert_equal( app.invite_plan( '', my, '' ), 'skip' )
-
-			// Чужую: знакомого собеседника открываем, незнакомому заводим диалог
-			$mol_assert_equal( app.invite_plan( other, my, 'DialogLink' ), 'open' )
-			$mol_assert_equal( app.invite_plan( other, my, '' ), 'start' )
-
-		},
-
 		async 'Уведомления включаются сами, но выключенные руками не возвращаются'( $ ) {
 
 			const app = $bog_gram.make({ $ })
@@ -662,65 +638,6 @@ namespace $.$$ {
 
 			// Без поддержки в браузере не делаем вообще ничего
 			$mol_assert_equal( app.notify_plan( false, 'granted', false, false, false ), 'skip' )
-
-		},
-
-		async 'Ключ в ссылке-приглашении избавляет от ожидания сети'( $ ) {
-
-			const king = await $.$giper_baza_auth._generate()
-			const dialogs = $giper_baza_land.make({ $, auth: ()=> king }).Data( $bog_gram_dialogs )
-			const app = $bog_gram.make({ $, dialogs_store: ()=> dialogs })
-
-			const auth = await $.$giper_baza_auth._generate()
-			const pass = auth.pass()
-			const lord = pass.lord().str
-			const key = pass.toString()
-
-			// Лорд и ключ едут в ссылке рядом, ключ URL не ломает
-			const uri = app.invite_uri( lord, key )
-			$mol_assert_equal( uri.slice( uri.indexOf( '#' ) ), '#!invite=' + lord + '/key=' + key )
-			$mol_assert_equal( encodeURIComponent( key ), key )
-
-			// Старая ссылка без ключа по-прежнему работает — через сеть
-			$mol_assert_equal( app.invite_plan( lord, 'LordMine', '' ), 'start' )
-
-		},
-
-		async 'Битая ссылка-приглашение не уходит в молчаливое ожидание'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const my = 'LordMine'
-
-			$mol_assert_equal( app.invite_plan( 'не ссылка', my, '' ), 'bad' )
-
-		},
-
-		async 'Ожидание ключа собеседника объясняется на экране'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const other = 'LordOthr_Bbbbbbbb'
-
-			// Пока ждать нечего, плитки нет вовсе
-			$mol_assert_equal( app.invite_plate_text(), '' )
-			$mol_assert_equal( app.Invite_plate(), null )
-
-			// Ожидание ключа объясняем сразу, а не после таймаута
-			app.dialog_pending( other )
-			$mol_assert_equal( app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника' )
-
-			// Ключ не доехал: молчание превращается в объяснение
-			app.pending_late( other )
-			$mol_assert_equal( app.invite_plate_text().startsWith( 'Ключ собеседника не нашёлся' ), true )
-
-			// Метка от прошлого приглашения на новое не налипает
-			app.dialog_pending( 'LordThrd_Cccccccc' )
-			$mol_assert_equal( app.invite_plate_text(), 'Открываем диалог — ищем ключ собеседника' )
-
-			// Битая ссылка говорит о себе отдельно
-			app.invite_lost( 'мусор' )
-			$mol_assert_equal( app.invite_plate_text(), 'Ссылка на диалог битая — попросите свежую' )
 
 		},
 
