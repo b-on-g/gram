@@ -54,182 +54,6 @@ namespace $.$$ {
 
 	export class $bog_gram extends $.$bog_gram {
 
-		// ===== Текущий пользователь =====
-
-		user_store() {
-			return this.$.$giper_baza_glob.home().land().Data( $bog_gram_user )
-		}
-
-		@$mol_mem
-		my_lord() {
-			return this.$.$giper_baza_auth.current().pass().lord().str
-		}
-
-		/** Публичная часть своего ключа строкой. Приватная сюда не попадает:
-		 * это ровно то, что можно класть в открытый реестр — по нему мне и
-		 * выдадут право читать шифрованный ленд диалога. */
-		@$mol_mem
-		my_pass_str() {
-			return this.$.$giper_baza_auth.current().pass().toString()
-		}
-
-		@$mol_mem
-		user_name( next?: string ) {
-			if( next !== undefined ) this.user_store().Name( 'auto' )?.val( next )
-			return this.user_store().Name()?.val() ?? ''
-		}
-
-		// ===== Служебные ленды пользователя (ссылки хранятся в профиле) =====
-
-		@$mol_mem
-		inbox_land() {
-			const home = this.$.$giper_baza_glob.Land( new $giper_baza_link( this.my_lord() ) )
-			return home.area_make( $mol_hash_string( 'bog_gram_inbox' ) )
-		}
-
-		@$mol_mem
-		inbox_open() {
-			const land = this.inbox_land()
-			const rank = $giper_baza_rank_post( 'slow' )
-			if( land.lord_rank( null ) !== rank ) land.give( null, rank )
-			return true
-		}
-
-		@$mol_mem
-		inbox_publish() {
-
-			const link = this.inbox_land().link().str
-			const prev = String( this.user_store().Inbox_land()?.val() ?? '' )
-			if( prev === link ) return link
-
-			if( prev && !this.lobbies_old().includes( prev ) ) this.dialogs_store().Lobbies( 'auto' )!.add( prev )
-			this.user_store().Inbox_land( 'auto' )?.val( link )
-
-			return link
-		}
-
-		@$mol_mem
-		lobbies_old() {
-			return ( this.dialogs_store().Lobbies()?.items() ?? [] ).map( String )
-		}
-
-		@$mol_mem
-		inbox_stores() {
-
-			let old = [] as string[]
-			try {
-				old = this.lobbies_old()
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-			}
-
-			return [
-				this.inbox_store(),
-				... old.map( link => this.$.$giper_baza_glob.Land( new $giper_baza_link( link ) ).Data( $bog_gram_inbox ) ),
-			]
-		}
-
-		inbox_items( pick: ( store: $bog_gram_inbox )=> $giper_baza_list_str | null ) {
-
-			const all = [] as string[]
-
-			for( const store of this.inbox_stores() ) {
-				try {
-					for( const item of pick( store )?.items() ?? [] ) all.push( String( item ) )
-				} catch( error ) {
-					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-					$mol_fail_log( error )
-				}
-			}
-
-			return [ ... new Set( all ) ]
-		}
-
-		@$mol_action
-		inbox_cut( pick: ( store: $bog_gram_inbox, auto?: 'auto' )=> $giper_baza_list_str | null, entry: string ) {
-			for( const store of this.inbox_stores() ) {
-				try {
-					if( !( pick( store )?.items() ?? [] ).map( String ).includes( entry ) ) continue
-					pick( store, 'auto' )!.cut( entry )
-				} catch( error ) {
-					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-					$mol_fail_log( error )
-				}
-			}
-			return null
-		}
-
-		@$mol_action
-		dialogs_land_make() {
-			const land = this.$.$giper_baza_glob.land_grab([
-				[ null, $giper_baza_rank_deny ],
-			])
-			this.user_store().Dialogs_land( 'auto' )?.val( land.link().str )
-			return land
-		}
-
-		dialogs_land() {
-			const str = this.user_store().Dialogs_land()?.val()
-			if( !str ) return this.dialogs_land_make()
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
-		}
-
-		@$mol_action
-		monitor_land_make() {
-			const land = this.$.$giper_baza_glob.land_grab([
-				[ null, $giper_baza_rank_read ],
-			])
-			this.user_store().Monitor_land( 'auto' )?.val( land.link().str )
-			return land
-		}
-
-		monitor_land() {
-			const str = this.user_store().Monitor_land()?.val()
-			if( !str ) return this.monitor_land_make()
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
-		}
-
-		@$mol_action
-		devices_land_make() {
-			const land = this.$.$giper_baza_glob.land_grab([
-				[ null, $giper_baza_rank_deny ],
-			])
-			this.user_store().Devices_land( 'auto' )?.val( land.link().str )
-			return land
-		}
-
-		devices_land() {
-			const str = this.user_store().Devices_land()?.val()
-			if( !str ) return this.devices_land_make()
-			return this.$.$giper_baza_glob.Land( new $giper_baza_link( String( str ) ) )
-		}
-
-		dialogs_store() {
-			return this.dialogs_land().Data( $bog_gram_dialogs )
-		}
-
-		inbox_store() {
-			return this.inbox_land().Data( $bog_gram_inbox )
-		}
-
-		monitor_store() {
-			return this.monitor_land().Data( $bog_gram_monitor )
-		}
-
-		devices_store() {
-			return this.devices_land().Data( $bog_gram_devices )
-		}
-
-		@$mol_mem
-		device_ready() {
-			const dev = this.devices_store().Registry( 'auto' )?.key( 'web', 'auto' )
-			if( dev && !dev.Title()?.val() ) {
-				dev.Title( 'auto' )?.val( 'Web client' )
-				dev.Token( 'auto' )?.val( 'stub' )
-			}
-			return true
-		}
-
 		// ===== Чужие профили =====
 
 		peer_store( lord: string ) {
@@ -2170,7 +1994,7 @@ namespace $.$$ {
 		@$mol_mem
 		ask_all() {
 			try {
-				return this.inbox_items( store => store.Joins() )
+				return this.Account().joins()
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return [] as string[]
@@ -2296,7 +2120,7 @@ namespace $.$$ {
 		@$mol_action
 		ask_forget( entry: string ) {
 			if( !entry ) return null
-			this.inbox_cut( ( store, auto )=> store.Joins( auto ), entry )
+			this.Account().joins_cut( entry )
 			return null
 		}
 
@@ -2416,7 +2240,7 @@ namespace $.$$ {
 
 		@$mol_mem
 		inbox_merge() {
-			const invites = this.inbox_items( store => store.Invites() )
+			const invites = this.Account().invites()
 			if( !invites.length ) return 0
 			const have = new Set( this.dialog_ids() )
 			const hidden = new Set( this.hidden_ids() )
@@ -3732,7 +3556,7 @@ namespace $.$$ {
 
 			const store = this.registry_store( id )
 			const my = this.my_lord()
-			const str = this.my_pass_str()
+			const str = this.my_pass()
 
 			if( String( store.Keys()?.key( my )?.Pass()?.val() ?? '' ) === str ) return null
 			store.Keys( 'auto' )?.key( my, 'auto' )?.Pass( 'auto' )?.val( str )
@@ -3777,7 +3601,7 @@ namespace $.$$ {
 			const store = land.Data( $bog_gram_users )
 			if( title ) store.Title( 'auto' )?.val( title )
 			store.Lords( 'auto' )?.add( this.my_lord() )
-			store.Keys( 'auto' )?.key( this.my_lord(), 'auto' )?.Pass( 'auto' )?.val( this.my_pass_str() )
+			store.Keys( 'auto' )?.key( this.my_lord(), 'auto' )?.Pass( 'auto' )?.val( this.my_pass() )
 
 			/** Дожидаемся, пока записи подпишутся и осядут в хранилище. Ждём не
 			 * ради вида: право писать всем выдаётся отдельной записью, и пока
@@ -3946,13 +3770,6 @@ namespace $.$$ {
 		}
 
 		// ===== Личная ссылка-приглашение =====
-
-		/** Свой публичный ключ строкой — тот же вид, в котором он лежит в
-		 * реестрах и уезжает в заявке в группу. */
-		@$mol_mem
-		my_pass() {
-			return this.$.$giper_baza_auth.current().pass().toString()
-		}
 
 		/** Приглашение — адрес страницы с лордом и публичным ключом хозяина.
 		 * Свой мастер и открытые реестры чужому человеку по-прежнему не нужны,
@@ -4375,7 +4192,7 @@ namespace $.$$ {
 
 			let entries: string[] = []
 			try {
-				entries = this.inbox_items( store => store.Denies() )
+				entries = this.Account().denies()
 			} catch( error ) {
 				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
 				return 0
@@ -4400,7 +4217,7 @@ namespace $.$$ {
 					if( !this.ask_denied().includes( group ) ) store.Denied( 'auto' )!.add( group )
 				}
 
-				this.inbox_cut( ( store, auto )=> store.Denies( auto ), entry )
+				this.Account().denies_cut( entry )
 			}
 
 			return entries.length
@@ -4608,7 +4425,7 @@ namespace $.$$ {
 			// Ленд монитора нужен самой подписке: демон следит именно за ним.
 			// До его приезда лезть в браузер незачем — подписка уехала бы
 			// демону с пустой ссылкой, и следить ему было бы не за чем
-			const monitor = this.monitor_land().link().str
+			const monitor = this.monitor_link()
 			if( !monitor ) return false
 
 			$mol_wire_async( this ).notify_apply( true )
@@ -4684,7 +4501,7 @@ namespace $.$$ {
 				return false
 			}
 
-			const ok = notify.subscribe( this.my_lord(), this.monitor_land().link().str )
+			const ok = notify.subscribe( this.my_lord(), this.monitor_link() )
 			this.notify_permission( notify.permission() )
 			this.notify_on( ok )
 			if( ok ) this.notify_off( false )
@@ -4854,23 +4671,9 @@ namespace $.$$ {
 
 		// ===== Автозапуск =====
 
-		/** Ленд заметок тут не заводим: он нужен не раньше первого клика по
-		 * строке избранного, а на старте список диалогов ещё в пути, и захват
-		 * попадал бы в окно, когда своей ссылки на него как бы нет. */
-		@$mol_mem
-		setup_ready() {
-			this.user_store()
-			this.inbox_open()
-			this.inbox_publish()
-			this.dialogs_land()
-			this.monitor_land()
-			this.device_ready()
-			return true
-		}
-
 		override auto() {
 			super.auto()
-			try { this.setup_ready() } catch( error ) { $mol_fail_log( error ) }
+			try { this.account_ready() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_remember() } catch( error ) { $mol_fail_log( error ) }
 			try { this.registry_keys_fill() } catch( error ) { $mol_fail_log( error ) }
 			try { this.invite_handle() } catch( error ) { $mol_fail_log( error ) }

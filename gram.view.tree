@@ -5,6 +5,14 @@ $bog_gram $mol_book2
 			base \zinc
 			font_head \eb-garamond
 		<= Theme $bog_theme_auto
+	Account $bog_gram_account
+		my_lord => my_lord
+		my_pass => my_pass
+		user_name? => user_name?
+		dialogs_store => dialogs_store
+		monitor_store => monitor_store
+		monitor_link => monitor_link
+		ready => account_ready
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -70,12 +78,12 @@ $bog_gram $mol_book2
 			body /
 				<= Name_field $bog_gram_field
 					hint \Ваше имя
-					value? <=> user_name? \
+					value? <=> user_name?
 				<= My_id $mol_labeler
 					title \Мой ID
 					content /
 						<= My_id_text $mol_paragraph
-							title <= my_lord \
+							title <= my_lord
 						<= My_id_copy $mol_button_copy
 							title \Скопировать
 							text <= my_lord
@@ -112,7 +120,7 @@ $bog_gram $mol_book2
 				<= Registry_block $mol_labeler
 					title \Реестры
 					content <= registry_content /
-				<= Account $mol_labeler
+				<= Account_block $mol_labeler
 					title \Аккаунт
 					content /
 						<= Account_body $mol_view
