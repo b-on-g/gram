@@ -1,0 +1,72 @@
+$bog_gram_group $bog_gram_page
+	title \Новая группа
+	close? null
+	name? \
+	picked /string
+	lost /string
+	id? \
+	id_error \
+	pick*? null
+	drop*? null
+	id_add? null
+	make? null
+	label* \
+	contact_lords /string
+	contact_source* \
+	tools /
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Name_field $mol_string
+			hint \Название группы
+			value? <=> name?
+		<= Chosen_head $mol_paragraph
+			title <= chosen_head \
+		<= Chosen_list $mol_list
+			rows <= chosen_rows /
+		<= Lost_note $mol_paragraph
+			title <= lost_note \
+		<= Make $mol_button_major
+			click? <=> make?
+			sub /
+				<= make_label \
+		<= Id_form $mol_view
+			sub /
+				<= Id_field $mol_string
+					hint \ID участника
+					value? <=> id?
+					submit? <=> id_add?
+				<= Id_add $mol_button_major
+					click? <=> id_add?
+					sub /
+						\Добавить
+		<= Id_error $mol_paragraph
+			title <= id_error
+		<= Pick_head $mol_paragraph
+			title \Кого позвать
+		<= Pick_list $mol_list
+			rows <= pick_rows /
+	Pick_row* $bog_gram_row
+		click? <=> pick*?
+		current <= picked_is* false
+		avatar_id <= person* \
+		tint <= tint* 0
+		title <= label*
+		note <= contact_source*
+		marks /
+			<= Pick_mark* $mol_icon_check
+	Chosen_row* $bog_gram_row
+		enabled false
+		size \tiny
+		avatar_id <= person* \
+		tint <= tint* 0
+		title <= label*
+		tools /
+			<= Chosen_drop* $mol_button_minor
+				hint \Убрать из списка
+				click? <=> drop*?
+				sub /
+					<= Chosen_drop_icon* $mol_icon_close

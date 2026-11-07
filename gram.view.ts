@@ -594,185 +594,8 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Кого можно позвать: собеседники своих переписок и участники
-		 * реестров. Ключи первых уже лежат в их лендах, поэтому такой список
-		 * работает и без сети. Один человек — одна строка, даже если он
-		 * встречается в обоих источниках: подписью берём переписку, она ближе.
-		 * Незасинканный диалог просто не даёт своего собеседника — весь список
-		 * из-за одного такого молчать не должен. */
-		@$mol_mem
-		group_sources() {
-
-			const sources: Record< string, string > = {}
-			const my = this.my_lord()
-
-			for( const id of this.dialog_ids() ) {
-				if( this.group_is( id ) ) continue
-				let peer = ''
-				try {
-					peer = this.dialog_peer( id )
-				} catch( error ) {
-					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				}
-				if( !peer || peer === my ) continue
-				if( sources[ peer ] ) continue
-				sources[ peer ] = 'из переписки'
-			}
-
-			const registries = this.user_sources()
-			for( const lord of Object.keys( registries ) ) {
-				if( sources[ lord ] ) continue
-				sources[ lord ] = this.registry_title( registries[ lord ] )
-			}
-
-			return sources
-		}
-
-		@$mol_mem
-		group_picked( next?: readonly string[] ) {
-			return next ?? [] as readonly string[]
-		}
-
-		/** Список ненайденных ключей относился к прежнему составу: любая
-		 * правка выбора его снимает, и кнопка возвращается к обычной. */
 		@$mol_action
-		group_pick( lord: string, next?: any ) {
-			if( !lord ) return null
-			const picked = this.group_picked()
-			this.group_lost( [] )
-			this.group_picked(
-				picked.includes( lord )
-					? picked.filter( item => item !== lord )
-					: [ ... picked, lord ]
-			)
-			return null
-		}
-
-		@$mol_action
-		group_chosen_drop( lord: string, next?: Event ) {
-			if( !lord ) return null
-			this.group_lost( [] )
-			this.group_picked( this.group_picked().filter( item => item !== lord ) )
-			return null
-		}
-
-		@$mol_mem
-		group_id_error( next?: string ) {
-			return next ?? ''
-		}
-
-		override Group_id_error() {
-			return this.group_id_error() ? super.Group_id_error() : null!
-		}
-
-		/** Идентификатор руками. Заведомую опечатку отсеиваем сразу: группа с
-		 * несуществующим участником всё равно бы его не дождалась. */
-		@$mol_action
-		group_id_add( next?: any ) {
-
-			const lord = this.group_id().trim()
-			if( !lord ) return null
-
-			if( lord === this.my_lord() ) {
-				this.group_id_error( 'Это ваш собственный идентификатор' )
-				return null
-			}
-
-			if( !$giper_baza_link.check( lord ) ) {
-				this.group_id_error( 'Это не похоже на идентификатор' )
-				return null
-			}
-
-			this.group_id_error( '' )
-			this.group_id( '' )
-
-			if( !this.group_picked().includes( lord ) ) {
-				this.group_lost( [] )
-				this.group_picked( [ ... this.group_picked(), lord ] )
-			}
-
-			return null
-		}
-
-		@$mol_mem
-		group_pick_rows() {
-			return Object.keys( this.group_sources() ).map( lord => this.Group_pick_row( lord ) )
-		}
-
-		group_pick_lord( lord: string ) {
-			return lord
-		}
-
-		group_pick_tint( lord: string ) {
-			return this.avatar_tint( lord )
-		}
-
-		@$mol_mem_key
-		group_pick_title( lord: string ) {
-			return this.peer_label( lord )
-		}
-
-		@$mol_mem_key
-		group_pick_source( lord: string ) {
-			return this.group_sources()[ lord ] ?? ''
-		}
-
-		@$mol_mem_key
-		group_picked_is( lord: string ) {
-			return this.group_picked().includes( lord )
-		}
-
-		override Group_pick_mark( lord: string ) {
-			return this.group_picked_is( lord ) ? super.Group_pick_mark( lord ) : null!
-		}
-
-		@$mol_mem
-		group_chosen_rows() {
-			return this.group_picked().map( lord => this.Group_chosen_row( lord ) )
-		}
-
-		override group_chosen_head() {
-			const count = this.group_picked().length
-			if( !count ) return 'Пока никого не выбрали'
-			return $bog_gram_count.people( count )
-		}
-
-		group_chosen_lord( lord: string ) {
-			return lord
-		}
-
-		group_chosen_tint( lord: string ) {
-			return this.avatar_tint( lord )
-		}
-
-		@$mol_mem_key
-		group_chosen_name( lord: string ) {
-			return this.peer_label( lord )
-		}
-
-		@$mol_mem
-		group_lost( next?: readonly string[] ) {
-			return next ?? [] as readonly string[]
-		}
-
-		override group_lost_note() {
-			const lost = this.group_lost()
-			if( !lost.length ) return ''
-			const names = lost.map( lord => this.peer_label( lord ) ).join( ', ' )
-			return 'Не нашли ключей: ' + names
-				+ '. Без ключа человек не прочитает переписку — группу можно создать без него.'
-		}
-
-		override Group_lost_note() {
-			return this.group_lost().length ? super.Group_lost_note() : null!
-		}
-
-		override group_make_label() {
-			return this.group_lost().length ? 'Создать без них' : 'Создать группу'
-		}
-
-		@$mol_action
-		group_make( next?: any ) {
+		override group_make( next?: any ) {
 			const picked = this.group_picked()
 			if( !picked.length ) return null
 			$mol_wire_async( this ).group_create( this.group_name().trim(), picked, this.group_lost().length > 0 )
@@ -781,15 +604,9 @@ namespace $.$$ {
 
 		group_create( title: string, lords: readonly string[], forced: boolean ) {
 
-			const { id, lost } = this.Crew().group_make( title, lords, forced )
-			this.group_lost( lost )
+			const id = this.Crew().draft_build( title, lords, forced )
 			if( !id ) return ''
 
-			this.group_picked( [] )
-			this.group_lost( [] )
-			this.group_name( '' )
-			this.group_id( '' )
-			this.group_id_error( '' )
 			this.group_opened( false )
 			this.dialog_current( id )
 			this.chat_bring()
@@ -976,7 +793,7 @@ namespace $.$$ {
 		@$mol_mem
 		member_pick_lords() {
 			const inside = new Set( this.member_lords() )
-			return Object.keys( this.group_sources() ).filter( lord => !inside.has( lord ) )
+			return this.contact_lords().filter( lord => !inside.has( lord ) )
 		}
 
 		@$mol_mem
@@ -999,7 +816,7 @@ namespace $.$$ {
 
 		@$mol_mem_key
 		member_pick_source( lord: string ) {
-			return this.group_sources()[ lord ] ?? ''
+			return this.contact_source( lord )
 		}
 
 		@$mol_action

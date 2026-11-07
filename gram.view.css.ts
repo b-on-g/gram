@@ -78,16 +78,6 @@ namespace $.$$ {
 			},
 		},
 
-		Group_page: {
-			width: '26rem',
-			Head: {
-				padding: head_pad,
-			},
-			Body_content: {
-				padding: body_pad,
-			},
-		},
-
 		Music_page: {
 			width: '30rem',
 		},
@@ -226,82 +216,6 @@ namespace $.$$ {
 
 		Saved_icon: {
 			color: tg_blue,
-		},
-
-		// ===== Создание группы =====
-		// Страница устроена как «новый диалог»: сверху название и уже
-		// выбранные, снизу — откуда выбирать. Строки выбора повторяют сетку
-		// строк реестра, чтобы список людей везде выглядел одинаково.
-
-		Group_name_field: {
-			alignSelf: 'stretch',
-		},
-
-		Group_chosen_head: {
-			font: {
-				weight: 'bold',
-			},
-			color: $mol_theme.shade,
-			padding: {
-				top: $mol_gap.block,
-				bottom: 0,
-				left: 0,
-				right: 0,
-			},
-		},
-
-		Group_chosen_list: {
-			gap: '0.125rem',
-		},
-
-		/* кого не удалось добавить: тревожная строка, а не молчание */
-		Group_lost_note: {
-			font: {
-				size: '0.875rem',
-			},
-			color: alert_red,
-		},
-
-		Group_make: {
-			alignSelf: 'stretch',
-			justify: {
-				content: 'center',
-			},
-		},
-
-		Group_id_form: {
-			flex: {
-				direction: 'column',
-			},
-			align: {
-				items: 'stretch',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-		},
-
-		Group_id_error: {
-			font: {
-				size: '0.875rem',
-			},
-			color: alert_red,
-		},
-
-		Group_pick_head: {
-			font: {
-				weight: 'bold',
-			},
-			color: $mol_theme.shade,
-			padding: {
-				top: $mol_gap.block,
-				bottom: 0,
-				left: 0,
-				right: 0,
-			},
-		},
-
-		Group_pick_list: {
-			gap: '0.125rem',
 		},
 
 		// ===== Участники группы =====
@@ -891,10 +805,6 @@ namespace $.$$ {
 			'(max-width: 30rem)': {
 
 				Dialogs_list: {
-					gap: 0,
-				},
-
-				Group_pick_list: {
 					gap: 0,
 				},
 

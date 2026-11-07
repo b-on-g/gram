@@ -189,6 +189,40 @@ namespace $ {
 		}
 
 		@ $mol_mem
+		contacts() {
+
+			const sources: Record< string, string > = {}
+			const my = this.Account().my_lord()
+			const talk = this.Talk()
+
+			for( const id of this.ids() ) {
+				if( talk.group_is( id ) ) continue
+				const peer = $bog_gram_soft( ()=> talk.peer( id ), '' )
+				if( !peer || peer === my || sources[ peer ] ) continue
+				sources[ peer ] = 'из переписки'
+			}
+
+			const registry = this.People().Registry()
+			const registries = registry.sources()
+			for( const lord of Object.keys( registries ) ) {
+				if( sources[ lord ] ) continue
+				sources[ lord ] = registry.title( registries[ lord ] )
+			}
+
+			return sources
+		}
+
+		@ $mol_mem
+		contact_lords() {
+			return Object.keys( this.contacts() )
+		}
+
+		@ $mol_mem_key
+		contact_source( lord: string ) {
+			return this.contacts()[ lord ] ?? ''
+		}
+
+		@ $mol_mem
 		watch_fill() {
 			const watch = this.Account().monitor_store()
 			const have = new Set( ( watch.Watch()?.items() ?? [] ).map( String ) )

@@ -92,11 +92,21 @@ $bog_gram $mol_book2
 		with* => dialog_with*
 		invites_merge => inbox_merge
 		watch_fill => monitor_fill
+		contact_lords => contact_lords
+		contact_source* => contact_source*
 	Crew $bog_gram_crew
 		Account <= Account
 		People <= People
 		Talk <= Talk
 		error? => member_error?
+		draft_name? => group_name?
+		draft_picked => group_picked
+		draft_lost => group_lost
+		draft_id? => group_id?
+		draft_error => group_id_error
+		draft_pick*? => group_pick*?
+		draft_drop*? => group_chosen_drop*?
+		draft_id_add? => group_id_add?
 	Lobby $bog_gram_lobby
 		Account <= Account
 		People <= People
@@ -210,44 +220,20 @@ $bog_gram $mol_book2
 			registry_ids <= registry_ids
 			join_needed <= registry_join_needed
 			join? <=> registry_join_active?
-		<= Group_page $mol_page
-			title \Новая группа
-			tools /
-				<= Group_close $mol_button_minor
-					hint \Закрыть
-					click? <=> group_close? null
-					sub /
-						<= Group_close_icon $mol_icon_close
-			body /
-				<= Group_name_field $mol_string
-					hint \Название группы
-					value? <=> group_name? \
-				<= Group_chosen_head $mol_paragraph
-					title <= group_chosen_head \
-				<= Group_chosen_list $mol_list
-					rows <= group_chosen_rows /
-				<= Group_lost_note $mol_paragraph
-					title <= group_lost_note \
-				<= Group_make $mol_button_major
-					click? <=> group_make? null
-					sub /
-						<= group_make_label \
-				<= Group_id_form $mol_view
-					sub /
-						<= Group_id_field $mol_string
-							hint \ID участника
-							value? <=> group_id? \
-							submit? <=> group_id_add? null
-						<= Group_id_add $mol_button_major
-							click? <=> group_id_add? null
-							sub /
-								\Добавить
-				<= Group_id_error $mol_paragraph
-					title <= group_id_error \
-				<= Group_pick_head $mol_paragraph
-					title \Кого позвать
-				<= Group_pick_list $mol_list
-					rows <= group_pick_rows /
+		<= Group_page $bog_gram_group
+			close? <=> group_close? null
+			make? <=> group_make? null
+			name? <=> group_name?
+			picked <= group_picked
+			lost <= group_lost
+			id? <=> group_id?
+			id_error <= group_id_error
+			pick*? <=> group_pick*?
+			drop*? <=> group_chosen_drop*?
+			id_add? <=> group_id_add?
+			label* <= peer_label*
+			contact_lords <= contact_lords
+			contact_source* <= contact_source*
 		<= Members_page $mol_page
 			title \Участники
 			tools /
@@ -371,27 +357,6 @@ $bog_gram $mol_book2
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
-	Group_pick_row* $bog_gram_row
-		click? <=> group_pick*? null
-		current <= group_picked_is* false
-		avatar_id <= group_pick_lord* \
-		tint <= group_pick_tint* 0
-		title <= group_pick_title* \
-		note <= group_pick_source* \
-		marks /
-			<= Group_pick_mark* $mol_icon_check
-	Group_chosen_row* $bog_gram_row
-		enabled false
-		size \tiny
-		avatar_id <= group_chosen_lord* \
-		tint <= group_chosen_tint* 0
-		title <= group_chosen_name* \
-		tools /
-			<= Group_chosen_drop* $mol_button_minor
-				hint \Убрать из списка
-				click? <=> group_chosen_drop*? null
-				sub /
-					<= Group_chosen_drop_icon* $mol_icon_close
 	Members_add_title $mol_paragraph
 		title \Добавить участника
 	Members_history $mol_view

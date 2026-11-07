@@ -22,6 +22,85 @@ namespace $ {
 			return next ?? ''
 		}
 
+		@ $mol_mem
+		draft_name( next?: string ) {
+			return next ?? ''
+		}
+
+		@ $mol_mem
+		draft_picked( next?: readonly string[] ) {
+			return next ?? [] as readonly string[]
+		}
+
+		@ $mol_mem
+		draft_lost( next?: readonly string[] ) {
+			return next ?? [] as readonly string[]
+		}
+
+		@ $mol_mem
+		draft_id( next?: string ) {
+			return next ?? ''
+		}
+
+		@ $mol_mem
+		draft_error( next?: string ) {
+			return next ?? ''
+		}
+
+		@ $mol_action
+		draft_pick( lord: string, next?: any ) {
+			if( !lord ) return null
+			const picked = this.draft_picked()
+			this.draft_lost( [] )
+			this.draft_picked( picked.includes( lord ) ? picked.filter( item => item !== lord ) : [ ... picked, lord ] )
+			return null
+		}
+
+		@ $mol_action
+		draft_drop( lord: string, next?: any ) {
+			if( !lord ) return null
+			this.draft_lost( [] )
+			this.draft_picked( this.draft_picked().filter( item => item !== lord ) )
+			return null
+		}
+
+		@ $mol_action
+		draft_id_add( next?: any ) {
+
+			const lord = this.draft_id().trim()
+			if( !lord ) return null
+
+			if( lord === this.Account().my_lord() ) {
+				this.draft_error( 'Это ваш собственный идентификатор' )
+				return null
+			}
+
+			if( !$giper_baza_link.check( lord ) ) {
+				this.draft_error( 'Это не похоже на идентификатор' )
+				return null
+			}
+
+			this.draft_error( '' )
+			this.draft_id( '' )
+			if( !this.draft_picked().includes( lord ) ) this.draft_pick( lord )
+
+			return null
+		}
+
+		draft_build( title: string, lords: readonly string[], forced: boolean ) {
+
+			const { id, lost } = this.group_make( title, lords, forced )
+			this.draft_lost( lost )
+			if( !id ) return ''
+
+			this.draft_picked( [] )
+			this.draft_name( '' )
+			this.draft_id( '' )
+			this.draft_error( '' )
+
+			return id
+		}
+
 		grab() {
 			return this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
 		}
