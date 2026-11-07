@@ -96,6 +96,17 @@ $bog_gram $mol_book2
 		People <= People
 		Talk <= Talk
 		error? => member_error?
+	Lobby $bog_gram_lobby
+		Account <= Account
+		People <= People
+		Talk <= Talk
+		Roster <= Roster
+		Crew <= Crew
+		outbox_flush => outbox_flush
+		denies_merge => denies_merge
+		asks_flush => asks_flush
+		plate => ask_plate_text
+		lord_of* => ask_lord*
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -144,7 +155,7 @@ $bog_gram $mol_book2
 				<= Ask_plate $mol_view
 					sub /
 						<= Ask_plate_text $mol_paragraph
-							title <= ask_plate_text \
+							title <= ask_plate_text
 				<= Dialogs_list $mol_list
 					rows <= dialog_rows /
 		<= Music_page $bog_gram_music
@@ -591,7 +602,7 @@ $bog_gram $mol_book2
 		rows <= members_ask_rows /
 	Ask_row* $bog_gram_row
 		enabled false
-		avatar_id <= ask_lord* \
+		avatar_id <= ask_lord*
 		tint <= ask_tint* 0
 		title <= ask_title* \
 		note <= ask_status* \
