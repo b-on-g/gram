@@ -1,0 +1,155 @@
+$bog_gram_members $bog_gram_page
+	title \Участники
+	close? null
+	me \
+	lords /string
+	label* \
+	status* \
+	admin false
+	owner false
+	admin_is* false
+	error? \
+	join_link \
+	asks /string
+	ask_lord* \
+	accept*? null
+	reject*? null
+	candidates /string
+	contact_source* \
+	history? true
+	add*? null
+	part*? null
+	promote*? null
+	leave? null
+	tools /
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= List $mol_list
+			rows <= member_rows /
+		<= Drop_note $mol_paragraph
+			title \«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.
+		<= Add_block $mol_view
+			sub <= add_rows /
+		<= Leave_note $mol_paragraph
+			title \«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.
+		<= Leave $mol_button_minor
+			hint \Убрать группу из своего списка
+			attr *
+				^
+				bog_gram_armed <= leave_armed? false
+			click? <=> leave_click? null
+			sub /
+				<= leave_label \
+	Add_title $mol_paragraph
+		title \Добавить участника
+	History $mol_view
+		sub /
+			<= History_head $mol_paragraph
+				title \Что увидит новый участник
+			<= History_row $mol_view
+				sub /
+					<= History_all $mol_button_minor
+						hint \Выдать ключи от всех прошлых сообщений
+						attr *
+							^
+							bog_gram_current <= history_open false
+						click? <=> history_all? null
+						sub /
+							\Всю переписку
+					<= History_new $mol_button_minor
+						hint \Завести новый отсек переписки
+						attr *
+							^
+							bog_gram_current <= history_shut false
+						click? <=> history_new? null
+						sub /
+							\Только новые
+			<= History_note $mol_paragraph
+				title <= history_note \
+	Error $mol_paragraph
+		title <= error
+	Id_form $mol_view
+		sub /
+			<= Id_field $mol_string
+				hint \ID участника
+				value? <=> id? \
+				submit? <=> id_add? null
+			<= Id_add $mol_button_major
+				click? <=> id_add? null
+				sub /
+					\Добавить
+	Pick_list $mol_list
+		rows <= pick_rows /
+	Admin_note $mol_paragraph
+		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
+	Join $mol_view
+		sub /
+			<= Join_head $mol_paragraph
+				title \Ссылка-приглашение в группу
+			<= Join_hint $mol_paragraph
+				title \Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо
+			<= Join_text $mol_paragraph
+				title <= join_link
+			<= Join_copy $mol_button_copy
+				title \Скопировать
+				text <= join_link
+			<= Join_qr_box $mol_view
+				sub /
+					<= Join_qr $bog_qr
+						uri <= join_link
+						gradient_stops /
+							\#2f9e5f
+							\#8fd14f
+	Asks_head $mol_paragraph
+		title <= asks_head \
+	Asks_list $mol_list
+		rows <= ask_rows /
+	Ask_row* $bog_gram_row
+		enabled false
+		avatar_id <= ask_lord*
+		tint <= ask_tint* 0
+		title <= ask_title* \
+		note <= ask_status* \
+		tools /
+			<= Ask_accept* $mol_button_minor
+				hint \Принять в группу
+				click? <=> accept*?
+				sub /
+					<= Ask_accept_icon* $mol_icon_check
+			<= Ask_reject* $mol_button_minor
+				hint \Отклонить заявку
+				click? <=> reject*?
+				sub /
+					<= Ask_reject_icon* $mol_icon_close
+	Member_row* $bog_gram_row
+		enabled false
+		avatar_id <= person* \
+		tint <= tint* 0
+		title <= member_title* \
+		note <= status*
+		tools /
+			<= Rule* $mol_button_minor
+				hint \Назначить админом
+				click? <=> rule_click*? null
+				sub /
+					<= Rule_icon* $mol_icon_shield_crown
+			<= Drop* $mol_button_minor
+				hint <= drop_hint* \
+				attr *
+					^
+					bog_gram_armed <= armed*? false
+				click? <=> drop_click*? null
+				sub /
+					<= Drop_icon* $mol_icon_account_remove
+	Pick_row* $bog_gram_row
+		click? <=> add*?
+		avatar_id <= person* \
+		tint <= tint* 0
+		title <= label*
+		note <= contact_source*
+		marks /
+			<= Pick_mark* $mol_icon_account_plus

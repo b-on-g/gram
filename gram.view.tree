@@ -99,6 +99,7 @@ $bog_gram $mol_book2
 		People <= People
 		Talk <= Talk
 		error? => member_error?
+		history? => member_history?
 		draft_name? => group_name?
 		draft_picked => group_picked
 		draft_lost => group_lost
@@ -234,31 +235,28 @@ $bog_gram $mol_book2
 			label* <= peer_label*
 			contact_lords <= contact_lords
 			contact_source* <= contact_source*
-		<= Members_page $mol_page
-			title \Участники
-			tools /
-				<= Members_close $mol_button_minor
-					hint \Закрыть
-					click? <=> members_close? null
-					sub /
-						<= Members_close_icon $mol_icon_close
-			body /
-				<= Members_list $mol_list
-					rows <= member_rows /
-				<= Members_drop_note $mol_paragraph
-					title \«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.
-				<= Members_add_block $mol_view
-					sub <= members_add_rows /
-				<= Members_leave_note $mol_paragraph
-					title \«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.
-				<= Members_leave $mol_button_minor
-					hint \Убрать группу из своего списка
-					attr *
-						^
-						bog_gram_armed <= leave_armed false
-					click? <=> group_leave_click? null
-					sub /
-						<= group_leave_label \
+		<= Members_page $bog_gram_members
+			close? <=> members_close? null
+			me <= my_lord
+			lords <= member_lords /string
+			label* <= peer_label*
+			status* <= member_status* \
+			admin <= members_admin false
+			owner <= members_owner false
+			admin_is* <= member_admin* false
+			error? <=> member_error?
+			join_link <= join_link \
+			asks <= members_asks /string
+			ask_lord* <= ask_lord*
+			accept*? <=> ask_accept*? null
+			reject*? <=> ask_reject*? null
+			candidates <= member_candidates /string
+			contact_source* <= contact_source*
+			history? <=> member_history?
+			add*? <=> member_add*? null
+			part*? <=> member_drop*? null
+			promote*? <=> member_raise*? null
+			leave? <=> group_leave? null
 		<= Chat_page $bog_gram_chat
 			title <= chat_title \
 			focus_key <= chat_dialog \
@@ -357,115 +355,6 @@ $bog_gram $mol_book2
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
-	Members_add_title $mol_paragraph
-		title \Добавить участника
-	Members_history $mol_view
-		sub /
-			<= Members_history_head $mol_paragraph
-				title \Что увидит новый участник
-			<= Members_history_row $mol_view
-				sub /
-					<= Members_history_all $mol_button_minor
-						hint \Выдать ключи от всех прошлых сообщений
-						attr *
-							^
-							bog_gram_current <= history_open false
-						click? <=> members_history_all? null
-						sub /
-							\Всю переписку
-					<= Members_history_new $mol_button_minor
-						hint \Завести новый отсек переписки
-						attr *
-							^
-							bog_gram_current <= history_shut false
-						click? <=> members_history_new? null
-						sub /
-							\Только новые
-			<= Members_history_note $mol_paragraph
-				title <= members_history_note \
-	Members_error $mol_paragraph
-		title <= member_error
-	Members_id_form $mol_view
-		sub /
-			<= Members_id_field $mol_string
-				hint \ID участника
-				value? <=> member_id? \
-				submit? <=> member_id_add? null
-			<= Members_id_add $mol_button_major
-				click? <=> member_id_add? null
-				sub /
-					\Добавить
-	Members_pick_list $mol_list
-		rows <= member_pick_rows /
-	Members_admin_note $mol_paragraph
-		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
-	Members_join $mol_view
-		sub /
-			<= Members_join_head $mol_paragraph
-				title \Ссылка-приглашение в группу
-			<= Members_join_hint $mol_paragraph
-				title \Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо
-			<= Members_join_text $mol_paragraph
-				title <= join_link \
-			<= Members_join_copy $mol_button_copy
-				title \Скопировать
-				text <= join_link
-			<= Members_join_qr_box $mol_view
-				sub /
-					<= Members_join_qr $bog_qr
-						uri <= join_link
-						gradient_stops /
-							\#2f9e5f
-							\#8fd14f
-	Members_asks_head $mol_paragraph
-		title <= members_asks_head \
-	Members_asks_list $mol_list
-		rows <= members_ask_rows /
-	Ask_row* $bog_gram_row
-		enabled false
-		avatar_id <= ask_lord*
-		tint <= ask_tint* 0
-		title <= ask_title* \
-		note <= ask_status* \
-		tools /
-			<= Ask_accept* $mol_button_minor
-				hint \Принять в группу
-				click? <=> ask_accept*? null
-				sub /
-					<= Ask_accept_icon* $mol_icon_check
-			<= Ask_reject* $mol_button_minor
-				hint \Отклонить заявку
-				click? <=> ask_reject*? null
-				sub /
-					<= Ask_reject_icon* $mol_icon_close
-	Member_row* $bog_gram_row
-		enabled false
-		avatar_id <= member_lord* \
-		tint <= member_tint* 0
-		title <= member_title* \
-		note <= member_status* \
-		tools /
-			<= Member_rule* $mol_button_minor
-				hint \Назначить админом
-				click? <=> member_rule_click*? null
-				sub /
-					<= Member_rule_icon* $mol_icon_shield_crown
-			<= Member_drop* $mol_button_minor
-				hint <= member_drop_hint* \
-				attr *
-					^
-					bog_gram_armed <= member_armed* false
-				click? <=> member_drop_click*? null
-				sub /
-					<= Member_drop_icon* $mol_icon_account_remove
-	Member_pick_row* $bog_gram_row
-		click? <=> member_pick*? null
-		avatar_id <= member_pick_lord* \
-		tint <= member_pick_tint* 0
-		title <= member_pick_title* \
-		note <= member_pick_source* \
-		marks /
-			<= Member_pick_mark* $mol_icon_account_plus
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view

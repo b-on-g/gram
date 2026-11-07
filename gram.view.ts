@@ -125,7 +125,6 @@ namespace $.$$ {
 			this.settings_opened( false )
 			this.group_opened( false )
 			this.members_opened( false )
-			this.leave_armed( false )
 			this.edit_id( '' )
 			this.reply_id( '' )
 			this.message_text( '' )
@@ -202,7 +201,6 @@ namespace $.$$ {
 			this.zoom_id( '' )
 			this.delete_disarm()
 			this.members_opened( false )
-			this.leave_armed( false )
 			this.dialog_current( '' )
 			return null
 		}
@@ -636,333 +634,95 @@ namespace $.$$ {
 		members_open( next?: any ) {
 			this.members_opened( !this.members_opened() )
 			this.member_error( '' )
-			this.leave_armed( false )
 			return null
 		}
 
 		@$mol_action
 		members_close( next?: any ) {
 			this.members_opened( false )
-			this.leave_armed( false )
 			return null
 		}
 
-		/** Что значит «убрать», объясняем на месте и только тому, кто может
-		 * убирать: остальным эта кнопка и не показывается. Прятать пояснение
-		 * в подсказку кнопки нельзя — на телефоне её никто не увидит, а
-		 * операция необратимая. */
-		override Members_drop_note() {
-			return this.admin_me( this.dialog_active() ) ? super.Members_drop_note() : null!
-		}
-
-		/** Ленд группы может быть ещё не засинкан: список участников тогда
-		 * пуст, а подписка на его приход сохраняется — строки дорисуются. */
 		@$mol_mem
-		member_lords() {
+		override member_lords() {
 			const id = this.dialog_active()
 			if( !id ) return [] as string[]
-			try {
-				return this.dialog_lords( id )
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				return [] as string[]
-			}
-		}
-
-		@$mol_mem
-		member_rows() {
-			return this.member_lords().map( lord => this.Member_row( lord ) )
-		}
-
-		member_lord( lord: string ) {
-			return lord
-		}
-
-		member_tint( lord: string ) {
-			return this.avatar_tint( lord )
+			return $bog_gram_soft( ()=> this.dialog_lords( id ), [] as string[] )
 		}
 
 		@$mol_mem_key
-		member_title( lord: string ) {
-			if( lord === this.my_lord() ) return 'Вы'
-			return this.peer_label( lord )
-		}
-
-		/** Создателя отмечаем отдельно от назначенных админов: его права никто
-		 * не отберёт — он король ленда. */
-		@$mol_mem_key
-		member_status( lord: string ) {
+		override member_status( lord: string ) {
 			const id = this.dialog_active()
 			if( !id ) return ''
 			if( this.dialog_owner( id ) === lord ) return 'создатель'
 			return this.admin_is( id, lord ) ? 'админ' : ''
 		}
 
-		/** Назначает админов создатель, и только тех, кто им ещё не стал. */
-		override Member_rule( lord: string ) {
-			const id = this.dialog_active()
-			if( !this.owner_me( id ) ) return null!
-			if( lord === this.my_lord() ) return null!
-			if( this.admin_is( id, lord ) ) return null!
-			return super.Member_rule( lord )
+		override members_admin() {
+			return this.admin_me( this.dialog_active() )
 		}
 
-		/** Убирает людей админ. Себя убрать нельзя: для этого есть выход из
-		 * группы, он не трогает остальных. */
-		override Member_drop( lord: string ) {
-			const id = this.dialog_active()
-			if( !this.admin_me( id ) ) return null!
-			if( lord === this.my_lord() ) return null!
-			return super.Member_drop( lord )
+		override members_owner() {
+			return this.owner_me( this.dialog_active() )
 		}
 
-		@$mol_mem_key
-		member_armed( lord: string, next?: boolean ) {
-			return next ?? false
+		override member_admin( lord: string ) {
+			return this.admin_is( this.dialog_active(), lord )
 		}
 
-		@$mol_mem_key
-		member_drop_hint( lord: string ) {
-			return this.member_armed( lord )
-				? 'Точно убрать? Прошлые сообщения у него останутся'
-				: 'Убрать из группы'
+		override members_asks() {
+			return this.Lobby().asks_of( this.dialog_active() )
 		}
 
-		@$mol_action
-		member_disarm( next?: any ) {
-			for( const lord of this.member_lords() ) this.member_armed( lord, false )
-			return null
-		}
-
-		/** Первый клик взводит кнопку, второй убирает человека — как корзина в
-		 * списке диалогов. Строка участника не кликабельна, но всплытие гасим
-		 * так же: кнопка лежит внутри неё. */
-		@$mol_action
-		member_drop_click( lord: string, next?: Event ) {
-			if( !lord ) return null
-			if( !this.member_armed( lord ) ) {
-				this.member_disarm()
-				this.member_armed( lord, true )
-				return null
-			}
-			this.member_armed( lord, false )
-			const id = this.dialog_active()
-			if( id ) $mol_wire_async( this ).member_part( id, lord )
-			return null
-		}
-
-		@$mol_action
-		member_rule_click( lord: string, next?: Event ) {
-			const id = this.dialog_active()
-			if( !id || !lord ) return null
-			$mol_wire_async( this ).member_promote( id, lord )
-			return null
-		}
-
-		/** Что достанется новому участнику: ключи от всех бакетов группы или
-		 * только от свежего. */
 		@$mol_mem
-		history_open( next?: boolean ) {
-			return next ?? true
-		}
-
-		history_shut() {
-			return !this.history_open()
-		}
-
-		@$mol_action
-		members_history_all( next?: any ) {
-			this.history_open( true )
-			return null
-		}
-
-		@$mol_action
-		members_history_new( next?: any ) {
-			this.history_open( false )
-			return null
-		}
-
-		override members_history_note() {
-			return this.history_open()
-				? 'Новый участник получит ключи от всех прошлых сообщений группы'
-				: 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше'
-		}
-
-		/** Кого ещё можно позвать: те же источники, что и при создании, минус
-		 * те, кто в группе уже есть. */
-		@$mol_mem
-		member_pick_lords() {
+		override member_candidates() {
 			const inside = new Set( this.member_lords() )
 			return this.contact_lords().filter( lord => !inside.has( lord ) )
 		}
 
-		@$mol_mem
-		member_pick_rows() {
-			return this.member_pick_lords().map( lord => this.Member_pick_row( lord ) )
-		}
-
-		member_pick_lord( lord: string ) {
-			return lord
-		}
-
-		member_pick_tint( lord: string ) {
-			return this.avatar_tint( lord )
-		}
-
-		@$mol_mem_key
-		member_pick_title( lord: string ) {
-			return this.peer_label( lord )
-		}
-
-		@$mol_mem_key
-		member_pick_source( lord: string ) {
-			return this.contact_source( lord )
-		}
-
 		@$mol_action
-		member_pick( lord: string, next?: any ) {
+		override member_add( lord: string, next?: any ) {
 			const id = this.dialog_active()
 			if( !id || !lord ) return null
-			$mol_wire_async( this ).member_join( id, lord, this.history_open() )
+			$mol_wire_async( this.Crew() ).join( id, lord, this.member_history() )
 			return null
 		}
 
 		@$mol_action
-		member_id_add( next?: any ) {
-
+		override member_drop( lord: string, next?: any ) {
 			const id = this.dialog_active()
-			const lord = this.member_id().trim()
 			if( !id || !lord ) return null
-
-			if( lord === this.my_lord() ) {
-				this.member_error( 'Это ваш собственный идентификатор' )
-				return null
-			}
-
-			if( !$giper_baza_link.check( lord ) ) {
-				this.member_error( 'Это не похоже на идентификатор' )
-				return null
-			}
-
-			this.member_error( '' )
-			this.member_id( '' )
-			$mol_wire_async( this ).member_join( id, lord, this.history_open() )
-
+			$mol_wire_async( this.Crew() ).part( id, lord )
 			return null
 		}
 
-		/** Звать людей может админ, поэтому у остальных этого блока нет вовсе —
-		 * вместе со ссылкой-приглашением и заявками по ней: принять заявку
-		 * всё равно некому, а ссылка без приёма бесполезна.
-		 *
-		 * Выбор истории стоит наверху блока и распространяется на все способы
-		 * добавить человека сразу: и на заявку, и на ссылку из реестра, и на
-		 * набранный руками идентификатор. */
-		@$mol_mem
-		members_add_rows() {
-
-			const id = this.dialog_active()
-			if( !this.admin_me( id ) ) return []
-
-			const asks = this.ask_entries( id )
-
-			return [
-				this.Members_add_title(),
-				this.Members_history(),
-				... this.member_error() ? [ this.Members_error() ] : [],
-				this.Members_join(),
-				... asks.length ? [ this.Members_asks_head(), this.Members_asks_list() ] : [],
-				this.Members_id_form(),
-				this.Members_pick_list(),
-				... this.owner_me( id ) ? [ this.Members_admin_note() ] : [],
-			]
-		}
-
-		@$mol_mem
-		leave_armed( next?: boolean ) {
-			return next ?? false
-		}
-
-		override group_leave_label() {
-			return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы'
-		}
-
-		/** Выход — то же самое, что удаление диалога из своего списка: ленд
-		 * остаётся у остальных, а свою ссылку и слежку за бакетами мы снимаем.
-		 * Из списка участников при этом не вычёркиваемся: сделать это можно
-		 * только записью в тот же ленд, а писать в группу, из которой уходишь,
-		 * — лишнее. */
 		@$mol_action
-		group_leave_click( next?: any ) {
-			if( !this.leave_armed() ) {
-				this.leave_armed( true )
-				return null
-			}
+		override member_raise( lord: string, next?: any ) {
 			const id = this.dialog_active()
-			this.leave_armed( false )
-			this.members_opened( false )
-			this.dialog_delete( id )
+			if( !id || !lord ) return null
+			$mol_wire_async( this.Crew() ).promote( id, lord )
 			return null
 		}
 
-		member_join( id: string, lord: string, history: boolean, known?: $giper_baza_auth_pass | null ) {
-			return this.Crew().join( id, lord, history, known )
-		}
-
-		member_part( id: string, lord: string ) {
-			return this.Crew().part( id, lord )
-		}
-
-		member_promote( id: string, lord: string ) {
-			return this.Crew().promote( id, lord )
-		}
-
-		// ===== Заявки в группу: сторона админа =====
-
-		ask_entries( id: string ) {
-			return this.Lobby().asks_of( id )
-		}
-
-		override members_asks_head() {
-			return 'Заявки: ' + this.ask_entries( this.dialog_active() ).length
-		}
-
-		@$mol_mem
-		members_ask_rows() {
-			return this.ask_entries( this.dialog_active() ).map( entry => this.Ask_row( entry ) )
-		}
-
-		ask_tint( entry: string ) {
-			return this.avatar_tint( this.ask_lord( entry ) )
-		}
-
-		@$mol_mem_key
-		ask_title( entry: string ) {
-			return this.peer_label( this.ask_lord( entry ) )
-		}
-
-		/** Под именем стоит сокращённый идентификатор: имя человек задаёт себе
-		 * сам, и по одному только имени понять, того ли впускаешь, нельзя. */
-		@$mol_mem_key
-		ask_status( entry: string ) {
-			return this.lord_short( this.ask_lord( entry ) )
-		}
-
-		/** Выдача прав — это криптография с перебором степеней, поэтому из
-		 * обработчика уходим в фибру. */
 		@$mol_action
-		ask_accept( entry: string, next?: Event ) {
+		override ask_accept( entry: string, next?: any ) {
 			if( !entry ) return null
-			$mol_wire_async( this.Lobby() ).apply( entry, this.history_open() )
+			$mol_wire_async( this.Lobby() ).apply( entry, this.member_history() )
 			return null
 		}
 
-		/** Отказ — тоже криптография с перебором степеней: решение уезжает в
-		 * лобби просящего, а туда пишут с работой. Поэтому в фибру. */
 		@$mol_action
-		ask_reject( entry: string, next?: Event ) {
+		override ask_reject( entry: string, next?: any ) {
 			if( !entry ) return null
 			$mol_wire_async( this.Lobby() ).deny( entry )
+			return null
+		}
+
+		@$mol_action
+		override group_leave( next?: any ) {
+			const id = this.dialog_active()
+			this.members_opened( false )
+			this.dialog_delete( id )
 			return null
 		}
 

@@ -23,6 +23,11 @@ namespace $ {
 		}
 
 		@ $mol_mem
+		history( next?: boolean ) {
+			return next ?? true
+		}
+
+		@ $mol_mem
 		draft_name( next?: string ) {
 			return next ?? ''
 		}
