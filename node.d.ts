@@ -41745,7 +41745,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.97";
+    const $bog_gram_version = "1.0.98";
 }
 
 declare namespace $ {
@@ -49870,6 +49870,12 @@ declare namespace $ {
         static permission(): NotificationPermission;
         static activated(): boolean;
         static permission_request(): NotificationPermission;
+        static proof(action: string, lord: string, monitor: string, endpoint: string, time: number): string;
+        static signed(action: string, lord: string, monitor: string, endpoint: string): {
+            time: number;
+            pass: string;
+            sign: string;
+        };
         static send(path: string, body: object): $mol_fetch_response;
         static subscribe(lord: string, monitor: string): boolean;
         static unsubscribe(lord: string): boolean;

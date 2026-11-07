@@ -25734,7 +25734,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.97';
+    $.$bog_gram_version = '1.0.98';
 })($ || ($ = {}));
 
 ;
@@ -30242,6 +30242,9 @@ var $;
         async subscription_drop(sub) {
             return await sub.unsubscribe();
         },
+        async sign(auth, data) {
+            return new Uint8Array(await auth.signer().sign(data));
+        },
     };
     function key_bytes(key) {
         const tail = '='.repeat((4 - key.length % 4) % 4);
@@ -30299,6 +30302,15 @@ var $;
                 return 'default';
             }
         }
+        static proof(action, lord, monitor, endpoint, time) {
+            return ['gram-push', action, lord, monitor, endpoint, String(time)].join('\n');
+        }
+        static signed(action, lord, monitor, endpoint) {
+            const auth = this.$.$giper_baza_auth.current();
+            const time = Date.now();
+            const sign = $mol_wire_sync(api).sign(auth, $mol_charset_encode(this.proof(action, lord, monitor, endpoint, time)));
+            return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode(sign) };
+        }
         static send(path, body) {
             return this.$.$mol_fetch.success(this.base + path, {
                 method: 'POST',
@@ -30330,6 +30342,7 @@ var $;
                     lord,
                     monitor,
                     subscription: sub.toJSON(),
+                    ...this.signed('subscribe', lord, monitor, sub.endpoint),
                 });
                 return true;
             }
@@ -30352,7 +30365,11 @@ var $;
                     }
                 }
                 if (lord)
-                    this.send('/push/unsubscribe', { lord, endpoint });
+                    this.send('/push/unsubscribe', {
+                        lord,
+                        endpoint,
+                        ...this.signed('unsubscribe', lord, '', endpoint),
+                    });
                 return true;
             }
             catch (error) {
@@ -44059,6 +44076,31 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Подпись запроса к демону сходится с ключом владельца и ломается от подмены'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            class Notify extends $bog_gram_notify {
+                static $ = $.$mol_ambient({
+                    $giper_baza_auth: { current: () => auth },
+                });
+            }
+            const proof = await $mol_wire_async(Notify).signed('subscribe', lord, 'Monitor', 'https://push.example/1');
+            $mol_assert_equal($giper_baza_auth_pass.from(proof.pass).lord().str, lord);
+            const sign = $mol_base64_url_decode(proof.sign);
+            const text = (monitor) => $mol_charset_encode(Notify.proof('subscribe', lord, monitor, 'https://push.example/1', proof.time));
+            $mol_assert_equal(await auth.pass().auditor().verify(text('Monitor'), sign), true);
+            $mol_assert_equal(await auth.pass().auditor().verify(text('Stolen'), sign), false);
+            $mol_assert_equal(await other.pass().auditor().verify(text('Monitor'), sign), false);
+        },
+    });
 })($ || ($ = {}));
 
 ;

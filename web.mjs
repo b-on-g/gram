@@ -45434,7 +45434,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.97';
+    $.$bog_gram_version = '1.0.98';
 })($ || ($ = {}));
 
 ;
@@ -49755,6 +49755,9 @@ var $;
         async subscription_drop(sub) {
             return await sub.unsubscribe();
         },
+        async sign(auth, data) {
+            return new Uint8Array(await auth.signer().sign(data));
+        },
     };
     function key_bytes(key) {
         const tail = '='.repeat((4 - key.length % 4) % 4);
@@ -49812,6 +49815,15 @@ var $;
                 return 'default';
             }
         }
+        static proof(action, lord, monitor, endpoint, time) {
+            return ['gram-push', action, lord, monitor, endpoint, String(time)].join('\n');
+        }
+        static signed(action, lord, monitor, endpoint) {
+            const auth = this.$.$giper_baza_auth.current();
+            const time = Date.now();
+            const sign = $mol_wire_sync(api).sign(auth, $mol_charset_encode(this.proof(action, lord, monitor, endpoint, time)));
+            return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode(sign) };
+        }
         static send(path, body) {
             return this.$.$mol_fetch.success(this.base + path, {
                 method: 'POST',
@@ -49843,6 +49855,7 @@ var $;
                     lord,
                     monitor,
                     subscription: sub.toJSON(),
+                    ...this.signed('subscribe', lord, monitor, sub.endpoint),
                 });
                 return true;
             }
@@ -49865,7 +49878,11 @@ var $;
                     }
                 }
                 if (lord)
-                    this.send('/push/unsubscribe', { lord, endpoint });
+                    this.send('/push/unsubscribe', {
+                        lord,
+                        endpoint,
+                        ...this.signed('unsubscribe', lord, '', endpoint),
+                    });
                 return true;
             }
             catch (error) {
