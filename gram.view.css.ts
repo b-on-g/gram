@@ -48,26 +48,6 @@ namespace $.$$ {
 		// в 100% вьюпорта и буклет листается горизонтальным снапом; любые
 		// shrink/grow/minWidth поверх этого ломают адаптивность.
 
-		Menu: {
-			width: '24rem',
-			background: {
-				color: $mol_theme.back,
-			},
-			Head: {
-				padding: head_pad,
-			},
-			Title: {
-				font: {
-					family: $bog_builderui_tokens.font_head,
-					size: '1.5rem',
-					weight: 500,
-				},
-			},
-			Body_content: {
-				padding: body_pad,
-			},
-		},
-
 		Chat_page: {
 			width: '30rem',
 			flex: {
@@ -123,89 +103,6 @@ namespace $.$$ {
 			font: {
 				size: '0.875rem',
 			},
-		},
-
-		// ===== Диалог по ссылке ещё не заведён =====
-		// Ключ собеседника едет по сети, и до его приезда списку диалогов
-		// показать нечего. Плитка тут же объясняет, чего ждём.
-
-		Invite_plate: {
-			align: {
-				items: 'center',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-			padding: {
-				top: '0.5rem',
-				bottom: '0.5rem',
-				left: '0.75rem',
-				right: '0.75rem',
-			},
-			background: {
-				color: veil,
-			},
-			borderRadius: '0.75rem',
-		},
-
-		Invite_plate_text: {
-			flex: {
-				grow: 1,
-				shrink: 1,
-			},
-			minWidth: 0,
-			font: {
-				size: '0.875rem',
-			},
-			color: $mol_theme.shade,
-		},
-
-		// ===== Заявка в группу отправлена =====
-		// Строка стоит над списком диалогов, пока заявку не приняли: после
-		// перехода по ссылке экран иначе просто молчит.
-
-		Ask_plate: {
-			align: {
-				items: 'center',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-			padding: {
-				top: '0.5rem',
-				bottom: '0.5rem',
-				left: '0.75rem',
-				right: '0.75rem',
-			},
-			background: {
-				color: veil,
-			},
-			borderRadius: '0.75rem',
-		},
-
-		Ask_plate_text: {
-			flex: {
-				grow: 1,
-				shrink: 1,
-			},
-			minWidth: 0,
-			font: {
-				size: '0.875rem',
-			},
-			color: $mol_theme.shade,
-		},
-
-		// ===== Список диалогов =====
-
-		Dialogs_list: {
-			gap: '0.125rem',
-		},
-
-		Dialogs_empty: {
-			padding: $mol_gap.block,
-			color: $mol_theme.shade,
-		},
-
-		Saved_icon: {
-			color: tg_blue,
 		},
 
 		// ===== Разделитель дня =====
@@ -474,10 +371,6 @@ namespace $.$$ {
 		'@media': {
 
 			'(max-width: 30rem)': {
-
-				Dialogs_list: {
-					gap: 0,
-				},
 
 				/* пузырю можно шире: соседней колонки на телефоне всё равно нет */
 				Message_row: {

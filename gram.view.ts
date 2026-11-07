@@ -84,27 +84,32 @@ namespace $.$$ {
 			return this.Talk().admin_is( id, lord )
 		}
 
-		/** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
-		 * последними и только пока им есть что показать; развёрнутый раздел
-		 * досыпает строки туда же. */
 		@$mol_mem
-		dialog_rows() {
+		override archive_fresh() {
+			return this.Talk().fresh_first( this.archive_ids() )
+		}
 
-			const archived = this.archive_ids()
-			const requests = this.request_ids()
-			const visible = this.dialog_visible()
+		override request_is( id: string ) {
+			return this.dialog_kind( id ) === 'request'
+		}
 
-			const empty = !visible.length && !archived.length && !requests.length
+		@$mol_action
+		override dialog_archive( id: string, next?: any ) {
+			this.Roster().archive( id )
+			return null
+		}
 
-			return [
-				... archived.length ? [ this.Archive_row() ] : [],
-				... this.archive_opened() ? this.Talk().fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
-				this.Saved_row(),
-				... visible.map( id => this.Dialog_row( id ) ),
-				... empty ? [ this.Dialogs_empty() ] : [],
-				... requests.length ? [ this.Requests_row() ] : [],
-				... this.requests_opened() ? requests.map( id => this.Dialog_row( id ) ) : [],
-			]
+		@$mol_action
+		override dialog_unarchive( id: string, next?: any ) {
+			this.Roster().unarchive( id )
+			return null
+		}
+
+		@$mol_action
+		override request_accept( id: string, next?: any ) {
+			if( !id ) return null
+			this.peer_accept( this.dialog_owner( id ) )
+			return null
 		}
 
 		@$mol_mem
@@ -130,7 +135,6 @@ namespace $.$$ {
 			this.message_text( '' )
 			this.message_menu( '' )
 			this.zoom_id( '' )
-			this.delete_disarm()
 			this.dialog_current( id )
 			this.chat_bring()
 			this.field_focus()
@@ -199,49 +203,13 @@ namespace $.$$ {
 			this.message_text( '' )
 			this.message_menu( '' )
 			this.zoom_id( '' )
-			this.delete_disarm()
 			this.members_opened( false )
 			this.dialog_current( '' )
 			return null
 		}
 
-		// ===== Удаление диалога из своего списка =====
-
-		/** Взвод корзины живёт на своей строке: первый клик красит её,
-		 * второй удаляет — без модалок и системных алертов. */
-		@$mol_mem_key
-		delete_armed( id: string, next?: boolean ) {
-			return next ?? false
-		}
-
-		delete_hint( id: string ) {
-			return this.delete_armed( id ) ? 'Точно удалить?' : 'Удалить диалог'
-		}
-
-		/** Красной ждёт подтверждения максимум одна строка: любой другой клик
-		 * по списку снимает взвод, чтобы забытая корзина не сработала потом. */
 		@$mol_action
-		delete_disarm( next?: any ) {
-			for( const id of this.dialog_ids() ) this.delete_armed( id, false )
-			return null
-		}
-
-		/** Корзина лежит внутри кликабельной строки, поэтому первым делом гасим
-		 * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
-		@$mol_action
-		dialog_delete_click( id: string, next?: Event ) {
-			if( !id ) return null
-			if( !this.delete_armed( id ) ) {
-				this.delete_disarm()
-				this.delete_armed( id, true )
-				return null
-			}
-			this.dialog_delete( id )
-			return null
-		}
-
-		@$mol_action
-		dialog_delete( id: string, next?: any ) {
+		override dialog_delete( id: string, next?: any ) {
 			if( !id ) return null
 			if( this.saved_is( id ) ) return null
 
@@ -253,125 +221,7 @@ namespace $.$$ {
 				this.message_text( '' )
 				this.dialog_current( '' )
 			}
-			this.delete_armed( id, false )
 
-			return null
-		}
-
-		// ===== Архив: спрятанные, но живые диалоги =====
-
-		@$mol_mem
-		archive_opened( next?: boolean ) {
-			return next ?? false
-		}
-
-		/** Архив разворачивается прямо в списке: отдельная страница ради
-		 * пары спрятанных диалогов — лишний шаг навигации. */
-		@$mol_action
-		archive_toggle( next?: any ) {
-			this.delete_disarm()
-			this.archive_opened( !this.archive_opened() )
-			return null
-		}
-
-		/** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-		 * всплытие: иначе тот же клик ещё и открыл бы прячущийся диалог.
-		 * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
-		@$mol_action
-		dialog_archive_click( id: string, next?: Event ) {
-			if( !id ) return null
-			this.delete_disarm()
-			if( this.archive_is( id ) ) this.Roster().unarchive( id )
-			else this.Roster().archive( id )
-			return null
-		}
-
-		@$mol_mem_key
-		archive_hint( id: string ) {
-			return this.archive_is( id ) ? 'Вернуть из архива' : 'В архив'
-		}
-
-		/** Одна и та же кнопка прячет и возвращает, поэтому и стрелка на ней
-		 * смотрит в ту сторону, куда уедет диалог. */
-		@$mol_mem_key
-		archive_icons( id: string ) {
-			return [ this.archive_is( id ) ? this.Dialog_unarchive_icon( id ) : this.Dialog_archive_icon( id ) ]
-		}
-
-		override archive_note() {
-			return $bog_gram_count.dialogs( this.archive_ids().length )
-		}
-
-		/** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
-		 * диалогов. Ленд любого из них может быть ещё в пути — такой не считаем. */
-		@$mol_mem
-		archive_unread() {
-			let count = 0
-			for( const id of this.archive_ids() ) {
-				try {
-					count += this.unread_count( id )
-				} catch( error ) {
-					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				}
-			}
-			return count
-		}
-
-		override archive_unread_label() {
-			return this.archive_unread() ? String( this.archive_unread() ) : ''
-		}
-
-		// ===== Запросы на переписку =====
-
-		@$mol_mem
-		requests_opened( next?: boolean ) {
-			return next ?? false
-		}
-
-		/** Запросы разворачиваются прямо в списке, как и архив: отдельная
-		 * страница ради пары незнакомцев — лишний шаг навигации. */
-		@$mol_action
-		requests_toggle( next?: any ) {
-			this.delete_disarm()
-			this.requests_opened( !this.requests_opened() )
-			return null
-		}
-
-		override requests_count_label() {
-			return String( this.request_ids().length )
-		}
-
-		/** В строке запроса на месте архива и корзины стоят согласие и отказ:
-		 * прятать на вторую полку то, о чём решение ещё не принято, незачем.
-		 * Сама строка остаётся обычной строкой диалога — по клику она так же
-		 * открывает переписку, и прочитать её до решения это нормально. */
-		override Dialog_archive( id: string ) {
-			if( this.dialog_kind( id ) === 'request' ) return this.Request_accept( id )
-			return super.Dialog_archive( id )
-		}
-
-		override Dialog_delete( id: string ) {
-			if( this.dialog_kind( id ) === 'request' ) return this.Request_reject( id )
-			return super.Dialog_delete( id )
-		}
-
-		/** Кнопка лежит внутри кликабельной строки, поэтому первым делом гасим
-		 * всплытие: иначе тот же клик ещё и открыл бы диалог. Согласие даётся
-		 * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
-		@$mol_action
-		request_accept( id: string, next?: Event ) {
-			if( !id ) return null
-			this.peer_accept( this.dialog_owner( id ) )
-			return null
-		}
-
-		/** Отказ — то же самое, что удаление диалога из своего списка: ссылка
-		 * уходит в скрытые, и повторное приглашение её не вернёт. У собеседника
-		 * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
-		@$mol_action
-		request_reject( id: string, next?: Event ) {
-			if( !id ) return null
-			this.dialog_delete( id )
 			return null
 		}
 
@@ -1758,12 +1608,6 @@ namespace $.$$ {
 			return this.unread_total( id )
 		}
 
-		@$mol_mem_key
-		unread_label( id: string ) {
-			const count = this.unread_count( id )
-			return count ? String( count ) : ''
-		}
-
 		// ===== Личная ссылка-приглашение =====
 
 		@$mol_mem
@@ -1778,10 +1622,6 @@ namespace $.$$ {
 			const { plan, exist } = this.Invite().take( lord, key )
 			if( plan === 'open' ) this.dialog_select( exist )
 			return plan
-		}
-
-		override Invite_plate() {
-			return this.invite_plate_text() ? super.Invite_plate() : null!
 		}
 
 		// ===== Ссылка-приглашение в группу =====
@@ -1802,10 +1642,6 @@ namespace $.$$ {
 			const plan = this.Lobby().join_take( id, by )
 			if( plan === 'open' ) this.dialog_select( id )
 			return plan
-		}
-
-		override Ask_plate() {
-			return this.ask_plate_text() ? super.Ask_plate() : null!
 		}
 
 		// ===== Автозапуск =====

@@ -145,48 +145,37 @@ $bog_gram $mol_book2
 					<= Intro_hint $mol_paragraph
 						title \Или начните новый: кнопка в шапке списка
 	pages /
-		<= Menu $mol_page
-			title \Gram
-			tools /
-				<= Status $giper_baza_status
-				<= Compose_open $mol_button_minor
-					hint \Новый диалог
-					click? <=> compose_open? null
-					sub /
-						<= Compose_open_icon $mol_icon_message_plus
-				<= Group_open $mol_button_minor
-					hint \Новая группа
-					click? <=> group_open? null
-					sub /
-						<= Group_open_icon $mol_icon_account_multiple_plus
-				<= Music_open $mol_button_minor
-					hint \Музыка
-					click? <=> music_open? null
-					sub /
-						<= Music_open_icon $mol_icon_music
-				<= Settings_open $mol_button_minor
-					hint \Настройки
-					click? <=> settings_open? null
-					sub /
-						<= Settings_open_icon $mol_icon_cog
-				<= Lights $bog_theme_toggle
-					theme_auto <= Theme
-			body /
-				<= Invite_plate $mol_view
-					sub /
-						<= Invite_plate_text $mol_paragraph
-							title <= invite_plate_text
-						<= Invite_drop $mol_button_minor
-							hint \Отменить
-							click? <=> invite_drop?
-							sub /
-								<= Invite_drop_icon $mol_icon_close
-				<= Ask_plate $mol_view
-					sub /
-						<= Ask_plate_text $mol_paragraph
-							title <= ask_plate_text
-				<= Dialogs_list $mol_list
-					rows <= dialog_rows /
+		<= Menu $bog_gram_menu
+			Theme <= Theme
+			compose? <=> compose_open? null
+			group? <=> group_open? null
+			music? <=> music_open? null
+			settings? <=> settings_open? null
+			invite_plate_text <= invite_plate_text
+			invite_drop? <=> invite_drop?
+			ask_plate_text <= ask_plate_text
+			visible <= dialog_visible
+			archived <= archive_fresh /string
+			requests <= request_ids
+			dialog_title* <= dialog_title*
+			dialog_time* <= dialog_time*
+			dialog_preview* <= dialog_preview*
+			dialog_avatar_id* <= dialog_avatar_id*
+			dialog_tint* <= dialog_tint*
+			unread* <= unread_count* 0
+			current_is* <= dialog_current_is* false
+			request_is* <= request_is* false
+			archive_is* <= archive_is*
+			select*? <=> dialog_select*? null
+			archive*? <=> dialog_archive*? null
+			unarchive*? <=> dialog_unarchive*? null
+			drop*? <=> dialog_delete*? null
+			accept*? <=> request_accept*? null
+			saved_title <= saved_title
+			saved_time <= saved_time \
+			saved_preview <= saved_preview \
+			saved_current <= saved_current_is false
+			saved_open? <=> saved_open? null
 		<= Music_page $bog_gram_music
 			hidden <= music_hidden false
 			close? <=> music_close? null
@@ -291,70 +280,6 @@ $bog_gram $mol_book2
 			voice_abort? <=> voice_abort? null
 			voice_cancel? <=> voice_cancel? null
 			voice_menu? <=> voice_menu? null
-	Dialogs_empty $mol_view
-		sub /
-			<= Dialogs_empty_text $mol_paragraph
-				title \Пока нет диалогов
-	Dialog_row* $bog_gram_row
-		size \large
-		click? <=> dialog_select*? null
-		current <= dialog_current_is* false
-		avatar_id <= dialog_avatar_id*
-		tint <= dialog_tint*
-		title <= dialog_title*
-		time <= dialog_time*
-		note <= dialog_preview*
-		badge <= unread_label* \
-		tools /
-			<= Dialog_archive* $mol_button_minor
-				hint <= archive_hint* \
-				click? <=> dialog_archive_click*? null
-				sub <= archive_icons* /
-			<= Dialog_delete* $mol_button_minor
-				hint <= delete_hint* \
-				attr *
-					^
-					bog_gram_armed <= delete_armed* false
-				click? <=> dialog_delete_click*? null
-				sub /
-					<= Dialog_delete_icon* $mol_icon_delete
-	Dialog_archive_icon* $mol_icon_archive_arrow_down
-	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
-	Saved_row $bog_gram_row
-		size \large
-		hint \Заметки для себя
-		click? <=> saved_open? null
-		current <= saved_current_is false
-		Icon <= Saved_icon $mol_icon_bookmark
-		title <= saved_title
-		time <= saved_time \
-		note <= saved_preview \
-	Archive_row $bog_gram_row
-		size \large
-		hint \Спрятанные диалоги
-		click? <=> archive_toggle? null
-		Icon <= Archive_icon $mol_icon_archive
-		title \Архив
-		note <= archive_note \
-		badge <= archive_unread_label \
-	Requests_row $bog_gram_row
-		size \large
-		hint \Запросы на переписку
-		click? <=> requests_toggle? null
-		Icon <= Requests_icon $mol_icon_account_question
-		title \Запросы
-		note \Хотят вам написать
-		badge <= requests_count_label \
-	Request_accept* $mol_button_minor
-		hint \Принять
-		click? <=> request_accept*? null
-		sub /
-			<= Request_accept_icon* $mol_icon_check
-	Request_reject* $mol_button_minor
-		hint \Отклонить
-		click? <=> request_reject*? null
-		sub /
-			<= Request_reject_icon* $mol_icon_close
 	Day_row* $mol_view
 		sub /
 			<= Day_chip* $mol_view

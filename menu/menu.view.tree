@@ -1,0 +1,136 @@
+$bog_gram_menu $bog_gram_page
+	title \Gram
+	Theme $bog_theme_auto
+	compose? null
+	group? null
+	music? null
+	settings? null
+	invite_plate_text \
+	invite_drop? null
+	ask_plate_text \
+	visible /string
+	archived /string
+	requests /string
+	dialog_title* \
+	dialog_time* \
+	dialog_preview* \
+	dialog_avatar_id* \
+	dialog_tint* 0
+	unread* 0
+	current_is* false
+	request_is* false
+	archive_is* false
+	select*? null
+	archive*? null
+	unarchive*? null
+	drop*? null
+	accept*? null
+	saved_title \
+	saved_time \
+	saved_preview \
+	saved_current false
+	saved_open? null
+	tools /
+		<= Status $giper_baza_status
+		<= Compose_open $mol_button_minor
+			hint \Новый диалог
+			click? <=> compose?
+			sub /
+				<= Compose_open_icon $mol_icon_message_plus
+		<= Group_open $mol_button_minor
+			hint \Новая группа
+			click? <=> group?
+			sub /
+				<= Group_open_icon $mol_icon_account_multiple_plus
+		<= Music_open $mol_button_minor
+			hint \Музыка
+			click? <=> music?
+			sub /
+				<= Music_open_icon $mol_icon_music
+		<= Settings_open $mol_button_minor
+			hint \Настройки
+			click? <=> settings?
+			sub /
+				<= Settings_open_icon $mol_icon_cog
+		<= Lights $bog_theme_toggle
+			theme_auto <= Theme
+	body /
+		<= Invite_plate $mol_view
+			sub /
+				<= Invite_plate_text $mol_paragraph
+					title <= invite_plate_text
+				<= Invite_drop $mol_button_minor
+					hint \Отменить
+					click? <=> invite_drop?
+					sub /
+						<= Invite_drop_icon $mol_icon_close
+		<= Ask_plate $mol_view
+			sub /
+				<= Ask_plate_text $mol_paragraph
+					title <= ask_plate_text
+		<= Dialogs_list $mol_list
+			rows <= dialog_rows /
+	Dialogs_empty $mol_view
+		sub /
+			<= Dialogs_empty_text $mol_paragraph
+				title \Пока нет диалогов
+	Dialog_row* $bog_gram_row
+		size \large
+		click? <=> pick*? null
+		current <= current_is*
+		avatar_id <= dialog_avatar_id*
+		tint <= dialog_tint*
+		title <= dialog_title*
+		time <= dialog_time*
+		note <= dialog_preview*
+		badge <= unread_label* \
+		tools /
+			<= Dialog_archive* $mol_button_minor
+				hint <= archive_hint* \
+				click? <=> archive_click*? null
+				sub <= archive_icons* /
+			<= Dialog_delete* $mol_button_minor
+				hint <= delete_hint* \
+				attr *
+					^
+					bog_gram_armed <= delete_armed*? false
+				click? <=> delete_click*? null
+				sub /
+					<= Dialog_delete_icon* $mol_icon_delete
+	Dialog_archive_icon* $mol_icon_archive_arrow_down
+	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
+	Request_accept* $mol_button_minor
+		hint \Принять
+		click? <=> request_accept*? null
+		sub /
+			<= Request_accept_icon* $mol_icon_check
+	Request_reject* $mol_button_minor
+		hint \Отклонить
+		click? <=> request_reject*? null
+		sub /
+			<= Request_reject_icon* $mol_icon_close
+	Saved_row $bog_gram_row
+		size \large
+		hint \Заметки для себя
+		click? <=> saved_pick? null
+		current <= saved_current
+		Icon <= Saved_icon $mol_icon_bookmark
+		title <= saved_title
+		time <= saved_time
+		note <= saved_preview
+	Archive_row $bog_gram_row
+		size \large
+		hint \Спрятанные диалоги
+		click? <=> archive_toggle? null
+		Icon <= Archive_icon $mol_icon_archive
+		title \Архив
+		note <= archive_note \
+		badge <= archive_unread_label \
+	Requests_row $bog_gram_row
+		size \large
+		hint \Запросы на переписку
+		click? <=> requests_toggle? null
+		Icon <= Requests_icon $mol_icon_account_question
+		title \Запросы
+		note \Хотят вам написать
+		badge <= requests_count_label \
