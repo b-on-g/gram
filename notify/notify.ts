@@ -1,5 +1,9 @@
 namespace $ {
 
+	function proof( action: string, lord: string, monitor: string, endpoint: string, time: number ) {
+		return [ 'gram-push', action, lord, monitor, endpoint, String( time ) ].join( '\n' )
+	}
+
 	const api = {
 
 		async permission_ask() {
@@ -25,8 +29,11 @@ namespace $ {
 			return await sub.unsubscribe()
 		},
 
-		async sign( auth: $giper_baza_auth, data: Uint8Array< ArrayBuffer > ) {
-			return new Uint8Array( await auth.signer().sign( data ) )
+		async signed( auth: $giper_baza_auth, action: string, lord: string, monitor: string, endpoint: string ) {
+			const time = Date.now()
+			const data = $mol_charset_encode( proof( action, lord, monitor, endpoint, time ) )
+			const sign = new Uint8Array( await auth.signer().sign( data ) )
+			return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode( sign ) }
 		},
 
 	}
@@ -85,14 +92,12 @@ namespace $ {
 		}
 
 		static proof( action: string, lord: string, monitor: string, endpoint: string, time: number ) {
-			return [ 'gram-push', action, lord, monitor, endpoint, String( time ) ].join( '\n' )
+			return proof( action, lord, monitor, endpoint, time )
 		}
 
 		static signed( action: string, lord: string, monitor: string, endpoint: string ) {
 			const auth = this.$.$giper_baza_auth.current()
-			const time = Date.now()
-			const sign = $mol_wire_sync( api ).sign( auth, $mol_charset_encode( this.proof( action, lord, monitor, endpoint, time ) ) )
-			return { time, pass: auth.pass().toString(), sign: $mol_base64_url_encode( sign ) }
+			return $mol_wire_sync( api ).signed( auth, action, lord, monitor, endpoint )
 		}
 
 		static send( path: string, body: object ) {
