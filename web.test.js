@@ -8951,6 +8951,13 @@ var $;
                 // Отметки нет вовсе — читать с самого начала
                 $mol_assert_equal(app.unread_first(list, 'Me', 0), 0);
             },
+            async 'Тап по диалогу открывает его, даже пока отметка прочтения едет'($) {
+                const app = $bog_gram.make({ $ });
+                const wait = new Promise(() => { });
+                app.chat_focus = () => { throw wait; };
+                await $mol_wire_async(app).dialog_select('dialog');
+                $mol_assert_equal(app.dialog_current(), 'dialog');
+            },
             'Пока отметка прочтения не доехала, диалог не решает, откуда открываться'($) {
                 const app = $bog_gram.make({ $ });
                 const wait = new Promise(() => { });

@@ -52877,7 +52877,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.66";
+    const $bog_gram_version = "1.0.67";
 }
 
 declare namespace $ {
@@ -55941,6 +55941,10 @@ declare namespace $.$$ {
         dialog_current(next?: string): string;
         dialog_current_is(id: string): boolean;
         dialog_select(id: string, next?: any): null;
+        /** Отметка прочтения после перезагрузки ещё едет, и пересчёт фокуса
+         * ждёт её. Тап по диалогу ждать не должен: решение досчитается само,
+         * когда отметка приедет. */
+        chat_focus_reset(id: string): void;
         /** С мышью и клавиатурой открытый диалог сразу принимает текст. На
          * сенсорном экране фокус вытащил бы клавиатуру на пол-экрана поверх
          * переписки, которую человек открыл почитать. */
