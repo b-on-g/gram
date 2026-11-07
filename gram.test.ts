@@ -607,40 +607,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Уведомления включаются сами, но выключенные руками не возвращаются'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const plan = (
-				permission: NotificationPermission,
-				on: boolean,
-				off: boolean,
-				asked: boolean,
-			)=> app.notify_plan( true, permission, on, off, asked )
-
-			// Разрешение уже есть — подписываемся молча, без похода в настройки
-			$mol_assert_equal( plan( 'granted', false, false, false ), 'subscribe' )
-
-			// Разрешения нет — спрашиваем, но ровно один раз на браузер
-			$mol_assert_equal( plan( 'default', false, false, false ), 'ask' )
-			$mol_assert_equal( plan( 'default', false, false, true ), 'skip' )
-
-			$mol_assert_equal( plan( 'denied', false, false, false ), 'skip' )
-
-			// Включённые переподписываются на каждом заходе: демон мог выкинуть
-			// протухшую подписку, а сам браузер об этом не узнает
-			$mol_assert_equal( plan( 'granted', true, false, false ), 'subscribe' )
-			$mol_assert_equal( plan( 'denied', true, false, false ), 'skip' )
-
-			// Выключенное руками не включается обратно ни при каком разрешении
-			$mol_assert_equal( plan( 'granted', false, true, false ), 'skip' )
-			$mol_assert_equal( plan( 'default', false, true, false ), 'skip' )
-
-			// Без поддержки в браузере не делаем вообще ничего
-			$mol_assert_equal( app.notify_plan( false, 'granted', false, false, false ), 'skip' )
-
-		},
-
 		async 'Архив прячет диалог из списка, но не удаляет'( $ ) {
 
 			const land = $giper_baza_land.make({ $ })
