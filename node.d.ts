@@ -41745,7 +41745,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.100";
+    const $bog_gram_version = "1.0.101";
 }
 
 declare namespace $ {
@@ -46191,6 +46191,7 @@ declare namespace $ {
             } | null;
             readonly Voice_span: (auto?: any) => $giper_baza_atom_real | null;
             readonly Reply: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Call: (auto?: any) => $giper_baza_atom_link | null;
         }>;
         path: string;
     } & {
@@ -48836,6 +48837,7 @@ declare namespace $ {
             };
             readonly Voice_span: typeof $giper_baza_atom_real;
             readonly Reply: typeof $giper_baza_atom_text;
+            readonly Call: typeof $giper_baza_atom_link;
         };
     };
     export class $bog_gram_message extends $bog_gram_message_base {
@@ -50284,6 +50286,15 @@ declare namespace $ {
 //# sourceMappingURL=left.view.tree.d.ts.map
 declare namespace $ {
 
+	export class $mol_icon_phone extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=phone.view.tree.d.ts.map
+declare namespace $ {
+
 	export class $mol_icon_reply extends $mol_icon {
 		path( ): string
 	}
@@ -50647,6 +50658,1514 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
+	export class $mol_icon_video extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=video.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_phone_hangup extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=hangup.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_microphone_off extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=off.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_video_player__stream_bog_gram_call_tile_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_tile['stream'] >
+		,
+		ReturnType< $mol_video_player['stream'] >
+	>
+	type $mol_video_player__controls_bog_gram_call_tile_2 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $mol_video_player['controls'] >
+	>
+	type $mol_video_player__muted_bog_gram_call_tile_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_tile['muted'] >
+		,
+		ReturnType< $mol_video_player['muted'] >
+	>
+	type $mol_view__sub_bog_gram_call_tile_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_tile_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_tile_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_tile_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_tile['label'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $bog_gram_call_tile extends $mol_view {
+		Video( ): $mol_video_player
+		letter( ): string
+		Face( ): $mol_view
+		Name( ): $mol_view
+		Mic_off( ): $mol_icon_microphone_off
+		status_text( ): string
+		Status( ): $mol_view
+		label( ): readonly(any)[]
+		Label( ): $mol_view
+		stream( ): any
+		muted( ): boolean
+		mirror( ): boolean
+		cam( ): boolean
+		mic( ): boolean
+		name( ): string
+		status( ): string
+		failed_text( ): string
+		connecting_text( ): string
+		attr( ): ({ 
+			'bog_gram_call_tile_cam': ReturnType< $bog_gram_call_tile['cam'] >,
+			'bog_gram_call_tile_mirror': ReturnType< $bog_gram_call_tile['mirror'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=tile.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_call_tile extends $.$bog_gram_call_tile {
+        letter(): string;
+        status_text(): string;
+        label(): ($mol_view | $mol_icon_microphone_off)[];
+        auto(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_check_icon extends $mol_check {
+	}
+	
+}
+
+//# sourceMappingURL=icon.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_paragraph__title_bog_gram_call_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['lobby_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_major__title_bog_gram_call_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_gram_call_3 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['join'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $bog_gram_call_room__land_bog_gram_call_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['land'] >
+		,
+		ReturnType< $bog_gram_call_room['land'] >
+	>
+	type $bog_gram_call_room__name_bog_gram_call_5 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['name'] >
+		,
+		ReturnType< $bog_gram_call_room['name'] >
+	>
+	type $mol_view__sub_bog_gram_call_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['tiles'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_call_tile__stream_bog_gram_call_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['self_stream'] >
+		,
+		ReturnType< $bog_gram_call_tile['stream'] >
+	>
+	type $bog_gram_call_tile__muted_bog_gram_call_8 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_call_tile['muted'] >
+	>
+	type $bog_gram_call_tile__mirror_bog_gram_call_9 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_call_tile['mirror'] >
+	>
+	type $bog_gram_call_tile__cam_bog_gram_call_10 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam'] >
+		,
+		ReturnType< $bog_gram_call_tile['cam'] >
+	>
+	type $bog_gram_call_tile__mic_bog_gram_call_11 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mic'] >
+		,
+		ReturnType< $bog_gram_call_tile['mic'] >
+	>
+	type $bog_gram_call_tile__name_bog_gram_call_12 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['self_name'] >
+		,
+		ReturnType< $bog_gram_call_tile['name'] >
+	>
+	type $bog_gram_call_tile__stream_bog_gram_call_13 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_stream'] >
+		,
+		ReturnType< $bog_gram_call_tile['stream'] >
+	>
+	type $bog_gram_call_tile__cam_bog_gram_call_14 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_cam'] >
+		,
+		ReturnType< $bog_gram_call_tile['cam'] >
+	>
+	type $bog_gram_call_tile__mic_bog_gram_call_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_mic'] >
+		,
+		ReturnType< $bog_gram_call_tile['mic'] >
+	>
+	type $bog_gram_call_tile__name_bog_gram_call_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_name'] >
+		,
+		ReturnType< $bog_gram_call_tile['name'] >
+	>
+	type $bog_gram_call_tile__status_bog_gram_call_17 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_status'] >
+		,
+		ReturnType< $bog_gram_call_tile['status'] >
+	>
+	type $mol_list__rows_bog_gram_call_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_check_icon__Icon_bog_gram_call_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['Mic_icon'] >
+		,
+		ReturnType< $mol_check_icon['Icon'] >
+	>
+	type $mol_check_icon__hint_bog_gram_call_20 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_icon['hint'] >
+	>
+	type $mol_check_icon__checked_bog_gram_call_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mic'] >
+		,
+		ReturnType< $mol_check_icon['checked'] >
+	>
+	type $mol_check_icon__Icon_bog_gram_call_22 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['Cam_icon'] >
+		,
+		ReturnType< $mol_check_icon['Icon'] >
+	>
+	type $mol_check_icon__hint_bog_gram_call_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_icon['hint'] >
+	>
+	type $mol_check_icon__checked_bog_gram_call_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam'] >
+		,
+		ReturnType< $mol_check_icon['checked'] >
+	>
+	type $mol_check_icon__enabled_bog_gram_call_25 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam_able'] >
+		,
+		ReturnType< $mol_check_icon['enabled'] >
+	>
+	type $mol_button_minor__hint_bog_gram_call_26 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_call_27 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['leave'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_call_28 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	export class $bog_gram_call extends $mol_page {
+		content( ): readonly(any)[]
+		controls( ): readonly(any)[]
+		tiles( ): readonly(any)[]
+		self_stream( ): any
+		self_name( ): string
+		mate_stream( id: any): any
+		mate_cam( id: any): boolean
+		mate_mic( id: any): boolean
+		mate_name( id: any): string
+		mate_status( id: any): string
+		lobby_text( ): string
+		Lobby_text( ): $mol_paragraph
+		join( next?: any ): any
+		Join( ): $mol_button_major
+		Mic_icon( ): $mol_icon_microphone
+		mic( next?: boolean ): boolean
+		Cam_icon( ): $mol_icon_video
+		cam( next?: boolean ): boolean
+		cam_able( ): boolean
+		leave( next?: any ): any
+		Leave_icon( ): $mol_icon_phone_hangup
+		land( ): any
+		name( ): string
+		Room( ): $bog_gram_call_room
+		title( ): string
+		body( ): ReturnType< $bog_gram_call['content'] >
+		foot( ): ReturnType< $bog_gram_call['controls'] >
+		Grid( ): $mol_view
+		Self( ): $bog_gram_call_tile
+		Mate( id: any): $bog_gram_call_tile
+		Lobby( ): $mol_list
+		Mic( ): $mol_check_icon
+		Cam( ): $mol_check_icon
+		Leave( ): $mol_button_minor
+		lobby_empty( ): string
+		lobby_some( ): string
+	}
+	
+}
+
+//# sourceMappingURL=call.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_call extends $.$bog_gram_call {
+        joined(): boolean;
+        content(): $mol_view[];
+        controls(): $mol_button_minor[];
+        tiles(): $.$bog_gram_call_tile[];
+        lobby_text(): string;
+        join(): void;
+        leave(): void;
+        mic(next?: boolean): boolean;
+        cam(next?: boolean): boolean;
+        cam_able(): boolean;
+        self_stream(): MediaStream & {
+            destructor: () => void;
+        };
+        mate_stream(mate: string): MediaStream | null;
+        mate_status(mate: string): string;
+        mate_name(mate: string): string;
+        mate_mic(mate: string): boolean;
+        mate_cam(mate: string): boolean;
+        auto(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+    const $bog_gram_call_seat_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Lord: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Name: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Beat: (auto?: any) => $giper_baza_atom_real | null;
+            readonly Left: (auto?: any) => $giper_baza_atom_real | null;
+            readonly Mic: (auto?: any) => $giper_baza_atom_bool | null;
+            readonly Cam: (auto?: any) => $giper_baza_atom_bool | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Lord: typeof $giper_baza_atom_text;
+            readonly Name: typeof $giper_baza_atom_text;
+            readonly Beat: typeof $giper_baza_atom_real;
+            readonly Left: typeof $giper_baza_atom_real;
+            readonly Mic: typeof $giper_baza_atom_bool;
+            readonly Cam: typeof $giper_baza_atom_bool;
+        };
+    };
+    export class $bog_gram_call_seat extends $bog_gram_call_seat_base {
+    }
+    export {};
+}
+
+declare namespace $ {
+    const $bog_gram_call_land_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Created: (auto?: any) => $giper_baza_atom_real | null;
+            readonly Seats: (auto?: any) => {
+                Value: typeof $bog_gram_call_seat;
+                key(key: $giper_baza_vary_type, auto?: any): $bog_gram_call_seat;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
+            readonly Offers: (auto?: any) => {
+                Value: typeof $giper_baza_atom_text;
+                key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
+            readonly Answers: (auto?: any) => {
+                Value: typeof $giper_baza_atom_text;
+                key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Created: typeof $giper_baza_atom_real;
+            readonly Seats: {
+                new (): {
+                    Value: typeof $bog_gram_call_seat;
+                    key(key: $giper_baza_vary_type, auto?: any): $bog_gram_call_seat;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
+            readonly Offers: {
+                new (): {
+                    Value: typeof $giper_baza_atom_text;
+                    key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
+            readonly Answers: {
+                new (): {
+                    Value: typeof $giper_baza_atom_text;
+                    key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
+        };
+    };
+    export class $bog_gram_call_land extends $bog_gram_call_land_base {
+    }
+    export {};
+}
+
+declare namespace $ {
+    type $bog_gram_call_signal = {
+        id: string;
+        sdp: string;
+    };
+    type $bog_gram_call_box = 'Offers' | 'Answers';
+    class $bog_gram_call_room extends $mol_object {
+        static beat_every: number;
+        static alive_span: number;
+        static grab(passes: readonly $giper_baza_auth_pass[] | null): $giper_baza_land;
+        static offerer(me: string, mate: string): boolean;
+        static pair(me: string, mate: string): string;
+        static signal_parse(text: string): $bog_gram_call_signal | null;
+        land(): $giper_baza_land;
+        data(): $bog_gram_call_land;
+        lord(): string;
+        name(): string;
+        now(precision: number): number;
+        seat(next?: string): string;
+        joined(next?: boolean): boolean;
+        mic(next?: boolean): boolean;
+        cam(next?: boolean): boolean;
+        join(): void;
+        leave(): void;
+        beat(): null;
+        seat_pawn(id: string): $bog_gram_call_seat | null;
+        seats_alive(): readonly string[];
+        mates(): readonly string[];
+        seat_name(id: string): string;
+        seat_mic(id: string): boolean;
+        seat_cam(id: string): boolean;
+        signal(box: $bog_gram_call_box, key: string): string;
+        signal_put(box: $bog_gram_call_box, key: string, text: string): void;
+        media(): MediaStream & {
+            destructor: () => void;
+        };
+        cam_able(): boolean;
+        media_apply(): MediaStream & {
+            destructor: () => void;
+        };
+        peer(mate: string): $bog_gram_call_peer;
+        peers(): $bog_gram_call_peer[];
+        run(): null;
+        destructor(): void;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_call_peer extends $mol_object {
+        static ice: RTCIceServer[];
+        static gather_limit: number;
+        static connect_limit: number;
+        static restart_after: number;
+        static gather(rtc: RTCPeerConnection): Promise<string>;
+        static offer_make(rtc: RTCPeerConnection, stream: MediaStream): Promise<string>;
+        static answer_make(rtc: RTCPeerConnection, offer: string, stream: MediaStream): Promise<string>;
+        static answer_apply(rtc: RTCPeerConnection, answer: string): Promise<void>;
+        room(): $bog_gram_call_room;
+        mate(): string;
+        offerer(): boolean;
+        key(): string;
+        attempt(next?: number): number;
+        changed(next?: number): number;
+        tracked(next?: number): number;
+        state(): RTCPeerConnectionState;
+        remote(): MediaStream | null;
+        offer_their(): $bog_gram_call_signal | null;
+        offer_id(): string;
+        rtc(): (RTCPeerConnection & {
+            destructor: () => void;
+        }) | null;
+        state_change(rtc: RTCPeerConnection): void;
+        restart(rtc: RTCPeerConnection): void;
+        offer_mine(): $bog_gram_call_signal | null;
+        offer_post(): string;
+        answer_take(): boolean;
+        answer_post(): boolean;
+        sync(): boolean;
+        status(): string;
+    }
+}
+
+declare namespace $ {
+
+	type $mol_view__sub_bog_gram_call_card_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_card_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_card_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_call_room__land_bog_gram_call_card_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_card['land'] >
+		,
+		ReturnType< $bog_gram_call_room['land'] >
+	>
+	export class $bog_gram_call_card extends $mol_button_minor {
+		Icon( ): $mol_icon_phone
+		title( ): string
+		Title( ): $mol_view
+		count_text( ): string
+		Count( ): $mol_view
+		Info( ): $mol_view
+		land( ): any
+		Room( ): $bog_gram_call_room
+		sub( ): readonly(any)[]
+		count_none( ): string
+		count_some( ): string
+	}
+	
+}
+
+//# sourceMappingURL=card.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_call_card extends $.$bog_gram_call_card {
+        count_text(): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
 	type $mol_view__attr_bog_gram_bubble_1 = $mol_type_enforce<
 		({ 
 			'bog_gram_tint': ReturnType< $bog_gram_bubble['author_tint'] >,
@@ -50734,20 +52253,20 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_sound['ended'] >
 	>
-	type $mol_paragraph__title_bog_gram_bubble_18 = $mol_type_enforce<
+	type $bog_gram_call_card__land_bog_gram_bubble_18 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['call_land'] >
+		,
+		ReturnType< $bog_gram_call_card['land'] >
+	>
+	type $bog_gram_call_card__click_bog_gram_bubble_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['call_open'] >
+		,
+		ReturnType< $bog_gram_call_card['click'] >
+	>
+	type $mol_paragraph__title_bog_gram_bubble_20 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['body'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_bubble_19 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_bubble_20 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_bubble_21 = $mol_type_enforce<
 		readonly(any)[]
@@ -50759,37 +52278,47 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_23 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_23 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_24 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_25 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_24 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_26 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_25 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_27 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_26 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_28 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_27 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_29 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_28 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_30 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__event_bog_gram_bubble_29 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_bubble_31 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
 			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
@@ -50797,7 +52326,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_30 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_32 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -50810,6 +52339,7 @@ declare namespace $ {
 		Quote( ): $mol_button_minor
 		Shot( ): $bog_gram_photo
 		Sound( ): $bog_gram_sound
+		Call( ): $bog_gram_call_card
 		Body( ): $mol_paragraph
 		Time( ): $mol_view
 		Edited( ): $mol_view
@@ -50840,6 +52370,9 @@ declare namespace $ {
 		sound_playing( ): boolean
 		sound_toggle( next?: any ): any
 		sound_ended( next?: any ): any
+		call( ): boolean
+		call_land( ): any
+		call_open( next?: any ): any
 		body( ): string
 		time( ): string
 		edited( ): boolean
@@ -50872,6 +52405,7 @@ declare namespace $.$$ {
         Quote(): $mol_button_minor;
         Shot(): $.$bog_gram_photo;
         Sound(): $.$bog_gram_sound;
+        Call(): $.$bog_gram_call_card;
         Body(): $.$mol_paragraph;
         Edited(): $mol_view;
         Checks(): $mol_view;
@@ -50959,7 +52493,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_gram_chat_9 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['members'] >
+		ReturnType< $bog_gram_chat['call_start'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -50974,7 +52508,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_gram_chat_12 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['close'] >
+		ReturnType< $bog_gram_chat['members'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -50983,357 +52517,387 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_list__rows_bog_gram_chat_14 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_14 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_bog_gram_chat_17 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_view__sub_bog_gram_chat_15 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_18 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_16 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_19 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_17 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_20 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_18 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_21 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_19 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_22 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['reply_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_20 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_23 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_21 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_22 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_25 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_23 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_26 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_24 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_27 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_25 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_28 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_26 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_chat_27 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['voice_hint'] >
-		,
-		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_chat_28 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['send_tools'] >
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_chat_29 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_30 = $mol_type_enforce<
-		readonly(any)[]
+	type $mol_paragraph__title_bog_gram_chat_30 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_hint'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $mol_paragraph['title'] >
 	>
 	type $mol_view__sub_bog_gram_chat_31 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['send_tools'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_32 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_zoom__uri_bog_gram_chat_32 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_33 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_34 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_zoom__uri_bog_gram_chat_35 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['zoom_uri'] >
 		,
 		ReturnType< $bog_gram_zoom['uri'] >
 	>
-	type $bog_gram_zoom__close_bog_gram_chat_33 = $mol_type_enforce<
+	type $bog_gram_zoom__close_bog_gram_chat_36 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['zoom_close'] >
 		,
 		ReturnType< $bog_gram_zoom['close'] >
 	>
-	type $bog_gram_attach__hint_bog_gram_chat_34 = $mol_type_enforce<
+	type $bog_gram_attach__hint_bog_gram_chat_37 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_attach['hint'] >
 	>
-	type $bog_gram_attach__accept_bog_gram_chat_35 = $mol_type_enforce<
+	type $bog_gram_attach__accept_bog_gram_chat_38 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_attach['accept'] >
 	>
-	type $bog_gram_attach__multiple_bog_gram_chat_36 = $mol_type_enforce<
+	type $bog_gram_attach__multiple_bog_gram_chat_39 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_attach['multiple'] >
 	>
-	type $bog_gram_attach__files_bog_gram_chat_37 = $mol_type_enforce<
+	type $bog_gram_attach__files_bog_gram_chat_40 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['image_files'] >
 		,
 		ReturnType< $bog_gram_attach['files'] >
 	>
-	type $bog_gram_attach__Icon_bog_gram_chat_38 = $mol_type_enforce<
+	type $bog_gram_attach__Icon_bog_gram_chat_41 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['Attach_icon'] >
 		,
 		ReturnType< $bog_gram_attach['Icon'] >
 	>
-	type $mol_string__hint_bog_gram_chat_39 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_chat_42 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_chat_40 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_chat_43 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_text'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_chat_41 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_chat_44 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_42 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_45 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_43 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_46 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_44 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_47 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $bog_gram_hold__hint_bog_gram_chat_45 = $mol_type_enforce<
+	type $bog_gram_hold__hint_bog_gram_chat_48 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_hold['hint'] >
 	>
-	type $bog_gram_hold__press_bog_gram_chat_46 = $mol_type_enforce<
+	type $bog_gram_hold__press_bog_gram_chat_49 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_press'] >
 		,
 		ReturnType< $bog_gram_hold['press'] >
 	>
-	type $bog_gram_hold__release_bog_gram_chat_47 = $mol_type_enforce<
+	type $bog_gram_hold__release_bog_gram_chat_50 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_release'] >
 		,
 		ReturnType< $bog_gram_hold['release'] >
 	>
-	type $bog_gram_hold__abort_bog_gram_chat_48 = $mol_type_enforce<
+	type $bog_gram_hold__abort_bog_gram_chat_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_cancel'] >
 		,
 		ReturnType< $bog_gram_hold['abort'] >
 	>
-	type $bog_gram_hold__sub_bog_gram_chat_49 = $mol_type_enforce<
+	type $bog_gram_hold__sub_bog_gram_chat_52 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_hold['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_50 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_53 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_51 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_54 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_52 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_55 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_53 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_56 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__minimal_height_bog_gram_chat_54 = $mol_type_enforce<
+	type $mol_view__minimal_height_bog_gram_chat_57 = $mol_type_enforce<
 		number
 		,
 		ReturnType< $mol_view['minimal_height'] >
 	>
-	type $mol_view__sub_bog_gram_chat_55 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_58 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['line_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_56 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_59 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_bubble__out_bog_gram_chat_57 = $mol_type_enforce<
+	type $bog_gram_bubble__out_bog_gram_chat_60 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_out'] >
 		,
 		ReturnType< $bog_gram_bubble['out'] >
 	>
-	type $bog_gram_bubble__menu_bog_gram_chat_58 = $mol_type_enforce<
+	type $bog_gram_bubble__menu_bog_gram_chat_61 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_menu_is'] >
 		,
 		ReturnType< $bog_gram_bubble['menu'] >
 	>
-	type $bog_gram_bubble__author_bog_gram_chat_59 = $mol_type_enforce<
+	type $bog_gram_bubble__author_bog_gram_chat_62 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author'] >
 		,
 		ReturnType< $bog_gram_bubble['author'] >
 	>
-	type $bog_gram_bubble__author_tint_bog_gram_chat_60 = $mol_type_enforce<
+	type $bog_gram_bubble__author_tint_bog_gram_chat_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author_tint'] >
 		,
 		ReturnType< $bog_gram_bubble['author_tint'] >
 	>
-	type $bog_gram_bubble__quote_shown_bog_gram_chat_61 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_64 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_shown'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_shown'] >
 	>
-	type $bog_gram_bubble__quote_author_bog_gram_chat_62 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_author_bog_gram_chat_65 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_author'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_author'] >
 	>
-	type $bog_gram_bubble__quote_text_bog_gram_chat_63 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_text_bog_gram_chat_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_text'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_text'] >
 	>
-	type $bog_gram_bubble__quote_jump_bog_gram_chat_64 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_jump'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_jump'] >
 	>
-	type $bog_gram_bubble__shot_bog_gram_chat_65 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_bog_gram_chat_68 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot'] >
 		,
 		ReturnType< $bog_gram_bubble['shot'] >
 	>
-	type $bog_gram_bubble__shot_uri_bog_gram_chat_66 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_uri'] >
 	>
-	type $bog_gram_bubble__shot_width_bog_gram_chat_67 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_width_bog_gram_chat_70 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_width'] >
 	>
-	type $bog_gram_bubble__shot_ratio_bog_gram_chat_68 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_71 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_ratio'] >
 	>
-	type $bog_gram_bubble__zoom_bog_gram_chat_69 = $mol_type_enforce<
+	type $bog_gram_bubble__zoom_bog_gram_chat_72 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_zoom'] >
 		,
 		ReturnType< $bog_gram_bubble['zoom'] >
 	>
-	type $bog_gram_bubble__sound_bog_gram_chat_70 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_bog_gram_chat_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound'] >
 		,
 		ReturnType< $bog_gram_bubble['sound'] >
 	>
-	type $bog_gram_bubble__sound_uri_bog_gram_chat_71 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_uri'] >
 	>
-	type $bog_gram_bubble__sound_span_bog_gram_chat_72 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_span_bog_gram_chat_75 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_span'] >
 	>
-	type $bog_gram_bubble__sound_playing_bog_gram_chat_73 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_76 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_playing'] >
 	>
-	type $bog_gram_bubble__sound_toggle_bog_gram_chat_74 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_toggle'] >
 	>
-	type $bog_gram_bubble__sound_ended_bog_gram_chat_75 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_78 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_ended'] >
 	>
-	type $bog_gram_bubble__body_bog_gram_chat_76 = $mol_type_enforce<
+	type $bog_gram_bubble__call_bog_gram_chat_79 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_call'] >
+		,
+		ReturnType< $bog_gram_bubble['call'] >
+	>
+	type $bog_gram_bubble__call_land_bog_gram_chat_80 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_call_land'] >
+		,
+		ReturnType< $bog_gram_bubble['call_land'] >
+	>
+	type $bog_gram_bubble__call_open_bog_gram_chat_81 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_call_open'] >
+		,
+		ReturnType< $bog_gram_bubble['call_open'] >
+	>
+	type $bog_gram_bubble__body_bog_gram_chat_82 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_body'] >
 		,
 		ReturnType< $bog_gram_bubble['body'] >
 	>
-	type $bog_gram_bubble__time_bog_gram_chat_77 = $mol_type_enforce<
+	type $bog_gram_bubble__time_bog_gram_chat_83 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_time'] >
 		,
 		ReturnType< $bog_gram_bubble['time'] >
 	>
-	type $bog_gram_bubble__edited_bog_gram_chat_78 = $mol_type_enforce<
+	type $bog_gram_bubble__edited_bog_gram_chat_84 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edited'] >
 		,
 		ReturnType< $bog_gram_bubble['edited'] >
 	>
-	type $bog_gram_bubble__checks_bog_gram_chat_79 = $mol_type_enforce<
+	type $bog_gram_bubble__checks_bog_gram_chat_85 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_checks'] >
 		,
 		ReturnType< $bog_gram_bubble['checks'] >
 	>
-	type $bog_gram_bubble__edit_bog_gram_chat_80 = $mol_type_enforce<
+	type $bog_gram_bubble__edit_bog_gram_chat_86 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edit'] >
 		,
 		ReturnType< $bog_gram_bubble['edit'] >
 	>
-	type $bog_gram_bubble__delete_bog_gram_chat_81 = $mol_type_enforce<
+	type $bog_gram_bubble__delete_bog_gram_chat_87 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_delete'] >
 		,
 		ReturnType< $bog_gram_bubble['delete'] >
 	>
-	type $bog_gram_bubble__press_bog_gram_chat_82 = $mol_type_enforce<
+	type $bog_gram_bubble__press_bog_gram_chat_88 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_press'] >
 		,
 		ReturnType< $bog_gram_bubble['press'] >
 	>
-	type $bog_gram_bubble__release_bog_gram_chat_83 = $mol_type_enforce<
+	type $bog_gram_bubble__release_bog_gram_chat_89 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_release'] >
 		,
 		ReturnType< $bog_gram_bubble['release'] >
 	>
-	type $bog_gram_bubble__context_bog_gram_chat_84 = $mol_type_enforce<
+	type $bog_gram_bubble__context_bog_gram_chat_90 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_context'] >
 		,
 		ReturnType< $bog_gram_bubble['context'] >
@@ -51348,6 +52912,9 @@ declare namespace $ {
 		Title_text( ): $mol_view
 		Back_icon( ): $mol_icon_arrow_left
 		Back( ): $mol_button_minor
+		call_start( next?: any ): any
+		Call_icon( ): $mol_icon_phone
+		Call( ): $mol_button_minor
 		Members_icon( ): $mol_icon_account_multiple
 		Members( ): $mol_button_minor
 		Close_icon( ): $mol_icon_close
@@ -51404,6 +52971,9 @@ declare namespace $ {
 		message_sound_playing( id: any): boolean
 		message_sound_toggle( id: any, next?: any ): any
 		message_sound_ended( id: any, next?: any ): any
+		message_call( id: any): boolean
+		message_call_land( id: any): any
+		message_call_open( id: any, next?: any ): any
 		message_body( id: any): string
 		message_time( id: any): string
 		message_edited( id: any): boolean
@@ -51420,6 +52990,7 @@ declare namespace $ {
 		Alerts( ): $bog_gram_alerts
 		close( next?: any ): any
 		members( next?: any ): any
+		call_open( next?: any ): any
 		note( next?: string ): string
 		note_hint( ): string
 		note_editable( ): boolean
@@ -51481,6 +53052,12 @@ declare namespace $.$$ {
         Title_text(): $mol_view;
         members_shown(): boolean;
         Members(): $mol_button_minor;
+        Call(): $mol_button_minor;
+        message_call(id: string): boolean;
+        message_call_land(id: string): $giper_baza_land | null;
+        message_call_open(id: string, next?: any): null;
+        call_start(next?: any): null;
+        call_send(): string;
         messages(): $bog_gram_message[];
         messages_index(): Map<string, number>;
         message_pawn(id: string): $bog_gram_message | null;
@@ -52458,140 +54035,175 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_members['leave'] >
 	>
-	type $bog_gram_registry__Account_bog_gram_170 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_170 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_171 = $mol_type_enforce<
+		ReturnType< $bog_gram['call_close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_172 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_registry__Account_bog_gram_173 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_registry['Account'] >
 	>
-	type $bog_gram_people__Account_bog_gram_171 = $mol_type_enforce<
+	type $bog_gram_people__Account_bog_gram_174 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_people['Account'] >
 	>
-	type $bog_gram_people__Registry_bog_gram_172 = $mol_type_enforce<
+	type $bog_gram_people__Registry_bog_gram_175 = $mol_type_enforce<
 		ReturnType< $bog_gram['Registry'] >
 		,
 		ReturnType< $bog_gram_people['Registry'] >
 	>
-	type $bog_gram_talk__Account_bog_gram_173 = $mol_type_enforce<
+	type $bog_gram_talk__Account_bog_gram_176 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_talk['Account'] >
 	>
-	type $bog_gram_talk__People_bog_gram_174 = $mol_type_enforce<
+	type $bog_gram_talk__People_bog_gram_177 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_talk['People'] >
 	>
-	type $bog_gram_roster__Account_bog_gram_175 = $mol_type_enforce<
+	type $bog_gram_roster__Account_bog_gram_178 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_roster['Account'] >
 	>
-	type $bog_gram_roster__People_bog_gram_176 = $mol_type_enforce<
+	type $bog_gram_roster__People_bog_gram_179 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_roster['People'] >
 	>
-	type $bog_gram_roster__Talk_bog_gram_177 = $mol_type_enforce<
+	type $bog_gram_roster__Talk_bog_gram_180 = $mol_type_enforce<
 		ReturnType< $bog_gram['Talk'] >
 		,
 		ReturnType< $bog_gram_roster['Talk'] >
 	>
-	type $bog_gram_crew__Account_bog_gram_178 = $mol_type_enforce<
+	type $bog_gram_crew__Account_bog_gram_181 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_crew['Account'] >
 	>
-	type $bog_gram_crew__People_bog_gram_179 = $mol_type_enforce<
+	type $bog_gram_crew__People_bog_gram_182 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_crew['People'] >
 	>
-	type $bog_gram_crew__Talk_bog_gram_180 = $mol_type_enforce<
+	type $bog_gram_crew__Talk_bog_gram_183 = $mol_type_enforce<
 		ReturnType< $bog_gram['Talk'] >
 		,
 		ReturnType< $bog_gram_crew['Talk'] >
 	>
-	type $bog_gram_lobby__Account_bog_gram_181 = $mol_type_enforce<
+	type $bog_gram_lobby__Account_bog_gram_184 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_lobby['Account'] >
 	>
-	type $bog_gram_lobby__People_bog_gram_182 = $mol_type_enforce<
+	type $bog_gram_lobby__People_bog_gram_185 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_lobby['People'] >
 	>
-	type $bog_gram_lobby__Talk_bog_gram_183 = $mol_type_enforce<
+	type $bog_gram_lobby__Talk_bog_gram_186 = $mol_type_enforce<
 		ReturnType< $bog_gram['Talk'] >
 		,
 		ReturnType< $bog_gram_lobby['Talk'] >
 	>
-	type $bog_gram_lobby__Roster_bog_gram_184 = $mol_type_enforce<
+	type $bog_gram_lobby__Roster_bog_gram_187 = $mol_type_enforce<
 		ReturnType< $bog_gram['Roster'] >
 		,
 		ReturnType< $bog_gram_lobby['Roster'] >
 	>
-	type $bog_gram_lobby__Crew_bog_gram_185 = $mol_type_enforce<
+	type $bog_gram_lobby__Crew_bog_gram_188 = $mol_type_enforce<
 		ReturnType< $bog_gram['Crew'] >
 		,
 		ReturnType< $bog_gram_lobby['Crew'] >
 	>
-	type $bog_gram_invite__Account_bog_gram_186 = $mol_type_enforce<
+	type $bog_gram_invite__Account_bog_gram_189 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_invite['Account'] >
 	>
-	type $bog_gram_invite__People_bog_gram_187 = $mol_type_enforce<
+	type $bog_gram_invite__People_bog_gram_190 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_invite['People'] >
 	>
-	type $bog_gram_invite__Roster_bog_gram_188 = $mol_type_enforce<
+	type $bog_gram_invite__Roster_bog_gram_191 = $mol_type_enforce<
 		ReturnType< $bog_gram['Roster'] >
 		,
 		ReturnType< $bog_gram_invite['Roster'] >
 	>
-	type $bog_gram_alerts__Account_bog_gram_189 = $mol_type_enforce<
+	type $bog_gram_alerts__Account_bog_gram_192 = $mol_type_enforce<
 		ReturnType< $bog_gram['Account'] >
 		,
 		ReturnType< $bog_gram_alerts['Account'] >
 	>
-	type $bog_gram_chat__dialog_bog_gram_190 = $mol_type_enforce<
+	type $bog_gram_chat__dialog_bog_gram_193 = $mol_type_enforce<
 		ReturnType< $bog_gram['chat_dialog'] >
 		,
 		ReturnType< $bog_gram_chat['dialog'] >
 	>
-	type $bog_gram_chat__my_lord_bog_gram_191 = $mol_type_enforce<
+	type $bog_gram_chat__my_lord_bog_gram_194 = $mol_type_enforce<
 		ReturnType< $bog_gram['my_lord'] >
 		,
 		ReturnType< $bog_gram_chat['my_lord'] >
 	>
-	type $bog_gram_chat__Talk_bog_gram_192 = $mol_type_enforce<
+	type $bog_gram_chat__Talk_bog_gram_195 = $mol_type_enforce<
 		ReturnType< $bog_gram['Talk'] >
 		,
 		ReturnType< $bog_gram_chat['Talk'] >
 	>
-	type $bog_gram_chat__People_bog_gram_193 = $mol_type_enforce<
+	type $bog_gram_chat__People_bog_gram_196 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_chat['People'] >
 	>
-	type $bog_gram_chat__Alerts_bog_gram_194 = $mol_type_enforce<
+	type $bog_gram_chat__Alerts_bog_gram_197 = $mol_type_enforce<
 		ReturnType< $bog_gram['Alerts'] >
 		,
 		ReturnType< $bog_gram_chat['Alerts'] >
 	>
-	type $bog_gram_chat__close_bog_gram_195 = $mol_type_enforce<
+	type $bog_gram_chat__close_bog_gram_198 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_close'] >
 		,
 		ReturnType< $bog_gram_chat['close'] >
 	>
-	type $bog_gram_chat__members_bog_gram_196 = $mol_type_enforce<
+	type $bog_gram_chat__members_bog_gram_199 = $mol_type_enforce<
 		ReturnType< $bog_gram['members_open'] >
 		,
 		ReturnType< $bog_gram_chat['members'] >
+	>
+	type $bog_gram_chat__call_open_bog_gram_200 = $mol_type_enforce<
+		ReturnType< $bog_gram['call_open'] >
+		,
+		ReturnType< $bog_gram_chat['call_open'] >
+	>
+	type $bog_gram_call__land_bog_gram_201 = $mol_type_enforce<
+		ReturnType< $bog_gram['call_land'] >
+		,
+		ReturnType< $bog_gram_call['land'] >
+	>
+	type $bog_gram_call__name_bog_gram_202 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_name'] >
+		,
+		ReturnType< $bog_gram_call['name'] >
+	>
+	type $bog_gram_call__tools_bog_gram_203 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_gram_call['tools'] >
 	>
 	export class $bog_gram extends $mol_book2 {
 		lights( ): string
@@ -52749,6 +54361,11 @@ declare namespace $ {
 		chat_dialog( id: any): string
 		dialog_close( next?: any ): any
 		members_open( next?: any ): any
+		call_open( next?: any ): any
+		call_land( id: any): any
+		call_close( next?: any ): any
+		Call_close_icon( id: any): $mol_icon_close
+		Call_close( id: any): $mol_button_minor
 		plugins( ): readonly(any)[]
 		Account( ): $bog_gram_account
 		Registry( ): $bog_gram_registry
@@ -52762,6 +54379,7 @@ declare namespace $ {
 		Placeholder( ): ReturnType< $bog_gram['Intro'] >
 		pages( ): readonly(any)[]
 		Chat_page( id: any): $bog_gram_chat
+		Call_page( id: any): $bog_gram_call
 	}
 	
 }
@@ -52806,7 +54424,11 @@ declare namespace $.$$ {
         music_open(next?: any): null;
         music_close(next?: any): null;
         lights(): "light" | "dark" | "system";
-        pages(): ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_chat)[];
+        pages(): ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_call | $.$bog_gram_chat)[];
+        call_current(next?: string): string;
+        call_land(id: string): $giper_baza_land;
+        call_open(next?: any): null;
+        call_close(next?: any): null;
         Placeholder(): $mol_view;
         dialog_open(lord: string, next?: any): null;
         dialog_autocreate(): string;

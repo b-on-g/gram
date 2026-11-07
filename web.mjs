@@ -45434,7 +45434,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.100';
+    $.$bog_gram_version = '1.0.101';
 })($ || ($ = {}));
 
 ;
@@ -48174,6 +48174,7 @@ var $;
         Voice: $bog_gram_link_synced(() => $giper_baza_file),
         Voice_span: $giper_baza_atom_real,
         Reply: $giper_baza_atom_text,
+        Call: $giper_baza_atom_link,
     }) {
     }
     $.$bog_gram_message = $bog_gram_message;
@@ -48507,7 +48508,8 @@ var $;
             const text = String(last.Text()?.val() ?? '');
             const kind = last.Image()?.val() ? 'Фото'
                 : last.Voice()?.val() ? 'Голосовое сообщение'
-                    : '';
+                    : last.Call()?.val() ? 'Звонок'
+                        : '';
             const body = kind ? (text ? kind + ' · ' + text : kind) : text;
             if (this.saved_is(id))
                 return body;
@@ -50178,6 +50180,18 @@ var $;
 
 
 ;
+	($.$mol_icon_phone) = class $mol_icon_phone extends ($.$mol_icon) {
+		path(){
+			return "M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_reply) = class $mol_icon_reply extends ($.$mol_icon) {
 		path(){
 			return "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z";
@@ -51035,6 +51049,1142 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_video) = class $mol_icon_video extends ($.$mol_icon) {
+		path(){
+			return "M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_phone_hangup) = class $mol_icon_phone_hangup extends ($.$mol_icon) {
+		path(){
+			return "M12,9C10.4,9 8.85,9.25 7.4,9.72V12.82C7.4,13.22 7.17,13.56 6.84,13.72C5.86,14.21 4.97,14.84 4.17,15.57C4,15.75 3.75,15.86 3.5,15.86C3.2,15.86 2.95,15.74 2.77,15.56L0.29,13.08C0.11,12.9 0,12.65 0,12.38C0,12.1 0.11,11.85 0.29,11.67C3.34,8.77 7.46,7 12,7C16.54,7 20.66,8.77 23.71,11.67C23.89,11.85 24,12.1 24,12.38C24,12.65 23.89,12.9 23.71,13.08L21.23,15.56C21.05,15.74 20.8,15.86 20.5,15.86C20.25,15.86 20,15.75 19.82,15.57C19.03,14.84 18.14,14.21 17.16,13.72C16.83,13.56 16.6,13.22 16.6,12.82V9.72C15.15,9.25 13.6,9 12,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_microphone_off) = class $mol_icon_microphone_off extends ($.$mol_icon) {
+		path(){
+			return "M19,11C19,12.19 18.66,13.3 18.1,14.28L16.87,13.05C17.14,12.43 17.3,11.74 17.3,11H19M15,11.16L9,5.18V5A3,3 0 0,1 12,2A3,3 0 0,1 15,5V11L15,11.16M4.27,3L21,19.73L19.73,21L15.54,16.81C14.77,17.27 13.91,17.58 13,17.72V21H11V17.72C7.72,17.23 5,14.41 5,11H6.7C6.7,14 9.24,16.1 12,16.1C12.81,16.1 13.6,15.91 14.31,15.58L12.65,13.92L12,14A3,3 0 0,1 9,11V10.28L3,4.27L4.27,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_call_tile) = class $bog_gram_call_tile extends ($.$mol_view) {
+		Video(){
+			const obj = new this.$.$mol_video_player();
+			(obj.stream) = () => ((this.stream()));
+			(obj.controls) = () => (false);
+			(obj.muted) = () => ((this.muted()));
+			return obj;
+		}
+		letter(){
+			return "";
+		}
+		Face(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.letter())]);
+			return obj;
+		}
+		Name(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.name())]);
+			return obj;
+		}
+		Mic_off(){
+			const obj = new this.$.$mol_icon_microphone_off();
+			return obj;
+		}
+		status_text(){
+			return "";
+		}
+		Status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.status_text())]);
+			return obj;
+		}
+		label(){
+			return [
+				(this.Name()), 
+				(this.Mic_off()), 
+				(this.Status())
+			];
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.label()));
+			return obj;
+		}
+		stream(){
+			return null;
+		}
+		muted(){
+			return false;
+		}
+		mirror(){
+			return false;
+		}
+		cam(){
+			return true;
+		}
+		mic(){
+			return true;
+		}
+		name(){
+			return "";
+		}
+		status(){
+			return "";
+		}
+		failed_text(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_failed_text"));
+		}
+		connecting_text(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_connecting_text"));
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"bog_gram_call_tile_cam": (this.cam()), 
+				"bog_gram_call_tile_mirror": (this.mirror())
+			};
+		}
+		sub(){
+			return [
+				(this.Video()), 
+				(this.Face()), 
+				(this.Label())
+			];
+		}
+	};
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Video"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Face"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Name"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Mic_off"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Status"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Label"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_call_tile extends $.$bog_gram_call_tile {
+            letter() {
+                return this.name().slice(0, 1).toUpperCase();
+            }
+            status_text() {
+                const status = this.status();
+                if (!status || status === 'connected')
+                    return '';
+                if (status === 'failed')
+                    return this.failed_text();
+                return this.connecting_text();
+            }
+            label() {
+                return [
+                    this.Name(),
+                    ...this.mic() ? [] : [this.Mic_off()],
+                    ...this.status_text() ? [this.Status()] : [],
+                ];
+            }
+            auto() {
+                const video = this.Video().dom_node();
+                video.muted = this.muted();
+            }
+        }
+        $$.$bog_gram_call_tile = $bog_gram_call_tile;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_call_tile, {
+            position: 'relative',
+            flex: {
+                grow: 1,
+                shrink: 1,
+                basis: '18rem',
+            },
+            aspectRatio: '4 / 3',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            border: {
+                radius: $mol_gap.round,
+            },
+            background: {
+                color: $mol_theme.card,
+            },
+            Video: {
+                position: 'absolute',
+                inset: '0',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+            },
+            Face: {
+                position: 'absolute',
+                inset: '0',
+                display: 'none',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                font: {
+                    size: '3rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Label: {
+                position: 'absolute',
+                left: $mol_gap.block,
+                bottom: $mol_gap.block,
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.text,
+                padding: {
+                    left: $mol_gap.text,
+                    right: $mol_gap.text,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                background: {
+                    color: $mol_theme.back,
+                },
+            },
+            '@': {
+                bog_gram_call_tile_cam: {
+                    false: {
+                        Video: {
+                            opacity: 0,
+                        },
+                        Face: {
+                            display: 'flex',
+                        },
+                    },
+                },
+                bog_gram_call_tile_mirror: {
+                    true: {
+                        Video: {
+                            transform: 'scaleX(-1)',
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_call) = class $bog_gram_call extends ($.$mol_page) {
+		content(){
+			return [];
+		}
+		controls(){
+			return [];
+		}
+		tiles(){
+			return [];
+		}
+		self_stream(){
+			return null;
+		}
+		self_name(){
+			return (this.$.$mol_locale.text("$bog_gram_call_self_name"));
+		}
+		mate_stream(id){
+			return null;
+		}
+		mate_cam(id){
+			return true;
+		}
+		mate_mic(id){
+			return true;
+		}
+		mate_name(id){
+			return "";
+		}
+		mate_status(id){
+			return "";
+		}
+		lobby_text(){
+			return "";
+		}
+		Lobby_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.lobby_text()));
+			return obj;
+		}
+		join(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Join(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_call_Join_title")));
+			(obj.click) = (next) => ((this.join(next)));
+			return obj;
+		}
+		Mic_icon(){
+			const obj = new this.$.$mol_icon_microphone();
+			return obj;
+		}
+		mic(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		Cam_icon(){
+			const obj = new this.$.$mol_icon_video();
+			return obj;
+		}
+		cam(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		cam_able(){
+			return true;
+		}
+		leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Leave_icon(){
+			const obj = new this.$.$mol_icon_phone_hangup();
+			return obj;
+		}
+		land(){
+			return null;
+		}
+		name(){
+			return "";
+		}
+		Room(){
+			const obj = new this.$.$bog_gram_call_room();
+			(obj.land) = () => ((this.land()));
+			(obj.name) = () => ((this.name()));
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_call_title"));
+		}
+		body(){
+			return (this.content());
+		}
+		foot(){
+			return (this.controls());
+		}
+		Grid(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.tiles()));
+			return obj;
+		}
+		Self(){
+			const obj = new this.$.$bog_gram_call_tile();
+			(obj.stream) = () => ((this.self_stream()));
+			(obj.muted) = () => (true);
+			(obj.mirror) = () => (true);
+			(obj.cam) = () => ((this.cam()));
+			(obj.mic) = () => ((this.mic()));
+			(obj.name) = () => ((this.self_name()));
+			return obj;
+		}
+		Mate(id){
+			const obj = new this.$.$bog_gram_call_tile();
+			(obj.stream) = () => ((this.mate_stream(id)));
+			(obj.cam) = () => ((this.mate_cam(id)));
+			(obj.mic) = () => ((this.mate_mic(id)));
+			(obj.name) = () => ((this.mate_name(id)));
+			(obj.status) = () => ((this.mate_status(id)));
+			return obj;
+		}
+		Lobby(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([(this.Lobby_text()), (this.Join())]);
+			return obj;
+		}
+		Mic(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Mic_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Mic_hint")));
+			(obj.checked) = (next) => ((this.mic(next)));
+			return obj;
+		}
+		Cam(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Cam_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Cam_hint")));
+			(obj.checked) = (next) => ((this.cam(next)));
+			(obj.enabled) = () => ((this.cam_able()));
+			return obj;
+		}
+		Leave(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Leave_hint")));
+			(obj.click) = (next) => ((this.leave(next)));
+			(obj.sub) = () => ([(this.Leave_icon())]);
+			return obj;
+		}
+		lobby_empty(){
+			return (this.$.$mol_locale.text("$bog_gram_call_lobby_empty"));
+		}
+		lobby_some(){
+			return (this.$.$mol_locale.text("$bog_gram_call_lobby_some"));
+		}
+	};
+	($mol_mem(($.$bog_gram_call.prototype), "Lobby_text"));
+	($mol_mem(($.$bog_gram_call.prototype), "join"));
+	($mol_mem(($.$bog_gram_call.prototype), "Join"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "mic"));
+	($mol_mem(($.$bog_gram_call.prototype), "Cam_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "leave"));
+	($mol_mem(($.$bog_gram_call.prototype), "Leave_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "Room"));
+	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
+	($mol_mem(($.$bog_gram_call.prototype), "Self"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Mate"));
+	($mol_mem(($.$bog_gram_call.prototype), "Lobby"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic"));
+	($mol_mem(($.$bog_gram_call.prototype), "Cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "Leave"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_call extends $.$bog_gram_call {
+            joined() {
+                return this.Room().joined();
+            }
+            content() {
+                return [this.joined() ? this.Grid() : this.Lobby()];
+            }
+            controls() {
+                if (!this.joined())
+                    return [];
+                return [this.Mic(), this.Cam(), this.Leave()];
+            }
+            tiles() {
+                return [
+                    this.Self(),
+                    ...this.Room().mates().map(mate => this.Mate(mate)),
+                ];
+            }
+            lobby_text() {
+                const names = this.Room().seats_alive().map(seat => this.Room().seat_name(seat));
+                if (!names.length)
+                    return this.lobby_empty();
+                return this.lobby_some().replace('{names}', names.join(', '));
+            }
+            join() {
+                this.Room().join();
+            }
+            leave() {
+                this.Room().leave();
+            }
+            mic(next) {
+                return this.Room().mic(next);
+            }
+            cam(next) {
+                return this.Room().cam(next);
+            }
+            cam_able() {
+                return this.Room().cam_able();
+            }
+            self_stream() {
+                return this.Room().media();
+            }
+            mate_stream(mate) {
+                return this.Room().peer(mate).remote();
+            }
+            mate_status(mate) {
+                return this.Room().peer(mate).status();
+            }
+            mate_name(mate) {
+                return this.Room().seat_name(mate);
+            }
+            mate_mic(mate) {
+                return this.Room().seat_mic(mate);
+            }
+            mate_cam(mate) {
+                return this.Room().seat_cam(mate);
+            }
+            auto() {
+                this.Room().run();
+            }
+        }
+        $$.$bog_gram_call = $bog_gram_call;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_call, {
+            Grid: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                align: {
+                    content: 'center',
+                },
+                justify: {
+                    content: 'center',
+                },
+                gap: $mol_gap.block,
+                padding: $mol_gap.block,
+                minHeight: '100%',
+            },
+            Lobby: {
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.block,
+                padding: $mol_gap.block,
+            },
+            Foot: {
+                justify: {
+                    content: 'center',
+                },
+                gap: $mol_gap.block,
+            },
+            Leave: {
+                color: 'white',
+                background: {
+                    color: '#E53935',
+                },
+                borderRadius: '50%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_seat extends $giper_baza_dict.with({
+        Lord: $giper_baza_atom_text,
+        Name: $giper_baza_atom_text,
+        Beat: $giper_baza_atom_real,
+        Left: $giper_baza_atom_real,
+        Mic: $giper_baza_atom_bool,
+        Cam: $giper_baza_atom_bool,
+    }) {
+    }
+    $.$bog_gram_call_seat = $bog_gram_call_seat;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_land extends $giper_baza_dict.with({
+        Created: $giper_baza_atom_real,
+        Seats: $giper_baza_dict_to($bog_gram_call_seat),
+        Offers: $giper_baza_dict_to($giper_baza_atom_text),
+        Answers: $giper_baza_dict_to($giper_baza_atom_text),
+    }) {
+    }
+    $.$bog_gram_call_land = $bog_gram_call_land;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_room extends $mol_object {
+        static beat_every = 10_000;
+        static alive_span = 35_000;
+        static grab(passes) {
+            const glob = this.$.$giper_baza_glob;
+            const land = passes
+                ? glob.land_grab([[null, $giper_baza_rank_deny]])
+                : glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+            for (const pass of passes ?? [])
+                land.give(pass, $giper_baza_rank_post('just'));
+            land.Data($bog_gram_call_land).Created('auto').val(Date.now());
+            land.sync();
+            return land;
+        }
+        static offerer(me, mate) {
+            return me < mate;
+        }
+        static pair(me, mate) {
+            return this.offerer(me, mate) ? `${me}>${mate}` : `${mate}>${me}`;
+        }
+        static signal_parse(text) {
+            try {
+                const data = JSON.parse(text);
+                if (typeof data?.id !== 'string' || typeof data?.sdp !== 'string')
+                    return null;
+                return { id: data.id, sdp: data.sdp };
+            }
+            catch {
+                return null;
+            }
+        }
+        land() {
+            return null;
+        }
+        data() {
+            return this.land().Data($bog_gram_call_land);
+        }
+        lord() {
+            return this.$.$giper_baza_auth.current().pass().lord().str;
+        }
+        name() {
+            return '';
+        }
+        now(precision) {
+            return this.$.$mol_state_time.now(precision);
+        }
+        seat(next) {
+            return next ?? $mol_guid();
+        }
+        joined(next) {
+            return next ?? false;
+        }
+        mic(next) {
+            return next ?? true;
+        }
+        cam(next) {
+            return next ?? true;
+        }
+        join() {
+            this.seat($mol_guid());
+            this.joined(true);
+        }
+        leave() {
+            this.data().Seats('auto')?.key(this.seat(), 'auto')?.Left('auto')?.val(Date.now());
+            this.joined(false);
+        }
+        beat() {
+            if (!this.joined())
+                return null;
+            const moment = this.now($bog_gram_call_room.beat_every);
+            const seat = this.data().Seats('auto').key(this.seat(), 'auto');
+            seat.Lord('auto').val(this.lord());
+            seat.Name('auto').val(this.name());
+            seat.Mic('auto').val(this.mic());
+            seat.Cam('auto').val(this.cam() && this.cam_able());
+            seat.Beat('auto').val(moment);
+            return null;
+        }
+        seat_pawn(id) {
+            return this.data().Seats()?.key(id) ?? null;
+        }
+        seats_alive() {
+            const now = this.now(5_000);
+            const seats = this.data().Seats();
+            if (!seats)
+                return [];
+            return seats.keys()
+                .filter(id => {
+                const seat = seats.key(id);
+                if (seat.Left()?.val())
+                    return false;
+                return now - (seat.Beat()?.val() ?? 0) < $bog_gram_call_room.alive_span;
+            })
+                .sort();
+        }
+        mates() {
+            const me = this.seat();
+            return this.seats_alive().filter(id => id !== me);
+        }
+        seat_name(id) {
+            const seat = this.seat_pawn(id);
+            return seat?.Name()?.val() || seat?.Lord()?.val()?.slice(0, 8) || id;
+        }
+        seat_mic(id) {
+            return this.seat_pawn(id)?.Mic()?.val() ?? true;
+        }
+        seat_cam(id) {
+            return this.seat_pawn(id)?.Cam()?.val() ?? true;
+        }
+        signal(box, key) {
+            return this.data()[box]()?.key(key)?.val() ?? '';
+        }
+        signal_put(box, key, text) {
+            const atom = this.data()[box]('auto').key(key, 'auto');
+            if (atom.val() !== text)
+                atom.val(text);
+        }
+        media() {
+            const devices = $mol_wire_sync(navigator.mediaDevices);
+            let stream;
+            try {
+                stream = devices.getUserMedia({
+                    audio: true,
+                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+                });
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                stream = devices.getUserMedia({ audio: true });
+            }
+            return Object.assign(stream, {
+                destructor: () => stream.getTracks().forEach(track => track.stop())
+            });
+        }
+        cam_able() {
+            return this.media().getVideoTracks().length > 0;
+        }
+        media_apply() {
+            const stream = this.media();
+            for (const track of stream.getAudioTracks())
+                track.enabled = this.mic();
+            for (const track of stream.getVideoTracks())
+                track.enabled = this.cam();
+            return stream;
+        }
+        peer(mate) {
+            return $bog_gram_call_peer.make({
+                room: $mol_const(this),
+                mate: $mol_const(mate),
+            });
+        }
+        peers() {
+            if (!this.joined())
+                return [];
+            return this.mates().map(mate => this.peer(mate));
+        }
+        run() {
+            if (!this.joined())
+                return null;
+            this.media_apply();
+            this.beat();
+            for (const peer of this.peers())
+                peer.status();
+            return null;
+        }
+        destructor() {
+            if (!$mol_wire_probe(() => this.joined()))
+                return;
+            try {
+                this.data().Seats()?.key(this.seat())?.Left('auto')?.val(Date.now());
+            }
+            catch (error) {
+                $mol_fail_log(error);
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "seat", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "joined", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "mic", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cam", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "join", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "leave", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "beat", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "seats_alive", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "mates", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "media", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cam_able", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "media_apply", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "peer", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "peers", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "run", null);
+    $.$bog_gram_call_room = $bog_gram_call_room;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_peer extends $mol_object {
+        static ice = [
+            { urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] },
+        ];
+        static gather_limit = 3_000;
+        static connect_limit = 20_000;
+        static restart_after = 5_000;
+        static async gather(rtc) {
+            if (rtc.iceGatheringState !== 'complete') {
+                await new Promise(done => {
+                    const timer = setTimeout(done, this.gather_limit);
+                    rtc.addEventListener('icegatheringstatechange', () => {
+                        if (rtc.iceGatheringState !== 'complete')
+                            return;
+                        clearTimeout(timer);
+                        done();
+                    });
+                });
+            }
+            return rtc.localDescription.sdp;
+        }
+        static async offer_make(rtc, stream) {
+            for (const kind of ['audio', 'video']) {
+                const track = stream.getTracks().find(track => track.kind === kind);
+                rtc.addTransceiver(track ?? kind, { direction: 'sendrecv', streams: [stream] });
+            }
+            await rtc.setLocalDescription(await rtc.createOffer());
+            return this.gather(rtc);
+        }
+        static async answer_make(rtc, offer, stream) {
+            await rtc.setRemoteDescription({ type: 'offer', sdp: offer });
+            for (const transceiver of rtc.getTransceivers()) {
+                const kind = transceiver.receiver.track.kind;
+                const track = stream.getTracks().find(track => track.kind === kind) ?? null;
+                transceiver.direction = 'sendrecv';
+                await transceiver.sender.replaceTrack(track);
+                transceiver.sender.setStreams?.(stream);
+            }
+            await rtc.setLocalDescription(await rtc.createAnswer());
+            return this.gather(rtc);
+        }
+        static async answer_apply(rtc, answer) {
+            if (rtc.signalingState !== 'have-local-offer')
+                return;
+            await rtc.setRemoteDescription({ type: 'answer', sdp: answer });
+        }
+        room() {
+            return null;
+        }
+        mate() {
+            return '';
+        }
+        offerer() {
+            return $bog_gram_call_room.offerer(this.room().seat(), this.mate());
+        }
+        key() {
+            return $bog_gram_call_room.pair(this.room().seat(), this.mate());
+        }
+        attempt(next) {
+            return next ?? 0;
+        }
+        changed(next) {
+            return next ?? 0;
+        }
+        tracked(next) {
+            return next ?? 0;
+        }
+        state() {
+            this.changed();
+            return this.rtc()?.connectionState ?? 'new';
+        }
+        remote() {
+            this.tracked();
+            const rtc = this.rtc();
+            if (!rtc)
+                return null;
+            const tracks = rtc.getReceivers().map(receiver => receiver.track);
+            if (!tracks.length)
+                return null;
+            return new MediaStream(tracks);
+        }
+        offer_their() {
+            if (this.offerer())
+                return null;
+            return $bog_gram_call_room.signal_parse(this.room().signal('Offers', this.key()));
+        }
+        offer_id() {
+            return this.offer_their()?.id ?? '';
+        }
+        rtc() {
+            const round = this.offerer() ? String(this.attempt()) : this.offer_id();
+            if (!round)
+                return null;
+            const rtc = new RTCPeerConnection({ iceServers: $bog_gram_call_peer.ice });
+            rtc.addEventListener('connectionstatechange', () => this.state_change(rtc));
+            rtc.addEventListener('track', () => this.tracked(this.tracked() + 1));
+            return Object.assign(rtc, {
+                destructor: () => rtc.close()
+            });
+        }
+        state_change(rtc) {
+            const state = rtc.connectionState;
+            if (state === 'closed')
+                return;
+            this.changed(this.changed() + 1);
+            if (!this.offerer())
+                return;
+            if (state === 'failed')
+                this.restart(rtc);
+            if (state === 'disconnected')
+                setTimeout(() => {
+                    if (rtc.connectionState === 'disconnected')
+                        this.restart(rtc);
+                }, $bog_gram_call_peer.restart_after);
+        }
+        restart(rtc) {
+            if (rtc.connectionState === 'closed')
+                return;
+            if (rtc.connectionState === 'connected')
+                return;
+            this.attempt(this.attempt() + 1);
+        }
+        offer_mine() {
+            if (!this.offerer())
+                return null;
+            const rtc = this.rtc();
+            const sdp = $mol_wire_sync($bog_gram_call_peer).offer_make(rtc, this.room().media());
+            setTimeout(() => this.restart(rtc), $bog_gram_call_peer.connect_limit);
+            return { id: `${this.attempt()}.${$mol_guid()}`, sdp };
+        }
+        offer_post() {
+            const offer = this.offer_mine();
+            if (!offer)
+                return '';
+            this.room().signal_put('Offers', this.key(), JSON.stringify(offer));
+            return offer.id;
+        }
+        answer_take() {
+            const id = this.offer_post();
+            if (!id)
+                return false;
+            const answer = $bog_gram_call_room.signal_parse(this.room().signal('Answers', this.key()));
+            if (answer?.id !== id)
+                return false;
+            $mol_wire_sync($bog_gram_call_peer).answer_apply(this.rtc(), answer.sdp);
+            return true;
+        }
+        answer_post() {
+            const offer = this.offer_their();
+            if (!offer)
+                return false;
+            const rtc = this.rtc();
+            const sdp = $mol_wire_sync($bog_gram_call_peer).answer_make(rtc, offer.sdp, this.room().media());
+            this.room().signal_put('Answers', this.key(), JSON.stringify({ id: offer.id, sdp }));
+            return true;
+        }
+        sync() {
+            return this.offerer() ? this.answer_take() : this.answer_post();
+        }
+        status() {
+            try {
+                if (!this.sync())
+                    return 'waiting';
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    return 'connecting';
+                $mol_fail_log(error);
+                return 'failed';
+            }
+            return this.state();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "attempt", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "changed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "tracked", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "state", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "remote", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_their", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_id", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "rtc", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_mine", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_post", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "answer_take", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "answer_post", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "sync", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "status", null);
+    $.$bog_gram_call_peer = $bog_gram_call_peer;
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_call_card) = class $bog_gram_call_card extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_phone();
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_call_card_title"));
+		}
+		Title(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.title())]);
+			return obj;
+		}
+		count_text(){
+			return "";
+		}
+		Count(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.count_text())]);
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Title()), (this.Count())]);
+			return obj;
+		}
+		land(){
+			return null;
+		}
+		Room(){
+			const obj = new this.$.$bog_gram_call_room();
+			(obj.land) = () => ((this.land()));
+			return obj;
+		}
+		sub(){
+			return [(this.Icon()), (this.Info())];
+		}
+		count_none(){
+			return (this.$.$mol_locale.text("$bog_gram_call_card_count_none"));
+		}
+		count_some(){
+			return (this.$.$mol_locale.text("$bog_gram_call_card_count_some"));
+		}
+	};
+	($mol_mem(($.$bog_gram_call_card.prototype), "Icon"));
+	($mol_mem(($.$bog_gram_call_card.prototype), "Title"));
+	($mol_mem(($.$bog_gram_call_card.prototype), "Count"));
+	($mol_mem(($.$bog_gram_call_card.prototype), "Info"));
+	($mol_mem(($.$bog_gram_call_card.prototype), "Room"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_call_card extends $.$bog_gram_call_card {
+            count_text() {
+                const count = this.Room().seats_alive().length;
+                if (!count)
+                    return this.count_none();
+                return this.count_some().replace('{count}', String(count));
+            }
+        }
+        $$.$bog_gram_call_card = $bog_gram_call_card;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_call_card, {
+            align: {
+                items: 'center',
+            },
+            gap: $mol_gap.block,
+            Icon: {
+                width: '2rem',
+                height: '2rem',
+            },
+            Info: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'flex-start',
+                },
+            },
+            Count: {
+                color: $mol_theme.shade,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		mouse_down(next){
 			if(next !== undefined) return next;
@@ -51079,6 +52229,12 @@ var $;
 			(obj.playing) = () => ((this.sound_playing()));
 			(obj.toggle) = (next) => ((this.sound_toggle(next)));
 			(obj.ended) = (next) => ((this.sound_ended(next)));
+			return obj;
+		}
+		Call(){
+			const obj = new this.$.$bog_gram_call_card();
+			(obj.land) = () => ((this.call_land()));
+			(obj.click) = (next) => ((this.call_open(next)));
 			return obj;
 		}
 		Body(){
@@ -51207,6 +52363,16 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		call(){
+			return false;
+		}
+		call_land(){
+			return null;
+		}
+		call_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		body(){
 			return "";
 		}
@@ -51262,6 +52428,7 @@ var $;
 				(this.Quote()), 
 				(this.Shot()), 
 				(this.Sound()), 
+				(this.Call()), 
 				(this.Body()), 
 				(this.Meta()), 
 				(this.Actions())
@@ -51275,6 +52442,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Quote"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Shot"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Sound"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Call"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
@@ -51290,6 +52458,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "zoom"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "sound_toggle"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "sound_ended"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "call_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "edit"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "delete"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "press"));
@@ -51319,6 +52488,9 @@ var $;
             }
             Sound() {
                 return this.sound() ? super.Sound() : null;
+            }
+            Call() {
+                return this.call() ? super.Call() : null;
             }
             Body() {
                 return this.body() ? super.Body() : null;
@@ -51603,6 +52775,21 @@ var $;
 			(obj.sub) = () => ([(this.Back_icon())]);
 			return obj;
 		}
+		call_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Call_icon(){
+			const obj = new this.$.$mol_icon_phone();
+			return obj;
+		}
+		Call(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Звонок");
+			(obj.click) = (next) => ((this.call_start(next)));
+			(obj.sub) = () => ([(this.Call_icon())]);
+			return obj;
+		}
 		Members_icon(){
 			const obj = new this.$.$mol_icon_account_multiple();
 			return obj;
@@ -51836,6 +53023,16 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_call(id){
+			return false;
+		}
+		message_call_land(id){
+			return null;
+		}
+		message_call_open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		message_body(id){
 			return "";
 		}
@@ -51891,6 +53088,10 @@ var $;
 			return null;
 		}
 		members(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		call_open(next){
 			if(next !== undefined) return next;
 			return null;
 		}
@@ -51999,7 +53200,11 @@ var $;
 			];
 		}
 		tools(){
-			return [(this.Members()), (this.Close())];
+			return [
+				(this.Call()), 
+				(this.Members()), 
+				(this.Close())
+			];
 		}
 		body(){
 			return [(this.Messages())];
@@ -52088,6 +53293,9 @@ var $;
 			(obj.sound_playing) = () => ((this.message_sound_playing(id)));
 			(obj.sound_toggle) = (next) => ((this.message_sound_toggle(id, next)));
 			(obj.sound_ended) = (next) => ((this.message_sound_ended(id, next)));
+			(obj.call) = () => ((this.message_call(id)));
+			(obj.call_land) = () => ((this.message_call_land(id)));
+			(obj.call_open) = (next) => ((this.message_call_open(id, next)));
 			(obj.body) = () => ((this.message_body(id)));
 			(obj.time) = () => ((this.message_time(id)));
 			(obj.edited) = () => ((this.message_edited(id)));
@@ -52109,6 +53317,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Title_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Back"));
+	($mol_mem(($.$bog_gram_chat.prototype), "call_start"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Call_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Call"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Members_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
@@ -52146,6 +53357,7 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_zoom"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_toggle"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_ended"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_call_open"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_edit"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_delete"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_press"));
@@ -52156,6 +53368,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Alerts"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "members"));
+	($mol_mem(($.$bog_gram_chat.prototype), "call_open"));
 	($mol_mem(($.$bog_gram_chat.prototype), "note"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_text"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_hint"));
@@ -52385,6 +53598,42 @@ var $;
             }
             Members() {
                 return this.members_shown() ? super.Members() : null;
+            }
+            Call() {
+                return this.saved() ? null : super.Call();
+            }
+            message_call(id) {
+                return Boolean(this.message_pawn(id)?.Call()?.val());
+            }
+            message_call_land(id) {
+                const link = this.message_pawn(id)?.Call()?.val();
+                return link ? this.$.$giper_baza_glob.Land(link) : null;
+            }
+            message_call_open(id, next) {
+                const link = this.message_pawn(id)?.Call()?.val();
+                if (link)
+                    this.call_open(link.str);
+                return null;
+            }
+            call_start(next) {
+                this.Alerts().offer();
+                $mol_wire_async(this).call_send();
+                return null;
+            }
+            call_send() {
+                const session = this.Talk().session(this.dialog());
+                if (!session)
+                    return '';
+                const passes = this.passes();
+                if (!passes)
+                    return '';
+                const land = this.$.$bog_gram_call_room.grab(passes);
+                const message = session.Messages('auto').make(null);
+                message.Call('auto').val(land.link());
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.call_open(land.link().str);
+                return message.link().str;
             }
             messages() {
                 return this.Talk().messages_of(this.dialog());
@@ -53080,6 +54329,15 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "note", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_call", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_call_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "call_start", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "messages_index", null);
@@ -54234,6 +55492,28 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		call_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		call_land(id){
+			return null;
+		}
+		call_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Call_close_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Call_close(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.call_close(next)));
+			(obj.sub) = () => ([(this.Call_close_icon(id))]);
+			return obj;
+		}
 		plugins(){
 			return [(this.Skin()), (this.Theme())];
 		}
@@ -54315,6 +55595,14 @@ var $;
 			(obj.Alerts) = () => ((this.Alerts()));
 			(obj.close) = (next) => ((this.dialog_close(next)));
 			(obj.members) = (next) => ((this.members_open(next)));
+			(obj.call_open) = (next) => ((this.call_open(next)));
+			return obj;
+		}
+		Call_page(id){
+			const obj = new this.$.$bog_gram_call();
+			(obj.land) = () => ((this.call_land(id)));
+			(obj.name) = () => ((this.user_name()));
+			(obj.tools) = () => ([(this.Call_close(id))]);
 			return obj;
 		}
 	};
@@ -54355,6 +55643,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Members_page"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
 	($mol_mem(($.$bog_gram.prototype), "members_open"));
+	($mol_mem(($.$bog_gram.prototype), "call_open"));
+	($mol_mem(($.$bog_gram.prototype), "call_close"));
+	($mol_mem_key(($.$bog_gram.prototype), "Call_close_icon"));
+	($mol_mem_key(($.$bog_gram.prototype), "Call_close"));
 	($mol_mem(($.$bog_gram.prototype), "Account"));
 	($mol_mem(($.$bog_gram.prototype), "Registry"));
 	($mol_mem(($.$bog_gram.prototype), "People"));
@@ -54365,6 +55657,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Invite"));
 	($mol_mem(($.$bog_gram.prototype), "Alerts"));
 	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
+	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
 
 
 ;
@@ -54786,11 +56079,27 @@ var $;
                     ...this.group_opened() ? [this.Group_page()] : [],
                     ...active ? [this.Chat_page(active)] : [],
                     ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
+                    ...this.call_current() ? [this.Call_page(this.call_current())] : [],
                     ...this.music_alive() ? [this.Music_page()] : [],
                 ];
             }
+            call_current(next) {
+                return next ?? '';
+            }
+            call_land(id) {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+            }
+            call_open(next) {
+                if (typeof next === 'string' && next)
+                    this.call_current(next);
+                return null;
+            }
+            call_close(next) {
+                this.call_current('');
+                return null;
+            }
             Placeholder() {
-                return this.dialog_active() || this.music_opened() ? null : super.Placeholder();
+                return this.dialog_active() || this.music_opened() || this.call_current() ? null : super.Placeholder();
             }
             dialog_open(lord, next) {
                 if (!lord)
@@ -55043,6 +56352,15 @@ var $;
             $mol_action
         ], $bog_gram.prototype, "music_close", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "call_current", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "call_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "call_close", null);
+        __decorate([
             $mol_action
         ], $bog_gram.prototype, "dialog_open", null);
         __decorate([
@@ -55107,6 +56425,9 @@ var $;
         $mol_style_define($bog_gram, {
             Music_page: {
                 width: '30rem',
+            },
+            Call_page: {
+                width: '40rem',
             },
             Intro: {
                 flex: {
