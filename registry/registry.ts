@@ -71,11 +71,22 @@ namespace $ {
 
 		@ $mol_mem
 		keys_fill() {
+
+			const store = this.Account().dialogs_store()
+			if( Number( store.Schema()?.val() ?? 0 ) >= 2 ) return 0
+
+			const my = this.Account().my_lord()
 			let count = 0
+
 			for( const id of this.ids() ) {
-				if( !this.joined( id ) ) continue
-				count += $bog_gram_soft( ()=> ( this.key_put( id ), 1 ), 0 )
+				const lords = ( this.store( id ).Lords()?.items() ?? [] ).map( String )
+				if( !lords.includes( my ) ) continue
+				this.key_put( id )
+				++ count
 			}
+
+			store.Schema( 'auto' )?.val( 2 )
+
 			return count
 		}
 

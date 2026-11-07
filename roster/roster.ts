@@ -23,7 +23,20 @@ namespace $ {
 
 		@ $mol_mem
 		ids() {
-			return ( this.store().Dialogs()?.items() ?? [] ).map( String )
+			const all = new Set( ( this.store().Dialogs()?.items() ?? [] ).map( String ) )
+			const hidden = new Set( this.hidden() )
+			for( const link of this.invited() ) if( !hidden.has( link ) ) all.add( link )
+			return [ ... all ]
+		}
+
+		@ $mol_mem
+		invited() {
+			const links = [] as string[]
+			for( const entry of $bog_gram_soft( ()=> this.Account().invites(), [] as string[] ) ) {
+				const link = $bog_gram_soft( ()=> this.invite_open( entry ), '' )
+				if( link && $giper_baza_link.check( link ) ) links.push( link )
+			}
+			return links
 		}
 
 		@ $mol_mem
@@ -160,22 +173,6 @@ namespace $ {
 			this.store().Outbox( 'auto' )!.add( peer + '|' + id )
 
 			return id
-		}
-
-		@ $mol_mem
-		invites_merge() {
-			const invites = this.Account().invites()
-			if( !invites.length ) return 0
-			const have = new Set( this.ids() )
-			const hidden = new Set( this.hidden() )
-			for( const entry of invites ) {
-				const link = this.invite_open( entry )
-				if( !link ) continue
-				if( have.has( link ) ) continue
-				if( hidden.has( link ) ) continue
-				this.store().Dialogs( 'auto' )!.add( link )
-			}
-			return invites.length
 		}
 
 		invite_open( entry: string ) {

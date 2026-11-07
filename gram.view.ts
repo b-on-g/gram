@@ -434,8 +434,6 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.notify_auto(), null )
 			$bog_gram_soft( ()=> this.outbox_flush(), null )
 			$bog_gram_soft( ()=> this.asks_flush(), null )
-			$bog_gram_soft( ()=> this.denies_merge(), null )
-			$bog_gram_soft( ()=> this.inbox_merge(), null )
 			$bog_gram_soft( ()=> this.monitor_fill(), null )
 		}
 

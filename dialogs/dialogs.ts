@@ -15,6 +15,8 @@ namespace $ {
 		Notes: $giper_baza_dict_to( $bog_gram_note ),
 		Passes: $giper_baza_list_str,
 		Lobbies: $giper_baza_list_str,
+		Joining: $giper_baza_dict_to( $bog_gram_join ),
+		Schema: $giper_baza_atom_real,
 	}) {}
 
 }

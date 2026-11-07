@@ -2,6 +2,37 @@ namespace $ {
 
 	$mol_test({
 
+		'Ключ в старые реестры кладётся один раз, потом схема помечена и проход молчит'( $ ) {
+
+			const my = 'LordMine'
+			const pass = 'PassMine'
+
+			const dialogs = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+			const joined = $giper_baza_land.make({ $ }).Data( $bog_gram_users )
+			const foreign = $giper_baza_land.make({ $ }).Data( $bog_gram_users )
+
+			const account = $bog_gram_account.make({ $, my_lord: ()=> my, my_pass: ()=> pass, dialogs_store: ()=> dialogs })
+			const start = ()=> $bog_gram_registry.make({ $,
+				Account: ()=> account,
+				store: ( id: string )=> id === 'Joined' ? joined : foreign,
+			})
+			const registry = start()
+
+			dialogs.Registries( 'auto' )!.add( 'Joined' )
+			dialogs.Registries( 'auto' )!.add( 'Foreign' )
+			joined.Lords( 'auto' )!.add( my )
+
+			$mol_assert_equal( registry.keys_fill(), 1 )
+			$mol_assert_equal( String( joined.Keys()?.key( my )?.Pass()?.val() ?? '' ), pass )
+			$mol_assert_equal( foreign.Keys()?.key( my ) ?? null, null )
+			$mol_assert_equal( dialogs.Schema()?.val(), 2 )
+
+			joined.Keys( 'auto' )?.key( my, 'auto' )?.Pass( 'auto' )?.val( 'Stale' )
+			$mol_assert_equal( start().keys_fill(), 0 )
+			$mol_assert_equal( String( joined.Keys()?.key( my )?.Pass()?.val() ?? '' ), 'Stale' )
+
+		},
+
 		async 'Люди из реестров собираются без меня, их ключ находится по лорду'( $ ) {
 
 			const me = await $.$giper_baza_auth._generate()

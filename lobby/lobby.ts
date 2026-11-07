@@ -245,6 +245,117 @@ namespace $ {
 			return String( entry ?? '' ).split( '|' )[ 1 ] ?? ''
 		}
 
+		@ $mol_mem
+		queued_old() {
+			return $bog_gram_soft( ()=> ( this.store().Asks()?.items() ?? [] ).map( String ), [] as string[] )
+		}
+
+		@ $mol_mem
+		sent_old() {
+			return $bog_gram_soft( ()=> ( this.store().Asked()?.items() ?? [] ).map( String ), [] as string[] )
+		}
+
+		@ $mol_mem
+		denied_old() {
+			return $bog_gram_soft( ()=> ( this.store().Denied()?.items() ?? [] ).map( String ), [] as string[] )
+		}
+
+		@ $mol_mem
+		asks(): Readonly< Record< string, { owner: string, state: 'queued' | 'sent' } > > {
+
+			const out: Record< string, { owner: string, state: 'queued' | 'sent' } > = {}
+
+			const put = ( group: string, owner: string, state: 'queued' | 'sent' )=> {
+				if( !group ) return
+				const prev = out[ group ]
+				out[ group ] = {
+					owner: owner || prev?.owner || '',
+					state: prev?.state === 'sent' ? 'sent' : state,
+				}
+			}
+
+			for( const task of this.queued_old() ) put( this.task_group( task ), this.task_owner( task ), 'queued' )
+			for( const task of this.sent_old() ) put( this.task_group( task ), this.task_owner( task ), 'sent' )
+
+			const joining = $bog_gram_soft( ()=> this.store().Joining(), null )
+			for( const key of $bog_gram_soft( ()=> joining?.keys() ?? [], [] as readonly $giper_baza_vary_type[] ) ) {
+				const group = String( key )
+				const join = $bog_gram_soft( ()=> joining!.key( group ), null )
+				const owner = $bog_gram_soft( ()=> String( join?.Owner()?.val() ?? '' ), '' )
+				const state = $bog_gram_soft( ()=> String( join?.State()?.val() ?? '' ), '' )
+				put( group, owner, state === 'sent' ? 'sent' : 'queued' )
+			}
+
+			return out
+		}
+
+		@ $mol_mem
+		groups() {
+			return Object.keys( this.asks() )
+		}
+
+		@ $mol_mem
+		denials() {
+			const groups = [] as string[]
+			for( const entry of $bog_gram_soft( ()=> this.Account().denies(), [] as string[] ) ) {
+				const group = this.denial_group( entry )
+				if( group ) groups.push( group )
+			}
+			return groups
+		}
+
+		denial_group( entry: string ) {
+			if( !$bog_gram_seal.is( entry ) ) return entry
+			return $bog_gram_soft( ()=> this.sealed_open([ 'deny', entry ])?.open ?? '', '' )
+		}
+
+		@ $mol_mem
+		denied() {
+			const asks = this.asks()
+			const out = new Set( this.denied_old() )
+			for( const group of this.denials() ) if( asks[ group ] ) out.add( group )
+			return [ ... out ]
+		}
+
+		@ $mol_mem
+		queued() {
+			const asks = this.asks()
+			const denied = new Set( this.denied() )
+			return this.groups().filter( group => asks[ group ].state === 'queued' && !denied.has( group ) )
+		}
+
+		@ $mol_mem
+		sent() {
+			const asks = this.asks()
+			const denied = new Set( this.denied() )
+			return this.groups().filter( group => asks[ group ].state === 'sent' && !denied.has( group ) )
+		}
+
+		join_put( group: string, owner: string, state: 'queued' | 'sent' ) {
+			const join = this.store().Joining( 'auto' )?.key( group, 'auto' )
+			if( owner ) join?.Owner( 'auto' )?.val( owner )
+			join?.State( 'auto' )?.val( state )
+		}
+
+		join_drop( group: string ) {
+			const joining = this.store().Joining()
+			if( ( joining?.keys() ?? [] ).map( String ).includes( group ) ) this.store().Joining( 'auto' )!.cut( group )
+			this.old_drop( group )
+		}
+
+		old_drop( group: string ) {
+			const store = this.store()
+			for( const task of this.queued_old() ) if( this.task_group( task ) === group ) store.Asks( 'auto' )!.cut( task )
+			for( const task of this.sent_old() ) if( this.task_group( task ) === group ) store.Asked( 'auto' )!.cut( task )
+		}
+
+		denial_drop( group: string ) {
+			if( this.denied_old().includes( group ) ) this.store().Denied( 'auto' )!.cut( group )
+			for( const entry of $bog_gram_soft( ()=> this.Account().denies(), [] as string[] ) ) {
+				if( this.denial_group( entry ) === group ) this.Account().denies_cut( entry )
+			}
+		}
+
 		@ $mol_action
 		send( id: string, owner: string ) {
 
@@ -253,31 +364,16 @@ namespace $ {
 			const store = this.store()
 
 			if( this.Roster().hidden().includes( id ) ) store.Hidden( 'auto' )!.cut( id )
-			if( this.denied().includes( id ) ) store.Denied( 'auto' )!.cut( id )
 
-			if( this.groups().includes( id ) ) return
+			const was_denied = this.denied().includes( id )
+			if( was_denied ) this.denial_drop( id )
+
+			if( this.groups().includes( id ) && !was_denied ) return
+
+			this.join_put( id, owner, 'queued' )
+			this.old_drop( id )
 			store.Asks( 'auto' )!.add( this.task( id, owner ) )
 
-		}
-
-		@ $mol_mem
-		queued() {
-			return $bog_gram_soft( ()=> ( this.store().Asks()?.items() ?? [] ).map( String ), [] as string[] )
-		}
-
-		@ $mol_mem
-		sent() {
-			return $bog_gram_soft( ()=> ( this.store().Asked()?.items() ?? [] ).map( String ), [] as string[] )
-		}
-
-		@ $mol_mem
-		denied() {
-			return $bog_gram_soft( ()=> ( this.store().Denied()?.items() ?? [] ).map( String ), [] as string[] )
-		}
-
-		@ $mol_mem
-		groups() {
-			return [ ... this.queued(), ... this.sent() ].map( entry => this.task_group( entry ) )
 		}
 
 		waiting( entries: readonly string[] ) {
@@ -294,35 +390,6 @@ namespace $ {
 		@ $mol_mem
 		pending_sent() {
 			return this.waiting( this.sent() )
-		}
-
-		@ $mol_mem
-		denies_merge() {
-
-			const entries = $bog_gram_soft( ()=> this.Account().denies(), [] as string[] )
-			if( !entries.length ) return 0
-
-			const store = this.store()
-			const mine = [ ... this.queued(), ... this.sent() ]
-
-			for( const entry of entries ) {
-
-				const group = $bog_gram_seal.is( entry )
-					? this.sealed_open([ 'deny', entry ])?.open ?? ''
-					: entry
-
-				for( const task of mine ) {
-					if( !group ) break
-					if( this.task_group( task ) !== group ) continue
-					store.Asks( 'auto' )!.cut( task )
-					store.Asked( 'auto' )!.cut( task )
-					if( !this.denied().includes( group ) ) store.Denied( 'auto' )!.add( group )
-				}
-
-				this.Account().denies_cut( entry )
-			}
-
-			return entries.length
 		}
 
 		@ $mol_mem
@@ -345,67 +412,64 @@ namespace $ {
 			return ''
 		}
 
-		taken( entry: string ) {
+		taken( id: string ) {
 
-			const id = this.task_group( entry )
 			const inside = $bog_gram_soft( ()=> this.Talk().lords( id ).includes( this.Account().my_lord() ), false )
 			if( !inside ) return false
 
-			const store = this.store()
 			const roster = this.Roster()
-			if( !roster.ids().includes( id ) && !roster.hidden().includes( id ) ) store.Dialogs( 'auto' )!.add( id )
+			if( !roster.ids().includes( id ) && !roster.hidden().includes( id ) ) this.store().Dialogs( 'auto' )!.add( id )
 
-			store.Asks( 'auto' )!.cut( entry )
-			store.Asked( 'auto' )!.cut( entry )
+			this.join_drop( id )
 
 			return true
+		}
+
+		deliver( id: string, owner: string ) {
+
+			const inbox = this.inbox_of( owner )
+			if( !inbox ) return false
+
+			const owner_pass = this.People().pass_of( owner )
+			if( !owner_pass ) return false
+
+			const entry = this.sealed_close([ 'join', owner_pass.toString(), id ])
+			const joins = inbox.Joins( 'auto' )
+			if( !joins ) return false
+			joins.add( entry )
+
+			return ( inbox.Joins()?.items() ?? [] ).map( String ).includes( entry )
 		}
 
 		@ $mol_mem
 		asks_flush() {
 
-			const queued = this.queued()
-			const sent = this.sent()
-			if( !queued.length && !sent.length ) return 0
+			const groups = [ ... this.queued(), ... this.sent() ]
+			if( !groups.length ) return 0
 
-			for( const task of sent ) this.taken( task )
+			const asks = this.asks()
+			let waiting = 0
 
-			if( !queued.length ) return sent.length
+			for( const id of groups ) {
 
-			this.$.$mol_state_time.now( 3000 )
+				if( this.taken( id ) ) continue
+				if( asks[ id ].state !== 'queued' ) continue
 
-			const store = this.store()
-
-			for( const task of queued ) {
-
-				if( this.taken( task ) ) continue
+				++ waiting
 
 				try {
 
-					const id = this.task_group( task )
-
-					const owner = this.task_owner( task ) || this.Talk().owner( id )
+					const owner = asks[ id ].owner || this.Talk().owner( id )
 					if( !owner ) {
-						store.Asks( 'auto' )!.cut( task )
+						this.join_drop( id )
 						continue
 					}
 
-					const inbox = this.inbox_of( owner )
-					if( !inbox ) continue
+					if( !this.deliver( id, owner ) ) continue
 
-					const owner_pass = this.People().pass_of( owner )
-					if( !owner_pass ) continue
-
-					const entry = this.sealed_close([ 'join', owner_pass.toString(), id ])
-					const joins = inbox.Joins( 'auto' )
-					if( !joins ) continue
-					joins.add( entry )
-
-					const delivered = ( inbox.Joins()?.items() ?? [] ).map( String ).includes( entry )
-					if( !delivered ) continue
-
-					store.Asked( 'auto' )!.add( task )
-					store.Asks( 'auto' )!.cut( task )
+					this.join_put( id, owner, 'sent' )
+					this.old_drop( id )
+					this.store().Asked( 'auto' )!.add( this.task( id, owner ) )
 
 				} catch( error ) {
 					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
@@ -414,7 +478,9 @@ namespace $ {
 
 			}
 
-			return queued.length + sent.length
+			if( waiting ) this.$.$mol_state_time.now( 3000 )
+
+			return groups.length
 		}
 
 	}

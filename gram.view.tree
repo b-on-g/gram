@@ -90,7 +90,6 @@ $bog_gram $mol_book2
 		archive_is* => archive_is*
 		visible => dialog_visible
 		with* => dialog_with*
-		invites_merge => inbox_merge
 		watch_fill => monitor_fill
 		contact_lords => contact_lords
 		contact_source* => contact_source*
@@ -115,7 +114,6 @@ $bog_gram $mol_book2
 		Roster <= Roster
 		Crew <= Crew
 		outbox_flush => outbox_flush
-		denies_merge => denies_merge
 		asks_flush => asks_flush
 		plate => ask_plate_text
 		lord_of* => ask_lord*

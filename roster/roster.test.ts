@@ -47,30 +47,33 @@ namespace $ {
 
 		},
 
-		'Убранный диалог прячется и не возвращается приглашением'( $ ) {
+		'Приглашённый диалог виден без копирования, убранный не возвращается, мусор отсеивается'( $ ) {
+
+			const keep = 'AAAAAAAA_BBBBBBBB'
+			const drop = 'CCCCCCCC_DDDDDDDD'
+			const fresh = 'EEEEEEEE_FFFFFFFF'
 
 			const store = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
 			const monitor = $giper_baza_land.make({ $ }).Data( $bog_gram_monitor )
 			const account = $bog_gram_account.make({ $,
 				dialogs_store: ()=> store,
 				monitor_store: ()=> monitor,
-				invites: ()=> [ 'Keep', 'Drop', 'Fresh' ],
+				invites: ()=> [ keep, drop, fresh, 'не ссылка' ],
 			})
 			const talk = $bog_gram_talk.make({ $, Account: ()=> account, links_of: ()=> [] })
 			const roster = $bog_gram_roster.make({ $, Account: ()=> account, Talk: ()=> talk })
 
-			store.Dialogs( 'auto' )!.add( 'Keep' )
-			store.Dialogs( 'auto' )!.add( 'Drop' )
-			store.Archived( 'auto' )!.add( 'Drop' )
+			store.Dialogs( 'auto' )!.add( keep )
+			store.Archived( 'auto' )!.add( drop )
 
-			roster.drop( 'Drop' )
+			$mol_assert_equal( [ ... roster.ids() ].sort(), [ keep, drop, fresh ].sort() )
 
-			$mol_assert_equal( roster.ids(), [ 'Keep' ] )
-			$mol_assert_equal( roster.hidden(), [ 'Drop' ] )
+			roster.drop( drop )
+
+			$mol_assert_equal( [ ... roster.ids() ].sort(), [ keep, fresh ].sort() )
+			$mol_assert_equal( roster.hidden(), [ drop ] )
 			$mol_assert_equal( roster.archive_links(), [] )
-
-			roster.invites_merge()
-			$mol_assert_equal( [ ... roster.ids() ].sort(), [ 'Fresh', 'Keep' ] )
+			$mol_assert_equal( ( store.Dialogs()!.items() as readonly string[] ).map( String ), [ keep ] )
 
 		},
 

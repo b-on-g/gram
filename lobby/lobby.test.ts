@@ -1,9 +1,9 @@
 namespace $ {
 
-	function lobby_with( context: typeof $$,inbox: $bog_gram_inbox, store: $bog_gram_dialogs ) {
+	function lobby_with( context: typeof $$, inbox: $bog_gram_inbox, store: $bog_gram_dialogs, rest: Partial< $bog_gram_lobby > = {} ) {
 		const account = $bog_gram_account.make({ $: context, inbox_store: ()=> inbox, dialogs_store: ()=> store })
 		const roster = $bog_gram_roster.make({ $: context, Account: ()=> account })
-		return $bog_gram_lobby.make({ $: context, Account: ()=> account, Roster: ()=> roster })
+		return $bog_gram_lobby.make({ $: context, Account: ()=> account, Roster: ()=> roster, ... rest })
 	}
 
 	$mol_test({
@@ -71,7 +71,7 @@ namespace $ {
 
 		},
 
-		'Отказ доезжает до просящего и снимает заявку, но не банит'( $ ) {
+		'Отказ выводится из лобби без перекладывания, повторная заявка его снимает'( $ ) {
 
 			const inbox = $giper_baza_land.make({ $ }).Data( $bog_gram_inbox )
 			const store = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
@@ -85,34 +85,78 @@ namespace $ {
 			$mol_assert_equal( lobby.plate(), 'Заявка отправлена — ждём, пока её примут' )
 
 			inbox.Denies( 'auto' )!.add( group )
-			lobby.denies_merge()
 
-			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 0 )
-			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).length, 0 )
-			$mol_assert_equal( lobby.denied().join(), group )
+			$mol_assert_equal( lobby.denied(), [ group ] )
 			$mol_assert_equal( lobby.plate(), 'Заявку отклонили — попроситься снова можно по той же ссылке' )
+			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).map( String ), [ task ] )
+			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).map( String ), [ group ] )
 
 			lobby.send( group, owner )
-			$mol_assert_equal( lobby.denied().length, 0 )
-			$mol_assert_equal( ( store.Asks()!.items() as readonly string[] ).map( String ).join(), task )
+
+			$mol_assert_equal( lobby.denied(), [] )
+			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).length, 0 )
+			$mol_assert_equal( lobby.asks()[ group ], { owner, state: 'queued' } )
+			$mol_assert_equal( ( store.Asks()!.items() as readonly string[] ).map( String ), [ task ] )
+			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 0 )
 			$mol_assert_equal( lobby.plate(), 'Заявка отправляется — это не мгновенно' )
 
 		},
 
-		'Чужой отказ снимает только свою заявку, а мусор из лобби убирается'( $ ) {
+		'Чужой отказ не трогает заявку'( $ ) {
 
 			const inbox = $giper_baza_land.make({ $ }).Data( $bog_gram_inbox )
 			const store = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
 			const lobby = lobby_with( $, inbox, store )
 
 			store.Asked( 'auto' )!.add( lobby.task( 'AAAAAAAA_BBBBBBBB', 'CCCCCCCC_DDDDDDDD' ) )
-
 			inbox.Denies( 'auto' )!.add( 'EEEEEEEE_FFFFFFFF' )
-			lobby.denies_merge()
 
-			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 1 )
-			$mol_assert_equal( lobby.denied().length, 0 )
-			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).length, 0 )
+			$mol_assert_equal( lobby.denied(), [] )
+			$mol_assert_equal( lobby.sent(), [ 'AAAAAAAA_BBBBBBBB' ] )
+
+		},
+
+		'Заявки из словаря и старых списков сливаются, доставленное не откатывается'( $ ) {
+
+			const inbox = $giper_baza_land.make({ $ }).Data( $bog_gram_inbox )
+			const store = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+			const lobby = lobby_with( $, inbox, store )
+
+			const owner = 'CCCCCCCC_DDDDDDDD'
+			const old_queued = 'AAAAAAAA_AAAAAAAA'
+			const fresh_sent = 'BBBBBBBB_BBBBBBBB'
+			const both = 'EEEEEEEE_EEEEEEEE'
+
+			store.Asks( 'auto' )!.add( lobby.task( old_queued, owner ) )
+			lobby.join_put( fresh_sent, owner, 'sent' )
+			lobby.join_put( both, owner, 'queued' )
+			store.Asked( 'auto' )!.add( lobby.task( both, owner ) )
+
+			$mol_assert_equal( lobby.asks()[ old_queued ], { owner, state: 'queued' } )
+			$mol_assert_equal( lobby.asks()[ fresh_sent ], { owner, state: 'sent' } )
+			$mol_assert_equal( lobby.asks()[ both ], { owner, state: 'sent' } )
+			$mol_assert_equal( lobby.queued(), [ old_queued ] )
+
+		},
+
+		'Доставленная заявка переходит в отправленные и в словаре, и в старых списках'( $ ) {
+
+			const inbox = $giper_baza_land.make({ $ }).Data( $bog_gram_inbox )
+			const store = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+			const lobby = lobby_with( $, inbox, store, { deliver: ()=> true } )
+
+			const group = 'AAAAAAAA_BBBBBBBB'
+			const owner = 'CCCCCCCC_DDDDDDDD'
+			const task = lobby.task( group, owner )
+
+			lobby.send( group, owner )
+			$mol_assert_equal( lobby.queued(), [ group ] )
+
+			lobby.asks_flush()
+
+			$mol_assert_equal( lobby.asks()[ group ], { owner, state: 'sent' } )
+			$mol_assert_equal( ( store.Asks()!.items() as readonly string[] ).length, 0 )
+			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).map( String ), [ task ] )
 
 		},
 
