@@ -1,0 +1,206 @@
+namespace $ {
+
+	export class $bog_gram_roster extends $mol_object {
+
+		@ $mol_mem
+		Account() {
+			return this.$.$bog_gram_account.make({ $: this.$ })
+		}
+
+		@ $mol_mem
+		People() {
+			return this.$.$bog_gram_people.make({ $: this.$ })
+		}
+
+		@ $mol_mem
+		Talk() {
+			return this.$.$bog_gram_talk.make({ $: this.$ })
+		}
+
+		store() {
+			return this.Account().dialogs_store()
+		}
+
+		@ $mol_mem
+		ids() {
+			return ( this.store().Dialogs()?.items() ?? [] ).map( String )
+		}
+
+		@ $mol_mem
+		hidden() {
+			return ( this.store().Hidden()?.items() ?? [] ).map( String )
+		}
+
+		sort( own: boolean, alive: boolean, known: boolean ): 'plain' | 'request' | 'skip' {
+			if( own ) return 'plain'
+			if( !alive ) return 'skip'
+			return known ? 'plain' : 'request'
+		}
+
+		@ $mol_mem_key
+		kind( id: string ): 'plain' | 'request' | 'skip' {
+			if( this.archive_is( id ) ) return 'plain'
+			const talk = this.Talk()
+			const known = this.People().known( talk.owner( id ) ) || talk.mine_wrote( id )
+			return this.sort( talk.own( id ), talk.alive( id ), known )
+		}
+
+		@ $mol_mem
+		requests() {
+			const dropped = new Set( this.hidden() )
+			return this.Talk().fresh_first( this.ids().filter( id => {
+				if( dropped.has( id ) ) return false
+				return this.kind( id ) === 'request'
+			} ) )
+		}
+
+		@ $mol_mem
+		archive_links() {
+			return ( this.store().Archived()?.items() ?? [] ).map( String )
+		}
+
+		@ $mol_mem
+		archived() {
+			const alive = new Set( this.ids() )
+			const dropped = new Set( this.hidden() )
+			return this.archive_links().filter( id => alive.has( id ) && !dropped.has( id ) )
+		}
+
+		@ $mol_mem_key
+		archive_is( id: string ) {
+			return this.archive_links().includes( id )
+		}
+
+		@ $mol_mem
+		visible() {
+			const folded = new Set( this.archived() )
+			const asked = new Set( this.requests() )
+			return this.Talk().fresh_first( this.ids().filter( id => {
+				if( folded.has( id ) ) return false
+				if( asked.has( id ) ) return false
+				return this.kind( id ) !== 'skip'
+			} ) )
+		}
+
+		@ $mol_action
+		archive( id: string ) {
+			if( !id ) return
+			if( this.Talk().saved_is( id ) ) return
+			this.store().Archived( 'auto' )!.add( id )
+		}
+
+		@ $mol_action
+		unarchive( id: string ) {
+			if( !id ) return
+			this.store().Archived( 'auto' )!.cut( id )
+		}
+
+		@ $mol_action
+		drop( id: string ) {
+
+			if( !id ) return
+			if( this.Talk().saved_is( id ) ) return
+
+			const store = this.store()
+			store.Dialogs( 'auto' )!.cut( id )
+			store.Hidden( 'auto' )!.add( id )
+			if( this.archive_is( id ) ) store.Archived( 'auto' )!.cut( id )
+
+			$bog_gram_soft( ()=> {
+				const sessions = this.Talk().links_of( id )
+				const watch = this.Account().monitor_store().Watch( 'auto' )!
+				for( const link of sessions ) watch.cut( link )
+				return true
+			}, false )
+
+		}
+
+		with( peer: string ) {
+			if( !peer ) return ''
+			const talk = this.Talk()
+			for( const id of this.ids() ) {
+				const found = $bog_gram_soft( ()=> !talk.group_is( id ) && talk.peer( id ) === peer, false )
+				if( found ) return id
+			}
+			return ''
+		}
+
+		create( peer: string ) {
+
+			const exist = this.with( peer )
+			if( exist ) return exist
+
+			const pass = this.People().pass_of( peer )
+			if( !pass ) return ''
+
+			const glob = this.$.$giper_baza_glob
+			const my = this.Account().my_lord()
+
+			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+			const session_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+
+			dialog_land.give( pass, $giper_baza_rank_post( 'fast' ) )
+			session_land.give( pass, $giper_baza_rank_post( 'fast' ) )
+
+			const id = dialog_land.link().str
+			const session = session_land.link().str
+
+			const dialog = dialog_land.Data( $bog_gram_dialog )
+			dialog.Peers( 'auto' )!.add( my )
+			dialog.Peers( 'auto' )!.add( peer )
+			dialog.Sessions( 'auto' )!.add( session )
+			dialog.Session_last( 'auto' )?.val( session )
+			dialog.Created( 'auto' )?.val( Date.now() )
+			dialog.Owner( 'auto' )?.val( my )
+
+			session_land.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
+
+			this.store().Dialogs( 'auto' )!.add( id )
+			this.Account().monitor_store().Watch( 'auto' )!.add( session )
+			this.store().Outbox( 'auto' )!.add( peer + '|' + id )
+
+			return id
+		}
+
+		@ $mol_mem
+		invites_merge() {
+			const invites = this.Account().invites()
+			if( !invites.length ) return 0
+			const have = new Set( this.ids() )
+			const hidden = new Set( this.hidden() )
+			for( const entry of invites ) {
+				const link = this.invite_open( entry )
+				if( !link ) continue
+				if( have.has( link ) ) continue
+				if( hidden.has( link ) ) continue
+				this.store().Dialogs( 'auto' )!.add( link )
+			}
+			return invites.length
+		}
+
+		invite_open( entry: string ) {
+			if( !$bog_gram_seal.is( entry ) ) return entry
+			return this.sealed( entry )?.open ?? ''
+		}
+
+		@ $mol_mem_key
+		sealed( entry: string ) {
+			return $bog_gram_seal.open( this.$.$giper_baza_auth.current(), 'invite', entry )
+		}
+
+		@ $mol_mem
+		watch_fill() {
+			const watch = this.Account().monitor_store()
+			const have = new Set( ( watch.Watch()?.items() ?? [] ).map( String ) )
+			for( const id of this.ids() ) {
+				for( const link of this.Talk().links_of( id ) ) {
+					if( have.has( link ) ) continue
+					watch.Watch( 'auto' )!.add( link )
+				}
+			}
+			return true
+		}
+
+	}
+
+}

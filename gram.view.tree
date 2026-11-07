@@ -77,6 +77,20 @@ $bog_gram $mol_book2
 		preview* => dialog_preview*
 		time* => dialog_time*
 		mine_wrote* => mine_wrote*
+	Roster $bog_gram_roster
+		Account <= Account
+		People <= People
+		Talk <= Talk
+		ids => dialog_ids
+		hidden => hidden_ids
+		kind* => dialog_kind*
+		requests => request_ids
+		archived => archive_ids
+		archive_is* => archive_is*
+		visible => dialog_visible
+		with* => dialog_with*
+		invites_merge => inbox_merge
+		watch_fill => monitor_fill
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view

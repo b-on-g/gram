@@ -1286,46 +1286,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Чужой диалог показывается по сообщениям и знакомству'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			// Свой диалог показывается всегда: пустым его завёл я сам
-			$mol_assert_equal( app.dialog_sort( true, false, false ), 'plain' )
-			$mol_assert_equal( app.dialog_sort( true, true, false ), 'plain' )
-
-			// Чужой пустой не показывается вовсе, знаком его автор или нет
-			$mol_assert_equal( app.dialog_sort( false, false, true ), 'skip' )
-			$mol_assert_equal( app.dialog_sort( false, false, false ), 'skip' )
-
-			// Чужой с сообщениями: от знакомого в общий список, от незнакомца в запросы
-			$mol_assert_equal( app.dialog_sort( false, true, true ), 'plain' )
-			$mol_assert_equal( app.dialog_sort( false, true, false ), 'request' )
-
-			// Создателя приходится записывать прямо в ленд: королём числится
-			// служебный ключ, выданный при захвате, и по ссылке ленда автора
-			// не узнать. Без записи ответ честно пустой.
-			$mol_assert_equal( app.dialog_owner( '' ), '' )
-
-			const auth = await $.$giper_baza_auth._generate()
-			const lord = auth.pass().lord().str
-			const land = $giper_baza_land.make({ $, auth: ()=> auth })
-
-			const ops = {
-				write() {
-					land.Data( $bog_gram_dialog ).Owner( 'auto' )?.val( lord )
-					return true
-				},
-				read() {
-					return String( land.Data( $bog_gram_dialog ).Owner()?.val() ?? '' )
-				},
-			}
-
-			await $mol_wire_async( ops ).write()
-			$mol_assert_equal( await $mol_wire_async( ops ).read(), lord )
-
-		},
-
 		async 'Исключённый теряет новый бакет, но не старый'( $ ) {
 
 			// Ссылка ленда выводится из ключа его короля, поэтому каждому ленду

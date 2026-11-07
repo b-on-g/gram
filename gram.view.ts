@@ -104,18 +104,6 @@ namespace $.$$ {
 
 		// ===== Диалоги =====
 
-		@$mol_mem
-		dialog_ids() {
-			return ( this.dialogs_store().Dialogs()?.items() ?? [] ).map( String )
-		}
-
-		/** Убранные из своего списка диалоги: инвайт на такой ленд игнорируем,
-		 * иначе собеседник вернул бы диалог обратно на следующем же синке. */
-		@$mol_mem
-		hidden_ids() {
-			return ( this.dialogs_store().Hidden()?.items() ?? [] ).map( String )
-		}
-
 		owner_me( id: string ) {
 			return this.dialog_own( id )
 		}
@@ -128,46 +116,6 @@ namespace $.$$ {
 			return this.Talk().member_rank( id, lord )
 		}
 
-		fresh_first( ids: readonly string[] ) {
-			return this.Talk().fresh_first( ids )
-		}
-
-		/** Куда попадает диалог в списке. Свой показываем всегда — пустым его
-		 * завёл я сам, и это моё решение. Чужой пустой не показываем вовсе:
-		 * человек мог открыть диалог со мной и передумать, а строка от него
-		 * уже стояла бы в списке. Чужой с сообщениями от незнакомого человека
-		 * уходит в запросы: знакомство предлагают, а не назначают. */
-		dialog_sort( own: boolean, alive: boolean, known: boolean ): 'plain' | 'request' | 'skip' {
-			if( own ) return 'plain'
-			if( !alive ) return 'skip'
-			return known ? 'plain' : 'request'
-		}
-
-		/** То же по ссылке на диалог. Заархивированный не разбираем: он уже
-		 * прошёл через мои руки, и второй раз спрашивать про него незачем.
-		 * Свой ответ в диалоге — то же согласие, только данное молча: иначе
-		 * давняя переписка с человеком не из реестра уехала бы в запросы. */
-		@$mol_mem_key
-		dialog_kind( id: string ): 'plain' | 'request' | 'skip' {
-			if( this.archive_is( id ) ) return 'plain'
-			const lord = this.dialog_owner( id )
-			const own = this.dialog_own( id )
-			const known = this.peer_known( lord ) || this.mine_wrote( id )
-			return this.dialog_sort( own, this.dialog_alive( id ), known )
-		}
-
-		/** Запросы на переписку: чужие диалоги с сообщениями от людей, которых
-		 * я нигде не встречал. Убранные из списка сюда не попадают — отказ
-		 * такое же решение, как и согласие. */
-		@$mol_mem
-		request_ids() {
-			const dropped = new Set( this.hidden_ids() )
-			return this.fresh_first( this.dialog_ids().filter( id => {
-				if( dropped.has( id ) ) return false
-				return this.dialog_kind( id ) === 'request'
-			} ) )
-		}
-
 		/** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
 		 * последними и только пока им есть что показать; развёрнутый раздел
 		 * досыпает строки туда же. */
@@ -175,21 +123,14 @@ namespace $.$$ {
 		dialog_rows() {
 
 			const archived = this.archive_ids()
-			const folded = new Set( archived )
 			const requests = this.request_ids()
-			const asked = new Set( requests )
-
-			const visible = this.fresh_first( this.dialog_ids().filter( id => {
-				if( folded.has( id ) ) return false
-				if( asked.has( id ) ) return false
-				return this.dialog_kind( id ) !== 'skip'
-			} ) )
+			const visible = this.dialog_visible()
 
 			const empty = !visible.length && !archived.length && !requests.length
 
 			return [
 				... archived.length ? [ this.Archive_row() ] : [],
-				... this.archive_opened() ? this.fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
+				... this.archive_opened() ? this.Talk().fresh_first( archived ).map( id => this.Dialog_row( id ) ) : [],
 				this.Saved_row(),
 				... visible.map( id => this.Dialog_row( id ) ),
 				... empty ? [ this.Dialogs_empty() ] : [],
@@ -337,29 +278,13 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Диалог живёт в шаренном ленде и у собеседника остаётся:
-		 * убираем только свою ссылку и свою слежку за сессиями. */
 		@$mol_action
 		dialog_delete( id: string, next?: any ) {
 			if( !id ) return null
 			if( this.saved_is( id ) ) return null
 
 			const active = this.dialog_current() === id
-			const store = this.dialogs_store()
-
-			store.Dialogs( 'auto' )!.cut( id )
-			store.Hidden( 'auto' )!.add( id )
-			if( this.archive_is( id ) ) store.Archived( 'auto' )!.cut( id )
-
-			// Ленд диалога может быть ещё не засинкан: список сессий тогда недоступен,
-			// но выкидывание из своего списка важнее — просто не чистим монитор
-			try {
-				const sessions = this.session_links_of( id )
-				const watch = this.monitor_store().Watch( 'auto' )!
-				for( const link of sessions ) watch.cut( link )
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-			}
+			this.Roster().drop( id )
 
 			if( active ) {
 				this.edit_id( '' )
@@ -372,27 +297,6 @@ namespace $.$$ {
 		}
 
 		// ===== Архив: спрятанные, но живые диалоги =====
-
-		/** Сырые ссылки из хранилища: по ним рисуется состояние кнопки в строке,
-		 * даже когда сам диалог из списка уже выпал. */
-		@$mol_mem
-		archive_links() {
-			return ( this.dialogs_store().Archived()?.items() ?? [] ).map( String )
-		}
-
-		/** В архиве показываем только живые диалоги: удалённый осел в Hidden
-		 * и вернуться на экран не должен ни в списке, ни в архиве. */
-		@$mol_mem
-		archive_ids() {
-			const alive = new Set( this.dialog_ids() )
-			const dropped = new Set( this.hidden_ids() )
-			return this.archive_links().filter( id => alive.has( id ) && !dropped.has( id ) )
-		}
-
-		@$mol_mem_key
-		archive_is( id: string ) {
-			return this.archive_links().includes( id )
-		}
 
 		@$mol_mem
 		archive_opened( next?: boolean ) {
@@ -415,25 +319,8 @@ namespace $.$$ {
 		dialog_archive_click( id: string, next?: Event ) {
 			if( !id ) return null
 			this.delete_disarm()
-			if( this.archive_is( id ) ) this.dialog_unarchive( id )
-			else this.dialog_archive( id )
-			return null
-		}
-
-		/** Диалог остаётся в своём списке и продолжает принимать сообщения:
-		 * архив — это только вторая полка, а не удаление. */
-		@$mol_action
-		dialog_archive( id: string, next?: any ) {
-			if( !id ) return null
-			if( this.saved_is( id ) ) return null
-			this.dialogs_store().Archived( 'auto' )!.add( id )
-			return null
-		}
-
-		@$mol_action
-		dialog_unarchive( id: string, next?: any ) {
-			if( !id ) return null
-			this.dialogs_store().Archived( 'auto' )!.cut( id )
+			if( this.archive_is( id ) ) this.Roster().unarchive( id )
+			else this.Roster().archive( id )
 			return null
 		}
 
@@ -691,24 +578,6 @@ namespace $.$$ {
 
 		// ===== Создание диалога =====
 
-		/** Уже существующий диалог с этим собеседником — повторный старт
-		 * не должен плодить новые ленды, а должен открывать старый.
-		 * Незасинканный диалог считаем несовпадением, чтобы не виснуть.
-		 * Группы тут не в счёт: человек может быть в общей группе и всё равно
-		 * не иметь с тобой личной переписки. */
-		dialog_with( peer: string ) {
-			if( !peer ) return ''
-			for( const id of this.dialog_ids() ) {
-				try {
-					if( this.group_is( id ) ) continue
-					if( this.dialog_peer( id ) === peer ) return id
-				} catch( error ) {
-					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				}
-			}
-			return ''
-		}
-
 		@$mol_mem
 		dialog_pending( next?: string ) {
 			return next ?? ''
@@ -745,55 +614,16 @@ namespace $.$$ {
 
 		dialog_create( peer: string ) {
 
-			// Гонка: пока ждали ключ, диалог мог появиться (или второй клик)
-			const exist = this.dialog_with( peer )
-			if( exist ) {
-				this.dialog_current( exist )
-				this.compose_opened( false )
-				this.dialog_pending( '' )
-				this.invite_done()
-				this.chat_bring()
-				return exist
-			}
+			const id = this.Roster().create( peer )
+			if( !id ) return null
 
-			const glob = this.$.$giper_baza_glob
-
-			// Имя собеседника тут не читаем: оно живёт в его ленде и офлайн
-			// подвесило бы фибру целиком, хотя для самого диалога не нужно
-			const peer_pass = this.peer_pass_of( peer )
-			if( !peer_pass ) return null
-
-			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-			const session_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-			// Ранг задаёт цену записи: на `just` подпись принимается с первой
-			// попытки, то есть работы ноль и поток сообщений ничем не ограничен.
-			// Берём следующую ступень — сотни подписей на сообщение: человек
-			// разницы не заметит, а заливать тысячами станет невыгодно.
-			dialog_land.give( peer_pass, $giper_baza_rank_post( 'fast' ) )
-			session_land.give( peer_pass, $giper_baza_rank_post( 'fast' ) )
-
-			const dialog = dialog_land.Data( $bog_gram_dialog )
-			dialog.Peers( 'auto' )!.add( this.my_lord() )
-			dialog.Peers( 'auto' )!.add( peer )
-			dialog.Sessions( 'auto' )!.add( session_land.link().str )
-			dialog.Session_last( 'auto' )?.val( session_land.link().str )
-			dialog.Created( 'auto' )?.val( Date.now() )
-			dialog.Owner( 'auto' )?.val( this.my_lord() )
-
-			const session = session_land.Data( $bog_gram_session )
-			session.Dialog_land( 'auto' )?.val( dialog_land.link().str )
-
-			this.dialogs_store().Dialogs( 'auto' )!.add( dialog_land.link().str )
-			this.monitor_store().Watch( 'auto' )!.add( session_land.link().str )
-
-			this.dialogs_store().Outbox( 'auto' )!.add( peer + '|' + dialog_land.link().str )
-
-			this.dialog_current( dialog_land.link().str )
-			this.chat_bring()
+			this.dialog_current( id )
 			this.compose_opened( false )
 			this.dialog_pending( '' )
 			this.invite_done()
-			return dialog_land.link().str
+			this.chat_bring()
+
+			return id
 		}
 
 		// ===== Создание группы =====
@@ -1755,40 +1585,6 @@ namespace $.$$ {
 		@$mol_mem_key
 		sealed_open( [ kind, entry ]: readonly [ string, string ] ) {
 			return $bog_gram_seal.open( this.$.$giper_baza_auth.current(), kind, entry )
-		}
-
-		invite_open( entry: string ) {
-			if( !$bog_gram_seal.is( entry ) ) return entry
-			return this.sealed_open([ 'invite', entry ])?.open ?? ''
-		}
-
-		@$mol_mem
-		inbox_merge() {
-			const invites = this.Account().invites()
-			if( !invites.length ) return 0
-			const have = new Set( this.dialog_ids() )
-			const hidden = new Set( this.hidden_ids() )
-			for( const entry of invites ) {
-				const link = this.invite_open( entry )
-				if( !link ) continue
-				if( have.has( link ) ) continue
-				if( hidden.has( link ) ) continue
-				this.dialogs_store().Dialogs( 'auto' )!.add( link )
-			}
-			return invites.length
-		}
-
-		@$mol_mem
-		monitor_fill() {
-			const watch = this.monitor_store()
-			const have = new Set( ( watch.Watch()?.items() ?? [] ).map( String ) )
-			for( const id of this.dialog_ids() ) {
-				for( const link of this.session_links_of( id ) ) {
-					if( have.has( link ) ) continue
-					watch.Watch( 'auto' )!.add( link )
-				}
-			}
-			return true
 		}
 
 		// ===== Сообщения =====
