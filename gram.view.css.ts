@@ -2275,6 +2275,59 @@ namespace $.$$ {
 
 		},
 
+		Message_quote: {
+			display: 'flex',
+			flex: {
+				direction: 'column',
+			},
+			alignSelf: 'stretch',
+			alignItems: 'flex-start',
+			minWidth: 0,
+			padding: {
+				top: '0.125rem',
+				bottom: '0.125rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			margin: {
+				bottom: '0.25rem',
+			},
+			border: {
+				left: {
+					width: '2px',
+					style: 'solid',
+					color: tg_blue,
+				},
+			},
+			borderRadius: '0.25rem',
+			background: {
+				color: $mol_theme.hover,
+			},
+			font: {
+				size: '0.8rem',
+			},
+			textAlign: 'left',
+		},
+
+		Message_quote_author: {
+			color: tg_blue,
+			font: {
+				weight: 'bold',
+			},
+			maxWidth: '100%',
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Message_quote_text: {
+			color: $mol_theme.shade,
+			maxWidth: '100%',
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
 		Message_body: {
 			minWidth: 0,
 			whiteSpace: 'pre-wrap',
@@ -2842,6 +2895,66 @@ namespace $.$$ {
 				},
 			},
 			borderRadius: '0.25rem',
+		},
+
+		Reply_banner: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			background: {
+				color: $mol_theme.hover,
+			},
+			border: {
+				left: {
+					width: '2px',
+					style: 'solid',
+					color: tg_blue,
+				},
+			},
+			borderRadius: '0.25rem',
+		},
+
+		Reply_icon: {
+			color: tg_blue,
+			flex: {
+				shrink: 0,
+			},
+		},
+
+		Reply_info: {
+			flex: {
+				direction: 'column',
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				size: '0.8rem',
+			},
+		},
+
+		Reply_title: {
+			color: tg_blue,
+			font: {
+				weight: 'bold',
+			},
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+		},
+
+		Reply_text: {
+			color: $mol_theme.shade,
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
 		},
 
 		Edit_banner_text: {

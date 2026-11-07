@@ -34,6 +34,9 @@ namespace $.$$ {
 	 * ощущается как зависший интерфейс. */
 	const press_delay = 400
 
+	/** Два отпускания на одном пузыре чаще этого — двойной тап, ответ. */
+	const double_tap_delay = 350
+
 	/** Предел большей стороны кадра в пузыре. Крупнее — и переписка
 	 * превращается в ленту плакатов, где текста уже не видно. */
 	const shot_side = 15
@@ -803,6 +806,7 @@ namespace $.$$ {
 			this.leave_armed( false )
 			this.account_reset()
 			this.edit_id( '' )
+			this.reply_id( '' )
 			this.message_text( '' )
 			this.message_menu( '' )
 			this.zoom_id( '' )
@@ -2753,6 +2757,8 @@ namespace $.$$ {
 		press_timer: ReturnType< typeof setTimeout > | null = null
 		press_row = ''
 		press_held = false
+		tap_row = ''
+		tap_at = 0
 
 		press_stop() {
 			if( this.press_timer !== null ) this.$.$mol_dom_context.clearTimeout( this.press_timer )
@@ -2798,7 +2804,20 @@ namespace $.$$ {
 			if( held ) return null
 			if( this.press_on_actions( next ) ) return null
 			if( this.message_menu() === id ) this.message_menu( '' )
+			if( next?.type === 'pointerup' && this.message_double_tap( id, Date.now() ) ) {
+				this.$.$mol_dom_context.getSelection?.()?.removeAllRanges()
+				this.message_reply( id )
+			}
 			return null
+		}
+
+		/** Двойной тап узнаём сами по двум отпусканиям подряд: dblclick на
+		 * телефонах приходит не везде, а отпускание пальца — всегда. */
+		message_double_tap( id: string, now: number ) {
+			const double = this.tap_row === id && now - this.tap_at < double_tap_delay
+			this.tap_row = double ? '' : id
+			this.tap_at = double ? 0 : now
+			return double
 		}
 
 		/** На телефоне это тот же долгий тап, на десктопе — правый клик.
@@ -2824,9 +2843,95 @@ namespace $.$$ {
 			return Boolean( this.edit_id() )
 		}
 
+		@$mol_mem
+		reply_id( next?: string ) {
+			return next ?? ''
+		}
+
+		override reply_mode() {
+			return Boolean( this.reply_id() ) && !this.edit_mode()
+		}
+
+		@$mol_action
+		message_reply( id: string ) {
+			this.message_menu( '' )
+			if( this.edit_id() ) {
+				this.edit_id( '' )
+				this.message_text( '' )
+			}
+			this.reply_id( id )
+			new this.$.$mol_after_tick( ()=> {
+				try {
+					this.Chat_page().Message_field().focused( true )
+				} catch( error ) {
+					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
+				}
+			} )
+			return null
+		}
+
+		@$mol_action
+		reply_cancel( next?: any ) {
+			this.reply_id( '' )
+			return null
+		}
+
+		/** Кто написал сообщение, на которое отвечают: в цитате это видно
+		 * и в переписке вдвоём, иначе непонятно, чьи слова процитированы. */
+		quote_author( id: string ) {
+			const lord = String( this.message_pawn( id )?.Author()?.val() ?? '' )
+			if( !lord ) return ''
+			if( lord === this.my_lord() ) return 'Вы'
+			return this.peer_label( lord )
+		}
+
+		quote_text( id: string ) {
+			const pawn = this.message_pawn( id )
+			if( !pawn ) return ''
+			const text = String( pawn.Text()?.val() ?? '' ).replace( /\s+/g, ' ' ).trim()
+			if( text ) return text
+			if( pawn.Image()?.val() ) return 'Фото'
+			if( pawn.Voice()?.val() ) return 'Голосовое сообщение'
+			return ''
+		}
+
+		override reply_title() {
+			return 'Ответ ' + this.quote_author( this.reply_id() )
+		}
+
+		override reply_text() {
+			return this.quote_text( this.reply_id() )
+		}
+
+		message_quote_id( id: string ) {
+			const target = String( this.message_pawn( id )?.Reply()?.val() ?? '' )
+			if( !target ) return ''
+			return this.message_pawn( target ) ? target : ''
+		}
+
+		override Message_quote( id: string ) {
+			return this.message_quote_id( id ) ? super.Message_quote( id ) : null!
+		}
+
+		override message_quote_author( id: string ) {
+			return this.quote_author( this.message_quote_id( id ) )
+		}
+
+		override message_quote_text( id: string ) {
+			return this.quote_text( this.message_quote_id( id ) )
+		}
+
+		@$mol_action
+		message_quote_jump( id: string, next?: any ) {
+			const target = this.message_quote_id( id )
+			if( target ) this.Chat_page().reveal( this.Message_row( target ), 'center' )
+			return null
+		}
+
 		@$mol_action
 		message_edit( id: string, next?: any ) {
 			this.message_menu( '' )
+			this.reply_id( '' )
 			this.edit_id( id )
 			this.message_text( this.message_body( id ) )
 			return null
@@ -2878,6 +2983,9 @@ namespace $.$$ {
 			message.Text( 'auto' )?.val( text )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
+			const reply = this.reply_id()
+			if( reply ) message.Reply( 'auto' )?.val( reply )
+			this.reply_id( '' )
 			this.message_text( '' )
 			return null
 		}
@@ -5046,6 +5154,10 @@ namespace $.$$ {
 
 		override Edit_banner() {
 			return this.edit_mode() ? super.Edit_banner() : null!
+		}
+
+		override Reply_banner() {
+			return this.reply_mode() ? super.Reply_banner() : null!
 		}
 
 		override Voice_note() {

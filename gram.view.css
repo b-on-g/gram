@@ -168,6 +168,7 @@
 	-webkit-tap-highlight-color: transparent;
 }
 
-[mol_button] {
+[mol_button],
+[bog_gram_message_row] {
 	touch-action: manipulation;
 }

@@ -1791,6 +1791,24 @@ namespace $.$$ {
 
 		},
 
+		'Ответ вызывается двумя тапами по одному пузырю, а не по разным'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			$mol_assert_equal( app.message_double_tap( 'a', 1000 ), false )
+			$mol_assert_equal( app.message_double_tap( 'a', 1200 ), true )
+
+			// Третий тап начинает отсчёт заново, а не отвечает ещё раз
+			$mol_assert_equal( app.message_double_tap( 'a', 1300 ), false )
+
+			// Тапы по разным пузырям — не двойной
+			$mol_assert_equal( app.message_double_tap( 'b', 1400 ), false )
+
+			// Слишком медленно — тоже
+			$mol_assert_equal( app.message_double_tap( 'b', 2000 ), false )
+
+		},
+
 		async 'Тап по диалогу открывает его, даже пока отметка прочтения едет'( $ ) {
 
 			const app = $bog_gram.make({ $ })

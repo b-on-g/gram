@@ -230,6 +230,10 @@ $bog_gram $mol_book2
 			message_text? <=> message_text? \
 			message_send? <=> message_send? null
 			edit_cancel? <=> edit_cancel? null
+			reply_mode <= reply_mode false
+			reply_title <= reply_title \
+			reply_text <= reply_text \
+			reply_cancel? <=> reply_cancel? null
 			close? <=> dialog_close? null
 			image_files? <=> image_files? null
 			image_paste? <=> image_paste? null
@@ -658,6 +662,16 @@ $bog_gram $mol_book2
 					bog_gram_tint <= message_author_tint* 0
 				sub /
 					<= message_author* \
+			<= Message_quote* $mol_button_minor
+				hint \Перейти к сообщению
+				click? <=> message_quote_jump*? null
+				sub /
+					<= Message_quote_author* $mol_view
+						sub /
+							<= message_quote_author* \
+					<= Message_quote_text* $mol_view
+						sub /
+							<= message_quote_text* \
 			<= Message_shot* $bog_gram_photo
 				hint \Открыть картинку
 				uri <= message_shot_uri* \
@@ -710,6 +724,10 @@ $bog_gram_chat $mol_page
 	focus_key \
 	focus_row null
 	edit_mode false
+	reply_mode false
+	reply_title \
+	reply_text \
+	reply_cancel? null
 	message_text? \
 	message_send? null
 	edit_cancel? null
@@ -772,6 +790,22 @@ $bog_gram_chat $mol_page
 	foot /
 		<= Foot $mol_view
 			sub /
+				<= Reply_banner $mol_view
+					sub /
+						<= Reply_icon $mol_icon_reply
+						<= Reply_info $mol_view
+							sub /
+								<= Reply_title $mol_view
+									sub /
+										<= reply_title
+								<= Reply_text $mol_view
+									sub /
+										<= reply_text
+						<= Reply_cancel $mol_button_minor
+							hint \Отменить ответ
+							click? <=> reply_cancel? null
+							sub /
+								<= Reply_cancel_icon $mol_icon_close
 				<= Edit_banner $mol_view
 					sub /
 						<= Edit_banner_text $mol_paragraph
