@@ -112,10 +112,6 @@ namespace $.$$ {
 			return this.Talk().admin_is( id, lord )
 		}
 
-		member_rank( id: string, lord: string ) {
-			return this.Talk().member_rank( id, lord )
-		}
-
 		/** Избранное стоит первой строкой всегда, вход в архив и вход в запросы —
 		 * последними и только пока им есть что показать; развёрнутый раздел
 		 * досыпает строки туда же. */
@@ -836,77 +832,11 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Создание группы целиком. Порядок здесь не косметика: всё, что умеет
-		 * ждать — ключи участников, захват лендов, выдача прав, — стоит до
-		 * первой записи. Фибра перезапускается с начала на каждом ожидании, и
-		 * заведённая раньше группа завелась бы заново, оставив в списке пустые
-		 * копии. Название и состав приезжают сюда аргументами по той же
-		 * причине: очищенные поля следующий заход прочитал бы уже пустыми.
-		 *
-		 * Ключ может не найтись ни в ленде человека, ни в реестрах: без него
-		 * шифрованный ленд ему не открыть, и группа с ним вышла бы молча
-		 * кривой. Поэтому первый заход только показывает, кого не удалось
-		 * добавить, а создаёт уже второй — когда с потерей согласились. */
 		group_create( title: string, lords: readonly string[], forced: boolean ) {
 
-			const my = this.my_lord()
-
-			const known: string[] = []
-			const passes: $giper_baza_auth_pass[] = []
-			const lost: string[] = []
-
-			for( const lord of lords ) {
-				if( !lord || lord === my ) continue
-				const pass = this.peer_pass_of( lord )
-				if( pass ) {
-					known.push( lord )
-					passes.push( pass )
-				} else {
-					lost.push( lord )
-				}
-			}
-
-			if( lost.length && !forced ) {
-				this.group_lost( lost )
-				return ''
-			}
-
-			if( !known.length ) return ''
-
-			const glob = this.$.$giper_baza_glob
-
-			const dialog_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-			const session_land = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-
-			// Ранг тот же, что и в переписке вдвоём: сотни подписей на сообщение
-			// человек не заметит, а заливать группу тысячами станет невыгодно.
-			// Создатель — король обоих лендов, полное управление у него и так
-			for( const pass of passes ) {
-				dialog_land.give( pass, $giper_baza_rank_post( 'fast' ) )
-				session_land.give( pass, $giper_baza_rank_post( 'fast' ) )
-			}
-
-			const dialog = dialog_land.Data( $bog_gram_dialog )
-			dialog.Peers( 'auto' )!.add( my )
-			for( const lord of known ) dialog.Peers( 'auto' )!.add( lord )
-			dialog.Sessions( 'auto' )!.add( session_land.link().str )
-			dialog.Session_last( 'auto' )?.val( session_land.link().str )
-			dialog.Created( 'auto' )?.val( Date.now() )
-			dialog.Owner( 'auto' )?.val( this.my_lord() )
-			if( title ) dialog.Title( 'auto' )?.val( title )
-
-			const session = session_land.Data( $bog_gram_session )
-			session.Dialog_land( 'auto' )?.val( dialog_land.link().str )
-
-			const id = dialog_land.link().str
-
-			this.dialogs_store().Dialogs( 'auto' )!.add( id )
-			this.monitor_store().Watch( 'auto' )!.add( session_land.link().str )
-
-			for( const lord of known ) {
-				this.peer_accept( lord )
-				this.dialogs_store().Outbox( 'auto' )!.add( lord + '|' + id )
-			}
+			const { id, lost } = this.Crew().group_make( title, lords, forced )
+			this.group_lost( lost )
+			if( !id ) return ''
 
 			this.group_picked( [] )
 			this.group_lost( [] )
@@ -951,11 +881,6 @@ namespace $.$$ {
 			this.members_opened( false )
 			this.leave_armed( false )
 			return null
-		}
-
-		@$mol_mem
-		member_error( next?: string ) {
-			return next ?? ''
 		}
 
 		/** Что значит «убрать», объясняем на месте и только тому, кто может
@@ -1216,149 +1141,16 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Добавление участника. Всё, что умеет ждать — ключ человека, ключи
-		 * остальных, захват свежего бакета, выдача прав, — стоит до первой
-		 * записи: фибра перезапускается с начала на каждом ожидании.
-		 *
-		 * С историей: выдаём право на все бакеты, что уже есть, и новичок
-		 * читает переписку с самого начала. Без истории: заводим свежий бакет,
-		 * открываем его нынешним участникам и новичку, а старые ему не
-		 * открываем вовсе — ключей от них у него не появится.
-		 *
-		 * Готовый ключ приходит сюда из заявки: там он приезжает вместе с
-		 * просьбой, уже проверенный пересчётом, и разыскивать человека по
-		 * реестрам не нужно. Во всех остальных местах ключ ищется как прежде. */
 		member_join( id: string, lord: string, history: boolean, known?: $giper_baza_auth_pass | null ) {
-
-			if( !id || !lord ) return ''
-			if( lord === this.my_lord() ) return ''
-			if( !this.admin_me( id ) ) return ''
-
-			const pass = known ?? this.peer_pass_of( lord )
-			if( !pass ) {
-				this.member_error( 'Не нашли ключ этого человека: без ключа он не прочитает переписку' )
-				return ''
-			}
-
-			const links = this.session_links_of( id )
-			const mates = this.dialog_mates( id ).filter( mate => mate !== lord )
-
-			// Ключи остающихся нужны только свежему бакету: старым права уже
-			// выданы, и трогать их незачем
-			const stay: [ string, $giper_baza_auth_pass ][] = []
-			if( !history ) {
-				for( const mate of mates ) {
-					const mate_pass = this.peer_pass_of( mate )
-					if( mate_pass ) stay.push( [ mate, mate_pass ] )
-				}
-				if( stay.length < mates.length ) {
-					this.member_error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
-					return ''
-				}
-			}
-
-			const glob = this.$.$giper_baza_glob
-			const fresh = history ? null : glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-
-			const dialog_land = glob.Land( new $giper_baza_link( id ) )
-			dialog_land.give( pass, this.member_rank( id, lord ) )
-
-			if( fresh ) {
-				for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, this.member_rank( id, mate ) )
-				fresh.give( pass, this.member_rank( id, lord ) )
-			} else {
-				for( const link of links ) {
-					this.session_land_by( link ).give( pass, this.member_rank( id, lord ) )
-				}
-			}
-
-			const dialog = dialog_land.Data( $bog_gram_dialog )
-			dialog.Peers( 'auto' )!.add( lord )
-
-			if( fresh ) {
-				dialog.Sessions( 'auto' )!.add( fresh.link().str )
-				dialog.Session_last( 'auto' )?.val( fresh.link().str )
-				fresh.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
-				this.monitor_store().Watch( 'auto' )!.add( fresh.link().str )
-			}
-
-			this.peer_accept( lord )
-			this.dialogs_store().Outbox( 'auto' )!.add( lord + '|' + id )
-			this.member_error( '' )
-
-			return lord
+			return this.Crew().join( id, lord, history, known )
 		}
 
-		/** Исключение — это свежий бакет без исключённого. Ключ от уже выданных
-		 * бакетов отобрать нельзя: прошлые сообщения у него остаются навсегда,
-		 * а новых он не увидит — права на свежий бакет ему не выдают.
-		 *
-		 * Порядок тот же: ключи остающихся и захват бакета умеют ждать и стоят
-		 * до первой записи. */
 		member_part( id: string, lord: string ) {
-
-			if( !id || !lord ) return ''
-			if( lord === this.my_lord() ) return ''
-			if( !this.admin_me( id ) ) return ''
-
-			const mates = this.dialog_mates( id ).filter( mate => mate !== lord )
-
-			const stay: [ string, $giper_baza_auth_pass ][] = []
-			for( const mate of mates ) {
-				const mate_pass = this.peer_pass_of( mate )
-				if( mate_pass ) stay.push( [ mate, mate_pass ] )
-			}
-
-			if( stay.length < mates.length ) {
-				this.member_error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
-				return ''
-			}
-
-			const glob = this.$.$giper_baza_glob
-			const fresh = glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
-
-			for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, this.member_rank( id, mate ) )
-
-			const dialog = glob.Land( new $giper_baza_link( id ) ).Data( $bog_gram_dialog )
-			dialog.Sessions( 'auto' )!.add( fresh.link().str )
-			dialog.Session_last( 'auto' )?.val( fresh.link().str )
-			dialog.Peers( 'auto' )!.cut( lord )
-			if( this.admin_lords( id ).includes( lord ) ) dialog.Admins( 'auto' )!.cut( lord )
-
-			fresh.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
-			this.monitor_store().Watch( 'auto' )!.add( fresh.link().str )
-			this.member_error( '' )
-
-			return lord
+			return this.Crew().part( id, lord )
 		}
 
-		/** Назначение админом. Право звать людей — это право управлять лендом,
-		 * поэтому выдаётся оно и на ленд группы, и на каждый её бакет: иначе
-		 * новый админ не смог бы открыть бакет новому человеку. Вместе с ним
-		 * он получает и возможность менять чужие права — разделить эти
-		 * способности в Базе нечем, и в интерфейсе об этом сказано прямо. */
 		member_promote( id: string, lord: string ) {
-
-			if( !id || !lord ) return ''
-			if( !this.owner_me( id ) ) return ''
-
-			const pass = this.peer_pass_of( lord )
-			if( !pass ) {
-				this.member_error( 'Не нашли ключ этого человека: права ему не выдать' )
-				return ''
-			}
-
-			const glob = this.$.$giper_baza_glob
-			const links = this.session_links_of( id )
-			const dialog_land = glob.Land( new $giper_baza_link( id ) )
-
-			dialog_land.give( pass, $giper_baza_rank_rule )
-			for( const link of links ) this.session_land_by( link ).give( pass, $giper_baza_rank_rule )
-
-			dialog_land.Data( $bog_gram_dialog ).Admins( 'auto' )!.add( lord )
-			this.member_error( '' )
-
-			return lord
+			return this.Crew().promote( id, lord )
 		}
 
 		// ===== Заявки в группу: сторона админа =====

@@ -91,6 +91,11 @@ $bog_gram $mol_book2
 		with* => dialog_with*
 		invites_merge => inbox_merge
 		watch_fill => monitor_fill
+	Crew $bog_gram_crew
+		Account <= Account
+		People <= People
+		Talk <= Talk
+		error? => member_error?
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
@@ -547,7 +552,7 @@ $bog_gram $mol_book2
 			<= Members_history_note $mol_paragraph
 				title <= members_history_note \
 	Members_error $mol_paragraph
-		title <= member_error \
+		title <= member_error
 	Members_id_form $mol_view
 		sub /
 			<= Members_id_field $mol_string
