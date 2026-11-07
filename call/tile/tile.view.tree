@@ -1,0 +1,31 @@
+$bog_gram_call_tile $mol_view
+	stream null
+	muted false
+	mirror false
+	cam true
+	mic true
+	name \
+	status \
+	failed_text @ \Нет связи
+	connecting_text @ \Соединяюсь…
+	attr *
+		^
+		bog_gram_call_tile_cam <= cam
+		bog_gram_call_tile_mirror <= mirror
+	sub /
+		<= Video $mol_video_player
+			stream <= stream
+			controls false
+			muted <= muted
+		<= Face $mol_view
+			sub /
+				<= letter \
+		<= Label $mol_view
+			sub <= label /
+				<= Name $mol_view
+					sub /
+						<= name
+				<= Mic_off $mol_icon_microphone_off
+				<= Status $mol_view
+					sub /
+						<= status_text \

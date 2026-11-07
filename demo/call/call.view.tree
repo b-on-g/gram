@@ -1,0 +1,28 @@
+$bog_gram_demo_call $mol_book2
+	land null
+	Start $mol_page
+		title @ \Звонки на Гипер Базе
+		body /
+			<= Start_content $mol_list
+				rows <= start_rows /
+					<= Name $mol_string
+						hint @ \Ваше имя
+						value? <=> name? \
+					<= Create $mol_button_major
+						title @ \Новый звонок
+						click? <=> create? null
+					<= Card $bog_gram_call_card
+						land <= land
+						click? <=> open? null
+					<= Share $mol_button_copy
+						title @ \Скопировать ссылку
+						text <= share_link \
+	Call $bog_gram_call
+		land <= land
+		name <= name
+		tools /
+			<= Close $mol_button_minor
+				hint @ \Закрыть
+				click? <=> close? null
+				sub /
+					<= Close_icon $mol_icon_close

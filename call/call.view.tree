@@ -1,0 +1,47 @@
+$bog_gram_call $mol_page
+	land null
+	name \
+	Room $bog_gram_call_room
+		land <= land
+		name <= name
+	title @ \Звонок
+	body <= content /
+	foot <= controls /
+	Grid $mol_view
+		sub <= tiles /
+	Self $bog_gram_call_tile
+		stream <= self_stream null
+		muted true
+		mirror true
+		cam <= cam
+		mic <= mic
+		name <= self_name @ \Вы
+	Mate* $bog_gram_call_tile
+		stream <= mate_stream* null
+		cam <= mate_cam* true
+		mic <= mate_mic* true
+		name <= mate_name* \
+		status <= mate_status* \
+	Lobby $mol_list
+		rows /
+			<= Lobby_text $mol_paragraph
+				title <= lobby_text \
+			<= Join $mol_button_major
+				title @ \Войти в звонок
+				click? <=> join? null
+	Mic $mol_check_icon
+		Icon <= Mic_icon $mol_icon_microphone
+		hint @ \Микрофон
+		checked? <=> mic? true
+	Cam $mol_check_icon
+		Icon <= Cam_icon $mol_icon_video
+		hint @ \Камера
+		checked? <=> cam? true
+		enabled <= cam_able true
+	Leave $mol_button_minor
+		hint @ \Выйти из звонка
+		click? <=> leave? null
+		sub /
+			<= Leave_icon $mol_icon_phone_hangup
+	lobby_empty @ \В звонке пока никого
+	lobby_some @ \В звонке: {names}

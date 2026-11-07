@@ -1,0 +1,16 @@
+$bog_gram_call_card $mol_button_minor
+	land null
+	Room $bog_gram_call_room
+		land <= land
+	sub /
+		<= Icon $mol_icon_phone
+		<= Info $mol_view
+			sub /
+				<= Title $mol_view
+					sub /
+						<= title @ \Звонок
+				<= Count $mol_view
+					sub /
+						<= count_text \
+	count_none @ \Сейчас никого, нажмите, чтобы войти
+	count_some @ \В звонке: {count}
