@@ -1,7 +1,5 @@
 namespace $ {
 
-	// Отдельная IDB-база для этого приложения, чтобы не конфликтовать
-	// с хранилищами других сборок Гипер Базы на том же origin.
 	export class $bog_gram_mine extends $giper_baza_mine_idb {
 
 		@ $mol_memo.method

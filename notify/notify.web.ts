@@ -1,8 +1,5 @@
 namespace $ {
 
-	/** Тот же бандл исполняется и как страница, и как сервис-воркер, а lib.dom
-	 * знает только про страницу — формы воркерных событий описываем сами. */
-
 	interface Gram_push_data {
 		json(): unknown
 	}
@@ -52,8 +49,6 @@ namespace $ {
 			let body = 'Новое сообщение'
 			let url = './'
 
-			// Пустое или чужое тело — не повод молчать: показываем заглушку,
-			// иначе браузер сам нарисует «This site has been updated in background»
 			try {
 				const data = push.data?.json() as {
 					title?: string,
