@@ -37,10 +37,6 @@ namespace $.$$ {
 	/** Два отпускания на одном пузыре чаще этого — двойной тап, ответ. */
 	const double_tap_delay = 350
 
-	/** Сколько ждать, пока открываемая страница встанет в книгу: ленд
-	 * диалога после перезагрузки может ехать пару секунд. */
-	const page_bring_limit = 5000
-
 	/** Предел большей стороны кадра в пузыре. Крупнее — и переписка
 	 * превращается в ленту плакатов, где текста уже не видно. */
 	const shot_side = 15
@@ -856,29 +852,21 @@ namespace $.$$ {
 			this.page_bring( ()=> this.Chat_page() )
 		}
 
-		/** Страница, открытая впервые, попадает в книгу только с отрисовкой
-		 * кадра: до неё узел висит вне документа и прокручивать не к чему.
-		 * Поэтому ждём кадры, пока страница не встанет в книгу, и только тогда
-		 * встаём на неё. Без анимации: плавная прокрутка книги со снапом
-		 * на телефоне то не доезжает, то отщёлкивает обратно к списку. */
-		page_bring( target: ()=> $mol_view, until = Date.now() + page_bring_limit ) {
-			new this.$.$mol_after_frame( ()=> {
+		/** Новую страницу книга показывает сама. Ехать к ней отсюда можно
+		 * только когда она уже стоит в книге: до отрисовки смещение у неё
+		 * нулевое, и такая прокрутка сбивает прокрутку самой книги. */
+		page_bring( target: ()=> $mol_view ) {
+			new this.$.$mol_after_tick( ()=> {
 				try {
 					const book = this.dom_node() as HTMLElement
 					const page = target().dom_node() as HTMLElement
-					if( page.parentNode !== book || !page.offsetWidth ) {
-						if( Date.now() < until ) this.page_bring( target, until )
-						return
-					}
+					if( page.parentNode !== book ) return
 					book.scroll({
 						left: page.offsetLeft + page.offsetWidth - book.offsetWidth,
-						behavior: 'instant',
+						behavior: 'smooth',
 					})
 				} catch( error ) {
-					if( $mol_promise_like( error ) ) {
-						if( Date.now() < until ) this.page_bring( target, until )
-						return
-					}
+					if( $mol_promise_like( error ) ) return
 					$mol_fail_log( error )
 				}
 			} )
