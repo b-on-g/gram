@@ -47256,7 +47256,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.65';
+    $.$bog_gram_version = '1.0.66';
 })($ || ($ = {}));
 
 ;
@@ -50782,8 +50782,9 @@ var $;
                             last = moment;
                     }
                     catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                        $mol_fail_log(error);
                     }
                 }
                 return last;

@@ -27500,7 +27500,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.65';
+    $.$bog_gram_version = '1.0.66';
 })($ || ($ = {}));
 
 ;
@@ -31019,8 +31019,9 @@ var $;
                             last = moment;
                     }
                     catch (error) {
-                        if (!$mol_promise_like(error))
-                            $mol_fail_log(error);
+                        if ($mol_promise_like(error))
+                            $mol_fail_hidden(error);
+                        $mol_fail_log(error);
                     }
                 }
                 return last;
@@ -44813,6 +44814,19 @@ var $;
                 $mol_assert_equal(app.unread_first(list, 'Me', 4000), -1);
                 // Отметки нет вовсе — читать с самого начала
                 $mol_assert_equal(app.unread_first(list, 'Me', 0), 0);
+            },
+            'Пока отметка прочтения не доехала, диалог не решает, откуда открываться'($) {
+                const app = $bog_gram.make({ $ });
+                const wait = new Promise(() => { });
+                app.session_lands_of = () => [{ Data: () => { throw wait; } }];
+                let thrown = null;
+                try {
+                    app.read_moment_of('dialog', 'Me');
+                }
+                catch (error) {
+                    thrown = error;
+                }
+                $mol_assert_equal(thrown, wait);
             },
             async 'В группе вместо галочек — сколько человек прочитало'($) {
                 const app = $bog_gram.make({ $ });

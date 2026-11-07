@@ -8951,6 +8951,19 @@ var $;
                 // Отметки нет вовсе — читать с самого начала
                 $mol_assert_equal(app.unread_first(list, 'Me', 0), 0);
             },
+            'Пока отметка прочтения не доехала, диалог не решает, откуда открываться'($) {
+                const app = $bog_gram.make({ $ });
+                const wait = new Promise(() => { });
+                app.session_lands_of = () => [{ Data: () => { throw wait; } }];
+                let thrown = null;
+                try {
+                    app.read_moment_of('dialog', 'Me');
+                }
+                catch (error) {
+                    thrown = error;
+                }
+                $mol_assert_equal(thrown, wait);
+            },
             async 'В группе вместо галочек — сколько человек прочитало'($) {
                 const app = $bog_gram.make({ $ });
                 const mates = ['LordA', 'LordB', 'LordC'];
