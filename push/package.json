@@ -3,6 +3,7 @@
 	"private": true,
 	"dependencies": {
 		"web-push": "^3",
-		"jsdom": "^26"
+		"jsdom": "^26",
+		"ws": "^8"
 	}
 }

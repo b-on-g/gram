@@ -18,6 +18,22 @@ const webpush = require('web-push')
 
 const $ = require('./node.js')
 
+/** Мастер не отвечает на закрывающий кадр, а сокет jsdom и undici ждёт
+ * ответа вечно: каждый обход оставлял открытое соединение. Здесь сокет
+ * обрывается сразу, и закрытый клиент не держит ни TCP, ни памяти. */
+const sockets = new Set()
+class Socket extends require('ws') {
+	constructor(...args) {
+		super(...args)
+		sockets.add(this)
+		this.on('close', () => sockets.delete(this))
+	}
+	close() {
+		this.terminate()
+	}
+}
+$.$mol_dom_context.WebSocket = Socket
+
 const PORT = Number(process.env.GRAM_PUSH_PORT || 9099)
 const MASTERS = process.env.GRAM_PUSH_MASTER?.split(',').filter(Boolean)
 const DATA = process.env.GRAM_PUSH_DATA || '/data'
@@ -93,6 +109,14 @@ async function auth_load() {
 
 let auth = null
 
+/** Шина между вкладками демону не нужна, а её BroadcastChannel держит
+ * ленд вечно: деструктор ленда асинхронный и поднимает шину заново уже
+ * после того, как клиент обхода закрыт. */
+class Bus {
+	send() {}
+	destructor() {}
+}
+
 /** Свежий изолированный клиент на каждый обход.
  *
  * Долгоживущий клиент вне браузера не догоняет обновления: он берёт
@@ -105,10 +129,24 @@ let auth = null
 function client_make() {
 	const ctx = $.$mol_ambient({})
 
-	ctx.$giper_baza_mine = $.$giper_baza_mine_temp
-	if (process.env.GRAM_PUSH_BAZA_LOG) ctx.$giper_baza_log = () => true
+	ctx.$mol_bus = Bus
+	class Mine extends $.$giper_baza_mine_temp {}
+	ctx.$giper_baza_mine = Mine
+	const baza_log = Boolean(process.env.GRAM_PUSH_BAZA_LOG)
+	ctx.$giper_baza_log = () => baza_log
 
-	class Yard extends $.$giper_baza_yard {}
+	const yards = []
+	let dead = false
+	class Yard extends $.$giper_baza_yard {
+		constructor(...args) {
+			super(...args)
+			yards.push(this)
+		}
+		master() {
+			if (dead) return null
+			return super.master()
+		}
+	}
 	if (MASTERS) Yard.masters = $.$mol_const(MASTERS)
 	ctx.$giper_baza_yard = Yard
 
@@ -185,20 +223,44 @@ function client_make() {
 				$.$mol_wire_solid()
 				return Glob.yard().master()
 			})
+			holds.set('', atom)
 			const port = await atom.async()
 			if (!port) throw new Error('no master port')
 			return port
 		},
 		close(port) {
+			dead = true
 			for (const atom of holds.values()) atom.destructor()
 			holds.clear()
 			try {
-				const socket = port?.socket
-				if (socket) socket.close()
+				port?.destructor()
+				for (const socket of sockets) socket.terminate()
+				for (const yard of yards) wipe(yard)
+				yards.length = 0
+				wipe(Glob)
+				wipe(Mine)
 			} catch (error) {
 				debug('close failed', String(error?.message ?? error))
 			}
 		},
+	}
+}
+
+/** Клиент обхода держится за свои атомы сам: сокеты мастера, дворовая
+ * служба и кэш лендов переживают обход, если их не снести явно. */
+function wipe(host, seen = new Set()) {
+	if (seen.has(host)) return
+	seen.add(host)
+	for (const key of Object.getOwnPropertyNames(host)) {
+		const value = host[key]
+		const atoms = value instanceof $.$mol_wire_atom ? [value]
+			: value instanceof Map ? [...value.values()].filter(item => item instanceof $.$mol_wire_atom)
+			: []
+		for (const atom of atoms) {
+			const cache = atom.cache
+			if (cache instanceof $.$giper_baza_land || cache instanceof $.$giper_baza_pawn) wipe(cache, seen)
+			atom.destructor()
+		}
 	}
 }
 
