@@ -27509,7 +27509,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.63';
+    $.$bog_gram_version = '1.0.64';
 })($ || ($ = {}));
 
 ;
@@ -27836,14 +27836,17 @@ var $;
          * это не повод не сказать демону, что слать больше некому. */
         static unsubscribe(lord) {
             try {
+                let endpoint = '';
                 if (this.supported()) {
                     const reg = $mol_wire_sync(api).registration();
                     const sub = $mol_wire_sync(api).subscription_get(reg);
-                    if (sub)
+                    if (sub) {
+                        endpoint = sub.endpoint;
                         $mol_wire_sync(api).subscription_drop(sub);
+                    }
                 }
                 if (lord)
-                    this.send('/push/unsubscribe', { lord });
+                    this.send('/push/unsubscribe', { lord, endpoint });
                 return true;
             }
             catch (error) {
@@ -32011,8 +32014,6 @@ var $;
                 if (!supported)
                     return 'skip';
                 if (off)
-                    return 'skip';
-                if (on)
                     return 'skip';
                 if (permission === 'granted')
                     return 'subscribe';

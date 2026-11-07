@@ -27500,7 +27500,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.63';
+    $.$bog_gram_version = '1.0.64';
 })($ || ($ = {}));
 
 ;
@@ -27827,14 +27827,17 @@ var $;
          * это не повод не сказать демону, что слать больше некому. */
         static unsubscribe(lord) {
             try {
+                let endpoint = '';
                 if (this.supported()) {
                     const reg = $mol_wire_sync(api).registration();
                     const sub = $mol_wire_sync(api).subscription_get(reg);
-                    if (sub)
+                    if (sub) {
+                        endpoint = sub.endpoint;
                         $mol_wire_sync(api).subscription_drop(sub);
+                    }
                 }
                 if (lord)
-                    this.send('/push/unsubscribe', { lord });
+                    this.send('/push/unsubscribe', { lord, endpoint });
                 return true;
             }
             catch (error) {
@@ -32002,8 +32005,6 @@ var $;
                 if (!supported)
                     return 'skip';
                 if (off)
-                    return 'skip';
-                if (on)
                     return 'skip';
                 if (permission === 'granted')
                     return 'subscribe';
@@ -44233,9 +44234,11 @@ var $;
                 // Разрешения нет — спрашиваем, но ровно один раз на браузер
                 $mol_assert_equal(plan('default', false, false, false), 'ask');
                 $mol_assert_equal(plan('default', false, false, true), 'skip');
-                // Запрет браузера и живая подписка одинаково не требуют ничего
                 $mol_assert_equal(plan('denied', false, false, false), 'skip');
-                $mol_assert_equal(plan('granted', true, false, false), 'skip');
+                // Включённые переподписываются на каждом заходе: демон мог выкинуть
+                // протухшую подписку, а сам браузер об этом не узнает
+                $mol_assert_equal(plan('granted', true, false, false), 'subscribe');
+                $mol_assert_equal(plan('denied', true, false, false), 'skip');
                 // Выключенное руками не включается обратно ни при каком разрешении
                 $mol_assert_equal(plan('granted', false, true, false), 'skip');
                 $mol_assert_equal(plan('default', false, true, false), 'skip');
