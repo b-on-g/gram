@@ -1,7 +1,5 @@
 namespace $.$$ {
 
-	const day_ms = 24 * 60 * 60 * 1000
-
 	/** Сколько ждём ключ собеседника, прежде чем признать, что он не едет.
 	 * Штатно ключ приезжает за доли секунды, но по дороге ещё захват лендов
 	 * с перебором подписей — на слабом телефоне это заметные секунды. */
@@ -48,13 +46,6 @@ namespace $.$$ {
 	/** Как часто перерисовывается таймер записи: чаще человек всё равно не
 	 * заметит, а реже секунды начинают перескакивать через одну. */
 	const clock_tick = 200
-
-	/** Разобранные ключи участников: одной и той же строке должен отвечать
-	 * один и тот же объект. Выдача права на шифрованный ленд считает общий
-	 * секрет и держит его при самом объекте ключа, а фибра перезапускается с
-	 * начала на каждом ожидании — свежий разбор на каждой попытке заводил бы
-	 * счёт заново, и попытки не кончились бы никогда. */
-	const pass_parsed = new Map< string, $giper_baza_auth_pass >()
 
 	/** Что показать под полем ввода, когда с записью не сложилось. Ни
 	 * модалок, ни системных окон — одна строка на месте. */
@@ -251,12 +242,7 @@ namespace $.$$ {
 		 * подписка на приход ленда сохраняется, и имя проявится само. */
 		@$mol_mem_key
 		peer_name( lord: string ) {
-			try {
-				return this.peer_store( lord ).Name()?.val() ?? ''
-			} catch( error ) {
-				if( !$mol_promise_like( error ) ) $mol_fail_log( error )
-				return ''
-			}
+			return $bog_gram_soft( ()=> this.peer_store( lord ).Name()?.val() ?? '', '' )
 		}
 
 		// ===== Свои подписи собеседников =====
@@ -287,26 +273,16 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Порядок один на всё приложение: моя подпись важнее имени из чужого
-		 * профиля, а безымянного и неподписанного показываем сокращённым
-		 * идентификатором. Аватар при этом остаётся привязан к лорду —
-		 * от переименования человек не должен менять лицо. */
-		label_pick( lord: string, note: string, name: string ) {
-			if( !lord ) return ''
-			return note || name || this.lord_short( lord )
-		}
-
 		peer_label( lord: string ) {
-			return this.label_pick( lord, this.peer_note( lord ), this.peer_name( lord ) )
+			return $bog_gram_lord.label( lord, this.peer_note( lord ), this.peer_name( lord ) )
 		}
 
-		// ===== Аватары =====
-
-		/** Номер цвета из палитры: один и тот же лорд всегда красится одинаково. */
 		avatar_tint( lord: string ) {
-			let hash = 0
-			for( const symbol of lord ) hash = ( hash * 31 + symbol.charCodeAt( 0 ) ) % 7
-			return hash
+			return $bog_gram_lord.tint( lord )
+		}
+
+		lord_short( lord: string ) {
+			return $bog_gram_lord.short( lord )
 		}
 
 		/** Ленды собеседников приезжают не сразу: suspend в аватаре подвесил бы
@@ -505,13 +481,6 @@ namespace $.$$ {
 				if( pass ) passes.push( pass )
 			}
 			return passes
-		}
-
-		/** Безымянного собеседника показываем началом и концом идентификатора:
-		 * у одного только начала первые символы у разных людей совпадают глазом. */
-		lord_short( lord: string ) {
-			if( lord.length <= 14 ) return lord
-			return lord.slice( 0, 6 ) + '…' + lord.slice( -4 )
 		}
 
 		// ===== Группы =====
@@ -1036,7 +1005,7 @@ namespace $.$$ {
 		}
 
 		override archive_note() {
-			return this.plural( this.archive_ids().length, 'диалог', 'диалога', 'диалогов' )
+			return $bog_gram_count.dialogs( this.archive_ids().length )
 		}
 
 		/** Непрочитанное в архиве не теряется: складываем счётчики спрятанных
@@ -1332,39 +1301,6 @@ namespace $.$$ {
 			return null
 		}
 
-		/** Разбор ключа из недоверенного источника с проверкой подлинности:
-		 * так приезжают ключи из реестра, из заявки в группу и из ссылки-
-		 * приглашения. Реестр открыт на запись всем, ссылку по дороге тоже
-		 * могли подменить — и тогда диалог, заведённый для одного человека,
-		 * открылся бы совсем другому. Идентификатор это хеш ключа, так что
-		 * подмена ловится пересчётом: не сошлось — считаем, что ключа нет
-		 * вовсе. Мусор вместо ключа сюда тоже долетает: разбор бросает
-		 * исключение, и оно не должно мешать заводить диалог. */
-		pass_verified( lord: string, str: string ): $giper_baza_auth_pass | null {
-
-			if( !lord || !str ) return null
-
-			try {
-
-				let pass = pass_parsed.get( str )
-				if( !pass ) {
-					pass = $giper_baza_auth_pass.from( str )
-					pass_parsed.set( str, pass )
-				}
-
-				if( pass.lord().str === lord ) return pass
-
-				$mol_fail_log( new Error( 'Ключ не сходится со своим владельцем', { cause: lord } ) )
-				return null
-
-			} catch( error ) {
-				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-				$mol_fail_log( error )
-				return null
-			}
-
-		}
-
 		/** Ключ собеседника: без него ни ленд диалога, ни ленд сессии ему не
 		 * открыть. Штатно ключ приезжает вместе с его домашним лендом, и
 		 * когда тот уже осел в хранилище, всё работает и офлайн. Незнакомый
@@ -1402,7 +1338,7 @@ namespace $.$$ {
 			for( const id of this.registry_ids() ) {
 				try {
 					const str = String( this.registry_store( id ).Keys()?.key( lord )?.Pass()?.val() ?? '' )
-					const pass = this.pass_verified( lord, str )
+					const pass = $bog_gram_pass.verified( lord, str )
 					if( pass ) return pass
 				} catch( error ) {
 					if( !$mol_promise_like( error ) ) $mol_fail_log( error )
@@ -1645,7 +1581,7 @@ namespace $.$$ {
 		override group_chosen_head() {
 			const count = this.group_picked().length
 			if( !count ) return 'Пока никого не выбрали'
-			return this.people_count( count )
+			return $bog_gram_count.people( count )
 		}
 
 		group_chosen_lord( lord: string ) {
@@ -2334,7 +2270,7 @@ namespace $.$$ {
 			try {
 
 				const inbox_link = this.peer_store( ask.lord ).Inbox_land()?.val()
-				const pass = this.pass_verified( ask.lord, ask.pass )
+				const pass = $bog_gram_pass.verified( ask.lord, ask.pass )
 
 				// Лобби у просящего может быть ещё не заведено — сказать ему
 				// нечем, но и держать заявку у себя из-за этого незачем
@@ -2383,7 +2319,7 @@ namespace $.$$ {
 
 			if( !this.admin_me( ask.group ) ) return ''
 
-			const pass = this.pass_verified( ask.lord, ask.pass )
+			const pass = $bog_gram_pass.verified( ask.lord, ask.pass )
 			if( !pass ) {
 				this.member_error( 'Ключ в заявке не сходится со своим владельцем: заявка отклонена' )
 				this.ask_forget( entry )
@@ -2465,7 +2401,7 @@ namespace $.$$ {
 
 		@$mol_mem_key
 		sealed_close( [ kind, pass, open ]: readonly [ string, string, string ] ) {
-			return $bog_gram_seal.close( this.$.$giper_baza_auth.current(), $bog_gram_seal.pass( pass ), kind, open )
+			return $bog_gram_seal.close( this.$.$giper_baza_auth.current(), $bog_gram_pass.parse( pass ), kind, open )
 		}
 
 		@$mol_mem_key
@@ -2608,22 +2544,8 @@ namespace $.$$ {
 			return this.messages().find( message => message.link().str === id ) ?? null
 		}
 
-		day_key( moment: number ) {
-			if( !moment ) return ''
-			return new Date( moment ).toDateString()
-		}
-
 		day_title( key: string ) {
-			if( !key ) return ''
-			const now = new Date()
-			if( key === now.toDateString() ) return 'Сегодня'
-			if( key === new Date( now.getTime() - day_ms ).toDateString() ) return 'Вчера'
-			return new Date( key ).toLocaleDateString( 'ru' )
-		}
-
-		time_hm( moment: number ) {
-			const date = new Date( moment )
-			return String( date.getHours() ).padStart( 2, '0' ) + ':' + String( date.getMinutes() ).padStart( 2, '0' )
+			return $bog_gram_clock.day_title( key )
 		}
 
 		/** Лента чата: пузыри вперемешку с разделителями календарных дней. */
@@ -2631,7 +2553,7 @@ namespace $.$$ {
 		chat_rows() {
 			let last_day = ''
 			return this.messages().flatMap( message => {
-				const day = this.day_key( Number( message.Moment()?.val() ?? 0 ) )
+				const day = $bog_gram_clock.day_key( Number( message.Moment()?.val() ?? 0 ) )
 				const head = day && day !== last_day ? [ this.Day_row( day ) ] : []
 				last_day = day
 				return [ ... head, this.Message_row( message.link().str ) ]
@@ -2651,7 +2573,7 @@ namespace $.$$ {
 		@$mol_mem_key
 		message_time( id: string ) {
 			const moment = Number( this.message_pawn( id )?.Moment()?.val() ?? 0 )
-			return moment ? this.time_hm( moment ) : ''
+			return moment ? $bog_gram_clock.time( moment ) : ''
 		}
 
 		@$mol_mem_key
@@ -3701,11 +3623,7 @@ namespace $.$$ {
 		dialog_time( id: string ) {
 			const messages = this.messages_alive_of( id )
 			const last = messages[ messages.length - 1 ]
-			const moment = Number( last?.Moment()?.val() ?? 0 )
-			if( !moment ) return ''
-			const date = new Date( moment )
-			if( date.toDateString() === new Date().toDateString() ) return this.time_hm( moment )
-			return String( date.getDate() ).padStart( 2, '0' ) + '.' + String( date.getMonth() + 1 ).padStart( 2, '0' )
+			return $bog_gram_clock.brief( Number( last?.Moment()?.val() ?? 0 ) )
 		}
 
 		// ===== Реестры пользователей =====
@@ -3769,25 +3687,10 @@ namespace $.$$ {
 			return this.registry_active() === id
 		}
 
-		/** Русское склонение числительных: 1 диалог, 2 диалога, 5 диалогов. */
-		plural( count: number, one: string, few: string, many: string ) {
-			const tens = count % 100
-			const ones = count % 10
-			if( tens < 11 || tens > 14 ) {
-				if( ones === 1 ) return count + ' ' + one
-				if( ones >= 2 && ones <= 4 ) return count + ' ' + few
-			}
-			return count + ' ' + many
-		}
-
-		people_count( count: number ) {
-			return this.plural( count, 'участник', 'участника', 'участников' )
-		}
-
 		@$mol_mem_key
 		registry_status( id: string ) {
 			const mine = this.registry_joined( id ) ? 'вы в списке' : 'только смотрите'
-			return this.people_count( this.registry_size( id ) ) + ' · ' + mine
+			return $bog_gram_count.people( this.registry_size( id ) ) + ' · ' + mine
 		}
 
 		override Registry_join( id: string ) {
@@ -4086,22 +3989,12 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'key' ) ?? ''
 		}
 
-		/** Мусор вместо идентификатора: ссылку могли обрезать при пересылке.
-		 * Лордом считаем только полный идентификатор владельца — ссылка на
-		 * чей-то ленд личным диалогом не открывается, и ждать по ней нечего.
-		 * Проверка формата тут ровно та же, что у ссылки в группу. */
-		invite_lord_ok( lord: string ) {
-			if( !$giper_baza_link.check( lord ) ) return false
-			const link = new $giper_baza_link( lord )
-			return link.lord().str === link.str
-		}
-
 		/** Своя же ссылка диалога не заводит, знакомый собеседник просто
 		 * открывается, а незнакомый уходит обычным путём — через ожидание. */
 		invite_plan( lord: string, my: string, exist: string ): 'skip' | 'bad' | 'open' | 'start' {
 			if( !lord ) return 'skip'
 			if( lord === my ) return 'skip'
-			if( !this.invite_lord_ok( lord ) ) return 'bad'
+			if( !$bog_gram_lord.check( lord ) ) return 'bad'
 			return exist ? 'open' : 'start'
 		}
 
@@ -4132,7 +4025,7 @@ namespace $.$$ {
 		 * ячейку то же значение и никого не будит. */
 		peer_pass_learn( lord: string, key: string ) {
 			if( !lord || !key ) return null
-			const pass = this.pass_verified( lord, key )
+			const pass = $bog_gram_pass.verified( lord, key )
 			if( !pass ) return null
 			this.peer_pass_given( lord, pass )
 			if( !this.peer_pass_stored( lord ) ) this.dialogs_store().Passes( 'auto' )!.add( pass.toString() )
@@ -4144,7 +4037,7 @@ namespace $.$$ {
 		peer_pass_stored( lord: string ) {
 			for( const str of this.dialogs_store().Passes()?.items() ?? [] ) {
 				try {
-					const pass = $bog_gram_seal.pass( String( str ) )
+					const pass = $bog_gram_pass.parse( String( str ) )
 					if( pass.lord().str === lord ) return pass
 				} catch( error ) {
 					if( $mol_promise_like( error ) ) $mol_fail_hidden( error )

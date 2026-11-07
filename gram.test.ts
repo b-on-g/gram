@@ -352,47 +352,10 @@ namespace $.$$ {
 			const got = String( data_b.Keys()?.key( lord_a )?.Pass()?.val() ?? '' )
 			$mol_assert_equal( got, key_a )
 
-			// Из строки собирается тот самый ключ: по нему и выдаются права
-			const app = $bog_gram.make({ $ })
-			$mol_assert_equal( app.pass_verified( lord_a, got )?.lord().str, lord_a )
+			$mol_assert_equal( $bog_gram_pass.verified( lord_a, got )?.lord().str, lord_a )
 
 			// Ключи лежат по ключу-лорду и соседей не задевают
 			$mol_assert_equal( Boolean( data_b.Keys()?.key( auth_b.pass().lord().str ) ), false )
-
-		},
-
-		async 'Подложенный ключ не принимается: идентификатор его не подтверждает'( $ ) {
-
-			const auth_a = await $.$giper_baza_auth._generate()
-			const auth_b = await $.$giper_baza_auth._generate()
-
-			const lord_a = auth_a.pass().lord().str
-			const app = $bog_gram.make({ $ })
-
-			// Свой ключ под своей записью проходит
-			$mol_assert_equal( app.pass_verified( lord_a, auth_a.pass().toString() )?.lord().str, lord_a )
-
-			// Реестр открыт всем, и чужой ключ под записью A мог положить кто
-			// угодно: идентификатор это хеш ключа, пересчёт ловит подмену
-			$mol_assert_equal( app.pass_verified( lord_a, auth_b.pass().toString() ), null )
-			$mol_assert_equal( app.pass_verified( auth_b.pass().lord().str, auth_a.pass().toString() ), null )
-
-		},
-
-		async 'Мусор вместо ключа не роняет разбор'( $ ) {
-
-			const auth = await $.$giper_baza_auth._generate()
-			const lord = auth.pass().lord().str
-			const app = $bog_gram.make({ $ })
-
-			// Ни строки короче ключа, ни строки нужной длины из чего попало
-			$mol_assert_equal( app.pass_verified( lord, 'не ключ' ), null )
-			$mol_assert_equal( app.pass_verified( lord, 'a'.repeat( 43 ) ), null )
-			$mol_assert_equal( app.pass_verified( lord, 'a'.repeat( 86 ) ), null )
-
-			// Пустого места в реестре тоже достаточно, чтобы ничего не делать
-			$mol_assert_equal( app.pass_verified( lord, '' ), null )
-			$mol_assert_equal( app.pass_verified( '', auth.pass().toString() ), null )
 
 		},
 
@@ -620,7 +583,7 @@ namespace $.$$ {
 			$mol_assert_equal( ask?.pass, key )
 
 			// Ключ приезжает вместе с заявкой: по нему админ и выдаёт права
-			$mol_assert_equal( app.pass_verified( ask!.lord, ask!.pass )?.lord().str, lord )
+			$mol_assert_equal( $bog_gram_pass.verified( ask!.lord, ask!.pass )?.lord().str, lord )
 
 			// Лобби открыто на запись всем, и мусор туда долетает наравне
 			// с заявками: разбор его отвергает, а не роняет весь список
@@ -634,7 +597,7 @@ namespace $.$$ {
 			// Мусор на месте ключа разбор проходит, а проверка — нет
 			const junk = app.ask_parse( app.ask_entry( group, lord, 'не ключ' ) )
 			$mol_assert_equal( junk?.pass, 'не ключ' )
-			$mol_assert_equal( app.pass_verified( junk!.lord, junk!.pass ), null )
+			$mol_assert_equal( $bog_gram_pass.verified( junk!.lord, junk!.pass ), null )
 
 		},
 
@@ -650,18 +613,18 @@ namespace $.$$ {
 
 			// Своя заявка со своим ключом проходит
 			const honest = app.ask_parse( app.ask_entry( group, lord_a, auth_a.pass().toString() ) )
-			$mol_assert_equal( app.pass_verified( honest!.lord, honest!.pass )?.lord().str, lord_a )
+			$mol_assert_equal( $bog_gram_pass.verified( honest!.lord, honest!.pass )?.lord().str, lord_a )
 
 			// Лобби открыто на запись всем: под лордом A кто угодно кладёт свой
 			// ключ. Идентификатор это хеш ключа, пересчёт ловит подмену — иначе
 			// в группу попал бы подложивший, а не тот, кого туда звали
 			const forged = app.ask_parse( app.ask_entry( group, lord_a, auth_b.pass().toString() ) )
 			$mol_assert_equal( forged!.lord, lord_a )
-			$mol_assert_equal( app.pass_verified( forged!.lord, forged!.pass ), null )
+			$mol_assert_equal( $bog_gram_pass.verified( forged!.lord, forged!.pass ), null )
 
 			// И наоборот: настоящий ключ A под чужим идентификатором
 			const swapped = app.ask_parse( app.ask_entry( group, auth_b.pass().lord().str, auth_a.pass().toString() ) )
-			$mol_assert_equal( app.pass_verified( swapped!.lord, swapped!.pass ), null )
+			$mol_assert_equal( $bog_gram_pass.verified( swapped!.lord, swapped!.pass ), null )
 
 		},
 
@@ -717,7 +680,7 @@ namespace $.$$ {
 			// ленд группы, без всяких реестров
 			const ask = app.ask_parse( entry )
 			$mol_assert_equal( ask?.group, group )
-			$mol_assert_equal( app.pass_verified( ask!.lord, ask!.pass )?.lord().str, guest_lord )
+			$mol_assert_equal( $bog_gram_pass.verified( ask!.lord, ask!.pass )?.lord().str, guest_lord )
 
 			// Решение по заявке снимает её из лобби, чтобы такие не копились
 			await $mol_wire_async( ops ).drop()
@@ -953,22 +916,6 @@ namespace $.$$ {
 
 		},
 
-		async 'Заголовок дня и время сообщения форматируются по-человечески'( $ ) {
-
-			const app = $bog_gram.make({ $ })
-
-			const now = new Date()
-			$mol_assert_equal( app.day_title( now.toDateString() ), 'Сегодня' )
-			$mol_assert_equal( app.day_title( new Date( now.getTime() - 24 * 60 * 60 * 1000 ).toDateString() ), 'Вчера' )
-			$mol_assert_equal( app.day_title( '' ), '' )
-
-			$mol_assert_ok( app.day_title( new Date( 2020, 0, 15 ).toDateString() ).includes( '2020' ) )
-
-			$mol_assert_equal( app.time_hm( new Date( 2020, 0, 15, 9, 5 ).getTime() ), '09:05' )
-			$mol_assert_equal( app.time_hm( new Date( 2020, 0, 15, 23, 59 ).getTime() ), '23:59' )
-
-		},
-
 		async 'Приглашение не заводит диалог с самим собой'( $ ) {
 
 			const app = $bog_gram.make({ $ })
@@ -1067,15 +1014,6 @@ namespace $.$$ {
 
 			const my = 'LordMine'
 
-			// Обрезанный при пересылке идентификатор форматом не проходит
-			$mol_assert_equal( app.invite_lord_ok( 'ikjOnflc_WufmHhGH' ), true )
-			$mol_assert_equal( app.invite_lord_ok( 'не ссылка' ), false )
-			$mol_assert_equal( app.invite_lord_ok( 'ikjOnflc_Wufm' ), false )
-
-			// Ссылка на ленд — не лорд: личный диалог по ней не открывается
-			$mol_assert_equal( app.invite_lord_ok( 'ikjOnflc_WufmHhGH_Aaaaaaaa' ), false )
-
-			// Мусор отсекается до ожидания, а не уходит в него молча
 			$mol_assert_equal( app.invite_plan( 'не ссылка', my, '' ), 'bad' )
 
 		},
@@ -1407,15 +1345,6 @@ namespace $.$$ {
 			// Снятая подпись — это пустое значение, а не исчезнувшая запись
 			store.Notes( 'auto' )?.key( peer, 'auto' )?.Title( 'auto' )?.val( '' )
 			$mol_assert_equal( store.Notes()?.key( peer )?.Title()?.val() ?? '', '' )
-
-			// Приоритет: своя подпись важнее имени из чужого профиля, а без
-			// обоих человек показывается сокращённым идентификатором
-			const app = $bog_gram.make({ $ })
-
-			$mol_assert_equal( app.label_pick( peer, 'Костя с работы', 'Иииии' ), 'Костя с работы' )
-			$mol_assert_equal( app.label_pick( peer, '', 'Иииии' ), 'Иииии' )
-			$mol_assert_equal( app.label_pick( peer, '', '' ), app.lord_short( peer ) )
-			$mol_assert_equal( app.label_pick( '', 'Костя с работы', 'Иииии' ), '' )
 
 		},
 

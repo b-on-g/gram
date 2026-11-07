@@ -1,21 +1,8 @@
 namespace $ {
 
-	const passes = new Map< string, $giper_baza_auth_pass >()
-
 	export class $bog_gram_seal extends $mol_object {
 
 		static prefix = 'seal'
-
-		static pass( str: string ) {
-
-			let pass = passes.get( str )
-			if( pass ) return pass
-
-			pass = $giper_baza_auth_pass.from( str )
-			passes.set( str, pass )
-
-			return pass
-		}
 
 		static nonce( kind: string, open: string ) {
 			return $mol_crypto2_hash( $mol_charset_encode( kind + '|' + open ) ).slice( 0, 16 )
@@ -48,7 +35,7 @@ namespace $ {
 
 			try {
 
-				const pass = this.pass( parts[ 1 ] )
+				const pass = $bog_gram_pass.parse( parts[ 1 ] )
 				const nonce = $mol_base64_url_decode( parts[ 2 ] )
 				const code = $mol_base64_url_decode( parts[ 3 ] )
 
