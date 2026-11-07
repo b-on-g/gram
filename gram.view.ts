@@ -704,7 +704,6 @@ namespace $.$$ {
 		 * всплытие: иначе тот же клик ещё и открыл бы удаляемый диалог. */
 		@$mol_action
 		dialog_delete_click( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			if( !this.delete_armed( id ) ) {
 				this.delete_disarm()
@@ -791,7 +790,6 @@ namespace $.$$ {
 		 * Подтверждения не спрашиваем — операция обратима, в отличие от корзины. */
 		@$mol_action
 		dialog_archive_click( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			this.delete_disarm()
 			if( this.archive_is( id ) ) this.dialog_unarchive( id )
@@ -851,10 +849,6 @@ namespace $.$$ {
 			return this.archive_unread() ? String( this.archive_unread() ) : ''
 		}
 
-		override Archive_unread() {
-			return this.archive_unread() ? super.Archive_unread() : null!
-		}
-
 		// ===== Запросы на переписку =====
 
 		@$mol_mem
@@ -894,7 +888,6 @@ namespace $.$$ {
 		 * человеку, а не диалогу — следующий его диалог придёт уже в общий список. */
 		@$mol_action
 		request_accept( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			this.peer_accept( this.dialog_owner( id ) )
 			return null
@@ -905,7 +898,6 @@ namespace $.$$ {
 		 * диалог остаётся: сообщить ему об отказе нечем, и это к лучшему. */
 		@$mol_action
 		request_reject( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			this.dialog_delete( id )
 			return null
@@ -1320,7 +1312,6 @@ namespace $.$$ {
 
 		@$mol_action
 		group_chosen_drop( lord: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !lord ) return null
 			this.group_lost( [] )
 			this.group_picked( this.group_picked().filter( item => item !== lord ) )
@@ -1623,10 +1614,6 @@ namespace $.$$ {
 			return this.admin_is( id, lord ) ? 'админ' : ''
 		}
 
-		override Member_status( lord: string ) {
-			return this.member_status( lord ) ? super.Member_status( lord ) : null!
-		}
-
 		/** Назначает админов создатель, и только тех, кто им ещё не стал. */
 		override Member_rule( lord: string ) {
 			const id = this.dialog_active()
@@ -1668,7 +1655,6 @@ namespace $.$$ {
 		 * так же: кнопка лежит внутри неё. */
 		@$mol_action
 		member_drop_click( lord: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !lord ) return null
 			if( !this.member_armed( lord ) ) {
 				this.member_disarm()
@@ -1683,7 +1669,6 @@ namespace $.$$ {
 
 		@$mol_action
 		member_rule_click( lord: string, next?: Event ) {
-			next?.stopPropagation()
 			const id = this.dialog_active()
 			if( !id || !lord ) return null
 			$mol_wire_async( this ).member_promote( id, lord )
@@ -1748,10 +1733,6 @@ namespace $.$$ {
 		@$mol_mem_key
 		member_pick_source( lord: string ) {
 			return this.group_sources()[ lord ] ?? ''
-		}
-
-		override Member_pick_source( lord: string ) {
-			return this.member_pick_source( lord ) ? super.Member_pick_source( lord ) : null!
 		}
 
 		@$mol_action
@@ -2059,7 +2040,6 @@ namespace $.$$ {
 		 * обработчика уходим в фибру. */
 		@$mol_action
 		ask_accept( entry: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !entry ) return null
 			$mol_wire_async( this ).ask_apply( entry )
 			return null
@@ -2069,7 +2049,6 @@ namespace $.$$ {
 		 * лобби просящего, а туда пишут с работой. Поэтому в фибру. */
 		@$mol_action
 		ask_reject( entry: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !entry ) return null
 			$mol_wire_async( this ).ask_deny( entry )
 			return null
@@ -3416,10 +3395,6 @@ namespace $.$$ {
 			return count ? String( count ) : ''
 		}
 
-		override Unread_badge( id: string ) {
-			return this.unread_count( id ) ? super.Unread_badge( id ) : null!
-		}
-
 		// ===== Превью в списке диалогов =====
 
 		/** Вложение в строке списка называем словом: ни кадра, ни звука там
@@ -3647,7 +3622,6 @@ namespace $.$$ {
 		 * от записанного. */
 		@$mol_action
 		registry_join( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			if( !this.registry_ids().includes( id ) ) {
 				this.dialogs_store().Registries( 'auto' )!.add( id )
@@ -3671,7 +3645,6 @@ namespace $.$$ {
 		 * вернулся бы в список на ближайшем же заходе. */
 		@$mol_action
 		registry_forget( id: string, next?: Event ) {
-			next?.stopPropagation()
 			if( !id ) return null
 			this.dialogs_store().Registries( 'auto' )!.cut( id )
 			if( this.registry_active() === id ) this.$.$mol_state_arg.value( 'users', null )
@@ -3749,10 +3722,6 @@ namespace $.$$ {
 			if( this.registry_ids().length < 2 ) return ''
 			const id = this.user_sources()[ lord ]
 			return id ? this.registry_title( id ) : ''
-		}
-
-		override User_source( lord: string ) {
-			return this.user_source( lord ) ? super.User_source( lord ) : null!
 		}
 
 		@$mol_action

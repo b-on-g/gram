@@ -1,0 +1,46 @@
+$bog_gram_row $mol_button_minor
+	current false
+	size \small
+	faced true
+	avatar_id \
+	tint 0
+	time \
+	note \
+	badge \
+	marks /$mol_view
+	tools /$mol_view
+	Icon null $mol_view
+	attr *
+		^
+		bog_gram_row_current <= current
+		bog_gram_row_size <= size
+	sub /
+		<= Avatar $bog_gram_avatar
+			id <= avatar_id
+			tint <= tint
+		<= Sign $mol_view
+			sub /
+				<= Icon
+		<= Info $mol_view
+			sub /
+				<= Top $mol_view
+					sub /
+						<= Title $mol_view
+							sub /
+								<= title
+						<= Time $mol_view
+							sub /
+								<= time
+				<= Bottom $mol_view
+					sub /
+						<= Note $mol_view
+							sub /
+								<= note
+						<= Badge $mol_view
+							sub /
+								<= badge
+		<= Tools $mol_view
+			event *
+				^
+				click? <=> tools_click? null
+			sub <= tools

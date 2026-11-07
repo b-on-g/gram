@@ -1,0 +1,77 @@
+[bog_gram_row][disabled]:hover {
+	box-shadow: none;
+}
+
+[bog_gram_row_current="true"] {
+	background-color: var(--mol_theme_control);
+	color: #ffffff;
+}
+
+[bog_gram_row_current="true"] :where([mol_view]) {
+	color: #ffffff;
+}
+
+[bog_gram_row_size="large"] > [bog_gram_row_avatar],
+[bog_gram_row_size="large"] > [bog_gram_row_sign] {
+	width: 3rem;
+	height: 3rem;
+}
+
+[bog_gram_row_size="large"] [bog_gram_row_title] {
+	font-weight: bold;
+}
+
+[bog_gram_row_size="large"] [bog_gram_row_note] {
+	font-size: 0.875rem;
+}
+
+[bog_gram_row][bog_gram_row_size="tiny"] {
+	padding: 0.375rem 0.5rem;
+	background-color: #8888881a;
+}
+
+[bog_gram_row_size="tiny"] > [bog_gram_row_avatar] {
+	width: 2rem;
+	height: 2rem;
+}
+
+[bog_gram_row_sign] > [mol_icon] {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+[bog_gram_row_tools] > [mol_button] {
+	flex-shrink: 0;
+	justify-content: center;
+	align-items: center;
+	min-width: 1.75rem;
+	min-height: 1.75rem;
+	padding: 0.25rem;
+	border-radius: 0.5rem;
+}
+
+[bog_gram_row_tools] > [mol_button] > [mol_icon] {
+	flex-shrink: 0;
+	width: 1rem;
+	height: 1rem;
+}
+
+[bog_gram_row] > [mol_icon] {
+	flex-shrink: 0;
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+@media ( max-width: 30rem ) {
+
+	[bog_gram_row_tools] > [mol_button] {
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+	}
+
+	[bog_gram_row_tools] > [mol_button] > [mol_icon] {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+
+}

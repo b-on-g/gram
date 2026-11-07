@@ -289,20 +289,13 @@ $bog_gram $mol_book2
 				click? <=> registry_make? null
 				sub /
 					\Создать реестр
-	Registry_row* $mol_button_minor
+	Registry_row* $bog_gram_row
+		faced false
 		click? <=> registry_open*? null
-		attr *
-			^
-			bog_gram_current <= registry_active_is* false
-		sub /
-			<= Registry_info* $mol_view
-				sub /
-					<= Registry_title* $mol_view
-						sub /
-							<= registry_title* \
-					<= Registry_status* $mol_view
-						sub /
-							<= registry_status* \
+		current <= registry_active_is* false
+		title <= registry_title* \
+		note <= registry_status* \
+		tools /
 			<= Registry_join* $mol_button_minor
 				hint \Вступить в реестр
 				click? <=> registry_join*? null
@@ -362,33 +355,17 @@ $bog_gram $mol_book2
 					<= key_import_label \
 			<= Key_error $mol_paragraph
 				title <= key_error \
-	Dialog_row* $mol_button_minor
+	Dialog_row* $bog_gram_row
+		size \large
 		click? <=> dialog_select*? null
-		attr *
-			^
-			bog_gram_current <= dialog_current_is* false
-		sub /
-			<= Dialog_avatar* $bog_gram_avatar
-				id <= dialog_avatar_id* \
-				tint <= dialog_tint* 0
-			<= Dialog_info* $mol_view
-				sub /
-					<= Dialog_top* $mol_view
-						sub /
-							<= Dialog_title* $mol_view
-								sub /
-									<= dialog_title* \
-							<= Dialog_time* $mol_view
-								sub /
-									<= dialog_time* \
-					<= Dialog_bottom* $mol_view
-						sub /
-							<= Dialog_preview* $mol_view
-								sub /
-									<= dialog_preview* \
-							<= Unread_badge* $mol_view
-								sub /
-									<= unread_label* \
+		current <= dialog_current_is* false
+		avatar_id <= dialog_avatar_id* \
+		tint <= dialog_tint* 0
+		title <= dialog_title* \
+		time <= dialog_time* \
+		note <= dialog_preview* \
+		badge <= unread_label* \
+		tools /
 			<= Dialog_archive* $mol_button_minor
 				hint <= archive_hint* \
 				click? <=> dialog_archive_click*? null
@@ -403,67 +380,31 @@ $bog_gram $mol_book2
 					<= Dialog_delete_icon* $mol_icon_delete
 	Dialog_archive_icon* $mol_icon_archive_arrow_down
 	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
-	Saved_row $mol_button_minor
+	Saved_row $bog_gram_row
+		size \large
 		hint \Заметки для себя
 		click? <=> saved_open? null
-		attr *
-			^
-			bog_gram_current <= saved_current_is false
-		sub /
-			<= Saved_avatar $mol_view
-				sub /
-					<= Saved_avatar_icon $mol_icon_bookmark
-			<= Saved_info $mol_view
-				sub /
-					<= Saved_top $mol_view
-						sub /
-							<= Saved_title $mol_view
-								sub /
-									<= saved_title \
-							<= Saved_time $mol_view
-								sub /
-									<= saved_time \
-					<= Saved_bottom $mol_view
-						sub /
-							<= Saved_preview $mol_view
-								sub /
-									<= saved_preview \
-	Archive_row $mol_button_minor
+		current <= saved_current_is false
+		Icon <= Saved_icon $mol_icon_bookmark
+		title <= saved_title \
+		time <= saved_time \
+		note <= saved_preview \
+	Archive_row $bog_gram_row
+		size \large
 		hint \Спрятанные диалоги
 		click? <=> archive_toggle? null
-		sub /
-			<= Archive_avatar $mol_view
-				sub /
-					<= Archive_avatar_icon $mol_icon_archive
-			<= Archive_info $mol_view
-				sub /
-					<= Archive_title $mol_view
-						sub /
-							\Архив
-					<= Archive_note $mol_view
-						sub /
-							<= archive_note \
-			<= Archive_unread $mol_view
-				sub /
-					<= archive_unread_label \
-	Requests_row $mol_button_minor
+		Icon <= Archive_icon $mol_icon_archive
+		title \Архив
+		note <= archive_note \
+		badge <= archive_unread_label \
+	Requests_row $bog_gram_row
+		size \large
 		hint \Запросы на переписку
 		click? <=> requests_toggle? null
-		sub /
-			<= Requests_avatar $mol_view
-				sub /
-					<= Requests_avatar_icon $mol_icon_account_question
-			<= Requests_info $mol_view
-				sub /
-					<= Requests_title $mol_view
-						sub /
-							\Запросы
-					<= Requests_note $mol_view
-						sub /
-							\Хотят вам написать
-			<= Requests_count $mol_view
-				sub /
-					<= requests_count_label \
+		Icon <= Requests_icon $mol_icon_account_question
+		title \Запросы
+		note \Хотят вам написать
+		badge <= requests_count_label \
 	Request_accept* $mol_button_minor
 		hint \Принять
 		click? <=> request_accept*? null
@@ -474,46 +415,28 @@ $bog_gram $mol_book2
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
-	User_row* $mol_button_minor
+	User_row* $bog_gram_row
 		click? <=> user_pick*? null
-		sub /
-			<= User_avatar* $bog_gram_avatar
-				id <= user_lord* \
-				tint <= user_tint* 0
-			<= User_info* $mol_view
-				sub /
-					<= User_title* $mol_view
-						sub /
-							<= user_title* \
-					<= User_source* $mol_view
-						sub /
-							<= user_source* \
-	Group_pick_row* $mol_button_minor
+		avatar_id <= user_lord* \
+		tint <= user_tint* 0
+		title <= user_title* \
+		note <= user_source* \
+	Group_pick_row* $bog_gram_row
 		click? <=> group_pick*? null
-		attr *
-			^
-			bog_gram_current <= group_picked_is* false
-		sub /
-			<= Group_pick_avatar* $bog_gram_avatar
-				id <= group_pick_lord* \
-				tint <= group_pick_tint* 0
-			<= Group_pick_info* $mol_view
-				sub /
-					<= Group_pick_title* $mol_view
-						sub /
-							<= group_pick_title* \
-					<= Group_pick_source* $mol_view
-						sub /
-							<= group_pick_source* \
+		current <= group_picked_is* false
+		avatar_id <= group_pick_lord* \
+		tint <= group_pick_tint* 0
+		title <= group_pick_title* \
+		note <= group_pick_source* \
+		marks /
 			<= Group_pick_mark* $mol_icon_check
-	Group_chosen_row* $mol_view
-		sub /
-			<= Group_chosen_avatar* $bog_gram_avatar
-				id <= group_chosen_lord* \
-				tint <= group_chosen_tint* 0
-			<= Group_chosen_name* $mol_view
-				sub /
-					<= group_chosen_name* \
+	Group_chosen_row* $bog_gram_row
+		enabled false
+		size \tiny
+		avatar_id <= group_chosen_lord* \
+		tint <= group_chosen_tint* 0
+		title <= group_chosen_name* \
+		tools /
 			<= Group_chosen_drop* $mol_button_minor
 				hint \Убрать из списка
 				click? <=> group_chosen_drop*? null
@@ -583,19 +506,13 @@ $bog_gram $mol_book2
 		title <= members_asks_head \
 	Members_asks_list $mol_list
 		rows <= members_ask_rows /
-	Ask_row* $mol_view
-		sub /
-			<= Ask_avatar* $bog_gram_avatar
-				id <= ask_lord* \
-				tint <= ask_tint* 0
-			<= Ask_info* $mol_view
-				sub /
-					<= Ask_title* $mol_view
-						sub /
-							<= ask_title* \
-					<= Ask_status* $mol_view
-						sub /
-							<= ask_status* \
+	Ask_row* $bog_gram_row
+		enabled false
+		avatar_id <= ask_lord* \
+		tint <= ask_tint* 0
+		title <= ask_title* \
+		note <= ask_status* \
+		tools /
 			<= Ask_accept* $mol_button_minor
 				hint \Принять в группу
 				click? <=> ask_accept*? null
@@ -606,19 +523,13 @@ $bog_gram $mol_book2
 				click? <=> ask_reject*? null
 				sub /
 					<= Ask_reject_icon* $mol_icon_close
-	Member_row* $mol_view
-		sub /
-			<= Member_avatar* $bog_gram_avatar
-				id <= member_lord* \
-				tint <= member_tint* 0
-			<= Member_info* $mol_view
-				sub /
-					<= Member_title* $mol_view
-						sub /
-							<= member_title* \
-					<= Member_status* $mol_view
-						sub /
-							<= member_status* \
+	Member_row* $bog_gram_row
+		enabled false
+		avatar_id <= member_lord* \
+		tint <= member_tint* 0
+		title <= member_title* \
+		note <= member_status* \
+		tools /
 			<= Member_rule* $mol_button_minor
 				hint \Назначить админом
 				click? <=> member_rule_click*? null
@@ -632,20 +543,13 @@ $bog_gram $mol_book2
 				click? <=> member_drop_click*? null
 				sub /
 					<= Member_drop_icon* $mol_icon_account_remove
-	Member_pick_row* $mol_button_minor
+	Member_pick_row* $bog_gram_row
 		click? <=> member_pick*? null
-		sub /
-			<= Member_pick_avatar* $bog_gram_avatar
-				id <= member_pick_lord* \
-				tint <= member_pick_tint* 0
-			<= Member_pick_info* $mol_view
-				sub /
-					<= Member_pick_title* $mol_view
-						sub /
-							<= member_pick_title* \
-					<= Member_pick_source* $mol_view
-						sub /
-							<= member_pick_source* \
+		avatar_id <= member_pick_lord* \
+		tint <= member_pick_tint* 0
+		title <= member_pick_title* \
+		note <= member_pick_source* \
+		marks /
 			<= Member_pick_mark* $mol_icon_account_plus
 	Day_row* $mol_view
 		sub /
