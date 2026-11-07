@@ -47053,7 +47053,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.94";
+    const $bog_gram_version = "1.0.96";
 }
 
 declare namespace $ {
@@ -55146,6 +55146,7 @@ declare namespace $ {
         plan(supported: boolean, permission: NotificationPermission, on: boolean, off: boolean, asked: boolean): 'skip' | 'subscribe' | 'ask';
         plan_now(): "skip" | "ask" | "subscribe";
         auto(): boolean;
+        raised(key: string): boolean;
         offer(): boolean;
         grant(): boolean;
         label(): "Выключить" | "Включить уведомления";
@@ -55776,6 +55777,14 @@ declare namespace $ {
         };
         static image_is(file: Blob): boolean;
         static shrink(file: Blob): $bog_gram_shrink_shot;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_awake extends $mol_object {
+        static now(): boolean;
+        static listeners(): $mol_dom_listener[];
+        static active(next?: boolean): boolean;
     }
 }
 

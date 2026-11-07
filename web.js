@@ -45432,7 +45432,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.94';
+    $.$bog_gram_version = '1.0.96';
 })($ || ($ = {}));
 
 ;
@@ -49739,6 +49739,15 @@ var $;
             bytes[i] = raw.charCodeAt(i);
         return bytes;
     }
+    function key_same(sub, bytes) {
+        const own = sub.options?.applicationServerKey;
+        if (!own)
+            return false;
+        const view = new Uint8Array(own);
+        if (view.length !== bytes.length)
+            return false;
+        return view.every((byte, index) => byte === bytes[index]);
+    }
     class $bog_gram_notify extends $mol_object {
         static base = 'https://push.91-188-212-151.ip.giper.dev';
         static supported() {
@@ -49799,10 +49808,12 @@ var $;
                 const key = answer?.key;
                 if (!key)
                     return false;
-                const stale = $mol_wire_sync(api).subscription_get(reg);
-                if (stale)
-                    $mol_wire_sync(api).subscription_drop(stale);
-                const sub = $mol_wire_sync(api).subscription_make(reg, key_bytes(key));
+                const bytes = key_bytes(key);
+                const current = $mol_wire_sync(api).subscription_get(reg);
+                const same = current && key_same(current, bytes);
+                if (current && !same)
+                    $mol_wire_sync(api).subscription_drop(current);
+                const sub = same ? current : $mol_wire_sync(api).subscription_make(reg, bytes);
                 this.send('/push/subscribe', {
                     lord,
                     monitor,
@@ -49940,8 +49951,12 @@ var $;
         auto() {
             if (this.plan_now() !== 'subscribe')
                 return false;
-            if (!this.Account().monitor_link())
+            const monitor = this.Account().monitor_link();
+            if (!monitor)
                 return false;
+            return this.raised(this.Account().my_lord() + '/' + monitor);
+        }
+        raised(key) {
             $mol_wire_async(this).apply(true);
             return true;
         }
@@ -50003,6 +50018,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_alerts.prototype, "auto", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_alerts.prototype, "raised", null);
     __decorate([
         $mol_action
     ], $bog_gram_alerts.prototype, "offer", null);
@@ -52114,6 +52132,44 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    class $bog_gram_awake extends $mol_object {
+        static now() {
+            const doc = this.$.$mol_dom_context.document;
+            if (!doc)
+                return true;
+            if (doc.visibilityState === 'hidden')
+                return false;
+            return doc.hasFocus?.() ?? true;
+        }
+        static listeners() {
+            const win = this.$.$mol_dom_context;
+            if (!win.document?.addEventListener)
+                return [];
+            const check = () => this.active(this.now());
+            return [
+                new this.$.$mol_dom_listener(win.document, 'visibilitychange', check),
+                new this.$.$mol_dom_listener(win, 'focus', check),
+                new this.$.$mol_dom_listener(win, 'blur', check),
+            ];
+        }
+        static active(next) {
+            this.listeners();
+            return next ?? this.now();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_awake, "listeners", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_awake, "active", null);
+    $.$bog_gram_awake = $bog_gram_awake;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -52767,6 +52823,8 @@ var $;
             }
             read_sync() {
                 if (this.saved())
+                    return 0;
+                if (!this.$.$bog_gram_awake.active())
                     return 0;
                 const id = this.dialog();
                 const my = this.my_lord();
@@ -54658,7 +54716,7 @@ var $;
                 return null;
             }
             unread_count(id) {
-                if (id === this.dialog_active())
+                if (id === this.dialog_active() && this.$.$bog_gram_awake.active())
                     return 0;
                 return this.unread_total(id);
             }

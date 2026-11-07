@@ -9110,7 +9110,39 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    class Alerts_switch extends $mol_object {
+        static on(next) {
+            return next ?? false;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], Alerts_switch, "on", null);
     $mol_test({
+        async 'Подписка поднимается один раз, даже когда сама включает уведомления'($) {
+            let applied = 0;
+            const alerts = $bog_gram_alerts.make({ $,
+                supported: () => true,
+                permission: () => 'granted',
+                on: (next) => Alerts_switch.on(next),
+                off: () => false,
+                asked: () => false,
+                Account: () => ({ monitor_link: () => 'Monitor', my_lord: () => 'Lord' }),
+                apply: (on) => {
+                    ++applied;
+                    Promise.resolve().then(() => alerts.on(on));
+                    return on;
+                },
+            });
+            alerts.auto();
+            await Promise.resolve();
+            await Promise.resolve();
+            $mol_assert_equal(applied, 1);
+            $mol_assert_equal(alerts.on(), true);
+            alerts.auto();
+            await Promise.resolve();
+            $mol_assert_equal(applied, 1);
+        },
         'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
             const alerts = $bog_gram_alerts.make({ $ });
             const plan = (permission, on, off, asked) => alerts.plan(true, permission, on, off, asked);
@@ -9176,6 +9208,26 @@ var $;
         'Картинкой считается только файл с типом image'() {
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Скрытая вкладка и окно без фокуса не перед глазами'($) {
+            const doc = { visibilityState: 'visible', hasFocus: () => true };
+            class Awake extends $bog_gram_awake {
+                static $ = $.$mol_ambient({ $mol_dom_context: { document: doc } });
+            }
+            $mol_assert_equal(Awake.now(), true);
+            doc.visibilityState = 'hidden';
+            $mol_assert_equal(Awake.now(), false);
+            doc.visibilityState = 'visible';
+            doc.hasFocus = () => false;
+            $mol_assert_equal(Awake.now(), false);
         },
     });
 })($ || ($ = {}));
