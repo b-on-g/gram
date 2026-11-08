@@ -2,6 +2,11 @@ namespace $.$$ {
 
 	export class $bog_gram_settings extends $.$bog_gram_settings {
 
+		override follow( next?: string ) {
+			if( next && this.$.$bog_gram_follow.go( next ) ) this.close( null )
+			return ''
+		}
+
 		override version() {
 			return $bog_gram_version
 		}
