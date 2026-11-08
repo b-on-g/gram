@@ -73,6 +73,31 @@ namespace $.$$ {
 
 		},
 
+		'Кадр без размеров — квадрат на полный предел, а не точка'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+
+			const bare = session.Messages( 'auto' )!.make( null )
+			const zero = session.Messages( 'auto' )!.make( null )
+			zero.Image_width( 'auto' )?.val( 0 )
+			zero.Image_height( 'auto' )?.val( 0 )
+			const wide = session.Messages( 'auto' )!.make( null )
+			wide.Image_width( 'auto' )?.val( 1600 )
+			wide.Image_height( 'auto' )?.val( 1200 )
+
+			const pawns = new Map( [ bare, zero, wide ].map( message => [ message.link().str, message ] ) )
+			const chat = $bog_gram_chat.make({ $, message_pawn: ( id: string )=> pawns.get( id ) ?? null })
+
+			for( const message of [ bare, zero ] ) {
+				$mol_assert_equal( chat.message_shot_width( message.link().str ), '15.00rem' )
+				$mol_assert_equal( chat.message_shot_ratio( message.link().str ), '240 / 240' )
+			}
+
+			$mol_assert_equal( chat.message_shot_width( wide.link().str ), '15.00rem' )
+			$mol_assert_equal( chat.message_shot_ratio( wide.link().str ), '1600 / 1200' )
+
+		},
+
 		'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )

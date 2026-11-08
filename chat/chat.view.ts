@@ -524,7 +524,7 @@ namespace $.$$ {
 			const width = Number( pawn?.Image_width()?.val() ?? 0 )
 			const height = Number( pawn?.Image_height()?.val() ?? 0 )
 
-			if( !width || !height ) return { width: 1, height: 1 }
+			if( !width || !height ) return { width: shot_side * rem_px, height: shot_side * rem_px }
 
 			return { width, height }
 		}
