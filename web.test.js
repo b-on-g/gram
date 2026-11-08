@@ -6619,6 +6619,67 @@ var $;
                 $mol_assert_equal(row.swipe_shift(), 40);
                 $mol_assert_equal(row.swipe_dragging(), true);
             },
+            'Мышь тянет строку как палец, клик после тяги гасится, без тяги открывает'($) {
+                let clicks = 0;
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                    click: () => { ++clicks; return null; },
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                const at = (x, time) => ({ pointerType: 'mouse', button: 0, pointerId: 1, clientX: x, clientY: 10, timeStamp: time });
+                row.swipe_start(at(0, 0));
+                for (let x = 4; x <= 100; x += 4)
+                    row.swipe_move(at(x, x * 10));
+                row.swipe_end(at(100, 1000));
+                $mol_assert_equal(row.swipe_open(), true);
+                row.event_activate({});
+                $mol_assert_equal(clicks, 0);
+                row.swipe_start(at(50, 2000));
+                row.swipe_end(at(50, 2010));
+                row.event_activate({});
+                $mol_assert_equal(clicks, 1);
+            },
+            'Тачпад: горизонтальная прокрутка двигает строку, вертикальная и шаг влево у закрытой — нет'($) {
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                let stopped = 0;
+                const wheel = (deltaX, deltaY) => row.swipe_wheel({ deltaX, deltaY, preventDefault: () => { ++stopped; } });
+                for (let i = 0; i < 10; ++i)
+                    wheel(0, 10);
+                row.swipe_wheel_end();
+                $mol_assert_equal(stopped, 0);
+                $mol_assert_equal(row.swipe_open(), false);
+                for (let i = 0; i < 10; ++i)
+                    wheel(10, 1);
+                row.swipe_wheel_end();
+                $mol_assert_equal(stopped, 0);
+                $mol_assert_equal(row.swipe_open(), false);
+                for (let i = 0; i < 10; ++i)
+                    wheel(-8, 1);
+                $mol_assert_equal(row.swipe_shift(), 80);
+                row.swipe_wheel_end();
+                $mol_assert_equal(row.swipe_open(), true);
+                $mol_assert_equal(stopped > 0, true);
+                for (let i = 0; i < 10; ++i)
+                    wheel(8, 0);
+                row.swipe_wheel_end();
+                $mol_assert_equal(row.swipe_open(), false);
+            },
+            'Фокус клавиатуры на кнопке открывает строку'($) {
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                row.swipe_focus({ target: row.Info().dom_node() });
+                $mol_assert_equal(row.swipe_open(), false);
+                row.swipe_focus({ target: row.Tools().dom_node() });
+                $mol_assert_equal(row.swipe_open(), true);
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
@@ -7611,64 +7672,82 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        'Избранное первым, архив и запросы входами по краям, пустой список говорит об этом'($) {
-            const empty = $bog_gram_menu.make({ $ });
-            $mol_assert_equal(empty.dialog_rows(), [empty.Saved_row(), empty.Dialogs_empty()]);
-            const full = $bog_gram_menu.make({ $,
-                visible: () => ['A'],
-                archived: () => ['Z'],
-                requests: () => ['R'],
-            });
-            $mol_assert_equal(full.dialog_rows(), [full.Archive_row(), full.Saved_row(), full.Dialog_row('A'), full.Requests_row()]);
-            full.archive_toggle();
-            full.requests_toggle();
-            $mol_assert_equal(full.dialog_rows(), [
-                full.Archive_row(), full.Dialog_row('Z'),
-                full.Saved_row(), full.Dialog_row('A'),
-                full.Requests_row(), full.Dialog_row('R'),
-            ]);
-        },
-        'Корзина удаляет со второго нажатия, другой клик снимает взвод'($) {
-            const dropped = [];
-            const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
-            menu.delete_click('A');
-            $mol_assert_equal(menu.delete_armed('A'), true);
-            $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
-            menu.archive_toggle();
-            $mol_assert_equal(menu.delete_armed('A'), false);
-            menu.delete_click('A');
-            menu.delete_click('A');
-            $mol_assert_equal(dropped, ['A']);
-        },
-        'В строке запроса вместо архива и корзины согласие и отказ'($) {
-            const menu = $bog_gram_menu.make({ $, request_is: (id) => id === 'R' });
-            $mol_assert_equal(menu.Dialog_archive('R'), menu.Request_accept('R'));
-            $mol_assert_equal(menu.Dialog_delete('R'), menu.Request_reject('R'));
-            $mol_assert_equal(menu.Dialog_archive('A') === menu.Request_accept('A'), false);
-        },
-        'Непрочитанное в архиве складывается'($) {
-            const menu = $bog_gram_menu.make({ $,
-                archived: () => ['X', 'Y'],
-                unread: (id) => id === 'X' ? 2 : 3,
-            });
-            $mol_assert_equal(menu.archive_unread_label(), '5');
-            $mol_assert_equal(menu.archive_note(), '2 диалога');
-        },
-        'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
-            const picked = [];
-            const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
-            menu.Dialog_row('A').swipe_open(true);
-            menu.Dialog_row('B').swipe_open(true);
-            $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
-            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
-            menu.pick('A');
-            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
-            $mol_assert_equal(picked, []);
-            menu.pick('A');
-            $mol_assert_equal(picked, ['A']);
-        },
-    });
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Избранное первым, архив и запросы входами по краям, пустой список говорит об этом'($) {
+                const empty = $bog_gram_menu.make({ $ });
+                $mol_assert_equal(empty.dialog_rows(), [empty.Saved_row(), empty.Dialogs_empty()]);
+                const full = $bog_gram_menu.make({ $,
+                    visible: () => ['A'],
+                    archived: () => ['Z'],
+                    requests: () => ['R'],
+                });
+                $mol_assert_equal(full.dialog_rows(), [full.Archive_row(), full.Saved_row(), full.Dialog_row('A'), full.Requests_row()]);
+                full.archive_toggle();
+                full.requests_toggle();
+                $mol_assert_equal(full.dialog_rows(), [
+                    full.Archive_row(), full.Dialog_row('Z'),
+                    full.Saved_row(), full.Dialog_row('A'),
+                    full.Requests_row(), full.Dialog_row('R'),
+                ]);
+            },
+            'Корзина удаляет со второго нажатия, другой клик снимает взвод'($) {
+                const dropped = [];
+                const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
+                menu.delete_click('A');
+                $mol_assert_equal(menu.delete_armed('A'), true);
+                $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
+                menu.archive_toggle();
+                $mol_assert_equal(menu.delete_armed('A'), false);
+                menu.delete_click('A');
+                menu.delete_click('A');
+                $mol_assert_equal(dropped, ['A']);
+            },
+            'В строке запроса вместо архива и корзины согласие и отказ'($) {
+                const menu = $bog_gram_menu.make({ $, request_is: (id) => id === 'R' });
+                $mol_assert_equal(menu.Dialog_archive('R'), menu.Request_accept('R'));
+                $mol_assert_equal(menu.Dialog_delete('R'), menu.Request_reject('R'));
+                $mol_assert_equal(menu.Dialog_archive('A') === menu.Request_accept('A'), false);
+            },
+            'Непрочитанное в архиве складывается'($) {
+                const menu = $bog_gram_menu.make({ $,
+                    archived: () => ['X', 'Y'],
+                    unread: (id) => id === 'X' ? 2 : 3,
+                });
+                $mol_assert_equal(menu.archive_unread_label(), '5');
+                $mol_assert_equal(menu.archive_note(), '2 диалога');
+            },
+            'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
+                const picked = [];
+                const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
+                menu.Dialog_row('A').swipe_open(true);
+                menu.Dialog_row('B').swipe_open(true);
+                $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
+                $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
+                menu.pick('A');
+                $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
+                $mol_assert_equal(picked, []);
+                menu.pick('A');
+                $mol_assert_equal(picked, ['A']);
+            },
+            'Esc и клик мимо закрывают открытую строку, клик по ней самой — нет'($) {
+                const menu = $bog_gram_menu.make({ $ });
+                const row = menu.Dialog_row('A');
+                row.dom_tree();
+                row.swipe_open(true);
+                menu.swipe_outside({ target: row.Info().dom_node() });
+                $mol_assert_equal(row.swipe_open(), true);
+                menu.swipe_outside({ target: menu.Head().dom_node() });
+                $mol_assert_equal(row.swipe_open(), false);
+                row.swipe_open(true);
+                menu.swipe_key({ key: 'Enter' });
+                $mol_assert_equal(row.swipe_open(), true);
+                menu.swipe_key({ key: 'Escape' });
+                $mol_assert_equal(row.swipe_open(), false);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -9592,6 +9671,70 @@ var $;
             $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
         },
     });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        function key(mods = {}) {
+            const event = {
+                keyCode: $mol_keyboard_code.enter,
+                ctrlKey: false,
+                metaKey: false,
+                altKey: false,
+                shiftKey: false,
+                defaultPrevented: false,
+                preventDefault() { event.defaultPrevented = true; },
+                ...mods,
+            };
+            return event;
+        }
+        function make($, fine) {
+            let sent = 0;
+            const write = $bog_gram_write.make({ $, enter_sends: () => fine, send: () => (++sent, null) });
+            const press = (event) => {
+                write.Edit().Submit().keydown(event);
+                write.press(event);
+                return event;
+            };
+            return { write, press, sent: () => sent };
+        }
+        $mol_test({
+            'Enter отправляет, Shift+Enter переносит строку'($) {
+                const { write, press, sent } = make($, true);
+                write.value('Привет');
+                const shift = press(key({ shiftKey: true }));
+                $mol_assert_equal(sent(), 0);
+                $mol_assert_equal(shift.defaultPrevented, false);
+                const enter = press(key());
+                $mol_assert_equal(sent(), 1);
+                $mol_assert_equal(enter.defaultPrevented, true);
+            },
+            'Ctrl+Enter и Cmd+Enter вставляют перевод строки на месте курсора'($) {
+                const { write, press, sent } = make($, true);
+                write.value('Приветмир');
+                write.selection([6, 6]);
+                const ctrl = press(key({ ctrlKey: true }));
+                $mol_assert_equal(write.value(), 'Привет\nмир');
+                $mol_assert_equal(write.selection(), [7, 7]);
+                $mol_assert_equal(ctrl.defaultPrevented, true);
+                write.selection([0, 6]);
+                press(key({ metaKey: true }));
+                $mol_assert_equal(write.value(), '\n\nмир');
+                $mol_assert_equal(sent(), 0);
+            },
+            'На тач-экране Enter переносит строку, отправка кнопкой'($) {
+                const { write, press, sent } = make($, false);
+                write.value('Привет');
+                const enter = press(key());
+                $mol_assert_equal(sent(), 0);
+                $mol_assert_equal(enter.defaultPrevented, false);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;

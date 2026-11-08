@@ -20850,6 +20850,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		swipe_wheel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_focus(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Avatar(){
 			const obj = new this.$.$bog_gram_avatar();
 			(obj.id) = () => ((this.avatar_id()));
@@ -20962,7 +20970,9 @@ var $;
 				"pointerdown": (next) => (this.swipe_start(next)), 
 				"pointermove": (next) => (this.swipe_move(next)), 
 				"pointerup": (next) => (this.swipe_end(next)), 
-				"pointercancel": (next) => (this.swipe_cancel(next))
+				"pointercancel": (next) => (this.swipe_cancel(next)), 
+				"wheel": (next) => (this.swipe_wheel(next)), 
+				"focusin": (next) => (this.swipe_focus(next))
 			};
 		}
 		sub(){
@@ -20978,6 +20988,8 @@ var $;
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_move"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_end"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_cancel"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_wheel"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_focus"));
 	($mol_mem(($.$bog_gram_row.prototype), "Avatar"));
 	($mol_mem(($.$bog_gram_row.prototype), "Sign"));
 	($mol_mem(($.$bog_gram_row.prototype), "Title"));
@@ -21069,16 +21081,13 @@ var $;
                     return false;
                 return shift > width / 2;
             }
-            swipe_touch() {
-                return this.$.$mol_dom_context.matchMedia?.('(hover: none)').matches ?? false;
-            }
             swipe_start(event) {
                 this.swipe_moved = false;
-                if (!event || !this.swipe() || event.pointerType !== 'touch')
+                if (!event || !this.swipe_able())
                     return null;
-                if (!this.tools().length || !this.swipe_touch())
+                if (event.pointerType === 'mouse' && event.button !== 0)
                     return null;
-                this.swipe_width = this.Tools().dom_node().offsetWidth;
+                this.swipe_measure();
                 this.swipe_from = {
                     x: event.clientX,
                     y: event.clientY,
@@ -21132,6 +21141,54 @@ var $;
                     this.swipe_from.speed = 0;
                 return this.swipe_end(event);
             }
+            swipe_able() {
+                return this.swipe() && this.tools().length > 0;
+            }
+            swipe_measure() {
+                this.swipe_width = this.Tools().dom_node().offsetWidth;
+            }
+            wheel_from = null;
+            swipe_wheel(event) {
+                if (!event || !this.swipe_able())
+                    return null;
+                if (!this.wheel_from) {
+                    this.swipe_measure();
+                    this.wheel_from = { base: this.swipe_shift(), x: 0, y: 0, axis: 'wait', idle: null };
+                }
+                const from = this.wheel_from;
+                from.idle?.destructor();
+                from.idle = new this.$.$mol_after_timeout(150, () => this.swipe_wheel_end());
+                from.x -= event.deltaX;
+                from.y -= event.deltaY;
+                if (from.axis === 'wait') {
+                    from.axis = this.swipe_axis(from.x, from.y, from.base);
+                    if (from.axis === 'drag' && !from.base)
+                        this.swipe_open(false);
+                }
+                if (from.axis !== 'drag')
+                    return null;
+                event.preventDefault();
+                this.swipe_drag(Math.max(0, Math.min(this.swipe_width, from.base + from.x)));
+                return null;
+            }
+            swipe_wheel_end() {
+                const from = this.wheel_from;
+                this.wheel_from = null;
+                if (from?.axis !== 'drag')
+                    return;
+                const open = this.swipe_settle(this.swipe_shift(), 0, this.swipe_width);
+                this.swipe_drag(null);
+                this.swipe_open(open);
+            }
+            swipe_focus(event) {
+                if (!event || !this.swipe_able() || this.swipe_open())
+                    return null;
+                if (!this.Tools().dom_node().contains(event.target))
+                    return null;
+                this.swipe_measure();
+                this.swipe_open(true);
+                return null;
+            }
             event_activate(next) {
                 if (this.swipe_moved) {
                     this.swipe_moved = false;
@@ -21154,7 +21211,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n@media ( hover: none ) {\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\t\tposition: relative;\n\t\toverflow: hidden;\n\t\ttouch-action: pan-y pan-right;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\t\ttouch-action: pan-y;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\t\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\t\ttransition: transform .2s ease-out;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\t\ttransition: none;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\tpadding: 0 0.5rem;\n\t\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n\t}\n\n}\n");
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\tposition: relative;\n\toverflow: hidden;\n\ttouch-action: pan-y pan-right;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\ttouch-action: pan-y;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\ttransition: transform .2s ease-out;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\ttransition: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\tposition: absolute;\n\ttop: 0;\n\tbottom: 0;\n\tleft: 0;\n\tpadding: 0 0.5rem;\n\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n}\n\n");
 })($ || ($ = {}));
 
 ;
@@ -33445,9 +33502,35 @@ var $;
                 this.swiped('');
                 return null;
             }
+            swipe_outside(event) {
+                const id = this.swiped();
+                if (!id)
+                    return;
+                if (this.Dialog_row(id).dom_node().contains(event.target))
+                    return;
+                this.swiped('');
+            }
+            swipe_key(event) {
+                if (event.key === 'Escape')
+                    this.swiped('');
+            }
+            Swipe_listen() {
+                if (!this.swiped())
+                    return null;
+                const doc = this.$.$mol_dom_context.document;
+                const click = new this.$.$mol_dom_listener(doc, 'click', (event) => this.swipe_outside(event));
+                const key = new this.$.$mol_dom_listener(doc, 'keydown', (event) => this.swipe_key(event));
+                return {
+                    destructor: () => {
+                        click.destructor();
+                        key.destructor();
+                    },
+                };
+            }
             auto() {
                 super.auto();
                 this.Swipe_reset();
+                this.Swipe_listen();
             }
             pick(id, next) {
                 this.armed('');
@@ -33554,6 +33637,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_menu.prototype, "Swipe_reset", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "Swipe_listen", null);
         __decorate([
             $mol_action
         ], $bog_gram_menu.prototype, "pick", null);
@@ -45740,7 +45826,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.118';
+    $.$bog_gram_version = '1.0.122';
 })($ || ($ = {}));
 
 ;
@@ -51250,6 +51336,78 @@ var $;
 
 
 ;
+	($.$bog_gram_write) = class $bog_gram_write extends ($.$mol_textarea) {
+		submit_with_ctrl(){
+			return false;
+		}
+		spellcheck(){
+			return true;
+		}
+		send(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+	};
+	($mol_mem(($.$bog_gram_write.prototype), "send"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_write extends $.$bog_gram_write {
+            enter_sends() {
+                return this.$.$mol_media.match('(pointer: fine)');
+            }
+            submit(event) {
+                if (!this.enter_sends())
+                    return null;
+                event?.preventDefault();
+                this.send(event);
+                return null;
+            }
+            newline() {
+                const text = this.value();
+                const [from = text.length, to = from] = this.selection();
+                this.value(text.slice(0, from) + '\n' + text.slice(to));
+                this.selection([from + 1, from + 1]);
+            }
+            press(event) {
+                if (event.keyCode === $mol_keyboard_code.tab)
+                    return;
+                if (event.keyCode === $mol_keyboard_code.enter && (event.ctrlKey || event.metaKey) && !event.altKey) {
+                    event.preventDefault();
+                    this.newline();
+                    return;
+                }
+                super.press(event);
+            }
+        }
+        $$.$bog_gram_write = $bog_gram_write;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_write, {
+            font: {
+                family: 'inherit',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
 		path(){
 			return "M2,21L23,12L2,3V10L17,12L2,14V21Z";
@@ -53691,20 +53849,35 @@ var $;
             align: {
                 items: 'center',
             },
+            flex: {
+                shrink: 1,
+            },
+            minWidth: 0,
+            maxWidth: '100%',
             gap: $mol_gap.block,
             Icon: {
+                flex: {
+                    shrink: 0,
+                },
                 width: '2rem',
                 height: '2rem',
             },
             Info: {
                 flex: {
                     direction: 'column',
+                    shrink: 1,
                 },
                 align: {
                     items: 'flex-start',
                 },
+                minWidth: 0,
+                overflowWrap: 'anywhere',
+            },
+            Title: {
+                maxWidth: '100%',
             },
             Count: {
+                maxWidth: '100%',
                 color: $mol_theme.shade,
             },
         });
@@ -54440,6 +54613,13 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		Message_field(){
+			const obj = new this.$.$bog_gram_write();
+			(obj.hint) = () => ("Сообщение…");
+			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.send) = (next) => ((this.message_send(next)));
+			return obj;
+		}
 		Send_icon(){
 			const obj = new this.$.$mol_icon_send();
 			return obj;
@@ -54753,11 +54933,9 @@ var $;
 			(obj.Icon) = () => ((this.Attach_icon()));
 			return obj;
 		}
-		Message_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Сообщение…");
-			(obj.value) = (next) => ((this.message_text(next)));
-			(obj.submit) = (next) => ((this.message_send(next)));
+		Message_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
 		Send(){
@@ -54870,6 +55048,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_release"));
@@ -54909,7 +55088,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "rows_seen"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
@@ -55712,7 +55891,7 @@ var $;
             send_tools() {
                 if (this.voice_on())
                     return [this.Record_state(), this.Voice_cancel(), this.Voice()];
-                return [this.Attach(), this.Message_field(), this.Send(), this.Voice()];
+                return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
             }
             voice_press(next) {
                 if (this.voice_live)
@@ -56370,18 +56549,45 @@ var $;
                 gap: '0.5rem',
                 minWidth: 0,
             },
+            Message_box: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxHeight: '10rem',
+                overflow: {
+                    y: 'auto',
+                },
+                borderRadius: '1rem',
+                background: {
+                    color: $mol_theme.field,
+                },
+                boxShadow: `inset 0 0 0 1px ${$mol_theme.line}`,
+                ':hover': {
+                    boxShadow: `inset 0 0 0 2px ${$mol_theme.line}`,
+                },
+                ':focus-within': {
+                    boxShadow: `inset 0 0 0 1px ${$mol_theme.focus}`,
+                },
+            },
             Message_field: {
                 flex: {
                     grow: 1,
                     shrink: 1,
                 },
                 minWidth: 0,
-                borderRadius: '1rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.875rem',
-                    right: '0.875rem',
+                Edit: {
+                    background: {
+                        color: 'transparent',
+                    },
+                    boxShadow: 'none',
+                    ':hover': {
+                        boxShadow: 'none',
+                    },
+                    ':focus': {
+                        boxShadow: 'none',
+                    },
                 },
             },
             Send: {

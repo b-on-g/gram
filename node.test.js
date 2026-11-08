@@ -22194,6 +22194,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		swipe_wheel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_focus(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Avatar(){
 			const obj = new this.$.$bog_gram_avatar();
 			(obj.id) = () => ((this.avatar_id()));
@@ -22306,7 +22314,9 @@ var $;
 				"pointerdown": (next) => (this.swipe_start(next)), 
 				"pointermove": (next) => (this.swipe_move(next)), 
 				"pointerup": (next) => (this.swipe_end(next)), 
-				"pointercancel": (next) => (this.swipe_cancel(next))
+				"pointercancel": (next) => (this.swipe_cancel(next)), 
+				"wheel": (next) => (this.swipe_wheel(next)), 
+				"focusin": (next) => (this.swipe_focus(next))
 			};
 		}
 		sub(){
@@ -22322,6 +22332,8 @@ var $;
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_move"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_end"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_cancel"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_wheel"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_focus"));
 	($mol_mem(($.$bog_gram_row.prototype), "Avatar"));
 	($mol_mem(($.$bog_gram_row.prototype), "Sign"));
 	($mol_mem(($.$bog_gram_row.prototype), "Title"));
@@ -22413,16 +22425,13 @@ var $;
                     return false;
                 return shift > width / 2;
             }
-            swipe_touch() {
-                return this.$.$mol_dom_context.matchMedia?.('(hover: none)').matches ?? false;
-            }
             swipe_start(event) {
                 this.swipe_moved = false;
-                if (!event || !this.swipe() || event.pointerType !== 'touch')
+                if (!event || !this.swipe_able())
                     return null;
-                if (!this.tools().length || !this.swipe_touch())
+                if (event.pointerType === 'mouse' && event.button !== 0)
                     return null;
-                this.swipe_width = this.Tools().dom_node().offsetWidth;
+                this.swipe_measure();
                 this.swipe_from = {
                     x: event.clientX,
                     y: event.clientY,
@@ -22476,6 +22485,54 @@ var $;
                     this.swipe_from.speed = 0;
                 return this.swipe_end(event);
             }
+            swipe_able() {
+                return this.swipe() && this.tools().length > 0;
+            }
+            swipe_measure() {
+                this.swipe_width = this.Tools().dom_node().offsetWidth;
+            }
+            wheel_from = null;
+            swipe_wheel(event) {
+                if (!event || !this.swipe_able())
+                    return null;
+                if (!this.wheel_from) {
+                    this.swipe_measure();
+                    this.wheel_from = { base: this.swipe_shift(), x: 0, y: 0, axis: 'wait', idle: null };
+                }
+                const from = this.wheel_from;
+                from.idle?.destructor();
+                from.idle = new this.$.$mol_after_timeout(150, () => this.swipe_wheel_end());
+                from.x -= event.deltaX;
+                from.y -= event.deltaY;
+                if (from.axis === 'wait') {
+                    from.axis = this.swipe_axis(from.x, from.y, from.base);
+                    if (from.axis === 'drag' && !from.base)
+                        this.swipe_open(false);
+                }
+                if (from.axis !== 'drag')
+                    return null;
+                event.preventDefault();
+                this.swipe_drag(Math.max(0, Math.min(this.swipe_width, from.base + from.x)));
+                return null;
+            }
+            swipe_wheel_end() {
+                const from = this.wheel_from;
+                this.wheel_from = null;
+                if (from?.axis !== 'drag')
+                    return;
+                const open = this.swipe_settle(this.swipe_shift(), 0, this.swipe_width);
+                this.swipe_drag(null);
+                this.swipe_open(open);
+            }
+            swipe_focus(event) {
+                if (!event || !this.swipe_able() || this.swipe_open())
+                    return null;
+                if (!this.Tools().dom_node().contains(event.target))
+                    return null;
+                this.swipe_measure();
+                this.swipe_open(true);
+                return null;
+            }
             event_activate(next) {
                 if (this.swipe_moved) {
                     this.swipe_moved = false;
@@ -22498,7 +22555,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n@media ( hover: none ) {\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\t\tposition: relative;\n\t\toverflow: hidden;\n\t\ttouch-action: pan-y pan-right;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\t\ttouch-action: pan-y;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\t\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\t\ttransition: transform .2s ease-out;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\t\ttransition: none;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\tpadding: 0 0.5rem;\n\t\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n\t}\n\n}\n");
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\tposition: relative;\n\toverflow: hidden;\n\ttouch-action: pan-y pan-right;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\ttouch-action: pan-y;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\ttransition: transform .2s ease-out;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\ttransition: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\tposition: absolute;\n\ttop: 0;\n\tbottom: 0;\n\tleft: 0;\n\tpadding: 0 0.5rem;\n\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n}\n\n");
 })($ || ($ = {}));
 
 ;
@@ -23266,9 +23323,35 @@ var $;
                 this.swiped('');
                 return null;
             }
+            swipe_outside(event) {
+                const id = this.swiped();
+                if (!id)
+                    return;
+                if (this.Dialog_row(id).dom_node().contains(event.target))
+                    return;
+                this.swiped('');
+            }
+            swipe_key(event) {
+                if (event.key === 'Escape')
+                    this.swiped('');
+            }
+            Swipe_listen() {
+                if (!this.swiped())
+                    return null;
+                const doc = this.$.$mol_dom_context.document;
+                const click = new this.$.$mol_dom_listener(doc, 'click', (event) => this.swipe_outside(event));
+                const key = new this.$.$mol_dom_listener(doc, 'keydown', (event) => this.swipe_key(event));
+                return {
+                    destructor: () => {
+                        click.destructor();
+                        key.destructor();
+                    },
+                };
+            }
             auto() {
                 super.auto();
                 this.Swipe_reset();
+                this.Swipe_listen();
             }
             pick(id, next) {
                 this.armed('');
@@ -23375,6 +23458,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_menu.prototype, "Swipe_reset", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "Swipe_listen", null);
         __decorate([
             $mol_action
         ], $bog_gram_menu.prototype, "pick", null);
@@ -26040,7 +26126,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.118';
+    $.$bog_gram_version = '1.0.122';
 })($ || ($ = {}));
 
 ;
@@ -32008,6 +32094,930 @@ var $;
 
 
 ;
+	($.$mol_stack) = class $mol_stack extends ($.$mol_view) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/stack/stack.view.css", "[mol_stack] {\n\tdisplay: grid;\n\t/* width: max-content; */\n\t/* height: max-content; */\n\talign-items: flex-start;\n\tjustify-items: flex-start;\n}\n\n[mol_stack] > * {\n\tgrid-area: 1/1;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_text_code_token) = class $mol_text_code_token extends ($.$mol_dimmer) {
+		type(){
+			return "";
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_token_type": (this.type())};
+		}
+	};
+	($.$mol_text_code_token_link) = class $mol_text_code_token_link extends ($.$mol_text_code_token) {
+		uri(){
+			return "";
+		}
+		dom_name(){
+			return "a";
+		}
+		type(){
+			return "code-link";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"href": (this.uri()), 
+				"target": "_blank"
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { hsla } = $mol_style_func;
+        $mol_style_define($mol_text_code_token, {
+            display: 'inline',
+            textDecoration: 'none',
+            '@': {
+                mol_text_code_token_type: {
+                    'code-keyword': {
+                        color: hsla(0, 70, 60, 1),
+                    },
+                    'code-field': {
+                        color: hsla(300, 70, 50, 1),
+                    },
+                    'code-tag': {
+                        color: hsla(330, 70, 50, 1),
+                    },
+                    'code-global': {
+                        color: hsla(30, 80, 50, 1),
+                    },
+                    'code-decorator': {
+                        color: hsla(180, 40, 50, 1),
+                    },
+                    'code-punctuation': {
+                        color: hsla(0, 0, 50, 1),
+                    },
+                    'code-string': {
+                        color: hsla(90, 40, 50, 1),
+                    },
+                    'code-number': {
+                        color: hsla(55, 65, 45, 1),
+                    },
+                    'code-call': {
+                        color: hsla(270, 60, 50, 1),
+                    },
+                    'code-link': {
+                        color: hsla(210, 60, 50, 1),
+                    },
+                    'code-comment-inline': {
+                        opacity: .5,
+                    },
+                    'code-comment-block': {
+                        opacity: .5,
+                    },
+                    'code-docs': {
+                        opacity: .75,
+                    },
+                },
+            }
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code_line) = class $mol_text_code_line extends ($.$mol_paragraph) {
+		numb(){
+			return 0;
+		}
+		token_type(id){
+			return "";
+		}
+		token_text(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		token_uri(id){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		minimal_height(){
+			return 24;
+		}
+		numb_showed(){
+			return true;
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		Numb(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.numb())]);
+			return obj;
+		}
+		Token(id){
+			const obj = new this.$.$mol_text_code_token();
+			(obj.type) = () => ((this.token_type(id)));
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			return obj;
+		}
+		Token_link(id){
+			const obj = new this.$.$mol_text_code_token_link();
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			(obj.uri) = () => ((this.token_uri(id)));
+			return obj;
+		}
+		find_pos(id){
+			return null;
+		}
+	};
+	($mol_mem(($.$mol_text_code_line.prototype), "Numb"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token_link"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_syntax2_md_flow = new $mol_syntax2({
+        'quote': /^((?:(?:[>"] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'spoiler': /^((?:(?:[\?] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'header': /^([#=]+)(\s+)(.*?)$([\n\r]*)/,
+        'list': /^((?:(?: ?([*+-])|(?:\d+[\.\)])+) +(?:[^]*?)$(?:\r?\n?)(?:  (?:[^]*?)$(?:\r?\n?))*)+)((?:\r?\n)*)/,
+        'code': /^(```)([\w.-]*)[\r\n]+([^]*?)^(```)$([\n\r]*)/,
+        'code-indent': /^((?:(?: |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
+        'table': /((?:^\|.+?$\r?\n?)+)([\n\r]*)/,
+        'grid': /((?:^ *! .*?$\r?\n?)+)([\n\r]*)/,
+        'cut': /^--+$((?:\r?\n)*)/,
+        'block': /^(.*?)$((?:\r?\n)*)/,
+    });
+    $.$mol_syntax2_md_line = new $mol_syntax2({
+        'strong': /\*\*(.+?)\*\*/,
+        'emphasis': /\*(?!\s)(.+?)\*|\/\/(?!\s)(.+?)\/\//,
+        'code': /```(.+?)```|;;(.+?);;|`(.+?)`/,
+        'insert': /\+\+(.+?)\+\+/,
+        'delete': /~~(.+?)~~|--(.+?)--/,
+        // 'remark' : /(\()(.+?)(\))/ ,
+        // 'quote' : /(")(.+?)(")/ ,
+        'embed': /""(?:(.*?)\\)?(.*?)""/,
+        'link': /\\\\(?:(.*?)\\)?(.*?)\\\\/,
+        'image-link': /!\[([^\[\]]*?)\]\((.*?)\)/,
+        'text-link': /\[(.*?(?:\[[^\[\]]*?\][^\[\]]*?)*)\]\((.*?)\)/,
+        'text-link-http': /\b(https?:\/\/[^\s,.;:!?")]+(?:[,.;:!?")][^\s,.;:!?")]+)+)/,
+    });
+    $.$mol_syntax2_md_code = new $mol_syntax2({
+        'code-indent': /\t+/,
+        'code-docs': /\/\/\/.*?$/,
+        'code-comment-block': /(?:\/\*[^]*?\*\/|\/\+[^]*?\+\/|<![^]*?>)/,
+        'code-link': /(?:\w+:\/\/|#)\S+?(?=\s|\\\\|""|$)/,
+        'code-comment-inline': /\/\/.*?(?:$|\/\/)|- \\(?!\\).*|(?<=^| )#!? .*/,
+        'code-string': /(?:".*?"|'.*?'|`.*?`| ?\\\\.+?\\\\|\/.+?\/[dygimsu]*(?!\p{Letter})|[ \t]*\\[^\n]*)/u,
+        'code-number': /[+-]?(?:\d*\.)?\d+(\uFE0F.|\w*)/,
+        'code-call': /\.?\w+(?=\()/,
+        'code-sexpr': /\((\w+ )/,
+        'code-field': /(?:(?<=\.|::|->)[a-z][\w-]*|(?<=[, \t] |\t)[\w-]+\??:(?!\/\/|:))/,
+        'code-keyword': /(?<=^|\t|[ )(}{=] )((throw|readonly|unknown|keyof|typeof|never|from|class|struct|interface|type|function|extends|implements|module|namespace|import|export|include|require|var|val|let|const|for|do|while|until|in|out|of|new|if|then|else|switch|case|return|async|await|yield|try|catch|break|continue|get|set|public|private|protected|void|int|float|ref)( |$|;))+/,
+        'code-global': /[$]+\w*|\b[A-Z][a-z0-9]+[A-Z]\w*/,
+        'code-word': /\w+/,
+        'code-decorator': /(?<=^|  |\t)@\s*\S+/,
+        'code-tag': /<\/?[\w-]+\/?>?|&\w+;/,
+        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+?/,
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_text_code_line extends $.$mol_text_code_line {
+            maximal_width() {
+                return this.text().length * this.letter_width();
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            tokens(path) {
+                const tokens = [];
+                const text = (path.length > 0)
+                    // @FIXME: this logic compatible only with `string`
+                    ? this.tokens(path.slice(0, path.length - 1))[path[path.length - 1]].found.slice(1, -1)
+                    : this.text();
+                this.syntax().tokenize(text, (name, found, chunks) => {
+                    if (name === 'code-sexpr') {
+                        tokens.push({ name: 'code-punctuation', found: '(', chunks: [] });
+                        tokens.push({ name: 'code-call', found: chunks[0], chunks: [] });
+                    }
+                    else {
+                        tokens.push({ name, found, chunks });
+                    }
+                });
+                return tokens;
+            }
+            sub() {
+                return [
+                    ...this.numb_showed() ? [this.Numb()] : [],
+                    ...this.row_content([])
+                ];
+            }
+            row_content(path) {
+                const content = this.tokens(path).map((t, i) => this.Token([...path, i]));
+                return content.length ? content : ['\n'];
+            }
+            Token(path) {
+                return this.token_type(path) === 'code-link' ? this.Token_link(path) : super.Token(path);
+            }
+            token_type(path) {
+                return this.tokens([...path.slice(0, path.length - 1)])[path[path.length - 1]].name;
+            }
+            token_content(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                switch (token.name) {
+                    case 'code-string': return [
+                        token.found[0],
+                        ...this.row_content(path),
+                        token.found[token.found.length - 1],
+                    ];
+                    default: return [token.found];
+                }
+            }
+            token_text(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                return token.found;
+            }
+            token_uri(path) {
+                const uri = this.token_text(path);
+                return this.uri_resolve(uri);
+            }
+            *view_find(check, path = []) {
+                if (check(this, this.text())) {
+                    yield [...path, this];
+                }
+            }
+            find_pos(offset) {
+                return this.find_token_pos([offset]);
+            }
+            find_token_pos([offset, ...path]) {
+                for (const [index, token] of this.tokens(path).entries()) {
+                    if (token.found.length >= offset) {
+                        const token = this.Token([...path, index]);
+                        return { token, offset };
+                    }
+                    else {
+                        offset -= token.found.length;
+                    }
+                }
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "row_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_type", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_token_pos", null);
+        $$.$mol_text_code_line = $mol_text_code_line;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        $mol_style_define($mol_text_code_line, {
+            display: 'block',
+            position: 'relative',
+            font: {
+                family: 'monospace',
+            },
+            Numb: {
+                textAlign: 'end',
+                color: $mol_theme.shade,
+                width: rem(3),
+                margin: {
+                    inlineStart: '-4rem',
+                },
+                display: 'inline-block',
+                whiteSpace: 'nowrap',
+                userSelect: 'none',
+                position: 'absolute',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code) = class $mol_text_code extends ($.$mol_stack) {
+		sidebar_showed(){
+			return false;
+		}
+		render_visible_only(){
+			return false;
+		}
+		row_numb(id){
+			return 0;
+		}
+		row_theme(id){
+			return "";
+		}
+		row_text(id){
+			return "";
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		Row(id){
+			const obj = new this.$.$mol_text_code_line();
+			(obj.numb_showed) = () => ((this.sidebar_showed()));
+			(obj.numb) = () => ((this.row_numb(id)));
+			(obj.theme) = () => ((this.row_theme(id)));
+			(obj.text) = () => ((this.row_text(id)));
+			(obj.syntax) = () => ((this.syntax()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			return obj;
+		}
+		rows(){
+			return [(this.Row("0"))];
+		}
+		Rows(){
+			const obj = new this.$.$mol_list();
+			(obj.render_visible_only) = () => ((this.render_visible_only()));
+			(obj.rows) = () => ((this.rows()));
+			return obj;
+		}
+		text_export(){
+			return "";
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_code_Copy_hint")));
+			(obj.text) = () => ((this.text_export()));
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_sidebar_showed": (this.sidebar_showed())};
+		}
+		text(){
+			return "";
+		}
+		text_lines(){
+			return [];
+		}
+		find_pos(id){
+			return null;
+		}
+		uri_base(){
+			return "";
+		}
+		row_themes(){
+			return [];
+		}
+		sub(){
+			return [(this.Rows()), (this.Copy())];
+		}
+	};
+	($mol_mem_key(($.$mol_text_code.prototype), "Row"));
+	($mol_mem(($.$mol_text_code.prototype), "Rows"));
+	($mol_mem(($.$mol_text_code.prototype), "Copy"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Code visualizer.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_code_demo
+         */
+        class $mol_text_code extends $.$mol_text_code {
+            render_visible_only() {
+                return this.$.$mol_support_css_overflow_anchor();
+            }
+            text_lines() {
+                return (this.text() ?? '').split('\n');
+            }
+            rows() {
+                return this.text_lines().map((_, index) => this.Row(index + 1));
+            }
+            row_text(index) {
+                return this.text_lines()[index - 1];
+            }
+            row_numb(index) {
+                return index;
+            }
+            find_pos(offset) {
+                for (const [index, line] of this.text_lines().entries()) {
+                    if (line.length >= offset) {
+                        return this.Row(index + 1).find_pos(offset);
+                    }
+                    else {
+                        offset -= line.length + 1;
+                    }
+                }
+                return null;
+            }
+            sub() {
+                return [
+                    this.Rows(),
+                    ...this.sidebar_showed() ? [this.Copy()] : []
+                ];
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            uri_base() {
+                return $mol_dom_context.document.location.href;
+            }
+            uri_resolve(uri) {
+                if (/^(\w+script+:)+/.test(uri))
+                    return null;
+                try {
+                    const url = new URL(uri, this.uri_base());
+                    return url.toString();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            text_export() {
+                return this.text() + '\n';
+            }
+            row_theme(row) {
+                return this.row_themes()[row - 1];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "text_lines", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "row_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "sub", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "uri_resolve", null);
+        $$.$mol_text_code = $mol_text_code;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem, px } = $mol_style_unit;
+        $mol_style_define($mol_text_code, {
+            whiteSpace: 'pre-wrap',
+            font: {
+                family: 'monospace',
+            },
+            Rows: {
+                padding: $mol_gap.text,
+                minWidth: 0,
+            },
+            Row: {
+                font: {
+                    family: 'inherit',
+                },
+            },
+            Copy: {
+                alignSelf: 'flex-start',
+                justifySelf: 'flex-start',
+            },
+            '@': {
+                'mol_text_code_sidebar_showed': {
+                    true: {
+                        $mol_text_code_line: {
+                            margin: {
+                                inlineStart: '1.75rem',
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_textarea) = class $mol_textarea extends ($.$mol_stack) {
+		clickable(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		sidebar_showed(){
+			return false;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		hover(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		hint(){
+			return " ";
+		}
+		enabled(){
+			return true;
+		}
+		spellcheck(){
+			return true;
+		}
+		length_max(){
+			return +Infinity;
+		}
+		selection(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		bring(){
+			return (this.Edit().bring());
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		submit_with_ctrl(){
+			return true;
+		}
+		Edit(){
+			const obj = new this.$.$mol_textarea_edit();
+			(obj.value) = (next) => ((this.value(next)));
+			(obj.hint) = () => ((this.hint()));
+			(obj.enabled) = () => ((this.enabled()));
+			(obj.spellcheck) = () => ((this.spellcheck()));
+			(obj.length_max) = () => ((this.length_max()));
+			(obj.selection) = (next) => ((this.selection(next)));
+			(obj.submit) = (next) => ((this.submit(next)));
+			(obj.submit_with_ctrl) = () => ((this.submit_with_ctrl()));
+			return obj;
+		}
+		row_numb(id){
+			return 0;
+		}
+		highlight(){
+			return "";
+		}
+		syntax(){
+			const obj = new this.$.$mol_syntax2();
+			return obj;
+		}
+		View(){
+			const obj = new this.$.$mol_text_code();
+			(obj.text) = () => ((this.value()));
+			(obj.render_visible_only) = () => (false);
+			(obj.row_numb) = (id) => ((this.row_numb(id)));
+			(obj.sidebar_showed) = () => ((this.sidebar_showed()));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.syntax) = () => ((this.syntax()));
+			return obj;
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"mol_textarea_clickable": (this.clickable()), 
+				"mol_textarea_sidebar_showed": (this.sidebar_showed())
+			};
+		}
+		event(){
+			return {"keydown": (next) => (this.press(next)), "pointermove": (next) => (this.hover(next))};
+		}
+		sub(){
+			return [(this.Edit()), (this.View())];
+		}
+		symbols_alt(){
+			return {
+				"comma": "<", 
+				"period": ">", 
+				"dash": "−", 
+				"equals": "≈", 
+				"graveAccent": "́", 
+				"forwardSlash": "÷", 
+				"E": "€", 
+				"V": "✔", 
+				"X": "×", 
+				"C": "©", 
+				"P": "§", 
+				"H": "₽", 
+				"key0": "°", 
+				"key8": "•", 
+				"key2": "@", 
+				"key3": "#", 
+				"key4": "$", 
+				"key6": "^", 
+				"key7": "&", 
+				"bracketOpen": "[", 
+				"bracketClose": "]", 
+				"slashBack": "|"
+			};
+		}
+		symbols_alt_ctrl(){
+			return {"space": " "};
+		}
+		symbols_alt_shift(){
+			return {
+				"V": "✅", 
+				"X": "❌", 
+				"O": "⭕", 
+				"key1": "❗", 
+				"key4": "💲", 
+				"key7": "❓", 
+				"comma": "«", 
+				"period": "»", 
+				"semicolon": "“", 
+				"quoteSingle": "”", 
+				"dash": "—", 
+				"equals": "≠", 
+				"graveAccent": "̱", 
+				"bracketOpen": "{", 
+				"bracketClose": "}"
+			};
+		}
+	};
+	($mol_mem(($.$mol_textarea.prototype), "clickable"));
+	($mol_mem(($.$mol_textarea.prototype), "press"));
+	($mol_mem(($.$mol_textarea.prototype), "hover"));
+	($mol_mem(($.$mol_textarea.prototype), "value"));
+	($mol_mem(($.$mol_textarea.prototype), "selection"));
+	($mol_mem(($.$mol_textarea.prototype), "submit"));
+	($mol_mem(($.$mol_textarea.prototype), "Edit"));
+	($mol_mem(($.$mol_textarea.prototype), "syntax"));
+	($mol_mem(($.$mol_textarea.prototype), "View"));
+	($.$mol_textarea_edit) = class $mol_textarea_edit extends ($.$mol_string) {
+		dom_name(){
+			return "textarea";
+		}
+		enter(){
+			return "enter";
+		}
+		field(){
+			return {...(super.field()), "scrollTop": 0};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * An input field for entering multiline text.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
+         */
+        class $mol_textarea extends $.$mol_textarea {
+            indent_inc() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    let end = start + rows[i].length;
+                    if (end >= from && start <= to) {
+                        if (to === from || start !== to) {
+                            rows[i] = '\t' + rows[i];
+                            to += 1;
+                            end += 1;
+                        }
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from + 1, to]);
+            }
+            indent_dec() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    const end = start + rows[i].length;
+                    if (end >= from && start <= to && rows[i].startsWith('\t')) {
+                        rows[i] = rows[i].slice(1);
+                        to -= 1;
+                        if (start < from)
+                            from -= 1;
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from, to]);
+            }
+            symbol_insert(event) {
+                const symbol = event.shiftKey
+                    ? this.symbols_alt_shift()[$mol_keyboard_code[event.keyCode]]
+                    : event.ctrlKey
+                        ? this.symbols_alt_ctrl()[$mol_keyboard_code[event.keyCode]]
+                        : this.symbols_alt()[$mol_keyboard_code[event.keyCode]];
+                if (!symbol)
+                    return;
+                event.preventDefault();
+                document.execCommand('insertText', false, symbol);
+            }
+            clickable(next) {
+                if (!this.enabled())
+                    return true;
+                return next ?? false;
+            }
+            hover(event) {
+                this.clickable(event.ctrlKey);
+            }
+            press(event) {
+                if (event.altKey) {
+                    this.symbol_insert(event);
+                }
+                else {
+                    switch (event.keyCode) {
+                        case !event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_inc();
+                            break;
+                        case event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_dec();
+                            break;
+                        default: return;
+                    }
+                    event.preventDefault();
+                }
+            }
+            row_numb(index) {
+                return index;
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_textarea.prototype, "clickable", null);
+        $$.$mol_textarea = $mol_textarea;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tflex-direction: column;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n\tborder-radius: var(--mol_gap_round);\n\tfont-family: monospace;\n\tposition: relative;\n\ttab-size: 4;\n}\n\n[mol_textarea_view] {\n    interactivity: inert;\n\twhite-space: inherit;\n\tfont-family: inherit;\n\ttab-size: inherit;\n}\n\n[mol_textarea_view_copy] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_view] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_edit] {\n    interactivity: inert;\n}\n\n[mol_textarea_edit] {\n\tfont-family: inherit;\n\tpadding: var(--mol_gap_text);\n\tcolor: transparent !important;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\toverflow-anchor: none;\n\tposition: absolute;\n\theight: 100%;\n\twidth: 100%;\n\ttab-size: inherit;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 1.75rem;\n\twidth: calc( 100% - 1.75rem );\n}\n\n[mol_textarea_edit]:hover + [mol_textarea_view] {\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_textarea_edit]:focus + [mol_textarea_view] {\n\tz-index: var(--mol_layer_focus);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_write) = class $bog_gram_write extends ($.$mol_textarea) {
+		submit_with_ctrl(){
+			return false;
+		}
+		spellcheck(){
+			return true;
+		}
+		send(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+	};
+	($mol_mem(($.$bog_gram_write.prototype), "send"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_write extends $.$bog_gram_write {
+            enter_sends() {
+                return this.$.$mol_media.match('(pointer: fine)');
+            }
+            submit(event) {
+                if (!this.enter_sends())
+                    return null;
+                event?.preventDefault();
+                this.send(event);
+                return null;
+            }
+            newline() {
+                const text = this.value();
+                const [from = text.length, to = from] = this.selection();
+                this.value(text.slice(0, from) + '\n' + text.slice(to));
+                this.selection([from + 1, from + 1]);
+            }
+            press(event) {
+                if (event.keyCode === $mol_keyboard_code.tab)
+                    return;
+                if (event.keyCode === $mol_keyboard_code.enter && (event.ctrlKey || event.metaKey) && !event.altKey) {
+                    event.preventDefault();
+                    this.newline();
+                    return;
+                }
+                super.press(event);
+            }
+        }
+        $$.$bog_gram_write = $bog_gram_write;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_write, {
+            font: {
+                family: 'inherit',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
 		path(){
 			return "M2,21L23,12L2,3V10L17,12L2,14V21Z";
@@ -34476,20 +35486,35 @@ var $;
             align: {
                 items: 'center',
             },
+            flex: {
+                shrink: 1,
+            },
+            minWidth: 0,
+            maxWidth: '100%',
             gap: $mol_gap.block,
             Icon: {
+                flex: {
+                    shrink: 0,
+                },
                 width: '2rem',
                 height: '2rem',
             },
             Info: {
                 flex: {
                     direction: 'column',
+                    shrink: 1,
                 },
                 align: {
                     items: 'flex-start',
                 },
+                minWidth: 0,
+                overflowWrap: 'anywhere',
+            },
+            Title: {
+                maxWidth: '100%',
             },
             Count: {
+                maxWidth: '100%',
                 color: $mol_theme.shade,
             },
         });
@@ -35225,6 +36250,13 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		Message_field(){
+			const obj = new this.$.$bog_gram_write();
+			(obj.hint) = () => ("Сообщение…");
+			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.send) = (next) => ((this.message_send(next)));
+			return obj;
+		}
 		Send_icon(){
 			const obj = new this.$.$mol_icon_send();
 			return obj;
@@ -35538,11 +36570,9 @@ var $;
 			(obj.Icon) = () => ((this.Attach_icon()));
 			return obj;
 		}
-		Message_field(){
-			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Сообщение…");
-			(obj.value) = (next) => ((this.message_text(next)));
-			(obj.submit) = (next) => ((this.message_send(next)));
+		Message_box(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
 		Send(){
@@ -35655,6 +36685,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_release"));
@@ -35694,7 +36725,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "rows_seen"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_state"));
@@ -36497,7 +37528,7 @@ var $;
             send_tools() {
                 if (this.voice_on())
                     return [this.Record_state(), this.Voice_cancel(), this.Voice()];
-                return [this.Attach(), this.Message_field(), this.Send(), this.Voice()];
+                return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
             }
             voice_press(next) {
                 if (this.voice_live)
@@ -37155,18 +38186,45 @@ var $;
                 gap: '0.5rem',
                 minWidth: 0,
             },
+            Message_box: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                maxHeight: '10rem',
+                overflow: {
+                    y: 'auto',
+                },
+                borderRadius: '1rem',
+                background: {
+                    color: $mol_theme.field,
+                },
+                boxShadow: `inset 0 0 0 1px ${$mol_theme.line}`,
+                ':hover': {
+                    boxShadow: `inset 0 0 0 2px ${$mol_theme.line}`,
+                },
+                ':focus-within': {
+                    boxShadow: `inset 0 0 0 1px ${$mol_theme.focus}`,
+                },
+            },
             Message_field: {
                 flex: {
                     grow: 1,
                     shrink: 1,
                 },
                 minWidth: 0,
-                borderRadius: '1rem',
-                padding: {
-                    top: '0.5rem',
-                    bottom: '0.5rem',
-                    left: '0.875rem',
-                    right: '0.875rem',
+                Edit: {
+                    background: {
+                        color: 'transparent',
+                    },
+                    boxShadow: 'none',
+                    ':hover': {
+                        boxShadow: 'none',
+                    },
+                    ':focus': {
+                        boxShadow: 'none',
+                    },
                 },
             },
             Send: {
@@ -38474,586 +39532,6 @@ var $;
             },
             ':focus-visible': {
                 outline: 'none',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$mol_stack) = class $mol_stack extends ($.$mol_view) {};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/stack/stack.view.css", "[mol_stack] {\n\tdisplay: grid;\n\t/* width: max-content; */\n\t/* height: max-content; */\n\talign-items: flex-start;\n\tjustify-items: flex-start;\n}\n\n[mol_stack] > * {\n\tgrid-area: 1/1;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_text_code_token) = class $mol_text_code_token extends ($.$mol_dimmer) {
-		type(){
-			return "";
-		}
-		attr(){
-			return {...(super.attr()), "mol_text_code_token_type": (this.type())};
-		}
-	};
-	($.$mol_text_code_token_link) = class $mol_text_code_token_link extends ($.$mol_text_code_token) {
-		uri(){
-			return "";
-		}
-		dom_name(){
-			return "a";
-		}
-		type(){
-			return "code-link";
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"href": (this.uri()), 
-				"target": "_blank"
-			};
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        const { hsla } = $mol_style_func;
-        $mol_style_define($mol_text_code_token, {
-            display: 'inline',
-            textDecoration: 'none',
-            '@': {
-                mol_text_code_token_type: {
-                    'code-keyword': {
-                        color: hsla(0, 70, 60, 1),
-                    },
-                    'code-field': {
-                        color: hsla(300, 70, 50, 1),
-                    },
-                    'code-tag': {
-                        color: hsla(330, 70, 50, 1),
-                    },
-                    'code-global': {
-                        color: hsla(30, 80, 50, 1),
-                    },
-                    'code-decorator': {
-                        color: hsla(180, 40, 50, 1),
-                    },
-                    'code-punctuation': {
-                        color: hsla(0, 0, 50, 1),
-                    },
-                    'code-string': {
-                        color: hsla(90, 40, 50, 1),
-                    },
-                    'code-number': {
-                        color: hsla(55, 65, 45, 1),
-                    },
-                    'code-call': {
-                        color: hsla(270, 60, 50, 1),
-                    },
-                    'code-link': {
-                        color: hsla(210, 60, 50, 1),
-                    },
-                    'code-comment-inline': {
-                        opacity: .5,
-                    },
-                    'code-comment-block': {
-                        opacity: .5,
-                    },
-                    'code-docs': {
-                        opacity: .75,
-                    },
-                },
-            }
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$mol_text_code_line) = class $mol_text_code_line extends ($.$mol_paragraph) {
-		numb(){
-			return 0;
-		}
-		token_type(id){
-			return "";
-		}
-		token_text(id){
-			return "";
-		}
-		highlight(){
-			return "";
-		}
-		token_uri(id){
-			return "";
-		}
-		text(){
-			return "";
-		}
-		minimal_height(){
-			return 24;
-		}
-		numb_showed(){
-			return true;
-		}
-		syntax(){
-			return null;
-		}
-		uri_resolve(id){
-			return "";
-		}
-		Numb(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.numb())]);
-			return obj;
-		}
-		Token(id){
-			const obj = new this.$.$mol_text_code_token();
-			(obj.type) = () => ((this.token_type(id)));
-			(obj.haystack) = () => ((this.token_text(id)));
-			(obj.needle) = () => ((this.highlight()));
-			return obj;
-		}
-		Token_link(id){
-			const obj = new this.$.$mol_text_code_token_link();
-			(obj.haystack) = () => ((this.token_text(id)));
-			(obj.needle) = () => ((this.highlight()));
-			(obj.uri) = () => ((this.token_uri(id)));
-			return obj;
-		}
-		find_pos(id){
-			return null;
-		}
-	};
-	($mol_mem(($.$mol_text_code_line.prototype), "Numb"));
-	($mol_mem_key(($.$mol_text_code_line.prototype), "Token"));
-	($mol_mem_key(($.$mol_text_code_line.prototype), "Token_link"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_syntax2_md_flow = new $mol_syntax2({
-        'quote': /^((?:(?:[>"] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
-        'spoiler': /^((?:(?:[\?] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
-        'header': /^([#=]+)(\s+)(.*?)$([\n\r]*)/,
-        'list': /^((?:(?: ?([*+-])|(?:\d+[\.\)])+) +(?:[^]*?)$(?:\r?\n?)(?:  (?:[^]*?)$(?:\r?\n?))*)+)((?:\r?\n)*)/,
-        'code': /^(```)([\w.-]*)[\r\n]+([^]*?)^(```)$([\n\r]*)/,
-        'code-indent': /^((?:(?: |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
-        'table': /((?:^\|.+?$\r?\n?)+)([\n\r]*)/,
-        'grid': /((?:^ *! .*?$\r?\n?)+)([\n\r]*)/,
-        'cut': /^--+$((?:\r?\n)*)/,
-        'block': /^(.*?)$((?:\r?\n)*)/,
-    });
-    $.$mol_syntax2_md_line = new $mol_syntax2({
-        'strong': /\*\*(.+?)\*\*/,
-        'emphasis': /\*(?!\s)(.+?)\*|\/\/(?!\s)(.+?)\/\//,
-        'code': /```(.+?)```|;;(.+?);;|`(.+?)`/,
-        'insert': /\+\+(.+?)\+\+/,
-        'delete': /~~(.+?)~~|--(.+?)--/,
-        // 'remark' : /(\()(.+?)(\))/ ,
-        // 'quote' : /(")(.+?)(")/ ,
-        'embed': /""(?:(.*?)\\)?(.*?)""/,
-        'link': /\\\\(?:(.*?)\\)?(.*?)\\\\/,
-        'image-link': /!\[([^\[\]]*?)\]\((.*?)\)/,
-        'text-link': /\[(.*?(?:\[[^\[\]]*?\][^\[\]]*?)*)\]\((.*?)\)/,
-        'text-link-http': /\b(https?:\/\/[^\s,.;:!?")]+(?:[,.;:!?")][^\s,.;:!?")]+)+)/,
-    });
-    $.$mol_syntax2_md_code = new $mol_syntax2({
-        'code-indent': /\t+/,
-        'code-docs': /\/\/\/.*?$/,
-        'code-comment-block': /(?:\/\*[^]*?\*\/|\/\+[^]*?\+\/|<![^]*?>)/,
-        'code-link': /(?:\w+:\/\/|#)\S+?(?=\s|\\\\|""|$)/,
-        'code-comment-inline': /\/\/.*?(?:$|\/\/)|- \\(?!\\).*|(?<=^| )#!? .*/,
-        'code-string': /(?:".*?"|'.*?'|`.*?`| ?\\\\.+?\\\\|\/.+?\/[dygimsu]*(?!\p{Letter})|[ \t]*\\[^\n]*)/u,
-        'code-number': /[+-]?(?:\d*\.)?\d+(\uFE0F.|\w*)/,
-        'code-call': /\.?\w+(?=\()/,
-        'code-sexpr': /\((\w+ )/,
-        'code-field': /(?:(?<=\.|::|->)[a-z][\w-]*|(?<=[, \t] |\t)[\w-]+\??:(?!\/\/|:))/,
-        'code-keyword': /(?<=^|\t|[ )(}{=] )((throw|readonly|unknown|keyof|typeof|never|from|class|struct|interface|type|function|extends|implements|module|namespace|import|export|include|require|var|val|let|const|for|do|while|until|in|out|of|new|if|then|else|switch|case|return|async|await|yield|try|catch|break|continue|get|set|public|private|protected|void|int|float|ref)( |$|;))+/,
-        'code-global': /[$]+\w*|\b[A-Z][a-z0-9]+[A-Z]\w*/,
-        'code-word': /\w+/,
-        'code-decorator': /(?<=^|  |\t)@\s*\S+/,
-        'code-tag': /<\/?[\w-]+\/?>?|&\w+;/,
-        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+?/,
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_text_code_line extends $.$mol_text_code_line {
-            maximal_width() {
-                return this.text().length * this.letter_width();
-            }
-            syntax() {
-                return this.$.$mol_syntax2_md_code;
-            }
-            tokens(path) {
-                const tokens = [];
-                const text = (path.length > 0)
-                    // @FIXME: this logic compatible only with `string`
-                    ? this.tokens(path.slice(0, path.length - 1))[path[path.length - 1]].found.slice(1, -1)
-                    : this.text();
-                this.syntax().tokenize(text, (name, found, chunks) => {
-                    if (name === 'code-sexpr') {
-                        tokens.push({ name: 'code-punctuation', found: '(', chunks: [] });
-                        tokens.push({ name: 'code-call', found: chunks[0], chunks: [] });
-                    }
-                    else {
-                        tokens.push({ name, found, chunks });
-                    }
-                });
-                return tokens;
-            }
-            sub() {
-                return [
-                    ...this.numb_showed() ? [this.Numb()] : [],
-                    ...this.row_content([])
-                ];
-            }
-            row_content(path) {
-                const content = this.tokens(path).map((t, i) => this.Token([...path, i]));
-                return content.length ? content : ['\n'];
-            }
-            Token(path) {
-                return this.token_type(path) === 'code-link' ? this.Token_link(path) : super.Token(path);
-            }
-            token_type(path) {
-                return this.tokens([...path.slice(0, path.length - 1)])[path[path.length - 1]].name;
-            }
-            token_content(path) {
-                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
-                const token = tokens[path[path.length - 1]];
-                switch (token.name) {
-                    case 'code-string': return [
-                        token.found[0],
-                        ...this.row_content(path),
-                        token.found[token.found.length - 1],
-                    ];
-                    default: return [token.found];
-                }
-            }
-            token_text(path) {
-                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
-                const token = tokens[path[path.length - 1]];
-                return token.found;
-            }
-            token_uri(path) {
-                const uri = this.token_text(path);
-                return this.uri_resolve(uri);
-            }
-            *view_find(check, path = []) {
-                if (check(this, this.text())) {
-                    yield [...path, this];
-                }
-            }
-            find_pos(offset) {
-                return this.find_token_pos([offset]);
-            }
-            find_token_pos([offset, ...path]) {
-                for (const [index, token] of this.tokens(path).entries()) {
-                    if (token.found.length >= offset) {
-                        const token = this.Token([...path, index]);
-                        return { token, offset };
-                    }
-                    else {
-                        offset -= token.found.length;
-                    }
-                }
-                return null;
-            }
-        }
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "tokens", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "row_content", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "token_type", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "token_content", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "token_text", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "token_uri", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "find_pos", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code_line.prototype, "find_token_pos", null);
-        $$.$mol_text_code_line = $mol_text_code_line;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        const { rem } = $mol_style_unit;
-        $mol_style_define($mol_text_code_line, {
-            display: 'block',
-            position: 'relative',
-            font: {
-                family: 'monospace',
-            },
-            Numb: {
-                textAlign: 'end',
-                color: $mol_theme.shade,
-                width: rem(3),
-                margin: {
-                    inlineStart: '-4rem',
-                },
-                display: 'inline-block',
-                whiteSpace: 'nowrap',
-                userSelect: 'none',
-                position: 'absolute',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$mol_text_code) = class $mol_text_code extends ($.$mol_stack) {
-		sidebar_showed(){
-			return false;
-		}
-		render_visible_only(){
-			return false;
-		}
-		row_numb(id){
-			return 0;
-		}
-		row_theme(id){
-			return "";
-		}
-		row_text(id){
-			return "";
-		}
-		syntax(){
-			return null;
-		}
-		uri_resolve(id){
-			return "";
-		}
-		highlight(){
-			return "";
-		}
-		Row(id){
-			const obj = new this.$.$mol_text_code_line();
-			(obj.numb_showed) = () => ((this.sidebar_showed()));
-			(obj.numb) = () => ((this.row_numb(id)));
-			(obj.theme) = () => ((this.row_theme(id)));
-			(obj.text) = () => ((this.row_text(id)));
-			(obj.syntax) = () => ((this.syntax()));
-			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
-			(obj.highlight) = () => ((this.highlight()));
-			return obj;
-		}
-		rows(){
-			return [(this.Row("0"))];
-		}
-		Rows(){
-			const obj = new this.$.$mol_list();
-			(obj.render_visible_only) = () => ((this.render_visible_only()));
-			(obj.rows) = () => ((this.rows()));
-			return obj;
-		}
-		text_export(){
-			return "";
-		}
-		Copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_code_Copy_hint")));
-			(obj.text) = () => ((this.text_export()));
-			return obj;
-		}
-		attr(){
-			return {...(super.attr()), "mol_text_code_sidebar_showed": (this.sidebar_showed())};
-		}
-		text(){
-			return "";
-		}
-		text_lines(){
-			return [];
-		}
-		find_pos(id){
-			return null;
-		}
-		uri_base(){
-			return "";
-		}
-		row_themes(){
-			return [];
-		}
-		sub(){
-			return [(this.Rows()), (this.Copy())];
-		}
-	};
-	($mol_mem_key(($.$mol_text_code.prototype), "Row"));
-	($mol_mem(($.$mol_text_code.prototype), "Rows"));
-	($mol_mem(($.$mol_text_code.prototype), "Copy"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * Code visualizer.
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_code_demo
-         */
-        class $mol_text_code extends $.$mol_text_code {
-            render_visible_only() {
-                return this.$.$mol_support_css_overflow_anchor();
-            }
-            text_lines() {
-                return (this.text() ?? '').split('\n');
-            }
-            rows() {
-                return this.text_lines().map((_, index) => this.Row(index + 1));
-            }
-            row_text(index) {
-                return this.text_lines()[index - 1];
-            }
-            row_numb(index) {
-                return index;
-            }
-            find_pos(offset) {
-                for (const [index, line] of this.text_lines().entries()) {
-                    if (line.length >= offset) {
-                        return this.Row(index + 1).find_pos(offset);
-                    }
-                    else {
-                        offset -= line.length + 1;
-                    }
-                }
-                return null;
-            }
-            sub() {
-                return [
-                    this.Rows(),
-                    ...this.sidebar_showed() ? [this.Copy()] : []
-                ];
-            }
-            syntax() {
-                return this.$.$mol_syntax2_md_code;
-            }
-            uri_base() {
-                return $mol_dom_context.document.location.href;
-            }
-            uri_resolve(uri) {
-                if (/^(\w+script+:)+/.test(uri))
-                    return null;
-                try {
-                    const url = new URL(uri, this.uri_base());
-                    return url.toString();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                    return null;
-                }
-            }
-            text_export() {
-                return this.text() + '\n';
-            }
-            row_theme(row) {
-                return this.row_themes()[row - 1];
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_text_code.prototype, "text_lines", null);
-        __decorate([
-            $mol_mem
-        ], $mol_text_code.prototype, "rows", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code.prototype, "row_text", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code.prototype, "find_pos", null);
-        __decorate([
-            $mol_mem
-        ], $mol_text_code.prototype, "sub", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_text_code.prototype, "uri_resolve", null);
-        $$.$mol_text_code = $mol_text_code;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        const { rem, px } = $mol_style_unit;
-        $mol_style_define($mol_text_code, {
-            whiteSpace: 'pre-wrap',
-            font: {
-                family: 'monospace',
-            },
-            Rows: {
-                padding: $mol_gap.text,
-                minWidth: 0,
-            },
-            Row: {
-                font: {
-                    family: 'inherit',
-                },
-            },
-            Copy: {
-                alignSelf: 'flex-start',
-                justifySelf: 'flex-start',
-            },
-            '@': {
-                'mol_text_code_sidebar_showed': {
-                    true: {
-                        $mol_text_code_line: {
-                            margin: {
-                                inlineStart: '1.75rem',
-                            },
-                        },
-                    },
-                },
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
@@ -40516,278 +40994,6 @@ var $;
 var $;
 (function ($) {
     $mol_style_attach("mol/text/text/text.view.css", "[mol_text] {\n\tline-height: 1.5em;\n\tbox-sizing: border-box;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\tdisplay: flex;\n\tflex-direction: column;\n\tflex: 0 0 auto;\n\ttab-size: 4;\n}\n\n[mol_text_paragraph] {\n\tpadding: var(--mol_gap_text);\n\toverflow: auto;\n\toverflow-x: overlay;\n\tmax-width: 100%;\n\tdisplay: block;\n\tmax-width: 60rem;\n\tbreak-inside: avoid;\n}\n\n[mol_text_spoiler_label_paragraph] {\n\tpadding: 0;\n}\n\n[mol_text_span] {\n\tdisplay: inline;\n}\n\n[mol_text_string] {\n\tdisplay: inline;\n\tflex: 0 1 auto;\n\twhite-space: normal;\n}\n\n[mol_text_quote] {\n\tmargin: var(--mol_gap_block);\n\tpadding: var(--mol_gap_block);\n\tbackground: var(--mol_theme_card);\n\tbox-shadow: 0 0 0 1px var(--mol_theme_back);\n\tbreak-inside: avoid;\n}\n\n[mol_text_header] {\n\tdisplay: block;\n\ttext-shadow: 0 0;\n\tfont-weight: normal;\n\tbreak-after: avoid;\n\tletter-spacing: 2px;\n}\n\n* + [mol_text_header] {\n\tmargin-top: 0.75rem;\n}\n\nh1[mol_text_header] {\n\tfont-size: 1.5rem;\n}\n\nh2[mol_text_header] {\n\tfont-size: 1.5rem;\n\tfont-style: italic;\n}\n\nh3[mol_text_header] {\n\tfont-size: 1.25rem;\n}\n\nh4[mol_text_header] {\n\tfont-size: 1.25em;\n\tfont-style: italic;\n}\n\nh5[mol_text_header] {\n\tfont-size: 1rem;\n}\n\nh6[mol_text_header] {\n\tfont-size: 1rem;\n\tfont-style: italic;\n}\n\n[mol_text_header_link] {\n\tcolor: inherit;\n}\n\n[mol_text_table] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_table_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: baseline;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_grid] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_grid_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: top;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_cut] {\n\tborder: none;\n\twidth: 100%;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_text_link_http],\n[mol_text_link] {\n\tpadding: 0;\n\tdisplay: inline;\n\twhite-space: nowrap;\n}\n\n[mol_text_link_icon] + [mol_text_embed] {\n\tmargin-inline-start: -1.5rem;\n}\n\n[mol_text_embed_youtube] {\n\tdisplay: inline;\n}\n\n[mol_text_embed_youtube_image],\n[mol_text_embed_youtube_frame],\n[mol_text_embed_object] {\n\tobject-fit: contain;\n\tobject-position: center;\n\twidth: 100vw;\n\tmax-height: calc( 100vh - 6rem );\n}\n[mol_text_embed_object_fallback] {\n\tpadding: 0;\n}\n[mol_text_embed_image] {\n\tobject-fit: contain;\n\tobject-position: center;\n\tdisplay: inline;\n\t/* max-height: calc( 100vh - 6rem ); */\n\tvertical-align: top;\n}\n\n[mol_text_pre] {\n\twhite-space: pre;\n\toverflow-x: auto;\n\toverflow-x: overlay;\n\ttab-size: 2;\n\tbreak-inside: avoid;\n}\n\n[mol_text_code_line] {\n\tdisplay: inline-block;\n}\n\n[mol_text_type=\"strong\"] {\n\ttext-shadow: 0 0;\n\tfilter: contrast(1.5);\n}\n\n[mol_text_type=\"emphasis\"] {\n\tfont-style: italic;\n}\n\n[mol_text_type=\"insert\"] {\n\tcolor: var(--mol_theme_special);\n}\n\n[mol_text_type=\"delete\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"remark\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"quote\"] {\n\tfont-style: italic;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$mol_textarea) = class $mol_textarea extends ($.$mol_stack) {
-		clickable(next){
-			if(next !== undefined) return next;
-			return false;
-		}
-		sidebar_showed(){
-			return false;
-		}
-		press(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		hover(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		value(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		hint(){
-			return " ";
-		}
-		enabled(){
-			return true;
-		}
-		spellcheck(){
-			return true;
-		}
-		length_max(){
-			return +Infinity;
-		}
-		selection(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		bring(){
-			return (this.Edit().bring());
-		}
-		submit(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		submit_with_ctrl(){
-			return true;
-		}
-		Edit(){
-			const obj = new this.$.$mol_textarea_edit();
-			(obj.value) = (next) => ((this.value(next)));
-			(obj.hint) = () => ((this.hint()));
-			(obj.enabled) = () => ((this.enabled()));
-			(obj.spellcheck) = () => ((this.spellcheck()));
-			(obj.length_max) = () => ((this.length_max()));
-			(obj.selection) = (next) => ((this.selection(next)));
-			(obj.submit) = (next) => ((this.submit(next)));
-			(obj.submit_with_ctrl) = () => ((this.submit_with_ctrl()));
-			return obj;
-		}
-		row_numb(id){
-			return 0;
-		}
-		highlight(){
-			return "";
-		}
-		syntax(){
-			const obj = new this.$.$mol_syntax2();
-			return obj;
-		}
-		View(){
-			const obj = new this.$.$mol_text_code();
-			(obj.text) = () => ((this.value()));
-			(obj.render_visible_only) = () => (false);
-			(obj.row_numb) = (id) => ((this.row_numb(id)));
-			(obj.sidebar_showed) = () => ((this.sidebar_showed()));
-			(obj.highlight) = () => ((this.highlight()));
-			(obj.syntax) = () => ((this.syntax()));
-			return obj;
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"mol_textarea_clickable": (this.clickable()), 
-				"mol_textarea_sidebar_showed": (this.sidebar_showed())
-			};
-		}
-		event(){
-			return {"keydown": (next) => (this.press(next)), "pointermove": (next) => (this.hover(next))};
-		}
-		sub(){
-			return [(this.Edit()), (this.View())];
-		}
-		symbols_alt(){
-			return {
-				"comma": "<", 
-				"period": ">", 
-				"dash": "−", 
-				"equals": "≈", 
-				"graveAccent": "́", 
-				"forwardSlash": "÷", 
-				"E": "€", 
-				"V": "✔", 
-				"X": "×", 
-				"C": "©", 
-				"P": "§", 
-				"H": "₽", 
-				"key0": "°", 
-				"key8": "•", 
-				"key2": "@", 
-				"key3": "#", 
-				"key4": "$", 
-				"key6": "^", 
-				"key7": "&", 
-				"bracketOpen": "[", 
-				"bracketClose": "]", 
-				"slashBack": "|"
-			};
-		}
-		symbols_alt_ctrl(){
-			return {"space": " "};
-		}
-		symbols_alt_shift(){
-			return {
-				"V": "✅", 
-				"X": "❌", 
-				"O": "⭕", 
-				"key1": "❗", 
-				"key4": "💲", 
-				"key7": "❓", 
-				"comma": "«", 
-				"period": "»", 
-				"semicolon": "“", 
-				"quoteSingle": "”", 
-				"dash": "—", 
-				"equals": "≠", 
-				"graveAccent": "̱", 
-				"bracketOpen": "{", 
-				"bracketClose": "}"
-			};
-		}
-	};
-	($mol_mem(($.$mol_textarea.prototype), "clickable"));
-	($mol_mem(($.$mol_textarea.prototype), "press"));
-	($mol_mem(($.$mol_textarea.prototype), "hover"));
-	($mol_mem(($.$mol_textarea.prototype), "value"));
-	($mol_mem(($.$mol_textarea.prototype), "selection"));
-	($mol_mem(($.$mol_textarea.prototype), "submit"));
-	($mol_mem(($.$mol_textarea.prototype), "Edit"));
-	($mol_mem(($.$mol_textarea.prototype), "syntax"));
-	($mol_mem(($.$mol_textarea.prototype), "View"));
-	($.$mol_textarea_edit) = class $mol_textarea_edit extends ($.$mol_string) {
-		dom_name(){
-			return "textarea";
-		}
-		enter(){
-			return "enter";
-		}
-		field(){
-			return {...(super.field()), "scrollTop": 0};
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * An input field for entering multiline text.
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
-         */
-        class $mol_textarea extends $.$mol_textarea {
-            indent_inc() {
-                let text = this.value();
-                let [from, to] = this.selection();
-                const rows = text.split('\n');
-                let start = 0;
-                for (let i = 0; i < rows.length; ++i) {
-                    let end = start + rows[i].length;
-                    if (end >= from && start <= to) {
-                        if (to === from || start !== to) {
-                            rows[i] = '\t' + rows[i];
-                            to += 1;
-                            end += 1;
-                        }
-                    }
-                    start = end + 1;
-                }
-                this.value(rows.join('\n'));
-                this.selection([from + 1, to]);
-            }
-            indent_dec() {
-                let text = this.value();
-                let [from, to] = this.selection();
-                const rows = text.split('\n');
-                let start = 0;
-                for (let i = 0; i < rows.length; ++i) {
-                    const end = start + rows[i].length;
-                    if (end >= from && start <= to && rows[i].startsWith('\t')) {
-                        rows[i] = rows[i].slice(1);
-                        to -= 1;
-                        if (start < from)
-                            from -= 1;
-                    }
-                    start = end + 1;
-                }
-                this.value(rows.join('\n'));
-                this.selection([from, to]);
-            }
-            symbol_insert(event) {
-                const symbol = event.shiftKey
-                    ? this.symbols_alt_shift()[$mol_keyboard_code[event.keyCode]]
-                    : event.ctrlKey
-                        ? this.symbols_alt_ctrl()[$mol_keyboard_code[event.keyCode]]
-                        : this.symbols_alt()[$mol_keyboard_code[event.keyCode]];
-                if (!symbol)
-                    return;
-                event.preventDefault();
-                document.execCommand('insertText', false, symbol);
-            }
-            clickable(next) {
-                if (!this.enabled())
-                    return true;
-                return next ?? false;
-            }
-            hover(event) {
-                this.clickable(event.ctrlKey);
-            }
-            press(event) {
-                if (event.altKey) {
-                    this.symbol_insert(event);
-                }
-                else {
-                    switch (event.keyCode) {
-                        case !event.shiftKey && $mol_keyboard_code.tab:
-                            this.indent_inc();
-                            break;
-                        case event.shiftKey && $mol_keyboard_code.tab:
-                            this.indent_dec();
-                            break;
-                        default: return;
-                    }
-                    event.preventDefault();
-                }
-            }
-            row_numb(index) {
-                return index;
-            }
-            syntax() {
-                return this.$.$mol_syntax2_md_code;
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_textarea.prototype, "clickable", null);
-        $$.$mol_textarea = $mol_textarea;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tflex-direction: column;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n\tborder-radius: var(--mol_gap_round);\n\tfont-family: monospace;\n\tposition: relative;\n\ttab-size: 4;\n}\n\n[mol_textarea_view] {\n    interactivity: inert;\n\twhite-space: inherit;\n\tfont-family: inherit;\n\ttab-size: inherit;\n}\n\n[mol_textarea_view_copy] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_view] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_edit] {\n    interactivity: inert;\n}\n\n[mol_textarea_edit] {\n\tfont-family: inherit;\n\tpadding: var(--mol_gap_text);\n\tcolor: transparent !important;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\toverflow-anchor: none;\n\tposition: absolute;\n\theight: 100%;\n\twidth: 100%;\n\ttab-size: inherit;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 1.75rem;\n\twidth: calc( 100% - 1.75rem );\n}\n\n[mol_textarea_edit]:hover + [mol_textarea_view] {\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_textarea_edit]:focus + [mol_textarea_view] {\n\tz-index: var(--mol_layer_focus);\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -49584,6 +49790,67 @@ var $;
                 $mol_assert_equal(row.swipe_shift(), 40);
                 $mol_assert_equal(row.swipe_dragging(), true);
             },
+            'Мышь тянет строку как палец, клик после тяги гасится, без тяги открывает'($) {
+                let clicks = 0;
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                    click: () => { ++clicks; return null; },
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                const at = (x, time) => ({ pointerType: 'mouse', button: 0, pointerId: 1, clientX: x, clientY: 10, timeStamp: time });
+                row.swipe_start(at(0, 0));
+                for (let x = 4; x <= 100; x += 4)
+                    row.swipe_move(at(x, x * 10));
+                row.swipe_end(at(100, 1000));
+                $mol_assert_equal(row.swipe_open(), true);
+                row.event_activate({});
+                $mol_assert_equal(clicks, 0);
+                row.swipe_start(at(50, 2000));
+                row.swipe_end(at(50, 2010));
+                row.event_activate({});
+                $mol_assert_equal(clicks, 1);
+            },
+            'Тачпад: горизонтальная прокрутка двигает строку, вертикальная и шаг влево у закрытой — нет'($) {
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                let stopped = 0;
+                const wheel = (deltaX, deltaY) => row.swipe_wheel({ deltaX, deltaY, preventDefault: () => { ++stopped; } });
+                for (let i = 0; i < 10; ++i)
+                    wheel(0, 10);
+                row.swipe_wheel_end();
+                $mol_assert_equal(stopped, 0);
+                $mol_assert_equal(row.swipe_open(), false);
+                for (let i = 0; i < 10; ++i)
+                    wheel(10, 1);
+                row.swipe_wheel_end();
+                $mol_assert_equal(stopped, 0);
+                $mol_assert_equal(row.swipe_open(), false);
+                for (let i = 0; i < 10; ++i)
+                    wheel(-8, 1);
+                $mol_assert_equal(row.swipe_shift(), 80);
+                row.swipe_wheel_end();
+                $mol_assert_equal(row.swipe_open(), true);
+                $mol_assert_equal(stopped > 0, true);
+                for (let i = 0; i < 10; ++i)
+                    wheel(8, 0);
+                row.swipe_wheel_end();
+                $mol_assert_equal(row.swipe_open(), false);
+            },
+            'Фокус клавиатуры на кнопке открывает строку'($) {
+                const row = $bog_gram_row.make({ $,
+                    swipe: () => true,
+                    tools: () => [new $mol_view],
+                });
+                row.swipe_measure = () => { row.swipe_width = 120; };
+                row.swipe_focus({ target: row.Info().dom_node() });
+                $mol_assert_equal(row.swipe_open(), false);
+                row.swipe_focus({ target: row.Tools().dom_node() });
+                $mol_assert_equal(row.swipe_open(), true);
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
@@ -49622,64 +49889,82 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        'Избранное первым, архив и запросы входами по краям, пустой список говорит об этом'($) {
-            const empty = $bog_gram_menu.make({ $ });
-            $mol_assert_equal(empty.dialog_rows(), [empty.Saved_row(), empty.Dialogs_empty()]);
-            const full = $bog_gram_menu.make({ $,
-                visible: () => ['A'],
-                archived: () => ['Z'],
-                requests: () => ['R'],
-            });
-            $mol_assert_equal(full.dialog_rows(), [full.Archive_row(), full.Saved_row(), full.Dialog_row('A'), full.Requests_row()]);
-            full.archive_toggle();
-            full.requests_toggle();
-            $mol_assert_equal(full.dialog_rows(), [
-                full.Archive_row(), full.Dialog_row('Z'),
-                full.Saved_row(), full.Dialog_row('A'),
-                full.Requests_row(), full.Dialog_row('R'),
-            ]);
-        },
-        'Корзина удаляет со второго нажатия, другой клик снимает взвод'($) {
-            const dropped = [];
-            const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
-            menu.delete_click('A');
-            $mol_assert_equal(menu.delete_armed('A'), true);
-            $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
-            menu.archive_toggle();
-            $mol_assert_equal(menu.delete_armed('A'), false);
-            menu.delete_click('A');
-            menu.delete_click('A');
-            $mol_assert_equal(dropped, ['A']);
-        },
-        'В строке запроса вместо архива и корзины согласие и отказ'($) {
-            const menu = $bog_gram_menu.make({ $, request_is: (id) => id === 'R' });
-            $mol_assert_equal(menu.Dialog_archive('R'), menu.Request_accept('R'));
-            $mol_assert_equal(menu.Dialog_delete('R'), menu.Request_reject('R'));
-            $mol_assert_equal(menu.Dialog_archive('A') === menu.Request_accept('A'), false);
-        },
-        'Непрочитанное в архиве складывается'($) {
-            const menu = $bog_gram_menu.make({ $,
-                archived: () => ['X', 'Y'],
-                unread: (id) => id === 'X' ? 2 : 3,
-            });
-            $mol_assert_equal(menu.archive_unread_label(), '5');
-            $mol_assert_equal(menu.archive_note(), '2 диалога');
-        },
-        'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
-            const picked = [];
-            const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
-            menu.Dialog_row('A').swipe_open(true);
-            menu.Dialog_row('B').swipe_open(true);
-            $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
-            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
-            menu.pick('A');
-            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
-            $mol_assert_equal(picked, []);
-            menu.pick('A');
-            $mol_assert_equal(picked, ['A']);
-        },
-    });
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Избранное первым, архив и запросы входами по краям, пустой список говорит об этом'($) {
+                const empty = $bog_gram_menu.make({ $ });
+                $mol_assert_equal(empty.dialog_rows(), [empty.Saved_row(), empty.Dialogs_empty()]);
+                const full = $bog_gram_menu.make({ $,
+                    visible: () => ['A'],
+                    archived: () => ['Z'],
+                    requests: () => ['R'],
+                });
+                $mol_assert_equal(full.dialog_rows(), [full.Archive_row(), full.Saved_row(), full.Dialog_row('A'), full.Requests_row()]);
+                full.archive_toggle();
+                full.requests_toggle();
+                $mol_assert_equal(full.dialog_rows(), [
+                    full.Archive_row(), full.Dialog_row('Z'),
+                    full.Saved_row(), full.Dialog_row('A'),
+                    full.Requests_row(), full.Dialog_row('R'),
+                ]);
+            },
+            'Корзина удаляет со второго нажатия, другой клик снимает взвод'($) {
+                const dropped = [];
+                const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
+                menu.delete_click('A');
+                $mol_assert_equal(menu.delete_armed('A'), true);
+                $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
+                menu.archive_toggle();
+                $mol_assert_equal(menu.delete_armed('A'), false);
+                menu.delete_click('A');
+                menu.delete_click('A');
+                $mol_assert_equal(dropped, ['A']);
+            },
+            'В строке запроса вместо архива и корзины согласие и отказ'($) {
+                const menu = $bog_gram_menu.make({ $, request_is: (id) => id === 'R' });
+                $mol_assert_equal(menu.Dialog_archive('R'), menu.Request_accept('R'));
+                $mol_assert_equal(menu.Dialog_delete('R'), menu.Request_reject('R'));
+                $mol_assert_equal(menu.Dialog_archive('A') === menu.Request_accept('A'), false);
+            },
+            'Непрочитанное в архиве складывается'($) {
+                const menu = $bog_gram_menu.make({ $,
+                    archived: () => ['X', 'Y'],
+                    unread: (id) => id === 'X' ? 2 : 3,
+                });
+                $mol_assert_equal(menu.archive_unread_label(), '5');
+                $mol_assert_equal(menu.archive_note(), '2 диалога');
+            },
+            'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
+                const picked = [];
+                const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
+                menu.Dialog_row('A').swipe_open(true);
+                menu.Dialog_row('B').swipe_open(true);
+                $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
+                $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
+                menu.pick('A');
+                $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
+                $mol_assert_equal(picked, []);
+                menu.pick('A');
+                $mol_assert_equal(picked, ['A']);
+            },
+            'Esc и клик мимо закрывают открытую строку, клик по ней самой — нет'($) {
+                const menu = $bog_gram_menu.make({ $ });
+                const row = menu.Dialog_row('A');
+                row.dom_tree();
+                row.swipe_open(true);
+                menu.swipe_outside({ target: row.Info().dom_node() });
+                $mol_assert_equal(row.swipe_open(), true);
+                menu.swipe_outside({ target: menu.Head().dom_node() });
+                $mol_assert_equal(row.swipe_open(), false);
+                row.swipe_open(true);
+                menu.swipe_key({ key: 'Enter' });
+                $mol_assert_equal(row.swipe_open(), true);
+                menu.swipe_key({ key: 'Escape' });
+                $mol_assert_equal(row.swipe_open(), false);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -51622,6 +51907,105 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        '$mol_syntax2_md_flow'() {
+            const check = (input, right) => {
+                const tokens = [];
+                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
+                $mol_assert_equal(tokens, right);
+            };
+            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
+                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
+                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
+                ['block', 'of Love!', ['of Love!', ''], 19],
+            ]);
+            check('# Header1\n\nHello!\n\n## Header2', [
+                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
+                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
+            ]);
+            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
+                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
+                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
+                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
+            ]);
+            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
+                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
+                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
+            ]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        function key(mods = {}) {
+            const event = {
+                keyCode: $mol_keyboard_code.enter,
+                ctrlKey: false,
+                metaKey: false,
+                altKey: false,
+                shiftKey: false,
+                defaultPrevented: false,
+                preventDefault() { event.defaultPrevented = true; },
+                ...mods,
+            };
+            return event;
+        }
+        function make($, fine) {
+            let sent = 0;
+            const write = $bog_gram_write.make({ $, enter_sends: () => fine, send: () => (++sent, null) });
+            const press = (event) => {
+                write.Edit().Submit().keydown(event);
+                write.press(event);
+                return event;
+            };
+            return { write, press, sent: () => sent };
+        }
+        $mol_test({
+            'Enter отправляет, Shift+Enter переносит строку'($) {
+                const { write, press, sent } = make($, true);
+                write.value('Привет');
+                const shift = press(key({ shiftKey: true }));
+                $mol_assert_equal(sent(), 0);
+                $mol_assert_equal(shift.defaultPrevented, false);
+                const enter = press(key());
+                $mol_assert_equal(sent(), 1);
+                $mol_assert_equal(enter.defaultPrevented, true);
+            },
+            'Ctrl+Enter и Cmd+Enter вставляют перевод строки на месте курсора'($) {
+                const { write, press, sent } = make($, true);
+                write.value('Приветмир');
+                write.selection([6, 6]);
+                const ctrl = press(key({ ctrlKey: true }));
+                $mol_assert_equal(write.value(), 'Привет\nмир');
+                $mol_assert_equal(write.selection(), [7, 7]);
+                $mol_assert_equal(ctrl.defaultPrevented, true);
+                write.selection([0, 6]);
+                press(key({ metaKey: true }));
+                $mol_assert_equal(write.value(), '\n\nмир');
+                $mol_assert_equal(sent(), 0);
+            },
+            'На тач-экране Enter переносит строку, отправка кнопкой'($) {
+                const { write, press, sent } = make($, false);
+                write.value('Привет');
+                const enter = press(key());
+                $mol_assert_equal(sent(), 0);
+                $mol_assert_equal(enter.defaultPrevented, false);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     async function $bog_gram_call_room_pair($) {
         const king = await $.$giper_baza_auth._generate();
@@ -51978,41 +52362,6 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        '$mol_syntax2_md_flow'() {
-            const check = (input, right) => {
-                const tokens = [];
-                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
-                $mol_assert_equal(tokens, right);
-            };
-            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
-                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
-                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
-                ['block', 'of Love!', ['of Love!', ''], 19],
-            ]);
-            check('# Header1\n\nHello!\n\n## Header2', [
-                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
-                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
-                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
-            ]);
-            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
-                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
-                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
-                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
-                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
-            ]);
-            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
-                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
-                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
-            ]);
-        },
-    });
 })($ || ($ = {}));
 
 ;
