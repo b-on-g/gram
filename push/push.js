@@ -100,7 +100,7 @@ async function auth_load() {
 	if (fs.existsSync(auth_file)) {
 		return $.$giper_baza_auth.from(fs.readFileSync(auth_file, 'utf8').trim())
 	}
-	const auth = await $.$giper_baza_auth.generate()
+	const auth = await $.$giper_baza_auth._generate()
 	fs.mkdirSync(DATA, { recursive: true })
 	fs.writeFileSync(auth_file, auth.toString())
 	log('auth key generated:', auth.pass().lord().str.slice(0, 10))
@@ -195,25 +195,6 @@ function client_make() {
 			return out
 		},
 
-		/** Кто скрывается за пиром. Содержимое юнита зашифровано, а вот его
-		 * подпись — нет: по ней и восстанавливаем полный идентификатор автора. */
-		peer_lords(session) {
-			const land = held(session)
-			const out = {}
-			for (const unit of land.diff_units()) {
-				const lord = unit.lord()
-				if (!lord?.str) continue
-				out[lord.peer().str] = lord.str
-			}
-			return out
-		},
-
-		/** Публичное имя из профиля автора: профиль лежит в открытом ленде,
-		 * так что демону он доступен, а вот сам текст сообщения — нет. */
-		lord_name(lord) {
-			const land = held(lord)
-			return String(land.Data($.$bog_gram_user).Name()?.val() ?? '')
-		},
 	}
 
 	return {
@@ -267,16 +248,10 @@ function wipe(host, seen = new Set()) {
 
 // ===== Цикл слежения =====
 
-async function notify(sub, names) {
-	// Считать можно только юниты, а одно сообщение — это их несколько
-	// (текст, автор, момент, порядок), поэтому числом не врём: сам факт
-	// новостей демон видит точно, а сколько их — знает только клиент.
-	// Имя отправителя берём из его открытого профиля; само тело пуша
-	// шифруется браузерным ключом, так что мимо нас его никто не прочтёт.
-	const who = names.filter(Boolean)
-	const body = who.length === 1 ? 'Новое сообщение от ' + who[0]
-		: who.length > 1 ? 'Новые сообщения: ' + who.join(', ')
-		: 'Новое сообщение'
+async function notify(sub) {
+	// Имён демон не знает и знать не должен: кто написал, человек увидит
+	// в приложении, а сервер видит только факт новых юнитов
+	const body = 'Новое сообщение'
 
 	const payload = JSON.stringify({
 		title: 'Gram',
@@ -308,9 +283,6 @@ function endpoint_drop(lord, endpoint) {
 }
 
 let ticks = 0
-
-/** Имена меняются редко, а лишний ленд на каждый пуш — лишняя задержка. */
-const names_cache = new Map()
 
 /** Свежий клиент отвечает раньше, чем ленд успевает приехать с мастера:
  * пустой ответ тут означает не «пусто», а «ещё не доехало». Переспрашиваем
@@ -348,7 +320,6 @@ async function tick() {
 
 				const my_peer = new $.$giper_baza_link(sub.lord).peer().str
 				let fresh = 0
-				const authors = new Set()
 
 				for (const session of sessions) {
 					const faces = await settle(
@@ -374,13 +345,12 @@ async function tick() {
 						// иначе первое сообщение в новом диалоге пропало бы.
 						if (seen === undefined) {
 							sub.seen[key] = summ
-							if (sub.primed) { fresh += summ; authors.add(session + '|' + peer) }
+							if (sub.primed) fresh += summ
 							continue
 						}
 						if (summ > seen) {
 							fresh += summ - seen
 							sub.seen[key] = summ
-							authors.add(session + '|' + peer)
 						}
 					}
 				}
@@ -388,28 +358,7 @@ async function tick() {
 				sub.primed = true
 				subs_save()
 
-				if (fresh) {
-					const names = []
-					for (const mark of authors) {
-						const [ session, peer ] = mark.split('|')
-						try {
-							const lords = await $.$mol_wire_async(client.ops).peer_lords(session)
-							const lord = lords[ peer ]
-							if (!lord) continue
-							const name = names_cache.get(lord) ?? await settle(
-								() => $.$mol_wire_async(client.ops).lord_name(lord),
-								value => Boolean(value),
-								3,
-								1000,
-							)
-							if (name) names_cache.set(lord, name)
-							if (name && !names.includes(name)) names.push(name)
-						} catch (error) {
-							debug('name lookup failed', String(error?.message ?? error))
-						}
-					}
-					await notify(sub, names)
-				}
+				if (fresh) await notify(sub)
 
 			} catch (error) {
 				log('tick failed for', sub.lord.slice(0, 8), String(error?.message ?? error))
@@ -475,7 +424,7 @@ const server = http.createServer(async (req, res) => {
 	if (req.method === 'OPTIONS') return json(res, 204, {})
 
 	if (url.pathname === '/push/health') return json(res, 200, { ok: true, subs: Object.keys(subs).length })
-	if (url.pathname === '/push/key') return json(res, 200, { key: keys.publicKey })
+	if (url.pathname === '/push/key') return json(res, 200, { key: keys.publicKey, pass: auth.pass().toString() })
 
 	if (url.pathname === '/push/subscribe' && req.method === 'POST') {
 		try {
