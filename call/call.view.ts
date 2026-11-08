@@ -12,7 +12,14 @@ namespace $.$$ {
 
 		override controls() {
 			if( !this.joined() ) return []
-			return [ this.Mic(), this.Cam(), this.Leave() ]
+			return [
+				this.Mic(),
+				this.Cam(),
+				... this.Room().cam_switch_able() ? [ this.Flip() ] : [],
+				this.Stats_show(),
+				... this.pip_able() ? [ this.Pip() ] : [],
+				this.Leave(),
+			]
 		}
 
 		override tiles() {
@@ -36,6 +43,12 @@ namespace $.$$ {
 			this.Room().leave()
 		}
 
+		override close_click( next?: any ) {
+			this.leave()
+			this.close( next )
+			return null
+		}
+
 		override mic( next?: boolean ) {
 			return this.Room().mic( next )
 		}
@@ -48,8 +61,20 @@ namespace $.$$ {
 			return this.Room().cam_able()
 		}
 
+		override cam_switch() {
+			this.Room().cam_switch()
+		}
+
+		override self_mirror() {
+			return this.Room().facing() === 'user'
+		}
+
+		override awake() {
+			return this.Room().visible()
+		}
+
 		override self_stream() {
-			return this.Room().media()
+			return this.Room().self_stream()
 		}
 
 		override mate_stream( mate: string ) {
@@ -58,6 +83,21 @@ namespace $.$$ {
 
 		override mate_status( mate: string ) {
 			return this.Room().peer( mate ).status()
+		}
+
+		override mate_stats( mate: string ) {
+
+			if( !this.stats_show() ) return ''
+
+			const stats = this.Room().peer( mate ).stats()
+			if( !stats ) return ''
+
+			return this.stats_pattern()
+				.replace( '{fps}', String( stats.fps ) )
+				.replace( '{size}', `${ stats.width }×${ stats.height }` )
+				.replace( '{kbps}', String( stats.kbps ) )
+				.replace( '{loss}', String( stats.loss ) )
+				.replace( '{rtt}', String( stats.rtt ) )
 		}
 
 		override mate_name( mate: string ) {
@@ -72,8 +112,74 @@ namespace $.$$ {
 			return this.Room().seat_cam( mate )
 		}
 
+		pip_able() {
+			return Boolean( $mol_dom_context.document.pictureInPictureEnabled )
+		}
+
+		pip_video() {
+			const mate = this.Room().mates().find( mate => this.mate_stream( mate ) )
+			return ( mate ? this.Mate( mate ) : this.Self() ).Video().dom_node() as HTMLVideoElement
+		}
+
+		override pip() {
+
+			const doc = $mol_dom_context.document
+
+			if( doc.pictureInPictureElement ) {
+				doc.exitPictureInPicture().catch( $mol_fail_log )
+				return null
+			}
+
+			this.pip_video().requestPictureInPicture().catch( $mol_fail_log )
+
+			return null
+		}
+
+		@ $mol_mem
+		session() {
+
+			const session = $mol_dom_context.navigator.mediaSession
+			if( !session ) return null
+
+			const handlers: Record< string, MediaSessionActionHandler > = {
+				enterpictureinpicture: ()=> this.pip(),
+				hangup: ()=> this.leave(),
+				togglemicrophone: ()=> this.mic( !this.mic() ),
+				togglecamera: ()=> this.cam( !this.cam() ),
+			}
+
+			const put = ( action: string, handler: MediaSessionActionHandler | null )=> {
+				try {
+					session.setActionHandler( action as MediaSessionAction, handler )
+				} catch {}
+			}
+
+			for( const action in handlers ) put( action, handlers[ action ] )
+
+			return {
+				destructor: ()=> {
+					for( const action in handlers ) put( action, null )
+				}
+			}
+		}
+
+		@ $mol_mem
+		session_state() {
+
+			const session = $mol_dom_context.navigator.mediaSession as any
+			if( !session ) return null
+
+			session.setMicrophoneActive?.( this.mic() )?.catch?.( ()=> {} )
+			session.setCameraActive?.( this.cam() )?.catch?.( ()=> {} )
+
+			return null
+		}
+
 		override auto() {
 			this.Room().run()
+			if( !this.joined() ) return
+			this.session()
+			this.session_state()
 		}
 
 	}

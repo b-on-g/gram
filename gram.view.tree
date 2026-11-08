@@ -258,9 +258,4 @@ $bog_gram $mol_book2
 	Call_page* $bog_gram_call
 		land <= call_land* null
 		name <= user_name
-		tools /
-			<= Call_close* $mol_button_minor
-				hint \Закрыть
-				click? <=> call_close? null
-				sub /
-					<= Call_close_icon* $mol_icon_close
+		close? <=> call_close? null

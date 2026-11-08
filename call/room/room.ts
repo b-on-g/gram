@@ -7,6 +7,8 @@ namespace $ {
 
 	export type $bog_gram_call_box = 'Offers' | 'Answers'
 
+	export type $bog_gram_call_facing = 'user' | 'environment'
+
 	export class $bog_gram_call_room extends $mol_object {
 
 		static beat_every = 10_000
@@ -47,6 +49,10 @@ namespace $ {
 			}
 		}
 
+		static video_constraints( facing: $bog_gram_call_facing ): MediaTrackConstraints {
+			return { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facing }
+		}
+
 		land(): $giper_baza_land {
 			return null!
 		}
@@ -73,8 +79,20 @@ namespace $ {
 		}
 
 		@ $mol_mem
-		joined( next?: boolean ) {
+		entered( next?: boolean ) {
 			return next ?? false
+		}
+
+		@ $mol_mem
+		joined() {
+
+			if( !this.entered() ) return false
+
+			const me = this.seat()
+			if( this.seat_pawn( me )?.Left()?.val() ) return false
+
+			const top = this.lords_seats().get( this.lord() )
+			return !top || top === me
 		}
 
 		@ $mol_mem
@@ -89,14 +107,31 @@ namespace $ {
 
 		@ $mol_action
 		join() {
-			this.seat( $mol_guid() )
-			this.joined( true )
+
+			const me = $mol_guid()
+			const lord = this.lord()
+			const seats = this.data().Seats( 'auto' )!
+
+			for( const id of seats.keys() as string[] ) {
+				const seat = seats.key( id )
+				if( seat.Lord()?.val() !== lord ) continue
+				if( seat.Left()?.val() ) continue
+				seat.Left( 'auto' )!.val( Date.now() )
+			}
+
+			const seat = seats.key( me, 'auto' )!
+			seat.Lord( 'auto' )!.val( lord )
+			seat.Joined( 'auto' )!.val( Date.now() )
+
+			this.seat( me )
+			this.entered( true )
 		}
 
 		@ $mol_action
 		leave() {
+			if( !this.entered() ) return
 			this.data().Seats( 'auto' )?.key( this.seat(), 'auto' )?.Left( 'auto' )?.val( Date.now() )
-			this.joined( false )
+			this.entered( false )
 		}
 
 		@ $mol_mem
@@ -120,26 +155,46 @@ namespace $ {
 			return this.data().Seats()?.key( id ) ?? null
 		}
 
+		seat_newer( left: string, right: string ) {
+			const left_time = this.seat_pawn( left )?.Joined()?.val() ?? 0
+			const right_time = this.seat_pawn( right )?.Joined()?.val() ?? 0
+			if( left_time !== right_time ) return left_time > right_time
+			return left > right
+		}
+
 		@ $mol_mem
-		seats_alive(): readonly string[] {
+		lords_seats() {
 
 			const now = this.now( 5_000 )
 			const seats = this.data().Seats()
-			if( !seats ) return []
+			const lords = new Map< string, string >()
+			if( !seats ) return lords
 
-			return ( seats.keys() as string[] )
-				.filter( id => {
-					const seat = seats.key( id )
-					if( seat.Left()?.val() ) return false
-					return now - ( seat.Beat()?.val() ?? 0 ) < $bog_gram_call_room.alive_span
-				} )
-				.sort()
+			for( const id of seats.keys() as string[] ) {
+
+				const seat = seats.key( id )
+				if( seat.Left()?.val() ) continue
+				if( now - ( seat.Beat()?.val() ?? 0 ) >= $bog_gram_call_room.alive_span ) continue
+
+				const lord = seat.Lord()?.val() || id
+				const prev = lords.get( lord )
+				if( !prev || this.seat_newer( id, prev ) ) lords.set( lord, id )
+
+			}
+
+			return lords
+		}
+
+		@ $mol_mem
+		seats_alive(): readonly string[] {
+			return [ ... this.lords_seats().values() ].sort()
 		}
 
 		@ $mol_mem
 		mates(): readonly string[] {
 			const me = this.seat()
-			return this.seats_alive().filter( id => id !== me )
+			const lord = this.lord()
+			return this.seats_alive().filter( id => id !== me && this.seat_pawn( id )?.Lord()?.val() !== lord )
 		}
 
 		seat_name( id: string ) {
@@ -174,7 +229,7 @@ namespace $ {
 			try {
 				stream = devices.getUserMedia({
 					audio: true,
-					video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+					video: $bog_gram_call_room.video_constraints( 'user' ),
 				})
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
@@ -187,12 +242,114 @@ namespace $ {
 		}
 
 		@ $mol_mem
+		video_changed( next?: number ) {
+			return next ?? 0
+		}
+
+		@ $mol_mem
+		facing( next?: $bog_gram_call_facing ) {
+			return next ?? 'user'
+		}
+
+		@ $mol_mem
 		cam_able() {
+			this.video_changed()
 			return this.media().getVideoTracks().length > 0
 		}
 
 		@ $mol_mem
+		cameras() {
+			this.media()
+			const devices = $mol_wire_sync( navigator.mediaDevices ).enumerateDevices()
+			return devices.filter( device => device.kind === 'videoinput' ).length
+		}
+
+		cam_switch_able() {
+			return this.cameras() > 1
+		}
+
+		@ $mol_mem
+		self_stream() {
+			this.video_changed()
+			return new MediaStream( this.media().getTracks() )
+		}
+
+		@ $mol_action
+		video_open( facing: $bog_gram_call_facing ) {
+
+			const stream = this.media()
+
+			for( const old of stream.getVideoTracks() ) {
+				old.stop()
+				stream.removeTrack( old )
+			}
+
+			const fresh = $mol_wire_sync( navigator.mediaDevices ).getUserMedia({
+				video: $bog_gram_call_room.video_constraints( facing ),
+			})
+
+			const track = fresh.getVideoTracks()[ 0 ]
+			track.enabled = this.cam()
+			stream.addTrack( track )
+
+			for( const peer of this.peers() ) peer.video_replace( track )
+
+			this.facing( facing )
+			this.video_changed( this.video_changed() + 1 )
+		}
+
+		cam_switch() {
+			this.video_open( this.facing() === 'user' ? 'environment' : 'user' )
+		}
+
+		video_restore() {
+			this.video_open( this.facing() )
+		}
+
+		video_broken() {
+			const track = this.media().getVideoTracks()[ 0 ]
+			if( !track ) return false
+			return track.readyState === 'ended' || track.muted
+		}
+
+		@ $mol_mem
+		video_watch() {
+
+			this.video_changed()
+
+			const track = this.media().getVideoTracks()[ 0 ]
+			if( !track ) return null
+
+			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).video_restore() )
+		}
+
+		@ $mol_mem
+		visible( next?: boolean ) {
+			return next ?? $mol_dom_context.document.visibilityState !== 'hidden'
+		}
+
+		@ $mol_mem
+		visible_watch() {
+			const doc = $mol_dom_context.document
+			return new $mol_dom_listener( doc, 'visibilitychange', ()=> this.visible( doc.visibilityState !== 'hidden' ) )
+		}
+
+		@ $mol_mem
+		video_check() {
+			if( !this.visible() ) return null
+			if( this.video_broken() ) $mol_wire_async( this ).video_restore()
+			return null
+		}
+
+		@ $mol_mem
+		unload_watch() {
+			return new $mol_dom_listener( $mol_dom_context, 'pagehide', ()=> this.leave() )
+		}
+
+		@ $mol_mem
 		media_apply() {
+
+			this.video_changed()
 
 			const stream = this.media()
 
@@ -221,7 +378,11 @@ namespace $ {
 
 			if( !this.joined() ) return null
 
+			this.unload_watch()
+			this.visible_watch()
 			this.media_apply()
+			this.video_watch()
+			this.video_check()
 			this.beat()
 
 			for( const peer of this.peers() ) peer.status()
@@ -230,7 +391,7 @@ namespace $ {
 		}
 
 		destructor() {
-			if( !$mol_wire_probe( ()=> this.joined() ) ) return
+			if( !$mol_wire_probe( ()=> this.entered() ) ) return
 			try {
 				this.data().Seats()?.key( this.seat() )?.Left( 'auto' )?.val( Date.now() )
 			} catch( error ) {

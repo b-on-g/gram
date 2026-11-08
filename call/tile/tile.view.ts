@@ -21,9 +21,24 @@ namespace $.$$ {
 			]
 		}
 
+		override Stats() {
+			return this.stats() ? super.Stats() : null!
+		}
+
+		video() {
+			return this.Video().dom_node() as HTMLVideoElement
+		}
+
 		override auto() {
-			const video = this.Video().dom_node() as HTMLVideoElement
+
+			const video = this.video()
 			video.muted = this.muted()
+
+			this.Video().pause_event()
+			if( !this.awake() || !this.stream() || !video.paused ) return
+
+			video.play().catch( ()=> {} )
+
 		}
 
 	}

@@ -20,9 +20,4 @@ $bog_gram_demo_call $mol_book2
 	Call $bog_gram_call
 		land <= land
 		name <= name
-		tools /
-			<= Close $mol_button_minor
-				hint @ \Закрыть
-				click? <=> close? null
-				sub /
-					<= Close_icon $mol_icon_close
+		close? <=> close? null

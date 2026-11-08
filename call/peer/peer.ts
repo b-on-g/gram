@@ -1,5 +1,18 @@
 namespace $ {
 
+	export type $bog_gram_call_peer_stats = {
+		time: number
+		bytes: number
+		fps: number
+		width: number
+		height: number
+		kbps: number
+		lost: number
+		packets: number
+		loss: number
+		rtt: number
+	}
+
 	export class $bog_gram_call_peer extends $mol_object {
 
 		static ice: RTCIceServer[] = [
@@ -216,6 +229,79 @@ namespace $ {
 		@ $mol_mem
 		sync() {
 			return this.offerer() ? this.answer_take() : this.answer_post()
+		}
+
+		video_replace( track: MediaStreamTrack ) {
+
+			const rtc = this.rtc()
+			if( !rtc ) return
+
+			for( const transceiver of rtc.getTransceivers() ) {
+				if( transceiver.receiver.track.kind !== 'video' ) continue
+				transceiver.sender.replaceTrack( track ).catch( $mol_fail_log )
+			}
+
+		}
+
+		stats_last = null as $bog_gram_call_peer_stats | null
+
+		@ $mol_mem
+		stats() {
+
+			this.room().now( 2_000 )
+
+			const rtc = this.rtc()
+			if( !rtc || this.state() !== 'connected' ) return null
+
+			const report = $mol_wire_sync( rtc ).getStats()
+			const next = $bog_gram_call_peer.stats_sum( [ ... report.values() ], this.stats_last )
+			this.stats_last = next
+
+			return next
+		}
+
+		static stats_sum( entries: readonly any[], last: $bog_gram_call_peer_stats | null ): $bog_gram_call_peer_stats {
+
+			const sum: $bog_gram_call_peer_stats = {
+				time: 0, bytes: 0, fps: 0, width: 0, height: 0, kbps: 0, lost: 0, packets: 0, loss: 0, rtt: 0,
+			}
+
+			let pair = ''
+			for( const entry of entries ) {
+				if( entry.type === 'transport' && entry.selectedCandidatePairId ) pair = entry.selectedCandidatePairId
+			}
+
+			for( const entry of entries ) {
+
+				if( entry.type === 'inbound-rtp' ) {
+
+					sum.time = Math.max( sum.time, entry.timestamp ?? 0 )
+					sum.bytes += entry.bytesReceived ?? 0
+					sum.lost += Math.max( 0, entry.packetsLost ?? 0 )
+					sum.packets += entry.packetsReceived ?? 0
+
+					if( entry.kind === 'video' ) {
+						sum.fps = Math.round( entry.framesPerSecond ?? 0 )
+						sum.width = entry.frameWidth ?? 0
+						sum.height = entry.frameHeight ?? 0
+					}
+
+				}
+
+				if( entry.type === 'candidate-pair' && ( pair ? entry.id === pair : entry.nominated && entry.state === 'succeeded' ) ) {
+					sum.rtt = Math.round( ( entry.currentRoundTripTime ?? 0 ) * 1000 )
+				}
+
+			}
+
+			const total = sum.lost + sum.packets
+			sum.loss = total ? Math.round( sum.lost / total * 1000 ) / 10 : 0
+
+			if( last && sum.time > last.time ) {
+				sum.kbps = Math.round( Math.max( 0, sum.bytes - last.bytes ) * 8 / ( sum.time - last.time ) )
+			}
+
+			return sum
 		}
 
 		@ $mol_mem

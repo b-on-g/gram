@@ -1,10 +1,17 @@
 $bog_gram_call $mol_page
 	land null
 	name \
+	close? null
 	Room $bog_gram_call_room
 		land <= land
 		name <= name
 	title @ \Звонок
+	tools /
+		<= Close $mol_button_minor
+			hint @ \Выйти и закрыть
+			click? <=> close_click? null
+			sub /
+				<= Close_icon $mol_icon_close
 	body <= content /
 	foot <= controls /
 	Grid $mol_view
@@ -12,16 +19,19 @@ $bog_gram_call $mol_page
 	Self $bog_gram_call_tile
 		stream <= self_stream null
 		muted true
-		mirror true
+		mirror <= self_mirror true
+		awake <= awake true
 		cam <= cam
 		mic <= mic
 		name <= self_name @ \Вы
 	Mate* $bog_gram_call_tile
 		stream <= mate_stream* null
+		awake <= awake
 		cam <= mate_cam* true
 		mic <= mate_mic* true
 		name <= mate_name* \
 		status <= mate_status* \
+		stats <= mate_stats* \
 	Lobby $mol_list
 		rows /
 			<= Lobby_text $mol_paragraph
@@ -38,6 +48,20 @@ $bog_gram_call $mol_page
 		hint @ \Камера
 		checked? <=> cam? true
 		enabled <= cam_able true
+	Flip $mol_button_minor
+		hint @ \Сменить камеру
+		click? <=> cam_switch? null
+		sub /
+			<= Flip_icon $mol_icon_camera_flip
+	Stats_show $mol_check_icon
+		Icon <= Stats_icon $mol_icon_signal
+		hint @ \Показать FPS и сеть
+		checked? <=> stats_show? true
+	Pip $mol_button_minor
+		hint @ \Картинка в картинке
+		click? <=> pip? null
+		sub /
+			<= Pip_icon $mol_icon_picture_in_picture_bottom_right
 	Leave $mol_button_minor
 		hint @ \Выйти из звонка
 		click? <=> leave? null
@@ -45,3 +69,4 @@ $bog_gram_call $mol_page
 			<= Leave_icon $mol_icon_phone_hangup
 	lobby_empty @ \В звонке пока никого
 	lobby_some @ \В звонке: {names}
+	stats_pattern @ \{fps} к/с · {size} · {kbps} кбит/с · потери {loss}% · {rtt} мс

@@ -4,8 +4,10 @@ $bog_gram_call_tile $mol_view
 	mirror false
 	cam true
 	mic true
+	awake true
 	name \
 	status \
+	stats \
 	failed_text @ \Нет связи
 	connecting_text @ \Соединяюсь…
 	attr *
@@ -17,9 +19,15 @@ $bog_gram_call_tile $mol_view
 			stream <= stream
 			controls false
 			muted <= muted
+			attr *
+				^
+				autopictureinpicture true
 		<= Face $mol_view
 			sub /
 				<= letter \
+		<= Stats $mol_view
+			sub /
+				<= stats
 		<= Label $mol_view
 			sub <= label /
 				<= Name $mol_view

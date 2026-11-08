@@ -42,6 +42,26 @@ namespace $.$$ {
 			color: $mol_theme.shade,
 		},
 
+		Stats: {
+			position: 'absolute',
+			left: $mol_gap.block,
+			top: $mol_gap.block,
+			padding: {
+				left: $mol_gap.text,
+				right: $mol_gap.text,
+			},
+			border: {
+				radius: $mol_gap.round,
+			},
+			background: {
+				color: $mol_theme.back,
+			},
+			font: {
+				size: '.75rem',
+			},
+			opacity: .8,
+		},
+
 		Label: {
 			position: 'absolute',
 			left: $mol_gap.block,

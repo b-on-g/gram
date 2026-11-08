@@ -1,6 +1,6 @@
 namespace $ {
 
-	async function pair( $: $ ) {
+	export async function $bog_gram_call_room_pair( $: $ ) {
 
 		const king = await $.$giper_baza_auth._generate()
 		const auth_a = await $.$giper_baza_auth._generate()
@@ -30,6 +30,9 @@ namespace $ {
 		const room_b = room( land_b, auth_b, 'Боря' )
 
 		return {
+			room,
+			land_a,
+			auth_a,
 			room_a,
 			room_b,
 			swap: async()=> {
@@ -43,7 +46,7 @@ namespace $ {
 
 		async 'Вошедший виден собеседнику по имени, своё место в собеседниках не числится'( $ ) {
 
-			const { room_a, room_b, swap } = await pair( $ )
+			const { room_a, room_b, swap } = await $bog_gram_call_room_pair( $ )
 
 			room_a.join()
 			room_a.beat()
@@ -60,7 +63,7 @@ namespace $ {
 
 		async 'Вышедший пропадает из звонка у собеседника'( $ ) {
 
-			const { room_a, room_b, swap } = await pair( $ )
+			const { room_a, room_b, swap } = await $bog_gram_call_room_pair( $ )
 
 			room_a.join()
 			room_a.beat()
@@ -78,7 +81,7 @@ namespace $ {
 
 		async 'Замолчавший без выхода считается ушедшим через окно присутствия'( $ ) {
 
-			const { room_a, room_b, swap } = await pair( $ )
+			const { room_a, room_b, swap } = await $bog_gram_call_room_pair( $ )
 
 			room_a.join()
 			room_a.beat()
@@ -96,7 +99,7 @@ namespace $ {
 
 		async 'Повторный вход занимает новое место, чтобы пары сигналов не смешивались'( $ ) {
 
-			const { room_a } = await pair( $ )
+			const { room_a } = await $bog_gram_call_room_pair( $ )
 
 			room_a.join()
 			const first = room_a.seat()
@@ -109,7 +112,7 @@ namespace $ {
 
 		async 'Предложение и ответ доходят через ленд по общему ключу пары'( $ ) {
 
-			const { room_a, room_b, swap } = await pair( $ )
+			const { room_a, room_b, swap } = await $bog_gram_call_room_pair( $ )
 
 			room_a.join()
 			room_b.join()
@@ -131,6 +134,68 @@ namespace $ {
 			answerer.signal_put( 'Answers', key, JSON.stringify({ id: '0.X', sdp: 'answer' }) )
 			await swap()
 			$mol_assert_equal( $bog_gram_call_room.signal_parse( offerer.signal( 'Answers', key ) ), { id: '0.X', sdp: 'answer' } )
+
+		},
+
+		async 'Повторный вход того же человека заменяет прежнее место, а не добавляет второе'( $ ) {
+
+			const { room, land_a, auth_a, room_a, room_b, swap } = await $bog_gram_call_room_pair( $ )
+
+			room_a.join()
+			room_a.beat()
+
+			const twin = room( land_a, auth_a, 'Аня' )
+			twin.join()
+			twin.beat()
+
+			room_b.join()
+			room_b.beat()
+			await swap()
+
+			$mol_assert_equal( room_b.mates(), [ twin.seat() ] )
+			$mol_assert_equal( room_b.seats_alive().length, 2 )
+			$mol_assert_equal( room_a.joined(), false )
+			$mol_assert_equal( twin.joined(), true )
+			$mol_assert_equal( twin.mates(), [ room_b.seat() ] )
+
+		},
+
+		async 'Из двух живых мест одного человека в звонке остаётся последнее'( $ ) {
+
+			const { room, room_a, room_b, auth_a, swap } = await $bog_gram_call_room_pair( $ )
+
+			room_a.join()
+			room_a.beat()
+			room_a.seat_pawn( room_a.seat() )!.Joined( 'auto' )!.val( 1 )
+
+			const twin = room( room_b.land(), auth_a, 'Аня' )
+			twin.join()
+			twin.beat()
+
+			await swap()
+
+			$mol_assert_equal( room_a.seat_pawn( room_a.seat() )!.Left()?.val() ?? null, null )
+			$mol_assert_equal( room_b.seats_alive(), [ twin.seat() ] )
+			$mol_assert_equal( room_a.joined(), false )
+			$mol_assert_equal( twin.joined(), true )
+
+		},
+
+		'Сводка соединения считает кадры, битрейт, потери и задержку'() {
+
+			const entries = ( time: number, bytes: number )=> [
+				{ type: 'transport', selectedCandidatePairId: 'P' },
+				{ type: 'candidate-pair', id: 'P', currentRoundTripTime: 0.042 },
+				{ type: 'candidate-pair', id: 'Q', currentRoundTripTime: 9 },
+				{ type: 'inbound-rtp', kind: 'video', timestamp: time, bytesReceived: bytes, packetsLost: 1, packetsReceived: 99, framesPerSecond: 29.7, frameWidth: 640, frameHeight: 480 },
+				{ type: 'inbound-rtp', kind: 'audio', timestamp: time, bytesReceived: 0, packetsLost: 0, packetsReceived: 100 },
+			]
+
+			const first = $bog_gram_call_peer.stats_sum( entries( 1_000, 0 ), null )
+			$mol_assert_equal( first.kbps, 0 )
+
+			const next = $bog_gram_call_peer.stats_sum( entries( 3_000, 250_000 ), first )
+			$mol_assert_equal( [ next.fps, next.width, next.height, next.kbps, next.loss, next.rtt ], [ 30, 640, 480, 1000, 0.5, 42 ] )
 
 		},
 
