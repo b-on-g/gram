@@ -28,6 +28,11 @@ $bog_gram_settings $bog_gram_page
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
+		<= Version $mol_labeler
+			title \Версия
+			content /
+				<= Version_text $mol_paragraph
+					title <= version \
 		<= Name_field $bog_gram_field
 			hint \Ваше имя — видят только собеседники
 			value? <=> user_name?
@@ -95,11 +100,6 @@ $bog_gram_settings $bog_gram_page
 			content /
 				<= Key $bog_gram_settings_key
 					notify_on? <=> notify_on?
-		<= Version $mol_labeler
-			title \Версия
-			content /
-				<= Version_text $mol_paragraph
-					title <= version \
 	Registry_empty $mol_paragraph
 		title \Вы не состоите ни в одном реестре
 	Registry_list $mol_list
