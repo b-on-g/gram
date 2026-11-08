@@ -1,0 +1,4 @@
+$bog_gram_write $mol_textarea
+	submit_with_ctrl false
+	spellcheck true
+	send? null

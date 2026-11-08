@@ -747,7 +747,7 @@ namespace $.$$ {
 		@ $mol_mem
 		override send_tools() {
 			if( this.voice_on() ) return [ this.Record_state(), this.Voice_cancel(), this.Voice() ]
-			return [ this.Attach(), this.Message_field(), this.Send(), this.Voice() ]
+			return [ this.Attach(), this.Message_box(), this.Send(), this.Voice() ]
 		}
 
 		@ $mol_action

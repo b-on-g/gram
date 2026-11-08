@@ -265,6 +265,19 @@ namespace $.$$ {
 			minWidth: 0,
 		},
 
+		Message_box: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			maxHeight: '10rem',
+			overflow: {
+				y: 'auto',
+			},
+			borderRadius: '1rem',
+		},
+
 		Message_field: {
 			flex: {
 				grow: 1,
@@ -272,12 +285,6 @@ namespace $.$$ {
 			},
 			minWidth: 0,
 			borderRadius: '1rem',
-			padding: {
-				top: '0.5rem',
-				bottom: '0.5rem',
-				left: '0.875rem',
-				right: '0.875rem',
-			},
 		},
 
 		Send: {
