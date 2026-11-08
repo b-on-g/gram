@@ -26135,7 +26135,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.123';
+    $.$bog_gram_version = '1.0.125';
 })($ || ($ = {}));
 
 ;
@@ -35612,6 +35612,11 @@ var $;
 			]);
 			return obj;
 		}
+		Line(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Body()), (this.Meta())]);
+			return obj;
+		}
 		actions_touch(next){
 			if(next !== undefined) return next;
 			return null;
@@ -35775,8 +35780,7 @@ var $;
 				(this.Shot()), 
 				(this.Sound()), 
 				(this.Call()), 
-				(this.Body()), 
-				(this.Meta()), 
+				(this.Line()), 
 				(this.Actions())
 			];
 		}
@@ -35794,6 +35798,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "actions_touch"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edit_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edit"));
@@ -35988,8 +35993,21 @@ var $;
                 ...line,
                 color: $mol_theme.shade,
             },
+            Line: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                align: {
+                    items: 'flex-end',
+                },
+                columnGap: '0.5rem',
+                minWidth: 0,
+            },
             Body: {
                 minWidth: 0,
+                flex: {
+                    shrink: 1,
+                },
                 whiteSpace: 'pre-wrap',
                 overflowWrap: 'anywhere',
             },
@@ -36003,7 +36021,9 @@ var $;
                 maxWidth: '100%',
             },
             Meta: {
-                alignSelf: 'flex-end',
+                margin: {
+                    left: 'auto',
+                },
                 align: {
                     items: 'center',
                 },
@@ -36014,6 +36034,7 @@ var $;
                 font: {
                     size: '0.7rem',
                 },
+                lineHeight: '1rem',
                 color: $mol_theme.shade,
             },
             Time: {
@@ -37240,8 +37261,7 @@ var $;
             message_reply(id) {
                 this.message_menu('');
                 if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 this.reply_id(id);
                 this.Message_field().bring();
@@ -37307,9 +37327,22 @@ var $;
                 return null;
             }
             edit_cancel(next) {
-                this.edit_id('');
-                this.message_text('');
+                this.edit_stop();
                 return null;
+            }
+            edit_stop() {
+                this.edit_text('');
+                this.edit_id('');
+            }
+            edit_text(next) {
+                return next ?? '';
+            }
+            draft(next) {
+                const key = `$bog_gram_chat.draft(${this.my_lord()},${this.dialog()})`;
+                return this.$.$mol_state_local.value(key, next === undefined ? undefined : next || null) ?? '';
+            }
+            message_text(next) {
+                return this.edit_id() ? this.edit_text(next) : this.draft(next);
             }
             message_delete(id, next) {
                 this.message_menu('');
@@ -37318,8 +37351,7 @@ var $;
                     return null;
                 pawn.Deleted('auto')?.val(Date.now());
                 if (this.edit_id() === id) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 return null;
             }
@@ -37336,8 +37368,7 @@ var $;
                         pawn.Text('auto')?.val(text);
                         pawn.Edited('auto')?.val(Date.now());
                     }
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                     return null;
                 }
                 if (!text)
@@ -37450,8 +37481,7 @@ var $;
             }
             image_start(file) {
                 if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 $mol_wire_async(this).image_send(file);
             }
@@ -37850,6 +37880,9 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "edit_cancel", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "edit_text", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);

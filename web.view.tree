@@ -3482,19 +3482,21 @@ $bog_gram_bubble $mol_view
 		<= Call $bog_gram_call_card
 			land <= call_land
 			click? <=> call_open?
-		<= Body $mol_paragraph
-			title <= body
-		<= Meta $mol_view
+		<= Line $mol_view
 			sub /
-				<= Time $mol_view
+				<= Body $mol_paragraph
+					title <= body
+				<= Meta $mol_view
 					sub /
-						<= time
-				<= Edited $mol_view
-					sub /
-						\изменено
-				<= Checks $mol_view
-					sub /
-						<= checks
+						<= Time $mol_view
+							sub /
+								<= time
+						<= Edited $mol_view
+							sub /
+								\изменено
+						<= Checks $mol_view
+							sub /
+								<= checks
 		<= Actions $mol_view
 			event *
 				^

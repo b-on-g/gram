@@ -26126,7 +26126,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.123';
+    $.$bog_gram_version = '1.0.125';
 })($ || ($ = {}));
 
 ;
@@ -35603,6 +35603,11 @@ var $;
 			]);
 			return obj;
 		}
+		Line(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Body()), (this.Meta())]);
+			return obj;
+		}
 		actions_touch(next){
 			if(next !== undefined) return next;
 			return null;
@@ -35766,8 +35771,7 @@ var $;
 				(this.Shot()), 
 				(this.Sound()), 
 				(this.Call()), 
-				(this.Body()), 
-				(this.Meta()), 
+				(this.Line()), 
 				(this.Actions())
 			];
 		}
@@ -35785,6 +35789,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "actions_touch"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edit_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edit"));
@@ -35979,8 +35984,21 @@ var $;
                 ...line,
                 color: $mol_theme.shade,
             },
+            Line: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                align: {
+                    items: 'flex-end',
+                },
+                columnGap: '0.5rem',
+                minWidth: 0,
+            },
             Body: {
                 minWidth: 0,
+                flex: {
+                    shrink: 1,
+                },
                 whiteSpace: 'pre-wrap',
                 overflowWrap: 'anywhere',
             },
@@ -35994,7 +36012,9 @@ var $;
                 maxWidth: '100%',
             },
             Meta: {
-                alignSelf: 'flex-end',
+                margin: {
+                    left: 'auto',
+                },
                 align: {
                     items: 'center',
                 },
@@ -36005,6 +36025,7 @@ var $;
                 font: {
                     size: '0.7rem',
                 },
+                lineHeight: '1rem',
                 color: $mol_theme.shade,
             },
             Time: {
@@ -37231,8 +37252,7 @@ var $;
             message_reply(id) {
                 this.message_menu('');
                 if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 this.reply_id(id);
                 this.Message_field().bring();
@@ -37298,9 +37318,22 @@ var $;
                 return null;
             }
             edit_cancel(next) {
-                this.edit_id('');
-                this.message_text('');
+                this.edit_stop();
                 return null;
+            }
+            edit_stop() {
+                this.edit_text('');
+                this.edit_id('');
+            }
+            edit_text(next) {
+                return next ?? '';
+            }
+            draft(next) {
+                const key = `$bog_gram_chat.draft(${this.my_lord()},${this.dialog()})`;
+                return this.$.$mol_state_local.value(key, next === undefined ? undefined : next || null) ?? '';
+            }
+            message_text(next) {
+                return this.edit_id() ? this.edit_text(next) : this.draft(next);
             }
             message_delete(id, next) {
                 this.message_menu('');
@@ -37309,8 +37342,7 @@ var $;
                     return null;
                 pawn.Deleted('auto')?.val(Date.now());
                 if (this.edit_id() === id) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 return null;
             }
@@ -37327,8 +37359,7 @@ var $;
                         pawn.Text('auto')?.val(text);
                         pawn.Edited('auto')?.val(Date.now());
                     }
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                     return null;
                 }
                 if (!text)
@@ -37441,8 +37472,7 @@ var $;
             }
             image_start(file) {
                 if (this.edit_id()) {
-                    this.edit_id('');
-                    this.message_text('');
+                    this.edit_stop();
                 }
                 $mol_wire_async(this).image_send(file);
             }
@@ -37841,6 +37871,9 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "edit_cancel", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "edit_text", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);
@@ -52310,6 +52343,26 @@ var $;
                 $mol_assert_equal(chat.voice_on_cancel({ clientX: 250, clientY: 30 }), false);
                 $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 60 }), false);
                 $mol_assert_equal(chat.voice_on_cancel(), false);
+            },
+            'Черновик живёт у своего диалога, переживает перезагрузку и уходит с отправкой'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $, session: () => session, saved_is: () => false });
+                const alerts = $bog_gram_alerts.make({ $, offer: () => false });
+                const page = (dialog) => $bog_gram_chat.make({ $, dialog: () => dialog, my_lord: () => 'LordMe', Talk: () => talk, Alerts: () => alerts });
+                const first = page('DialogA');
+                first.message_text('Недописанное');
+                $mol_assert_equal(page('DialogB').message_text(), '');
+                $mol_assert_equal(page('DialogA').message_text(), 'Недописанное');
+                const own = session.Messages('auto').make(null);
+                own.Text('auto')?.val('Старое');
+                first.message_pawn = () => own;
+                first.message_edit(own.link().str);
+                $mol_assert_equal(first.message_text(), 'Старое');
+                first.edit_cancel();
+                $mol_assert_equal(first.message_text(), 'Недописанное');
+                const reload = page('DialogA');
+                reload.message_send();
+                $mol_assert_equal(page('DialogA').message_text(), '');
             },
             'Кадр без размеров — квадрат на полный предел, а не точка'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);

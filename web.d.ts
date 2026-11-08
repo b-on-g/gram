@@ -47139,7 +47139,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.123";
+    const $bog_gram_version = "1.0.125";
 }
 
 declare namespace $ {
@@ -58482,37 +58482,42 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_25 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_26 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_26 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_27 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_27 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_28 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_28 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_29 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_29 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_30 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_30 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_31 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__event_bog_gram_bubble_31 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_bubble_32 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
 			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
@@ -58520,7 +58525,7 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_32 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_33 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -58539,6 +58544,7 @@ declare namespace $ {
 		Edited( ): $mol_view
 		Checks( ): $mol_view
 		Meta( ): $mol_view
+		Line( ): $mol_view
 		actions_touch( next?: any ): any
 		Edit_icon( ): $mol_icon_pencil
 		Edit( ): $mol_button_minor
@@ -59313,6 +59319,10 @@ declare namespace $.$$ {
         message_quote_jump(id: string, next?: any): null;
         message_edit(id: string, next?: any): null;
         edit_cancel(next?: any): null;
+        edit_stop(): void;
+        edit_text(next?: string): string;
+        draft(next?: string): string;
+        message_text(next?: string): string;
         message_delete(id: string, next?: any): null;
         message_send(next?: any): null;
         message_shot(id: string): boolean;
