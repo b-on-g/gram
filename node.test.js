@@ -22175,6 +22175,25 @@ var $;
 
 ;
 	($.$bog_gram_row) = class $bog_gram_row extends ($.$mol_button_minor) {
+		swipe_dragging(){
+			return false;
+		}
+		swipe_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Avatar(){
 			const obj = new this.$.$bog_gram_avatar();
 			(obj.id) = () => ((this.avatar_id()));
@@ -22261,6 +22280,13 @@ var $;
 		tools(){
 			return [];
 		}
+		swipe(){
+			return false;
+		}
+		swipe_open(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		Icon(){
 			return null;
 		}
@@ -22268,7 +22294,19 @@ var $;
 			return {
 				...(super.attr()), 
 				"bog_gram_row_current": (this.current()), 
-				"bog_gram_row_size": (this.size())
+				"bog_gram_row_size": (this.size()), 
+				"bog_gram_row_swipe": (this.swipe()), 
+				"bog_gram_row_open": (this.swipe_open()), 
+				"bog_gram_row_drag": (this.swipe_dragging())
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"pointerdown": (next) => (this.swipe_start(next)), 
+				"pointermove": (next) => (this.swipe_move(next)), 
+				"pointerup": (next) => (this.swipe_end(next)), 
+				"pointercancel": (next) => (this.swipe_cancel(next))
 			};
 		}
 		sub(){
@@ -22280,6 +22318,10 @@ var $;
 			];
 		}
 	};
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_start"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_move"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_end"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_cancel"));
 	($mol_mem(($.$bog_gram_row.prototype), "Avatar"));
 	($mol_mem(($.$bog_gram_row.prototype), "Sign"));
 	($mol_mem(($.$bog_gram_row.prototype), "Title"));
@@ -22291,6 +22333,7 @@ var $;
 	($mol_mem(($.$bog_gram_row.prototype), "Info"));
 	($mol_mem(($.$bog_gram_row.prototype), "tools_click"));
 	($mol_mem(($.$bog_gram_row.prototype), "Tools"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_open"));
 
 
 ;
@@ -22333,10 +22376,120 @@ var $;
                 next?.stopPropagation();
                 return null;
             }
+            style() {
+                return {
+                    ...super.style(),
+                    '--bog_gram_row_shift': this.swipe_shift() + 'px',
+                };
+            }
+            swipe_from = null;
+            swipe_moved = false;
+            swipe_drag(next) {
+                return next === undefined ? null : next;
+            }
+            swipe_width = 0;
+            swipe_shift() {
+                const drag = this.swipe_drag();
+                if (drag !== null)
+                    return drag;
+                return this.swipe_open() ? this.swipe_width : 0;
+            }
+            swipe_dragging() {
+                return this.swipe_drag() !== null;
+            }
+            swipe_axis(dx, dy, base) {
+                if (Math.abs(dx) < 8 && Math.abs(dy) < 8)
+                    return 'wait';
+                if (Math.abs(dy) >= Math.abs(dx))
+                    return 'skip';
+                if (dx < 0 && !base)
+                    return 'skip';
+                return 'drag';
+            }
+            swipe_settle(shift, speed, width) {
+                if (speed > 0.3)
+                    return true;
+                if (speed < -0.3)
+                    return false;
+                return shift > width / 2;
+            }
+            swipe_touch() {
+                return this.$.$mol_dom_context.matchMedia?.('(hover: none)').matches ?? false;
+            }
+            swipe_start(event) {
+                this.swipe_moved = false;
+                if (!event || !this.swipe() || event.pointerType !== 'touch')
+                    return null;
+                if (!this.tools().length || !this.swipe_touch())
+                    return null;
+                this.swipe_width = this.Tools().dom_node().offsetWidth;
+                this.swipe_from = {
+                    x: event.clientX,
+                    y: event.clientY,
+                    time: event.timeStamp,
+                    base: this.swipe_shift(),
+                    speed: 0,
+                    drag: false,
+                };
+                return null;
+            }
+            swipe_move(event) {
+                const from = this.swipe_from;
+                if (!event || !from)
+                    return null;
+                const dx = event.clientX - from.x;
+                const dy = event.clientY - from.y;
+                if (!from.drag) {
+                    const axis = this.swipe_axis(dx, dy, from.base);
+                    if (axis === 'wait')
+                        return null;
+                    if (axis === 'skip') {
+                        this.swipe_from = null;
+                        return null;
+                    }
+                    from.drag = true;
+                    this.swipe_moved = true;
+                    this.dom_node().setPointerCapture?.(event.pointerId);
+                    if (!from.base)
+                        this.swipe_open(false);
+                }
+                const prev = this.swipe_drag() ?? from.base;
+                const next = Math.max(0, Math.min(this.swipe_width, from.base + dx));
+                const time = Math.max(1, event.timeStamp - from.time);
+                from.speed = (next - prev) / time;
+                from.time = event.timeStamp;
+                this.swipe_drag(next);
+                return null;
+            }
+            swipe_end(event) {
+                const from = this.swipe_from;
+                this.swipe_from = null;
+                if (!from?.drag)
+                    return null;
+                const open = this.swipe_settle(this.swipe_shift(), from.speed, this.swipe_width);
+                this.swipe_drag(null);
+                this.swipe_open(open);
+                return null;
+            }
+            swipe_cancel(event) {
+                if (this.swipe_from)
+                    this.swipe_from.speed = 0;
+                return this.swipe_end(event);
+            }
+            event_activate(next) {
+                if (this.swipe_moved) {
+                    this.swipe_moved = false;
+                    return;
+                }
+                return super.event_activate(next);
+            }
         }
         __decorate([
             $mol_action
         ], $bog_gram_row.prototype, "tools_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_row.prototype, "swipe_drag", null);
         $$.$bog_gram_row = $bog_gram_row;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -22345,7 +22498,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n");
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n@media ( hover: none ) {\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\t\tposition: relative;\n\t\toverflow: hidden;\n\t\ttouch-action: pan-y pan-right;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\t\ttouch-action: pan-y;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\t\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\t\ttransition: transform .2s ease-out;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\t\ttransition: none;\n\t}\n\n\t[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\t\tposition: absolute;\n\t\ttop: 0;\n\t\tbottom: 0;\n\t\tleft: 0;\n\t\tpadding: 0 0.5rem;\n\t\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n\t}\n\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -22637,6 +22790,10 @@ var $;
 			(obj.title) = () => ("Пока нет диалогов");
 			return obj;
 		}
+		swiped_is(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		pick(id, next){
 			if(next !== undefined) return next;
 			return null;
@@ -22863,6 +23020,8 @@ var $;
 		Dialog_row(id){
 			const obj = new this.$.$bog_gram_row();
 			(obj.size) = () => ("large");
+			(obj.swipe) = () => (true);
+			(obj.swipe_open) = (next) => ((this.swiped_is(id, next)));
 			(obj.click) = (next) => ((this.pick(id, next)));
 			(obj.current) = () => ((this.current_is(id)));
 			(obj.avatar_id) = () => ((this.dialog_avatar_id(id)));
@@ -22949,6 +23108,7 @@ var $;
 	($mol_mem(($.$bog_gram_menu.prototype), "Ask_plate"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Dialogs_list"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Dialogs_empty_text"));
+	($mol_mem_key(($.$bog_gram_menu.prototype), "swiped_is"));
 	($mol_mem_key(($.$bog_gram_menu.prototype), "pick"));
 	($mol_mem_key(($.$bog_gram_menu.prototype), "archive_click"));
 	($mol_mem_key(($.$bog_gram_menu.prototype), "Dialog_archive"));
@@ -23087,13 +23247,40 @@ var $;
             delete_hint(id) {
                 return this.delete_armed(id) ? 'Точно удалить?' : 'Удалить диалог';
             }
+            swiped(next) {
+                return next ?? '';
+            }
+            swiped_is(id, next) {
+                if (next !== undefined)
+                    this.swiped(next ? id : '');
+                return this.swiped() === id;
+            }
+            swipe_close() {
+                if (!this.swiped())
+                    return false;
+                this.swiped('');
+                return true;
+            }
+            Swipe_reset() {
+                this.body_scroll_top();
+                this.swiped('');
+                return null;
+            }
+            auto() {
+                super.auto();
+                this.Swipe_reset();
+            }
             pick(id, next) {
                 this.armed('');
+                if (this.swipe_close())
+                    return null;
                 this.select(id, null);
                 return null;
             }
             saved_pick(next) {
                 this.armed('');
+                if (this.swipe_close())
+                    return null;
                 this.saved_open(null);
                 return null;
             }
@@ -23112,6 +23299,7 @@ var $;
                 if (!id)
                     return null;
                 this.armed('');
+                this.swiped('');
                 if (this.archive_is(id))
                     this.unarchive(id, null);
                 else
@@ -23181,6 +23369,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_menu.prototype, "armed", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "swiped", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_menu.prototype, "Swipe_reset", null);
         __decorate([
             $mol_action
         ], $bog_gram_menu.prototype, "pick", null);
@@ -25461,6 +25655,41 @@ var $;
 			(obj.found) = (next) => ((this.follow(next)));
 			return obj;
 		}
+		paste_uri(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		paste_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Paste_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Или вставьте ссылку-приглашение");
+			(obj.value) = (next) => ((this.paste_uri(next)));
+			(obj.submit) = (next) => ((this.paste_open(next)));
+			return obj;
+		}
+		Paste_open(){
+			const obj = new this.$.$mol_button_major();
+			(obj.click) = (next) => ((this.paste_open(next)));
+			(obj.sub) = () => (["Открыть"]);
+			return obj;
+		}
+		Paste(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Paste_field()), (this.Paste_open())]);
+			return obj;
+		}
+		paste_error(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Paste_error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.paste_error()));
+			return obj;
+		}
 		Invite_body(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
@@ -25469,7 +25698,9 @@ var $;
 				(this.Invite_copy()), 
 				(this.Invite_qr_box()), 
 				(this.Follow_hint()), 
-				(this.Follow())
+				(this.Follow()), 
+				(this.Paste()), 
+				(this.Paste_error())
 			]);
 			return obj;
 		}
@@ -25719,6 +25950,13 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Follow_hint"));
 	($mol_mem(($.$bog_gram_settings.prototype), "follow"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Follow"));
+	($mol_mem(($.$bog_gram_settings.prototype), "paste_uri"));
+	($mol_mem(($.$bog_gram_settings.prototype), "paste_open"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Paste_field"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Paste_open"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Paste"));
+	($mol_mem(($.$bog_gram_settings.prototype), "paste_error"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Paste_error"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_body"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Notify_status"));
@@ -25802,7 +26040,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.108';
+    $.$bog_gram_version = '1.0.118';
 })($ || ($ = {}));
 
 ;
@@ -25820,6 +26058,24 @@ var $;
                 if (next && this.$.$bog_gram_follow.go(next))
                     this.close(null);
                 return '';
+            }
+            paste_open() {
+                if (!this.$.$bog_gram_follow.go(this.paste_uri().trim())) {
+                    this.paste_error('Ссылка не распознана: нужна ссылка Gram на человека, группу или реестр');
+                    return null;
+                }
+                this.paste_uri('');
+                this.paste_error('');
+                this.close(null);
+                return null;
+            }
+            paste_uri(next) {
+                if (next !== undefined)
+                    this.paste_error('');
+                return super.paste_uri(next);
+            }
+            Paste_error() {
+                return this.paste_error() ? super.Paste_error() : null;
             }
             version() {
                 return $bog_gram_version;
@@ -25971,6 +26227,27 @@ var $;
                 height: '14rem',
                 maxWidth: '100%',
             },
+            Paste: {
+                alignSelf: 'stretch',
+                align: {
+                    items: 'center',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+            },
+            Paste_field: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+            },
+            Paste_open: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Paste_error: hint,
             Notify_body: {
                 flex: {
                     direction: 'column',
@@ -29398,6 +29675,20 @@ var $;
             }
             return null;
         }
+        pass_shared(lord) {
+            const link = new $giper_baza_link(lord);
+            const roster = this.Roster();
+            const talk = roster.Talk();
+            for (const id of $bog_gram_soft(() => roster.ids(), [])) {
+                const links = [id, ...$bog_gram_soft(() => talk.links_of(id), [])];
+                for (const land of links) {
+                    const pass = talk.land(land).lord_pass(link);
+                    if (pass?.lord().str === lord)
+                        return pass;
+                }
+            }
+            return null;
+        }
         pass_learn(lord, key) {
             if (!lord || !key)
                 return null;
@@ -29425,6 +29716,9 @@ var $;
                     $mol_fail_hidden(error);
                 $mol_fail_log(error);
             }
+            const shared = this.pass_shared(lord);
+            if (shared)
+                return shared;
             const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
             $bog_gram_soft(() => (land.sync(), true), false);
             return land.king_pass() ?? this.Registry().pass_of(lord);
@@ -29472,6 +29766,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_people.prototype, "pass_stored", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "pass_shared", null);
     $.$bog_gram_people = $bog_gram_people;
 })($ || ($ = {}));
 
@@ -30858,6 +31155,455 @@ var $;
 })($ || ($ = {}));
 
 ;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * What every Kit component is made of.
+     *
+     * The system is built as moulded shells stacked on each other: the case the
+     * thing is housed in, the panel of a page, and the raised parts you actually
+     * touch. Depth is the stack plus a soft lift, never an outline — nothing in
+     * the Kit is drawn with a border.
+     *
+     * Values live in `shell.view.css` and are switched by `$bog_kit_shell`.
+     *
+     * This lives in the pack root on purpose. `$mol_style_define` runs at load,
+     * so the record has to exist before any sheet that reads it — and MAM forces
+     * a dependency on `..` at the highest priority for every module, so the pack
+     * root is the one place guaranteed to be there first. A sibling module is
+     * not: `bog/kit/tokens` sorted after the sheets that used it and every sheet
+     * threw ReferenceError while the audit stayed green.
+     */
+    $.$bog_kit = $mol_style_prop('bog_kit', [
+        /** The case: everything a page is not. */
+        'case',
+        /** The panel of a page. */
+        'panel',
+        /** Raised: cards, fields, keys — the parts you touch. */
+        'raise',
+        /** Text and icons. */
+        'ink',
+        /** Secondary text, captions, inactive labels. */
+        'ink_soft',
+        /** The one saturated colour: primary action, current place, on-state. */
+        'key',
+        /** Text on top of the key colour. */
+        'key_ink',
+        /**
+         * The quiet tone: the line between two pages, the track a knob runs
+         * in, the fill of a chip. Deeper than the case in every theme, which
+         * is what makes it the one tone that shows on a white ground.
+         */
+        'seam',
+        /** Corner of a panel or a card. */
+        'round_panel',
+        /** Corner of a field or a small surface. */
+        'round_field',
+        /** Corner of anything shaped like a key. */
+        'round_pill',
+        /** Text face. */
+        'font_text',
+        /** Face for machine-authored values: numbers, counts, code. */
+        'font_code',
+    ]);
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_pager) = class $bog_kit_pager extends ($.$mol_view) {
+		width_style(){
+			return "100%";
+		}
+		segments(){
+			return [];
+		}
+		segment_weight(id){
+			return "1";
+		}
+		segment_on(id){
+			return false;
+		}
+		count(){
+			return 1;
+		}
+		spans(){
+			return [];
+		}
+		span_total(){
+			return 0;
+		}
+		current(){
+			return 0;
+		}
+		style(){
+			return {...(super.style()), "width": (this.width_style())};
+		}
+		sub(){
+			return (this.segments());
+		}
+		Segment(id){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({...(this.$.$mol_view.prototype.style.call(obj)), "flexGrow": (this.segment_weight(id))});
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_kit_pager_on": (this.segment_on(id))});
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$bog_kit_pager.prototype), "Segment"));
+
+
+;
+	($.$mol_book2_catalog) = class $mol_book2_catalog extends ($.$mol_book2) {
+		Menu_title(){
+			return (this.Menu().Title());
+		}
+		menu_title(){
+			return "";
+		}
+		Menu_tools(){
+			return (this.Menu().Tools());
+		}
+		Menu_logo(){
+			return null;
+		}
+		menu_head(){
+			return [(this.Menu_title()), (this.Menu_tools())];
+		}
+		menu_filter(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Menu_filter(){
+			const obj = new this.$.$mol_search();
+			(obj.query) = (next) => ((this.menu_filter(next)));
+			return obj;
+		}
+		Menu_links_empty(){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		arg(id){
+			return {};
+		}
+		menu_link_arg(id){
+			return (this.arg(id));
+		}
+		spread_title(id){
+			return "";
+		}
+		Menu_link_title(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.needle) = () => ((this.menu_filter()));
+			(obj.haystack) = () => ((this.spread_title(id)));
+			return obj;
+		}
+		menu_link_content(id){
+			return [(this.Menu_link_title(id))];
+		}
+		Menu_link(id){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.menu_link_arg(id)));
+			(obj.sub) = () => ((this.menu_link_content(id)));
+			return obj;
+		}
+		menu_item_content(id){
+			return [(this.Menu_link(id))];
+		}
+		Menu_item(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.menu_item_content(id)));
+			return obj;
+		}
+		menu_links(){
+			return [(this.Menu_item("0"))];
+		}
+		Menu_links(){
+			const obj = new this.$.$mol_list();
+			(obj.Empty) = () => ((this.Menu_links_empty()));
+			(obj.rows) = () => ((this.menu_links()));
+			return obj;
+		}
+		menu_body(){
+			return [(this.Menu_filter()), (this.Menu_links())];
+		}
+		menu_foot(){
+			return [];
+		}
+		Menu(){
+			const obj = new this.$.$mol_page();
+			(obj.title) = () => ((this.menu_title()));
+			(obj.Logo) = () => ((this.Menu_logo()));
+			(obj.tools) = () => ([...(this.menu_tools()), ...(this.addon_tools())]);
+			(obj.head) = () => ((this.menu_head()));
+			(obj.body) = () => ((this.menu_body()));
+			(obj.foot) = () => ((this.menu_foot()));
+			return obj;
+		}
+		spread_close_arg(){
+			return {};
+		}
+		Spread_close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		param(){
+			return "";
+		}
+		spread(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		spreads(){
+			return {};
+		}
+		Spread(id){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		Spread_default(){
+			return null;
+		}
+		spread_ids(){
+			return [];
+		}
+		menu_filter_enabled(){
+			return false;
+		}
+		spread_ids_filtered(){
+			return [];
+		}
+		spread_current(){
+			return null;
+		}
+		menu_tools(){
+			return [];
+		}
+		addon_tools(){
+			return [];
+		}
+		pages(){
+			return [(this.Menu())];
+		}
+		Spread_close(){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.spread_close_arg()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_book2_catalog_Spread_close_hint")));
+			(obj.sub) = () => ([(this.Spread_close_icon())]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_book2_catalog.prototype), "menu_filter"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Menu_filter"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Menu_links_empty"));
+	($mol_mem_key(($.$mol_book2_catalog.prototype), "Menu_link_title"));
+	($mol_mem_key(($.$mol_book2_catalog.prototype), "Menu_link"));
+	($mol_mem_key(($.$mol_book2_catalog.prototype), "Menu_item"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Menu_links"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Menu"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Spread_close_icon"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "spread"));
+	($mol_mem_key(($.$mol_book2_catalog.prototype), "Spread"));
+	($mol_mem(($.$mol_book2_catalog.prototype), "Spread_close"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Variant of [mol_book2](../book2.view.ts) which draws menu in side bar on opens one of taken spreads.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_book2_catalog_demo
+         */
+        class $mol_book2_catalog extends $.$mol_book2_catalog {
+            spread_current() {
+                return this.spread() === '' ? this.Spread_default() : this.Spread(this.spread());
+            }
+            pages() {
+                const spread = this.spread_current();
+                return [
+                    this.Menu(),
+                    ...spread
+                        ? spread instanceof $mol_book2
+                            ? spread.pages_deep()
+                            : [spread]
+                        : [],
+                ];
+            }
+            auto() {
+                const spread = this.spread_current();
+                if (spread instanceof $mol_book2)
+                    spread.auto();
+                return [];
+            }
+            spread_ids() {
+                return Object.keys(this.spreads());
+            }
+            menu_body() {
+                return [
+                    ...this.menu_filter_enabled() ? [this.Menu_filter()] : [],
+                    this.Menu_links(),
+                ];
+            }
+            menu_filter_enabled() {
+                return this.spread_ids().length >= 10;
+            }
+            menu_links() {
+                return this.spread_ids_filtered()
+                    .map(spread => this.Menu_item(spread));
+            }
+            spread_ids_filtered() {
+                return this.spread_ids()
+                    .filter($mol_match_text(this.menu_filter(), spread => [this.spread_title(spread)]));
+            }
+            Spread(id) {
+                return this.spreads()[id];
+            }
+            Spread_default() {
+                return this.spreads()[''];
+            }
+            spread(next) {
+                return this.$.$mol_state_arg.value(this.param(), next) ?? '';
+            }
+            arg(spread) {
+                return { [this.param()]: spread || null };
+            }
+            spread_close_arg() {
+                return { [this.param()]: null };
+            }
+            spread_title(spread) {
+                const page = this.Spread(spread);
+                return page instanceof $mol_book2
+                    && page.menu_title()
+                    || page.title()
+                    || spread;
+            }
+            spread_current_book() {
+                const spread = this.spread_current();
+                return spread instanceof $mol_book2 ? spread : null;
+            }
+            placeholders() {
+                const spread_placeholders = this.spread_current_book()?.placeholders() ?? [];
+                return spread_placeholders.length ? spread_placeholders : super.placeholders();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "pages", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "spread_ids", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "menu_body", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "menu_links", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "spread_ids_filtered", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "spread", null);
+        __decorate([
+            $mol_mem
+        ], $mol_book2_catalog.prototype, "placeholders", null);
+        $$.$mol_book2_catalog = $mol_book2_catalog;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($mol_book2_catalog, {
+            Menu_filter: {
+                flex: {
+                    shrink: 0,
+                    grow: 0,
+                },
+                alignSelf: 'stretch',
+            },
+            Menu_item: {
+                align: {
+                    items: 'flex-start',
+                },
+            },
+            Menu_link: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    wrap: 'wrap',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Which platform's language to speak: `ios` or `md`.
+     *
+     * One code base, two modes — the same trick Ionic uses. The Kit components
+     * are picked by the context, so the whole tree changes together; this only
+     * decides which set the context hands out.
+     *
+     * `?platform=ios` / `?platform=md` in the address forces it, which is how
+     * both are checked from one desktop browser.
+     */
+    function $bog_kit_platform() {
+        const forced = this.$mol_state_arg.value('platform');
+        if (forced)
+            return forced;
+        const nav = this.$mol_dom_context.navigator;
+        const ua = nav?.userAgent ?? '';
+        // iPadOS reports itself as a Mac, and the only reliable tell is touch.
+        const touch = (nav?.maxTouchPoints ?? 0) > 1;
+        if (/iPhone|iPod/.test(ua))
+            return 'ios';
+        if (/iPad/.test(ua))
+            return 'ios';
+        if (/Macintosh/.test(ua) && touch)
+            return 'ios';
+        return 'md';
+    }
+    $.$bog_kit_platform = $bog_kit_platform;
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_chevron) = class $mol_icon_chevron extends ($.$mol_icon) {
+		path(){
+			return "M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_chevron_left) = class $mol_icon_chevron_left extends ($.$mol_icon) {
+		path(){
+			return "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_arrow_left) = class $mol_icon_arrow_left extends ($.$mol_icon) {
 		path(){
 			return "M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z";
@@ -30868,6 +31614,362 @@ var $;
 ;
 "use strict";
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * The catalogue with the Kit's chrome on it.
+     *
+     * Navigation stays what $mol does: the pages are columns of one horizontal
+     * scroller, and on a phone each is exactly one screen wide, so the browser's
+     * own momentum and snapping do the paging — the gesture is the platform's,
+     * not ours. What this adds is the level bar, a back arrow in the platform's
+     * own shape, and knowing which screen the reader is looking at.
+     *
+     * The stock build inherits this too, with `kit_chrome()` left off, so the two
+     * entry points differ by components and theme alone.
+     */
+    class $bog_kit_book extends $mol_book2_catalog {
+        /** The level bar and the platform back arrow. Off for the stock build. */
+        kit_chrome() {
+            return false;
+        }
+        /**
+         * Which screen was last seen in front of the reader, and how many there
+         * were at the time.
+         *
+         * The count is carried along on purpose. The book scrolls itself to a
+         * freshly opened page, and the observer reports the column it started
+         * from before that scroll lands — so a bare index sticks on the screen
+         * you came from and never moves again. Tagged with the route, a stale
+         * report is simply ignored: open something and you are on it.
+         */
+        page_seen(next) {
+            return next ?? [0, -1];
+        }
+        page_current() {
+            const count = this.pages_deep().length;
+            const last = count - 1;
+            const [seen_count, seen] = this.page_seen();
+            if (seen_count !== count)
+                return last;
+            return seen < 0 || seen > last ? last : seen;
+        }
+        /** Nothing to follow while every column fits on screen at once. */
+        page_follow(node) {
+            return node.scrollWidth > node.clientWidth + 1;
+        }
+        /**
+         * Follows the swipe.
+         *
+         * Two paths on purpose. The observer is the accurate one — it knows which
+         * column actually covers the book, whatever the column widths are — and
+         * the scroll handler below is the cheap fallback for when the observer is
+         * throttled. Either may write `page_seen`; both agree.
+         */
+        Pages_watch() {
+            // Re-observe whenever the set of columns changes.
+            this.pages_deep();
+            const root = this.dom_node();
+            const nodes = [...root.children].filter(node => node.hasAttribute('mol_page'));
+            const observer = new IntersectionObserver(entries => {
+                if (!this.page_follow(root))
+                    return;
+                for (const entry of entries) {
+                    if (!entry.isIntersecting)
+                        continue;
+                    const index = nodes.indexOf(entry.target);
+                    if (index >= 0)
+                        this.page_seen([nodes.length, index]);
+                }
+            }, { root, threshold: 0.6 });
+            for (const node of nodes)
+                observer.observe(node);
+            return {
+                destructor: () => observer.disconnect(),
+            };
+        }
+        event_scroll(next) {
+            super.event_scroll(next);
+            const node = this.dom_node();
+            if (!this.page_follow(node))
+                return;
+            const width = node.clientWidth;
+            if (!width)
+                return;
+            this.page_seen([this.pages_deep().length, Math.round(node.scrollLeft / width)]);
+        }
+        auto() {
+            return [...super.auto(), this.Pages_watch(), this.Spans_sync()];
+        }
+        /**
+         * Bumped once a frame after the columns change, so the widths below are
+         * taken after the layout that produced them.
+         */
+        spans_epoch(next) {
+            return next ?? 0;
+        }
+        Spans_sync() {
+            this.pages_deep();
+            this.$.$mol_window.size();
+            return new this.$.$mol_after_frame(() => this.spans_epoch(Date.now()));
+        }
+        /**
+         * How wide each column is, in order.
+         *
+         * The bar is drawn from these, so a segment ends where its column ends.
+         * On a phone the columns are all one screen wide and the segments come
+         * out equal; on a desktop they differ and the bar becomes a rule over the
+         * layout instead of a block of its own.
+         *
+         * Measured a frame late on purpose. This is read from `sub()`, which runs
+         * before the columns are in the document, so measuring inline returns an
+         * empty list on the first pass and a stale one after that — the bar came
+         * out with no segments on a phone, and with fewer segments than screens
+         * on a desktop, which left the current one unmarked because its index was
+         * past the end.
+         *
+         * Widths are a refinement only: how many segments there are comes from
+         * the route, so the bar is right even before it has been measured.
+         */
+        page_spans() {
+            this.spans_epoch();
+            this.pages_deep();
+            const root = this.dom_node();
+            return [...root.children]
+                .filter(node => node.hasAttribute('mol_page'))
+                .map(node => node.offsetWidth);
+        }
+        /**
+         * How far the bar runs: to the end of the last column, or to the edge of
+         * the screen when the columns overrun it.
+         */
+        page_span_total() {
+            const spans = this.page_spans();
+            if (spans.length !== this.pages_deep().length)
+                return 0;
+            if (spans.some(span => !span))
+                return 0;
+            // The seams between columns are part of the run — same 2px the bar
+            // puts between its own segments.
+            const seams = (spans.length - 1) * 2;
+            const total = spans.reduce((sum, span) => sum + span, seams);
+            return Math.min(total, this.dom_node().clientWidth);
+        }
+        Pager() {
+            const obj = new this.$.$bog_kit_pager();
+            obj.count = () => this.pages_deep().length;
+            obj.spans = () => this.page_spans();
+            obj.span_total = () => this.page_span_total();
+            obj.current = () => this.page_current();
+            return obj;
+        }
+        /**
+         * Back, not close.
+         *
+         * Stock $mol_book2_catalog hands every page a cross on the right, which
+         * is what a dialog does; going one level up in a catalogue is a back
+         * button, and on both phone platforms it lives at the head of the header.
+         * The pages put it in the `Logo` slot for that reason; here it only
+         * changes its mark — a chevron on iOS, an arrow on Material.
+         */
+        Back_icon() {
+            return this.$.$bog_kit_platform() === 'ios'
+                ? new this.$.$mol_icon_chevron_left
+                : new this.$.$mol_icon_arrow_left;
+        }
+        Spread_close() {
+            const link = super.Spread_close();
+            if (this.kit_chrome())
+                link.sub = () => [this.Back_icon()];
+            return link;
+        }
+        /**
+         * $mol_book2 builds `sub()` itself, memoised, and scrolls a freshly
+         * pushed page into view from inside it — reaching into that breaks the
+         * scroll and the memoisation both. Placeholders are the seam it leaves
+         * open: they are appended after the pages and excluded from its own
+         * bookkeeping, which is exactly what an overlay needs.
+         */
+        placeholders() {
+            const rest = super.placeholders();
+            return this.kit_chrome() ? [...rest, this.Pager()] : rest;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "page_seen", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "page_current", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "Pages_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "spans_epoch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "Spans_sync", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "page_spans", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "page_span_total", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "Pager", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "Back_icon", null);
+    __decorate([
+        $mol_mem
+    ], $bog_kit_book.prototype, "Spread_close", null);
+    $.$bog_kit_book = $bog_kit_book;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Where you are in a catalogue.
+         *
+         * Replaces the dashes $mol_book2 draws between its columns. Those said "the
+         * page continues", which is why they were worth having on a phone — but they
+         * never said how far in you are or how much is left, and they read as an
+         * artefact rather than as a control.
+         *
+         * A segment per screen, sized like the screen it stands for and laid over it,
+         * with the mark on the one in front of the reader. On a phone every column is
+         * one screen wide, so the segments come out equal and the bar spans the
+         * display; on a desktop the columns differ and so do the segments, and the
+         * bar ends where the last column ends instead of running on over the empty
+         * plate. Either way it is a rule drawn on the layout, not a block of its own.
+         *
+         * Lives in the DOM as `[bog_kit_pager]`, hung on the book through
+         * `$bog_kit_book.placeholders()`.
+         */
+        class $bog_kit_pager extends $.$bog_kit_pager {
+            /**
+             * How many screens there are comes from the route, never from the
+             * measurement: the widths are taken a frame late, and a bar that waited
+             * for them would be empty on the first paint and short of a segment
+             * after every step deeper.
+             */
+            segments() {
+                const count = this.count();
+                // A sequence of one is not a sequence.
+                if (count < 2)
+                    return [];
+                const list = [];
+                for (let index = 0; index < count; ++index)
+                    list.push(this.Segment(index));
+                return list;
+            }
+            /**
+             * Full width until the columns have been measured.
+             *
+             * `auto` would be wrong here: the bar is fixed and pinned on the left
+             * only, so shrink-to-fit collapses it to nothing. Falling back to the
+             * whole screen with equal segments is the behaviour it had before the
+             * columns were measured at all.
+             */
+            width_style() {
+                const total = this.span_total();
+                return total ? total + 'px' : '100%';
+            }
+            /**
+             * A string, not a number, and that is the whole point.
+             *
+             * `$mol_dom_render_styles` appends `px` to any numeric inline value, so a
+             * weight of 227 became `flex-grow: 227px`, which is invalid and dropped.
+             * With no growth and `flex-basis: 0` every segment measured zero wide:
+             * the colours were right, the bar was the right length, and nothing was
+             * visible in it.
+             */
+            segment_weight(index) {
+                return String(this.spans()[index] || 1);
+            }
+            /** One mark, on the screen in front of the reader. */
+            segment_on(index) {
+                return index === this.current();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_kit_pager.prototype, "segments", null);
+        $$.$bog_kit_pager = $bog_kit_pager;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { per } = $mol_style_unit;
+        $mol_style_define($bog_kit_pager, {
+            // Fixed, not absolute. The book is a horizontal scroller, and an absolutely
+            // positioned child of a scroller scrolls away with the content — the bar
+            // sat at the far left and was only ever visible on the first screen.
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            zIndex: 20,
+            // The width comes from a measurement, and a measurement taken at the
+            // wrong moment can be anything. Whatever it says, the bar stops at the
+            // edge of the screen.
+            maxWidth: per(100),
+            // $mol_book2 stretches its children to the full height of the book;
+            // an overlay is not one of its columns.
+            minHeight: 0,
+            maxHeight: '3px',
+            height: '3px',
+            // The gap matches the one between the book's columns, so a seam in the bar
+            // falls exactly on a seam in the layout. See shell.view.css.
+            gap: '2px',
+            pointerEvents: 'none',
+            /*
+                The bar must not animate its own width.
+    
+                $mol_view transitions `width` over .2s, and the columns do not: a new
+                one simply appears at its final size. So the bar rubber-banded after
+                an already-settled layout, and while it stretched its segments were
+                squeezed out of line with the columns they stand for — 181/149/182
+                against columns 227/186/228 sixty milliseconds in. On a phone the bar
+                is always the width of the screen, nothing to animate, which is why
+                this only showed up on a desktop. It belongs to the layout, so it
+                lands with the layout.
+            */
+            transition: 'none',
+            Segment: {
+                flex: { shrink: 1, basis: 0 },
+                height: per(100),
+                border: { radius: '2px' },
+                background: { color: $bog_kit.seam },
+                transition: 'background-color .2s ease-out',
+                '@': {
+                    bog_kit_pager_on: {
+                        'true': {
+                            background: { color: $bog_kit.key },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
 
 ;
 	($.$mol_icon_phone) = class $mol_icon_phone extends ($.$mol_icon) {
@@ -31763,6 +32865,54 @@ var $;
 
 
 ;
+	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
+		path(){
+			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_camera_flip) = class $mol_icon_camera_flip extends ($.$mol_icon) {
+		path(){
+			return "M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_signal) = class $mol_icon_signal extends ($.$mol_icon) {
+		path(){
+			return "M3,21H6V18H3M8,21H11V14H8M13,21H16V9H13M18,21H21V3H18V21Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_picture_in_picture_bottom_right) = class $mol_icon_picture_in_picture_bottom_right extends ($.$mol_icon) {
+		path(){
+			return "M19,11H11V17H19V11M23,19V5C23,3.88 22.1,3 21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19M21,19H3V4.97H21V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_phone_hangup) = class $mol_icon_phone_hangup extends ($.$mol_icon) {
 		path(){
 			return "M12,9C10.4,9 8.85,9.25 7.4,9.72V12.82C7.4,13.22 7.17,13.56 6.84,13.72C5.86,14.21 4.97,14.84 4.17,15.57C4,15.75 3.75,15.86 3.5,15.86C3.2,15.86 2.95,15.74 2.77,15.56L0.29,13.08C0.11,12.9 0,12.65 0,12.38C0,12.1 0.11,11.85 0.29,11.67C3.34,8.77 7.46,7 12,7C16.54,7 20.66,8.77 23.71,11.67C23.89,11.85 24,12.1 24,12.38C24,12.65 23.89,12.9 23.71,13.08L21.23,15.56C21.05,15.74 20.8,15.86 20.5,15.86C20.25,15.86 20,15.75 19.82,15.57C19.03,14.84 18.14,14.21 17.16,13.72C16.83,13.56 16.6,13.22 16.6,12.82V9.72C15.15,9.25 13.6,9 12,9Z";
@@ -31793,6 +32943,7 @@ var $;
 			(obj.stream) = () => ((this.stream()));
 			(obj.controls) = () => (false);
 			(obj.muted) = () => ((this.muted()));
+			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "autopictureinpicture": true});
 			return obj;
 		}
 		letter(){
@@ -31801,6 +32952,11 @@ var $;
 		Face(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.letter())]);
+			return obj;
+		}
+		Stats(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.stats())]);
 			return obj;
 		}
 		Name(){
@@ -31847,10 +33003,16 @@ var $;
 		mic(){
 			return true;
 		}
+		awake(){
+			return true;
+		}
 		name(){
 			return "";
 		}
 		status(){
+			return "";
+		}
+		stats(){
 			return "";
 		}
 		failed_text(){
@@ -31870,12 +33032,14 @@ var $;
 			return [
 				(this.Video()), 
 				(this.Face()), 
+				(this.Stats()), 
 				(this.Label())
 			];
 		}
 	};
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Video"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Face"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Stats"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Name"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Mic_off"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Status"));
@@ -31911,9 +33075,19 @@ var $;
                     ...this.status_text() ? [this.Status()] : [],
                 ];
             }
+            Stats() {
+                return this.stats() ? super.Stats() : null;
+            }
+            video() {
+                return this.Video().dom_node();
+            }
             auto() {
-                const video = this.Video().dom_node();
+                const video = this.video();
                 video.muted = this.muted();
+                this.Video().pause_event();
+                if (!this.awake() || !this.stream() || !video.paused)
+                    return;
+                video.play().catch(() => { });
             }
         }
         $$.$bog_gram_call_tile = $bog_gram_call_tile;
@@ -31963,6 +33137,25 @@ var $;
                     size: '3rem',
                 },
                 color: $mol_theme.shade,
+            },
+            Stats: {
+                position: 'absolute',
+                left: $mol_gap.block,
+                top: $mol_gap.block,
+                padding: {
+                    left: $mol_gap.text,
+                    right: $mol_gap.text,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                background: {
+                    color: $mol_theme.back,
+                },
+                font: {
+                    size: '.75rem',
+                },
+                opacity: .8,
             },
             Label: {
                 position: 'absolute',
@@ -32023,6 +33216,21 @@ var $;
 
 ;
 	($.$bog_gram_call) = class $bog_gram_call extends ($.$mol_page) {
+		close_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Close_hint")));
+			(obj.click) = (next) => ((this.close_click(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
 		content(){
 			return [];
 		}
@@ -32034,6 +33242,12 @@ var $;
 		}
 		self_stream(){
 			return null;
+		}
+		self_mirror(){
+			return true;
+		}
+		awake(){
+			return true;
 		}
 		self_name(){
 			return (this.$.$mol_locale.text("$bog_gram_call_self_name"));
@@ -32051,6 +33265,9 @@ var $;
 			return "";
 		}
 		mate_status(id){
+			return "";
+		}
+		mate_stats(id){
 			return "";
 		}
 		lobby_text(){
@@ -32090,6 +33307,30 @@ var $;
 		cam_able(){
 			return true;
 		}
+		cam_switch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Flip_icon(){
+			const obj = new this.$.$mol_icon_camera_flip();
+			return obj;
+		}
+		Stats_icon(){
+			const obj = new this.$.$mol_icon_signal();
+			return obj;
+		}
+		stats_show(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		pip(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Pip_icon(){
+			const obj = new this.$.$mol_icon_picture_in_picture_bottom_right();
+			return obj;
+		}
 		leave(next){
 			if(next !== undefined) return next;
 			return null;
@@ -32104,6 +33345,10 @@ var $;
 		name(){
 			return "";
 		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Room(){
 			const obj = new this.$.$bog_gram_call_room();
 			(obj.land) = () => ((this.land()));
@@ -32112,6 +33357,9 @@ var $;
 		}
 		title(){
 			return (this.$.$mol_locale.text("$bog_gram_call_title"));
+		}
+		tools(){
+			return [(this.Close())];
 		}
 		body(){
 			return (this.content());
@@ -32128,7 +33376,8 @@ var $;
 			const obj = new this.$.$bog_gram_call_tile();
 			(obj.stream) = () => ((this.self_stream()));
 			(obj.muted) = () => (true);
-			(obj.mirror) = () => (true);
+			(obj.mirror) = () => ((this.self_mirror()));
+			(obj.awake) = () => ((this.awake()));
 			(obj.cam) = () => ((this.cam()));
 			(obj.mic) = () => ((this.mic()));
 			(obj.name) = () => ((this.self_name()));
@@ -32137,10 +33386,12 @@ var $;
 		Mate(id){
 			const obj = new this.$.$bog_gram_call_tile();
 			(obj.stream) = () => ((this.mate_stream(id)));
+			(obj.awake) = () => ((this.awake()));
 			(obj.cam) = () => ((this.mate_cam(id)));
 			(obj.mic) = () => ((this.mate_mic(id)));
 			(obj.name) = () => ((this.mate_name(id)));
 			(obj.status) = () => ((this.mate_status(id)));
+			(obj.stats) = () => ((this.mate_stats(id)));
 			return obj;
 		}
 		Lobby(){
@@ -32163,6 +33414,27 @@ var $;
 			(obj.enabled) = () => ((this.cam_able()));
 			return obj;
 		}
+		Flip(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Flip_hint")));
+			(obj.click) = (next) => ((this.cam_switch(next)));
+			(obj.sub) = () => ([(this.Flip_icon())]);
+			return obj;
+		}
+		Stats_show(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Stats_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Stats_show_hint")));
+			(obj.checked) = (next) => ((this.stats_show(next)));
+			return obj;
+		}
+		Pip(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Pip_hint")));
+			(obj.click) = (next) => ((this.pip(next)));
+			(obj.sub) = () => ([(this.Pip_icon())]);
+			return obj;
+		}
 		Leave(){
 			const obj = new this.$.$mol_button_minor();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Leave_hint")));
@@ -32176,7 +33448,13 @@ var $;
 		lobby_some(){
 			return (this.$.$mol_locale.text("$bog_gram_call_lobby_some"));
 		}
+		stats_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_call_stats_pattern"));
+		}
 	};
+	($mol_mem(($.$bog_gram_call.prototype), "close_click"));
+	($mol_mem(($.$bog_gram_call.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "Close"));
 	($mol_mem(($.$bog_gram_call.prototype), "Lobby_text"));
 	($mol_mem(($.$bog_gram_call.prototype), "join"));
 	($mol_mem(($.$bog_gram_call.prototype), "Join"));
@@ -32184,8 +33462,15 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "mic"));
 	($mol_mem(($.$bog_gram_call.prototype), "Cam_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "cam_switch"));
+	($mol_mem(($.$bog_gram_call.prototype), "Flip_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "Stats_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "stats_show"));
+	($mol_mem(($.$bog_gram_call.prototype), "pip"));
+	($mol_mem(($.$bog_gram_call.prototype), "Pip_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "leave"));
 	($mol_mem(($.$bog_gram_call.prototype), "Leave_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "close"));
 	($mol_mem(($.$bog_gram_call.prototype), "Room"));
 	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
 	($mol_mem(($.$bog_gram_call.prototype), "Self"));
@@ -32193,6 +33478,9 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "Lobby"));
 	($mol_mem(($.$bog_gram_call.prototype), "Mic"));
 	($mol_mem(($.$bog_gram_call.prototype), "Cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "Flip"));
+	($mol_mem(($.$bog_gram_call.prototype), "Stats_show"));
+	($mol_mem(($.$bog_gram_call.prototype), "Pip"));
 	($mol_mem(($.$bog_gram_call.prototype), "Leave"));
 
 
@@ -32216,7 +33504,14 @@ var $;
             controls() {
                 if (!this.joined())
                     return [];
-                return [this.Mic(), this.Cam(), this.Leave()];
+                return [
+                    this.Mic(),
+                    this.Cam(),
+                    ...this.Room().cam_switch_able() ? [this.Flip()] : [],
+                    this.Stats_show(),
+                    ...this.pip_able() ? [this.Pip()] : [],
+                    this.Leave(),
+                ];
             }
             tiles() {
                 return [
@@ -32236,6 +33531,11 @@ var $;
             leave() {
                 this.Room().leave();
             }
+            close_click(next) {
+                this.leave();
+                this.close(next);
+                return null;
+            }
             mic(next) {
                 return this.Room().mic(next);
             }
@@ -32245,14 +33545,36 @@ var $;
             cam_able() {
                 return this.Room().cam_able();
             }
+            cam_switch() {
+                this.Room().cam_switch();
+            }
+            self_mirror() {
+                return this.Room().facing() === 'user';
+            }
+            awake() {
+                return this.Room().visible();
+            }
             self_stream() {
-                return this.Room().media();
+                return this.Room().self_stream();
             }
             mate_stream(mate) {
                 return this.Room().peer(mate).remote();
             }
             mate_status(mate) {
                 return this.Room().peer(mate).status();
+            }
+            mate_stats(mate) {
+                if (!this.stats_show())
+                    return '';
+                const stats = this.Room().peer(mate).stats();
+                if (!stats)
+                    return '';
+                return this.stats_pattern()
+                    .replace('{fps}', String(stats.fps))
+                    .replace('{size}', `${stats.width}×${stats.height}`)
+                    .replace('{kbps}', String(stats.kbps))
+                    .replace('{loss}', String(stats.loss))
+                    .replace('{rtt}', String(stats.rtt));
             }
             mate_name(mate) {
                 return this.Room().seat_name(mate);
@@ -32263,10 +33585,69 @@ var $;
             mate_cam(mate) {
                 return this.Room().seat_cam(mate);
             }
+            pip_able() {
+                return Boolean($mol_dom_context.document.pictureInPictureEnabled);
+            }
+            pip_video() {
+                const mate = this.Room().mates().find(mate => this.mate_stream(mate));
+                return (mate ? this.Mate(mate) : this.Self()).Video().dom_node();
+            }
+            pip() {
+                const doc = $mol_dom_context.document;
+                if (doc.pictureInPictureElement) {
+                    doc.exitPictureInPicture().catch($mol_fail_log);
+                    return null;
+                }
+                this.pip_video().requestPictureInPicture().catch($mol_fail_log);
+                return null;
+            }
+            session() {
+                const session = $mol_dom_context.navigator.mediaSession;
+                if (!session)
+                    return null;
+                const handlers = {
+                    enterpictureinpicture: () => this.pip(),
+                    hangup: () => this.leave(),
+                    togglemicrophone: () => this.mic(!this.mic()),
+                    togglecamera: () => this.cam(!this.cam()),
+                };
+                const put = (action, handler) => {
+                    try {
+                        session.setActionHandler(action, handler);
+                    }
+                    catch { }
+                };
+                for (const action in handlers)
+                    put(action, handlers[action]);
+                return {
+                    destructor: () => {
+                        for (const action in handlers)
+                            put(action, null);
+                    }
+                };
+            }
+            session_state() {
+                const session = $mol_dom_context.navigator.mediaSession;
+                if (!session)
+                    return null;
+                session.setMicrophoneActive?.(this.mic())?.catch?.(() => { });
+                session.setCameraActive?.(this.cam())?.catch?.(() => { });
+                return null;
+            }
             auto() {
                 this.Room().run();
+                if (!this.joined())
+                    return;
+                this.session();
+                this.session_state();
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call.prototype, "session", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call.prototype, "session_state", null);
         $$.$bog_gram_call = $bog_gram_call;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -32323,6 +33704,7 @@ var $;
     class $bog_gram_call_seat extends $giper_baza_dict.with({
         Lord: $giper_baza_atom_text,
         Name: $giper_baza_atom_text,
+        Joined: $giper_baza_atom_real,
         Beat: $giper_baza_atom_real,
         Left: $giper_baza_atom_real,
         Mic: $giper_baza_atom_bool,
@@ -32381,6 +33763,9 @@ var $;
                 return null;
             }
         }
+        static video_constraints(facing) {
+            return { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facing };
+        }
         land() {
             return null;
         }
@@ -32399,8 +33784,17 @@ var $;
         seat(next) {
             return next ?? $mol_guid();
         }
-        joined(next) {
+        entered(next) {
             return next ?? false;
+        }
+        joined() {
+            if (!this.entered())
+                return false;
+            const me = this.seat();
+            if (this.seat_pawn(me)?.Left()?.val())
+                return false;
+            const top = this.lords_seats().get(this.lord());
+            return !top || top === me;
         }
         mic(next) {
             return next ?? true;
@@ -32409,12 +33803,28 @@ var $;
             return next ?? true;
         }
         join() {
-            this.seat($mol_guid());
-            this.joined(true);
+            const me = $mol_guid();
+            const lord = this.lord();
+            const seats = this.data().Seats('auto');
+            for (const id of seats.keys()) {
+                const seat = seats.key(id);
+                if (seat.Lord()?.val() !== lord)
+                    continue;
+                if (seat.Left()?.val())
+                    continue;
+                seat.Left('auto').val(Date.now());
+            }
+            const seat = seats.key(me, 'auto');
+            seat.Lord('auto').val(lord);
+            seat.Joined('auto').val(Date.now());
+            this.seat(me);
+            this.entered(true);
         }
         leave() {
+            if (!this.entered())
+                return;
             this.data().Seats('auto')?.key(this.seat(), 'auto')?.Left('auto')?.val(Date.now());
-            this.joined(false);
+            this.entered(false);
         }
         beat() {
             if (!this.joined())
@@ -32431,23 +33841,39 @@ var $;
         seat_pawn(id) {
             return this.data().Seats()?.key(id) ?? null;
         }
-        seats_alive() {
+        seat_newer(left, right) {
+            const left_time = this.seat_pawn(left)?.Joined()?.val() ?? 0;
+            const right_time = this.seat_pawn(right)?.Joined()?.val() ?? 0;
+            if (left_time !== right_time)
+                return left_time > right_time;
+            return left > right;
+        }
+        lords_seats() {
             const now = this.now(5_000);
             const seats = this.data().Seats();
+            const lords = new Map();
             if (!seats)
-                return [];
-            return seats.keys()
-                .filter(id => {
+                return lords;
+            for (const id of seats.keys()) {
                 const seat = seats.key(id);
                 if (seat.Left()?.val())
-                    return false;
-                return now - (seat.Beat()?.val() ?? 0) < $bog_gram_call_room.alive_span;
-            })
-                .sort();
+                    continue;
+                if (now - (seat.Beat()?.val() ?? 0) >= $bog_gram_call_room.alive_span)
+                    continue;
+                const lord = seat.Lord()?.val() || id;
+                const prev = lords.get(lord);
+                if (!prev || this.seat_newer(id, prev))
+                    lords.set(lord, id);
+            }
+            return lords;
+        }
+        seats_alive() {
+            return [...this.lords_seats().values()].sort();
         }
         mates() {
             const me = this.seat();
-            return this.seats_alive().filter(id => id !== me);
+            const lord = this.lord();
+            return this.seats_alive().filter(id => id !== me && this.seat_pawn(id)?.Lord()?.val() !== lord);
         }
         seat_name(id) {
             const seat = this.seat_pawn(id);
@@ -32473,7 +33899,7 @@ var $;
             try {
                 stream = devices.getUserMedia({
                     audio: true,
-                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+                    video: $bog_gram_call_room.video_constraints('user'),
                 });
             }
             catch (error) {
@@ -32485,10 +33911,83 @@ var $;
                 destructor: () => stream.getTracks().forEach(track => track.stop())
             });
         }
+        video_changed(next) {
+            return next ?? 0;
+        }
+        facing(next) {
+            return next ?? 'user';
+        }
         cam_able() {
+            this.video_changed();
             return this.media().getVideoTracks().length > 0;
         }
+        cameras() {
+            this.media();
+            const devices = $mol_wire_sync(navigator.mediaDevices).enumerateDevices();
+            return devices.filter(device => device.kind === 'videoinput').length;
+        }
+        cam_switch_able() {
+            return this.cameras() > 1;
+        }
+        self_stream() {
+            this.video_changed();
+            return new MediaStream(this.media().getTracks());
+        }
+        video_open(facing) {
+            const stream = this.media();
+            for (const old of stream.getVideoTracks()) {
+                old.stop();
+                stream.removeTrack(old);
+            }
+            const fresh = $mol_wire_sync(navigator.mediaDevices).getUserMedia({
+                video: $bog_gram_call_room.video_constraints(facing),
+            });
+            const track = fresh.getVideoTracks()[0];
+            track.enabled = this.cam();
+            stream.addTrack(track);
+            for (const peer of this.peers())
+                peer.video_replace(track);
+            this.facing(facing);
+            this.video_changed(this.video_changed() + 1);
+        }
+        cam_switch() {
+            this.video_open(this.facing() === 'user' ? 'environment' : 'user');
+        }
+        video_restore() {
+            this.video_open(this.facing());
+        }
+        video_broken() {
+            const track = this.media().getVideoTracks()[0];
+            if (!track)
+                return false;
+            return track.readyState === 'ended' || track.muted;
+        }
+        video_watch() {
+            this.video_changed();
+            const track = this.media().getVideoTracks()[0];
+            if (!track)
+                return null;
+            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_restore());
+        }
+        visible(next) {
+            return next ?? $mol_dom_context.document.visibilityState !== 'hidden';
+        }
+        visible_watch() {
+            const doc = $mol_dom_context.document;
+            return new $mol_dom_listener(doc, 'visibilitychange', () => this.visible(doc.visibilityState !== 'hidden'));
+        }
+        video_check() {
+            if (!this.visible())
+                return null;
+            if (this.video_broken())
+                $mol_wire_async(this).video_restore();
+            return null;
+        }
+        unload_watch() {
+            return new $mol_dom_listener($mol_dom_context, 'pagehide', () => this.leave());
+        }
         media_apply() {
+            this.video_changed();
             const stream = this.media();
             for (const track of stream.getAudioTracks())
                 track.enabled = this.mic();
@@ -32510,14 +34009,18 @@ var $;
         run() {
             if (!this.joined())
                 return null;
+            this.unload_watch();
+            this.visible_watch();
             this.media_apply();
+            this.video_watch();
+            this.video_check();
             this.beat();
             for (const peer of this.peers())
                 peer.status();
             return null;
         }
         destructor() {
-            if (!$mol_wire_probe(() => this.joined()))
+            if (!$mol_wire_probe(() => this.entered()))
                 return;
             try {
                 this.data().Seats()?.key(this.seat())?.Left('auto')?.val(Date.now());
@@ -32530,6 +34033,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "seat", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "entered", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "joined", null);
@@ -32550,6 +34056,9 @@ var $;
     ], $bog_gram_call_room.prototype, "beat", null);
     __decorate([
         $mol_mem
+    ], $bog_gram_call_room.prototype, "lords_seats", null);
+    __decorate([
+        $mol_mem
     ], $bog_gram_call_room.prototype, "seats_alive", null);
     __decorate([
         $mol_mem
@@ -32559,7 +34068,37 @@ var $;
     ], $bog_gram_call_room.prototype, "media", null);
     __decorate([
         $mol_mem
+    ], $bog_gram_call_room.prototype, "video_changed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "facing", null);
+    __decorate([
+        $mol_mem
     ], $bog_gram_call_room.prototype, "cam_able", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cameras", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "self_stream", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "video_open", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "visible", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "visible_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_check", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "unload_watch", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "media_apply", null);
@@ -32738,6 +34277,59 @@ var $;
         sync() {
             return this.offerer() ? this.answer_take() : this.answer_post();
         }
+        video_replace(track) {
+            const rtc = this.rtc();
+            if (!rtc)
+                return;
+            for (const transceiver of rtc.getTransceivers()) {
+                if (transceiver.receiver.track.kind !== 'video')
+                    continue;
+                transceiver.sender.replaceTrack(track).catch($mol_fail_log);
+            }
+        }
+        stats_last = null;
+        stats() {
+            this.room().now(2_000);
+            const rtc = this.rtc();
+            if (!rtc || this.state() !== 'connected')
+                return null;
+            const report = $mol_wire_sync(rtc).getStats();
+            const next = $bog_gram_call_peer.stats_sum([...report.values()], this.stats_last);
+            this.stats_last = next;
+            return next;
+        }
+        static stats_sum(entries, last) {
+            const sum = {
+                time: 0, bytes: 0, fps: 0, width: 0, height: 0, kbps: 0, lost: 0, packets: 0, loss: 0, rtt: 0,
+            };
+            let pair = '';
+            for (const entry of entries) {
+                if (entry.type === 'transport' && entry.selectedCandidatePairId)
+                    pair = entry.selectedCandidatePairId;
+            }
+            for (const entry of entries) {
+                if (entry.type === 'inbound-rtp') {
+                    sum.time = Math.max(sum.time, entry.timestamp ?? 0);
+                    sum.bytes += entry.bytesReceived ?? 0;
+                    sum.lost += Math.max(0, entry.packetsLost ?? 0);
+                    sum.packets += entry.packetsReceived ?? 0;
+                    if (entry.kind === 'video') {
+                        sum.fps = Math.round(entry.framesPerSecond ?? 0);
+                        sum.width = entry.frameWidth ?? 0;
+                        sum.height = entry.frameHeight ?? 0;
+                    }
+                }
+                if (entry.type === 'candidate-pair' && (pair ? entry.id === pair : entry.nominated && entry.state === 'succeeded')) {
+                    sum.rtt = Math.round((entry.currentRoundTripTime ?? 0) * 1000);
+                }
+            }
+            const total = sum.lost + sum.packets;
+            sum.loss = total ? Math.round(sum.lost / total * 1000) / 10 : 0;
+            if (last && sum.time > last.time) {
+                sum.kbps = Math.round(Math.max(0, sum.bytes - last.bytes) * 8 / (sum.time - last.time));
+            }
+            return sum;
+        }
         status() {
             try {
                 if (!this.sync())
@@ -32791,6 +34383,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_peer.prototype, "sync", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "stats", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_peer.prototype, "status", null);
@@ -34123,22 +35718,51 @@ var $;
     function encode(canvas, type, quality) {
         return new Promise(done => canvas.toBlob(done, type, quality));
     }
-    async function original(file, bitmap) {
+    async function bitmap_of(file) {
+        try {
+            const bitmap = await createImageBitmap(file);
+            return { source: bitmap, width: bitmap.width, height: bitmap.height, close: () => bitmap.close() };
+        }
+        catch (error) {
+            return null;
+        }
+    }
+    async function image_of(file) {
+        const uri = $mol_dom_context.URL.createObjectURL(file);
+        const image = $mol_dom_context.document.createElement('img');
+        try {
+            image.src = uri;
+            await image.decode();
+            return { source: image, width: image.naturalWidth, height: image.naturalHeight, close: () => $mol_dom_context.URL.revokeObjectURL(uri) };
+        }
+        catch (error) {
+            $mol_dom_context.URL.revokeObjectURL(uri);
+            return null;
+        }
+    }
+    async function type_of(file) {
+        const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+        return $bog_gram_shrink.sniff(head) || $bog_gram_shrink.type_declared(file) || $bog_gram_shrink.type_named(file) || 'image/jpeg';
+    }
+    async function original(file, type, width, height) {
         return {
             bytes: new Uint8Array(await file.arrayBuffer()),
-            type: file.type || 'image/jpeg',
-            width: bitmap.width,
-            height: bitmap.height,
+            type,
+            width,
+            height,
         };
     }
     const api = {
         async shrink(file, side, weight) {
-            const bitmap = await createImageBitmap(file);
+            const type = await type_of(file);
+            const bitmap = await bitmap_of(file) ?? await image_of(file);
+            if (!bitmap)
+                return await original(file, type, 0, 0);
             try {
                 const fit = $bog_gram_shrink.fit(bitmap.width, bitmap.height, side);
                 const same = fit.width === bitmap.width && fit.height === bitmap.height;
-                if (same && file.size <= weight)
-                    return await original(file, bitmap);
+                if (same && file.size <= weight && $bog_gram_shrink.portable(type))
+                    return await original(file, type, bitmap.width, bitmap.height);
                 let width = fit.width;
                 let height = fit.height;
                 let quality = quality_max;
@@ -34150,7 +35774,7 @@ var $;
                     const paper = canvas.getContext('2d');
                     if (!paper)
                         break;
-                    paper.drawImage(bitmap, 0, 0, width, height);
+                    paper.drawImage(bitmap.source, 0, 0, width, height);
                     let blob = await encode(canvas, 'image/webp', quality);
                     if (blob?.type !== 'image/webp')
                         blob = await encode(canvas, 'image/jpeg', quality);
@@ -34171,7 +35795,7 @@ var $;
                     }
                 }
                 if (!best)
-                    return await original(file, bitmap);
+                    return await original(file, type, bitmap.width, bitmap.height);
                 return {
                     bytes: new Uint8Array(await best.arrayBuffer()),
                     type: best.type || 'image/jpeg',
@@ -34195,8 +35819,55 @@ var $;
                 height: Math.max(1, Math.round(height * scale)),
             };
         }
+        static extensions = {
+            jpg: 'image/jpeg',
+            jpeg: 'image/jpeg',
+            jfif: 'image/jpeg',
+            png: 'image/png',
+            gif: 'image/gif',
+            webp: 'image/webp',
+            heic: 'image/heic',
+            heif: 'image/heif',
+            avif: 'image/avif',
+        };
+        static type_named(file) {
+            const name = String(file.name ?? '');
+            if (!name.includes('.'))
+                return '';
+            return this.extensions[name.split('.').pop().toLowerCase()] ?? '';
+        }
+        static type_declared(file) {
+            return file.type && file.type !== 'application/octet-stream' ? file.type : '';
+        }
         static image_is(file) {
-            return file.type.startsWith('image/');
+            const type = this.type_declared(file);
+            if (type)
+                return type.startsWith('image/');
+            return Boolean(this.type_named(file));
+        }
+        static sniff(head) {
+            const ascii = (from, till) => String.fromCharCode(...head.subarray(from, till));
+            if (head[0] === 0xFF && head[1] === 0xD8 && head[2] === 0xFF)
+                return 'image/jpeg';
+            if (head[0] === 0x89 && ascii(1, 4) === 'PNG')
+                return 'image/png';
+            if (ascii(0, 4) === 'GIF8')
+                return 'image/gif';
+            if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP')
+                return 'image/webp';
+            if (ascii(4, 8) === 'ftyp') {
+                const brand = ascii(8, 12);
+                if (brand === 'avif' || brand === 'avis')
+                    return 'image/avif';
+                if (['heic', 'heix', 'heim', 'heis', 'hevc', 'hevx', 'hevm', 'hevs'].includes(brand))
+                    return 'image/heic';
+                if (brand === 'mif1' || brand === 'msf1')
+                    return 'image/heif';
+            }
+            return '';
+        }
+        static portable(type) {
+            return ['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(type);
         }
         static shrink(file) {
             return $mol_wire_sync(api).shrink(file, side_limit, weight_limit);
@@ -34342,13 +36013,16 @@ var $;
                 if (!session)
                     return '';
                 const passes = this.passes();
-                if (!passes)
+                if (!passes) {
+                    this.voice_hint(`Звонок не начат: не доехал ключ — ${this.lost_names()}. Позвоните ещё раз чуть позже`);
                     return '';
+                }
                 const land = this.$.$bog_gram_call_room.grab(passes);
                 const message = session.Messages('auto').make(null);
                 message.Call('auto').val(land.link());
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
+                this.voice_hint('');
                 this.call_open(land.link().str);
                 return message.link().str;
             }
@@ -34650,7 +36324,7 @@ var $;
                 const width = Number(pawn?.Image_width()?.val() ?? 0);
                 const height = Number(pawn?.Image_height()?.val() ?? 0);
                 if (!width || !height)
-                    return { width: 1, height: 1 };
+                    return { width: shot_side * rem_px, height: shot_side * rem_px };
                 return { width, height };
             }
             message_shot_ratio(id) {
@@ -34746,6 +36420,16 @@ var $;
                 const passes = this.People().passes_of(mates);
                 return passes.length < mates.length ? null : passes;
             }
+            passes_lost() {
+                const mates = this.saved() ? [] : this.Talk().mates(this.dialog());
+                return mates.filter(lord => !this.People().pass_of(lord));
+            }
+            lost_names() {
+                return this.passes_lost().map(lord => this.People().label(lord)).join(', ');
+            }
+            lost_hint(what) {
+                return `${what} не отправлено: не доехал ключ — ${this.lost_names()}. Отправьте ещё раз чуть позже`;
+            }
             land_closed(bytes, type, passes) {
                 const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
                 const store = land.Data($giper_baza_file);
@@ -34761,8 +36445,10 @@ var $;
                 if (!session)
                     return '';
                 const passes = this.passes();
-                if (!passes)
+                if (!passes) {
+                    this.voice_hint(this.lost_hint('Фото'));
                     return '';
+                }
                 const shot = this.$.$bog_gram_shrink.shrink(file);
                 const store = this.land_closed(shot.bytes, shot.type, passes);
                 const text = this.message_text().trim();
@@ -34775,6 +36461,7 @@ var $;
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
                 this.message_text('');
+                this.voice_hint('');
                 return message.link().str;
             }
             voice_ready() {
@@ -34890,8 +36577,10 @@ var $;
                 if (!session)
                     return '';
                 const passes = this.passes();
-                if (!passes)
+                if (!passes) {
+                    this.voice_hint(this.lost_hint('Голосовое'));
                     return '';
+                }
                 const sound = $mol_wire_sync(take).take();
                 if (!sound) {
                     this.voice_hint(voice_short);
@@ -35604,6 +37293,3652 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_theme_auto) = class $mol_theme_auto extends ($.$mol_plugin) {
+		dark(){
+			return "$mol_theme_dark";
+		}
+		theme(){
+			return (this.dark());
+		}
+		light(){
+			return "$mol_theme_light";
+		}
+		attr(){
+			return {"mol_theme": (this.theme())};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function parse(theme) {
+        if (theme === 'true')
+            return true;
+        if (theme === 'false')
+            return false;
+        return null;
+    }
+    // Get once because chrome switches to light on print
+    const base = $.$mol_media.match('(prefers-color-scheme: light)');
+    /**
+     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+     */
+    function $mol_lights(next) {
+        const arg = parse(this.$mol_state_arg.value('mol_lights'));
+        if (next === undefined) {
+            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
+        }
+        else {
+            if (arg === null) {
+                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
+            }
+            else {
+                this.$mol_state_arg.value('mol_lights', String(next));
+            }
+            return next;
+        }
+    }
+    $.$mol_lights = $mol_lights;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * The [plugin](../../plugin/readme.md) which defines theme based on [mol_lights](../../lights/readme.md).
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+         */
+        class $mol_theme_auto extends $.$mol_theme_auto {
+            theme() {
+                return this.$.$mol_lights() ? this.light() : this.dark();
+            }
+        }
+        $$.$mol_theme_auto = $mol_theme_auto;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_shell) = class $bog_kit_shell extends ($.$mol_theme_auto) {
+		platform(){
+			return "ios";
+		}
+		attr(){
+			return {...(super.attr()), "bog_kit_platform": (this.platform())};
+		}
+	};
+
+
+;
+	($.$mol_card) = class $mol_card extends ($.$mol_list) {
+		status(){
+			return "";
+		}
+		content(){
+			return [(this.title())];
+		}
+		Content(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		status_text(){
+			return (this.status());
+		}
+		Status(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (30);
+			(obj.sub) = () => ([(this.status_text())]);
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "mol_card_status_type": (this.status())};
+		}
+		rows(){
+			return [(this.Content()), (this.Status())];
+		}
+	};
+	($mol_mem(($.$mol_card.prototype), "Content"));
+	($mol_mem(($.$mol_card.prototype), "Status"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Represents a common card. It can has several statuses at bottom line.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_card_demo/readme
+         */
+        class $mol_card extends $.$mol_card {
+            rows() {
+                return [
+                    this.Content(),
+                    ...this.status_text() ? [this.Status()] : [],
+                ];
+            }
+        }
+        $$.$mol_card = $mol_card;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/card/card.view.css", "[mol_card] {\n\tbackground: var(--mol_theme_card);\n\tcolor: var(--mol_theme_text);\n\tborder-radius: var(--mol_gap_round);\n\tdisplay: flex;\n\tflex: 0 1 auto;\n\tflex-direction: column;\n\tposition: relative;\n\tbox-shadow: 0 0 0.5rem 0rem hsla(0,0%,0%,.125);\n\t/* overflow: hidden; */\n}\n\n[mol_card_content] {\n\tflex: 1 1 auto;\n\tborder-radius: var(--mol_gap_round);\n\tmargin: 0;\n\tpadding: var(--mol_gap_block);\n}\n\n[mol_card_status] {\n\tbackground: var(--mol_theme_line);\n\tpadding: var(--mol_gap_text);\n\tmargin: 0;\n}\n\n[mol_card_status] {\n\tbackground: var(--mol_theme_line);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_card) = class $bog_kit_card extends ($.$mol_card) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            A raised shell with a generous corner. The status strip is part of the
+            same moulding, one tone down, so the card stays a single object instead of
+            a box with a bar stuck to it.
+        */
+        $mol_style_define($bog_kit_card, {
+            border: { radius: $bog_kit.round_panel },
+            background: { color: $bog_kit.raise },
+            color: $bog_kit.ink,
+            overflow: { x: 'hidden', y: 'hidden' },
+            Content: {
+                padding: {
+                    top: rem(.875),
+                    bottom: rem(.875),
+                    left: rem(1.125),
+                    right: rem(1.125),
+                },
+                gap: rem(.5),
+            },
+            Status: {
+                minHeight: rem(2),
+                padding: {
+                    top: rem(.375),
+                    bottom: rem(.5),
+                    left: rem(1.125),
+                    right: rem(1.125),
+                },
+                background: { color: $bog_kit.panel },
+                color: $bog_kit.ink_soft,
+                font: { family: $bog_kit.font_code, size: rem(.8125) },
+                box: { shadow: 'none' },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_button) = class $bog_kit_button extends ($.$mol_button_minor) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            A key. It is shaped like one — fully round ends, a raised face, a real
+            amount of room around the label — and it sits above the panel rather than
+            being cut out of it with a line.
+    
+            Pressing it settles it back down; the lift is applied by the theme, which
+            is also what makes the tones differ.
+        */
+        $mol_style_define($bog_kit_button, {
+            minHeight: rem(2.375),
+            minWidth: rem(2.375),
+            alignSelf: 'flex-start',
+            gap: rem(.4375),
+            padding: {
+                top: rem(.4375),
+                bottom: rem(.4375),
+                left: rem(1),
+                right: rem(1),
+            },
+            border: { radius: $bog_kit.round_pill },
+            background: { color: $bog_kit.raise },
+            color: $bog_kit.ink,
+            font: { weight: 500 },
+            transition: 'box-shadow .16s ease-out, transform .1s ease-out, background-color .16s ease-out',
+            ':hover': {
+                color: $bog_kit.ink,
+                background: { color: $bog_kit.raise },
+            },
+            ':focus-visible': {
+                outline: 'none',
+            },
+            ':active': {
+                transform: 'translateY(1px)',
+            },
+            '@': {
+                disabled: {
+                    'true': {
+                        background: { color: 'transparent' },
+                        color: $bog_kit.ink_soft,
+                        opacity: .5,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_button_copy) = class $bog_kit_button_copy extends ($.$mol_button_copy) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            $mol_button_copy inherits $mol_button_minor as a class, and swapping a
+            class in the context only reaches the places that build one by name — so
+            a descendant of the button does not become a descendant of the Kit button
+            and has to be moulded on its own. The same goes for _download, _open and
+            _share when a page starts using them.
+        */
+        $mol_style_define($bog_kit_button_copy, {
+            minHeight: rem(2.375),
+            alignSelf: 'flex-start',
+            gap: rem(.4375),
+            padding: {
+                top: rem(.4375),
+                bottom: rem(.4375),
+                left: rem(.875),
+                right: rem(1),
+            },
+            border: { radius: $bog_kit.round_pill },
+            background: { color: $bog_kit.raise },
+            color: $bog_kit.ink,
+            font: { weight: 500 },
+            transition: 'box-shadow .16s ease-out, transform .1s ease-out',
+            Icon: {
+                color: $bog_kit.ink_soft,
+            },
+            ':hover': {
+                color: $bog_kit.ink,
+                background: { color: $bog_kit.raise },
+            },
+            ':focus-visible': {
+                outline: 'none',
+            },
+            ':active': {
+                transform: 'translateY(1px)',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_check_icon) = class $bog_kit_check_icon extends ($.$mol_check_icon) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            A key with no words: round, the same height as every other key, filled
+            with the key colour while it is on.
+        */
+        $mol_style_define($bog_kit_check_icon, {
+            minHeight: rem(2.375),
+            minWidth: rem(2.375),
+            alignSelf: 'flex-start',
+            justifyContent: 'center',
+            padding: {
+                top: rem(.4375),
+                bottom: rem(.4375),
+                left: rem(.4375),
+                right: rem(.4375),
+            },
+            border: { radius: $bog_kit.round_pill },
+            color: $bog_kit.ink,
+            background: { color: $bog_kit.raise },
+            transition: 'background-color .16s ease-out, color .16s ease-out, box-shadow .16s ease-out',
+            ':hover': {
+                color: $bog_kit.ink,
+                background: { color: $bog_kit.raise },
+            },
+            ':focus-visible': {
+                outline: 'none',
+            },
+            '@': {
+                mol_check_checked: {
+                    'true': {
+                        color: $bog_kit.key_ink,
+                        background: { color: $bog_kit.key },
+                        ':hover': {
+                            color: $bog_kit.key_ink,
+                            background: { color: $bog_kit.key },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_select) = class $bog_kit_select extends ($.$mol_select) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            Picking one value out of many is a field that happens to be answered from
+            a list, so the trigger is moulded like a field and only the marker at its
+            end says where the value comes from.
+        */
+        $mol_style_define($bog_kit_select, {
+            alignSelf: 'flex-start',
+            minWidth: rem(12),
+            Trigger: {
+                minHeight: rem(2.5),
+                justifyContent: 'space-between',
+                padding: {
+                    top: rem(.5),
+                    bottom: rem(.5),
+                    left: rem(.875),
+                    right: rem(.5),
+                },
+                border: { radius: $bog_kit.round_field },
+                color: $bog_kit.ink,
+                background: { color: $bog_kit.raise },
+                transition: 'box-shadow .16s ease-out',
+                ':hover': {
+                    background: { color: $bog_kit.raise },
+                },
+                ':focus-visible': {
+                    outline: 'none',
+                },
+            },
+            Trigger_icon: {
+                color: $bog_kit.ink_soft,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_check_list) = class $mol_check_list extends ($.$mol_view) {
+		option_checked(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		option_title(id){
+			return "";
+		}
+		option_label(id){
+			return [(this.option_title(id))];
+		}
+		enabled(){
+			return true;
+		}
+		option_enabled(id){
+			return (this.enabled());
+		}
+		option_hint(id){
+			return "";
+		}
+		items(){
+			return [];
+		}
+		dictionary(){
+			return {};
+		}
+		Option(id){
+			const obj = new this.$.$mol_check();
+			(obj.checked) = (next) => ((this.option_checked(id, next)));
+			(obj.label) = () => ((this.option_label(id)));
+			(obj.enabled) = () => ((this.option_enabled(id)));
+			(obj.hint) = () => ((this.option_hint(id)));
+			(obj.minimal_height) = () => (24);
+			return obj;
+		}
+		options(){
+			return {};
+		}
+		keys(){
+			return [];
+		}
+		sub(){
+			return (this.items());
+		}
+	};
+	($mol_mem_key(($.$mol_check_list.prototype), "option_checked"));
+	($mol_mem_key(($.$mol_check_list.prototype), "Option"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * List of checkboxes
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_check_list_demo
+         */
+        class $mol_check_list extends $.$mol_check_list {
+            options() {
+                return {};
+            }
+            dictionary(next) {
+                return next ?? {};
+            }
+            option_checked(id, next) {
+                const prev = this.dictionary();
+                if (next === undefined)
+                    return prev[id] ?? null;
+                const next_rec = { ...prev, [id]: next };
+                if (next === null)
+                    delete next_rec[id];
+                return this.dictionary(next_rec)[id] ?? null;
+            }
+            keys() {
+                return Object.keys(this.options());
+            }
+            items() {
+                return this.keys().map(key => this.Option(key));
+            }
+            option_title(key) {
+                return this.options()[key] || key;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_check_list.prototype, "keys", null);
+        __decorate([
+            $mol_mem
+        ], $mol_check_list.prototype, "items", null);
+        $$.$mol_check_list = $mol_check_list;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/list/list.view.css", "[mol_check_list] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tflex: 1 1 auto;\n\tborder-radius: var(--mol_gap_round);\n\tgap: 1px;\n}\n\n[mol_check_list_option] {\n\tflex: 0 1 auto;\n}\n\n[mol_check_list_option]:where([mol_check_checked=\"true\"]) {\n\ttext-shadow: 0 0;\n\tcolor: var(--mol_theme_current);\n}\n\n[mol_check_list_option]:where([mol_check_checked=\"true\"][disabled]) {\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_check_list) = class $bog_kit_check_list extends ($.$mol_check_list) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            Any number of these can be on at once, so unlike the switch they are
+            separate keys with air between them — and unlike the switch they do take
+            the key colour, because here there really is an on and an off.
+        */
+        $mol_style_define($bog_kit_check_list, {
+            gap: rem(.5),
+            flexWrap: 'wrap',
+            alignSelf: 'flex-start',
+            Option: {
+                minHeight: rem(2.25),
+                padding: {
+                    top: rem(.375),
+                    bottom: rem(.375),
+                    left: rem(1),
+                    right: rem(1),
+                },
+                border: { radius: $bog_kit.round_pill },
+                color: $bog_kit.key_ink,
+                background: { color: $bog_kit.key },
+                font: { weight: 500 },
+                transition: 'background-color .16s ease-out, color .16s ease-out, box-shadow .16s ease-out',
+                ':not([mol_check_checked])': {
+                    color: $bog_kit.ink,
+                    background: { color: $bog_kit.raise },
+                    font: { weight: 400 },
+                    ':hover': {
+                        color: $bog_kit.ink,
+                        background: { color: $bog_kit.raise },
+                    },
+                },
+                ':focus-visible': {
+                    outline: 'none',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_button_major) = class $bog_kit_button_major extends ($.$mol_button_major) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            The one action a screen is actually about. Same shape as every other key,
+            but moulded in the key colour and sitting a step higher — that is the
+            whole difference, and it is enough.
+        */
+        $mol_style_define($bog_kit_button_major, {
+            minHeight: rem(2.375),
+            alignSelf: 'flex-start',
+            gap: rem(.4375),
+            padding: {
+                top: rem(.4375),
+                bottom: rem(.4375),
+                left: rem(1.25),
+                right: rem(1.25),
+            },
+            border: { radius: $bog_kit.round_pill },
+            background: { color: $bog_kit.key },
+            color: $bog_kit.key_ink,
+            font: { weight: 500 },
+            transition: 'box-shadow .16s ease-out, transform .1s ease-out',
+            ':hover': {
+                color: $bog_kit.key_ink,
+                background: { color: $bog_kit.key },
+            },
+            ':focus-visible': {
+                outline: 'none',
+                color: $bog_kit.key_ink,
+            },
+            ':active': {
+                color: $bog_kit.key_ink,
+                transform: 'translateY(1px)',
+            },
+            '@': {
+                disabled: {
+                    'true': {
+                        opacity: .4,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_switch) = class $mol_switch extends ($.$mol_check_list) {
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+	};
+	($mol_mem(($.$mol_switch.prototype), "value"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Buttons which switching the state
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_switch_demo
+         */
+        class $mol_switch extends $.$mol_switch {
+            value(next) {
+                return $mol_state_session.value(`${this}.value()`, next) ?? '';
+            }
+            option_checked(key, next) {
+                if (next === undefined)
+                    return this.value() == key;
+                this.value(next ? key : '');
+                return next;
+            }
+        }
+        $$.$mol_switch = $mol_switch;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_switch) = class $bog_kit_switch extends ($.$mol_switch) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            One choice out of a few. The track is sunk into the panel and the answer
+            is a raised key sliding along it — the position is the answer, which is
+            why this one does not use the key colour: colour here would say "on", and
+            a radio group has no off.
+    
+            Stock $mol leaves these as bare words, legible but not operable-looking.
+        */
+        $mol_style_define($bog_kit_switch, {
+            gap: rem(.125),
+            alignSelf: 'flex-start',
+            flexWrap: 'wrap',
+            padding: {
+                top: rem(.1875),
+                bottom: rem(.1875),
+                left: rem(.1875),
+                right: rem(.1875),
+            },
+            border: { radius: $bog_kit.round_pill },
+            background: { color: $bog_kit.seam },
+            Option: {
+                minHeight: rem(2),
+                padding: {
+                    top: rem(.25),
+                    bottom: rem(.25),
+                    left: rem(.875),
+                    right: rem(.875),
+                },
+                border: { radius: $bog_kit.round_pill },
+                color: $bog_kit.ink,
+                /*
+                    The panel tone, not the raised one. A knob has to read against
+                    the track it runs in, and the track is the seam — on a white
+                    sheet the raised tint sits barely a step above it, which left
+                    the chosen option indistinguishable from the two beside it.
+                */
+                background: { color: $bog_kit.panel },
+                font: { weight: 500 },
+                transition: 'background-color .16s ease-out, color .16s ease-out',
+                ':not([mol_check_checked])': {
+                    color: $bog_kit.ink_soft,
+                    background: { color: 'transparent' },
+                    font: { weight: 400 },
+                    ':hover': {
+                        color: $bog_kit.ink,
+                        background: { color: 'transparent' },
+                    },
+                },
+                ':focus-visible': {
+                    outline: 'none',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Lighting mode of the Kit theme: `auto`, `light` or `dark`.
+     *
+     * Stored where `$mol_lights` keeps its own decision, so the plain
+     * `$mol_theme_auto` plugin and the Kit theme always agree. `auto` is the
+     * absence of a stored value, which is how `$mol_lights` falls back to the
+     * operating system.
+     */
+    function $bog_kit_lights(next) {
+        if (next === undefined) {
+            const stored = this.$mol_state_local.value('$mol_lights');
+            return stored === null ? 'auto' : stored ? 'light' : 'dark';
+        }
+        this.$mol_state_local.value('$mol_lights', next === 'auto' ? null : next === 'light');
+        return next;
+    }
+    $.$bog_kit_lights = $bog_kit_lights;
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_lights_pick) = class $bog_kit_lights_pick extends ($.$bog_kit_switch) {
+		lights(next){
+			if(next !== undefined) return next;
+			return "auto";
+		}
+		value(next){
+			return (this.lights(next));
+		}
+		options(){
+			return {
+				"auto": "Auto", 
+				"light": "Light", 
+				"dark": "Dark"
+			};
+		}
+	};
+	($mol_mem(($.$bog_kit_lights_pick.prototype), "lights"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Picks the lighting mode: follow the operating system, or pin light or dark.
+         * Writes through to `$bog_kit_lights`, so every view on the page turns over
+         * at once.
+         */
+        class $bog_kit_lights_pick extends $.$bog_kit_lights_pick {
+            lights(next) {
+                return this.$.$bog_kit_lights(next);
+            }
+        }
+        $$.$bog_kit_lights_pick = $bog_kit_lights_pick;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            Everything it looks like it inherits from $bog_kit_switch. All it adds is
+            running one size smaller and sitting still in a header full of taller
+            things.
+        */
+        $mol_style_define($bog_kit_lights_pick, {
+            alignSelf: 'center',
+            Option: {
+                minHeight: rem(1.75),
+                padding: {
+                    top: rem(.125),
+                    bottom: rem(.125),
+                    left: rem(.625),
+                    right: rem(.625),
+                },
+                font: { size: rem(.8125) },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_input) = class $bog_kit_input extends ($.$mol_string) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            A field is the one thing in the Kit that goes the other way: it is sunk
+            into the panel rather than raised out of it, because it is a place to put
+            something in. Focus rings it in the key colour.
+        */
+        $mol_style_define($bog_kit_input, {
+            minHeight: rem(2.5),
+            padding: {
+                top: rem(.5),
+                bottom: rem(.5),
+                left: rem(.875),
+                right: rem(.875),
+            },
+            border: { radius: $bog_kit.round_field },
+            background: { color: $bog_kit.raise },
+            color: $bog_kit.ink,
+            transition: 'box-shadow .16s ease-out',
+            ':hover': {
+                background: { color: $bog_kit.raise },
+            },
+            ':focus': {
+                outline: 'none',
+                color: $bog_kit.ink,
+            },
+            '::placeholder': {
+                color: $bog_kit.ink_soft,
+                opacity: .75,
+            },
+            ':disabled': {
+                background: { color: 'transparent' },
+                color: $bog_kit.ink_soft,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_link) = class $bog_kit_link extends ($.$mol_link) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            Where the key colour earns its keep. A link is a quiet line of the menu
+            until it is the page you are on, and then it is a filled key — the same
+            shape and the same colour as the primary action, because "the thing that
+            is happening" is one idea, not two.
+        */
+        $mol_style_define($bog_kit_link, {
+            minHeight: rem(2.25),
+            minWidth: 0,
+            gap: rem(.4375),
+            padding: {
+                top: rem(.375),
+                bottom: rem(.375),
+                left: rem(.875),
+                right: rem(.875),
+            },
+            border: { radius: $bog_kit.round_pill },
+            color: $bog_kit.ink,
+            background: { color: 'transparent' },
+            textDecoration: 'none',
+            transition: 'background-color .16s ease-out, color .16s ease-out',
+            ':hover': {
+                color: $bog_kit.ink,
+                background: { color: $bog_kit.seam },
+            },
+            ':focus-visible': {
+                outline: 'none',
+                background: { color: $bog_kit.seam },
+            },
+            ':active': {
+                color: $bog_kit.key,
+            },
+            '@': {
+                mol_link_current: {
+                    'true': {
+                        color: $bog_kit.key_ink,
+                        background: { color: $bog_kit.key },
+                        textShadow: 'none',
+                        font: { weight: 500 },
+                        ':hover': {
+                            color: $bog_kit.key_ink,
+                            background: { color: $bog_kit.key },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_tick) = class $mol_icon_tick extends ($.$mol_icon) {
+		path(){
+			return "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_check_box) = class $mol_check_box extends ($.$mol_check) {
+		Icon(){
+			const obj = new this.$.$mol_icon_tick();
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_check_box.prototype), "Icon"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/box/box.view.css", "[mol_check_box_icon] {\n\tborder-radius: var(--mol_gap_round);\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_line);\n\tcolor: var(--mol_theme_shade);\n\theight: 1rem;\n\talign-self: center;\n}\n\n[mol_check]:not([mol_check_checked]) > [mol_check_box_icon] {\n\tfill: transparent;\n}\n\n[mol_check]:not([disabled]) > [mol_check_box_icon] {\n\tbackground: var(--mol_theme_field);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_kit_check_box) = class $bog_kit_check_box extends ($.$mol_check_box) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/kit/check/box/box.view.css", "/*\n\t$mol_check_box fills its own box from a rule three attributes deep:\n\n\t\t[mol_check]:not([disabled]) > [mol_check_box_icon]\n\n\tEverything $mol_style_define emits for a sub-view goes inside :where(), which\n\tcarries no specificity at all, so the typed sheet cannot outweigh that rule\n\thowever it is written. The fill is stated here instead, where the selector\n\tcan be given the weight it needs. Geometry stays in the typed sheet next door.\n*/\n\n[mol_check][bog_kit_check_box]:not([disabled]) > [bog_kit_check_box_icon] {\n\tbackground: var(--bog_kit_raise);\n\tcolor: transparent;\n\tbox-shadow: var(--bog_kit_sink);\n}\n\n[mol_check][bog_kit_check_box][mol_check_checked]:not([disabled]) > [bog_kit_check_box_icon] {\n\tbackground: var(--bog_kit_key);\n\tcolor: var(--bog_kit_key_ink);\n\tbox-shadow: none;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            The row is not a surface — only the box is. Ticking it fills the box with
+            the key colour and lets the tick show through, the same figure-ground flip
+            the primary key uses, so "on" reads the same way everywhere in the Kit.
+        */
+        $mol_style_define($bog_kit_check_box, {
+            minHeight: rem(2.25),
+            alignSelf: 'flex-start',
+            gap: rem(.625),
+            padding: {
+                top: rem(.3125),
+                bottom: rem(.3125),
+                left: rem(.25),
+                right: rem(.625),
+            },
+            border: { radius: $bog_kit.round_pill },
+            color: $bog_kit.ink,
+            background: { color: 'transparent' },
+            box: { shadow: 'none' },
+            // The fill of the box lives in box.view.css — see the note there.
+            Icon: {
+                width: rem(1.375),
+                height: rem(1.375),
+                alignSelf: 'center',
+                border: { radius: rem(.5) },
+                transition: 'background-color .16s ease-out',
+                box: { shadow: 'none' },
+            },
+            ':hover': {
+                color: $bog_kit.ink,
+                background: { color: 'transparent' },
+            },
+            ':focus-visible': {
+                outline: 'none',
+            },
+            '@': {
+                disabled: {
+                    'true': {
+                        color: $bog_kit.ink_soft,
+                        opacity: .5,
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_check_expand) = class $mol_check_expand extends ($.$mol_check) {
+		level_style(){
+			return "0px";
+		}
+		expanded(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		expandable(){
+			return false;
+		}
+		Icon(){
+			const obj = new this.$.$mol_icon_chevron();
+			return obj;
+		}
+		level(){
+			return 0;
+		}
+		style(){
+			return {...(super.style()), "paddingLeft": (this.level_style())};
+		}
+		checked(next){
+			return (this.expanded(next));
+		}
+		enabled(){
+			return (this.expandable());
+		}
+	};
+	($mol_mem(($.$mol_check_expand.prototype), "expanded"));
+	($mol_mem(($.$mol_check_expand.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Expander for trees, lists, etc
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_check_expand_demo
+         */
+        class $mol_check_expand extends $.$mol_check_expand {
+            level_style() {
+                return `${this.level() * 1 - 1}rem`;
+            }
+            expandable() {
+                return this.expanded() !== null;
+            }
+        }
+        $$.$mol_check_expand = $mol_check_expand;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/check/expand/expand.view.css", "[mol_check_expand] {\n\tmin-width: 20px;\n}\n\n:where([mol_check_expand][disabled]) [mol_check_expand_icon] {\n\tvisibility: hidden;\n}\n\n[mol_check_expand_icon] {\n\tbox-shadow: none;\n\tmargin-inline-start: -0.375rem;\n}\n[mol_check_expand_icon] {\n\ttransform: rotateZ(0deg);\n}\n\n:where([mol_check_checked]) [mol_check_expand_icon] {\n\ttransform: rotateZ(90deg);\n}\n\n[mol_check_expand_icon] {\n\tvertical-align: text-top;\n}\n\n[mol_check_expand_label] {\n\tmargin-inline-start: 0;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_check_expand) = class $bog_kit_check_expand extends ($.$mol_check_expand) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        /*
+            The trigger of a spoiler and of a tree branch. It is a hinge, not a key,
+            so it stays flat on the panel: a chevron, the label, and the key colour
+            under the pointer.
+        */
+        $mol_style_define($bog_kit_check_expand, {
+            minHeight: rem(2),
+            alignSelf: 'flex-start',
+            gap: rem(.4375),
+            padding: {
+                top: rem(.3125),
+                bottom: rem(.3125),
+                left: rem(.25),
+                right: rem(.625),
+            },
+            border: { radius: $bog_kit.round_pill },
+            color: $bog_kit.ink,
+            background: { color: 'transparent' },
+            font: { weight: 500 },
+            box: { shadow: 'none' },
+            Icon: {
+                color: $bog_kit.ink_soft,
+            },
+            ':hover': {
+                color: $bog_kit.key,
+                background: { color: 'transparent' },
+                box: { shadow: 'none' },
+                Icon: {
+                    color: $bog_kit.key,
+                },
+            },
+            ':focus-visible': {
+                outline: 'none',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_stack) = class $mol_stack extends ($.$mol_view) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/stack/stack.view.css", "[mol_stack] {\n\tdisplay: grid;\n\t/* width: max-content; */\n\t/* height: max-content; */\n\talign-items: flex-start;\n\tjustify-items: flex-start;\n}\n\n[mol_stack] > * {\n\tgrid-area: 1/1;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_text_code_token) = class $mol_text_code_token extends ($.$mol_dimmer) {
+		type(){
+			return "";
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_token_type": (this.type())};
+		}
+	};
+	($.$mol_text_code_token_link) = class $mol_text_code_token_link extends ($.$mol_text_code_token) {
+		uri(){
+			return "";
+		}
+		dom_name(){
+			return "a";
+		}
+		type(){
+			return "code-link";
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"href": (this.uri()), 
+				"target": "_blank"
+			};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { hsla } = $mol_style_func;
+        $mol_style_define($mol_text_code_token, {
+            display: 'inline',
+            textDecoration: 'none',
+            '@': {
+                mol_text_code_token_type: {
+                    'code-keyword': {
+                        color: hsla(0, 70, 60, 1),
+                    },
+                    'code-field': {
+                        color: hsla(300, 70, 50, 1),
+                    },
+                    'code-tag': {
+                        color: hsla(330, 70, 50, 1),
+                    },
+                    'code-global': {
+                        color: hsla(30, 80, 50, 1),
+                    },
+                    'code-decorator': {
+                        color: hsla(180, 40, 50, 1),
+                    },
+                    'code-punctuation': {
+                        color: hsla(0, 0, 50, 1),
+                    },
+                    'code-string': {
+                        color: hsla(90, 40, 50, 1),
+                    },
+                    'code-number': {
+                        color: hsla(55, 65, 45, 1),
+                    },
+                    'code-call': {
+                        color: hsla(270, 60, 50, 1),
+                    },
+                    'code-link': {
+                        color: hsla(210, 60, 50, 1),
+                    },
+                    'code-comment-inline': {
+                        opacity: .5,
+                    },
+                    'code-comment-block': {
+                        opacity: .5,
+                    },
+                    'code-docs': {
+                        opacity: .75,
+                    },
+                },
+            }
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code_line) = class $mol_text_code_line extends ($.$mol_paragraph) {
+		numb(){
+			return 0;
+		}
+		token_type(id){
+			return "";
+		}
+		token_text(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		token_uri(id){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		minimal_height(){
+			return 24;
+		}
+		numb_showed(){
+			return true;
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		Numb(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.numb())]);
+			return obj;
+		}
+		Token(id){
+			const obj = new this.$.$mol_text_code_token();
+			(obj.type) = () => ((this.token_type(id)));
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			return obj;
+		}
+		Token_link(id){
+			const obj = new this.$.$mol_text_code_token_link();
+			(obj.haystack) = () => ((this.token_text(id)));
+			(obj.needle) = () => ((this.highlight()));
+			(obj.uri) = () => ((this.token_uri(id)));
+			return obj;
+		}
+		find_pos(id){
+			return null;
+		}
+	};
+	($mol_mem(($.$mol_text_code_line.prototype), "Numb"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token_link"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_syntax2_md_flow = new $mol_syntax2({
+        'quote': /^((?:(?:[>"] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'spoiler': /^((?:(?:[\?] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'header': /^([#=]+)(\s+)(.*?)$([\n\r]*)/,
+        'list': /^((?:(?: ?([*+-])|(?:\d+[\.\)])+) +(?:[^]*?)$(?:\r?\n?)(?:  (?:[^]*?)$(?:\r?\n?))*)+)((?:\r?\n)*)/,
+        'code': /^(```)([\w.-]*)[\r\n]+([^]*?)^(```)$([\n\r]*)/,
+        'code-indent': /^((?:(?: |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
+        'table': /((?:^\|.+?$\r?\n?)+)([\n\r]*)/,
+        'grid': /((?:^ *! .*?$\r?\n?)+)([\n\r]*)/,
+        'cut': /^--+$((?:\r?\n)*)/,
+        'block': /^(.*?)$((?:\r?\n)*)/,
+    });
+    $.$mol_syntax2_md_line = new $mol_syntax2({
+        'strong': /\*\*(.+?)\*\*/,
+        'emphasis': /\*(?!\s)(.+?)\*|\/\/(?!\s)(.+?)\/\//,
+        'code': /```(.+?)```|;;(.+?);;|`(.+?)`/,
+        'insert': /\+\+(.+?)\+\+/,
+        'delete': /~~(.+?)~~|--(.+?)--/,
+        // 'remark' : /(\()(.+?)(\))/ ,
+        // 'quote' : /(")(.+?)(")/ ,
+        'embed': /""(?:(.*?)\\)?(.*?)""/,
+        'link': /\\\\(?:(.*?)\\)?(.*?)\\\\/,
+        'image-link': /!\[([^\[\]]*?)\]\((.*?)\)/,
+        'text-link': /\[(.*?(?:\[[^\[\]]*?\][^\[\]]*?)*)\]\((.*?)\)/,
+        'text-link-http': /\b(https?:\/\/[^\s,.;:!?")]+(?:[,.;:!?")][^\s,.;:!?")]+)+)/,
+    });
+    $.$mol_syntax2_md_code = new $mol_syntax2({
+        'code-indent': /\t+/,
+        'code-docs': /\/\/\/.*?$/,
+        'code-comment-block': /(?:\/\*[^]*?\*\/|\/\+[^]*?\+\/|<![^]*?>)/,
+        'code-link': /(?:\w+:\/\/|#)\S+?(?=\s|\\\\|""|$)/,
+        'code-comment-inline': /\/\/.*?(?:$|\/\/)|- \\(?!\\).*|(?<=^| )#!? .*/,
+        'code-string': /(?:".*?"|'.*?'|`.*?`| ?\\\\.+?\\\\|\/.+?\/[dygimsu]*(?!\p{Letter})|[ \t]*\\[^\n]*)/u,
+        'code-number': /[+-]?(?:\d*\.)?\d+(\uFE0F.|\w*)/,
+        'code-call': /\.?\w+(?=\()/,
+        'code-sexpr': /\((\w+ )/,
+        'code-field': /(?:(?<=\.|::|->)[a-z][\w-]*|(?<=[, \t] |\t)[\w-]+\??:(?!\/\/|:))/,
+        'code-keyword': /(?<=^|\t|[ )(}{=] )((throw|readonly|unknown|keyof|typeof|never|from|class|struct|interface|type|function|extends|implements|module|namespace|import|export|include|require|var|val|let|const|for|do|while|until|in|out|of|new|if|then|else|switch|case|return|async|await|yield|try|catch|break|continue|get|set|public|private|protected|void|int|float|ref)( |$|;))+/,
+        'code-global': /[$]+\w*|\b[A-Z][a-z0-9]+[A-Z]\w*/,
+        'code-word': /\w+/,
+        'code-decorator': /(?<=^|  |\t)@\s*\S+/,
+        'code-tag': /<\/?[\w-]+\/?>?|&\w+;/,
+        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+?/,
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_text_code_line extends $.$mol_text_code_line {
+            maximal_width() {
+                return this.text().length * this.letter_width();
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            tokens(path) {
+                const tokens = [];
+                const text = (path.length > 0)
+                    // @FIXME: this logic compatible only with `string`
+                    ? this.tokens(path.slice(0, path.length - 1))[path[path.length - 1]].found.slice(1, -1)
+                    : this.text();
+                this.syntax().tokenize(text, (name, found, chunks) => {
+                    if (name === 'code-sexpr') {
+                        tokens.push({ name: 'code-punctuation', found: '(', chunks: [] });
+                        tokens.push({ name: 'code-call', found: chunks[0], chunks: [] });
+                    }
+                    else {
+                        tokens.push({ name, found, chunks });
+                    }
+                });
+                return tokens;
+            }
+            sub() {
+                return [
+                    ...this.numb_showed() ? [this.Numb()] : [],
+                    ...this.row_content([])
+                ];
+            }
+            row_content(path) {
+                const content = this.tokens(path).map((t, i) => this.Token([...path, i]));
+                return content.length ? content : ['\n'];
+            }
+            Token(path) {
+                return this.token_type(path) === 'code-link' ? this.Token_link(path) : super.Token(path);
+            }
+            token_type(path) {
+                return this.tokens([...path.slice(0, path.length - 1)])[path[path.length - 1]].name;
+            }
+            token_content(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                switch (token.name) {
+                    case 'code-string': return [
+                        token.found[0],
+                        ...this.row_content(path),
+                        token.found[token.found.length - 1],
+                    ];
+                    default: return [token.found];
+                }
+            }
+            token_text(path) {
+                const tokens = this.tokens([...path.slice(0, path.length - 1)]);
+                const token = tokens[path[path.length - 1]];
+                return token.found;
+            }
+            token_uri(path) {
+                const uri = this.token_text(path);
+                return this.uri_resolve(uri);
+            }
+            *view_find(check, path = []) {
+                if (check(this, this.text())) {
+                    yield [...path, this];
+                }
+            }
+            find_pos(offset) {
+                return this.find_token_pos([offset]);
+            }
+            find_token_pos([offset, ...path]) {
+                for (const [index, token] of this.tokens(path).entries()) {
+                    if (token.found.length >= offset) {
+                        const token = this.Token([...path, index]);
+                        return { token, offset };
+                    }
+                    else {
+                        offset -= token.found.length;
+                    }
+                }
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "row_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_type", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "token_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code_line.prototype, "find_token_pos", null);
+        $$.$mol_text_code_line = $mol_text_code_line;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $mol_style_unit;
+        $mol_style_define($mol_text_code_line, {
+            display: 'block',
+            position: 'relative',
+            font: {
+                family: 'monospace',
+            },
+            Numb: {
+                textAlign: 'end',
+                color: $mol_theme.shade,
+                width: rem(3),
+                margin: {
+                    inlineStart: '-4rem',
+                },
+                display: 'inline-block',
+                whiteSpace: 'nowrap',
+                userSelect: 'none',
+                position: 'absolute',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_code) = class $mol_text_code extends ($.$mol_stack) {
+		sidebar_showed(){
+			return false;
+		}
+		render_visible_only(){
+			return false;
+		}
+		row_numb(id){
+			return 0;
+		}
+		row_theme(id){
+			return "";
+		}
+		row_text(id){
+			return "";
+		}
+		syntax(){
+			return null;
+		}
+		uri_resolve(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		Row(id){
+			const obj = new this.$.$mol_text_code_line();
+			(obj.numb_showed) = () => ((this.sidebar_showed()));
+			(obj.numb) = () => ((this.row_numb(id)));
+			(obj.theme) = () => ((this.row_theme(id)));
+			(obj.text) = () => ((this.row_text(id)));
+			(obj.syntax) = () => ((this.syntax()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			return obj;
+		}
+		rows(){
+			return [(this.Row("0"))];
+		}
+		Rows(){
+			const obj = new this.$.$mol_list();
+			(obj.render_visible_only) = () => ((this.render_visible_only()));
+			(obj.rows) = () => ((this.rows()));
+			return obj;
+		}
+		text_export(){
+			return "";
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_code_Copy_hint")));
+			(obj.text) = () => ((this.text_export()));
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_code_sidebar_showed": (this.sidebar_showed())};
+		}
+		text(){
+			return "";
+		}
+		text_lines(){
+			return [];
+		}
+		find_pos(id){
+			return null;
+		}
+		uri_base(){
+			return "";
+		}
+		row_themes(){
+			return [];
+		}
+		sub(){
+			return [(this.Rows()), (this.Copy())];
+		}
+	};
+	($mol_mem_key(($.$mol_text_code.prototype), "Row"));
+	($mol_mem(($.$mol_text_code.prototype), "Rows"));
+	($mol_mem(($.$mol_text_code.prototype), "Copy"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Code visualizer.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_code_demo
+         */
+        class $mol_text_code extends $.$mol_text_code {
+            render_visible_only() {
+                return this.$.$mol_support_css_overflow_anchor();
+            }
+            text_lines() {
+                return (this.text() ?? '').split('\n');
+            }
+            rows() {
+                return this.text_lines().map((_, index) => this.Row(index + 1));
+            }
+            row_text(index) {
+                return this.text_lines()[index - 1];
+            }
+            row_numb(index) {
+                return index;
+            }
+            find_pos(offset) {
+                for (const [index, line] of this.text_lines().entries()) {
+                    if (line.length >= offset) {
+                        return this.Row(index + 1).find_pos(offset);
+                    }
+                    else {
+                        offset -= line.length + 1;
+                    }
+                }
+                return null;
+            }
+            sub() {
+                return [
+                    this.Rows(),
+                    ...this.sidebar_showed() ? [this.Copy()] : []
+                ];
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            uri_base() {
+                return $mol_dom_context.document.location.href;
+            }
+            uri_resolve(uri) {
+                if (/^(\w+script+:)+/.test(uri))
+                    return null;
+                try {
+                    const url = new URL(uri, this.uri_base());
+                    return url.toString();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            text_export() {
+                return this.text() + '\n';
+            }
+            row_theme(row) {
+                return this.row_themes()[row - 1];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "text_lines", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "row_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "find_pos", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text_code.prototype, "sub", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text_code.prototype, "uri_resolve", null);
+        $$.$mol_text_code = $mol_text_code;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem, px } = $mol_style_unit;
+        $mol_style_define($mol_text_code, {
+            whiteSpace: 'pre-wrap',
+            font: {
+                family: 'monospace',
+            },
+            Rows: {
+                padding: $mol_gap.text,
+                minWidth: 0,
+            },
+            Row: {
+                font: {
+                    family: 'inherit',
+                },
+            },
+            Copy: {
+                alignSelf: 'flex-start',
+                justifySelf: 'flex-start',
+            },
+            '@': {
+                'mol_text_code_sidebar_showed': {
+                    true: {
+                        $mol_text_code_line: {
+                            margin: {
+                                inlineStart: '1.75rem',
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_float) = class $mol_float extends ($.$mol_view) {
+		style(){
+			return {...(super.style()), "minHeight": "auto"};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/float/float.view.css", "[mol_float] {\n\tposition: sticky;\n\ttop: 0;\n\tleft: 0;\n\tz-index: var(--mol_layer_float);\n\topacity: 1;\n\ttransition: opacity .25s ease-in;\n\tdisplay: block;\n\tbackground: linear-gradient( var(--mol_theme_card), var(--mol_theme_card) ), var(--mol_theme_back);\n\tbox-shadow: 0 0 .5rem hsla(0,0%,0%,.25);\n}\n\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_grid) = class $mol_grid extends ($.$mol_view) {
+		rows(){
+			return [];
+		}
+		Table(){
+			const obj = new this.$.$mol_grid_table();
+			(obj.sub) = () => ((this.rows()));
+			return obj;
+		}
+		head_cells(){
+			return [];
+		}
+		cells(id){
+			return [];
+		}
+		cell_content(id){
+			return [];
+		}
+		cell_content_text(id){
+			return (this.cell_content(id));
+		}
+		cell_content_number(id){
+			return (this.cell_content(id));
+		}
+		col_head_content(id){
+			return [];
+		}
+		cell_level(id){
+			return 0;
+		}
+		cell_expanded(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		needle(){
+			return "";
+		}
+		cell_value(id){
+			return "";
+		}
+		Cell_dimmer(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.needle) = () => ((this.needle()));
+			(obj.haystack) = () => ((this.cell_value(id)));
+			return obj;
+		}
+		row_height(){
+			return 32;
+		}
+		row_ids(){
+			return [];
+		}
+		row_id(id){
+			return null;
+		}
+		col_ids(){
+			return [];
+		}
+		records(){
+			return {};
+		}
+		record(id){
+			return null;
+		}
+		hierarchy(){
+			return null;
+		}
+		hierarchy_col(){
+			return "";
+		}
+		minimal_width(){
+			return 0;
+		}
+		sub(){
+			return [(this.Head()), (this.Table())];
+		}
+		Head(){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.head_cells()));
+			return obj;
+		}
+		Row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.minimal_height) = () => ((this.row_height()));
+			(obj.minimal_width) = () => ((this.minimal_width()));
+			(obj.cells) = () => ((this.cells(id)));
+			return obj;
+		}
+		Cell(id){
+			const obj = new this.$.$mol_view();
+			return obj;
+		}
+		cell(id){
+			return null;
+		}
+		Cell_text(id){
+			const obj = new this.$.$mol_grid_cell();
+			(obj.sub) = () => ((this.cell_content_text(id)));
+			return obj;
+		}
+		Cell_number(id){
+			const obj = new this.$.$mol_grid_number();
+			(obj.sub) = () => ((this.cell_content_number(id)));
+			return obj;
+		}
+		Col_head(id){
+			const obj = new this.$.$mol_float();
+			(obj.dom_name) = () => ("th");
+			(obj.sub) = () => ((this.col_head_content(id)));
+			return obj;
+		}
+		Cell_branch(id){
+			const obj = new this.$.$mol_check_expand();
+			(obj.level) = () => ((this.cell_level(id)));
+			(obj.label) = () => ((this.cell_content(id)));
+			(obj.expanded) = (next) => ((this.cell_expanded(id, next)));
+			return obj;
+		}
+		Cell_content(id){
+			return [(this.Cell_dimmer(id))];
+		}
+	};
+	($mol_mem(($.$mol_grid.prototype), "Table"));
+	($mol_mem_key(($.$mol_grid.prototype), "cell_expanded"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_dimmer"));
+	($mol_mem(($.$mol_grid.prototype), "Head"));
+	($mol_mem_key(($.$mol_grid.prototype), "Row"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_text"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_number"));
+	($mol_mem_key(($.$mol_grid.prototype), "Col_head"));
+	($mol_mem_key(($.$mol_grid.prototype), "Cell_branch"));
+	($.$mol_grid_table) = class $mol_grid_table extends ($.$mol_list) {};
+	($.$mol_grid_row) = class $mol_grid_row extends ($.$mol_view) {
+		cells(){
+			return [];
+		}
+		sub(){
+			return (this.cells());
+		}
+	};
+	($.$mol_grid_cell) = class $mol_grid_cell extends ($.$mol_view) {
+		minimal_height(){
+			return 40;
+		}
+	};
+	($.$mol_grid_number) = class $mol_grid_number extends ($.$mol_grid_cell) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_grid extends $.$mol_grid {
+            head_cells() {
+                return this.col_ids().map(colId => this.Col_head(colId));
+            }
+            col_head_content(colId) {
+                return [colId];
+            }
+            rows() {
+                return this.row_ids().map(id => this.Row(id));
+            }
+            cells(row_id) {
+                return this.col_ids().map(col_id => this.Cell({ row: row_id, col: col_id }));
+            }
+            col_type(col_id) {
+                if (col_id === this.hierarchy_col())
+                    return 'branch';
+                const rowFirst = this.row_id(0);
+                const val = this.record(rowFirst[rowFirst.length - 1])[col_id];
+                if (typeof val === 'number')
+                    return 'number';
+                return 'text';
+            }
+            Cell(id) {
+                switch (this.col_type(id.col).valueOf()) {
+                    case 'branch': return this.Cell_branch(id);
+                    case 'number': return this.Cell_number(id);
+                }
+                return this.Cell_text(id);
+            }
+            cell_content(id) {
+                return [this.record(id.row[id.row.length - 1])[id.col]];
+            }
+            cell_content_text(id) {
+                return this.cell_content(id).map(val => typeof val === 'object' ? JSON.stringify(val) : val);
+            }
+            records() {
+                return [];
+            }
+            record(id) {
+                return this.records()[id];
+            }
+            record_ids() {
+                return Object.keys(this.records());
+            }
+            row_id(index) {
+                return this.row_ids().slice(index, index + 1).valueOf()[0];
+            }
+            col_ids() {
+                const rowFirst = this.row_id(0);
+                if (rowFirst === void 0)
+                    return [];
+                const record = this.record(rowFirst[rowFirst.length - 1]);
+                if (!record)
+                    return [];
+                return Object.keys(record);
+            }
+            hierarchy() {
+                const hierarchy = {};
+                const root = hierarchy[''] = {
+                    id: '',
+                    parent: null,
+                    sub: [],
+                };
+                this.record_ids().map(id => {
+                    root.sub.push(hierarchy[id] = {
+                        id,
+                        parent: root,
+                        sub: [],
+                    });
+                });
+                return hierarchy;
+            }
+            row_sub_ids(row) {
+                return this.hierarchy()[row[row.length - 1]].sub.map(child => row.concat(child.id));
+            }
+            row_root_id() {
+                return [''];
+            }
+            cell_level(id) {
+                return id.row.length - 1;
+            }
+            row_ids() {
+                const next = [];
+                const add = (row) => {
+                    next.push(row);
+                    if (this.row_expanded(row)) {
+                        this.row_sub_ids(row).forEach(child => add(child));
+                    }
+                };
+                this.row_sub_ids(this.row_root_id()).forEach(child => add(child));
+                return next;
+            }
+            row_expanded(row_id, next) {
+                if (!this.row_sub_ids(row_id).length)
+                    return null;
+                const key = `row_expanded(${JSON.stringify(row_id)})`;
+                const next2 = $mol_state_session.value(key, next);
+                return (next2 == null) ? this.row_expanded_default(row_id) : next2;
+            }
+            row_expanded_default(row_id) {
+                return true;
+            }
+            cell_expanded(id, next) {
+                return this.row_expanded(id.row, next);
+            }
+            sub() {
+                this.head_cells();
+                this.rows();
+                return super.sub();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "head_cells", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_grid.prototype, "col_type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "record_ids", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "hierarchy", null);
+        __decorate([
+            $mol_mem
+        ], $mol_grid.prototype, "row_ids", null);
+        $$.$mol_grid = $mol_grid;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/grid/grid.view.css", "[mol_grid] {\n\tdisplay: block;\n\tflex: 0 1 auto;\n\tposition: relative;\n\toverflow-x: auto;\n}\n\n[mol_grid_gap] {\n\tposition: absolute;\n\tpadding: .1px;\n\ttop: 0;\n\ttransform: translateZ(0);\n}\n\n[mol_grid_table] {\n\tborder-spacing: 0;\n\tdisplay: table-row-group;\n\tposition: relative;\n}\n\n[mol_grid_table] > * {\n\tdisplay: table-row;\n\ttransition: none;\n}\n\n[mol_grid_head] > *,\n[mol_grid_table] > * > * {\n\tdisplay: table-cell;\n\tpadding: var(--mol_gap_text);\n\twhite-space: nowrap;\n\tvertical-align: middle;\n\tbox-shadow: inset 2px 2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_row]:where(:first-child) > * {\n\tbox-shadow: inset 2px 0 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_table] > * > *:where(:first-child) {\n\tbox-shadow: inset 0px 2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_head] > * {\n\tbox-shadow: inset 2px -2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_head] > *:where(:first-child) {\n\tbox-shadow: inset 0px -2px 0 -1px var(--mol_theme_line);\n}\n\n[mol_grid_table] > [mol_grid_row]:where(:first-child) > *:where(:first-child) {\n\tbox-shadow: none;\n}\t\n\n[mol_grid_head] {\n\tdisplay: table-row;\n\ttransform: none !important;\n}\n\n/* [mol_grid_cell_number] {\n\ttext-align: end;\n} */\n\n[mol_grid_col_head] {\n\tfont-weight: inherit;\n\ttext-align: inherit;\n\tdisplay: table-cell;\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_grid_cell_dimmer] {\n\tdisplay: inline-block;\n\tvertical-align: inherit;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_link_iconed) = class $mol_link_iconed extends ($.$mol_link) {
+		icon(){
+			return "";
+		}
+		Icon(){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.icon()));
+			(obj.title) = () => ("");
+			return obj;
+		}
+		title(){
+			return (this.uri());
+		}
+		sub(){
+			return [(this.Icon())];
+		}
+		content(){
+			return [(this.title())];
+		}
+		host(){
+			return "";
+		}
+	};
+	($mol_mem(($.$mol_link_iconed.prototype), "Icon"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_link_iconed extends $.$mol_link_iconed {
+            icon() {
+                return `https://favicon.yandex.net/favicon/${this.host()}?color=0,0,0,0&size=32&stub=1`;
+                // return `https://api.faviconkit.com/${ this.host() }/16`
+            }
+            host() {
+                const base = this.$.$mol_state_arg.href();
+                const url = new URL(this.uri(), base);
+                return url.hostname;
+            }
+            title() {
+                const uri = this.uri();
+                const host = this.host();
+                const suffix = (host ? uri.split(this.host(), 2)[1] : uri)?.replace(/^[\/\?#!]+/, '');
+                return decodeURIComponent(suffix || host).replace(/^\//, ' ');
+            }
+            sub() {
+                return [
+                    ...this.host() ? [this.Icon()] : [],
+                    ...this.content() ? [' ', ...this.content()] : [],
+                ];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "icon", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "host", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "title", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link_iconed.prototype, "sub", null);
+        $$.$mol_link_iconed = $mol_link_iconed;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: baseline;\n\tdisplay: inline-flex;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1.5em;\n\twidth: 1em;\n\tflex: 0 0 auto;\n\tdisplay: inline-block;\n\talign-self: normal;\n\tvertical-align: top;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n\topacity: .75;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: var(--mol_theme_image);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_youtube) = class $mol_icon_youtube extends ($.$mol_icon) {
+		path(){
+			return "M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_embed_service) = class $mol_embed_service extends ($.$mol_check) {
+		active(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		title(){
+			return "";
+		}
+		video_preview(){
+			return "";
+		}
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.video_preview()));
+			return obj;
+		}
+		Hint(){
+			const obj = new this.$.$mol_icon_youtube();
+			return obj;
+		}
+		video_embed(){
+			return "";
+		}
+		Frame(){
+			const obj = new this.$.$mol_frame();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.video_embed()));
+			return obj;
+		}
+		uri(){
+			return "";
+		}
+		video_id(){
+			return "";
+		}
+		checked(next){
+			return (this.active(next));
+		}
+		sub(){
+			return [
+				(this.Image()), 
+				(this.Hint()), 
+				(this.Frame())
+			];
+		}
+	};
+	($mol_mem(($.$mol_embed_service.prototype), "active"));
+	($mol_mem(($.$mol_embed_service.prototype), "Image"));
+	($mol_mem(($.$mol_embed_service.prototype), "Hint"));
+	($mol_mem(($.$mol_embed_service.prototype), "Frame"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_service extends $.$mol_embed_service {
+            sub() {
+                return this.active()
+                    ? [this.Frame()]
+                    : [this.Image(), this.Hint()];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_service.prototype, "sub", null);
+        $$.$mol_embed_service = $mol_embed_service;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/embed/service/service.view.css", "[mol_embed_service] {\n\tpadding: 0;\n\tmax-width: 100%;\n}\n\n[mol_embed_service_image] {\n\tflex: auto 1 1;\n\twidth: 100vw;\n}\n\n[mol_embed_service_frame] {\n\twidth: 100vw;\n}\n\n[mol_embed_service_hint] {\n\tposition: absolute;\n    left: 50%;\n    top: 50%;\n    width: 50%;\n    height: 50%;\n    opacity: 0.3;\n    transform: translate(-50%, -50%);\n}\n\n[mol_embed_service]:hover [mol_embed_service_hint] {\n\topacity: .6;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_youtube) = class $mol_embed_youtube extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_youtube extends $.$mol_embed_youtube {
+            video_embed() {
+                return `https://www.youtube.com/embed/${encodeURIComponent(this.video_id())}?autoplay=1&loop=1`;
+            }
+            video_id() {
+                return this.uri().match(/^https\:\/\/www\.youtube\.com\/(?:embed\/|shorts\/|watch\?v=)([^\/&?#]+)/)?.[1]
+                    ?? this.uri().match(/^https\:\/\/youtu\.be\/([^\/&?#]+)/)?.[1]
+                    ?? 'about:blank';
+            }
+            video_preview() {
+                return `https://i.ytimg.com/vi/${this.video_id()}/sddefault.jpg`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_youtube.prototype, "video_preview", null);
+        $$.$mol_embed_youtube = $mol_embed_youtube;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_rutube) = class $mol_embed_rutube extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_rutube extends $.$mol_embed_rutube {
+            video_embed() {
+                return `https://rutube.ru/play/embed/${encodeURIComponent(this.video_id())}`;
+            }
+            video_id() {
+                return this.uri().match(/^https:\/\/rutube.ru\/video\/([^\/&?#]+)/)?.[1] ?? 'about:blank';
+            }
+            video_preview() {
+                return `https://rutube.ru/api/video/${this.video_id()}/thumbnail/?redirect=1`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_rutube.prototype, "video_preview", null);
+        $$.$mol_embed_rutube = $mol_embed_rutube;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_vklive) = class $mol_embed_vklive extends ($.$mol_embed_service) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_vklive extends $.$mol_embed_vklive {
+            video_embed() {
+                return `https://live.vkvideo.ru/app/embed/${this.channel_id()}/${this.video_id()}`;
+            }
+            channel_id() {
+                return this.uri().match(/^https:\/\/live\.vkvideo\.ru\/([^\/&?#]+)/)?.[1] ?? '';
+            }
+            video_id() {
+                return this.uri().match(/^https:\/\/live\.vkvideo\.ru\/[^\/&?#]+\/record\/([^\/&?#]+)/)?.[1] ?? '';
+            }
+            video_preview() {
+                return `https://images.live.vkvideo.ru/public_video_stream/record/${this.video_id()}/preview`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_embed", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "channel_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_id", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_vklive.prototype, "video_preview", null);
+        $$.$mol_embed_vklive = $mol_embed_vklive;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_embed_any) = class $mol_embed_any extends ($.$mol_view) {
+		title(){
+			return "";
+		}
+		uri(){
+			return "";
+		}
+		Image(){
+			const obj = new this.$.$mol_image();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Object(){
+			const obj = new this.$.$mol_embed_native();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Youtube(){
+			const obj = new this.$.$mol_embed_youtube();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Rutube(){
+			const obj = new this.$.$mol_embed_rutube();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+		Vklive(){
+			const obj = new this.$.$mol_embed_vklive();
+			(obj.title) = () => ((this.title()));
+			(obj.uri) = () => ((this.uri()));
+			return obj;
+		}
+	};
+	($mol_mem(($.$mol_embed_any.prototype), "Image"));
+	($mol_mem(($.$mol_embed_any.prototype), "Object"));
+	($mol_mem(($.$mol_embed_any.prototype), "Youtube"));
+	($mol_mem(($.$mol_embed_any.prototype), "Rutube"));
+	($mol_mem(($.$mol_embed_any.prototype), "Vklive"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_any extends $.$mol_embed_any {
+            type() {
+                try {
+                    const uri = this.uri();
+                    if (/\b(png|gif|jpg|jpeg|jfif|webp|svg)\b/.test(uri))
+                        return 'image';
+                    if (/^https:\/\/www\.youtube\.com\//.test(uri))
+                        return 'youtube';
+                    if (/^https:\/\/youtu\.be\//.test(uri))
+                        return 'youtube';
+                    if (/^https:\/\/rutube\.ru\//.test(uri))
+                        return 'rutube';
+                    if (/^https:\/\/live\.vkvideo\.ru\//.test(uri))
+                        return 'vklive';
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return 'image';
+                }
+                return 'object';
+            }
+            sub() {
+                switch (this.type()) {
+                    case 'image': return [this.Image()];
+                    case 'youtube': return [this.Youtube()];
+                    case 'rutube': return [this.Rutube()];
+                    case 'vklive': return [this.Vklive()];
+                    default: return [this.Object()];
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_embed_any.prototype, "type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_embed_any.prototype, "sub", null);
+        $$.$mol_embed_any = $mol_embed_any;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_expander) = class $mol_expander extends ($.$mol_list) {
+		expanded(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		expandable(){
+			return true;
+		}
+		label(){
+			return [(this.title())];
+		}
+		Trigger(){
+			const obj = new this.$.$mol_check_expand();
+			(obj.checked) = (next) => ((this.expanded(next)));
+			(obj.expandable) = () => ((this.expandable()));
+			(obj.label) = () => ((this.label()));
+			return obj;
+		}
+		Tools(){
+			return null;
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Trigger()), (this.Tools())]);
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content()));
+			return obj;
+		}
+		rows(){
+			return [(this.Label()), (this.Content())];
+		}
+	};
+	($mol_mem(($.$mol_expander.prototype), "expanded"));
+	($mol_mem(($.$mol_expander.prototype), "Trigger"));
+	($mol_mem(($.$mol_expander.prototype), "Label"));
+	($mol_mem(($.$mol_expander.prototype), "Content"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Component which expands any content on title click.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_expander_demo
+         */
+        class $mol_expander extends $.$mol_expander {
+            rows() {
+                return [
+                    this.Label(),
+                    ...this.expanded() ? [this.Content()] : []
+                ];
+            }
+            expandable() {
+                return this.content().length > 0;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_expander.prototype, "rows", null);
+        $$.$mol_expander = $mol_expander;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/expander/expander.view.css", "[mol_expander] {\n\tflex-direction: column;\n}\n\n[mol_expander_label] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_expander_trigger] {\n\tflex: auto;\n\tposition: relative;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_text) = class $mol_text extends ($.$mol_list) {
+		auto_scroll(){
+			return null;
+		}
+		block_content(id){
+			return [];
+		}
+		quote_text(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		uri_resolve(id){
+			return "";
+		}
+		code_sidebar_showed(){
+			return true;
+		}
+		list_type(id){
+			return "-";
+		}
+		list_text(id){
+			return "";
+		}
+		header_level(id){
+			return 1;
+		}
+		header_arg(id){
+			return {};
+		}
+		pre_text(id){
+			return "";
+		}
+		pre_themes(id){
+			return [];
+		}
+		table_head_cells(id){
+			return [];
+		}
+		table_rows(id){
+			return [];
+		}
+		table_cells(id){
+			return [];
+		}
+		table_cell_text(id){
+			return "";
+		}
+		grid_rows(id){
+			return [];
+		}
+		grid_cells(id){
+			return [];
+		}
+		grid_cell_text(id){
+			return "";
+		}
+		line_text(id){
+			return "";
+		}
+		line_type(id){
+			return "";
+		}
+		line_content(id){
+			return [];
+		}
+		code_syntax(){
+			return null;
+		}
+		link_uri(id){
+			return "";
+		}
+		link_host(id){
+			return "";
+		}
+		spoiler_label(id){
+			return "";
+		}
+		Spoiler_label(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.spoiler_label(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		spoiler_content(id){
+			return "";
+		}
+		Spoiler_content(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.spoiler_content(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		uri_base(){
+			return "";
+		}
+		text(){
+			return "";
+		}
+		param(){
+			return "";
+		}
+		flow_tokens(){
+			return [];
+		}
+		block_text(id){
+			return "";
+		}
+		auto(){
+			return [(this.auto_scroll())];
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.block_content(id)));
+			return obj;
+		}
+		Quote(id){
+			const obj = new this.$.$mol_text();
+			(obj.text) = () => ((this.quote_text(id)));
+			(obj.auto_scroll) = () => (null);
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		List(id){
+			const obj = new this.$.$mol_text_list();
+			(obj.type) = () => ((this.list_type(id)));
+			(obj.text) = () => ((this.list_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		item_index(id){
+			return 0;
+		}
+		Header(id){
+			const obj = new this.$.$mol_text_header();
+			(obj.minimal_height) = () => (40);
+			(obj.level) = () => ((this.header_level(id)));
+			(obj.content) = () => ((this.block_content(id)));
+			(obj.arg) = () => ((this.header_arg(id)));
+			return obj;
+		}
+		Pre(id){
+			const obj = new this.$.$mol_text_code();
+			(obj.text) = () => ((this.pre_text(id)));
+			(obj.row_themes) = () => ((this.pre_themes(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		Cut(id){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ("hr");
+			return obj;
+		}
+		Table(id){
+			const obj = new this.$.$mol_grid();
+			(obj.head_cells) = () => ((this.table_head_cells(id)));
+			(obj.rows) = () => ((this.table_rows(id)));
+			return obj;
+		}
+		Table_row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.table_cells(id)));
+			return obj;
+		}
+		Table_cell(id){
+			const obj = new this.$.$mol_text();
+			(obj.auto_scroll) = () => (null);
+			(obj.text) = () => ((this.table_cell_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		Grid(id){
+			const obj = new this.$.$mol_grid();
+			(obj.rows) = () => ((this.grid_rows(id)));
+			return obj;
+		}
+		Grid_row(id){
+			const obj = new this.$.$mol_grid_row();
+			(obj.cells) = () => ((this.grid_cells(id)));
+			return obj;
+		}
+		Grid_cell(id){
+			const obj = new this.$.$mol_text();
+			(obj.auto_scroll) = () => (null);
+			(obj.text) = () => ((this.grid_cell_text(id)));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.code_sidebar_showed) = () => ((this.code_sidebar_showed()));
+			return obj;
+		}
+		String(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.dom_name) = () => ("span");
+			(obj.needle) = () => ((this.highlight()));
+			(obj.haystack) = () => ((this.line_text(id)));
+			return obj;
+		}
+		Span(id){
+			const obj = new this.$.$mol_text_span();
+			(obj.dom_name) = () => ("span");
+			(obj.type) = () => ((this.line_type(id)));
+			(obj.sub) = () => ((this.line_content(id)));
+			return obj;
+		}
+		Code_line(id){
+			const obj = new this.$.$mol_text_code_line();
+			(obj.numb_showed) = () => (false);
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.text) = () => ((this.line_text(id)));
+			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
+			(obj.syntax) = () => ((this.code_syntax()));
+			return obj;
+		}
+		Link(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ((this.line_content(id)));
+			return obj;
+		}
+		Link_http(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ([(this.link_host(id))]);
+			return obj;
+		}
+		Embed(id){
+			const obj = new this.$.$mol_embed_any();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.title) = () => ((this.line_text(id)));
+			return obj;
+		}
+		Spoiler(id){
+			const obj = new this.$.$mol_expander();
+			(obj.label) = () => ([(this.Spoiler_label(id))]);
+			(obj.content) = () => ([(this.Spoiler_content(id))]);
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler_label"));
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler_content"));
+	($mol_mem_key(($.$mol_text.prototype), "Paragraph"));
+	($mol_mem_key(($.$mol_text.prototype), "Quote"));
+	($mol_mem_key(($.$mol_text.prototype), "List"));
+	($mol_mem_key(($.$mol_text.prototype), "Header"));
+	($mol_mem_key(($.$mol_text.prototype), "Pre"));
+	($mol_mem_key(($.$mol_text.prototype), "Cut"));
+	($mol_mem_key(($.$mol_text.prototype), "Table"));
+	($mol_mem_key(($.$mol_text.prototype), "Table_row"));
+	($mol_mem_key(($.$mol_text.prototype), "Table_cell"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid_row"));
+	($mol_mem_key(($.$mol_text.prototype), "Grid_cell"));
+	($mol_mem_key(($.$mol_text.prototype), "String"));
+	($mol_mem_key(($.$mol_text.prototype), "Span"));
+	($mol_mem_key(($.$mol_text.prototype), "Code_line"));
+	($mol_mem_key(($.$mol_text.prototype), "Link"));
+	($mol_mem_key(($.$mol_text.prototype), "Link_http"));
+	($mol_mem_key(($.$mol_text.prototype), "Embed"));
+	($mol_mem_key(($.$mol_text.prototype), "Spoiler"));
+	($.$mol_text_header) = class $mol_text_header extends ($.$mol_paragraph) {
+		arg(){
+			return {};
+		}
+		content(){
+			return [];
+		}
+		Link(){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.arg()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_header_Link_hint")));
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		level(){
+			return 1;
+		}
+		sub(){
+			return [(this.Link())];
+		}
+	};
+	($mol_mem(($.$mol_text_header.prototype), "Link"));
+	($.$mol_text_span) = class $mol_text_span extends ($.$mol_paragraph) {
+		type(){
+			return "";
+		}
+		dom_name(){
+			return "span";
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_type": (this.type())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Markdown visualizer.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_text_demo
+         */
+        class $mol_text extends $.$mol_text {
+            flow_tokens() {
+                const tokens = [];
+                this.$.$mol_syntax2_md_flow.tokenize(this.text(), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            block_type(index) {
+                return this.flow_tokens()[index].name;
+            }
+            rows() {
+                return this.flow_tokens().map(({ name }, index) => {
+                    switch (name) {
+                        case 'quote': return this.Quote(index);
+                        case 'spoiler': return this.Spoiler(index);
+                        case 'header': return this.Header(index);
+                        case 'list': return this.List(index);
+                        case 'code': return this.Pre(index);
+                        case 'code-indent': return this.Pre(index);
+                        case 'table': return this.Table(index);
+                        case 'grid': return this.Grid(index);
+                        case 'cut': return this.Cut(index);
+                        default: return this.Paragraph(index);
+                    }
+                });
+            }
+            param() {
+                return this.toString().replace(/^.*?[\)>]\./, '').replace(/[(<>)]/g, '');
+            }
+            header_level(index) {
+                return this.flow_tokens()[index].chunks[0].length;
+            }
+            header_arg(index) {
+                return {
+                    [this.param()]: this.block_text(index)
+                };
+            }
+            list_type(index) {
+                return this.flow_tokens()[index].chunks[1] ?? '';
+            }
+            item_index(index) {
+                return this.flow_tokens().slice(0, index).filter(token => token.name === 'block').length + 1;
+            }
+            pre_text(index) {
+                const token = this.flow_tokens()[index];
+                return (token.chunks[2] ?? token.chunks[0].replace(/^(\t| (?:\+\+|--|\*\*|  ) )/gm, '')).replace(/[\n\r]*$/, '');
+            }
+            pre_themes(index) {
+                const token = this.flow_tokens()[index];
+                const names = {
+                    ' ** ': '$mol_theme_accent',
+                    ' ++ ': '$mol_theme_current',
+                    ' -- ': '$mol_theme_special',
+                };
+                return token.chunks[0].split('\n')
+                    .map(line => names[line.match(/^ (?:\+\+|--|\*\*|  ) /gm)?.[0] ?? ''] ?? null);
+            }
+            quote_text(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^[>"] /mg, '');
+            }
+            list_text(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^([-*+]|(?:\d+[\.\)])+) ?/mg, '').replace(/^  ?/mg, '');
+            }
+            cell_content(indexBlock) {
+                return this.flow_tokens()[indexBlock].chunks[0]
+                    .split(/\r?\n/g)
+                    .filter(row => row && !/\|--/.test(row))
+                    .map((row, rowId) => {
+                    return row.split(/\|/g)
+                        .filter(cell => cell)
+                        .map((cell, cellId) => cell.trim());
+                });
+            }
+            table_rows(blockId) {
+                return this.cell_content(blockId)
+                    .slice(1)
+                    .map((row, rowId) => this.Table_row({ block: blockId, row: rowId + 1 }));
+            }
+            table_head_cells(blockId) {
+                return this.cell_content(blockId)[0]
+                    .map((cell, cellId) => this.Table_cell({ block: blockId, row: 0, cell: cellId }));
+            }
+            table_cells(id) {
+                return this.cell_content(id.block)[id.row]
+                    .map((cell, cellId) => this.Table_cell({ block: id.block, row: id.row, cell: cellId }));
+            }
+            table_cell_text(id) {
+                return this.cell_content(id.block)[id.row][id.cell];
+            }
+            grid_content(indexBlock) {
+                return [...this.flow_tokens()[indexBlock].chunks[0].match(/(?:^! .*?$\r?\n?)+(?:^ +! .*?$\r?\n?)*/gm)]
+                    .map((row, rowId) => {
+                    const cells = [];
+                    for (const line of row.trim().split(/\r?\n/)) {
+                        const [_, indent, content] = /^( *)! (.*)/.exec(line) ?? ['', '', ''];
+                        const col = Math.ceil(indent.length / 2);
+                        cells[col] = (cells[col] ? cells[col] + '\n' : '') + content;
+                    }
+                    return cells;
+                });
+            }
+            grid_rows(blockId) {
+                return this.grid_content(blockId)
+                    .map((row, rowId) => this.Grid_row({ block: blockId, row: rowId }));
+            }
+            grid_cells(id) {
+                return this.grid_content(id.block)[id.row]
+                    .map((cell, cellId) => this.Grid_cell({ block: id.block, row: id.row, cell: cellId }));
+            }
+            grid_cell_text(id) {
+                return this.grid_content(id.block)[id.row][id.cell];
+            }
+            uri_base() {
+                return $mol_dom_context.document.location.href;
+            }
+            uri_base_abs() {
+                return new URL(this.uri_base(), $mol_dom_context.document.location.href);
+            }
+            uri_resolve(uri) {
+                if (/^(\w+script+:)+/.test(uri))
+                    return null;
+                if (/^#\!/.test(uri)) {
+                    const params = {};
+                    for (const chunk of uri.slice(2).split(this.$.$mol_state_arg.separator)) {
+                        if (!chunk)
+                            continue;
+                        const vals = chunk.split('=').map(decodeURIComponent);
+                        params[vals.shift()] = vals.join('=');
+                    }
+                    return this.$.$mol_state_arg.link(params);
+                }
+                try {
+                    const url = new URL(uri, this.uri_base_abs());
+                    return url.toString();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    return null;
+                }
+            }
+            code_syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+            block_text(index) {
+                const token = this.flow_tokens()[index];
+                switch (token.name) {
+                    case 'header': return token.chunks[2];
+                    default: return token.chunks[0];
+                }
+            }
+            block_content(index) {
+                return this.line_content([index]);
+            }
+            line_tokens(path) {
+                const tokens = [];
+                this.$.$mol_syntax2_md_line.tokenize(this.line_text(path), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            line_token(path) {
+                const tokens = this.line_tokens(path.slice(0, path.length - 1));
+                return tokens[path[path.length - 1]];
+            }
+            line_type(path) {
+                return this.line_token(path).name;
+            }
+            line_text(path) {
+                if (path.length === 1)
+                    return this.block_text(path[0]);
+                const { name, found, chunks } = this.line_token(path);
+                switch (name) {
+                    case 'link': return chunks[0] || chunks[1].replace(/^.*?\/\/|\/.*$/g, '');
+                    case 'text-link': return chunks[0] || chunks[1].replace(/^.*?\/\/|\/.*$/g, '');
+                    default: return (chunks[0] || chunks[1] || chunks[2]) ?? found;
+                }
+            }
+            line_content(path) {
+                return this.line_tokens(path).map(({ name, chunks }, index) => {
+                    const path2 = [...path, index];
+                    switch (name) {
+                        case 'embed': return this.Embed(path2);
+                        case 'link': return this.Link(path2);
+                        case 'text-link-http': return this.Link_http(path2);
+                        case 'text-link': return this.Link(path2);
+                        case 'image-link': return this.Embed(path2);
+                        case 'code': return this.Code_line(path2);
+                        case '': return this.String(path2);
+                        default: return this.Span(path2);
+                    }
+                });
+            }
+            link_uri(path) {
+                const token = this.line_token(path);
+                const uri = this.uri_resolve(token.chunks[1] ?? token.found);
+                if (!uri)
+                    throw new Error('Bad link');
+                return uri;
+            }
+            link_host(path) {
+                return this.link_uri(path).replace(/^.*?\/\/|\/.*$/g, '');
+            }
+            auto_scroll() {
+                for (const [index, token] of this.flow_tokens().entries()) {
+                    if (token.name !== 'header')
+                        continue;
+                    const header = this.Header(index);
+                    if (!header.Link().current())
+                        continue;
+                    new $mol_after_tick(() => this.ensure_visible(header));
+                }
+            }
+            spoiler_rows(index) {
+                return this.flow_tokens()[index].chunks[0].replace(/^[\?] /mg, '').split('\n');
+            }
+            spoiler_label(index) {
+                return this.spoiler_rows(index)[0];
+            }
+            spoiler_content(index) {
+                return this.spoiler_rows(index).slice(1).join('\n');
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "flow_tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "block_type", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "rows", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "param", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "header_level", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "header_arg", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "pre_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "pre_themes", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "quote_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "list_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "cell_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_head_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "table_cell_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_cells", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "grid_cell_text", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "uri_base_abs", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "uri_resolve", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "block_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_tokens", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_token", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_type", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_text", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "line_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "link_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "link_host", null);
+        __decorate([
+            $mol_mem
+        ], $mol_text.prototype, "auto_scroll", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_rows", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_label", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_text.prototype, "spoiler_content", null);
+        $$.$mol_text = $mol_text;
+        class $mol_text_header extends $.$mol_text_header {
+            dom_name() {
+                return 'h' + this.level();
+            }
+        }
+        $$.$mol_text_header = $mol_text_header;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/text/text/text.view.css", "[mol_text] {\n\tline-height: 1.5em;\n\tbox-sizing: border-box;\n\tborder-radius: var(--mol_gap_round);\n\twhite-space: pre-line;\n\tdisplay: flex;\n\tflex-direction: column;\n\tflex: 0 0 auto;\n\ttab-size: 4;\n}\n\n[mol_text_paragraph] {\n\tpadding: var(--mol_gap_text);\n\toverflow: auto;\n\toverflow-x: overlay;\n\tmax-width: 100%;\n\tdisplay: block;\n\tmax-width: 60rem;\n\tbreak-inside: avoid;\n}\n\n[mol_text_spoiler_label_paragraph] {\n\tpadding: 0;\n}\n\n[mol_text_span] {\n\tdisplay: inline;\n}\n\n[mol_text_string] {\n\tdisplay: inline;\n\tflex: 0 1 auto;\n\twhite-space: normal;\n}\n\n[mol_text_quote] {\n\tmargin: var(--mol_gap_block);\n\tpadding: var(--mol_gap_block);\n\tbackground: var(--mol_theme_card);\n\tbox-shadow: 0 0 0 1px var(--mol_theme_back);\n\tbreak-inside: avoid;\n}\n\n[mol_text_header] {\n\tdisplay: block;\n\ttext-shadow: 0 0;\n\tfont-weight: normal;\n\tbreak-after: avoid;\n\tletter-spacing: 2px;\n}\n\n* + [mol_text_header] {\n\tmargin-top: 0.75rem;\n}\n\nh1[mol_text_header] {\n\tfont-size: 1.5rem;\n}\n\nh2[mol_text_header] {\n\tfont-size: 1.5rem;\n\tfont-style: italic;\n}\n\nh3[mol_text_header] {\n\tfont-size: 1.25rem;\n}\n\nh4[mol_text_header] {\n\tfont-size: 1.25em;\n\tfont-style: italic;\n}\n\nh5[mol_text_header] {\n\tfont-size: 1rem;\n}\n\nh6[mol_text_header] {\n\tfont-size: 1rem;\n\tfont-style: italic;\n}\n\n[mol_text_header_link] {\n\tcolor: inherit;\n}\n\n[mol_text_table] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_table_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: baseline;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_grid] {\n\tbreak-inside: avoid;\n}\n\n[mol_text_grid_cell] {\n\twidth: auto;\n\tdisplay: table-cell;\n\tvertical-align: top;\n\tpadding: 0;\n\tborder-radius: 0;\n}\n\n[mol_text_cut] {\n\tborder: none;\n\twidth: 100%;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n}\n\n[mol_text_link_http],\n[mol_text_link] {\n\tpadding: 0;\n\tdisplay: inline;\n\twhite-space: nowrap;\n}\n\n[mol_text_link_icon] + [mol_text_embed] {\n\tmargin-inline-start: -1.5rem;\n}\n\n[mol_text_embed_youtube] {\n\tdisplay: inline;\n}\n\n[mol_text_embed_youtube_image],\n[mol_text_embed_youtube_frame],\n[mol_text_embed_object] {\n\tobject-fit: contain;\n\tobject-position: center;\n\twidth: 100vw;\n\tmax-height: calc( 100vh - 6rem );\n}\n[mol_text_embed_object_fallback] {\n\tpadding: 0;\n}\n[mol_text_embed_image] {\n\tobject-fit: contain;\n\tobject-position: center;\n\tdisplay: inline;\n\t/* max-height: calc( 100vh - 6rem ); */\n\tvertical-align: top;\n}\n\n[mol_text_pre] {\n\twhite-space: pre;\n\toverflow-x: auto;\n\toverflow-x: overlay;\n\ttab-size: 2;\n\tbreak-inside: avoid;\n}\n\n[mol_text_code_line] {\n\tdisplay: inline-block;\n}\n\n[mol_text_type=\"strong\"] {\n\ttext-shadow: 0 0;\n\tfilter: contrast(1.5);\n}\n\n[mol_text_type=\"emphasis\"] {\n\tfont-style: italic;\n}\n\n[mol_text_type=\"insert\"] {\n\tcolor: var(--mol_theme_special);\n}\n\n[mol_text_type=\"delete\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"remark\"] {\n\tcolor: var(--mol_theme_shade);\n}\n\n[mol_text_type=\"quote\"] {\n\tfont-style: italic;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_textarea) = class $mol_textarea extends ($.$mol_stack) {
+		clickable(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		sidebar_showed(){
+			return false;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		hover(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		hint(){
+			return " ";
+		}
+		enabled(){
+			return true;
+		}
+		spellcheck(){
+			return true;
+		}
+		length_max(){
+			return +Infinity;
+		}
+		selection(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		bring(){
+			return (this.Edit().bring());
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		submit_with_ctrl(){
+			return true;
+		}
+		Edit(){
+			const obj = new this.$.$mol_textarea_edit();
+			(obj.value) = (next) => ((this.value(next)));
+			(obj.hint) = () => ((this.hint()));
+			(obj.enabled) = () => ((this.enabled()));
+			(obj.spellcheck) = () => ((this.spellcheck()));
+			(obj.length_max) = () => ((this.length_max()));
+			(obj.selection) = (next) => ((this.selection(next)));
+			(obj.submit) = (next) => ((this.submit(next)));
+			(obj.submit_with_ctrl) = () => ((this.submit_with_ctrl()));
+			return obj;
+		}
+		row_numb(id){
+			return 0;
+		}
+		highlight(){
+			return "";
+		}
+		syntax(){
+			const obj = new this.$.$mol_syntax2();
+			return obj;
+		}
+		View(){
+			const obj = new this.$.$mol_text_code();
+			(obj.text) = () => ((this.value()));
+			(obj.render_visible_only) = () => (false);
+			(obj.row_numb) = (id) => ((this.row_numb(id)));
+			(obj.sidebar_showed) = () => ((this.sidebar_showed()));
+			(obj.highlight) = () => ((this.highlight()));
+			(obj.syntax) = () => ((this.syntax()));
+			return obj;
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"mol_textarea_clickable": (this.clickable()), 
+				"mol_textarea_sidebar_showed": (this.sidebar_showed())
+			};
+		}
+		event(){
+			return {"keydown": (next) => (this.press(next)), "pointermove": (next) => (this.hover(next))};
+		}
+		sub(){
+			return [(this.Edit()), (this.View())];
+		}
+		symbols_alt(){
+			return {
+				"comma": "<", 
+				"period": ">", 
+				"dash": "−", 
+				"equals": "≈", 
+				"graveAccent": "́", 
+				"forwardSlash": "÷", 
+				"E": "€", 
+				"V": "✔", 
+				"X": "×", 
+				"C": "©", 
+				"P": "§", 
+				"H": "₽", 
+				"key0": "°", 
+				"key8": "•", 
+				"key2": "@", 
+				"key3": "#", 
+				"key4": "$", 
+				"key6": "^", 
+				"key7": "&", 
+				"bracketOpen": "[", 
+				"bracketClose": "]", 
+				"slashBack": "|"
+			};
+		}
+		symbols_alt_ctrl(){
+			return {"space": " "};
+		}
+		symbols_alt_shift(){
+			return {
+				"V": "✅", 
+				"X": "❌", 
+				"O": "⭕", 
+				"key1": "❗", 
+				"key4": "💲", 
+				"key7": "❓", 
+				"comma": "«", 
+				"period": "»", 
+				"semicolon": "“", 
+				"quoteSingle": "”", 
+				"dash": "—", 
+				"equals": "≠", 
+				"graveAccent": "̱", 
+				"bracketOpen": "{", 
+				"bracketClose": "}"
+			};
+		}
+	};
+	($mol_mem(($.$mol_textarea.prototype), "clickable"));
+	($mol_mem(($.$mol_textarea.prototype), "press"));
+	($mol_mem(($.$mol_textarea.prototype), "hover"));
+	($mol_mem(($.$mol_textarea.prototype), "value"));
+	($mol_mem(($.$mol_textarea.prototype), "selection"));
+	($mol_mem(($.$mol_textarea.prototype), "submit"));
+	($mol_mem(($.$mol_textarea.prototype), "Edit"));
+	($mol_mem(($.$mol_textarea.prototype), "syntax"));
+	($mol_mem(($.$mol_textarea.prototype), "View"));
+	($.$mol_textarea_edit) = class $mol_textarea_edit extends ($.$mol_string) {
+		dom_name(){
+			return "textarea";
+		}
+		enter(){
+			return "enter";
+		}
+		field(){
+			return {...(super.field()), "scrollTop": 0};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * An input field for entering multiline text.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_textarea_demo
+         */
+        class $mol_textarea extends $.$mol_textarea {
+            indent_inc() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    let end = start + rows[i].length;
+                    if (end >= from && start <= to) {
+                        if (to === from || start !== to) {
+                            rows[i] = '\t' + rows[i];
+                            to += 1;
+                            end += 1;
+                        }
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from + 1, to]);
+            }
+            indent_dec() {
+                let text = this.value();
+                let [from, to] = this.selection();
+                const rows = text.split('\n');
+                let start = 0;
+                for (let i = 0; i < rows.length; ++i) {
+                    const end = start + rows[i].length;
+                    if (end >= from && start <= to && rows[i].startsWith('\t')) {
+                        rows[i] = rows[i].slice(1);
+                        to -= 1;
+                        if (start < from)
+                            from -= 1;
+                    }
+                    start = end + 1;
+                }
+                this.value(rows.join('\n'));
+                this.selection([from, to]);
+            }
+            symbol_insert(event) {
+                const symbol = event.shiftKey
+                    ? this.symbols_alt_shift()[$mol_keyboard_code[event.keyCode]]
+                    : event.ctrlKey
+                        ? this.symbols_alt_ctrl()[$mol_keyboard_code[event.keyCode]]
+                        : this.symbols_alt()[$mol_keyboard_code[event.keyCode]];
+                if (!symbol)
+                    return;
+                event.preventDefault();
+                document.execCommand('insertText', false, symbol);
+            }
+            clickable(next) {
+                if (!this.enabled())
+                    return true;
+                return next ?? false;
+            }
+            hover(event) {
+                this.clickable(event.ctrlKey);
+            }
+            press(event) {
+                if (event.altKey) {
+                    this.symbol_insert(event);
+                }
+                else {
+                    switch (event.keyCode) {
+                        case !event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_inc();
+                            break;
+                        case event.shiftKey && $mol_keyboard_code.tab:
+                            this.indent_dec();
+                            break;
+                        default: return;
+                    }
+                    event.preventDefault();
+                }
+            }
+            row_numb(index) {
+                return index;
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_textarea.prototype, "clickable", null);
+        $$.$mol_textarea = $mol_textarea;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tflex-direction: column;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n\tborder-radius: var(--mol_gap_round);\n\tfont-family: monospace;\n\tposition: relative;\n\ttab-size: 4;\n}\n\n[mol_textarea_view] {\n    interactivity: inert;\n\twhite-space: inherit;\n\tfont-family: inherit;\n\ttab-size: inherit;\n}\n\n[mol_textarea_view_copy] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_view] {\n    interactivity: initial;\n}\n\n[mol_textarea_clickable] > [mol_textarea_edit] {\n    interactivity: inert;\n}\n\n[mol_textarea_edit] {\n\tfont-family: inherit;\n\tpadding: var(--mol_gap_text);\n\tcolor: transparent !important;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\toverflow-anchor: none;\n\tposition: absolute;\n\theight: 100%;\n\twidth: 100%;\n\ttab-size: inherit;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 1.75rem;\n\twidth: calc( 100% - 1.75rem );\n}\n\n[mol_textarea_edit]:hover + [mol_textarea_view] {\n\tz-index: var(--mol_layer_hover);\n}\n\n[mol_textarea_edit]:focus + [mol_textarea_view] {\n\tz-index: var(--mol_layer_focus);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_kit_page) = class $bog_kit_page extends ($.$mol_page) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem, per } = $mol_style_unit;
+        /*
+            A page is a panel of the case. Stock $mol floats the header and footer on
+            a pair of soft shadows; here they are simply part of the same moulding,
+            and the header earns its place by size and weight instead.
+        */
+        $mol_style_define($bog_kit_page, {
+            background: { color: $bog_kit.panel },
+            color: $bog_kit.ink,
+            Head: {
+                minHeight: rem(3.75),
+                padding: {
+                    top: rem(.75),
+                    bottom: rem(.5),
+                    left: rem(1),
+                    right: rem(.75),
+                },
+                gap: rem(.5),
+                border: { radius: 0 },
+                background: { color: $bog_kit.panel },
+                box: { shadow: 'none' },
+            },
+            Title: {
+                padding: {
+                    top: rem(.25),
+                    bottom: rem(.25),
+                    left: rem(.25),
+                    right: rem(.25),
+                },
+                color: $bog_kit.ink,
+                letterSpacing: '-0.015em',
+                lineHeight: '1.75rem',
+                font: {
+                    size: rem(1.3125),
+                    weight: 600,
+                },
+            },
+            Body_content: {
+                padding: {
+                    top: rem(.75),
+                    bottom: rem(2.5),
+                    left: rem(1.25),
+                    right: rem(1.25),
+                },
+                gap: rem(1.75),
+                maxWidth: rem(44),
+                width: per(100),
+            },
+            Foot: {
+                padding: {
+                    top: rem(.625),
+                    bottom: rem(.625),
+                    left: rem(1.25),
+                    right: rem(1.25),
+                },
+                border: { radius: 0 },
+                background: { color: $bog_kit.panel },
+                box: { shadow: 'none' },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_text_list) = class $mol_text_list extends ($.$mol_text) {
+		type(){
+			return "";
+		}
+		auto_scroll(){
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_list_type": (this.type())};
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_text_list_item();
+			(obj.index) = () => ((this.item_index(id)));
+			(obj.sub) = () => ((this.block_content(id)));
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_text_list.prototype), "Paragraph"));
+	($.$mol_text_list_item) = class $mol_text_list_item extends ($.$mol_paragraph) {
+		index(){
+			return 0;
+		}
+		attr(){
+			return {...(super.attr()), "mol_text_list_item_index": (this.index())};
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/text/list/list.view.css", "[mol_text_list] {\n\tpadding-inline-start: 1.75rem;\n}\n\n[mol_text_list_item] {\n\tcontain: none;\n\tdisplay: list-item;\n}\n\n[mol_text_list_item]::before {\n\tcontent: attr( mol_text_list_item_index ) \".\";\n\twidth: 1.25rem;\n\tdisplay: inline-block;\n\tposition: absolute;\n\tmargin-inline-start: -1.75rem;\n\ttext-align: end;\n}\n\n[mol_text_list_type=\"-\"] > [mol_text_list_item]::before,\n[mol_text_list_type=\"*\"] > [mol_text_list_item]::before {\n\tcontent: \"•\";\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * The Kit theme. Hang it on a view as a plugin and the whole subtree is
+         * moulded out of the Kit shells, in the language of the platform it is
+         * running on.
+         */
+        class $bog_kit_shell extends $.$bog_kit_shell {
+            platform() {
+                return this.$.$bog_kit_platform();
+            }
+        }
+        $$.$bog_kit_shell = $bog_kit_shell;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/kit/shell/shell.view.css", "/*\n\tThe Kit theme — canvas.\n\n\tPaper by day, shells by night. In the light the ground and the page are the\n\tsame white sheet, and the things you press are cut into it as a soft tint;\n\tin the dark the ground is the deepest tone and every surface above it is\n\tlighter. Both directions read the same way, because a thing is told apart\n\tfrom what it sits on by tone, by its corner, and by the space around it.\n\tNothing is outlined and nothing casts a shadow.\n\n\tThe one tone that never matches the ground is the seam. It draws the line\n\tbetween two pages and fills the track a knob runs in, which on a white sheet\n\tis the only thing keeping those from disappearing.\n\n\tValues only; the names live in kit.ts.\n*/\n\n:root {\n\t--bog_kit_font_text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;\n\t--bog_kit_font_code: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;\n}\n\n[bog_kit_shell] {\n\t--bog_kit_font_text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;\n\t--bog_kit_font_code: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;\n\n\t--bog_kit_case: #ffffff;\n\t--bog_kit_panel: #ffffff;\n\t--bog_kit_raise: #f1f2f5;\n\t--bog_kit_ink: #16181d;\n\t--bog_kit_ink_soft: #5f6672;\n\t--bog_kit_key: #1b1f26;\n\t--bog_kit_key_ink: #ffffff;\n\n\t--bog_kit_round_panel: 22px;\n\t--bog_kit_round_field: 16px;\n\t--bog_kit_round_pill: 999px;\n\n\t--bog_kit_lift: none;\n\t--bog_kit_lift_high: none;\n\t--bog_kit_sink: none;\n\t--bog_kit_seam: #e4e7ec;\n\n\tfont-family: var(--bog_kit_font_text);\n\tfont-size: 1rem;\n\tline-height: 1.6rem;\n\n\t--mol_gap_page: 2rem;\n\t--mol_gap_block: 0.75rem;\n\t--mol_gap_text: 0.5rem 0.875rem;\n\t--mol_gap_round: 12px;\n\t--mol_gap_space: 0.375rem;\n\t--mol_gap_blur: 0rem;\n}\n\n/*\n\tNight. The ink is deliberately short of white — a full-strength white on a\n\tdark panel glares and smears at small sizes. It sits around 80% lightness,\n\twhich still clears 9:1 against the panel.\n\n\tThe key inverts with everything else. It is the ink colour by day and the\n\tpaper colour by night, so a filled key reads as the strongest thing on the\n\tscreen in both.\n*/\n[bog_kit_shell][mol_theme=\"$mol_theme_dark\"] {\n\t--bog_kit_case: #12161c;\n\t--bog_kit_panel: #1a1f27;\n\t--bog_kit_raise: #232932;\n\t--bog_kit_ink: #c6ccd5;\n\t--bog_kit_ink_soft: #7f8794;\n\t--bog_kit_key: #e8ebf0;\n\t--bog_kit_key_ink: #12161c;\n\t--bog_kit_seam: #0d1116;\n}\n\n/*\n\tStock components we did not subclass read --mol_theme_*, so the palette is\n\tmapped onto it and they follow along. Two attributes, so this always\n\toutweighs the theme.css rule sitting on the very same node.\n*/\n[bog_kit_shell][mol_theme] {\n\t--mol_theme_hue: 230deg;\n\t--mol_theme_hue_spread: 120deg;\n\n\t--mol_theme_back: var(--bog_kit_case);\n\t--mol_theme_card: var(--bog_kit_raise);\n\t--mol_theme_field: var(--bog_kit_raise);\n\t--mol_theme_hover: #7f879424;\n\t--mol_theme_text: var(--bog_kit_ink);\n\t--mol_theme_shade: var(--bog_kit_ink_soft);\n\t--mol_theme_line: var(--bog_kit_seam);\n\t--mol_theme_focus: var(--bog_kit_key);\n\t--mol_theme_control: var(--bog_kit_key);\n\t--mol_theme_current: var(--bog_kit_key);\n\t--mol_theme_special: var(--bog_kit_key);\n\t--mol_theme_spirit: var(--bog_kit_raise);\n}\n\n[bog_kit_shell][mol_theme=\"$mol_theme_light\"] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n}\n\n[bog_kit_shell][mol_theme=\"$mol_theme_dark\"] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate(180deg);\n}\n\n/*\n\tDepth is a variable, so it has to be applied where a variable can stand for a\n\twhole shadow. This tone carries none, but the hooks stay: which raised part\n\tgets which lift is a decision of the system, not of the palette.\n*/\n[bog_kit_shell] [bog_kit_card],\n[bog_kit_shell] [bog_kit_button],\n[bog_kit_shell] [bog_kit_button_copy],\n[bog_kit_shell] [bog_kit_check_icon],\n[bog_kit_shell] [bog_kit_select_trigger],\n[bog_kit_shell] [bog_kit_check_list_option]:not([mol_check_checked]) {\n\tbox-shadow: var(--bog_kit_lift);\n}\n\n[bog_kit_shell] [bog_kit_button_major],\n[bog_kit_shell] [bog_kit_check_list_option][mol_check_checked] {\n\tbox-shadow: var(--bog_kit_lift_high);\n}\n\n[bog_kit_shell] [bog_kit_switch_option][mol_check_checked],\n[bog_kit_shell] [bog_kit_lights_pick_option][mol_check_checked] {\n\tbox-shadow: var(--bog_kit_lift);\n}\n\n[bog_kit_shell] [bog_kit_input],\n[bog_kit_shell] [bog_kit_switch],\n[bog_kit_shell] [bog_kit_lights_pick] {\n\tbox-shadow: var(--bog_kit_sink);\n}\n\n/*\n\tFocus.\n\n\tEvery Kit component clears the browser's own outline in its sheet, which\n\tleft the keys with nothing at all: tabbing through the app moved a cursor\n\tnobody could see. So the ring is the theme's job, and it is one ring for\n\teverything rather than a shadow here and an outline there.\n\n\tAn outline rather than a box-shadow, because `outline-offset` leaves a real\n\tgap without having to paint a band of some assumed background colour — the\n\tring reads the same on a white page, on a tinted key and on a filled one.\n\tIt is drawn in the key colour, which is the ink by day and the paper by\n\tnight, so it always has the ground to itself.\n*/\n[bog_kit_shell] [bog_kit_button]:focus-visible,\n[bog_kit_shell] [bog_kit_button_major]:focus-visible,\n[bog_kit_shell] [bog_kit_button_copy]:focus-visible,\n[bog_kit_shell] [bog_kit_link]:focus-visible,\n[bog_kit_shell] [bog_kit_check_box]:focus-visible,\n[bog_kit_shell] [bog_kit_check_icon]:focus-visible,\n[bog_kit_shell] [bog_kit_check_expand]:focus-visible,\n[bog_kit_shell] [bog_kit_check_list_option]:focus-visible,\n[bog_kit_shell] [bog_kit_switch_option]:focus-visible,\n[bog_kit_shell] [bog_kit_lights_pick_option]:focus-visible,\n[bog_kit_shell] [bog_kit_select_trigger]:focus-visible,\n[bog_kit_shell] [bog_kit_input]:focus {\n\toutline: 2px solid var(--bog_kit_key);\n\toutline-offset: 2px;\n}\n\n/*\n\tThe plate everything is laid out on. $mol_book2 frames each page with a pale\n\tinset and marks the seams between them with dashes; here the pages butt up\n\tagainst each other and the gap between them is the seam itself.\n\n\tThe gap is painted by the book's own background, which also shows in the\n\tempty space to the right of the last page — so the placeholder that fills\n\tthat space is painted back to the case below. Otherwise the plate would be\n\tone broad band of seam instead of a line.\n*/\n[bog_kit_shell][mol_book2],\n[bog_kit_shell] [mol_book2] {\n\tgap: 2px;\n\tbackground: var(--bog_kit_seam);\n\t/*\n\t\t$mol_scroll asks for `contain: content`, which is layout + paint + style —\n\t\tand anything with layout or paint containment becomes the containing block\n\t\tfor its `position: fixed` children. The level indicator was then pinned to\n\t\tthe scrolled content rather than to the screen, so it slid away with the\n\t\tfirst column and only ever showed up on the first level. Style containment\n\t\tis all this needs.\n\t*/\n\tcontain: style;\n}\n\n[bog_kit_shell][mol_book2] > [mol_page],\n[bog_kit_shell] [mol_book2] > [mol_page] {\n\tbox-shadow: none;\n}\n\n[bog_kit_shell] [mol_book2_placeholder],\n[bog_kit_shell] [mol_book2_gap] {\n\tbackground: var(--bog_kit_case);\n}\n\n[bog_kit_shell][mol_book2] > [mol_view]::before,\n[bog_kit_shell][mol_book2] > [mol_view]::after,\n[bog_kit_shell] [mol_book2] > [mol_view]::before,\n[bog_kit_shell] [mol_book2] > [mol_view]::after {\n\tdisplay: none;\n\tcontent: none;\n}\n\n/* Icons come with a drop shadow of their own. The shells carry the depth. */\n[bog_kit_shell] [mol_icon] {\n\tfilter: none;\n}\n\n[bog_kit_shell] [mol_pop_bubble] {\n\tbackground: var(--bog_kit_raise);\n\tborder-radius: var(--bog_kit_round_panel);\n\tbox-shadow: 0 0 0 1px var(--bog_kit_seam);\n\tpadding: 0.375rem;\n}\n\n/*\n\tA minor button inside a bubble is a row of a menu, not a key — the choice is\n\tthe list, and raising every line would make it unreadable.\n*/\n[bog_kit_shell] [mol_pop_bubble] [bog_kit_button] {\n\tbox-shadow: none;\n\tbackground: transparent;\n\tcolor: var(--bog_kit_ink);\n\tborder-radius: var(--bog_kit_round_field);\n}\n\n[bog_kit_shell] [mol_pop_bubble] [bog_kit_button]:hover {\n\tbox-shadow: none;\n\tbackground: var(--bog_kit_panel);\n\tcolor: var(--bog_kit_ink);\n}\n\n/* A heading in $mol_text is an anchor; it should read as a heading. */\n[bog_kit_shell] [mol_text_header_link] {\n\tcolor: inherit;\n\tbackground: transparent;\n\tpadding-left: 0;\n\tmin-height: 0;\n}\n\n[bog_kit_shell] [mol_view]::selection {\n\tbackground: var(--bog_kit_key);\n\tcolor: var(--bog_kit_key_ink);\n}\n\n/*\n\t=== The frame ===\n\n\tBehaving like an installed app rather than like a page: platform metrics, the\n\tsafe areas of a phone, and one screen per column.\n*/\n\n/* Platform metrics. The system face at the system size is half the tell. */\n[bog_kit_shell][bog_kit_platform=\"ios\"] {\n\t--bog_kit_font_text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;\n\tfont-size: 17px;\n\tline-height: 22px;\n\t--bog_kit_round_field: 12px;\n\t--bog_kit_round_panel: 18px;\n}\n\n[bog_kit_shell][bog_kit_platform=\"md\"] {\n\t--bog_kit_font_text: Roboto, 'Noto Sans', system-ui, sans-serif;\n\tfont-size: 16px;\n\tline-height: 24px;\n\t--bog_kit_round_field: 16px;\n\t--bog_kit_round_panel: 20px;\n}\n\n/*\n\tTouch behaviour. A page that highlights on tap, shows a callout on long\n\tpress or lets you select the chrome reads as a web page instantly.\n*/\n[bog_kit_shell] {\n\t-webkit-tap-highlight-color: transparent;\n\t-webkit-touch-callout: none;\n\toverscroll-behavior: none;\n}\n\n[bog_kit_shell] [mol_view] {\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_kit_shell] [mol_text],\n[bog_kit_shell] [mol_string],\n[bog_kit_shell] [mol_textarea] {\n\tuser-select: text;\n\t-webkit-user-select: text;\n}\n\n/* The notch and the home indicator belong to the chrome, not to the content. */\n[bog_kit_shell] [bog_kit_page_head] {\n\tpadding-top: calc(0.75rem + env(safe-area-inset-top));\n\tpadding-left: calc(1rem + env(safe-area-inset-left));\n\tpadding-right: calc(0.75rem + env(safe-area-inset-right));\n}\n\n[bog_kit_shell] [bog_kit_page_body_content] {\n\tpadding-bottom: calc(2.5rem + env(safe-area-inset-bottom));\n\tpadding-left: calc(1.25rem + env(safe-area-inset-left));\n\tpadding-right: calc(1.25rem + env(safe-area-inset-right));\n}\n\n[bog_kit_shell] [bog_kit_pager] {\n\ttop: env(safe-area-inset-top);\n}\n\n/*\n\tOne screen per column. The browser's own momentum and snapping do the paging,\n\tso the gesture belongs to the platform rather than to us.\n*/\n@media (max-width: 45rem) {\n\n\t[bog_kit_shell][mol_book2],\n\t[bog_kit_shell] [mol_book2] {\n\t\tscroll-snap-type: x mandatory;\n\t}\n\n\t[bog_kit_shell][mol_book2] > article[mol_page],\n\t[bog_kit_shell] [mol_book2] > article[mol_page] {\n\t\tflex: 0 0 100%;\n\t\tmin-width: 100%;\n\t\tscroll-snap-align: start;\n\t\tscroll-snap-stop: always;\n\t}\n\n}\n\n@media (prefers-reduced-motion: reduce) {\n\t[bog_kit_shell] * {\n\t\ttransition-duration: 0.01ms !important;\n\t\tanimation-duration: 0.01ms !important;\n\t}\n}\n");
+})($ || ($ = {}));
+
+;
 	($.$bog_gram) = class $bog_gram extends ($.$mol_book2) {
 		lights(){
 			return "system";
@@ -35922,6 +41257,12 @@ var $;
 		notify_auto(){
 			return (this.Alerts().auto());
 		}
+		pager_count(){
+			return 0;
+		}
+		page_current(){
+			return 0;
+		}
 		Intro_title(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ("Выберите диалог");
@@ -36223,17 +41564,6 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		Call_close_icon(id){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Call_close(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
-			(obj.click) = (next) => ((this.call_close(next)));
-			(obj.sub) = () => ([(this.Call_close_icon(id))]);
-			return obj;
-		}
 		plugins(){
 			return [(this.Skin()), (this.Theme())];
 		}
@@ -36294,6 +41624,12 @@ var $;
 			(obj.Account) = () => ((this.Account()));
 			return obj;
 		}
+		Pager(){
+			const obj = new this.$.$bog_kit_pager();
+			(obj.count) = () => ((this.pager_count()));
+			(obj.current) = () => ((this.page_current()));
+			return obj;
+		}
 		Placeholder(){
 			return (this.Intro());
 		}
@@ -36323,7 +41659,7 @@ var $;
 			const obj = new this.$.$bog_gram_call();
 			(obj.land) = () => ((this.call_land(id)));
 			(obj.name) = () => ((this.user_name()));
-			(obj.tools) = () => ([(this.Call_close(id))]);
+			(obj.close) = (next) => ((this.call_close(next)));
 			return obj;
 		}
 	};
@@ -36366,8 +41702,6 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "members_open"));
 	($mol_mem(($.$bog_gram.prototype), "call_open"));
 	($mol_mem(($.$bog_gram.prototype), "call_close"));
-	($mol_mem_key(($.$bog_gram.prototype), "Call_close_icon"));
-	($mol_mem_key(($.$bog_gram.prototype), "Call_close"));
 	($mol_mem(($.$bog_gram.prototype), "Account"));
 	($mol_mem(($.$bog_gram.prototype), "Registry"));
 	($mol_mem(($.$bog_gram.prototype), "People"));
@@ -36377,6 +41711,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Lobby"));
 	($mol_mem(($.$bog_gram.prototype), "Invite"));
 	($mol_mem(($.$bog_gram.prototype), "Alerts"));
+	($mol_mem(($.$bog_gram.prototype), "Pager"));
 	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
 
@@ -36845,6 +42180,42 @@ var $;
                 $mol_wire_async(this).join_request(id, this.Lobby().join_by());
                 return id;
             }
+            placeholders() {
+                return [...super.placeholders(), this.Pager()];
+            }
+            pages_shown() {
+                const music = this.music_alive() && this.music_hidden();
+                return music ? this.pages().slice(0, -1) : this.pages();
+            }
+            layout_epoch(next) {
+                return next ?? 0;
+            }
+            Layout_watch() {
+                this.pages_shown();
+                this.$.$mol_window.size();
+                return new this.$.$mol_after_frame(() => this.layout_epoch(this.layout_epoch() + 1));
+            }
+            pages_overflow() {
+                this.layout_epoch();
+                const node = this.dom_node();
+                return node.scrollWidth > node.clientWidth + 1;
+            }
+            pager_count() {
+                return this.pages_overflow() ? this.pages_shown().length : 0;
+            }
+            page_at(frames, middle) {
+                const index = frames.findIndex(([left, width]) => left <= middle && middle < left + width);
+                return index < 0 ? frames.length - 1 : index;
+            }
+            page_current() {
+                this.layout_epoch();
+                const node = this.dom_node();
+                const frames = this.pages_shown().map(page => {
+                    const el = page.dom_node();
+                    return [el.offsetLeft - node.offsetLeft, el.offsetWidth];
+                });
+                return this.page_at(frames, this.scroll_left() + node.clientWidth / 2);
+            }
             join_request(id, by) {
                 const plan = this.Lobby().join_take(id, by);
                 if (plan === 'open')
@@ -36853,6 +42224,7 @@ var $;
             }
             auto() {
                 super.auto();
+                this.Layout_watch();
                 $bog_gram_soft(() => this.account_ready(), null);
                 $bog_gram_soft(() => this.registry_remember(), null);
                 $bog_gram_soft(() => this.registry_keys_fill(), null);
@@ -37011,6 +42383,18 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "join_handle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "layout_epoch", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "Layout_watch", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "pages_overflow", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "page_current", null);
         $$.$bog_gram = $bog_gram;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -37019,7 +42403,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n\t--bog_kit_seam: var(--mol_theme_line);\n\t--bog_kit_key: var(--mol_theme_control);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -37029,6 +42413,10 @@ var $;
     var $$;
     (function ($$) {
         $mol_style_define($bog_gram, {
+            contain: 'style',
+            Pager: {
+                top: $mol_style_func.calc('env(safe-area-inset-top)'),
+            },
             Music_page: {
                 width: '30rem',
             },
@@ -40484,41 +45872,6 @@ var $;
         ], $mol_state_arg_mock, "go", null);
         context.$mol_state_arg = $mol_state_arg_mock;
     });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    function parse(theme) {
-        if (theme === 'true')
-            return true;
-        if (theme === 'false')
-            return false;
-        return null;
-    }
-    // Get once because chrome switches to light on print
-    const base = $.$mol_media.match('(prefers-color-scheme: light)');
-    /**
-     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
-     */
-    function $mol_lights(next) {
-        const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        if (next === undefined) {
-            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
-        }
-        else {
-            if (arg === null) {
-                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
-            }
-            else {
-                this.$mol_state_arg.value('mol_lights', String(next));
-            }
-            return next;
-        }
-    }
-    $.$mol_lights = $mol_lights;
 })($ || ($ = {}));
 
 ;
@@ -44202,6 +49555,42 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Отпущенная строка доезжает по порогу или по скорости'($) {
+                const row = $bog_gram_row.make({ $ });
+                $mol_assert_equal(row.swipe_settle(70, 0, 120), true);
+                $mol_assert_equal(row.swipe_settle(50, 0, 120), false);
+                $mol_assert_equal(row.swipe_settle(20, 0.5, 120), true);
+                $mol_assert_equal(row.swipe_settle(100, -0.5, 120), false);
+            },
+            'Направление решают первые пиксели, вертикаль и шаг назад отдаются прокрутке'($) {
+                const row = $bog_gram_row.make({ $ });
+                $mol_assert_equal(row.swipe_axis(3, 2, 0), 'wait');
+                $mol_assert_equal(row.swipe_axis(12, 3, 0), 'drag');
+                $mol_assert_equal(row.swipe_axis(4, 12, 0), 'skip');
+                $mol_assert_equal(row.swipe_axis(-12, 3, 0), 'skip');
+                $mol_assert_equal(row.swipe_axis(-12, 3, 120), 'drag');
+            },
+            'Открытая строка сдвинута на ширину кнопок, тянущаяся — на палец'($) {
+                const row = $bog_gram_row.make({ $ });
+                row.swipe_width = 120;
+                $mol_assert_equal(row.swipe_shift(), 0);
+                row.swipe_open(true);
+                $mol_assert_equal(row.swipe_shift(), 120);
+                row.swipe_drag(40);
+                $mol_assert_equal(row.swipe_shift(), 40);
+                $mol_assert_equal(row.swipe_dragging(), true);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'Числительные склоняются по-русски'() {
@@ -44277,6 +49666,39 @@ var $;
             $mol_assert_equal(menu.archive_unread_label(), '5');
             $mol_assert_equal(menu.archive_note(), '2 диалога');
         },
+        'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
+            const picked = [];
+            const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
+            menu.Dialog_row('A').swipe_open(true);
+            menu.Dialog_row('B').swipe_open(true);
+            $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
+            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
+            menu.pick('A');
+            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
+            $mol_assert_equal(picked, []);
+            menu.pick('A');
+            $mol_assert_equal(picked, ['A']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Из ссылки Gram берутся только свои параметры'() {
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
+        },
+        'Чужой QR и мусор ничего не открывают'() {
+            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
+            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
+        },
     });
 })($ || ($ = {}));
 
@@ -44321,21 +49743,42 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Из ссылки Gram берутся только свои параметры'() {
-            const lord = 'AAAAAAAA_BBBBBBBB';
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
-        },
-        'Чужой QR и мусор ничего не открывают'() {
-            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
-            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
-        },
-    });
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Вставленная ссылка открывается, чужая — объясняется'($) {
+                const lord = 'AAAAAAAA_BBBBBBBB';
+                const opened = [];
+                let closed = 0;
+                const context = $.$mol_ambient({
+                    $bog_gram_follow: class extends $.$bog_gram_follow {
+                        static go(uri) {
+                            const params = this.params(uri);
+                            if (!Object.keys(params).length)
+                                return false;
+                            opened.push(params);
+                            return true;
+                        }
+                    },
+                });
+                const page = $bog_gram_settings.make({ $: context });
+                page.close = () => (++closed, null);
+                page.paste_uri('https://example.com/#!x=1');
+                page.paste_open();
+                $mol_assert_equal(closed, 0);
+                $mol_assert_equal(opened, []);
+                $mol_assert_equal(page.paste_uri(), 'https://example.com/#!x=1');
+                $mol_assert_equal(page.paste_error() !== '', true);
+                page.paste_uri(' https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef ');
+                $mol_assert_equal(page.paste_error(), '');
+                page.paste_open();
+                $mol_assert_equal(closed, 1);
+                $mol_assert_equal(opened, [{ invite: lord, key: 'abc/def' }]);
+                $mol_assert_equal(page.paste_uri(), '');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -45430,6 +50873,48 @@ var $;
             $mol_assert_equal(next.pass_given(lord), null);
             $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
         },
+        async 'Ключ давнего собеседника берётся из общего диалога, без его домашнего ленда'($) {
+            const peer = await $.$giper_baza_auth._generate();
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_session = await $.$giper_baza_auth._generate();
+            const lord = peer.pass().lord().str;
+            const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+            const session = $giper_baza_land.make({ $, auth: () => king_session });
+            await $mol_wire_async(dialog).encrypted(true);
+            await $mol_wire_async(session).encrypted(true);
+            const lands = {
+                [dialog.link().str]: dialog,
+                [session.link().str]: session,
+            };
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, pass_of: () => null });
+            const talk = $bog_gram_talk.make({ $, Account: () => account, land: id => lands[id] ?? $giper_baza_land.make({ $ }) });
+            const roster = $bog_gram_roster.make({ $, Account: () => account, Talk: () => talk });
+            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry, Roster: () => roster });
+            const ops = {
+                fill() {
+                    dialog.give(peer.pass(), $giper_baza_rank_post('fast'));
+                    session.give(peer.pass(), $giper_baza_rank_post('fast'));
+                    dialog.Data($bog_gram_dialog).Sessions('auto').add(session.link().str);
+                    return true;
+                },
+                before() {
+                    return people.pass_of(lord)?.lord().str ?? '';
+                },
+                join() {
+                    dialogs.Dialogs('auto').add(dialog.link().str);
+                    return true;
+                },
+                after() {
+                    return people.pass_of(lord)?.lord().str ?? '';
+                },
+            };
+            await $mol_wire_async(ops).fill();
+            $mol_assert_equal(await $mol_wire_async(ops).before(), '');
+            await $mol_wire_async(ops).join();
+            $mol_assert_equal(await $mol_wire_async(ops).after(), lord);
+        },
         async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
             const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
@@ -46059,6 +51544,65 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    $mol_test({
+        'a segment per screen, marked where the reader is'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.current = () => 1;
+            $mol_assert_equal(pager.segments().length, 3);
+            $mol_assert_equal(pager.segment_on(0), false);
+            $mol_assert_equal(pager.segment_on(1), true);
+            $mol_assert_equal(pager.segment_on(2), false);
+        },
+        /*
+            The widths are taken a frame after the columns are laid out, so they
+            are empty on the first paint and one short after every step deeper.
+            A bar that counted its segments from them came out blank on a phone
+            and left the current screen unmarked on a desktop, because the index
+            ran past the end. The count comes from the route instead.
+        */
+        'segments do not wait for the columns to be measured'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.spans = () => [];
+            pager.span_total = () => 0;
+            pager.current = () => 2;
+            $mol_assert_equal(pager.segments().length, 3);
+            $mol_assert_equal(pager.segment_on(2), true);
+            $mol_assert_equal(pager.segment_weight(0), '1');
+            $mol_assert_equal(pager.width_style(), '100%');
+        },
+        /*
+            Weights go out as strings. $mol_dom_render_styles appends `px` to any
+            numeric inline value, so a numeric weight lands as `flex-grow: 450px`,
+            is dropped as invalid, and every segment ends up zero wide — right
+            colours, right bar length, nothing to see.
+        */
+        'measured columns set the segment widths'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.spans = () => [450, 355, 585];
+            pager.span_total = () => 1394;
+            $mol_assert_equal(pager.segment_weight(0), '450');
+            $mol_assert_equal(pager.segment_weight(2), '585');
+            $mol_assert_equal(pager.width_style(), '1394px');
+        },
+        'one screen is not a sequence'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 1;
+            $mol_assert_equal(pager.segments().length, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'Длительность показывается минутами и секундами, доли округляются'() {
@@ -46079,7 +51623,7 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    async function pair($) {
+    async function $bog_gram_call_room_pair($) {
         const king = await $.$giper_baza_auth._generate();
         const auth_a = await $.$giper_baza_auth._generate();
         const auth_b = await $.$giper_baza_auth._generate();
@@ -46102,6 +51646,9 @@ var $;
         const room_a = room(land_a, auth_a, 'Аня');
         const room_b = room(land_b, auth_b, 'Боря');
         return {
+            room,
+            land_a,
+            auth_a,
             room_a,
             room_b,
             swap: async () => {
@@ -46110,9 +51657,10 @@ var $;
             },
         };
     }
+    $_1.$bog_gram_call_room_pair = $bog_gram_call_room_pair;
     $mol_test({
         async 'Вошедший виден собеседнику по имени, своё место в собеседниках не числится'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             room_b.join();
@@ -46124,7 +51672,7 @@ var $;
             $mol_assert_equal(room_a.seats_alive().length, 2);
         },
         async 'Вышедший пропадает из звонка у собеседника'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             room_b.join();
@@ -46136,7 +51684,7 @@ var $;
             $mol_assert_equal(room_a.joined(), false);
         },
         async 'Замолчавший без выхода считается ушедшим через окно присутствия'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             await swap();
@@ -46149,7 +51697,7 @@ var $;
             $mol_assert_equal(room_c.seats_alive(), []);
         },
         async 'Повторный вход занимает новое место, чтобы пары сигналов не смешивались'($) {
-            const { room_a } = await pair($);
+            const { room_a } = await $bog_gram_call_room_pair($);
             room_a.join();
             const first = room_a.seat();
             room_a.leave();
@@ -46157,7 +51705,7 @@ var $;
             $mol_assert_unique(first, room_a.seat());
         },
         async 'Предложение и ответ доходят через ленд по общему ключу пары'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_b.join();
             const a = room_a.seat();
@@ -46174,11 +51722,85 @@ var $;
             await swap();
             $mol_assert_equal($bog_gram_call_room.signal_parse(offerer.signal('Answers', key)), { id: '0.X', sdp: 'answer' });
         },
+        async 'Повторный вход того же человека заменяет прежнее место, а не добавляет второе'($) {
+            const { room, land_a, auth_a, room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+            room_a.join();
+            room_a.beat();
+            const twin = room(land_a, auth_a, 'Аня');
+            twin.join();
+            twin.beat();
+            room_b.join();
+            room_b.beat();
+            await swap();
+            $mol_assert_equal(room_b.mates(), [twin.seat()]);
+            $mol_assert_equal(room_b.seats_alive().length, 2);
+            $mol_assert_equal(room_a.joined(), false);
+            $mol_assert_equal(twin.joined(), true);
+            $mol_assert_equal(twin.mates(), [room_b.seat()]);
+        },
+        async 'Из двух живых мест одного человека в звонке остаётся последнее'($) {
+            const { room, room_a, room_b, auth_a, swap } = await $bog_gram_call_room_pair($);
+            room_a.join();
+            room_a.beat();
+            room_a.seat_pawn(room_a.seat()).Joined('auto').val(1);
+            const twin = room(room_b.land(), auth_a, 'Аня');
+            twin.join();
+            twin.beat();
+            await swap();
+            $mol_assert_equal(room_a.seat_pawn(room_a.seat()).Left()?.val() ?? null, null);
+            $mol_assert_equal(room_b.seats_alive(), [twin.seat()]);
+            $mol_assert_equal(room_a.joined(), false);
+            $mol_assert_equal(twin.joined(), true);
+        },
+        'Сводка соединения считает кадры, битрейт, потери и задержку'() {
+            const entries = (time, bytes) => [
+                { type: 'transport', selectedCandidatePairId: 'P' },
+                { type: 'candidate-pair', id: 'P', currentRoundTripTime: 0.042 },
+                { type: 'candidate-pair', id: 'Q', currentRoundTripTime: 9 },
+                { type: 'inbound-rtp', kind: 'video', timestamp: time, bytesReceived: bytes, packetsLost: 1, packetsReceived: 99, framesPerSecond: 29.7, frameWidth: 640, frameHeight: 480 },
+                { type: 'inbound-rtp', kind: 'audio', timestamp: time, bytesReceived: 0, packetsLost: 0, packetsReceived: 100 },
+            ];
+            const first = $bog_gram_call_peer.stats_sum(entries(1_000, 0), null);
+            $mol_assert_equal(first.kbps, 0);
+            const next = $bog_gram_call_peer.stats_sum(entries(3_000, 250_000), first);
+            $mol_assert_equal([next.fps, next.width, next.height, next.kbps, next.loss, next.rtt], [30, 640, 480, 1000, 0.5, 42]);
+        },
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);
             $mol_assert_equal($bog_gram_call_room.signal_parse('{"id":1}'), null);
         },
     });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async 'Крестик выходит из звонка и закрывает страницу'($) {
+                const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+                let closed = 0;
+                const call = $bog_gram_call.make({
+                    $,
+                    Room: () => room_a,
+                    close: () => ++closed,
+                });
+                call.join();
+                room_a.beat();
+                room_b.join();
+                room_b.beat();
+                await swap();
+                $mol_assert_equal(room_b.mates(), [room_a.seat()]);
+                call.close_click({});
+                await swap();
+                $mol_assert_equal(closed, 1);
+                $mol_assert_equal(call.joined(), false);
+                $mol_assert_equal(room_b.mates(), []);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -46198,6 +51820,32 @@ var $;
         'Картинкой считается только файл с типом image'() {
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
+            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
+            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
+        },
+        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
+        },
+        'Настоящий тип берётся из первых байт'() {
+            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
         },
     });
 })($ || ($ = {}));
@@ -46279,8 +51927,92 @@ var $;
                 $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 60 }), false);
                 $mol_assert_equal(chat.voice_on_cancel(), false);
             },
+            'Кадр без размеров — квадрат на полный предел, а не точка'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const bare = session.Messages('auto').make(null);
+                const zero = session.Messages('auto').make(null);
+                zero.Image_width('auto')?.val(0);
+                zero.Image_height('auto')?.val(0);
+                const wide = session.Messages('auto').make(null);
+                wide.Image_width('auto')?.val(1600);
+                wide.Image_height('auto')?.val(1200);
+                const pawns = new Map([bare, zero, wide].map(message => [message.link().str, message]));
+                const chat = $bog_gram_chat.make({ $, message_pawn: (id) => pawns.get(id) ?? null });
+                for (const message of [bare, zero]) {
+                    $mol_assert_equal(chat.message_shot_width(message.link().str), '15.00rem');
+                    $mol_assert_equal(chat.message_shot_ratio(message.link().str), '240 / 240');
+                }
+                $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
+                $mol_assert_equal(chat.message_shot_ratio(wide.link().str), '1600 / 1200');
+            },
+            'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $, session: () => session, mates: () => ['LordKnown', 'LordLost'], saved_is: () => false });
+                const pass = {};
+                const people = $bog_gram_people.make({ $,
+                    pass_of: (lord) => lord === 'LordKnown' ? pass : null,
+                    label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
+                });
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people });
+                $mol_assert_equal(chat.image_send(new File([], 'a.jpg', { type: 'image/jpeg' })), '');
+                $mol_assert_equal(chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                chat.voice_hint('');
+                $mol_assert_equal(chat.voice_send({}), '');
+                $mol_assert_equal(chat.voice_hint(), 'Голосовое не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
+            },
+            'Без ключа участника звонок не начинается молча, а называет, чей ключ не доехал'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $, session: () => session, mates: () => ['LordKnown', 'LordLost'], saved_is: () => false });
+                const pass = {};
+                const people = $bog_gram_people.make({ $,
+                    pass_of: (lord) => lord === 'LordKnown' ? pass : null,
+                    label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
+                });
+                let opened = 0;
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
+                $mol_assert_equal(chat.call_send(), '');
+                $mol_assert_equal(chat.voice_hint(), 'Звонок не начат: не доехал ключ — Борис. Позвоните ещё раз чуть позже');
+                $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
+                $mol_assert_equal(opened, 0);
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        '$mol_syntax2_md_flow'() {
+            const check = (input, right) => {
+                const tokens = [];
+                $mol_syntax2_md_flow.tokenize(input, (...token) => tokens.push(token));
+                $mol_assert_equal(tokens, right);
+            };
+            check('Hello,\nWorld..\r\n\r\n\nof Love!', [
+                ['block', 'Hello,\n', ['Hello,', '\n'], 0],
+                ['block', 'World..\r\n\r\n\n', ['World..', '\r\n\r\n\n'], 7],
+                ['block', 'of Love!', ['of Love!', ''], 19],
+            ]);
+            check('# Header1\n\nHello!\n\n## Header2', [
+                ['header', '# Header1\n\n', ['#', ' ', 'Header1', '\n\n'], 0],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 11],
+                ['header', '## Header2', ['##', ' ', 'Header2', ''], 19],
+            ]);
+            check('```\nstart()\n```\n\n```jam.js\nrestart()\n```\n\nHello!\n\n```\nstop()\n```', [
+                ['code', '```\nstart()\n```\n\n', ['```', '', 'start()\n', '```', '\n\n'], 0],
+                ['code', '```jam.js\nrestart()\n```\n\n', ['```', 'jam.js', 'restart()\n', '```', '\n\n'], 17],
+                ['block', 'Hello!\n\n', ['Hello!', '\n\n'], 42],
+                ['code', '```\nstop()\n```', ['```', '', 'stop()\n', '```', ''], 50],
+            ]);
+            check('| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n| Cell11 | Cell12\n| Cell21 | Cell22\n', [
+                ['table', '| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n\n', ['| header1 | header2\n|----|----\n| Cell11 | Cell12\n| Cell21 | Cell22\n', '\n'], 0],
+                ['table', '| Cell11 | Cell12\n| Cell21 | Cell22\n', ['| Cell11 | Cell12\n| Cell21 | Cell22\n', ''], 68],
+            ]);
+        },
+    });
 })($ || ($ = {}));
 
 ;
@@ -46356,6 +52088,19 @@ var $;
                 const app = $bog_gram.make({ $ });
                 await $mol_wire_async(app).dialog_select('dialog');
                 $mol_assert_equal(app.dialog_current(), 'dialog');
+            },
+            'Полоса отмечает панель, которая перед глазами'($) {
+                const app = $bog_gram.make({ $ });
+                const frames = [[0, 390], [390, 390], [780, 390]];
+                $mol_assert_equal(app.page_at(frames, 195), 0);
+                $mol_assert_equal(app.page_at(frames, 390 + 195), 1);
+                $mol_assert_equal(app.page_at(frames, 780 + 195), 2);
+                $mol_assert_equal(app.page_at(frames, 5000), 2);
+            },
+            'Пока все панели влезают, полосы нет'($) {
+                const app = $bog_gram.make({ $ });
+                app.pages_overflow = () => false;
+                $mol_assert_equal(app.pager_count(), 0);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

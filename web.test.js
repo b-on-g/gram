@@ -3427,41 +3427,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function parse(theme) {
-        if (theme === 'true')
-            return true;
-        if (theme === 'false')
-            return false;
-        return null;
-    }
-    // Get once because chrome switches to light on print
-    const base = $.$mol_media.match('(prefers-color-scheme: light)');
-    /**
-     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
-     */
-    function $mol_lights(next) {
-        const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        if (next === undefined) {
-            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
-        }
-        else {
-            if (arg === null) {
-                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
-            }
-            else {
-                this.$mol_state_arg.value('mol_lights', String(next));
-            }
-            return next;
-        }
-    }
-    $.$mol_lights = $mol_lights;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     $mol_test({
         'null by default'() {
             const key = String(Math.random());
@@ -6625,6 +6590,42 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Отпущенная строка доезжает по порогу или по скорости'($) {
+                const row = $bog_gram_row.make({ $ });
+                $mol_assert_equal(row.swipe_settle(70, 0, 120), true);
+                $mol_assert_equal(row.swipe_settle(50, 0, 120), false);
+                $mol_assert_equal(row.swipe_settle(20, 0.5, 120), true);
+                $mol_assert_equal(row.swipe_settle(100, -0.5, 120), false);
+            },
+            'Направление решают первые пиксели, вертикаль и шаг назад отдаются прокрутке'($) {
+                const row = $bog_gram_row.make({ $ });
+                $mol_assert_equal(row.swipe_axis(3, 2, 0), 'wait');
+                $mol_assert_equal(row.swipe_axis(12, 3, 0), 'drag');
+                $mol_assert_equal(row.swipe_axis(4, 12, 0), 'skip');
+                $mol_assert_equal(row.swipe_axis(-12, 3, 0), 'skip');
+                $mol_assert_equal(row.swipe_axis(-12, 3, 120), 'drag');
+            },
+            'Открытая строка сдвинута на ширину кнопок, тянущаяся — на палец'($) {
+                const row = $bog_gram_row.make({ $ });
+                row.swipe_width = 120;
+                $mol_assert_equal(row.swipe_shift(), 0);
+                row.swipe_open(true);
+                $mol_assert_equal(row.swipe_shift(), 120);
+                row.swipe_drag(40);
+                $mol_assert_equal(row.swipe_shift(), 40);
+                $mol_assert_equal(row.swipe_dragging(), true);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         '$mol_syntax2_md_flow'() {
@@ -7654,6 +7655,39 @@ var $;
             $mol_assert_equal(menu.archive_unread_label(), '5');
             $mol_assert_equal(menu.archive_note(), '2 диалога');
         },
+        'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
+            const picked = [];
+            const menu = $bog_gram_menu.make({ $, select: (id) => { picked.push(id); return null; } });
+            menu.Dialog_row('A').swipe_open(true);
+            menu.Dialog_row('B').swipe_open(true);
+            $mol_assert_equal(menu.Dialog_row('A').swipe_open(), false);
+            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), true);
+            menu.pick('A');
+            $mol_assert_equal(menu.Dialog_row('B').swipe_open(), false);
+            $mol_assert_equal(picked, []);
+            menu.pick('A');
+            $mol_assert_equal(picked, ['A']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Из ссылки Gram берутся только свои параметры'() {
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
+        },
+        'Чужой QR и мусор ничего не открывают'() {
+            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
+            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
+        },
     });
 })($ || ($ = {}));
 
@@ -7698,21 +7732,42 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Из ссылки Gram берутся только свои параметры'() {
-            const lord = 'AAAAAAAA_BBBBBBBB';
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
-        },
-        'Чужой QR и мусор ничего не открывают'() {
-            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
-            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
-        },
-    });
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Вставленная ссылка открывается, чужая — объясняется'($) {
+                const lord = 'AAAAAAAA_BBBBBBBB';
+                const opened = [];
+                let closed = 0;
+                const context = $.$mol_ambient({
+                    $bog_gram_follow: class extends $.$bog_gram_follow {
+                        static go(uri) {
+                            const params = this.params(uri);
+                            if (!Object.keys(params).length)
+                                return false;
+                            opened.push(params);
+                            return true;
+                        }
+                    },
+                });
+                const page = $bog_gram_settings.make({ $: context });
+                page.close = () => (++closed, null);
+                page.paste_uri('https://example.com/#!x=1');
+                page.paste_open();
+                $mol_assert_equal(closed, 0);
+                $mol_assert_equal(opened, []);
+                $mol_assert_equal(page.paste_uri(), 'https://example.com/#!x=1');
+                $mol_assert_equal(page.paste_error() !== '', true);
+                page.paste_uri(' https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef ');
+                $mol_assert_equal(page.paste_error(), '');
+                page.paste_open();
+                $mol_assert_equal(closed, 1);
+                $mol_assert_equal(opened, [{ invite: lord, key: 'abc/def' }]);
+                $mol_assert_equal(page.paste_uri(), '');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -8807,6 +8862,48 @@ var $;
             $mol_assert_equal(next.pass_given(lord), null);
             $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
         },
+        async 'Ключ давнего собеседника берётся из общего диалога, без его домашнего ленда'($) {
+            const peer = await $.$giper_baza_auth._generate();
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_session = await $.$giper_baza_auth._generate();
+            const lord = peer.pass().lord().str;
+            const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+            const session = $giper_baza_land.make({ $, auth: () => king_session });
+            await $mol_wire_async(dialog).encrypted(true);
+            await $mol_wire_async(session).encrypted(true);
+            const lands = {
+                [dialog.link().str]: dialog,
+                [session.link().str]: session,
+            };
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, pass_of: () => null });
+            const talk = $bog_gram_talk.make({ $, Account: () => account, land: id => lands[id] ?? $giper_baza_land.make({ $ }) });
+            const roster = $bog_gram_roster.make({ $, Account: () => account, Talk: () => talk });
+            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry, Roster: () => roster });
+            const ops = {
+                fill() {
+                    dialog.give(peer.pass(), $giper_baza_rank_post('fast'));
+                    session.give(peer.pass(), $giper_baza_rank_post('fast'));
+                    dialog.Data($bog_gram_dialog).Sessions('auto').add(session.link().str);
+                    return true;
+                },
+                before() {
+                    return people.pass_of(lord)?.lord().str ?? '';
+                },
+                join() {
+                    dialogs.Dialogs('auto').add(dialog.link().str);
+                    return true;
+                },
+                after() {
+                    return people.pass_of(lord)?.lord().str ?? '';
+                },
+            };
+            await $mol_wire_async(ops).fill();
+            $mol_assert_equal(await $mol_wire_async(ops).before(), '');
+            await $mol_wire_async(ops).join();
+            $mol_assert_equal(await $mol_wire_async(ops).after(), lord);
+        },
         async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
             const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
@@ -9422,6 +9519,65 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    $mol_test({
+        'a segment per screen, marked where the reader is'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.current = () => 1;
+            $mol_assert_equal(pager.segments().length, 3);
+            $mol_assert_equal(pager.segment_on(0), false);
+            $mol_assert_equal(pager.segment_on(1), true);
+            $mol_assert_equal(pager.segment_on(2), false);
+        },
+        /*
+            The widths are taken a frame after the columns are laid out, so they
+            are empty on the first paint and one short after every step deeper.
+            A bar that counted its segments from them came out blank on a phone
+            and left the current screen unmarked on a desktop, because the index
+            ran past the end. The count comes from the route instead.
+        */
+        'segments do not wait for the columns to be measured'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.spans = () => [];
+            pager.span_total = () => 0;
+            pager.current = () => 2;
+            $mol_assert_equal(pager.segments().length, 3);
+            $mol_assert_equal(pager.segment_on(2), true);
+            $mol_assert_equal(pager.segment_weight(0), '1');
+            $mol_assert_equal(pager.width_style(), '100%');
+        },
+        /*
+            Weights go out as strings. $mol_dom_render_styles appends `px` to any
+            numeric inline value, so a numeric weight lands as `flex-grow: 450px`,
+            is dropped as invalid, and every segment ends up zero wide — right
+            colours, right bar length, nothing to see.
+        */
+        'measured columns set the segment widths'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 3;
+            pager.spans = () => [450, 355, 585];
+            pager.span_total = () => 1394;
+            $mol_assert_equal(pager.segment_weight(0), '450');
+            $mol_assert_equal(pager.segment_weight(2), '585');
+            $mol_assert_equal(pager.width_style(), '1394px');
+        },
+        'one screen is not a sequence'($) {
+            const pager = new $.$bog_kit_pager;
+            pager.$ = $;
+            pager.count = () => 1;
+            $mol_assert_equal(pager.segments().length, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'Длительность показывается минутами и секундами, доли округляются'() {
@@ -9442,7 +9598,7 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    async function pair($) {
+    async function $bog_gram_call_room_pair($) {
         const king = await $.$giper_baza_auth._generate();
         const auth_a = await $.$giper_baza_auth._generate();
         const auth_b = await $.$giper_baza_auth._generate();
@@ -9465,6 +9621,9 @@ var $;
         const room_a = room(land_a, auth_a, 'Аня');
         const room_b = room(land_b, auth_b, 'Боря');
         return {
+            room,
+            land_a,
+            auth_a,
             room_a,
             room_b,
             swap: async () => {
@@ -9473,9 +9632,10 @@ var $;
             },
         };
     }
+    $_1.$bog_gram_call_room_pair = $bog_gram_call_room_pair;
     $mol_test({
         async 'Вошедший виден собеседнику по имени, своё место в собеседниках не числится'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             room_b.join();
@@ -9487,7 +9647,7 @@ var $;
             $mol_assert_equal(room_a.seats_alive().length, 2);
         },
         async 'Вышедший пропадает из звонка у собеседника'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             room_b.join();
@@ -9499,7 +9659,7 @@ var $;
             $mol_assert_equal(room_a.joined(), false);
         },
         async 'Замолчавший без выхода считается ушедшим через окно присутствия'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_a.beat();
             await swap();
@@ -9512,7 +9672,7 @@ var $;
             $mol_assert_equal(room_c.seats_alive(), []);
         },
         async 'Повторный вход занимает новое место, чтобы пары сигналов не смешивались'($) {
-            const { room_a } = await pair($);
+            const { room_a } = await $bog_gram_call_room_pair($);
             room_a.join();
             const first = room_a.seat();
             room_a.leave();
@@ -9520,7 +9680,7 @@ var $;
             $mol_assert_unique(first, room_a.seat());
         },
         async 'Предложение и ответ доходят через ленд по общему ключу пары'($) {
-            const { room_a, room_b, swap } = await pair($);
+            const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
             room_a.join();
             room_b.join();
             const a = room_a.seat();
@@ -9537,11 +9697,85 @@ var $;
             await swap();
             $mol_assert_equal($bog_gram_call_room.signal_parse(offerer.signal('Answers', key)), { id: '0.X', sdp: 'answer' });
         },
+        async 'Повторный вход того же человека заменяет прежнее место, а не добавляет второе'($) {
+            const { room, land_a, auth_a, room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+            room_a.join();
+            room_a.beat();
+            const twin = room(land_a, auth_a, 'Аня');
+            twin.join();
+            twin.beat();
+            room_b.join();
+            room_b.beat();
+            await swap();
+            $mol_assert_equal(room_b.mates(), [twin.seat()]);
+            $mol_assert_equal(room_b.seats_alive().length, 2);
+            $mol_assert_equal(room_a.joined(), false);
+            $mol_assert_equal(twin.joined(), true);
+            $mol_assert_equal(twin.mates(), [room_b.seat()]);
+        },
+        async 'Из двух живых мест одного человека в звонке остаётся последнее'($) {
+            const { room, room_a, room_b, auth_a, swap } = await $bog_gram_call_room_pair($);
+            room_a.join();
+            room_a.beat();
+            room_a.seat_pawn(room_a.seat()).Joined('auto').val(1);
+            const twin = room(room_b.land(), auth_a, 'Аня');
+            twin.join();
+            twin.beat();
+            await swap();
+            $mol_assert_equal(room_a.seat_pawn(room_a.seat()).Left()?.val() ?? null, null);
+            $mol_assert_equal(room_b.seats_alive(), [twin.seat()]);
+            $mol_assert_equal(room_a.joined(), false);
+            $mol_assert_equal(twin.joined(), true);
+        },
+        'Сводка соединения считает кадры, битрейт, потери и задержку'() {
+            const entries = (time, bytes) => [
+                { type: 'transport', selectedCandidatePairId: 'P' },
+                { type: 'candidate-pair', id: 'P', currentRoundTripTime: 0.042 },
+                { type: 'candidate-pair', id: 'Q', currentRoundTripTime: 9 },
+                { type: 'inbound-rtp', kind: 'video', timestamp: time, bytesReceived: bytes, packetsLost: 1, packetsReceived: 99, framesPerSecond: 29.7, frameWidth: 640, frameHeight: 480 },
+                { type: 'inbound-rtp', kind: 'audio', timestamp: time, bytesReceived: 0, packetsLost: 0, packetsReceived: 100 },
+            ];
+            const first = $bog_gram_call_peer.stats_sum(entries(1_000, 0), null);
+            $mol_assert_equal(first.kbps, 0);
+            const next = $bog_gram_call_peer.stats_sum(entries(3_000, 250_000), first);
+            $mol_assert_equal([next.fps, next.width, next.height, next.kbps, next.loss, next.rtt], [30, 640, 480, 1000, 0.5, 42]);
+        },
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);
             $mol_assert_equal($bog_gram_call_room.signal_parse('{"id":1}'), null);
         },
     });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            async 'Крестик выходит из звонка и закрывает страницу'($) {
+                const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+                let closed = 0;
+                const call = $bog_gram_call.make({
+                    $,
+                    Room: () => room_a,
+                    close: () => ++closed,
+                });
+                call.join();
+                room_a.beat();
+                room_b.join();
+                room_b.beat();
+                await swap();
+                $mol_assert_equal(room_b.mates(), [room_a.seat()]);
+                call.close_click({});
+                await swap();
+                $mol_assert_equal(closed, 1);
+                $mol_assert_equal(call.joined(), false);
+                $mol_assert_equal(room_b.mates(), []);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -9561,6 +9795,32 @@ var $;
         'Картинкой считается только файл с типом image'() {
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
             $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
+            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
+            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
+        },
+        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
+        },
+        'Настоящий тип берётся из первых байт'() {
+            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
         },
     });
 })($ || ($ = {}));
@@ -9642,6 +9902,55 @@ var $;
                 $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 60 }), false);
                 $mol_assert_equal(chat.voice_on_cancel(), false);
             },
+            'Кадр без размеров — квадрат на полный предел, а не точка'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const bare = session.Messages('auto').make(null);
+                const zero = session.Messages('auto').make(null);
+                zero.Image_width('auto')?.val(0);
+                zero.Image_height('auto')?.val(0);
+                const wide = session.Messages('auto').make(null);
+                wide.Image_width('auto')?.val(1600);
+                wide.Image_height('auto')?.val(1200);
+                const pawns = new Map([bare, zero, wide].map(message => [message.link().str, message]));
+                const chat = $bog_gram_chat.make({ $, message_pawn: (id) => pawns.get(id) ?? null });
+                for (const message of [bare, zero]) {
+                    $mol_assert_equal(chat.message_shot_width(message.link().str), '15.00rem');
+                    $mol_assert_equal(chat.message_shot_ratio(message.link().str), '240 / 240');
+                }
+                $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
+                $mol_assert_equal(chat.message_shot_ratio(wide.link().str), '1600 / 1200');
+            },
+            'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $, session: () => session, mates: () => ['LordKnown', 'LordLost'], saved_is: () => false });
+                const pass = {};
+                const people = $bog_gram_people.make({ $,
+                    pass_of: (lord) => lord === 'LordKnown' ? pass : null,
+                    label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
+                });
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people });
+                $mol_assert_equal(chat.image_send(new File([], 'a.jpg', { type: 'image/jpeg' })), '');
+                $mol_assert_equal(chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                chat.voice_hint('');
+                $mol_assert_equal(chat.voice_send({}), '');
+                $mol_assert_equal(chat.voice_hint(), 'Голосовое не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
+            },
+            'Без ключа участника звонок не начинается молча, а называет, чей ключ не доехал'($) {
+                const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $, session: () => session, mates: () => ['LordKnown', 'LordLost'], saved_is: () => false });
+                const pass = {};
+                const people = $bog_gram_people.make({ $,
+                    pass_of: (lord) => lord === 'LordKnown' ? pass : null,
+                    label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
+                });
+                let opened = 0;
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
+                $mol_assert_equal(chat.call_send(), '');
+                $mol_assert_equal(chat.voice_hint(), 'Звонок не начат: не доехал ключ — Борис. Позвоните ещё раз чуть позже');
+                $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
+                $mol_assert_equal(opened, 0);
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
@@ -9703,6 +10012,19 @@ var $;
                 const app = $bog_gram.make({ $ });
                 await $mol_wire_async(app).dialog_select('dialog');
                 $mol_assert_equal(app.dialog_current(), 'dialog');
+            },
+            'Полоса отмечает панель, которая перед глазами'($) {
+                const app = $bog_gram.make({ $ });
+                const frames = [[0, 390], [390, 390], [780, 390]];
+                $mol_assert_equal(app.page_at(frames, 195), 0);
+                $mol_assert_equal(app.page_at(frames, 390 + 195), 1);
+                $mol_assert_equal(app.page_at(frames, 780 + 195), 2);
+                $mol_assert_equal(app.page_at(frames, 5000), 2);
+            },
+            'Пока все панели влезают, полосы нет'($) {
+                const app = $bog_gram.make({ $ });
+                app.pages_overflow = () => false;
+                $mol_assert_equal(app.pager_count(), 0);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
