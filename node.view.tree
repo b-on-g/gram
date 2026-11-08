@@ -1077,6 +1077,16 @@ $bog_gram_music $mol_page
 	Frame $mol_frame
 		uri <= uri
 
+$mol_labeler $mol_list
+	rows /
+		<= Label $mol_view
+			minimal_height 32
+			sub <= label /$mol_view_content
+				<= title
+		<= Content $mol_view
+			minimal_height 24
+			sub <= content /
+
 $mol_string_button $mol_string
 
 $mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
@@ -1106,16 +1116,6 @@ $mol_button_copy $mol_button_minor
 	sub /
 		<= Icon $mol_icon_clipboard_outline
 		<= title \
-
-$mol_labeler $mol_list
-	rows /
-		<= Label $mol_view
-			minimal_height 32
-			sub <= label /$mol_view_content
-				<= title
-		<= Content $mol_view
-			minimal_height 24
-			sub <= content /
 
 $bog_qr $mol_svg_root
 	uri \
@@ -1352,6 +1352,11 @@ $bog_gram_settings $bog_gram_page
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
+		<= Version $mol_labeler
+			title \Версия
+			content /
+				<= Version_text $mol_paragraph
+					title <= version \
 		<= Name_field $bog_gram_field
 			hint \Ваше имя — видят только собеседники
 			value? <=> user_name?
@@ -1419,11 +1424,6 @@ $bog_gram_settings $bog_gram_page
 			content /
 				<= Key $bog_gram_settings_key
 					notify_on? <=> notify_on?
-		<= Version $mol_labeler
-			title \Версия
-			content /
-				<= Version_text $mol_paragraph
-					title <= version \
 	Registry_empty $mol_paragraph
 		title \Вы не состоите ни в одном реестре
 	Registry_list $mol_list

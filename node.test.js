@@ -23881,6 +23881,45 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_labeler) = class $mol_labeler extends ($.$mol_list) {
+		label(){
+			return [(this.title())];
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (32);
+			(obj.sub) = () => ((this.label()));
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (24);
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		rows(){
+			return [(this.Label()), (this.Content())];
+		}
+	};
+	($mol_mem(($.$mol_labeler.prototype), "Label"));
+	($mol_mem(($.$mol_labeler.prototype), "Content"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: 0;\n\tpadding-top: .5rem;\n\tpadding-inline: .75rem;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n\tmin-height: 2.5rem;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
 	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
 
 
@@ -24103,45 +24142,6 @@ var $;
         $$.$mol_button_copy = $mol_button_copy;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-
-;
-	($.$mol_labeler) = class $mol_labeler extends ($.$mol_list) {
-		label(){
-			return [(this.title())];
-		}
-		Label(){
-			const obj = new this.$.$mol_view();
-			(obj.minimal_height) = () => (32);
-			(obj.sub) = () => ((this.label()));
-			return obj;
-		}
-		content(){
-			return [];
-		}
-		Content(){
-			const obj = new this.$.$mol_view();
-			(obj.minimal_height) = () => (24);
-			(obj.sub) = () => ((this.content()));
-			return obj;
-		}
-		rows(){
-			return [(this.Label()), (this.Content())];
-		}
-	};
-	($mol_mem(($.$mol_labeler.prototype), "Label"));
-	($mol_mem(($.$mol_labeler.prototype), "Content"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: 0;\n\tpadding-top: .5rem;\n\tpadding-inline: .75rem;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n\tmin-height: 2.5rem;\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
 
 ;
 	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
@@ -25675,6 +25675,20 @@ var $;
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
+		version(){
+			return "";
+		}
+		Version_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.version()));
+			return obj;
+		}
+		Version(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Версия");
+			(obj.content) = () => ([(this.Version_text())]);
+			return obj;
+		}
 		Name_field(){
 			const obj = new this.$.$bog_gram_field();
 			(obj.hint) = () => ("Ваше имя — видят только собеседники");
@@ -25838,20 +25852,6 @@ var $;
 			(obj.content) = () => ([(this.Key())]);
 			return obj;
 		}
-		version(){
-			return "";
-		}
-		Version_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.version()));
-			return obj;
-		}
-		Version(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Версия");
-			(obj.content) = () => ([(this.Version_text())]);
-			return obj;
-		}
 		registry_rows(){
 			return [];
 		}
@@ -25977,13 +25977,13 @@ var $;
 		}
 		body(){
 			return [
+				(this.Version()), 
 				(this.Name_field()), 
 				(this.My_id()), 
 				(this.Invite()), 
 				(this.Notify()), 
 				(this.Registry_block()), 
-				(this.Account()), 
-				(this.Version())
+				(this.Account())
 			];
 		}
 		Registry_empty(){
@@ -26024,6 +26024,8 @@ var $;
 	};
 	($mol_mem(($.$bog_gram_settings.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_copy"));
@@ -26052,8 +26054,6 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_block"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Key"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Account"));
-	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
-	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_copy"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_name"));
@@ -26126,7 +26126,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.122';
+    $.$bog_gram_version = '1.0.123';
 })($ || ($ = {}));
 
 ;

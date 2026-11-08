@@ -45375,6 +45375,20 @@ var $;
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
+		version(){
+			return "";
+		}
+		Version_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.version()));
+			return obj;
+		}
+		Version(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Версия");
+			(obj.content) = () => ([(this.Version_text())]);
+			return obj;
+		}
 		Name_field(){
 			const obj = new this.$.$bog_gram_field();
 			(obj.hint) = () => ("Ваше имя — видят только собеседники");
@@ -45538,20 +45552,6 @@ var $;
 			(obj.content) = () => ([(this.Key())]);
 			return obj;
 		}
-		version(){
-			return "";
-		}
-		Version_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.version()));
-			return obj;
-		}
-		Version(){
-			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Версия");
-			(obj.content) = () => ([(this.Version_text())]);
-			return obj;
-		}
 		registry_rows(){
 			return [];
 		}
@@ -45677,13 +45677,13 @@ var $;
 		}
 		body(){
 			return [
+				(this.Version()), 
 				(this.Name_field()), 
 				(this.My_id()), 
 				(this.Invite()), 
 				(this.Notify()), 
 				(this.Registry_block()), 
-				(this.Account()), 
-				(this.Version())
+				(this.Account())
 			];
 		}
 		Registry_empty(){
@@ -45724,6 +45724,8 @@ var $;
 	};
 	($mol_mem(($.$bog_gram_settings.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_copy"));
@@ -45752,8 +45754,6 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_block"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Key"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Account"));
-	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
-	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_share_copy"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_name"));
@@ -45826,7 +45826,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.122';
+    $.$bog_gram_version = '1.0.123';
 })($ || ($ = {}));
 
 ;
