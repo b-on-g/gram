@@ -438,6 +438,54 @@ namespace $.$$ {
 			return id
 		}
 
+		override placeholders() {
+			return [ ... super.placeholders(), this.Pager() ]
+		}
+
+		pages_shown() {
+			const music = this.music_alive() && this.music_hidden()
+			return music ? this.pages().slice( 0, -1 ) : this.pages()
+		}
+
+		@ $mol_mem
+		layout_epoch( next?: number ) {
+			return next ?? 0
+		}
+
+		@ $mol_mem
+		Layout_watch() {
+			this.pages_shown()
+			this.$.$mol_window.size()
+			return new this.$.$mol_after_frame( ()=> this.layout_epoch( this.layout_epoch() + 1 ) )
+		}
+
+		@ $mol_mem
+		pages_overflow() {
+			this.layout_epoch()
+			const node = this.dom_node() as HTMLElement
+			return node.scrollWidth > node.clientWidth + 1
+		}
+
+		override pager_count() {
+			return this.pages_overflow() ? this.pages_shown().length : 0
+		}
+
+		page_at( frames: readonly ( readonly [ number, number ] )[], middle: number ) {
+			const index = frames.findIndex( ([ left, width ])=> left <= middle && middle < left + width )
+			return index < 0 ? frames.length - 1 : index
+		}
+
+		@ $mol_mem
+		override page_current() {
+			this.layout_epoch()
+			const node = this.dom_node() as HTMLElement
+			const frames = this.pages_shown().map( page => {
+				const el = page.dom_node() as HTMLElement
+				return [ el.offsetLeft - node.offsetLeft, el.offsetWidth ] as const
+			} )
+			return this.page_at( frames, this.scroll_left() + node.clientWidth / 2 )
+		}
+
 		join_request( id: string, by: string ) {
 			const plan = this.Lobby().join_take( id, by )
 			if( plan === 'open' ) this.dialog_select( id )
@@ -446,6 +494,7 @@ namespace $.$$ {
 
 		override auto() {
 			super.auto()
+			this.Layout_watch()
 			$bog_gram_soft( ()=> this.account_ready(), null )
 			$bog_gram_soft( ()=> this.registry_remember(), null )
 			$bog_gram_soft( ()=> this.registry_keys_fill(), null )

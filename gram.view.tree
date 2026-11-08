@@ -136,6 +136,9 @@ $bog_gram $mol_book2
 		toggle? => notify_toggle?
 		on? => notify_on?
 		auto => notify_auto
+	Pager $bog_kit_pager
+		count <= pager_count 0
+		current <= page_current 0
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view

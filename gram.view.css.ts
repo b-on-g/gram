@@ -2,6 +2,12 @@ namespace $.$$ {
 
 	$mol_style_define( $bog_gram, {
 
+		contain: 'style',
+
+		Pager: {
+			top: $mol_style_func.calc( 'env(safe-area-inset-top)' ),
+		},
+
 		Music_page: {
 			width: '30rem',
 		},

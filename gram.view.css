@@ -40,6 +40,8 @@
 	--mol_theme_control: var(--bog_builderui_control);
 	--mol_theme_current: var(--bog_builderui_current);
 	--mol_theme_special: var(--bog_builderui_special);
+	--bog_kit_seam: var(--mol_theme_line);
+	--bog_kit_key: var(--mol_theme_control);
 }
 
 [bog_gram] [mol_page_head] {
