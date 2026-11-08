@@ -34121,25 +34121,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
-		theme(){
-			return "$mol_theme_base";
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
 	($.$mol_video_player) = class $mol_video_player extends ($.$mol_view) {
 		uri(){
 			return "";
@@ -34460,9 +34441,12 @@ var $;
 
 ;
 	($.$bog_gram_scan) = class $bog_gram_scan extends ($.$mol_view) {
+		toggle_title(){
+			return (this.$.$mol_locale.text("$bog_gram_scan_toggle_title"));
+		}
 		Toggle(){
 			const obj = new this.$.$mol_check();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_scan_Toggle_title")));
+			(obj.title) = () => ((this.toggle_title()));
 			(obj.checked) = (next) => ((this.scanning(next)));
 			return obj;
 		}
@@ -44680,6 +44664,25 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
+		theme(){
+			return "$mol_theme_base";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
 	($.$bog_gram_settings_key) = class $bog_gram_settings_key extends ($.$mol_view) {
 		rows(){
 			return [];
@@ -45142,13 +45145,31 @@ var $;
 			(obj.sub) = () => ([(this.Invite_qr())]);
 			return obj;
 		}
+		Follow_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере");
+			return obj;
+		}
+		follow(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Follow(){
+			const obj = new this.$.$bog_gram_scan();
+			(obj.toggle_title) = () => ("Сканировать ссылку");
+			(obj.prefix) = () => ("#!");
+			(obj.found) = (next) => ((this.follow(next)));
+			return obj;
+		}
 		Invite_body(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
 				(this.Invite_hint()), 
 				(this.Invite_text()), 
 				(this.Invite_copy()), 
-				(this.Invite_qr_box())
+				(this.Invite_qr_box()), 
+				(this.Follow_hint()), 
+				(this.Follow())
 			]);
 			return obj;
 		}
@@ -45395,6 +45416,9 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_copy"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr_box"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Follow_hint"));
+	($mol_mem(($.$bog_gram_settings.prototype), "follow"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Follow"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_body"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Notify_status"));
@@ -45434,7 +45458,51 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.105';
+    class $bog_gram_follow extends $mol_object {
+        static keys = ['invite', 'key', 'join', 'by', 'users'];
+        static params(uri) {
+            const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
+            const out = {};
+            for (const chunk of hash.split('/')) {
+                if (!chunk)
+                    continue;
+                const [key, ...rest] = chunk.split('=');
+                const name = this.decode(key);
+                if (!this.keys.includes(name))
+                    continue;
+                out[name] = this.decode(rest.join('='));
+            }
+            if (!out.invite && !out.join && !out.users)
+                return {};
+            return out;
+        }
+        static decode(str) {
+            try {
+                return decodeURIComponent(str);
+            }
+            catch (error) {
+                return '';
+            }
+        }
+        static go(uri) {
+            const params = this.params(uri);
+            if (!Object.keys(params).length)
+                return false;
+            this.$.$mol_state_arg.dict({ ...this.$.$mol_state_arg.dict(), ...params });
+            return true;
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_gram_follow, "go", null);
+    $.$bog_gram_follow = $bog_gram_follow;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_gram_version = '1.0.106';
 })($ || ($ = {}));
 
 ;
@@ -45448,6 +45516,11 @@ var $;
     var $$;
     (function ($$) {
         class $bog_gram_settings extends $.$bog_gram_settings {
+            follow(next) {
+                if (next && this.$.$bog_gram_follow.go(next))
+                    this.close(null);
+                return '';
+            }
             version() {
                 return $bog_gram_version;
             }

@@ -1164,29 +1164,6 @@ $bog_qr $mol_svg_root
 				<= Center_body $mol_view
 					sub <= center
 
-$mol_button_major $mol_button_minor
-	theme \$mol_theme_base
-
-$mol_icon_upload $mol_icon path \M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z
-
-$mol_button_open $mol_button_minor
-	sub /
-		<= Icon $mol_icon_upload
-		<= Native $mol_button_open_native
-			files? <=> files_handled? <=> files? /File
-			accept <= accept \
-			multiple <= multiple true
-
-$mol_button_open_native $mol_view
-	dom_name \input
-	files? /File
-	attr *
-		type \file
-		accept <= accept \
-		multiple <= multiple true
-	event *
-		change? <=> picked? null
-
 $mol_video_player $mol_view
 	dom_name \video
 	playing? false
@@ -1238,11 +1215,34 @@ $bog_gram_scan $mol_view
 	found? \
 	sub /
 		<= Toggle $mol_check
-			title @ \Сканировать QR
+			title <= toggle_title @ \Сканировать QR
 			checked? <=> scanning?
 		<= Camera $mol_video_camera
 			facing \environment
 			muted true
+
+$mol_button_major $mol_button_minor
+	theme \$mol_theme_base
+
+$mol_icon_upload $mol_icon path \M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z
+
+$mol_button_open $mol_button_minor
+	sub /
+		<= Icon $mol_icon_upload
+		<= Native $mol_button_open_native
+			files? <=> files_handled? <=> files? /File
+			accept <= accept \
+			multiple <= multiple true
+
+$mol_button_open_native $mol_view
+	dom_name \input
+	files? /File
+	attr *
+		type \file
+		accept <= accept \
+		multiple <= multiple true
+	event *
+		change? <=> picked? null
 
 $mol_icon_download $mol_icon path \M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z
 
@@ -1367,6 +1367,12 @@ $bog_gram_settings $bog_gram_page
 									gradient_stops /
 										\#229ED9
 										\#5ED0F5
+						<= Follow_hint $mol_paragraph
+							title \Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере
+						<= Follow $bog_gram_scan
+							toggle_title \Сканировать ссылку
+							prefix \#!
+							found? <=> follow? \
 		<= Notify $mol_labeler
 			title \Уведомления
 			content /

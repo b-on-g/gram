@@ -24334,154 +24334,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
-		theme(){
-			return "$mol_theme_base";
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
-		path(){
-			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
-		Icon(){
-			const obj = new this.$.$mol_icon_upload();
-			return obj;
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		files_handled(next){
-			return (this.files(next));
-		}
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		Native(){
-			const obj = new this.$.$mol_button_open_native();
-			(obj.files) = (next) => ((this.files_handled(next)));
-			(obj.accept) = () => ((this.accept()));
-			(obj.multiple) = () => ((this.multiple()));
-			return obj;
-		}
-		sub(){
-			return [(this.Icon()), (this.Native())];
-		}
-	};
-	($mol_mem(($.$mol_button_open.prototype), "Icon"));
-	($mol_mem(($.$mol_button_open.prototype), "files"));
-	($mol_mem(($.$mol_button_open.prototype), "Native"));
-	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
-		accept(){
-			return "";
-		}
-		multiple(){
-			return true;
-		}
-		picked(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		dom_name(){
-			return "input";
-		}
-		files(next){
-			if(next !== undefined) return next;
-			return [];
-		}
-		attr(){
-			return {
-				"type": "file", 
-				"accept": (this.accept()), 
-				"multiple": (this.multiple())
-			};
-		}
-		event(){
-			return {"change": (next) => (this.picked(next))};
-		}
-	};
-	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
-	($mol_mem(($.$mol_button_open_native.prototype), "files"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_button_open extends $.$mol_button_open {
-            files_handled(next) {
-                try {
-                    const files = this.files(next);
-                    this.status([null]);
-                    return files;
-                }
-                catch (error) {
-                    // Calling actions from catch section, if throwing promise breaks idempotency
-                    Promise.resolve().then(() => this.status([error]));
-                    $mol_fail_hidden(error);
-                }
-            }
-        }
-        $$.$mol_button_open = $mol_button_open;
-        /**
-         * File open button
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
-         */
-        class $mol_button_open_native extends $.$mol_button_open_native {
-            dom_node() {
-                return super.dom_node();
-            }
-            picked() {
-                const files = this.dom_node().files;
-                if (!files || !files.length)
-                    return;
-                this.files([...files]);
-            }
-        }
-        $$.$mol_button_open_native = $mol_button_open_native;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
-})($ || ($ = {}));
-
-;
 	($.$mol_video_player) = class $mol_video_player extends ($.$mol_view) {
 		uri(){
 			return "";
@@ -24802,9 +24654,12 @@ var $;
 
 ;
 	($.$bog_gram_scan) = class $bog_gram_scan extends ($.$mol_view) {
+		toggle_title(){
+			return (this.$.$mol_locale.text("$bog_gram_scan_toggle_title"));
+		}
 		Toggle(){
 			const obj = new this.$.$mol_check();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_scan_Toggle_title")));
+			(obj.title) = () => ((this.toggle_title()));
 			(obj.checked) = (next) => ((this.scanning(next)));
 			return obj;
 		}
@@ -24909,6 +24764,154 @@ var $;
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
+		theme(){
+			return "$mol_theme_base";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_upload) = class $mol_icon_upload extends ($.$mol_icon) {
+		path(){
+			return "M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_open) = class $mol_button_open extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_upload();
+			return obj;
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		files_handled(next){
+			return (this.files(next));
+		}
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		Native(){
+			const obj = new this.$.$mol_button_open_native();
+			(obj.files) = (next) => ((this.files_handled(next)));
+			(obj.accept) = () => ((this.accept()));
+			(obj.multiple) = () => ((this.multiple()));
+			return obj;
+		}
+		sub(){
+			return [(this.Icon()), (this.Native())];
+		}
+	};
+	($mol_mem(($.$mol_button_open.prototype), "Icon"));
+	($mol_mem(($.$mol_button_open.prototype), "files"));
+	($mol_mem(($.$mol_button_open.prototype), "Native"));
+	($.$mol_button_open_native) = class $mol_button_open_native extends ($.$mol_view) {
+		accept(){
+			return "";
+		}
+		multiple(){
+			return true;
+		}
+		picked(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		dom_name(){
+			return "input";
+		}
+		files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		attr(){
+			return {
+				"type": "file", 
+				"accept": (this.accept()), 
+				"multiple": (this.multiple())
+			};
+		}
+		event(){
+			return {"change": (next) => (this.picked(next))};
+		}
+	};
+	($mol_mem(($.$mol_button_open_native.prototype), "picked"));
+	($mol_mem(($.$mol_button_open_native.prototype), "files"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_button_open extends $.$mol_button_open {
+            files_handled(next) {
+                try {
+                    const files = this.files(next);
+                    this.status([null]);
+                    return files;
+                }
+                catch (error) {
+                    // Calling actions from catch section, if throwing promise breaks idempotency
+                    Promise.resolve().then(() => this.status([error]));
+                    $mol_fail_hidden(error);
+                }
+            }
+        }
+        $$.$mol_button_open = $mol_button_open;
+        /**
+         * File open button
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_open_native extends $.$mol_button_open_native {
+            dom_node() {
+                return super.dom_node();
+            }
+            picked() {
+                const files = this.dom_node().files;
+                if (!files || !files.length)
+                    return;
+                this.files([...files]);
+            }
+        }
+        $$.$mol_button_open_native = $mol_button_open_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/open/open.view.css", "[mol_button_open_native] {\n\tposition: absolute;\n\tleft: 0;\n\ttop: -100%;\n\twidth: 100%;\n\theight: 200%;\n\tcursor: pointer;\n\topacity: 0;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -25442,13 +25445,31 @@ var $;
 			(obj.sub) = () => ([(this.Invite_qr())]);
 			return obj;
 		}
+		Follow_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере");
+			return obj;
+		}
+		follow(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Follow(){
+			const obj = new this.$.$bog_gram_scan();
+			(obj.toggle_title) = () => ("Сканировать ссылку");
+			(obj.prefix) = () => ("#!");
+			(obj.found) = (next) => ((this.follow(next)));
+			return obj;
+		}
 		Invite_body(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
 				(this.Invite_hint()), 
 				(this.Invite_text()), 
 				(this.Invite_copy()), 
-				(this.Invite_qr_box())
+				(this.Invite_qr_box()), 
+				(this.Follow_hint()), 
+				(this.Follow())
 			]);
 			return obj;
 		}
@@ -25695,6 +25716,9 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_copy"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_qr_box"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Follow_hint"));
+	($mol_mem(($.$bog_gram_settings.prototype), "follow"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Follow"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_body"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Notify_status"));
@@ -25734,7 +25758,51 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.105';
+    class $bog_gram_follow extends $mol_object {
+        static keys = ['invite', 'key', 'join', 'by', 'users'];
+        static params(uri) {
+            const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
+            const out = {};
+            for (const chunk of hash.split('/')) {
+                if (!chunk)
+                    continue;
+                const [key, ...rest] = chunk.split('=');
+                const name = this.decode(key);
+                if (!this.keys.includes(name))
+                    continue;
+                out[name] = this.decode(rest.join('='));
+            }
+            if (!out.invite && !out.join && !out.users)
+                return {};
+            return out;
+        }
+        static decode(str) {
+            try {
+                return decodeURIComponent(str);
+            }
+            catch (error) {
+                return '';
+            }
+        }
+        static go(uri) {
+            const params = this.params(uri);
+            if (!Object.keys(params).length)
+                return false;
+            this.$.$mol_state_arg.dict({ ...this.$.$mol_state_arg.dict(), ...params });
+            return true;
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $bog_gram_follow, "go", null);
+    $.$bog_gram_follow = $bog_gram_follow;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_gram_version = '1.0.106';
 })($ || ($ = {}));
 
 ;
@@ -25748,6 +25816,11 @@ var $;
     var $$;
     (function ($$) {
         class $bog_gram_settings extends $.$bog_gram_settings {
+            follow(next) {
+                if (next && this.$.$bog_gram_follow.go(next))
+                    this.close(null);
+                return '';
+            }
             version() {
                 return $bog_gram_version;
             }
@@ -44127,6 +44200,26 @@ var $;
             block.toggle();
             $mol_assert_equal(block.rows().includes(block.Row()), true);
             $mol_assert_equal(block.toggle_label(), 'Скрыть ключ');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Из ссылки Gram берутся только свои параметры'() {
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
+        },
+        'Чужой QR и мусор ничего не открывают'() {
+            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
+            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
         },
     });
 })($ || ($ = {}));
