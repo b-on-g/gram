@@ -276,6 +276,16 @@ namespace $.$$ {
 				y: 'auto',
 			},
 			borderRadius: '1rem',
+			background: {
+				color: $mol_theme.field,
+			},
+			boxShadow: `inset 0 0 0 1px ${ $mol_theme.line }`,
+			':hover': {
+				boxShadow: `inset 0 0 0 2px ${ $mol_theme.line }`,
+			},
+			':focus-within': {
+				boxShadow: `inset 0 0 0 1px ${ $mol_theme.focus }`,
+			},
 		},
 
 		Message_field: {
@@ -284,7 +294,18 @@ namespace $.$$ {
 				shrink: 1,
 			},
 			minWidth: 0,
-			borderRadius: '1rem',
+			Edit: {
+				background: {
+					color: 'transparent',
+				},
+				boxShadow: 'none',
+				':hover': {
+					boxShadow: 'none',
+				},
+				':focus': {
+					boxShadow: 'none',
+				},
+			},
 		},
 
 		Send: {
