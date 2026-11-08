@@ -97,6 +97,24 @@ namespace $ {
 			return null
 		}
 
+		@ $mol_mem_key
+		pass_shared( lord: string ) {
+
+			const link = new $giper_baza_link( lord )
+			const roster = this.Roster()
+			const talk = roster.Talk()
+
+			for( const id of $bog_gram_soft( ()=> roster.ids(), [] as string[] ) ) {
+				const links = [ id, ... $bog_gram_soft( ()=> talk.links_of( id ), [] as readonly string[] ) ]
+				for( const land of links ) {
+					const pass = talk.land( land ).lord_pass( link )
+					if( pass?.lord().str === lord ) return pass
+				}
+			}
+
+			return null
+		}
+
 		pass_learn( lord: string, key: string ) {
 			if( !lord || !key ) return null
 			const pass = $bog_gram_pass.verified( lord, key )
@@ -120,6 +138,9 @@ namespace $ {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				$mol_fail_log( error )
 			}
+
+			const shared = this.pass_shared( lord )
+			if( shared ) return shared
 
 			const land = this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) )
 			$bog_gram_soft( ()=> ( land.sync(), true ), false )

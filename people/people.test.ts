@@ -29,6 +29,62 @@ namespace $ {
 
 		},
 
+		async 'Ключ давнего собеседника берётся из общего диалога, без его домашнего ленда'( $ ) {
+
+			const peer = await $.$giper_baza_auth._generate()
+			const king_dialog = await $.$giper_baza_auth._generate()
+			const king_session = await $.$giper_baza_auth._generate()
+			const lord = peer.pass().lord().str
+
+			const dialog = $giper_baza_land.make({ $, auth: ()=> king_dialog })
+			const session = $giper_baza_land.make({ $, auth: ()=> king_session })
+			await $mol_wire_async( dialog ).encrypted( true )
+			await $mol_wire_async( session ).encrypted( true )
+
+			const lands = {
+				[ dialog.link().str ]: dialog,
+				[ session.link().str ]: session,
+			} as Record< string, $giper_baza_land >
+
+			const dialogs = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+			const account = $bog_gram_account.make({ $, dialogs_store: ()=> dialogs })
+			const registry = $bog_gram_registry.make({ $, Account: ()=> account, pass_of: ()=> null })
+			const talk = $bog_gram_talk.make({ $, Account: ()=> account, land: id => lands[ id ] ?? $giper_baza_land.make({ $ }) })
+			const roster = $bog_gram_roster.make({ $, Account: ()=> account, Talk: ()=> talk })
+			const people = $bog_gram_people.make({ $, Account: ()=> account, Registry: ()=> registry, Roster: ()=> roster })
+
+			const ops = {
+
+				fill() {
+					dialog.give( peer.pass(), $giper_baza_rank_post( 'fast' ) )
+					session.give( peer.pass(), $giper_baza_rank_post( 'fast' ) )
+					dialog.Data( $bog_gram_dialog ).Sessions( 'auto' )!.add( session.link().str )
+					return true
+				},
+
+				before() {
+					return people.pass_of( lord )?.lord().str ?? ''
+				},
+
+				join() {
+					dialogs.Dialogs( 'auto' )!.add( dialog.link().str )
+					return true
+				},
+
+				after() {
+					return people.pass_of( lord )?.lord().str ?? ''
+				},
+
+			}
+
+			await $mol_wire_async( ops ).fill()
+			$mol_assert_equal( await $mol_wire_async( ops ).before(), '' )
+
+			await $mol_wire_async( ops ).join()
+			$mol_assert_equal( await $mol_wire_async( ops ).after(), lord )
+
+		},
+
 		async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'( $ ) {
 
 			const dialogs = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
