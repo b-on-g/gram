@@ -17,6 +17,7 @@ namespace $ {
 		Lobbies: $giper_baza_list_str,
 		Joining: $giper_baza_dict_to( $bog_gram_join ),
 		Schema: $giper_baza_atom_real,
+		Name: $giper_baza_atom_text,
 	}) {}
 
 }

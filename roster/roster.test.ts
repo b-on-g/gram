@@ -2,6 +2,47 @@ namespace $ {
 
 	$mol_test({
 
+		async 'Имя собеседника берётся из общего диалога и только от него самого'( $ ) {
+
+			const king = await $.$giper_baza_auth._generate()
+			const ann = await $.$giper_baza_auth._generate()
+			const bob = await $.$giper_baza_auth._generate()
+			const ann_lord = ann.pass().lord().str
+			const bob_lord = bob.pass().lord().str
+
+			const land0 = $giper_baza_land.make({ $, auth: ()=> king })
+			await $mol_wire_async( ()=> {
+				land0.give( ann.pass(), $giper_baza_rank_post( 'just' ) )
+				land0.give( bob.pass(), $giper_baza_rank_post( 'just' ) )
+				return true
+			} )()
+
+			const write = async ( auth: $giper_baza_auth, lord: string, name: string )=> {
+				const copy = $giper_baza_land.make({ $, link: ()=> land0.link(), auth: ()=> auth })
+				await $mol_wire_async( copy ).units_steal( land0 )
+				await $mol_wire_async( ()=> {
+					copy.Data( $bog_gram_dialog ).Names( 'auto' )!.key( lord, 'auto' )!.Title( 'auto' )!.val( name )
+					return true
+				} )()
+				await $mol_wire_async( land0 ).units_steal( copy )
+			}
+
+			await write( ann, ann_lord, 'Анна' )
+			await write( bob, ann_lord, 'Подделка' )
+			await write( bob, bob_lord, 'Боб' )
+
+			const id = land0.link().str
+			const talk = $bog_gram_talk.make({ $, store: ()=> land0.Data( $bog_gram_dialog ) })
+			const roster = $bog_gram_roster.make({ $, Talk: ()=> talk, ids: ()=> [ id ] })
+
+			$mol_assert_equal( roster.name_of( id, ann_lord ), 'Анна' )
+			$mol_assert_equal( roster.name_of( id, bob_lord ), 'Боб' )
+			$mol_assert_equal( roster.names()[ ann_lord ], 'Анна' )
+			$mol_assert_equal( roster.names()[ bob_lord ], 'Боб' )
+			$mol_assert_equal( Object.keys( roster.names() ).length, 2 )
+
+		},
+
 		'Чужой диалог показывается по сообщениям и знакомству'( $ ) {
 
 			const roster = $bog_gram_roster.make({ $ })

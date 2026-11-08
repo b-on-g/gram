@@ -16,9 +16,16 @@ namespace $ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( lord ) ).Data( $bog_gram_user )
 		}
 
+		@ $mol_mem
+		Roster() {
+			return this.$.$bog_gram_roster.make({ $: this.$ })
+		}
+
 		@ $mol_mem_key
 		name( lord: string ) {
-			return $bog_gram_soft( ()=> this.store( lord ).Name()?.val() ?? '', '' )
+			const shared = $bog_gram_soft( ()=> this.Roster().names()[ lord ] ?? '', '' )
+			if( shared ) return shared
+			return $bog_gram_soft( ()=> String( this.store( lord ).Name()?.val() ?? '' ), '' )
 		}
 
 		inbox( lord: string ) {

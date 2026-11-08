@@ -457,6 +457,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.outbox_flush(), null )
 			$bog_gram_soft( ()=> this.asks_flush(), null )
 			$bog_gram_soft( ()=> this.monitor_fill(), null )
+			$bog_gram_soft( ()=> this.names_fill(), 0 )
 		}
 
 	}

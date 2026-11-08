@@ -100,6 +100,12 @@ namespace $ {
 			return $mol_wire_sync( api ).signed( auth, action, lord, monitor, endpoint )
 		}
 
+		static daemon() {
+			return this.$.$mol_fetch.json( this.base + '/push/key', {
+				cache: 'no-store',
+			} ) as { key?: string, pass?: string } | null
+		}
+
 		static send( path: string, body: object ) {
 			return this.$.$mol_fetch.success( this.base + path, {
 				method: 'POST',
@@ -118,11 +124,7 @@ namespace $ {
 
 				const reg = $mol_wire_sync( api ).registration()
 
-				const answer = this.$.$mol_fetch.json( this.base + '/push/key', {
-					cache: 'no-store',
-				} ) as { key?: string } | null
-
-				const key = answer?.key
+				const key = this.daemon()?.key
 				if( !key ) return false
 
 				const bytes = key_bytes( key )

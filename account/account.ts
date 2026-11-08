@@ -18,8 +18,26 @@ namespace $ {
 
 		@ $mol_mem
 		user_name( next?: string ) {
-			if( next !== undefined ) this.user_store().Name( 'auto' )?.val( next )
-			return this.user_store().Name()?.val() ?? ''
+			const store = this.dialogs_store()
+			if( next !== undefined ) {
+				store.Name( 'auto' )?.val( next )
+				this.name_hide()
+			}
+			return String( store.Name()?.val() ?? '' ) || this.name_public()
+		}
+
+		name_public() {
+			return String( $bog_gram_soft( ()=> this.user_store().Name()?.val() ?? '', '' ) )
+		}
+
+		@ $mol_mem
+		name_hide() {
+			const open = this.name_public()
+			if( !open ) return false
+			const store = this.dialogs_store()
+			if( !String( store.Name()?.val() ?? '' ) ) store.Name( 'auto' )?.val( open )
+			this.user_store().Name( 'auto' )?.val( '' )
+			return true
 		}
 
 		@ $mol_mem
@@ -134,14 +152,23 @@ namespace $ {
 
 		@ $mol_action
 		monitor_land_make() {
-			const land = this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_read ] ])
-			this.user_store().Monitor_land( 'auto' )?.val( land.link().str )
+			const land = this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
+			this.user_store().Watch_land( 'auto' )?.val( land.link().str )
 			return land
 		}
 
 		monitor_land() {
-			const str = this.user_store().Monitor_land()?.val()
+			const str = this.user_store().Watch_land()?.val()
 			return str ? this.land( String( str ) ) : this.monitor_land_make()
+		}
+
+		@ $mol_action
+		monitor_grant( pass: string ) {
+			const daemon = $bog_gram_pass.parse( pass )
+			const land = this.monitor_land()
+			if( land.pass_rank( daemon ) >= $giper_baza_rank_read ) return false
+			land.give( daemon, $giper_baza_rank_read )
+			return true
 		}
 
 		@ $mol_action
@@ -254,6 +281,7 @@ namespace $ {
 			this.monitor_land()
 			this.device_ready()
 			$bog_gram_soft( ()=> this.decisions_flush(), 0 )
+			$bog_gram_soft( ()=> this.name_hide(), false )
 			return true
 		}
 

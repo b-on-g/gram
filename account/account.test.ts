@@ -2,6 +2,51 @@ namespace $ {
 
 	$mol_test({
 
+		'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'( $ ) {
+
+			const dialogs = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+			const profile = $giper_baza_land.make({ $ }).Data( $bog_gram_user )
+			const account = $bog_gram_account.make({ $, dialogs_store: ()=> dialogs, user_store: ()=> profile })
+
+			profile.Name( 'auto' )!.val( 'Кирилл' )
+			$mol_assert_equal( account.user_name(), 'Кирилл' )
+
+			account.name_hide()
+			$mol_assert_equal( String( dialogs.Name()?.val() ?? '' ), 'Кирилл' )
+			$mol_assert_equal( String( profile.Name()?.val() ?? '' ), '' )
+
+			account.user_name( 'Кирилл Н.' )
+			$mol_assert_equal( account.user_name(), 'Кирилл Н.' )
+			$mol_assert_equal( String( profile.Name()?.val() ?? '' ), '' )
+
+		},
+
+		async 'Монитор закрыт для всех, а демон с выданным правом его читает'( $ ) {
+
+			const daemon = await $.$giper_baza_auth._generate()
+			const stranger = await $.$giper_baza_auth._generate()
+
+			const profile = $giper_baza_land.make({ $ }).Data( $bog_gram_user )
+			const account = $bog_gram_account.make({ $, user_store: ()=> profile })
+
+			const land = await $mol_wire_async( account ).monitor_land()
+			$mol_assert_equal( land.encrypted(), true )
+			$mol_assert_equal( String( profile.Watch_land()?.val() ?? '' ), land.link().str )
+
+			await $mol_wire_async( ()=> {
+				account.monitor_store().Watch( 'auto' )!.add( 'SessionLink' )
+				return true
+			} )()
+
+			$mol_assert_equal( await $mol_wire_async( account ).monitor_grant( daemon.pass().toString() ), true )
+			$mol_assert_equal( await $mol_wire_async( account ).monitor_grant( daemon.pass().toString() ), false )
+
+			$mol_assert_equal( land.pass_rank( daemon.pass() ), $giper_baza_rank_read )
+			$mol_assert_equal( land.pass_rank( stranger.pass() ), $giper_baza_rank_deny )
+			$mol_assert_equal( land.lord_rank( null ), $giper_baza_rank_deny )
+
+		},
+
 		async 'Запрос принимается и убирается локально, даже когда свой список не пишется, и переезжает в него потом'( $ ) {
 
 			const king = await $.$giper_baza_auth._generate()

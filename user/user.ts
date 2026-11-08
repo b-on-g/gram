@@ -5,6 +5,7 @@ namespace $ {
 		Inbox_land: $giper_baza_atom_text,
 		Dialogs_land: $giper_baza_atom_text,
 		Monitor_land: $giper_baza_atom_text,
+		Watch_land: $giper_baza_atom_text,
 		Devices_land: $giper_baza_atom_text,
 	}) {}
 

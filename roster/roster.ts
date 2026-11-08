@@ -234,6 +234,50 @@ namespace $ {
 			return this.contacts()[ lord ] ?? ''
 		}
 
+		name_of( id: string, lord: string ) {
+			const atom = this.Talk().store( id ).Names()?.key( lord )?.Title()
+			if( !atom ) return ''
+			for( const unit of atom.units_of( null ) ) {
+				if( unit.lord().str !== lord ) continue
+				return String( atom.land().sand_decode( unit ) ?? '' )
+			}
+			return ''
+		}
+
+		@ $mol_mem
+		names() {
+			const out: Record< string, string > = {}
+			for( const id of this.ids() ) {
+				const keys = $bog_gram_soft( ()=> this.Talk().store( id ).Names()?.keys() ?? [], [] as readonly $giper_baza_vary_type[] )
+				for( const key of keys ) {
+					const lord = String( key )
+					if( out[ lord ] ) continue
+					const name = $bog_gram_soft( ()=> this.name_of( id, lord ), '' )
+					if( name ) out[ lord ] = name
+				}
+			}
+			return out
+		}
+
+		@ $mol_mem
+		names_fill() {
+			const my = this.Account().my_lord()
+			const name = this.Account().user_name()
+			let count = 0
+			for( const id of this.ids() ) {
+				if( this.Talk().saved_is( id ) ) continue
+				const done = $bog_gram_soft( ()=> {
+					if( this.name_of( id, my ) === name ) return false
+					const title = this.Talk().store( id ).Names( 'auto' )?.key( my, 'auto' )?.Title( 'auto' )
+					if( !title ) return false
+					title.val( name )
+					return true
+				}, false )
+				if( done ) ++ count
+			}
+			return count
+		}
+
 		@ $mol_mem
 		watch_fill() {
 			const watch = this.Account().monitor_store()

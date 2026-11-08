@@ -105,6 +105,15 @@ namespace $ {
 				return false
 			}
 
+			let daemon = ''
+			try {
+				daemon = notify.daemon()?.pass ?? ''
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+			}
+			if( daemon ) this.Account().monitor_grant( daemon )
+
 			const ok = notify.subscribe( lord, this.Account().monitor_link() )
 			this.permission( notify.permission() )
 			this.on( ok )
