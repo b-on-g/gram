@@ -108,8 +108,22 @@ namespace $.$$ {
 			color: $mol_theme.shade,
 		},
 
+		Line: {
+			flex: {
+				wrap: 'wrap',
+			},
+			align: {
+				items: 'flex-end',
+			},
+			columnGap: '0.5rem',
+			minWidth: 0,
+		},
+
 		Body: {
 			minWidth: 0,
+			flex: {
+				shrink: 1,
+			},
 			whiteSpace: 'pre-wrap',
 			overflowWrap: 'anywhere',
 		},
@@ -126,7 +140,9 @@ namespace $.$$ {
 		},
 
 		Meta: {
-			alignSelf: 'flex-end',
+			margin: {
+				left: 'auto',
+			},
 			align: {
 				items: 'center',
 			},
@@ -137,6 +153,7 @@ namespace $.$$ {
 			font: {
 				size: '0.7rem',
 			},
+			lineHeight: '1rem',
 			color: $mol_theme.shade,
 		},
 
