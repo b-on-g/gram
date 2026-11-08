@@ -114,7 +114,10 @@ namespace $.$$ {
 			if( !session ) return ''
 
 			const passes = this.passes()
-			if( !passes ) return ''
+			if( !passes ) {
+				this.voice_hint( `Звонок не начат: не доехал ключ — ${ this.lost_names() }. Позвоните ещё раз чуть позже` )
+				return ''
+			}
 
 			const land = this.$.$bog_gram_call_room.grab( passes )
 
@@ -122,6 +125,8 @@ namespace $.$$ {
 			message.Call( 'auto' )!.val( land.link() )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
+
+			this.voice_hint( '' )
 
 			this.call_open( land.link().str )
 
@@ -650,9 +655,12 @@ namespace $.$$ {
 			return mates.filter( lord => !this.People().pass_of( lord ) )
 		}
 
+		lost_names() {
+			return this.passes_lost().map( lord => this.People().label( lord ) ).join( ', ' )
+		}
+
 		lost_hint( what: string ) {
-			const names = this.passes_lost().map( lord => this.People().label( lord ) ).join( ', ' )
-			return `${ what } не отправлено: не доехал ключ — ${ names }. Отправьте ещё раз чуть позже`
+			return `${ what } не отправлено: не доехал ключ — ${ this.lost_names() }. Отправьте ещё раз чуть позже`
 		}
 
 		land_closed( bytes: Uint8Array< ArrayBuffer >, type: string, passes: readonly $giper_baza_auth_pass[] ) {

@@ -120,6 +120,25 @@ namespace $.$$ {
 
 		},
 
+		'Без ключа участника звонок не начинается молча, а называет, чей ключ не доехал'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const talk = $bog_gram_talk.make({ $, session: ()=> session, mates: ()=> [ 'LordKnown', 'LordLost' ], saved_is: ()=> false })
+			const pass = {} as $giper_baza_auth_pass
+			const people = $bog_gram_people.make({ $,
+				pass_of: ( lord: string )=> lord === 'LordKnown' ? pass : null,
+				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
+			})
+			let opened = 0
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people, call_open: ()=> ++ opened })
+
+			$mol_assert_equal( chat.call_send(), '' )
+			$mol_assert_equal( chat.voice_hint(), 'Звонок не начат: не доехал ключ — Борис. Позвоните ещё раз чуть позже' )
+			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
+			$mol_assert_equal( opened, 0 )
+
+		},
+
 	})
 
 }
