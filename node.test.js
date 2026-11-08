@@ -25397,7 +25397,7 @@ var $;
 		}
 		Name_field(){
 			const obj = new this.$.$bog_gram_field();
-			(obj.hint) = () => ("Ваше имя");
+			(obj.hint) = () => ("Ваше имя — видят только собеседники");
 			(obj.value) = (next) => ((this.user_name(next)));
 			return obj;
 		}
@@ -25802,7 +25802,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.106';
+    $.$bog_gram_version = '1.0.108';
 })($ || ($ = {}));
 
 ;
@@ -27731,6 +27731,7 @@ var $;
         Inbox_land: $giper_baza_atom_text,
         Dialogs_land: $giper_baza_atom_text,
         Monitor_land: $giper_baza_atom_text,
+        Watch_land: $giper_baza_atom_text,
         Devices_land: $giper_baza_atom_text,
     }) {
     }
@@ -27748,6 +27749,41 @@ var $;
     }) {
     }
     $.$bog_gram_inbox = $bog_gram_inbox;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const parsed = new Map();
+    class $bog_gram_pass extends $mol_object {
+        static parse(str) {
+            let pass = parsed.get(str);
+            if (pass)
+                return pass;
+            pass = $giper_baza_auth_pass.from(str);
+            parsed.set(str, pass);
+            return pass;
+        }
+        static verified(lord, str) {
+            if (!lord || !str)
+                return null;
+            try {
+                const pass = this.parse(str);
+                if (pass.lord().str === lord)
+                    return pass;
+                $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
+                return null;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return null;
+            }
+        }
+    }
+    $.$bog_gram_pass = $bog_gram_pass;
 })($ || ($ = {}));
 
 ;
@@ -27794,6 +27830,7 @@ var $;
         Lobbies: $giper_baza_list_str,
         Joining: $giper_baza_dict_to($bog_gram_join),
         Schema: $giper_baza_atom_real,
+        Name: $giper_baza_atom_text,
     }) {
     }
     $.$bog_gram_dialogs = $bog_gram_dialogs;
@@ -27848,9 +27885,25 @@ var $;
             return this.$.$giper_baza_auth.current().pass().toString();
         }
         user_name(next) {
-            if (next !== undefined)
-                this.user_store().Name('auto')?.val(next);
-            return this.user_store().Name()?.val() ?? '';
+            const store = this.dialogs_store();
+            if (next !== undefined) {
+                store.Name('auto')?.val(next);
+                this.name_hide();
+            }
+            return String(store.Name()?.val() ?? '') || this.name_public();
+        }
+        name_public() {
+            return String($bog_gram_soft(() => this.user_store().Name()?.val() ?? '', ''));
+        }
+        name_hide() {
+            const open = this.name_public();
+            if (!open)
+                return false;
+            const store = this.dialogs_store();
+            if (!String(store.Name()?.val() ?? ''))
+                store.Name('auto')?.val(open);
+            this.user_store().Name('auto')?.val('');
+            return true;
         }
         inbox_land() {
             const home = this.$.$giper_baza_glob.Land(new $giper_baza_link(this.my_lord()));
@@ -27940,13 +27993,21 @@ var $;
             return str ? this.land(String(str)) : this.dialogs_land_make();
         }
         monitor_land_make() {
-            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_read]]);
-            this.user_store().Monitor_land('auto')?.val(land.link().str);
+            const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+            this.user_store().Watch_land('auto')?.val(land.link().str);
             return land;
         }
         monitor_land() {
-            const str = this.user_store().Monitor_land()?.val();
+            const str = this.user_store().Watch_land()?.val();
             return str ? this.land(String(str)) : this.monitor_land_make();
+        }
+        monitor_grant(pass) {
+            const daemon = $bog_gram_pass.parse(pass);
+            const land = this.monitor_land();
+            if (land.pass_rank(daemon) >= $giper_baza_rank_read)
+                return false;
+            land.give(daemon, $giper_baza_rank_read);
+            return true;
         }
         devices_land_make() {
             const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
@@ -28045,6 +28106,7 @@ var $;
             this.monitor_land();
             this.device_ready();
             $bog_gram_soft(() => this.decisions_flush(), 0);
+            $bog_gram_soft(() => this.name_hide(), false);
             return true;
         }
     }
@@ -28057,6 +28119,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_account.prototype, "user_name", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "name_hide", null);
     __decorate([
         $mol_mem
     ], $bog_gram_account.prototype, "inbox_land", null);
@@ -28093,6 +28158,9 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "monitor_land_make", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "monitor_grant", null);
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "devices_land_make", null);
@@ -28136,41 +28204,6 @@ var $;
     }) {
     }
     $.$bog_gram_users = $bog_gram_users;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const parsed = new Map();
-    class $bog_gram_pass extends $mol_object {
-        static parse(str) {
-            let pass = parsed.get(str);
-            if (pass)
-                return pass;
-            pass = $giper_baza_auth_pass.from(str);
-            parsed.set(str, pass);
-            return pass;
-        }
-        static verified(lord, str) {
-            if (!lord || !str)
-                return null;
-            try {
-                const pass = this.parse(str);
-                if (pass.lord().str === lord)
-                    return pass;
-                $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
-                return null;
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    $mol_fail_hidden(error);
-                $mol_fail_log(error);
-                return null;
-            }
-        }
-    }
-    $.$bog_gram_pass = $bog_gram_pass;
 })($ || ($ = {}));
 
 ;
@@ -28401,159 +28434,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $bog_gram_people extends $mol_object {
-        Account() {
-            return this.$.$bog_gram_account.make({ $: this.$ });
-        }
-        Registry() {
-            return this.$.$bog_gram_registry.make({ $: this.$ });
-        }
-        store(lord) {
-            return this.$.$giper_baza_glob.Land(new $giper_baza_link(lord)).Data($bog_gram_user);
-        }
-        name(lord) {
-            return $bog_gram_soft(() => this.store(lord).Name()?.val() ?? '', '');
-        }
-        inbox(lord) {
-            return String(this.store(lord).Inbox_land()?.val() ?? '');
-        }
-        note(lord) {
-            if (!lord)
-                return '';
-            return this.Account().dialogs_store().Notes()?.key(lord)?.Title()?.val() ?? '';
-        }
-        note_set(lord, next) {
-            if (!lord)
-                return null;
-            const title = next ?? '';
-            const notes = this.Account().dialogs_store().Notes('auto');
-            if (!notes)
-                return null;
-            if (!title && !notes.key(lord))
-                return null;
-            notes.key(lord, 'auto')?.Title('auto')?.val(title);
-            return null;
-        }
-        label(lord) {
-            return $bog_gram_lord.label(lord, this.note(lord), this.name(lord));
-        }
-        accepted() {
-            return this.Account().decided('accepted');
-        }
-        known(lord) {
-            if (!lord)
-                return false;
-            if (this.accepted().includes(lord))
-                return true;
-            return Boolean(this.Registry().sources()[lord]);
-        }
-        accept(lord) {
-            if (!lord)
-                return null;
-            if (lord === this.Account().my_lord())
-                return null;
-            if (!$giper_baza_link.check(lord))
-                return null;
-            if (this.accepted().includes(lord))
-                return null;
-            this.Account().decide('accepted', lord);
-            return null;
-        }
-        pass_given(lord, next) {
-            return next ?? null;
-        }
-        pass_stored(lord) {
-            for (const str of this.Account().dialogs_store().Passes()?.items() ?? []) {
-                try {
-                    const pass = $bog_gram_pass.parse(String(str));
-                    if (pass.lord().str === lord)
-                        return pass;
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                }
-            }
-            return null;
-        }
-        pass_learn(lord, key) {
-            if (!lord || !key)
-                return null;
-            const pass = $bog_gram_pass.verified(lord, key);
-            if (!pass)
-                return null;
-            this.pass_given(lord, pass);
-            if (!this.pass_stored(lord))
-                this.Account().dialogs_store().Passes('auto').add(pass.toString());
-            return pass;
-        }
-        pass_of(lord) {
-            if (!lord)
-                return null;
-            const given = this.pass_given(lord);
-            if (given)
-                return given;
-            try {
-                const stored = this.pass_stored(lord);
-                if (stored)
-                    return stored;
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    $mol_fail_hidden(error);
-                $mol_fail_log(error);
-            }
-            const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
-            $bog_gram_soft(() => (land.sync(), true), false);
-            return land.king_pass() ?? this.Registry().pass_of(lord);
-        }
-        passes_of(lords) {
-            const passes = [];
-            for (const lord of lords) {
-                const pass = this.pass_of(lord);
-                if (pass)
-                    passes.push(pass);
-            }
-            return passes;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $bog_gram_people.prototype, "Account", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_people.prototype, "Registry", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_people.prototype, "name", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_people.prototype, "note", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_people.prototype, "note_set", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_people.prototype, "accepted", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_people.prototype, "known", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_people.prototype, "accept", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_people.prototype, "pass_given", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_people.prototype, "pass_stored", null);
-    $.$bog_gram_people = $bog_gram_people;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     class $bog_gram_dialog extends $giper_baza_dict.with({
         Peers: $giper_baza_list_str,
         Sessions: $giper_baza_list_str,
@@ -28562,6 +28442,7 @@ var $;
         Created: $giper_baza_atom_real,
         Title: $giper_baza_atom_text,
         Admins: $giper_baza_list_str,
+        Names: $giper_baza_dict_to($bog_gram_note),
     }) {
     }
     $.$bog_gram_dialog = $bog_gram_dialog;
@@ -29300,6 +29181,53 @@ var $;
         contact_source(lord) {
             return this.contacts()[lord] ?? '';
         }
+        name_of(id, lord) {
+            const atom = this.Talk().store(id).Names()?.key(lord)?.Title();
+            if (!atom)
+                return '';
+            for (const unit of atom.units_of(null)) {
+                if (unit.lord().str !== lord)
+                    continue;
+                return String(atom.land().sand_decode(unit) ?? '');
+            }
+            return '';
+        }
+        names() {
+            const out = {};
+            for (const id of this.ids()) {
+                const keys = $bog_gram_soft(() => this.Talk().store(id).Names()?.keys() ?? [], []);
+                for (const key of keys) {
+                    const lord = String(key);
+                    if (out[lord])
+                        continue;
+                    const name = $bog_gram_soft(() => this.name_of(id, lord), '');
+                    if (name)
+                        out[lord] = name;
+                }
+            }
+            return out;
+        }
+        names_fill() {
+            const my = this.Account().my_lord();
+            const name = this.Account().user_name();
+            let count = 0;
+            for (const id of this.ids()) {
+                if (this.Talk().saved_is(id))
+                    continue;
+                const done = $bog_gram_soft(() => {
+                    if (this.name_of(id, my) === name)
+                        return false;
+                    const title = this.Talk().store(id).Names('auto')?.key(my, 'auto')?.Title('auto');
+                    if (!title)
+                        return false;
+                    title.val(name);
+                    return true;
+                }, false);
+                if (done)
+                    ++count;
+            }
+            return count;
+        }
         watch_fill() {
             const watch = this.Account().monitor_store();
             const have = new Set((watch.Watch()?.items() ?? []).map(String));
@@ -29375,8 +29303,176 @@ var $;
     ], $bog_gram_roster.prototype, "contact_source", null);
     __decorate([
         $mol_mem
+    ], $bog_gram_roster.prototype, "names", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "names_fill", null);
+    __decorate([
+        $mol_mem
     ], $bog_gram_roster.prototype, "watch_fill", null);
     $.$bog_gram_roster = $bog_gram_roster;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_people extends $mol_object {
+        Account() {
+            return this.$.$bog_gram_account.make({ $: this.$ });
+        }
+        Registry() {
+            return this.$.$bog_gram_registry.make({ $: this.$ });
+        }
+        store(lord) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(lord)).Data($bog_gram_user);
+        }
+        Roster() {
+            return this.$.$bog_gram_roster.make({ $: this.$ });
+        }
+        name(lord) {
+            const shared = $bog_gram_soft(() => this.Roster().names()[lord] ?? '', '');
+            if (shared)
+                return shared;
+            return $bog_gram_soft(() => String(this.store(lord).Name()?.val() ?? ''), '');
+        }
+        inbox(lord) {
+            return String(this.store(lord).Inbox_land()?.val() ?? '');
+        }
+        note(lord) {
+            if (!lord)
+                return '';
+            return this.Account().dialogs_store().Notes()?.key(lord)?.Title()?.val() ?? '';
+        }
+        note_set(lord, next) {
+            if (!lord)
+                return null;
+            const title = next ?? '';
+            const notes = this.Account().dialogs_store().Notes('auto');
+            if (!notes)
+                return null;
+            if (!title && !notes.key(lord))
+                return null;
+            notes.key(lord, 'auto')?.Title('auto')?.val(title);
+            return null;
+        }
+        label(lord) {
+            return $bog_gram_lord.label(lord, this.note(lord), this.name(lord));
+        }
+        accepted() {
+            return this.Account().decided('accepted');
+        }
+        known(lord) {
+            if (!lord)
+                return false;
+            if (this.accepted().includes(lord))
+                return true;
+            return Boolean(this.Registry().sources()[lord]);
+        }
+        accept(lord) {
+            if (!lord)
+                return null;
+            if (lord === this.Account().my_lord())
+                return null;
+            if (!$giper_baza_link.check(lord))
+                return null;
+            if (this.accepted().includes(lord))
+                return null;
+            this.Account().decide('accepted', lord);
+            return null;
+        }
+        pass_given(lord, next) {
+            return next ?? null;
+        }
+        pass_stored(lord) {
+            for (const str of this.Account().dialogs_store().Passes()?.items() ?? []) {
+                try {
+                    const pass = $bog_gram_pass.parse(String(str));
+                    if (pass.lord().str === lord)
+                        return pass;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                }
+            }
+            return null;
+        }
+        pass_learn(lord, key) {
+            if (!lord || !key)
+                return null;
+            const pass = $bog_gram_pass.verified(lord, key);
+            if (!pass)
+                return null;
+            this.pass_given(lord, pass);
+            if (!this.pass_stored(lord))
+                this.Account().dialogs_store().Passes('auto').add(pass.toString());
+            return pass;
+        }
+        pass_of(lord) {
+            if (!lord)
+                return null;
+            const given = this.pass_given(lord);
+            if (given)
+                return given;
+            try {
+                const stored = this.pass_stored(lord);
+                if (stored)
+                    return stored;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+            }
+            const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(lord));
+            $bog_gram_soft(() => (land.sync(), true), false);
+            return land.king_pass() ?? this.Registry().pass_of(lord);
+        }
+        passes_of(lords) {
+            const passes = [];
+            for (const lord of lords) {
+                const pass = this.pass_of(lord);
+                if (pass)
+                    passes.push(pass);
+            }
+            return passes;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "Account", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "Registry", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "Roster", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "name", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "note", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_people.prototype, "note_set", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_people.prototype, "accepted", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "known", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_people.prototype, "accept", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "pass_given", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_people.prototype, "pass_stored", null);
+    $.$bog_gram_people = $bog_gram_people;
 })($ || ($ = {}));
 
 ;
@@ -30548,6 +30644,11 @@ var $;
             const auth = this.$.$giper_baza_auth.current();
             return $mol_wire_sync(api).signed(auth, action, lord, monitor, endpoint);
         }
+        static daemon() {
+            return this.$.$mol_fetch.json(this.base + '/push/key', {
+                cache: 'no-store',
+            });
+        }
         static send(path, body) {
             return this.$.$mol_fetch.success(this.base + path, {
                 method: 'POST',
@@ -30563,10 +30664,7 @@ var $;
                 if ($mol_wire_sync(api).permission_ask() !== 'granted')
                     return false;
                 const reg = $mol_wire_sync(api).registration();
-                const answer = this.$.$mol_fetch.json(this.base + '/push/key', {
-                    cache: 'no-store',
-                });
-                const key = answer?.key;
+                const key = this.daemon()?.key;
                 if (!key)
                     return false;
                 const bytes = key_bytes(key);
@@ -30719,6 +30817,17 @@ var $;
                 this.off(true);
                 return false;
             }
+            let daemon = '';
+            try {
+                daemon = notify.daemon()?.pass ?? '';
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+            }
+            if (daemon)
+                this.Account().monitor_grant(daemon);
             const ok = notify.subscribe(lord, this.Account().monitor_link());
             this.permission(notify.permission());
             this.on(ok);
@@ -35729,6 +35838,9 @@ var $;
 		monitor_fill(){
 			return (this.Roster().watch_fill());
 		}
+		names_fill(){
+			return (this.Roster().names_fill());
+		}
 		contact_lords(){
 			return (this.Roster().contact_lords());
 		}
@@ -36138,6 +36250,7 @@ var $;
 			const obj = new this.$.$bog_gram_people();
 			(obj.Account) = () => ((this.Account()));
 			(obj.Registry) = () => ((this.Registry()));
+			(obj.Roster) = () => ((this.Roster()));
 			return obj;
 		}
 		Talk(){
@@ -36751,6 +36864,7 @@ var $;
                 $bog_gram_soft(() => this.outbox_flush(), null);
                 $bog_gram_soft(() => this.asks_flush(), null);
                 $bog_gram_soft(() => this.monitor_fill(), null);
+                $bog_gram_soft(() => this.names_fill(), 0);
             }
         }
         __decorate([
@@ -44406,6 +44520,37 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test({
+        async 'Ключ принимается только под своим лордом'($) {
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
+        },
+        async 'Мусор вместо ключа не роняет разбор'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
+            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
+        },
+        async 'Одна строка ключа даёт один и тот же объект'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const str = auth.pass().toString();
+            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function message_of(land, link) {
         return land.Pawn($bog_gram_message).Head(link.head());
     }
@@ -44726,37 +44871,6 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        async 'Ключ принимается только под своим лордом'($) {
-            const auth_a = await $.$giper_baza_auth._generate();
-            const auth_b = await $.$giper_baza_auth._generate();
-            const lord_a = auth_a.pass().lord().str;
-            const lord_b = auth_b.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
-        },
-        async 'Мусор вместо ключа не роняет разбор'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
-            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
-        },
-        async 'Одна строка ключа даёт один и тот же объект'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const str = auth.pass().toString();
-            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
     function strings(list) {
         return (list?.items() ?? []).map(String);
     }
@@ -45042,59 +45156,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($_1) {
-    $mol_test({
-        async 'Ключ из ссылки проверяется и не теряется после ухода экрана'($) {
-            const peer = await $.$giper_baza_auth._generate();
-            const other = await $.$giper_baza_auth._generate();
-            const lord = peer.pass().lord().str;
-            const key = peer.pass().toString();
-            const king = await $.$giper_baza_auth._generate();
-            const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
-            const first = $bog_gram_people.make({ $, Account: () => account });
-            $mol_assert_equal(first.pass_learn(lord, other.pass().toString()), null);
-            $mol_assert_equal(first.pass_learn(lord, 'мусор'), null);
-            $mol_assert_equal(first.pass_learn(lord, ''), null);
-            const learned = first.pass_learn(lord, key);
-            $mol_assert_equal(learned?.lord().str, lord);
-            $mol_assert_equal(first.pass_of(lord), learned);
-            const next = $bog_gram_people.make({ $, Account: () => account });
-            $mol_assert_equal(next.pass_given(lord), null);
-            $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
-        },
-        async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
-            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
-            const people = $bog_gram_people.make({ $, Account: () => account, name: () => 'Иииии' });
-            const peer = 'LordPeerWithVeryLongIdentifier';
-            $mol_assert_equal(people.label(peer), 'Иииии');
-            people.note_set(peer, 'Костя с работы');
-            $mol_assert_equal(people.label(peer), 'Костя с работы');
-            people.note_set(peer, '');
-            $mol_assert_equal(people.label(peer), 'Иииии');
-        },
-        async 'Согласие даётся человеку один раз и только настоящему лорду'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, my_lord: () => 'LordMine' });
-            const registry = $bog_gram_registry.make({ $, Account: () => account, sources: () => ({}) });
-            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry });
-            $mol_assert_equal(people.known(lord), false);
-            people.accept(lord);
-            people.accept(lord);
-            people.accept('не лорд');
-            people.accept('LordMine');
-            $mol_assert_equal(people.accepted(), [lord]);
-            $mol_assert_equal(people.known(lord), true);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($) {
     $mol_test({
         'Заголовок дня и время сообщения форматируются по-человечески'() {
@@ -45253,6 +45314,39 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Имя собеседника берётся из общего диалога и только от него самого'($) {
+            const king = await $.$giper_baza_auth._generate();
+            const ann = await $.$giper_baza_auth._generate();
+            const bob = await $.$giper_baza_auth._generate();
+            const ann_lord = ann.pass().lord().str;
+            const bob_lord = bob.pass().lord().str;
+            const land0 = $giper_baza_land.make({ $, auth: () => king });
+            await $mol_wire_async(() => {
+                land0.give(ann.pass(), $giper_baza_rank_post('just'));
+                land0.give(bob.pass(), $giper_baza_rank_post('just'));
+                return true;
+            })();
+            const write = async (auth, lord, name) => {
+                const copy = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth });
+                await $mol_wire_async(copy).units_steal(land0);
+                await $mol_wire_async(() => {
+                    copy.Data($bog_gram_dialog).Names('auto').key(lord, 'auto').Title('auto').val(name);
+                    return true;
+                })();
+                await $mol_wire_async(land0).units_steal(copy);
+            };
+            await write(ann, ann_lord, 'Анна');
+            await write(bob, ann_lord, 'Подделка');
+            await write(bob, bob_lord, 'Боб');
+            const id = land0.link().str;
+            const talk = $bog_gram_talk.make({ $, store: () => land0.Data($bog_gram_dialog) });
+            const roster = $bog_gram_roster.make({ $, Talk: () => talk, ids: () => [id] });
+            $mol_assert_equal(roster.name_of(id, ann_lord), 'Анна');
+            $mol_assert_equal(roster.name_of(id, bob_lord), 'Боб');
+            $mol_assert_equal(roster.names()[ann_lord], 'Анна');
+            $mol_assert_equal(roster.names()[bob_lord], 'Боб');
+            $mol_assert_equal(Object.keys(roster.names()).length, 2);
+        },
         'Чужой диалог показывается по сообщениям и знакомству'($) {
             const roster = $bog_gram_roster.make({ $ });
             $mol_assert_equal(roster.sort(true, false, false), 'plain');
@@ -45317,6 +45411,90 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Ключ из ссылки проверяется и не теряется после ухода экрана'($) {
+            const peer = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const lord = peer.pass().lord().str;
+            const key = peer.pass().toString();
+            const king = await $.$giper_baza_auth._generate();
+            const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const first = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(first.pass_learn(lord, other.pass().toString()), null);
+            $mol_assert_equal(first.pass_learn(lord, 'мусор'), null);
+            $mol_assert_equal(first.pass_learn(lord, ''), null);
+            const learned = first.pass_learn(lord, key);
+            $mol_assert_equal(learned?.lord().str, lord);
+            $mol_assert_equal(first.pass_of(lord), learned);
+            const next = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(next.pass_given(lord), null);
+            $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
+        },
+        async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const people = $bog_gram_people.make({ $, Account: () => account, name: () => 'Иииии' });
+            const peer = 'LordPeerWithVeryLongIdentifier';
+            $mol_assert_equal(people.label(peer), 'Иииии');
+            people.note_set(peer, 'Костя с работы');
+            $mol_assert_equal(people.label(peer), 'Костя с работы');
+            people.note_set(peer, '');
+            $mol_assert_equal(people.label(peer), 'Иииии');
+        },
+        async 'Согласие даётся человеку один раз и только настоящему лорду'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, my_lord: () => 'LordMine' });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, sources: () => ({}) });
+            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry });
+            $mol_assert_equal(people.known(lord), false);
+            people.accept(lord);
+            people.accept(lord);
+            people.accept('не лорд');
+            people.accept('LordMine');
+            $mol_assert_equal(people.accepted(), [lord]);
+            $mol_assert_equal(people.known(lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, user_store: () => profile });
+            profile.Name('auto').val('Кирилл');
+            $mol_assert_equal(account.user_name(), 'Кирилл');
+            account.name_hide();
+            $mol_assert_equal(String(dialogs.Name()?.val() ?? ''), 'Кирилл');
+            $mol_assert_equal(String(profile.Name()?.val() ?? ''), '');
+            account.user_name('Кирилл Н.');
+            $mol_assert_equal(account.user_name(), 'Кирилл Н.');
+            $mol_assert_equal(String(profile.Name()?.val() ?? ''), '');
+        },
+        async 'Монитор закрыт для всех, а демон с выданным правом его читает'($) {
+            const daemon = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, user_store: () => profile });
+            const land = await $mol_wire_async(account).monitor_land();
+            $mol_assert_equal(land.encrypted(), true);
+            $mol_assert_equal(String(profile.Watch_land()?.val() ?? ''), land.link().str);
+            await $mol_wire_async(() => {
+                account.monitor_store().Watch('auto').add('SessionLink');
+                return true;
+            })();
+            $mol_assert_equal(await $mol_wire_async(account).monitor_grant(daemon.pass().toString()), true);
+            $mol_assert_equal(await $mol_wire_async(account).monitor_grant(daemon.pass().toString()), false);
+            $mol_assert_equal(land.pass_rank(daemon.pass()), $giper_baza_rank_read);
+            $mol_assert_equal(land.pass_rank(stranger.pass()), $giper_baza_rank_deny);
+            $mol_assert_equal(land.lord_rank(null), $giper_baza_rank_deny);
+        },
         async 'Запрос принимается и убирается локально, даже когда свой список не пишется, и переезжает в него потом'($) {
             const king = await $.$giper_baza_auth._generate();
             const owned = $giper_baza_land.make({ $, auth: () => king });

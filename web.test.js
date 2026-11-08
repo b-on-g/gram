@@ -7897,6 +7897,37 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test({
+        async 'Ключ принимается только под своим лордом'($) {
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
+        },
+        async 'Мусор вместо ключа не роняет разбор'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
+            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
+        },
+        async 'Одна строка ключа даёт один и тот же объект'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const str = auth.pass().toString();
+            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function message_of(land, link) {
         return land.Pawn($bog_gram_message).Head(link.head());
     }
@@ -8217,37 +8248,6 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        async 'Ключ принимается только под своим лордом'($) {
-            const auth_a = await $.$giper_baza_auth._generate();
-            const auth_b = await $.$giper_baza_auth._generate();
-            const lord_a = auth_a.pass().lord().str;
-            const lord_b = auth_b.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
-        },
-        async 'Мусор вместо ключа не роняет разбор'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
-            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
-        },
-        async 'Одна строка ключа даёт один и тот же объект'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const str = auth.pass().toString();
-            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
     function strings(list) {
         return (list?.items() ?? []).map(String);
     }
@@ -8533,59 +8533,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($_1) {
-    $mol_test({
-        async 'Ключ из ссылки проверяется и не теряется после ухода экрана'($) {
-            const peer = await $.$giper_baza_auth._generate();
-            const other = await $.$giper_baza_auth._generate();
-            const lord = peer.pass().lord().str;
-            const key = peer.pass().toString();
-            const king = await $.$giper_baza_auth._generate();
-            const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
-            const first = $bog_gram_people.make({ $, Account: () => account });
-            $mol_assert_equal(first.pass_learn(lord, other.pass().toString()), null);
-            $mol_assert_equal(first.pass_learn(lord, 'мусор'), null);
-            $mol_assert_equal(first.pass_learn(lord, ''), null);
-            const learned = first.pass_learn(lord, key);
-            $mol_assert_equal(learned?.lord().str, lord);
-            $mol_assert_equal(first.pass_of(lord), learned);
-            const next = $bog_gram_people.make({ $, Account: () => account });
-            $mol_assert_equal(next.pass_given(lord), null);
-            $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
-        },
-        async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
-            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
-            const people = $bog_gram_people.make({ $, Account: () => account, name: () => 'Иииии' });
-            const peer = 'LordPeerWithVeryLongIdentifier';
-            $mol_assert_equal(people.label(peer), 'Иииии');
-            people.note_set(peer, 'Костя с работы');
-            $mol_assert_equal(people.label(peer), 'Костя с работы');
-            people.note_set(peer, '');
-            $mol_assert_equal(people.label(peer), 'Иииии');
-        },
-        async 'Согласие даётся человеку один раз и только настоящему лорду'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, my_lord: () => 'LordMine' });
-            const registry = $bog_gram_registry.make({ $, Account: () => account, sources: () => ({}) });
-            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry });
-            $mol_assert_equal(people.known(lord), false);
-            people.accept(lord);
-            people.accept(lord);
-            people.accept('не лорд');
-            people.accept('LordMine');
-            $mol_assert_equal(people.accepted(), [lord]);
-            $mol_assert_equal(people.known(lord), true);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($) {
     $mol_test({
         'Заголовок дня и время сообщения форматируются по-человечески'() {
@@ -8744,6 +8691,39 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Имя собеседника берётся из общего диалога и только от него самого'($) {
+            const king = await $.$giper_baza_auth._generate();
+            const ann = await $.$giper_baza_auth._generate();
+            const bob = await $.$giper_baza_auth._generate();
+            const ann_lord = ann.pass().lord().str;
+            const bob_lord = bob.pass().lord().str;
+            const land0 = $giper_baza_land.make({ $, auth: () => king });
+            await $mol_wire_async(() => {
+                land0.give(ann.pass(), $giper_baza_rank_post('just'));
+                land0.give(bob.pass(), $giper_baza_rank_post('just'));
+                return true;
+            })();
+            const write = async (auth, lord, name) => {
+                const copy = $giper_baza_land.make({ $, link: () => land0.link(), auth: () => auth });
+                await $mol_wire_async(copy).units_steal(land0);
+                await $mol_wire_async(() => {
+                    copy.Data($bog_gram_dialog).Names('auto').key(lord, 'auto').Title('auto').val(name);
+                    return true;
+                })();
+                await $mol_wire_async(land0).units_steal(copy);
+            };
+            await write(ann, ann_lord, 'Анна');
+            await write(bob, ann_lord, 'Подделка');
+            await write(bob, bob_lord, 'Боб');
+            const id = land0.link().str;
+            const talk = $bog_gram_talk.make({ $, store: () => land0.Data($bog_gram_dialog) });
+            const roster = $bog_gram_roster.make({ $, Talk: () => talk, ids: () => [id] });
+            $mol_assert_equal(roster.name_of(id, ann_lord), 'Анна');
+            $mol_assert_equal(roster.name_of(id, bob_lord), 'Боб');
+            $mol_assert_equal(roster.names()[ann_lord], 'Анна');
+            $mol_assert_equal(roster.names()[bob_lord], 'Боб');
+            $mol_assert_equal(Object.keys(roster.names()).length, 2);
+        },
         'Чужой диалог показывается по сообщениям и знакомству'($) {
             const roster = $bog_gram_roster.make({ $ });
             $mol_assert_equal(roster.sort(true, false, false), 'plain');
@@ -8808,6 +8788,90 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Ключ из ссылки проверяется и не теряется после ухода экрана'($) {
+            const peer = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const lord = peer.pass().lord().str;
+            const key = peer.pass().toString();
+            const king = await $.$giper_baza_auth._generate();
+            const dialogs = $giper_baza_land.make({ $, auth: () => king }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const first = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(first.pass_learn(lord, other.pass().toString()), null);
+            $mol_assert_equal(first.pass_learn(lord, 'мусор'), null);
+            $mol_assert_equal(first.pass_learn(lord, ''), null);
+            const learned = first.pass_learn(lord, key);
+            $mol_assert_equal(learned?.lord().str, lord);
+            $mol_assert_equal(first.pass_of(lord), learned);
+            const next = $bog_gram_people.make({ $, Account: () => account });
+            $mol_assert_equal(next.pass_given(lord), null);
+            $mol_assert_equal(next.pass_of(lord)?.lord().str, lord);
+        },
+        async 'Подпись собеседника перекрывает его имя, а пустая возвращает имя'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs });
+            const people = $bog_gram_people.make({ $, Account: () => account, name: () => 'Иииии' });
+            const peer = 'LordPeerWithVeryLongIdentifier';
+            $mol_assert_equal(people.label(peer), 'Иииии');
+            people.note_set(peer, 'Костя с работы');
+            $mol_assert_equal(people.label(peer), 'Костя с работы');
+            people.note_set(peer, '');
+            $mol_assert_equal(people.label(peer), 'Иииии');
+        },
+        async 'Согласие даётся человеку один раз и только настоящему лорду'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, my_lord: () => 'LordMine' });
+            const registry = $bog_gram_registry.make({ $, Account: () => account, sources: () => ({}) });
+            const people = $bog_gram_people.make({ $, Account: () => account, Registry: () => registry });
+            $mol_assert_equal(people.known(lord), false);
+            people.accept(lord);
+            people.accept(lord);
+            people.accept('не лорд');
+            people.accept('LordMine');
+            $mol_assert_equal(people.accepted(), [lord]);
+            $mol_assert_equal(people.known(lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'($) {
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, dialogs_store: () => dialogs, user_store: () => profile });
+            profile.Name('auto').val('Кирилл');
+            $mol_assert_equal(account.user_name(), 'Кирилл');
+            account.name_hide();
+            $mol_assert_equal(String(dialogs.Name()?.val() ?? ''), 'Кирилл');
+            $mol_assert_equal(String(profile.Name()?.val() ?? ''), '');
+            account.user_name('Кирилл Н.');
+            $mol_assert_equal(account.user_name(), 'Кирилл Н.');
+            $mol_assert_equal(String(profile.Name()?.val() ?? ''), '');
+        },
+        async 'Монитор закрыт для всех, а демон с выданным правом его читает'($) {
+            const daemon = await $.$giper_baza_auth._generate();
+            const stranger = await $.$giper_baza_auth._generate();
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, user_store: () => profile });
+            const land = await $mol_wire_async(account).monitor_land();
+            $mol_assert_equal(land.encrypted(), true);
+            $mol_assert_equal(String(profile.Watch_land()?.val() ?? ''), land.link().str);
+            await $mol_wire_async(() => {
+                account.monitor_store().Watch('auto').add('SessionLink');
+                return true;
+            })();
+            $mol_assert_equal(await $mol_wire_async(account).monitor_grant(daemon.pass().toString()), true);
+            $mol_assert_equal(await $mol_wire_async(account).monitor_grant(daemon.pass().toString()), false);
+            $mol_assert_equal(land.pass_rank(daemon.pass()), $giper_baza_rank_read);
+            $mol_assert_equal(land.pass_rank(stranger.pass()), $giper_baza_rank_deny);
+            $mol_assert_equal(land.lord_rank(null), $giper_baza_rank_deny);
+        },
         async 'Запрос принимается и убирается локально, даже когда свой список не пишется, и переезжает в него потом'($) {
             const king = await $.$giper_baza_auth._generate();
             const owned = $giper_baza_land.make({ $, auth: () => king });
