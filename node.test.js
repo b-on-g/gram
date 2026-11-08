@@ -25734,7 +25734,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.104';
+    $.$bog_gram_version = '1.0.105';
 })($ || ($ = {}));
 
 ;
@@ -27887,6 +27887,63 @@ var $;
         dialogs_store() {
             return this.dialogs_land().Data($bog_gram_dialogs);
         }
+        local_key(kind) {
+            return 'bog_gram_' + kind + '_' + this.my_lord();
+        }
+        local_list(kind, next) {
+            const key = this.local_key(kind);
+            if (next === undefined)
+                return this.$.$mol_state_local.value(key) ?? [];
+            return this.$.$mol_state_local.value(key, next.length ? next : null) ?? [];
+        }
+        local_add(kind, item) {
+            const prev = this.local_list(kind);
+            if (!prev.includes(item))
+                this.local_list(kind, [...prev, item]);
+        }
+        decision_list(kind) {
+            const store = this.dialogs_store();
+            return kind === 'accepted' ? store.Accepted('auto') : store.Hidden('auto');
+        }
+        decide(kind, item) {
+            const list = $bog_gram_soft(() => this.decision_list(kind), null);
+            if (list)
+                list.add(item);
+            else
+                this.local_add(kind, item);
+        }
+        undecide(kind, item) {
+            const prev = this.local_list(kind);
+            if (prev.includes(item))
+                this.local_list(kind, prev.filter(one => one !== item));
+            const store = this.dialogs_store();
+            const list = kind === 'accepted' ? store.Accepted() : store.Hidden();
+            if (!$bog_gram_soft(() => (list?.items() ?? []).map(String).includes(item), false))
+                return;
+            $bog_gram_soft(() => (this.decision_list(kind)?.cut(item), true), false);
+        }
+        decided(kind) {
+            const store = this.dialogs_store();
+            const list = kind === 'accepted' ? store.Accepted() : store.Hidden();
+            const stored = $bog_gram_soft(() => (list?.items() ?? []).map(String), []);
+            return [...new Set([...stored, ...this.local_list(kind)])];
+        }
+        decisions_flush() {
+            let moved = 0;
+            for (const kind of ['accepted', 'hidden']) {
+                const local = this.local_list(kind);
+                if (!local.length)
+                    continue;
+                const list = $bog_gram_soft(() => this.decision_list(kind), null);
+                if (!list)
+                    continue;
+                for (const item of local)
+                    list.add(item);
+                this.local_list(kind, []);
+                moved += local.length;
+            }
+            return moved;
+        }
         inbox_store() {
             return this.inbox_land().Data($bog_gram_inbox);
         }
@@ -27914,6 +27971,7 @@ var $;
             this.dialogs_land();
             this.monitor_land();
             this.device_ready();
+            $bog_gram_soft(() => this.decisions_flush(), 0);
             return true;
         }
     }
@@ -27965,6 +28023,15 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "devices_land_make", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "decide", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "undecide", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "decisions_flush", null);
     __decorate([
         $mol_mem
     ], $bog_gram_account.prototype, "device_ready", null);
@@ -28298,7 +28365,7 @@ var $;
             return $bog_gram_lord.label(lord, this.note(lord), this.name(lord));
         }
         accepted() {
-            return (this.Account().dialogs_store().Accepted()?.items() ?? []).map(String);
+            return this.Account().decided('accepted');
         }
         known(lord) {
             if (!lord)
@@ -28316,7 +28383,7 @@ var $;
                 return null;
             if (this.accepted().includes(lord))
                 return null;
-            this.Account().dialogs_store().Accepted('auto').add(lord);
+            this.Account().decide('accepted', lord);
             return null;
         }
         pass_given(lord, next) {
@@ -28981,11 +29048,10 @@ var $;
         }
         ids() {
             const all = new Set((this.store().Dialogs()?.items() ?? []).map(String));
-            const hidden = new Set(this.hidden());
             for (const link of this.invited())
-                if (!hidden.has(link))
-                    all.add(link);
-            return [...all];
+                all.add(link);
+            const hidden = new Set(this.hidden());
+            return [...all].filter(id => !hidden.has(id));
         }
         invited() {
             const links = [];
@@ -28997,7 +29063,7 @@ var $;
             return links;
         }
         hidden() {
-            return (this.store().Hidden()?.items() ?? []).map(String);
+            return this.Account().decided('hidden');
         }
         sort(own, alive, known) {
             if (own)
@@ -29010,7 +29076,7 @@ var $;
             if (this.archive_is(id))
                 return 'plain';
             const talk = this.Talk();
-            const known = this.People().known(talk.owner(id)) || talk.mine_wrote(id);
+            const known = this.People().known(talk.owner(id) || this.inviter(id)) || talk.mine_wrote(id);
             return this.sort(talk.own(id), talk.alive(id), known);
         }
         requests() {
@@ -29061,10 +29127,10 @@ var $;
             if (this.Talk().saved_is(id))
                 return;
             const store = this.store();
-            store.Dialogs('auto').cut(id);
-            store.Hidden('auto').add(id);
+            this.Account().decide('hidden', id);
+            $bog_gram_soft(() => (store.Dialogs('auto')?.cut(id), true), false);
             if (this.archive_is(id))
-                store.Archived('auto').cut(id);
+                $bog_gram_soft(() => (store.Archived('auto')?.cut(id), true), false);
             $bog_gram_soft(() => {
                 const sessions = this.Talk().links_of(id);
                 const watch = this.Account().monitor_store().Watch('auto');
@@ -29116,6 +29182,20 @@ var $;
             if (!$bog_gram_seal.is(entry))
                 return entry;
             return this.sealed(entry)?.open ?? '';
+        }
+        inviters() {
+            const out = {};
+            for (const entry of $bog_gram_soft(() => this.Account().invites(), [])) {
+                if (!$bog_gram_seal.is(entry))
+                    continue;
+                const sealed = $bog_gram_soft(() => this.sealed(entry), null);
+                if (sealed?.open && !out[sealed.open])
+                    out[sealed.open] = sealed.lord;
+            }
+            return out;
+        }
+        inviter(id) {
+            return this.inviters()[id] ?? '';
         }
         sealed(entry) {
             return $bog_gram_seal.open(this.$.$giper_baza_auth.current(), 'invite', entry);
@@ -29205,6 +29285,9 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_roster.prototype, "drop", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "inviters", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_roster.prototype, "sealed", null);
@@ -29806,7 +29889,7 @@ var $;
                 return;
             const store = this.store();
             if (this.Roster().hidden().includes(id))
-                store.Hidden('auto').cut(id);
+                this.Account().undecide('hidden', id);
             const was_denied = this.denied().includes(id);
             if (was_denied)
                 this.denial_drop(id);
@@ -36274,7 +36357,7 @@ var $;
             request_accept(id, next) {
                 if (!id)
                     return null;
-                this.peer_accept(this.dialog_owner(id));
+                this.peer_accept(this.dialog_owner(id) || this.Roster().inviter(id));
                 return null;
             }
             dialog_current(next) {
@@ -44803,49 +44886,6 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
-        async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'($) {
-            const king_lobby = await $.$giper_baza_auth._generate();
-            const king_user = await $.$giper_baza_auth._generate();
-            const king_dialogs = await $.$giper_baza_auth._generate();
-            const lobby = $giper_baza_land.make({ $, auth: () => king_lobby });
-            const profile = $giper_baza_land.make({ $, auth: () => king_user }).Data($bog_gram_user);
-            const dialogs = $giper_baza_land.make({ $, auth: () => king_dialogs }).Data($bog_gram_dialogs);
-            profile.Inbox_land('auto')?.val('OldLobbyLink');
-            const account = $bog_gram_account.make({ $,
-                inbox_land: () => lobby,
-                user_store: () => profile,
-                dialogs_store: () => dialogs,
-            });
-            account.inbox_open();
-            account.inbox_publish();
-            $mol_assert_equal(lobby.lord_rank(null), $giper_baza_rank_post('slow'));
-            $mol_assert_equal(profile.Inbox_land()?.val(), lobby.link().str);
-            $mol_assert_equal(account.lobbies_old(), ['OldLobbyLink']);
-        },
-        async 'Записи лобби читаются одним списком и снимаются по одной'($) {
-            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
-            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
-            const account = $bog_gram_account.make({ $,
-                inbox_store: () => inbox,
-                dialogs_store: () => dialogs,
-            });
-            inbox.Joins('auto').add('первая');
-            inbox.Joins('auto').add('вторая');
-            inbox.Denies('auto').add('отказ');
-            $mol_assert_equal(new Set(account.joins()).size, 2);
-            $mol_assert_equal(account.denies(), ['отказ']);
-            $mol_assert_equal(account.invites(), []);
-            account.joins_cut('первая');
-            $mol_assert_equal(account.joins(), ['вторая']);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
         'Ключ в старые реестры кладётся один раз, потом схема помечена и проход молчит'($) {
             const my = 'LordMine';
             const pass = 'PassMine';
@@ -45175,6 +45215,72 @@ var $;
             $mol_assert_equal(roster.hidden(), [drop]);
             $mol_assert_equal(roster.archive_links(), []);
             $mol_assert_equal(store.Dialogs().items().map(String), [keep]);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Запрос принимается и убирается локально, даже когда свой список не пишется, и переезжает в него потом'($) {
+            const king = await $.$giper_baza_auth._generate();
+            const owned = $giper_baza_land.make({ $, auth: () => king });
+            const locked = $giper_baza_land.make({ $, link: () => owned.link() }).Data($bog_gram_dialogs);
+            const open = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            $mol_assert_equal(locked.can_change(), false);
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            const dialog = 'CCCCCCCC_DDDDDDDD';
+            const offline = $bog_gram_account.make({ $, my_lord: () => 'LordLocal', dialogs_store: () => locked });
+            const people = $bog_gram_people.make({ $, Account: () => offline });
+            const talk = $bog_gram_talk.make({ $, Account: () => offline, links_of: () => [], saved_is: () => false });
+            const roster = $bog_gram_roster.make({ $, Account: () => offline, Talk: () => talk });
+            await $mol_wire_async(people).accept(lord);
+            await $mol_wire_async(roster).drop(dialog);
+            $mol_assert_equal(people.accepted(), [lord]);
+            $mol_assert_equal(roster.hidden(), [dialog]);
+            const online = $bog_gram_account.make({ $, my_lord: () => 'LordLocal', dialogs_store: () => open });
+            $mol_assert_equal(online.decisions_flush(), 2);
+            $mol_assert_equal(open.Accepted().items().map(String), [lord]);
+            $mol_assert_equal(open.Hidden().items().map(String), [dialog]);
+            $mol_assert_equal(online.local_list('accepted'), []);
+            $mol_assert_equal(online.local_list('hidden'), []);
+        },
+        async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'($) {
+            const king_lobby = await $.$giper_baza_auth._generate();
+            const king_user = await $.$giper_baza_auth._generate();
+            const king_dialogs = await $.$giper_baza_auth._generate();
+            const lobby = $giper_baza_land.make({ $, auth: () => king_lobby });
+            const profile = $giper_baza_land.make({ $, auth: () => king_user }).Data($bog_gram_user);
+            const dialogs = $giper_baza_land.make({ $, auth: () => king_dialogs }).Data($bog_gram_dialogs);
+            profile.Inbox_land('auto')?.val('OldLobbyLink');
+            const account = $bog_gram_account.make({ $,
+                inbox_land: () => lobby,
+                user_store: () => profile,
+                dialogs_store: () => dialogs,
+            });
+            account.inbox_open();
+            account.inbox_publish();
+            $mol_assert_equal(lobby.lord_rank(null), $giper_baza_rank_post('slow'));
+            $mol_assert_equal(profile.Inbox_land()?.val(), lobby.link().str);
+            $mol_assert_equal(account.lobbies_old(), ['OldLobbyLink']);
+        },
+        async 'Записи лобби читаются одним списком и снимаются по одной'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const account = $bog_gram_account.make({ $,
+                inbox_store: () => inbox,
+                dialogs_store: () => dialogs,
+            });
+            inbox.Joins('auto').add('первая');
+            inbox.Joins('auto').add('вторая');
+            inbox.Denies('auto').add('отказ');
+            $mol_assert_equal(new Set(account.joins()).size, 2);
+            $mol_assert_equal(account.denies(), ['отказ']);
+            $mol_assert_equal(account.invites(), []);
+            account.joins_cut('первая');
+            $mol_assert_equal(account.joins(), ['вторая']);
         },
     });
 })($ || ($ = {}));

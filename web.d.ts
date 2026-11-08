@@ -47053,7 +47053,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.104";
+    const $bog_gram_version = "1.0.105";
 }
 
 declare namespace $ {
@@ -49617,6 +49617,14 @@ declare namespace $ {
         devices_land_make(): $giper_baza_land;
         devices_land(): $giper_baza_land;
         dialogs_store(): $bog_gram_dialogs;
+        local_key(kind: 'accepted' | 'hidden'): string;
+        local_list(kind: 'accepted' | 'hidden', next?: readonly string[]): readonly string[];
+        local_add(kind: 'accepted' | 'hidden', item: string): void;
+        decision_list(kind: 'accepted' | 'hidden'): $giper_baza_list_str | null;
+        decide(kind: 'accepted' | 'hidden', item: string): void;
+        undecide(kind: 'accepted' | 'hidden', item: string): void;
+        decided(kind: 'accepted' | 'hidden'): string[];
+        decisions_flush(): number;
         inbox_store(): $bog_gram_inbox;
         monitor_store(): $bog_gram_monitor;
         devices_store(): $bog_gram_devices;
@@ -55359,6 +55367,8 @@ declare namespace $ {
         with(peer: string): string;
         create(peer: string): string;
         invite_open(entry: string): string;
+        inviters(): Record<string, string>;
+        inviter(id: string): string;
         sealed(entry: string): {
             open: string;
             pass: string;
