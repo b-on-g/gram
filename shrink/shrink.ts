@@ -23,12 +23,44 @@ namespace $ {
 		return new Promise< Blob | null >( done => canvas.toBlob( done, type, quality ) )
 	}
 
-	async function original( file: Blob, bitmap: ImageBitmap ): Promise< $bog_gram_shrink_shot > {
+	type $bog_gram_shrink_picture = {
+		source: CanvasImageSource,
+		width: number,
+		height: number,
+		close: ()=> void,
+	}
+
+	async function bitmap_of( file: Blob ): Promise< $bog_gram_shrink_picture | null > {
+		try {
+			const bitmap = await createImageBitmap( file )
+			return { source: bitmap, width: bitmap.width, height: bitmap.height, close: ()=> bitmap.close() }
+		} catch( error ) {
+			return null
+		}
+	}
+
+	async function image_of( file: Blob ): Promise< $bog_gram_shrink_picture | null > {
+
+		const uri = $mol_dom_context.URL.createObjectURL( file )
+		const image = $mol_dom_context.document.createElement( 'img' )
+
+		try {
+			image.src = uri
+			await image.decode()
+			return { source: image, width: image.naturalWidth, height: image.naturalHeight, close: ()=> $mol_dom_context.URL.revokeObjectURL( uri ) }
+		} catch( error ) {
+			$mol_dom_context.URL.revokeObjectURL( uri )
+			return null
+		}
+
+	}
+
+	async function original( file: Blob, width: number, height: number ): Promise< $bog_gram_shrink_shot > {
 		return {
 			bytes: new Uint8Array( await file.arrayBuffer() ),
 			type: file.type || 'image/jpeg',
-			width: bitmap.width,
-			height: bitmap.height,
+			width,
+			height,
 		}
 	}
 
@@ -36,14 +68,15 @@ namespace $ {
 
 		async shrink( file: Blob, side: number, weight: number ): Promise< $bog_gram_shrink_shot > {
 
-			const bitmap = await createImageBitmap( file )
+			const bitmap = await bitmap_of( file ) ?? await image_of( file )
+			if( !bitmap ) return await original( file, 0, 0 )
 
 			try {
 
 				const fit = $bog_gram_shrink.fit( bitmap.width, bitmap.height, side )
 				const same = fit.width === bitmap.width && fit.height === bitmap.height
 
-				if( same && file.size <= weight ) return await original( file, bitmap )
+				if( same && file.size <= weight && $bog_gram_shrink.portable( file ) ) return await original( file, bitmap.width, bitmap.height )
 
 				let width = fit.width
 				let height = fit.height
@@ -59,7 +92,7 @@ namespace $ {
 					const paper = canvas.getContext( '2d' )
 					if( !paper ) break
 
-					paper.drawImage( bitmap, 0, 0, width, height )
+					paper.drawImage( bitmap.source, 0, 0, width, height )
 
 					let blob = await encode( canvas, 'image/webp', quality )
 					if( blob?.type !== 'image/webp' ) blob = await encode( canvas, 'image/jpeg', quality )
@@ -79,7 +112,7 @@ namespace $ {
 
 				}
 
-				if( !best ) return await original( file, bitmap )
+				if( !best ) return await original( file, bitmap.width, bitmap.height )
 
 				return {
 					bytes: new Uint8Array( await best.arrayBuffer() ),
@@ -114,6 +147,10 @@ namespace $ {
 
 		static image_is( file: Blob ) {
 			return file.type.startsWith( 'image/' )
+		}
+
+		static portable( file: Blob ) {
+			return [ 'image/jpeg', 'image/png', 'image/webp', 'image/gif' ].includes( file.type )
 		}
 
 		static shrink( file: Blob ) {

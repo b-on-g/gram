@@ -18,6 +18,13 @@ namespace $ {
 			$mol_assert_equal( $bog_gram_shrink.image_is( new $mol_blob( [], { type: 'text/plain' } ) ), false )
 		},
 
+		'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
+			$mol_assert_equal( $bog_gram_shrink.portable( new $mol_blob( [], { type: 'image/jpeg' } ) ), true )
+			$mol_assert_equal( $bog_gram_shrink.portable( new $mol_blob( [], { type: 'image/webp' } ) ), true )
+			$mol_assert_equal( $bog_gram_shrink.portable( new $mol_blob( [], { type: 'image/heic' } ) ), false )
+			$mol_assert_equal( $bog_gram_shrink.portable( new $mol_blob( [], { type: 'image/tiff' } ) ), false )
+		},
+
 	})
 
 }
