@@ -86,17 +86,13 @@ namespace $.$$ {
 			return shift > width / 2
 		}
 
-		swipe_touch() {
-			return this.$.$mol_dom_context.matchMedia?.( '(hover: none)' ).matches ?? false
-		}
-
 		override swipe_start( event?: PointerEvent ) {
 
 			this.swipe_moved = false
-			if( !event || !this.swipe() || event.pointerType !== 'touch' ) return null
-			if( !this.tools().length || !this.swipe_touch() ) return null
+			if( !event || !this.swipe_able() ) return null
+			if( event.pointerType === 'mouse' && event.button !== 0 ) return null
 
-			this.swipe_width = ( this.Tools().dom_node() as HTMLElement ).offsetWidth
+			this.swipe_measure()
 			this.swipe_from = {
 				x: event.clientX,
 				y: event.clientY,
@@ -160,6 +156,73 @@ namespace $.$$ {
 		override swipe_cancel( event?: PointerEvent ) {
 			if( this.swipe_from ) this.swipe_from.speed = 0
 			return this.swipe_end( event )
+		}
+
+		swipe_able() {
+			return this.swipe() && this.tools().length > 0
+		}
+
+		swipe_measure() {
+			this.swipe_width = ( this.Tools().dom_node() as HTMLElement ).offsetWidth
+		}
+
+		wheel_from = null as null | {
+			base: number
+			x: number
+			y: number
+			axis: 'wait' | 'drag' | 'skip'
+			idle: $mol_after_timeout | null
+		}
+
+		override swipe_wheel( event?: WheelEvent ) {
+
+			if( !event || !this.swipe_able() ) return null
+
+			if( !this.wheel_from ) {
+				this.swipe_measure()
+				this.wheel_from = { base: this.swipe_shift(), x: 0, y: 0, axis: 'wait', idle: null }
+			}
+
+			const from = this.wheel_from
+			from.idle?.destructor()
+			from.idle = new this.$.$mol_after_timeout( 150, ()=> this.swipe_wheel_end() )
+
+			from.x -= event.deltaX
+			from.y -= event.deltaY
+
+			if( from.axis === 'wait' ) {
+				from.axis = this.swipe_axis( from.x, from.y, from.base )
+				if( from.axis === 'drag' && !from.base ) this.swipe_open( false )
+			}
+			if( from.axis !== 'drag' ) return null
+
+			event.preventDefault()
+			this.swipe_drag( Math.max( 0, Math.min( this.swipe_width, from.base + from.x ) ) )
+
+			return null
+		}
+
+		swipe_wheel_end() {
+
+			const from = this.wheel_from
+			this.wheel_from = null
+			if( from?.axis !== 'drag' ) return
+
+			const open = this.swipe_settle( this.swipe_shift(), 0, this.swipe_width )
+			this.swipe_drag( null )
+			this.swipe_open( open )
+
+		}
+
+		override swipe_focus( event?: FocusEvent ) {
+
+			if( !event || !this.swipe_able() || this.swipe_open() ) return null
+			if( !( this.Tools().dom_node() as HTMLElement ).contains( event.target as Node ) ) return null
+
+			this.swipe_measure()
+			this.swipe_open( true )
+
+			return null
 		}
 
 		override event_activate( next?: Event ) {

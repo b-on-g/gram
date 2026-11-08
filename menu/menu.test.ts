@@ -1,4 +1,4 @@
-namespace $ {
+namespace $.$$ {
 
 	$mol_test({
 
@@ -80,6 +80,27 @@ namespace $ {
 
 			menu.pick( 'A' )
 			$mol_assert_equal( picked, [ 'A' ] )
+
+		},
+
+		'Esc и клик мимо закрывают открытую строку, клик по ней самой — нет'( $ ) {
+
+			const menu = $bog_gram_menu.make({ $ })
+			const row = menu.Dialog_row( 'A' )
+			row.dom_tree()
+
+			row.swipe_open( true )
+			menu.swipe_outside({ target: row.Info().dom_node() } as any )
+			$mol_assert_equal( row.swipe_open(), true )
+
+			menu.swipe_outside({ target: menu.Head().dom_node() } as any )
+			$mol_assert_equal( row.swipe_open(), false )
+
+			row.swipe_open( true )
+			menu.swipe_key({ key: 'Enter' } as KeyboardEvent )
+			$mol_assert_equal( row.swipe_open(), true )
+			menu.swipe_key({ key: 'Escape' } as KeyboardEvent )
+			$mol_assert_equal( row.swipe_open(), false )
 
 		},
 

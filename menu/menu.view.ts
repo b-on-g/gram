@@ -83,9 +83,35 @@ namespace $.$$ {
 			return null
 		}
 
+		swipe_outside( event: Event ) {
+			const id = this.swiped()
+			if( !id ) return
+			if( this.Dialog_row( id ).dom_node().contains( event.target as Node ) ) return
+			this.swiped( '' )
+		}
+
+		swipe_key( event: KeyboardEvent ) {
+			if( event.key === 'Escape' ) this.swiped( '' )
+		}
+
+		@ $mol_mem
+		Swipe_listen() {
+			if( !this.swiped() ) return null
+			const doc = this.$.$mol_dom_context.document
+			const click = new this.$.$mol_dom_listener( doc, 'click', ( event: Event )=> this.swipe_outside( event ) )
+			const key = new this.$.$mol_dom_listener( doc, 'keydown', ( event: Event )=> this.swipe_key( event as KeyboardEvent ) )
+			return {
+				destructor: ()=> {
+					click.destructor()
+					key.destructor()
+				},
+			}
+		}
+
 		override auto() {
 			super.auto()
 			this.Swipe_reset()
+			this.Swipe_listen()
 		}
 
 		@ $mol_action
