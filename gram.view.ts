@@ -59,7 +59,7 @@ namespace $.$$ {
 		@ $mol_action
 		override request_accept( id: string, next?: any ) {
 			if( !id ) return null
-			this.peer_accept( this.dialog_owner( id ) )
+			this.peer_accept( this.dialog_owner( id ) || this.Roster().inviter( id ) )
 			return null
 		}
 

@@ -160,6 +160,65 @@ namespace $ {
 			return this.dialogs_land().Data( $bog_gram_dialogs )
 		}
 
+		local_key( kind: 'accepted' | 'hidden' ) {
+			return 'bog_gram_' + kind + '_' + this.my_lord()
+		}
+
+		local_list( kind: 'accepted' | 'hidden', next?: readonly string[] ): readonly string[] {
+			const key = this.local_key( kind )
+			if( next === undefined ) return this.$.$mol_state_local.value< readonly string[] >( key ) ?? []
+			return this.$.$mol_state_local.value( key, next.length ? next : null ) ?? []
+		}
+
+		local_add( kind: 'accepted' | 'hidden', item: string ) {
+			const prev = this.local_list( kind )
+			if( !prev.includes( item ) ) this.local_list( kind, [ ... prev, item ] )
+		}
+
+		decision_list( kind: 'accepted' | 'hidden' ) {
+			const store = this.dialogs_store()
+			return kind === 'accepted' ? store.Accepted( 'auto' ) : store.Hidden( 'auto' )
+		}
+
+		@ $mol_action
+		decide( kind: 'accepted' | 'hidden', item: string ) {
+			const list = $bog_gram_soft( ()=> this.decision_list( kind ), null )
+			if( list ) list.add( item )
+			else this.local_add( kind, item )
+		}
+
+		@ $mol_action
+		undecide( kind: 'accepted' | 'hidden', item: string ) {
+			const prev = this.local_list( kind )
+			if( prev.includes( item ) ) this.local_list( kind, prev.filter( one => one !== item ) )
+			const store = this.dialogs_store()
+			const list = kind === 'accepted' ? store.Accepted() : store.Hidden()
+			if( !$bog_gram_soft( ()=> ( list?.items() ?? [] ).map( String ).includes( item ), false ) ) return
+			$bog_gram_soft( ()=> ( this.decision_list( kind )?.cut( item ), true ), false )
+		}
+
+		decided( kind: 'accepted' | 'hidden' ) {
+			const store = this.dialogs_store()
+			const list = kind === 'accepted' ? store.Accepted() : store.Hidden()
+			const stored = $bog_gram_soft( ()=> ( list?.items() ?? [] ).map( String ), [] as string[] )
+			return [ ... new Set([ ... stored, ... this.local_list( kind ) ]) ]
+		}
+
+		@ $mol_mem
+		decisions_flush() {
+			let moved = 0
+			for( const kind of [ 'accepted', 'hidden' ] as const ) {
+				const local = this.local_list( kind )
+				if( !local.length ) continue
+				const list = $bog_gram_soft( ()=> this.decision_list( kind ), null )
+				if( !list ) continue
+				for( const item of local ) list.add( item )
+				this.local_list( kind, [] )
+				moved += local.length
+			}
+			return moved
+		}
+
 		inbox_store() {
 			return this.inbox_land().Data( $bog_gram_inbox )
 		}
@@ -194,6 +253,7 @@ namespace $ {
 			this.dialogs_land()
 			this.monitor_land()
 			this.device_ready()
+			$bog_gram_soft( ()=> this.decisions_flush(), 0 )
 			return true
 		}
 

@@ -24,9 +24,9 @@ namespace $ {
 		@ $mol_mem
 		ids() {
 			const all = new Set( ( this.store().Dialogs()?.items() ?? [] ).map( String ) )
+			for( const link of this.invited() ) all.add( link )
 			const hidden = new Set( this.hidden() )
-			for( const link of this.invited() ) if( !hidden.has( link ) ) all.add( link )
-			return [ ... all ]
+			return [ ... all ].filter( id => !hidden.has( id ) )
 		}
 
 		@ $mol_mem
@@ -41,7 +41,7 @@ namespace $ {
 
 		@ $mol_mem
 		hidden() {
-			return ( this.store().Hidden()?.items() ?? [] ).map( String )
+			return this.Account().decided( 'hidden' )
 		}
 
 		sort( own: boolean, alive: boolean, known: boolean ): 'plain' | 'request' | 'skip' {
@@ -54,7 +54,7 @@ namespace $ {
 		kind( id: string ): 'plain' | 'request' | 'skip' {
 			if( this.archive_is( id ) ) return 'plain'
 			const talk = this.Talk()
-			const known = this.People().known( talk.owner( id ) ) || talk.mine_wrote( id )
+			const known = this.People().known( talk.owner( id ) || this.inviter( id ) ) || talk.mine_wrote( id )
 			return this.sort( talk.own( id ), talk.alive( id ), known )
 		}
 
@@ -115,9 +115,9 @@ namespace $ {
 			if( this.Talk().saved_is( id ) ) return
 
 			const store = this.store()
-			store.Dialogs( 'auto' )!.cut( id )
-			store.Hidden( 'auto' )!.add( id )
-			if( this.archive_is( id ) ) store.Archived( 'auto' )!.cut( id )
+			this.Account().decide( 'hidden', id )
+			$bog_gram_soft( ()=> ( store.Dialogs( 'auto' )?.cut( id ), true ), false )
+			if( this.archive_is( id ) ) $bog_gram_soft( ()=> ( store.Archived( 'auto' )?.cut( id ), true ), false )
 
 			$bog_gram_soft( ()=> {
 				const sessions = this.Talk().links_of( id )
@@ -178,6 +178,21 @@ namespace $ {
 		invite_open( entry: string ) {
 			if( !$bog_gram_seal.is( entry ) ) return entry
 			return this.sealed( entry )?.open ?? ''
+		}
+
+		@ $mol_mem
+		inviters() {
+			const out: Record< string, string > = {}
+			for( const entry of $bog_gram_soft( ()=> this.Account().invites(), [] as string[] ) ) {
+				if( !$bog_gram_seal.is( entry ) ) continue
+				const sealed = $bog_gram_soft( ()=> this.sealed( entry ), null )
+				if( sealed?.open && !out[ sealed.open ] ) out[ sealed.open ] = sealed.lord
+			}
+			return out
+		}
+
+		inviter( id: string ) {
+			return this.inviters()[ id ] ?? ''
 		}
 
 		@ $mol_mem_key

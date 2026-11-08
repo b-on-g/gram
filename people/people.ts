@@ -52,7 +52,7 @@ namespace $ {
 
 		@ $mol_mem
 		accepted() {
-			return ( this.Account().dialogs_store().Accepted()?.items() ?? [] ).map( String )
+			return this.Account().decided( 'accepted' )
 		}
 
 		@ $mol_mem_key
@@ -68,7 +68,7 @@ namespace $ {
 			if( lord === this.Account().my_lord() ) return null
 			if( !$giper_baza_link.check( lord ) ) return null
 			if( this.accepted().includes( lord ) ) return null
-			this.Account().dialogs_store().Accepted( 'auto' )!.add( lord )
+			this.Account().decide( 'accepted', lord )
 			return null
 		}
 

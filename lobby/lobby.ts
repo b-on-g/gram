@@ -355,7 +355,7 @@ namespace $ {
 
 			const store = this.store()
 
-			if( this.Roster().hidden().includes( id ) ) store.Hidden( 'auto' )!.cut( id )
+			if( this.Roster().hidden().includes( id ) ) this.Account().undecide( 'hidden', id )
 
 			const was_denied = this.denied().includes( id )
 			if( was_denied ) this.denial_drop( id )

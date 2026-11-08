@@ -2,6 +2,39 @@ namespace $ {
 
 	$mol_test({
 
+		async 'Запрос принимается и убирается локально, даже когда свой список не пишется, и переезжает в него потом'( $ ) {
+
+			const king = await $.$giper_baza_auth._generate()
+			const owned = $giper_baza_land.make({ $, auth: ()=> king })
+			const locked = $giper_baza_land.make({ $, link: ()=> owned.link() }).Data( $bog_gram_dialogs )
+			const open = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
+
+			$mol_assert_equal( locked.can_change(), false )
+
+			const lord = 'AAAAAAAA_BBBBBBBB'
+			const dialog = 'CCCCCCCC_DDDDDDDD'
+
+			const offline = $bog_gram_account.make({ $, my_lord: ()=> 'LordLocal', dialogs_store: ()=> locked })
+			const people = $bog_gram_people.make({ $, Account: ()=> offline })
+			const talk = $bog_gram_talk.make({ $, Account: ()=> offline, links_of: ()=> [], saved_is: ()=> false })
+			const roster = $bog_gram_roster.make({ $, Account: ()=> offline, Talk: ()=> talk })
+
+			await $mol_wire_async( people ).accept( lord )
+			await $mol_wire_async( roster ).drop( dialog )
+
+			$mol_assert_equal( people.accepted(), [ lord ] )
+			$mol_assert_equal( roster.hidden(), [ dialog ] )
+
+			const online = $bog_gram_account.make({ $, my_lord: ()=> 'LordLocal', dialogs_store: ()=> open })
+			$mol_assert_equal( online.decisions_flush(), 2 )
+
+			$mol_assert_equal( ( open.Accepted()!.items() as readonly string[] ).map( String ), [ lord ] )
+			$mol_assert_equal( ( open.Hidden()!.items() as readonly string[] ).map( String ), [ dialog ] )
+			$mol_assert_equal( online.local_list( 'accepted' ), [] )
+			$mol_assert_equal( online.local_list( 'hidden' ), [] )
+
+		},
+
 		async 'Новое лобби открыто всем и встаёт в профиль, прежнее читается дальше'( $ ) {
 
 			const king_lobby = await $.$giper_baza_auth._generate()
