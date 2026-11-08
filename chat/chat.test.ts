@@ -73,6 +73,34 @@ namespace $.$$ {
 
 		},
 
+		'Черновик живёт у своего диалога, переживает перезагрузку и уходит с отправкой'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const talk = $bog_gram_talk.make({ $, session: ()=> session, saved_is: ()=> false })
+			const alerts = $bog_gram_alerts.make({ $, offer: ()=> false })
+			const page = ( dialog: string )=> $bog_gram_chat.make({ $, dialog: ()=> dialog, my_lord: ()=> 'LordMe', Talk: ()=> talk, Alerts: ()=> alerts })
+
+			const first = page( 'DialogA' )
+			first.message_text( 'Недописанное' )
+
+			$mol_assert_equal( page( 'DialogB' ).message_text(), '' )
+			$mol_assert_equal( page( 'DialogA' ).message_text(), 'Недописанное' )
+
+			const own = session.Messages( 'auto' )!.make( null )
+			own.Text( 'auto' )?.val( 'Старое' )
+			first.message_pawn = ()=> own
+
+			first.message_edit( own.link().str )
+			$mol_assert_equal( first.message_text(), 'Старое' )
+			first.edit_cancel()
+			$mol_assert_equal( first.message_text(), 'Недописанное' )
+
+			const reload = page( 'DialogA' )
+			reload.message_send()
+			$mol_assert_equal( page( 'DialogA' ).message_text(), '' )
+
+		},
+
 		'Кадр без размеров — квадрат на полный предел, а не точка'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )

@@ -369,8 +369,7 @@ namespace $.$$ {
 			this.message_menu( '' )
 
 			if( this.edit_id() ) {
-				this.edit_id( '' )
-				this.message_text( '' )
+				this.edit_stop()
 			}
 
 			this.reply_id( id )
@@ -450,9 +449,27 @@ namespace $.$$ {
 
 		@ $mol_action
 		override edit_cancel( next?: any ) {
-			this.edit_id( '' )
-			this.message_text( '' )
+			this.edit_stop()
 			return null
+		}
+
+		edit_stop() {
+			this.edit_text( '' )
+			this.edit_id( '' )
+		}
+
+		@ $mol_mem
+		edit_text( next?: string ) {
+			return next ?? ''
+		}
+
+		draft( next?: string ) {
+			const key = `$bog_gram_chat.draft(${ this.my_lord() },${ this.dialog() })`
+			return this.$.$mol_state_local.value( key, next === undefined ? undefined : next || null ) ?? ''
+		}
+
+		override message_text( next?: string ) {
+			return this.edit_id() ? this.edit_text( next ) : this.draft( next )
 		}
 
 		@ $mol_action
@@ -466,8 +483,7 @@ namespace $.$$ {
 			pawn.Deleted( 'auto' )?.val( Date.now() )
 
 			if( this.edit_id() === id ) {
-				this.edit_id( '' )
-				this.message_text( '' )
+				this.edit_stop()
 			}
 
 			return null
@@ -492,8 +508,7 @@ namespace $.$$ {
 					pawn.Edited( 'auto' )?.val( Date.now() )
 				}
 
-				this.edit_id( '' )
-				this.message_text( '' )
+				this.edit_stop()
 
 				return null
 			}
@@ -637,8 +652,7 @@ namespace $.$$ {
 		image_start( file: File ) {
 
 			if( this.edit_id() ) {
-				this.edit_id( '' )
-				this.message_text( '' )
+				this.edit_stop()
 			}
 
 			$mol_wire_async( this ).image_send( file )
