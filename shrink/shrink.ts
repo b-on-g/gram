@@ -55,10 +55,15 @@ namespace $ {
 
 	}
 
-	async function original( file: Blob, width: number, height: number ): Promise< $bog_gram_shrink_shot > {
+	async function type_of( file: Blob ) {
+		const head = new Uint8Array( await file.slice( 0, 16 ).arrayBuffer() )
+		return $bog_gram_shrink.sniff( head ) || $bog_gram_shrink.type_declared( file ) || $bog_gram_shrink.type_named( file ) || 'image/jpeg'
+	}
+
+	async function original( file: Blob, type: string, width: number, height: number ): Promise< $bog_gram_shrink_shot > {
 		return {
 			bytes: new Uint8Array( await file.arrayBuffer() ),
-			type: file.type || 'image/jpeg',
+			type,
 			width,
 			height,
 		}
@@ -68,15 +73,17 @@ namespace $ {
 
 		async shrink( file: Blob, side: number, weight: number ): Promise< $bog_gram_shrink_shot > {
 
+			const type = await type_of( file )
+
 			const bitmap = await bitmap_of( file ) ?? await image_of( file )
-			if( !bitmap ) return await original( file, 0, 0 )
+			if( !bitmap ) return await original( file, type, 0, 0 )
 
 			try {
 
 				const fit = $bog_gram_shrink.fit( bitmap.width, bitmap.height, side )
 				const same = fit.width === bitmap.width && fit.height === bitmap.height
 
-				if( same && file.size <= weight && $bog_gram_shrink.portable( file ) ) return await original( file, bitmap.width, bitmap.height )
+				if( same && file.size <= weight && $bog_gram_shrink.portable( type ) ) return await original( file, type, bitmap.width, bitmap.height )
 
 				let width = fit.width
 				let height = fit.height
@@ -112,7 +119,7 @@ namespace $ {
 
 				}
 
-				if( !best ) return await original( file, bitmap.width, bitmap.height )
+				if( !best ) return await original( file, type, bitmap.width, bitmap.height )
 
 				return {
 					bytes: new Uint8Array( await best.arrayBuffer() ),
@@ -145,12 +152,55 @@ namespace $ {
 
 		}
 
-		static image_is( file: Blob ) {
-			return file.type.startsWith( 'image/' )
+		static extensions: Record< string, string > = {
+			jpg: 'image/jpeg',
+			jpeg: 'image/jpeg',
+			jfif: 'image/jpeg',
+			png: 'image/png',
+			gif: 'image/gif',
+			webp: 'image/webp',
+			heic: 'image/heic',
+			heif: 'image/heif',
+			avif: 'image/avif',
 		}
 
-		static portable( file: Blob ) {
-			return [ 'image/jpeg', 'image/png', 'image/webp', 'image/gif' ].includes( file.type )
+		static type_named( file: Blob ) {
+			const name = String( ( file as File ).name ?? '' )
+			if( !name.includes( '.' ) ) return ''
+			return this.extensions[ name.split( '.' ).pop()!.toLowerCase() ] ?? ''
+		}
+
+		static type_declared( file: Blob ) {
+			return file.type && file.type !== 'application/octet-stream' ? file.type : ''
+		}
+
+		static image_is( file: Blob ) {
+			const type = this.type_declared( file )
+			if( type ) return type.startsWith( 'image/' )
+			return Boolean( this.type_named( file ) )
+		}
+
+		static sniff( head: Uint8Array ) {
+
+			const ascii = ( from: number, till: number )=> String.fromCharCode( ... head.subarray( from, till ) )
+
+			if( head[0] === 0xFF && head[1] === 0xD8 && head[2] === 0xFF ) return 'image/jpeg'
+			if( head[0] === 0x89 && ascii( 1, 4 ) === 'PNG' ) return 'image/png'
+			if( ascii( 0, 4 ) === 'GIF8' ) return 'image/gif'
+			if( ascii( 0, 4 ) === 'RIFF' && ascii( 8, 12 ) === 'WEBP' ) return 'image/webp'
+
+			if( ascii( 4, 8 ) === 'ftyp' ) {
+				const brand = ascii( 8, 12 )
+				if( brand === 'avif' || brand === 'avis' ) return 'image/avif'
+				if( [ 'heic', 'heix', 'heim', 'heis', 'hevc', 'hevx', 'hevm', 'hevs' ].includes( brand ) ) return 'image/heic'
+				if( brand === 'mif1' || brand === 'msf1' ) return 'image/heif'
+			}
+
+			return ''
+		}
+
+		static portable( type: string ) {
+			return [ 'image/jpeg', 'image/png', 'image/webp', 'image/gif' ].includes( type )
 		}
 
 		static shrink( file: Blob ) {
