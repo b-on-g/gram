@@ -64,6 +64,18 @@ $bog_gram_settings $bog_gram_page
 							toggle_title \Сканировать ссылку
 							prefix \#!
 							found? <=> follow? \
+						<= Paste $mol_view
+							sub /
+								<= Paste_field $mol_string
+									hint \Или вставьте ссылку-приглашение
+									value? <=> paste_uri? \
+									submit? <=> paste_open? null
+								<= Paste_open $mol_button_major
+									click? <=> paste_open? null
+									sub /
+										\Открыть
+						<= Paste_error $mol_paragraph
+							title <= paste_error? \
 		<= Notify $mol_labeler
 			title \Уведомления
 			content /

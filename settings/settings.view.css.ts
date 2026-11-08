@@ -125,6 +125,31 @@ namespace $.$$ {
 			maxWidth: '100%',
 		},
 
+		Paste: {
+			alignSelf: 'stretch',
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+		},
+
+		Paste_field: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+		},
+
+		Paste_open: {
+			flex: {
+				shrink: 0,
+			},
+		},
+
+		Paste_error: hint,
+
 		Notify_body: {
 			flex: {
 				direction: 'column',

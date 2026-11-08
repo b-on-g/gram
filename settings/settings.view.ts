@@ -7,6 +7,29 @@ namespace $.$$ {
 			return ''
 		}
 
+		override paste_open() {
+
+			if( !this.$.$bog_gram_follow.go( this.paste_uri().trim() ) ) {
+				this.paste_error( 'Ссылка не распознана: нужна ссылка Gram на человека, группу или реестр' )
+				return null
+			}
+
+			this.paste_uri( '' )
+			this.paste_error( '' )
+			this.close( null )
+
+			return null
+		}
+
+		override paste_uri( next?: string ) {
+			if( next !== undefined ) this.paste_error( '' )
+			return super.paste_uri( next )
+		}
+
+		override Paste_error() {
+			return this.paste_error() ? super.Paste_error() : null!
+		}
+
 		override version() {
 			return $bog_gram_version
 		}
