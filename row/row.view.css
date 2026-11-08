@@ -75,3 +75,35 @@
 	}
 
 }
+
+@media ( hover: none ) {
+
+	[bog_gram_row][bog_gram_row_swipe="true"] {
+		position: relative;
+		overflow: hidden;
+		touch-action: pan-y pan-right;
+	}
+
+	[bog_gram_row][bog_gram_row_swipe="true"][bog_gram_row_open="true"] {
+		touch-action: pan-y;
+	}
+
+	[bog_gram_row][bog_gram_row_swipe="true"] > * {
+		transform: translateX( var( --bog_gram_row_shift, 0px ) );
+		transition: transform .2s ease-out;
+	}
+
+	[bog_gram_row][bog_gram_row_swipe="true"][bog_gram_row_drag="true"] > * {
+		transition: none;
+	}
+
+	[bog_gram_row][bog_gram_row_swipe="true"] > [bog_gram_row_tools] {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		padding: 0 0.5rem;
+		transform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );
+	}
+
+}

@@ -64,6 +64,25 @@ namespace $ {
 
 		},
 
+		'Открыта одна строка, тап по списку закрывает её вместо перехода'( $ ) {
+
+			const picked = [] as string[]
+			const menu = $bog_gram_menu.make({ $, select: ( id: string )=> { picked.push( id ); return null } })
+
+			menu.Dialog_row( 'A' ).swipe_open( true )
+			menu.Dialog_row( 'B' ).swipe_open( true )
+			$mol_assert_equal( menu.Dialog_row( 'A' ).swipe_open(), false )
+			$mol_assert_equal( menu.Dialog_row( 'B' ).swipe_open(), true )
+
+			menu.pick( 'A' )
+			$mol_assert_equal( menu.Dialog_row( 'B' ).swipe_open(), false )
+			$mol_assert_equal( picked, [] )
+
+			menu.pick( 'A' )
+			$mol_assert_equal( picked, [ 'A' ] )
+
+		},
+
 	})
 
 }

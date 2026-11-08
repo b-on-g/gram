@@ -60,9 +60,38 @@ namespace $.$$ {
 			return this.delete_armed( id ) ? 'Точно удалить?' : 'Удалить диалог'
 		}
 
+		@ $mol_mem
+		swiped( next?: string ) {
+			return next ?? ''
+		}
+
+		override swiped_is( id: string, next?: boolean ) {
+			if( next !== undefined ) this.swiped( next ? id : '' )
+			return this.swiped() === id
+		}
+
+		swipe_close() {
+			if( !this.swiped() ) return false
+			this.swiped( '' )
+			return true
+		}
+
+		@ $mol_mem
+		Swipe_reset() {
+			this.body_scroll_top()
+			this.swiped( '' )
+			return null
+		}
+
+		override auto() {
+			super.auto()
+			this.Swipe_reset()
+		}
+
 		@ $mol_action
 		override pick( id: string, next?: any ) {
 			this.armed( '' )
+			if( this.swipe_close() ) return null
 			this.select( id, null )
 			return null
 		}
@@ -70,6 +99,7 @@ namespace $.$$ {
 		@ $mol_action
 		override saved_pick( next?: any ) {
 			this.armed( '' )
+			if( this.swipe_close() ) return null
 			this.saved_open( null )
 			return null
 		}
@@ -90,6 +120,7 @@ namespace $.$$ {
 		override archive_click( id: string, next?: any ) {
 			if( !id ) return null
 			this.armed( '' )
+			this.swiped( '' )
 			if( this.archive_is( id ) ) this.unarchive( id, null )
 			else this.archive( id, null )
 			return null

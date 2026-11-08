@@ -9,11 +9,22 @@ $bog_gram_row $mol_button_minor
 	badge \
 	marks /$mol_view
 	tools /$mol_view
+	swipe false
+	swipe_open? false
 	Icon null $mol_view
 	attr *
 		^
 		bog_gram_row_current <= current
 		bog_gram_row_size <= size
+		bog_gram_row_swipe <= swipe
+		bog_gram_row_open <= swipe_open?
+		bog_gram_row_drag <= swipe_dragging false
+	event *
+		^
+		pointerdown? <=> swipe_start? null
+		pointermove? <=> swipe_move? null
+		pointerup? <=> swipe_end? null
+		pointercancel? <=> swipe_cancel? null
 	sub /
 		<= Avatar $bog_gram_avatar
 			id <= avatar_id
