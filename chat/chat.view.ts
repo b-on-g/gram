@@ -645,6 +645,16 @@ namespace $.$$ {
 			return passes.length < mates.length ? null : passes
 		}
 
+		passes_lost() {
+			const mates = this.saved() ? [] : this.Talk().mates( this.dialog() )
+			return mates.filter( lord => !this.People().pass_of( lord ) )
+		}
+
+		lost_hint( what: string ) {
+			const names = this.passes_lost().map( lord => this.People().label( lord ) ).join( ', ' )
+			return `${ what } не отправлено: не доехал ключ — ${ names }. Отправьте ещё раз чуть позже`
+		}
+
 		land_closed( bytes: Uint8Array< ArrayBuffer >, type: string, passes: readonly $giper_baza_auth_pass[] ) {
 
 			const land = this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
@@ -666,7 +676,10 @@ namespace $.$$ {
 			if( !session ) return ''
 
 			const passes = this.passes()
-			if( !passes ) return ''
+			if( !passes ) {
+				this.voice_hint( this.lost_hint( 'Фото' ) )
+				return ''
+			}
 
 			const shot = this.$.$bog_gram_shrink.shrink( file )
 			const store = this.land_closed( shot.bytes, shot.type, passes )
@@ -682,6 +695,7 @@ namespace $.$$ {
 			message.Moment( 'auto' )?.val( Date.now() )
 
 			this.message_text( '' )
+			this.voice_hint( '' )
 
 			return message.link().str
 		}
@@ -826,7 +840,10 @@ namespace $.$$ {
 			if( !session ) return ''
 
 			const passes = this.passes()
-			if( !passes ) return ''
+			if( !passes ) {
+				this.voice_hint( this.lost_hint( 'Голосовое' ) )
+				return ''
+			}
 
 			const sound = $mol_wire_sync( take ).take()
 			if( !sound ) {

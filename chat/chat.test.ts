@@ -73,6 +73,28 @@ namespace $.$$ {
 
 		},
 
+		'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const talk = $bog_gram_talk.make({ $, session: ()=> session, mates: ()=> [ 'LordKnown', 'LordLost' ], saved_is: ()=> false })
+			const pass = {} as $giper_baza_auth_pass
+			const people = $bog_gram_people.make({ $,
+				pass_of: ( lord: string )=> lord === 'LordKnown' ? pass : null,
+				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
+			})
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people })
+
+			$mol_assert_equal( chat.image_send( new File( [], 'a.jpg', { type: 'image/jpeg' } ) ), '' )
+			$mol_assert_equal( chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+
+			chat.voice_hint( '' )
+			$mol_assert_equal( chat.voice_send( {} as $bog_gram_voice ), '' )
+			$mol_assert_equal( chat.voice_hint(), 'Голосовое не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+
+			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
+
+		},
+
 	})
 
 }
