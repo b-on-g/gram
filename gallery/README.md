@@ -4,9 +4,9 @@
 
 ```tree
 <= Gallery $bog_gram_gallery
-	ids <= shot_ids /string
+	ids <= shots /string
 	current? <=> zoom_id?
-	uri* <= message_shot_uri*
+	uri* <= shot_uri*
 	close? <=> zoom_close?
 ```
 
