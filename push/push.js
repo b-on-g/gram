@@ -102,7 +102,7 @@ async function auth_load() {
 	}
 	const auth = await $.$giper_baza_auth._generate()
 	fs.mkdirSync(DATA, { recursive: true })
-	fs.writeFileSync(auth_file, auth.toString())
+	fs.writeFileSync(auth_file, auth.toString() + auth.toStringPrivate())
 	log('auth key generated:', auth.pass().lord().str.slice(0, 10))
 	return auth
 }
