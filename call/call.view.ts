@@ -154,10 +154,12 @@ namespace $.$$ {
 				} catch {}
 			}
 
+			session.playbackState = 'playing'
 			for( const action in handlers ) put( action, handlers[ action ] )
 
 			return {
 				destructor: ()=> {
+					session.playbackState = 'none'
 					for( const action in handlers ) put( action, null )
 				}
 			}

@@ -312,6 +312,11 @@ namespace $ {
 			return track.readyState === 'ended' || track.muted
 		}
 
+		video_lost() {
+			if( !this.visible() ) return
+			this.video_restore()
+		}
+
 		@ $mol_mem
 		video_watch() {
 
@@ -320,7 +325,7 @@ namespace $ {
 			const track = this.media().getVideoTracks()[ 0 ]
 			if( !track ) return null
 
-			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).video_restore() )
+			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).video_lost() )
 		}
 
 		@ $mol_mem
@@ -343,7 +348,25 @@ namespace $ {
 
 		@ $mol_mem
 		unload_watch() {
-			return new $mol_dom_listener( $mol_dom_context, 'pagehide', ()=> this.leave() )
+			return new $mol_dom_listener( $mol_dom_context, 'pagehide', ( event: PageTransitionEvent )=> this.page_hide( event ) )
+		}
+
+		page_hide( event: { persisted: boolean } ) {
+			if( event.persisted ) return
+			this.leave()
+		}
+
+		@ $mol_mem
+		audio_session() {
+
+			const session = ( this.$.$mol_dom_context.navigator as any )?.audioSession as { type: string } | undefined
+			if( !session ) return null
+
+			session.type = 'play-and-record'
+
+			return {
+				destructor: ()=> { session.type = 'auto' },
+			}
 		}
 
 		@ $mol_mem
@@ -379,6 +402,7 @@ namespace $ {
 			if( !this.joined() ) return null
 
 			this.unload_watch()
+			this.audio_session()
 			this.visible_watch()
 			this.media_apply()
 			this.video_watch()

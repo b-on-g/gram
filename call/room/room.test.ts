@@ -199,6 +199,47 @@ namespace $ {
 
 		},
 
+		'Камера, потерянная в фоне, не запрашивается, пока страница скрыта'( $ ) {
+
+			let opened = 0
+			const room = $bog_gram_call_room.make({ $, video_restore: ()=> { ++ opened } })
+
+			room.visible( false )
+			room.video_lost()
+			$mol_assert_equal( opened, 0 )
+
+			room.visible( true )
+			room.video_lost()
+			$mol_assert_equal( opened, 1 )
+
+		},
+
+		'Уход в фон со страницей в кэше не выходит из звонка, закрытие выходит'( $ ) {
+
+			let left = 0
+			const room = $bog_gram_call_room.make({ $, leave: ()=> { ++ left } })
+
+			room.page_hide({ persisted: true })
+			$mol_assert_equal( left, 0 )
+
+			room.page_hide({ persisted: false })
+			$mol_assert_equal( left, 1 )
+
+		},
+
+		'На время звонка аудиосессия держит микрофон и звук, после возвращается в auto'( $ ) {
+
+			const session = { type: 'auto' }
+			const room = $bog_gram_call_room.make({ $: $.$mol_ambient({ $mol_dom_context: { navigator: { audioSession: session } } as any }) })
+
+			const hold = room.audio_session()!
+			$mol_assert_equal( session.type, 'play-and-record' )
+
+			hold.destructor()
+			$mol_assert_equal( session.type, 'auto' )
+
+		},
+
 		'Испорченный сигнал не ломает разбор'() {
 			$mol_assert_equal( $bog_gram_call_room.signal_parse( '' ), null )
 			$mol_assert_equal( $bog_gram_call_room.signal_parse( '{"id":1}' ), null )
