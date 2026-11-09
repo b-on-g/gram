@@ -576,10 +576,11 @@ namespace $.$$ {
 			return $bog_gram_soft( ()=> this.file_uri( this.message_pawn( id )?.Image()?.remote() ), '' )
 		}
 
-		override zoom_uri() {
-			const id = this.zoom_id()
-			if( !id ) return ''
-			return this.message_shot_uri( id )
+		@ $mol_mem
+		override shot_ids() {
+			return this.messages()
+				.map( message => message.link().str )
+				.filter( id => this.message_alive( id ) && this.message_shot( id ) )
 		}
 
 		@ $mol_action
@@ -597,8 +598,8 @@ namespace $.$$ {
 		}
 
 		override sub() {
-			if( !this.zoom_uri() ) return super.sub()
-			return [ ... super.sub(), this.Zoom() ]
+			if( !this.zoom_id() ) return super.sub()
+			return [ ... super.sub(), this.Gallery() ]
 		}
 
 		@ $mol_action

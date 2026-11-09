@@ -16,7 +16,6 @@ $bog_gram_chat $bog_gram_page
 	reply_title \
 	reply_text \
 	message_text? \
-	zoom_uri \
 	voice_ready false
 	voice_on false
 	voice_clock \
@@ -37,8 +36,10 @@ $bog_gram_chat $bog_gram_page
 	plugins /
 		<= Hotkey $mol_hotkey
 			key * escape? <=> zoom_close? null
-	Zoom $bog_gram_zoom
-		uri <= zoom_uri
+	Gallery $bog_gram_gallery
+		ids <= shot_ids /string
+		current? <=> zoom_id?
+		uri* <= message_shot_uri*
 		close? <=> zoom_close?
 	title_content /
 		<= Note_field $bog_gram_field

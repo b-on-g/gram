@@ -1,0 +1,52 @@
+$bog_gram_gallery $mol_view
+	ids /string
+	current? \
+	uri* \
+	close? null
+	counter_pattern \{index} из {count}
+	attr *
+		^
+		tabindex 0
+		bog_gram_gallery_drag <= dragging false
+	event *
+		^
+		pointerdown? <=> swipe_start? null
+		pointermove? <=> swipe_move? null
+		pointerup? <=> swipe_end? null
+		pointercancel? <=> swipe_cancel? null
+		wheel? <=> swipe_wheel? null
+		click? <=> back_click? null
+	plugins /
+		<= Hotkey $mol_hotkey
+			key *
+				escape? <=> close?
+				left? <=> prev? null
+				right? <=> next? null
+	sub /
+		<= Back $mol_view
+		<= Track $mol_view
+			sub <= slides /
+		<= Counter $mol_view
+			sub /
+				<= counter \
+		<= Prev $mol_button_minor
+			hint \Предыдущее
+			click? <=> prev?
+			sub /
+				<= Prev_icon $mol_icon_chevron_left
+		<= Next $mol_button_minor
+			hint \Следующее
+			click? <=> next?
+			sub /
+				<= Next_icon $mol_icon_chevron_right
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	Slide* $mol_image
+		uri <= uri*
+		loading \eager
+		attr *
+			^
+			bog_gram_gallery_offset <= slide_offset* 0
