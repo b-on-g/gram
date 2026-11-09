@@ -1,0 +1,25 @@
+$bog_gram_album $mol_view
+	shots /string
+	uri* \
+	ratio* 1
+	open*? null
+	width \15rem
+	style *
+		width <= width
+	sub <= rows /
+	Row* $mol_view
+		style *
+			aspectRatio <= row_ratio* \1
+		sub <= row_cells* /
+	Column* $mol_view
+		style *
+			flexGrow <= column_grow* \1
+		sub <= column_tiles* /
+	Tile* $bog_gram_photo
+		hint \Открыть картинку
+		uri <= uri*
+		click? <=> open*?
+		style *
+			width \
+			aspectRatio \
+			flexGrow <= tile_grow* \1

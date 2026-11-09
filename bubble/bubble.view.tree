@@ -8,10 +8,11 @@ $bog_gram_bubble $mol_view
 	quote_text \
 	quote_jump? null
 	shot false
-	shot_uri \
+	shots /string
+	shot_uri* \
+	shot_ratio* 1
 	shot_width \
-	shot_ratio \
-	zoom? null
+	shot_open*? null
 	sound false
 	sound_uri \
 	sound_span 0
@@ -58,12 +59,12 @@ $bog_gram_bubble $mol_view
 				<= Quote_text $mol_view
 					sub /
 						<= quote_text
-		<= Shot $bog_gram_photo
-			hint \Открыть картинку
-			uri <= shot_uri
-			box_width <= shot_width
-			box_ratio <= shot_ratio
-			click? <=> zoom?
+		<= Shot $bog_gram_album
+			shots <= shots
+			uri* <= shot_uri*
+			ratio* <= shot_ratio*
+			width <= shot_width
+			open*? <=> shot_open*?
 		<= Sound $bog_gram_sound
 			uri <= sound_uri
 			span <= sound_span

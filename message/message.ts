@@ -9,6 +9,7 @@ namespace $ {
 		Image: $bog_gram_link_synced( ()=> $giper_baza_file ),
 		Image_width: $giper_baza_atom_real,
 		Image_height: $giper_baza_atom_real,
+		Shots: $giper_baza_list_link_to( ()=> $bog_gram_shot ),
 		Voice: $bog_gram_link_synced( ()=> $giper_baza_file ),
 		Voice_span: $giper_baza_atom_real,
 		Reply: $giper_baza_atom_text,

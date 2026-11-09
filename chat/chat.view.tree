@@ -37,9 +37,9 @@ $bog_gram_chat $bog_gram_page
 		<= Hotkey $mol_hotkey
 			key * escape? <=> zoom_close? null
 	Gallery $bog_gram_gallery
-		ids <= shot_ids /string
+		ids <= shots /string
 		current? <=> zoom_id?
-		uri* <= message_shot_uri*
+		uri* <= shot_uri*
 		close? <=> zoom_close?
 	title_content /
 		<= Note_field $bog_gram_field
@@ -161,10 +161,11 @@ $bog_gram_chat $bog_gram_page
 		quote_text <= message_quote_text* \
 		quote_jump? <=> message_quote_jump*? null
 		shot <= message_shot* false
-		shot_uri <= message_shot_uri* \
+		shots <= message_shots* /string
+		shot_uri* <= shot_uri* \
+		shot_ratio* <= shot_ratio* 1
 		shot_width <= message_shot_width* \
-		shot_ratio <= message_shot_ratio* \
-		zoom? <=> message_zoom*? null
+		shot_open*? <=> shot_zoom*? null
 		sound <= message_sound* false
 		sound_uri <= message_sound_uri* \
 		sound_span <= message_sound_span* 0

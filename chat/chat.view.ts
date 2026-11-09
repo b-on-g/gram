@@ -535,34 +535,72 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		override message_shot( id: string ) {
-			return Boolean( this.message_pawn( id )?.Image()?.val() )
-		}
-
-		@ $mol_mem_key
-		message_shot_size( id: string ) {
+		message_frames( id: string ) {
 
 			const pawn = this.message_pawn( id )
-			const width = Number( pawn?.Image_width()?.val() ?? 0 )
-			const height = Number( pawn?.Image_height()?.val() ?? 0 )
+			if( !pawn ) return []
 
-			if( !width || !height ) return { width: shot_side * rem_px, height: shot_side * rem_px }
+			const shots = pawn.Shots()?.remote_list() ?? []
+			if( shots.length ) return shots.map( shot => ({
+				file: ()=> shot.Image()?.remote() ?? null,
+				width: Number( shot.Width()?.val() ?? 0 ),
+				height: Number( shot.Height()?.val() ?? 0 ),
+			}) )
 
-			return { width, height }
+			if( !pawn.Image()?.val() ) return []
+
+			return [ {
+				file: ()=> pawn.Image()?.remote() ?? null,
+				width: Number( pawn.Image_width()?.val() ?? 0 ),
+				height: Number( pawn.Image_height()?.val() ?? 0 ),
+			} ]
 		}
 
 		@ $mol_mem_key
-		override message_shot_ratio( id: string ) {
-			const size = this.message_shot_size( id )
-			return size.width + ' / ' + size.height
+		override message_shots( id: string ) {
+			return this.message_frames( id ).map( ( _, index )=> id + '/' + index )
+		}
+
+		@ $mol_mem_key
+		override message_shot( id: string ) {
+			return this.message_frames( id ).length > 0
+		}
+
+		shot_frame( shot: string ) {
+			const cut = shot.lastIndexOf( '/' )
+			if( cut < 0 ) return null
+			return this.message_frames( shot.slice( 0, cut ) )[ Number( shot.slice( cut + 1 ) ) ] ?? null
+		}
+
+		shot_size( shot: string ) {
+			const frame = this.shot_frame( shot )
+			if( !frame?.width || !frame?.height ) return { width: shot_side * rem_px, height: shot_side * rem_px }
+			return { width: frame.width, height: frame.height }
+		}
+
+		@ $mol_mem_key
+		override shot_ratio( shot: string ) {
+			const size = this.shot_size( shot )
+			return size.width / size.height
 		}
 
 		@ $mol_mem_key
 		override message_shot_width( id: string ) {
-			const size = this.message_shot_size( id )
+			const shots = this.message_shots( id )
+			if( shots.length !== 1 ) return shot_side + 'rem'
+			const size = this.shot_size( shots[0] )
 			const side = Math.max( size.width, size.height )
 			const limit = Math.min( shot_side, side / rem_px )
 			return ( limit * size.width / side ).toFixed( 2 ) + 'rem'
+		}
+
+		@ $mol_mem
+		override shots() {
+			return this.messages().flatMap( message => {
+				const id = message.link().str
+				if( !this.message_alive( id ) ) return []
+				return $bog_gram_soft( ()=> this.message_shots( id ), [] as string[] )
+			} )
 		}
 
 		file_uri( file: $giper_baza_file | null | undefined ) {
@@ -572,22 +610,15 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		override message_shot_uri( id: string ) {
-			return $bog_gram_soft( ()=> this.file_uri( this.message_pawn( id )?.Image()?.remote() ), '' )
-		}
-
-		@ $mol_mem
-		override shot_ids() {
-			return this.messages()
-				.map( message => message.link().str )
-				.filter( id => this.message_alive( id ) && this.message_shot( id ) )
+		override shot_uri( shot: string ) {
+			return $bog_gram_soft( ()=> this.file_uri( this.shot_frame( shot )?.file() ), '' )
 		}
 
 		@ $mol_action
-		override message_zoom( id: string, next?: any ) {
-			if( this.message_menu() === id ) return null
-			if( !this.message_shot_uri( id ) ) return null
-			this.zoom_id( id )
+		override shot_zoom( shot: string, next?: any ) {
+			if( this.message_menu() === shot.slice( 0, shot.lastIndexOf( '/' ) ) ) return null
+			if( !this.shot_uri( shot ) ) return null
+			this.zoom_id( shot )
 			return null
 		}
 
@@ -649,48 +680,23 @@ namespace $.$$ {
 			return null
 		}
 
-		image_queue = [] as File[]
-
-		image_cut = 0
-
-		image_pump: Promise< void > | null = null
-
-		images_start( files: readonly File[] ) {
+		async images_start( files: readonly File[] ) {
 
 			const images = files.filter( file => this.$.$bog_gram_shrink.image_is( file ) )
-			if( !images.length ) return this.image_pump
+			if( !images.length ) return ''
 
 			if( this.edit_id() ) this.edit_stop()
 
-			const room = image_limit - this.image_queue.length
-			this.image_cut += Math.max( 0, images.length - room )
-			this.image_queue.push( ... images.slice( 0, Math.max( 0, room ) ) )
+			const sent = await $mol_wire_async( this ).images_send( images.slice( 0, image_limit ) ).catch( error => {
+				$mol_fail_log( error )
+				return ''
+			} )
 
-			if( !this.image_pump ) this.image_pump = this.images_pump().finally( ()=> this.image_pump = null )
-
-			return this.image_pump
-		}
-
-		async images_pump() {
-
-			while( this.image_queue.length ) {
-
-				const sent = await $mol_wire_async( this ).image_send( this.image_queue[0] ).catch( error => {
-					$mol_fail_log( error )
-					return ''
-				} )
-
-				if( !sent ) {
-					this.image_queue = []
-					this.image_cut = 0
-					return
-				}
-
-				this.image_queue.shift()
+			if( sent && images.length > image_limit ) {
+				this.voice_hint( `Отправлены первые ${ image_limit } фото: за раз можно не больше ${ image_limit }` )
 			}
 
-			if( this.image_cut ) this.voice_hint( `Отправлены первые ${ image_limit } фото: за раз можно не больше ${ image_limit }` )
-			this.image_cut = 0
+			return sent
 		}
 
 		passes() {
@@ -727,7 +733,18 @@ namespace $.$$ {
 			return store
 		}
 
+		@ $mol_mem_key
+		image_frame( file: File ) {
+			const shot = this.$.$bog_gram_shrink.shrink( file )
+			const store = this.land_closed( shot.bytes, shot.type, this.passes() ?? [] )
+			return { store, width: shot.width, height: shot.height }
+		}
+
 		image_send( file: File ) {
+			return this.images_send([ file ])
+		}
+
+		images_send( files: readonly File[] ) {
 
 			const session = this.Talk().session( this.dialog() )
 			if( !session ) return ''
@@ -738,15 +755,23 @@ namespace $.$$ {
 				return ''
 			}
 
-			const shot = this.$.$bog_gram_shrink.shrink( file )
-			const store = this.land_closed( shot.bytes, shot.type, passes )
+			const frames = files.map( file => this.image_frame( file ) )
+			if( !frames.length ) return ''
 
 			const text = this.message_text().trim()
 			const message = session.Messages( 'auto' )!.make( null )
 
-			message.Image( 'auto' )!.remote( store )
-			message.Image_width( 'auto' )?.val( shot.width )
-			message.Image_height( 'auto' )?.val( shot.height )
+			const shots = message.Shots( 'auto' )!
+			for( const frame of frames ) {
+				const shot = shots.make( null )
+				shot.Image( 'auto' )!.remote( frame.store )
+				shot.Width( 'auto' )?.val( frame.width )
+				shot.Height( 'auto' )?.val( frame.height )
+			}
+
+			message.Image( 'auto' )!.remote( frames[0].store )
+			message.Image_width( 'auto' )?.val( frames[0].width )
+			message.Image_height( 'auto' )?.val( frames[0].height )
 			if( text ) message.Text( 'auto' )?.val( text )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )

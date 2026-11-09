@@ -101,9 +101,10 @@ namespace $.$$ {
 
 		},
 
-		'Кадр без размеров — квадрат на полный предел, а не точка'( $ ) {
+		'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const picture = $giper_baza_land.make({ $ }).link()
 
 			const bare = session.Messages( 'auto' )!.make( null )
 			const zero = session.Messages( 'auto' )!.make( null )
@@ -112,21 +113,27 @@ namespace $.$$ {
 			const wide = session.Messages( 'auto' )!.make( null )
 			wide.Image_width( 'auto' )?.val( 1600 )
 			wide.Image_height( 'auto' )?.val( 1200 )
+			const text = session.Messages( 'auto' )!.make( null )
 
-			const pawns = new Map( [ bare, zero, wide ].map( message => [ message.link().str, message ] ) )
+			for( const message of [ bare, zero, wide ] ) message.Image( 'auto' )!.val( picture )
+
+			const pawns = new Map( [ bare, zero, wide, text ].map( message => [ message.link().str, message ] ) )
 			const chat = $bog_gram_chat.make({ $, message_pawn: ( id: string )=> pawns.get( id ) ?? null })
 
 			for( const message of [ bare, zero ] ) {
-				$mol_assert_equal( chat.message_shot_width( message.link().str ), '15.00rem' )
-				$mol_assert_equal( chat.message_shot_ratio( message.link().str ), '240 / 240' )
+				const id = message.link().str
+				$mol_assert_equal( chat.message_shots( id ), [ id + '/0' ] )
+				$mol_assert_equal( chat.message_shot_width( id ), '15.00rem' )
+				$mol_assert_equal( chat.shot_ratio( id + '/0' ), 1 )
 			}
 
 			$mol_assert_equal( chat.message_shot_width( wide.link().str ), '15.00rem' )
-			$mol_assert_equal( chat.message_shot_ratio( wide.link().str ), '1600 / 1200' )
+			$mol_assert_equal( chat.shot_ratio( wide.link().str + '/0' ), 4 / 3 )
+			$mol_assert_equal( chat.message_shots( text.link().str ), [] )
 
 		},
 
-		async 'Несколько фото уходят отдельными сообщениями по порядку выбора, без ключа — ни одного'( $ ) {
+		async 'Несколько фото уходят одним сообщением-альбомом по порядку выбора, без ключа — ни одного'( $ ) {
 
 			const later = {
 				async tick( name: string ) {
@@ -152,13 +159,16 @@ namespace $.$$ {
 				const people = $bog_gram_people.make({ $: context, pass_of: ()=> lost ? null : {} as $giper_baza_auth_pass, label: ()=> 'Борис' })
 				const chat = $bog_gram_chat.make({ $: context, dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
 				chat.land_closed = ()=> $giper_baza_land.make({ $ }).Data( $giper_baza_file )
-				const widths = ()=> ( session.Messages()?.remote_list() ?? [] ).map( message => message.Image_width()?.val() )
+				const widths = ()=> ( session.Messages()?.remote_list() ?? [] ).map( message => [
+					message.Image_width()?.val(),
+					( message.Shots()?.remote_list() ?? [] ).map( shot => shot.Width()?.val() ),
+				] )
 				return { chat, widths }
 			}
 
 			const sent = await page( true, false )
 			await sent.chat.images_start([ file( '1' ), new File( [], 'notes.txt', { type: 'text/plain' } ), file( '2' ), file( '3' ) ])
-			$mol_assert_equal( sent.widths(), [ 1, 2, 3 ] )
+			$mol_assert_equal( sent.widths(), [ [ 1, [ 1, 2, 3 ] ] ] )
 
 			const lost = await page( false, true )
 			let hints = 0
