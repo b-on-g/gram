@@ -26135,7 +26135,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.134';
+    $.$bog_gram_version = '1.0.135';
 })($ || ($ = {}));
 
 ;
@@ -37975,7 +37975,7 @@ var $;
             field_focus() {
                 if (!this.$.$mol_media.match('(pointer: fine)'))
                     return false;
-                this.Message_field().bring();
+                this.Message_field().Edit().bring();
                 return true;
             }
             message_reply(id) {
@@ -37984,7 +37984,7 @@ var $;
                     this.edit_stop();
                 }
                 this.reply_id(id);
-                this.Message_field().bring();
+                this.Message_field().Edit().bring();
                 return null;
             }
             reply_cancel(next) {
