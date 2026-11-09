@@ -26126,7 +26126,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.127';
+    $.$bog_gram_version = '1.0.131';
 })($ || ($ = {}));
 
 ;
@@ -28846,6 +28846,19 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $bog_gram_shot extends $giper_baza_dict.with({
+        Image: $bog_gram_link_synced(() => $giper_baza_file),
+        Width: $giper_baza_atom_real,
+        Height: $giper_baza_atom_real,
+    }) {
+    }
+    $.$bog_gram_shot = $bog_gram_shot;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     class $bog_gram_message extends $giper_baza_dict.with({
         Text: $giper_baza_atom_text,
         Author: $giper_baza_atom_text,
@@ -28855,6 +28868,7 @@ var $;
         Image: $bog_gram_link_synced(() => $giper_baza_file),
         Image_width: $giper_baza_atom_real,
         Image_height: $giper_baza_atom_real,
+        Shots: $giper_baza_list_link_to(() => $bog_gram_shot),
         Voice: $bog_gram_link_synced(() => $giper_baza_file),
         Voice_span: $giper_baza_atom_real,
         Reply: $giper_baza_atom_text,
@@ -33055,6 +33069,18 @@ var $;
 
 
 ;
+	($.$mol_icon_chevron_right) = class $mol_icon_chevron_right extends ($.$mol_icon) {
+		path(){
+			return "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_image) = class $mol_image extends ($.$mol_view) {
 		uri(){
 			return "";
@@ -33158,51 +33184,185 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$bog_gram_zoom) = class $bog_gram_zoom extends ($.$mol_view) {
-		tab_index(){
-			return 0;
+	($.$bog_gram_gallery) = class $bog_gram_gallery extends ($.$mol_view) {
+		dragging(){
+			return false;
+		}
+		swipe_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_move(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		swipe_wheel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		back_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		prev(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		next(next){
+			if(next !== undefined) return next;
+			return null;
 		}
 		Hotkey(){
 			const obj = new this.$.$mol_hotkey();
-			(obj.key) = () => ({"escape": (next) => (this.close(next))});
+			(obj.key) = () => ({
+				"escape": (next) => (this.close(next)), 
+				"left": (next) => (this.prev(next)), 
+				"right": (next) => (this.next(next))
+			});
 			return obj;
 		}
-		Shot(){
-			const obj = new this.$.$mol_image();
-			(obj.uri) = () => ((this.uri()));
+		Back(){
+			const obj = new this.$.$mol_view();
 			return obj;
 		}
-		uri(){
+		slides(){
+			return [];
+		}
+		Track(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.slides()));
+			return obj;
+		}
+		counter(){
+			return "";
+		}
+		Counter(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.counter())]);
+			return obj;
+		}
+		Prev_icon(){
+			const obj = new this.$.$mol_icon_chevron_left();
+			return obj;
+		}
+		Prev(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Предыдущее");
+			(obj.click) = (next) => ((this.prev(next)));
+			(obj.sub) = () => ([(this.Prev_icon())]);
+			return obj;
+		}
+		Next_icon(){
+			const obj = new this.$.$mol_icon_chevron_right();
+			return obj;
+		}
+		Next(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Следующее");
+			(obj.click) = (next) => ((this.next(next)));
+			(obj.sub) = () => ([(this.Next_icon())]);
+			return obj;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Закрыть");
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		slide_offset(id){
+			return 0;
+		}
+		ids(){
+			return [];
+		}
+		current(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		uri(id){
 			return "";
 		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
 		}
+		counter_pattern(){
+			return "{index} из {count}";
+		}
 		attr(){
-			return {...(super.attr()), "tabindex": (this.tab_index())};
+			return {
+				...(super.attr()), 
+				"tabindex": 0, 
+				"bog_gram_gallery_drag": (this.dragging())
+			};
 		}
 		event(){
-			return {...(super.event()), "click": (next) => (this.close(next))};
+			return {
+				...(super.event()), 
+				"pointerdown": (next) => (this.swipe_start(next)), 
+				"pointermove": (next) => (this.swipe_move(next)), 
+				"pointerup": (next) => (this.swipe_end(next)), 
+				"pointercancel": (next) => (this.swipe_cancel(next)), 
+				"wheel": (next) => (this.swipe_wheel(next)), 
+				"click": (next) => (this.back_click(next))
+			};
 		}
 		plugins(){
 			return [(this.Hotkey())];
 		}
 		sub(){
-			return [(this.Shot())];
+			return [
+				(this.Back()), 
+				(this.Track()), 
+				(this.Counter()), 
+				(this.Prev()), 
+				(this.Next()), 
+				(this.Close())
+			];
+		}
+		Slide(id){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.uri(id)));
+			(obj.loading) = () => ("eager");
+			(obj.attr) = () => ({...(this.$.$mol_image.prototype.attr.call(obj)), "bog_gram_gallery_offset": (this.slide_offset(id))});
+			return obj;
 		}
 	};
-	($mol_mem(($.$bog_gram_zoom.prototype), "Hotkey"));
-	($mol_mem(($.$bog_gram_zoom.prototype), "Shot"));
-	($mol_mem(($.$bog_gram_zoom.prototype), "close"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_start"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_move"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_end"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_cancel"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_wheel"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "back_click"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "prev"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "next"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Hotkey"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Back"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Track"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Counter"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Prev_icon"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Prev"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Next_icon"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Next"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "Close"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "current"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "close"));
+	($mol_mem_key(($.$bog_gram_gallery.prototype), "Slide"));
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("bog/gram/zoom/zoom.view.css", "[bog_gram_zoom] [mol_image] {\n\tobject-fit: contain;\n}\n");
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -33214,32 +33374,252 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        $mol_style_define($bog_gram_zoom, {
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            zIndex: 2,
-            justify: {
-                content: 'center',
-            },
-            align: {
-                items: 'center',
-            },
-            padding: '1rem',
-            background: {
-                color: '#000000cc',
-            },
-            outline: 'none',
-            cursor: 'zoom-out',
-            Shot: {
-                maxWidth: '100%',
-                maxHeight: '100%',
-                borderRadius: '0.5rem',
-            },
-        });
+        class $bog_gram_gallery extends $.$bog_gram_gallery {
+            static step(ids, current, dir) {
+                const index = ids.indexOf(current);
+                if (index < 0)
+                    return current;
+                return ids[index + dir] ?? current;
+            }
+            static settle(shift, speed, width) {
+                if (speed < -0.3)
+                    return 1;
+                if (speed > 0.3)
+                    return -1;
+                if (shift < -width / 4)
+                    return 1;
+                if (shift > width / 4)
+                    return -1;
+                return 0;
+            }
+            static drop_settle(drop, speed, height) {
+                return speed > 0.3 || drop > height / 5;
+            }
+            index() {
+                return this.ids().indexOf(this.current());
+            }
+            near(dir) {
+                return $bog_gram_gallery.step(this.ids(), this.current(), dir);
+            }
+            go(dir) {
+                const id = this.near(dir);
+                if (id !== this.current())
+                    this.current(id);
+            }
+            prev(next) {
+                this.go(-1);
+                return null;
+            }
+            next(next) {
+                this.go(1);
+                return null;
+            }
+            slides() {
+                const current = this.current();
+                if (!current)
+                    return [];
+                const ids = new Set([this.near(-1), current, this.near(1)]);
+                return [...ids].map(id => this.Slide(id));
+            }
+            slide_offset(id) {
+                return this.ids().indexOf(id) - this.index();
+            }
+            counter() {
+                return this.counter_pattern()
+                    .replace('{index}', String(this.index() + 1))
+                    .replace('{count}', String(this.ids().length));
+            }
+            Prev() {
+                return this.near(-1) === this.current() ? null : super.Prev();
+            }
+            Next() {
+                return this.near(1) === this.current() ? null : super.Next();
+            }
+            shift(next) {
+                return next ?? 0;
+            }
+            drop(next) {
+                return next ?? 0;
+            }
+            dragging(next) {
+                return next ?? false;
+            }
+            height = 0;
+            style() {
+                const fade = this.height ? Math.max(0, 1 - this.drop() / this.height) : 1;
+                return {
+                    ...super.style(),
+                    '--bog_gram_gallery_shift': this.shift() + 'px',
+                    '--bog_gram_gallery_drop': this.drop() + 'px',
+                    '--bog_gram_gallery_fade': String(fade),
+                };
+            }
+            swipe_from = null;
+            swipe_moved = false;
+            swipe_axis(dx, dy) {
+                if (Math.abs(dx) < 8 && Math.abs(dy) < 8)
+                    return 'wait';
+                if (Math.abs(dx) > Math.abs(dy))
+                    return 'x';
+                return dy > 0 ? 'y' : 'skip';
+            }
+            swipe_start(event) {
+                this.swipe_moved = false;
+                if (!event || event.pointerType === 'mouse')
+                    return null;
+                if (event.target.closest?.('[mol_button]'))
+                    return null;
+                const node = this.dom_node();
+                this.height = node.clientHeight;
+                this.swipe_from = {
+                    x: event.clientX,
+                    y: event.clientY,
+                    time: event.timeStamp,
+                    axis: 'wait',
+                    speed: 0,
+                    width: node.clientWidth,
+                };
+                return null;
+            }
+            swipe_move(event) {
+                const from = this.swipe_from;
+                if (!event || !from)
+                    return null;
+                const dx = event.clientX - from.x;
+                const dy = event.clientY - from.y;
+                if (from.axis === 'wait') {
+                    const axis = this.swipe_axis(dx, dy);
+                    if (axis === 'wait')
+                        return null;
+                    if (axis === 'skip') {
+                        this.swipe_from = null;
+                        return null;
+                    }
+                    from.axis = axis;
+                    this.swipe_moved = true;
+                    this.dragging(true);
+                    this.dom_node().setPointerCapture?.(event.pointerId);
+                }
+                const time = Math.max(1, event.timeStamp - from.time);
+                from.time = event.timeStamp;
+                if (from.axis === 'x') {
+                    const edge = this.near(dx > 0 ? -1 : 1) === this.current();
+                    const next = edge ? dx / 3 : dx;
+                    from.speed = (next - this.shift()) / time;
+                    this.shift(next);
+                }
+                else {
+                    const next = Math.max(0, dy);
+                    from.speed = (next - this.drop()) / time;
+                    this.drop(next);
+                }
+                return null;
+            }
+            swipe_end(event) {
+                const from = this.swipe_from;
+                this.swipe_from = null;
+                if (!from || from.axis === 'wait')
+                    return null;
+                this.dragging(false);
+                if (from.axis === 'x') {
+                    const dir = $bog_gram_gallery.settle(this.shift(), from.speed, from.width);
+                    if (dir)
+                        this.go(dir);
+                    this.shift(0);
+                    return null;
+                }
+                if ($bog_gram_gallery.drop_settle(this.drop(), from.speed, this.height)) {
+                    this.drop(0);
+                    this.close(null);
+                    return null;
+                }
+                this.drop(0);
+                return null;
+            }
+            swipe_cancel(event) {
+                if (this.swipe_from)
+                    this.swipe_from.speed = 0;
+                return this.swipe_end(event);
+            }
+            wheel_sum = 0;
+            wheel_done = false;
+            wheel_idle = null;
+            swipe_wheel(event) {
+                if (!event)
+                    return null;
+                if (Math.abs(event.deltaX) <= Math.abs(event.deltaY))
+                    return null;
+                event.preventDefault();
+                this.wheel_idle?.destructor();
+                this.wheel_idle = new this.$.$mol_after_timeout(200, () => {
+                    this.wheel_sum = 0;
+                    this.wheel_done = false;
+                });
+                if (this.wheel_done)
+                    return null;
+                this.wheel_sum += event.deltaX;
+                if (Math.abs(this.wheel_sum) < 40)
+                    return null;
+                this.wheel_done = true;
+                this.go(this.wheel_sum > 0 ? 1 : -1);
+                return null;
+            }
+            back_click(event) {
+                if (this.swipe_moved) {
+                    this.swipe_moved = false;
+                    return null;
+                }
+                const target = event?.target;
+                if (!target)
+                    return null;
+                if (target.closest?.('[mol_button]'))
+                    return null;
+                if (target.closest?.('[bog_gram_gallery_slide]'))
+                    return null;
+                this.close(null);
+                return null;
+            }
+            focus_grab() {
+                const node = this.dom_node();
+                return new this.$.$mol_after_frame(() => node.focus?.());
+            }
+            auto() {
+                this.focus_grab();
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_gram_gallery.prototype, "go", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_gallery.prototype, "prev", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_gallery.prototype, "next", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "slides", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "shift", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "drop", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "dragging", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "focus_grab", null);
+        $$.$bog_gram_gallery = $bog_gram_gallery;
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/gallery/gallery.view.css", "[bog_gram_gallery] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tz-index: 2;\n\toverflow: hidden;\n\toutline: none;\n\ttouch-action: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_gallery_back] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tbackground-color: #000000e6;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n\ttransition: opacity .2s ease-out;\n}\n\n[bog_gram_gallery_track] {\n\tposition: absolute;\n\tcontainer-type: size;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n}\n\n[bog_gram_gallery_slide] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tmargin: auto;\n\tmax-width: 100%;\n\tmax-height: 100%;\n\tobject-fit: contain;\n\ttransform: translate( calc( var( --bog_gram_gallery_offset, 0 ) * 100cqw + var( --bog_gram_gallery_shift, 0px ) ), var( --bog_gram_gallery_drop, 0px ) );\n\ttransition: transform .25s ease-out;\n}\n\n[bog_gram_gallery_offset=\"-1\"] {\n\t--bog_gram_gallery_offset: -1;\n}\n\n[bog_gram_gallery_offset=\"1\"] {\n\t--bog_gram_gallery_offset: 1;\n}\n\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_slide],\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_back] {\n\ttransition: none;\n}\n\n[bog_gram_gallery_counter] {\n\tposition: absolute;\n\ttop: calc( 0.75rem + env( safe-area-inset-top ) );\n\tleft: 50%;\n\ttransform: translateX( -50% );\n\tpadding: 0.25rem 0.75rem;\n\tborder-radius: 1rem;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n\tfont-size: 0.875rem;\n\twhite-space: nowrap;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n}\n\n[bog_gram_gallery] > [mol_button] {\n\tposition: absolute;\n\tjustify-content: center;\n\talign-items: center;\n\twidth: 2.75rem;\n\theight: 2.75rem;\n\tborder-radius: 50%;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n}\n\n[bog_gram_gallery] > [mol_button] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_gallery_close] {\n\ttop: calc( 0.5rem + env( safe-area-inset-top ) );\n\tright: 0.5rem;\n}\n\n[bog_gram_gallery_prev] {\n\ttop: 50%;\n\tleft: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_next] {\n\ttop: 50%;\n\tright: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_prev],\n[bog_gram_gallery_next] {\n\topacity: 0;\n\ttransition: opacity .2s ease-out;\n}\n\n@media ( hover: hover ) and ( pointer: fine ) {\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_prev],\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_next] {\n\t\topacity: 1;\n\t}\n}\n\n@media ( hover: none ) {\n\t[bog_gram_gallery_prev],\n\t[bog_gram_gallery_next] {\n\t\tdisplay: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -33436,6 +33816,236 @@ var $;
                 display: 'block',
                 width: '100%',
                 height: '100%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_album) = class $bog_gram_album extends ($.$mol_view) {
+		rows(){
+			return [];
+		}
+		row_ratio(id){
+			return "1";
+		}
+		row_cells(id){
+			return [];
+		}
+		column_grow(id){
+			return "1";
+		}
+		column_tiles(id){
+			return [];
+		}
+		tile_grow(id){
+			return "1";
+		}
+		shots(){
+			return [];
+		}
+		uri(id){
+			return "";
+		}
+		ratio(id){
+			return 1;
+		}
+		open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		width(){
+			return "15rem";
+		}
+		style(){
+			return {"width": (this.width())};
+		}
+		sub(){
+			return (this.rows());
+		}
+		Row(id){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"aspectRatio": (this.row_ratio(id))});
+			(obj.sub) = () => ((this.row_cells(id)));
+			return obj;
+		}
+		Column(id){
+			const obj = new this.$.$mol_view();
+			(obj.style) = () => ({"flexGrow": (this.column_grow(id))});
+			(obj.sub) = () => ((this.column_tiles(id)));
+			return obj;
+		}
+		Tile(id){
+			const obj = new this.$.$bog_gram_photo();
+			(obj.hint) = () => ("Открыть картинку");
+			(obj.uri) = () => ((this.uri(id)));
+			(obj.click) = (next) => ((this.open(id, next)));
+			(obj.style) = () => ({
+				"width": "", 
+				"aspectRatio": "", 
+				"flexGrow": (this.tile_grow(id))
+			});
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$bog_gram_album.prototype), "open"));
+	($mol_mem_key(($.$bog_gram_album.prototype), "Row"));
+	($mol_mem_key(($.$bog_gram_album.prototype), "Column"));
+	($mol_mem_key(($.$bog_gram_album.prototype), "Tile"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_album extends $.$bog_gram_album {
+            static clamp(ratio) {
+                if (!(ratio > 0))
+                    return 1;
+                return Math.min(2, Math.max(0.5, ratio));
+            }
+            static chunks(count) {
+                const sizes = count % 3 === 1 ? [2, 2] : count % 3 === 2 ? [2] : [];
+                let rest = count - sizes.reduce((sum, size) => sum + size, 0);
+                while (rest > 0) {
+                    sizes.push(3);
+                    rest -= 3;
+                }
+                return sizes;
+            }
+            static strip(ratios, from, size) {
+                const cells = [];
+                for (let index = from; index < from + size; ++index) {
+                    cells.push({ tiles: [index], grow: this.clamp(ratios[index]) });
+                }
+                return { ratio: cells.reduce((sum, cell) => sum + cell.grow, 0), cells };
+            }
+            static layout(ratios) {
+                const count = ratios.length;
+                if (!count)
+                    return [];
+                if (count === 1)
+                    return [{ ratio: ratios[0] > 0 ? ratios[0] : 1, cells: [{ tiles: [0], grow: 1 }] }];
+                if (count === 2)
+                    return [this.strip(ratios, 0, 2)];
+                if (count === 3)
+                    return [{ ratio: 1.5, cells: [{ tiles: [0], grow: 2 }, { tiles: [1, 2], grow: 1 }] }];
+                if (count === 4)
+                    return [
+                        { ratio: 2, cells: [{ tiles: [0], grow: 1 }, { tiles: [1], grow: 1 }] },
+                        { ratio: 2, cells: [{ tiles: [2], grow: 1 }, { tiles: [3], grow: 1 }] },
+                    ];
+                const rows = [];
+                let from = 0;
+                for (const size of this.chunks(count)) {
+                    rows.push(this.strip(ratios, from, size));
+                    from += size;
+                }
+                return rows;
+            }
+            layout() {
+                return $bog_gram_album.layout(this.shots().map(shot => this.ratio(shot)));
+            }
+            cell(key) {
+                const [row, cell] = key.split(':').map(Number);
+                return this.layout()[row].cells[cell];
+            }
+            rows() {
+                return this.layout().map((_, index) => this.Row(index));
+            }
+            row_ratio(index) {
+                return String(this.layout()[index].ratio);
+            }
+            row_cells(index) {
+                return this.layout()[index].cells.map((cell, at) => cell.tiles.length > 1
+                    ? this.Column(index + ':' + at)
+                    : this.Tile(this.shots()[cell.tiles[0]]));
+            }
+            column_grow(key) {
+                return String(this.cell(key).grow);
+            }
+            column_tiles(key) {
+                return this.cell(key).tiles.map(index => this.Tile(this.shots()[index]));
+            }
+            grows() {
+                const out = new Map();
+                for (const row of this.layout()) {
+                    for (const cell of row.cells) {
+                        for (const index of cell.tiles)
+                            out.set(this.shots()[index], cell.tiles.length > 1 ? 1 : cell.grow);
+                    }
+                }
+                return out;
+            }
+            tile_grow(shot) {
+                return String(this.grows().get(shot) ?? 1);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_album.prototype, "layout", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_album.prototype, "rows", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_album.prototype, "grows", null);
+        $$.$bog_gram_album = $bog_gram_album;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const gap = '2px';
+        $mol_style_define($bog_gram_album, {
+            flex: {
+                direction: 'column',
+                shrink: 0,
+            },
+            gap,
+            maxWidth: '100%',
+            overflow: 'hidden',
+            borderRadius: '0.5rem',
+            Row: {
+                flex: {
+                    direction: 'row',
+                },
+                gap,
+                width: '100%',
+                minHeight: 0,
+                overflow: 'hidden',
+            },
+            Column: {
+                flex: {
+                    direction: 'column',
+                    basis: 0,
+                },
+                gap,
+                minWidth: 0,
+                minHeight: 0,
+            },
+            Tile: {
+                flex: {
+                    basis: 0,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                minHeight: 0,
+                maxWidth: 'none',
+                borderRadius: '0',
+                Image: {
+                    objectFit: 'cover',
+                },
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
@@ -35589,12 +36199,12 @@ var $;
 			return obj;
 		}
 		Shot(){
-			const obj = new this.$.$bog_gram_photo();
-			(obj.hint) = () => ("Открыть картинку");
-			(obj.uri) = () => ((this.shot_uri()));
-			(obj.box_width) = () => ((this.shot_width()));
-			(obj.box_ratio) = () => ((this.shot_ratio()));
-			(obj.click) = (next) => ((this.zoom(next)));
+			const obj = new this.$.$bog_gram_album();
+			(obj.shots) = () => ((this.shots()));
+			(obj.uri) = (id) => ((this.shot_uri(id)));
+			(obj.ratio) = (id) => ((this.shot_ratio(id)));
+			(obj.width) = () => ((this.shot_width()));
+			(obj.open) = (id, next) => ((this.shot_open(id, next)));
 			return obj;
 		}
 		Sound(){
@@ -35710,16 +36320,19 @@ var $;
 		shot(){
 			return false;
 		}
-		shot_uri(){
+		shots(){
+			return [];
+		}
+		shot_uri(id){
 			return "";
+		}
+		shot_ratio(id){
+			return 1;
 		}
 		shot_width(){
 			return "";
 		}
-		shot_ratio(){
-			return "";
-		}
-		zoom(next){
+		shot_open(id, next){
 			if(next !== undefined) return next;
 			return null;
 		}
@@ -35835,7 +36448,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Delete"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Actions"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "quote_jump"));
-	($mol_mem(($.$bog_gram_bubble.prototype), "zoom"));
+	($mol_mem_key(($.$bog_gram_bubble.prototype), "shot_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "sound_toggle"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "sound_ended"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "call_open"));
@@ -36149,6 +36762,9 @@ var $;
 			(obj.key) = () => ({"escape": (next) => (this.zoom_close(next))});
 			return obj;
 		}
+		shots(){
+			return [];
+		}
 		Note_field(){
 			const obj = new this.$.$bog_gram_field();
 			(obj.hint) = () => ((this.note_hint()));
@@ -36393,16 +37009,19 @@ var $;
 		message_shot(id){
 			return false;
 		}
-		message_shot_uri(id){
+		message_shots(id){
+			return [];
+		}
+		shot_uri(id){
 			return "";
+		}
+		shot_ratio(id){
+			return 1;
 		}
 		message_shot_width(id){
 			return "";
 		}
-		message_shot_ratio(id){
-			return "";
-		}
-		message_zoom(id, next){
+		shot_zoom(id, next){
 			if(next !== undefined) return next;
 			return null;
 		}
@@ -36527,9 +37146,6 @@ var $;
 			if(next !== undefined) return next;
 			return "";
 		}
-		zoom_uri(){
-			return "";
-		}
 		voice_ready(){
 			return false;
 		}
@@ -36586,9 +37202,11 @@ var $;
 		plugins(){
 			return [(this.Hotkey())];
 		}
-		Zoom(){
-			const obj = new this.$.$bog_gram_zoom();
-			(obj.uri) = () => ((this.zoom_uri()));
+		Gallery(){
+			const obj = new this.$.$bog_gram_gallery();
+			(obj.ids) = () => ((this.shots()));
+			(obj.current) = (next) => ((this.zoom_id(next)));
+			(obj.uri) = (id) => ((this.shot_uri(id)));
 			(obj.close) = (next) => ((this.zoom_close(next)));
 			return obj;
 		}
@@ -36624,7 +37242,7 @@ var $;
 			const obj = new this.$.$bog_gram_attach();
 			(obj.hint) = () => ("Отправить картинку");
 			(obj.accept) = () => ("image/*");
-			(obj.multiple) = () => (false);
+			(obj.multiple) = () => (true);
 			(obj.files) = (next) => ((this.image_files(next)));
 			(obj.Icon) = () => ((this.Attach_icon()));
 			return obj;
@@ -36684,10 +37302,11 @@ var $;
 			(obj.quote_text) = () => ((this.message_quote_text(id)));
 			(obj.quote_jump) = (next) => ((this.message_quote_jump(id, next)));
 			(obj.shot) = () => ((this.message_shot(id)));
-			(obj.shot_uri) = () => ((this.message_shot_uri(id)));
+			(obj.shots) = () => ((this.message_shots(id)));
+			(obj.shot_uri) = (id) => ((this.shot_uri(id)));
+			(obj.shot_ratio) = (id) => ((this.shot_ratio(id)));
 			(obj.shot_width) = () => ((this.message_shot_width(id)));
-			(obj.shot_ratio) = () => ((this.message_shot_ratio(id)));
-			(obj.zoom) = (next) => ((this.message_zoom(id, next)));
+			(obj.shot_open) = (id, next) => ((this.shot_zoom(id, next)));
 			(obj.sound) = () => ((this.message_sound(id)));
 			(obj.sound_uri) = () => ((this.message_sound_uri(id)));
 			(obj.sound_span) = () => ((this.message_sound_span(id)));
@@ -36756,7 +37375,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_cancel_text"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_chip"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_quote_jump"));
-	($mol_mem_key(($.$bog_gram_chat.prototype), "message_zoom"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "shot_zoom"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_toggle"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_ended"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_call_open"));
@@ -36782,7 +37401,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_playing"));
 	($mol_mem(($.$bog_gram_chat.prototype), "stick_end"));
 	($mol_mem(($.$bog_gram_chat.prototype), "rows_seen"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Zoom"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Gallery"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
@@ -37021,6 +37640,7 @@ var $;
         const clock_tick = 200;
         const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
         const voice_short = 'Слишком коротко — запись отменена';
+        const image_limit = 10;
         class $bog_gram_chat extends $.$bog_gram_chat {
             saved() {
                 return this.Talk().saved_is(this.dialog());
@@ -37416,26 +38036,63 @@ var $;
                 this.message_text('');
                 return null;
             }
-            message_shot(id) {
-                return Boolean(this.message_pawn(id)?.Image()?.val());
-            }
-            message_shot_size(id) {
+            message_frames(id) {
                 const pawn = this.message_pawn(id);
-                const width = Number(pawn?.Image_width()?.val() ?? 0);
-                const height = Number(pawn?.Image_height()?.val() ?? 0);
-                if (!width || !height)
-                    return { width: shot_side * rem_px, height: shot_side * rem_px };
-                return { width, height };
+                if (!pawn)
+                    return [];
+                const shots = pawn.Shots()?.remote_list() ?? [];
+                if (shots.length)
+                    return shots.map(shot => ({
+                        file: () => shot.Image()?.remote() ?? null,
+                        width: Number(shot.Width()?.val() ?? 0),
+                        height: Number(shot.Height()?.val() ?? 0),
+                    }));
+                if (!pawn.Image()?.val())
+                    return [];
+                return [{
+                        file: () => pawn.Image()?.remote() ?? null,
+                        width: Number(pawn.Image_width()?.val() ?? 0),
+                        height: Number(pawn.Image_height()?.val() ?? 0),
+                    }];
             }
-            message_shot_ratio(id) {
-                const size = this.message_shot_size(id);
-                return size.width + ' / ' + size.height;
+            message_shots(id) {
+                return this.message_frames(id).map((_, index) => id + '/' + index);
+            }
+            message_shot(id) {
+                return this.message_frames(id).length > 0;
+            }
+            shot_frame(shot) {
+                const cut = shot.lastIndexOf('/');
+                if (cut < 0)
+                    return null;
+                return this.message_frames(shot.slice(0, cut))[Number(shot.slice(cut + 1))] ?? null;
+            }
+            shot_size(shot) {
+                const frame = this.shot_frame(shot);
+                if (!frame?.width || !frame?.height)
+                    return { width: shot_side * rem_px, height: shot_side * rem_px };
+                return { width: frame.width, height: frame.height };
+            }
+            shot_ratio(shot) {
+                const size = this.shot_size(shot);
+                return size.width / size.height;
             }
             message_shot_width(id) {
-                const size = this.message_shot_size(id);
+                const shots = this.message_shots(id);
+                if (shots.length !== 1)
+                    return shot_side + 'rem';
+                const size = this.shot_size(shots[0]);
                 const side = Math.max(size.width, size.height);
                 const limit = Math.min(shot_side, side / rem_px);
                 return (limit * size.width / side).toFixed(2) + 'rem';
+            }
+            shots() {
+                return this.messages().flatMap(message => {
+                    const id = message.link().str;
+                    if (!this.message_alive(id))
+                        return [];
+                    return $bog_gram_soft(() => this.message_shots(id), []);
+                });
             }
             file_uri(file) {
                 if (!file)
@@ -37444,21 +38101,15 @@ var $;
                     return '';
                 return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
             }
-            message_shot_uri(id) {
-                return $bog_gram_soft(() => this.file_uri(this.message_pawn(id)?.Image()?.remote()), '');
+            shot_uri(shot) {
+                return $bog_gram_soft(() => this.file_uri(this.shot_frame(shot)?.file()), '');
             }
-            zoom_uri() {
-                const id = this.zoom_id();
-                if (!id)
-                    return '';
-                return this.message_shot_uri(id);
-            }
-            message_zoom(id, next) {
-                if (this.message_menu() === id)
+            shot_zoom(shot, next) {
+                if (this.message_menu() === shot.slice(0, shot.lastIndexOf('/')))
                     return null;
-                if (!this.message_shot_uri(id))
+                if (!this.shot_uri(shot))
                     return null;
-                this.zoom_id(id);
+                this.zoom_id(shot);
                 return null;
             }
             zoom_close(next) {
@@ -37466,14 +38117,12 @@ var $;
                 return null;
             }
             sub() {
-                if (!this.zoom_uri())
+                if (!this.zoom_id())
                     return super.sub();
-                return [...super.sub(), this.Zoom()];
+                return [...super.sub(), this.Gallery()];
             }
             image_files(next) {
-                const file = (next ?? []).find(item => this.$.$bog_gram_shrink.image_is(item));
-                if (file)
-                    this.image_start(file);
+                this.images_start(next ?? []);
                 return next ?? null;
             }
             image_paste(next) {
@@ -37481,16 +38130,16 @@ var $;
                 const items = event?.clipboardData?.items;
                 if (!items)
                     return null;
+                const files = [];
                 for (let i = 0; i < items.length; ++i) {
                     const file = items[i].getAsFile();
-                    if (!file)
-                        continue;
-                    if (!this.$.$bog_gram_shrink.image_is(file))
-                        continue;
-                    event?.preventDefault();
-                    this.image_start(file);
-                    break;
+                    if (file && this.$.$bog_gram_shrink.image_is(file))
+                        files.push(file);
                 }
+                if (!files.length)
+                    return null;
+                event?.preventDefault();
+                this.images_start(files);
                 return null;
             }
             image_over(next) {
@@ -37503,16 +38152,23 @@ var $;
                 const files = event?.dataTransfer?.files;
                 if (!files)
                     return null;
-                const file = Array.from(files).find(item => this.$.$bog_gram_shrink.image_is(item));
-                if (file)
-                    this.image_start(file);
+                this.images_start(Array.from(files));
                 return null;
             }
-            image_start(file) {
-                if (this.edit_id()) {
+            async images_start(files) {
+                const images = files.filter(file => this.$.$bog_gram_shrink.image_is(file));
+                if (!images.length)
+                    return '';
+                if (this.edit_id())
                     this.edit_stop();
+                const sent = await $mol_wire_async(this).images_send(images.slice(0, image_limit)).catch(error => {
+                    $mol_fail_log(error);
+                    return '';
+                });
+                if (sent && images.length > image_limit) {
+                    this.voice_hint(`Отправлены первые ${image_limit} фото: за раз можно не больше ${image_limit}`);
                 }
-                $mol_wire_async(this).image_send(file);
+                return sent;
             }
             passes() {
                 const mates = this.saved() ? [] : this.Talk().mates(this.dialog());
@@ -37539,7 +38195,15 @@ var $;
                 land.sync();
                 return store;
             }
+            image_frame(file) {
+                const shot = this.$.$bog_gram_shrink.shrink(file);
+                const store = this.land_closed(shot.bytes, shot.type, this.passes() ?? []);
+                return { store, width: shot.width, height: shot.height };
+            }
             image_send(file) {
+                return this.images_send([file]);
+            }
+            images_send(files) {
                 const session = this.Talk().session(this.dialog());
                 if (!session)
                     return '';
@@ -37548,13 +38212,21 @@ var $;
                     this.voice_hint(this.lost_hint('Фото'));
                     return '';
                 }
-                const shot = this.$.$bog_gram_shrink.shrink(file);
-                const store = this.land_closed(shot.bytes, shot.type, passes);
+                const frames = files.map(file => this.image_frame(file));
+                if (!frames.length)
+                    return '';
                 const text = this.message_text().trim();
                 const message = session.Messages('auto').make(null);
-                message.Image('auto').remote(store);
-                message.Image_width('auto')?.val(shot.width);
-                message.Image_height('auto')?.val(shot.height);
+                const shots = message.Shots('auto');
+                for (const frame of frames) {
+                    const shot = shots.make(null);
+                    shot.Image('auto').remote(frame.store);
+                    shot.Width('auto')?.val(frame.width);
+                    shot.Height('auto')?.val(frame.height);
+                }
+                message.Image('auto').remote(frames[0].store);
+                message.Image_width('auto')?.val(frames[0].width);
+                message.Image_height('auto')?.val(frames[0].height);
                 if (text)
                     message.Text('auto')?.val(text);
                 message.Author('auto')?.val(this.my_lord());
@@ -37920,22 +38592,28 @@ var $;
         ], $bog_gram_chat.prototype, "message_send", null);
         __decorate([
             $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_frames", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_shots", null);
+        __decorate([
+            $mol_mem_key
         ], $bog_gram_chat.prototype, "message_shot", null);
         __decorate([
             $mol_mem_key
-        ], $bog_gram_chat.prototype, "message_shot_size", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram_chat.prototype, "message_shot_ratio", null);
+        ], $bog_gram_chat.prototype, "shot_ratio", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_shot_width", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "shots", null);
+        __decorate([
             $mol_mem_key
-        ], $bog_gram_chat.prototype, "message_shot_uri", null);
+        ], $bog_gram_chat.prototype, "shot_uri", null);
         __decorate([
             $mol_action
-        ], $bog_gram_chat.prototype, "message_zoom", null);
+        ], $bog_gram_chat.prototype, "shot_zoom", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "zoom_close", null);
@@ -37951,6 +38629,9 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "image_drop", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "image_frame", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "voice_clock", null);
@@ -52028,6 +52709,53 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'Большая сторона вписывается в предел с сохранением пропорций'() {
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
+            $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
+            $mol_assert_equal($bog_gram_shrink.fit(2000, 2000, 1600), { width: 1600, height: 1600 });
+        },
+        'Кадр мельче предела не растягивается, узкая полоска не схлопывается'() {
+            $mol_assert_equal($bog_gram_shrink.fit(320, 200, 1600), { width: 320, height: 200 });
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 1, 1600), { width: 1600, height: 1 });
+        },
+        'Картинкой считается только файл с типом image'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
+            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
+            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
+        },
+        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
+        },
+        'Настоящий тип берётся из первых байт'() {
+            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'Длительность показывается минутами и секундами, доли округляются'() {
             $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
             $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
@@ -52139,6 +52867,74 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Листание на краях стоит на месте'() {
+                const ids = ['a', 'b', 'c'];
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'b', 1), 'c');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'b', -1), 'a');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'c', 1), 'c');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'a', -1), 'a');
+            },
+            'Дописанный в конец кадр не сдвигает текущий, счётчик растёт'($) {
+                let ids = ['a', 'b'];
+                const gallery = $bog_gram_gallery.make({ $, ids: () => ids });
+                gallery.current('b');
+                $mol_assert_equal(gallery.counter(), '2 из 2');
+                $mol_assert_equal(gallery.Next(), null);
+                ids = ['a', 'b', 'c'];
+                gallery.ids = () => ids;
+                $mol_assert_equal(gallery.current(), 'b');
+                $mol_assert_equal(gallery.counter(), '2 из 3');
+                gallery.next();
+                $mol_assert_equal(gallery.current(), 'c');
+            },
+            'Подгружаются только соседи текущего'($) {
+                const gallery = $bog_gram_gallery.make({ $, ids: () => ['a', 'b', 'c', 'd', 'e'] });
+                gallery.current('c');
+                $mol_assert_equal(gallery.slides(), [gallery.Slide('b'), gallery.Slide('c'), gallery.Slide('d')]);
+            },
+            'Отпущенный кадр перелистывается по порогу или скорости'() {
+                $mol_assert_equal($bog_gram_gallery.settle(-120, 0, 400), 1);
+                $mol_assert_equal($bog_gram_gallery.settle(120, 0, 400), -1);
+                $mol_assert_equal($bog_gram_gallery.settle(-60, 0, 400), 0);
+                $mol_assert_equal($bog_gram_gallery.settle(-20, -0.5, 400), 1);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(60, 0, 800), false);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(200, 0, 800), true);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(30, 0.5, 800), true);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Раскладка альбома как в TG: рядом, большой и два, сетка, дальше рядами'() {
+                const shape = (ratios) => $bog_gram_album.layout(ratios).map(row => row.cells.map(cell => cell.tiles));
+                $mol_assert_equal($bog_gram_album.layout([4 / 3]), [{ ratio: 4 / 3, cells: [{ tiles: [0], grow: 1 }] }]);
+                $mol_assert_equal($bog_gram_album.layout([0])[0].ratio, 1);
+                $mol_assert_equal($bog_gram_album.layout([1.5, 0.5]), [{ ratio: 2, cells: [{ tiles: [0], grow: 1.5 }, { tiles: [1], grow: 0.5 }] }]);
+                $mol_assert_equal($bog_gram_album.layout([10, 0.01])[0].ratio, 2.5);
+                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1, 2]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1]), [[[0], [1]], [[2], [3]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3], [4]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3]], [[4], [5], [6]]]);
+                $mol_assert_equal($bog_gram_album.layout([]), []);
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -52354,53 +53150,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Большая сторона вписывается в предел с сохранением пропорций'() {
-            $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
-            $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
-            $mol_assert_equal($bog_gram_shrink.fit(2000, 2000, 1600), { width: 1600, height: 1600 });
-        },
-        'Кадр мельче предела не растягивается, узкая полоска не схлопывается'() {
-            $mol_assert_equal($bog_gram_shrink.fit(320, 200, 1600), { width: 320, height: 200 });
-            $mol_assert_equal($bog_gram_shrink.fit(4000, 1, 1600), { width: 1600, height: 1 });
-        },
-        'Картинкой считается только файл с типом image'() {
-            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
-        },
-        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
-            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
-            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
-            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
-            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
-        },
-        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
-        },
-        'Настоящий тип берётся из первых байт'() {
-            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     $mol_test({
         'Скрытая вкладка и окно без фокуса не перед глазами'($) {
@@ -52495,8 +53244,9 @@ var $;
                 reload.message_send();
                 $mol_assert_equal(page('DialogA').message_text(), '');
             },
-            'Кадр без размеров — квадрат на полный предел, а не точка'($) {
+            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const picture = $giper_baza_land.make({ $ }).link();
                 const bare = session.Messages('auto').make(null);
                 const zero = session.Messages('auto').make(null);
                 zero.Image_width('auto')?.val(0);
@@ -52504,14 +53254,64 @@ var $;
                 const wide = session.Messages('auto').make(null);
                 wide.Image_width('auto')?.val(1600);
                 wide.Image_height('auto')?.val(1200);
-                const pawns = new Map([bare, zero, wide].map(message => [message.link().str, message]));
+                const text = session.Messages('auto').make(null);
+                for (const message of [bare, zero, wide])
+                    message.Image('auto').val(picture);
+                const pawns = new Map([bare, zero, wide, text].map(message => [message.link().str, message]));
                 const chat = $bog_gram_chat.make({ $, message_pawn: (id) => pawns.get(id) ?? null });
                 for (const message of [bare, zero]) {
-                    $mol_assert_equal(chat.message_shot_width(message.link().str), '15.00rem');
-                    $mol_assert_equal(chat.message_shot_ratio(message.link().str), '240 / 240');
+                    const id = message.link().str;
+                    $mol_assert_equal(chat.message_shots(id), [id + '/0']);
+                    $mol_assert_equal(chat.message_shot_width(id), '15.00rem');
+                    $mol_assert_equal(chat.shot_ratio(id + '/0'), 1);
                 }
                 $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
-                $mol_assert_equal(chat.message_shot_ratio(wide.link().str), '1600 / 1200');
+                $mol_assert_equal(chat.shot_ratio(wide.link().str + '/0'), 4 / 3);
+                $mol_assert_equal(chat.message_shots(text.link().str), []);
+            },
+            async 'Несколько фото уходят одним сообщением-альбомом по порядку выбора, без ключа — ни одного'($) {
+                const later = {
+                    async tick(name) {
+                        await Promise.resolve();
+                        return name;
+                    },
+                };
+                const context = $.$mol_ambient({
+                    $bog_gram_shrink: class extends $bog_gram_shrink {
+                        static shrink(file) {
+                            const name = $mol_wire_sync(later).tick(file.name);
+                            return { bytes: new Uint8Array([1]), type: 'image/png', width: Number(name), height: 1 };
+                        }
+                    },
+                });
+                const file = (name) => new File([], name, { type: 'image/png' });
+                const page = async (saved, lost) => {
+                    const session = (await $mol_wire_async($.$giper_baza_glob).land_grab()).Data($bog_gram_session);
+                    const talk = $bog_gram_talk.make({ $: context, session: () => session, mates: () => saved ? [] : ['LordLost'], saved_is: () => saved });
+                    const people = $bog_gram_people.make({ $: context, pass_of: () => lost ? null : {}, label: () => 'Борис' });
+                    const chat = $bog_gram_chat.make({ $: context, dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
+                    chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
+                    const widths = () => (session.Messages()?.remote_list() ?? []).map(message => [
+                        message.Image_width()?.val(),
+                        (message.Shots()?.remote_list() ?? []).map(shot => shot.Width()?.val()),
+                    ]);
+                    return { chat, widths };
+                };
+                const sent = await page(true, false);
+                await sent.chat.images_start([file('1'), new File([], 'notes.txt', { type: 'text/plain' }), file('2'), file('3')]);
+                $mol_assert_equal(sent.widths(), [[1, [1, 2, 3]]]);
+                const lost = await page(false, true);
+                let hints = 0;
+                const hint = lost.chat.voice_hint.bind(lost.chat);
+                lost.chat.voice_hint = (next) => {
+                    if (next)
+                        ++hints;
+                    return hint(next);
+                };
+                await lost.chat.images_start([file('1'), file('2'), file('3')]);
+                $mol_assert_equal(lost.widths(), []);
+                $mol_assert_equal(hints, 1);
+                $mol_assert_equal(lost.chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
             },
             'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);

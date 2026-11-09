@@ -9726,6 +9726,53 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'Большая сторона вписывается в предел с сохранением пропорций'() {
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
+            $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
+            $mol_assert_equal($bog_gram_shrink.fit(2000, 2000, 1600), { width: 1600, height: 1600 });
+        },
+        'Кадр мельче предела не растягивается, узкая полоска не схлопывается'() {
+            $mol_assert_equal($bog_gram_shrink.fit(320, 200, 1600), { width: 320, height: 200 });
+            $mol_assert_equal($bog_gram_shrink.fit(4000, 1, 1600), { width: 1600, height: 1 });
+        },
+        'Картинкой считается только файл с типом image'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
+        },
+        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
+            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
+            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
+            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
+        },
+        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
+            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
+        },
+        'Настоящий тип берётся из первых байт'() {
+            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
+            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'Длительность показывается минутами и секундами, доли округляются'() {
             $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
             $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
@@ -9802,6 +9849,74 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Листание на краях стоит на месте'() {
+                const ids = ['a', 'b', 'c'];
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'b', 1), 'c');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'b', -1), 'a');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'c', 1), 'c');
+                $mol_assert_equal($bog_gram_gallery.step(ids, 'a', -1), 'a');
+            },
+            'Дописанный в конец кадр не сдвигает текущий, счётчик растёт'($) {
+                let ids = ['a', 'b'];
+                const gallery = $bog_gram_gallery.make({ $, ids: () => ids });
+                gallery.current('b');
+                $mol_assert_equal(gallery.counter(), '2 из 2');
+                $mol_assert_equal(gallery.Next(), null);
+                ids = ['a', 'b', 'c'];
+                gallery.ids = () => ids;
+                $mol_assert_equal(gallery.current(), 'b');
+                $mol_assert_equal(gallery.counter(), '2 из 3');
+                gallery.next();
+                $mol_assert_equal(gallery.current(), 'c');
+            },
+            'Подгружаются только соседи текущего'($) {
+                const gallery = $bog_gram_gallery.make({ $, ids: () => ['a', 'b', 'c', 'd', 'e'] });
+                gallery.current('c');
+                $mol_assert_equal(gallery.slides(), [gallery.Slide('b'), gallery.Slide('c'), gallery.Slide('d')]);
+            },
+            'Отпущенный кадр перелистывается по порогу или скорости'() {
+                $mol_assert_equal($bog_gram_gallery.settle(-120, 0, 400), 1);
+                $mol_assert_equal($bog_gram_gallery.settle(120, 0, 400), -1);
+                $mol_assert_equal($bog_gram_gallery.settle(-60, 0, 400), 0);
+                $mol_assert_equal($bog_gram_gallery.settle(-20, -0.5, 400), 1);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(60, 0, 800), false);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(200, 0, 800), true);
+                $mol_assert_equal($bog_gram_gallery.drop_settle(30, 0.5, 800), true);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Раскладка альбома как в TG: рядом, большой и два, сетка, дальше рядами'() {
+                const shape = (ratios) => $bog_gram_album.layout(ratios).map(row => row.cells.map(cell => cell.tiles));
+                $mol_assert_equal($bog_gram_album.layout([4 / 3]), [{ ratio: 4 / 3, cells: [{ tiles: [0], grow: 1 }] }]);
+                $mol_assert_equal($bog_gram_album.layout([0])[0].ratio, 1);
+                $mol_assert_equal($bog_gram_album.layout([1.5, 0.5]), [{ ratio: 2, cells: [{ tiles: [0], grow: 1.5 }, { tiles: [1], grow: 0.5 }] }]);
+                $mol_assert_equal($bog_gram_album.layout([10, 0.01])[0].ratio, 2.5);
+                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1, 2]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1]), [[[0], [1]], [[2], [3]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3], [4]]]);
+                $mol_assert_equal(shape([1, 1, 1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3]], [[4], [5], [6]]]);
+                $mol_assert_equal($bog_gram_album.layout([]), []);
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -10017,53 +10132,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Большая сторона вписывается в предел с сохранением пропорций'() {
-            $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
-            $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
-            $mol_assert_equal($bog_gram_shrink.fit(2000, 2000, 1600), { width: 1600, height: 1600 });
-        },
-        'Кадр мельче предела не растягивается, узкая полоска не схлопывается'() {
-            $mol_assert_equal($bog_gram_shrink.fit(320, 200, 1600), { width: 320, height: 200 });
-            $mol_assert_equal($bog_gram_shrink.fit(4000, 1, 1600), { width: 1600, height: 1 });
-        },
-        'Картинкой считается только файл с типом image'() {
-            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'image/webp' })), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new $mol_blob([], { type: 'text/plain' })), false);
-        },
-        'Без перекодирования уезжают только форматы, которые покажет любой браузер'() {
-            $mol_assert_equal($bog_gram_shrink.portable('image/jpeg'), true);
-            $mol_assert_equal($bog_gram_shrink.portable('image/webp'), true);
-            $mol_assert_equal($bog_gram_shrink.portable('image/heic'), false);
-            $mol_assert_equal($bog_gram_shrink.portable('image/tiff'), false);
-        },
-        'Файл без типа узнаётся по расширению, а чужой тип расширением не перебить'() {
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'IMG_0001.HEIC')), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'photo.jpeg', { type: 'application/octet-stream' })), true);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'notes.txt')), false);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'jpg')), false);
-            $mol_assert_equal($bog_gram_shrink.image_is(new File([], 'fake.jpg', { type: 'application/pdf' })), false);
-        },
-        'Настоящий тип берётся из первых байт'() {
-            const bytes = (...parts) => new Uint8Array(parts.flatMap(part => typeof part === 'string' ? [...part].map(char => char.charCodeAt(0)) : part));
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0xFF, 0xD8, 0xFF, 0xE1])), 'image/jpeg');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0x89], 'PNG', [13, 10, 26, 10])), 'image/png');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('GIF89a')), 'image/gif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')), 'image/webp');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypheic')), 'image/heic');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypmif1')), 'image/heif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypavif')), 'image/avif');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
-            $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     $mol_test({
         'Скрытая вкладка и окно без фокуса не перед глазами'($) {
@@ -10158,8 +10226,9 @@ var $;
                 reload.message_send();
                 $mol_assert_equal(page('DialogA').message_text(), '');
             },
-            'Кадр без размеров — квадрат на полный предел, а не точка'($) {
+            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+                const picture = $giper_baza_land.make({ $ }).link();
                 const bare = session.Messages('auto').make(null);
                 const zero = session.Messages('auto').make(null);
                 zero.Image_width('auto')?.val(0);
@@ -10167,14 +10236,64 @@ var $;
                 const wide = session.Messages('auto').make(null);
                 wide.Image_width('auto')?.val(1600);
                 wide.Image_height('auto')?.val(1200);
-                const pawns = new Map([bare, zero, wide].map(message => [message.link().str, message]));
+                const text = session.Messages('auto').make(null);
+                for (const message of [bare, zero, wide])
+                    message.Image('auto').val(picture);
+                const pawns = new Map([bare, zero, wide, text].map(message => [message.link().str, message]));
                 const chat = $bog_gram_chat.make({ $, message_pawn: (id) => pawns.get(id) ?? null });
                 for (const message of [bare, zero]) {
-                    $mol_assert_equal(chat.message_shot_width(message.link().str), '15.00rem');
-                    $mol_assert_equal(chat.message_shot_ratio(message.link().str), '240 / 240');
+                    const id = message.link().str;
+                    $mol_assert_equal(chat.message_shots(id), [id + '/0']);
+                    $mol_assert_equal(chat.message_shot_width(id), '15.00rem');
+                    $mol_assert_equal(chat.shot_ratio(id + '/0'), 1);
                 }
                 $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
-                $mol_assert_equal(chat.message_shot_ratio(wide.link().str), '1600 / 1200');
+                $mol_assert_equal(chat.shot_ratio(wide.link().str + '/0'), 4 / 3);
+                $mol_assert_equal(chat.message_shots(text.link().str), []);
+            },
+            async 'Несколько фото уходят одним сообщением-альбомом по порядку выбора, без ключа — ни одного'($) {
+                const later = {
+                    async tick(name) {
+                        await Promise.resolve();
+                        return name;
+                    },
+                };
+                const context = $.$mol_ambient({
+                    $bog_gram_shrink: class extends $bog_gram_shrink {
+                        static shrink(file) {
+                            const name = $mol_wire_sync(later).tick(file.name);
+                            return { bytes: new Uint8Array([1]), type: 'image/png', width: Number(name), height: 1 };
+                        }
+                    },
+                });
+                const file = (name) => new File([], name, { type: 'image/png' });
+                const page = async (saved, lost) => {
+                    const session = (await $mol_wire_async($.$giper_baza_glob).land_grab()).Data($bog_gram_session);
+                    const talk = $bog_gram_talk.make({ $: context, session: () => session, mates: () => saved ? [] : ['LordLost'], saved_is: () => saved });
+                    const people = $bog_gram_people.make({ $: context, pass_of: () => lost ? null : {}, label: () => 'Борис' });
+                    const chat = $bog_gram_chat.make({ $: context, dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
+                    chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
+                    const widths = () => (session.Messages()?.remote_list() ?? []).map(message => [
+                        message.Image_width()?.val(),
+                        (message.Shots()?.remote_list() ?? []).map(shot => shot.Width()?.val()),
+                    ]);
+                    return { chat, widths };
+                };
+                const sent = await page(true, false);
+                await sent.chat.images_start([file('1'), new File([], 'notes.txt', { type: 'text/plain' }), file('2'), file('3')]);
+                $mol_assert_equal(sent.widths(), [[1, [1, 2, 3]]]);
+                const lost = await page(false, true);
+                let hints = 0;
+                const hint = lost.chat.voice_hint.bind(lost.chat);
+                lost.chat.voice_hint = (next) => {
+                    if (next)
+                        ++hints;
+                    return hint(next);
+                };
+                await lost.chat.images_start([file('1'), file('2'), file('3')]);
+                $mol_assert_equal(lost.widths(), []);
+                $mol_assert_equal(hints, 1);
+                $mol_assert_equal(lost.chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
             },
             'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);

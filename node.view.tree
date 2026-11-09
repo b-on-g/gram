@@ -1969,6 +1969,8 @@ $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
 
 $mol_icon_microphone $mol_icon path \M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z
 
+$mol_icon_chevron_right $mol_icon path \M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z
+
 $mol_image $mol_view
 	dom_name \img
 	attr *any
@@ -1986,21 +1988,58 @@ $mol_image $mol_view
 	minimal_width 16
 	minimal_height 16
 
-$bog_gram_zoom $mol_view
-	uri \
+$bog_gram_gallery $mol_view
+	ids /string
+	current? \
+	uri* \
 	close? null
+	counter_pattern \{index} из {count}
 	attr *
 		^
-		tabindex <= tab_index 0
+		tabindex 0
+		bog_gram_gallery_drag <= dragging false
 	event *
 		^
-		click? <=> close?
+		pointerdown? <=> swipe_start? null
+		pointermove? <=> swipe_move? null
+		pointerup? <=> swipe_end? null
+		pointercancel? <=> swipe_cancel? null
+		wheel? <=> swipe_wheel? null
+		click? <=> back_click? null
 	plugins /
 		<= Hotkey $mol_hotkey
-			key * escape? <=> close?
+			key *
+				escape? <=> close?
+				left? <=> prev? null
+				right? <=> next? null
 	sub /
-		<= Shot $mol_image
-			uri <= uri
+		<= Back $mol_view
+		<= Track $mol_view
+			sub <= slides /
+		<= Counter $mol_view
+			sub /
+				<= counter \
+		<= Prev $mol_button_minor
+			hint \Предыдущее
+			click? <=> prev?
+			sub /
+				<= Prev_icon $mol_icon_chevron_left
+		<= Next $mol_button_minor
+			hint \Следующее
+			click? <=> next?
+			sub /
+				<= Next_icon $mol_icon_chevron_right
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	Slide* $mol_image
+		uri <= uri*
+		loading \eager
+		attr *
+			^
+			bog_gram_gallery_offset <= slide_offset* 0
 
 $bog_gram_attach $mol_button_open
 	Native $bog_gram_attach_native
@@ -2031,6 +2070,32 @@ $bog_gram_photo $mol_button
 	sub /
 		<= Image $mol_image
 			uri <= uri
+
+$bog_gram_album $mol_view
+	shots /string
+	uri* \
+	ratio* 1
+	open*? null
+	width \15rem
+	style *
+		width <= width
+	sub <= rows /
+	Row* $mol_view
+		style *
+			aspectRatio <= row_ratio* \1
+		sub <= row_cells* /
+	Column* $mol_view
+		style *
+			flexGrow <= column_grow* \1
+		sub <= column_tiles* /
+	Tile* $bog_gram_photo
+		hint \Открыть картинку
+		uri <= uri*
+		click? <=> open*?
+		style *
+			width \
+			aspectRatio \
+			flexGrow <= tile_grow* \1
 
 $bog_gram_sound_node $mol_view
 	dom_name \audio
@@ -2231,10 +2296,11 @@ $bog_gram_bubble $mol_view
 	quote_text \
 	quote_jump? null
 	shot false
-	shot_uri \
+	shots /string
+	shot_uri* \
+	shot_ratio* 1
 	shot_width \
-	shot_ratio \
-	zoom? null
+	shot_open*? null
 	sound false
 	sound_uri \
 	sound_span 0
@@ -2281,12 +2347,12 @@ $bog_gram_bubble $mol_view
 				<= Quote_text $mol_view
 					sub /
 						<= quote_text
-		<= Shot $bog_gram_photo
-			hint \Открыть картинку
-			uri <= shot_uri
-			box_width <= shot_width
-			box_ratio <= shot_ratio
-			click? <=> zoom?
+		<= Shot $bog_gram_album
+			shots <= shots
+			uri* <= shot_uri*
+			ratio* <= shot_ratio*
+			width <= shot_width
+			open*? <=> shot_open*?
 		<= Sound $bog_gram_sound
 			uri <= sound_uri
 			span <= sound_span
@@ -2346,7 +2412,6 @@ $bog_gram_chat $bog_gram_page
 	reply_title \
 	reply_text \
 	message_text? \
-	zoom_uri \
 	voice_ready false
 	voice_on false
 	voice_clock \
@@ -2367,8 +2432,10 @@ $bog_gram_chat $bog_gram_page
 	plugins /
 		<= Hotkey $mol_hotkey
 			key * escape? <=> zoom_close? null
-	Zoom $bog_gram_zoom
-		uri <= zoom_uri
+	Gallery $bog_gram_gallery
+		ids <= shots /string
+		current? <=> zoom_id?
+		uri* <= shot_uri*
 		close? <=> zoom_close?
 	title_content /
 		<= Note_field $bog_gram_field
@@ -2437,7 +2504,7 @@ $bog_gram_chat $bog_gram_page
 	Attach $bog_gram_attach
 		hint \Отправить картинку
 		accept \image/*
-		multiple false
+		multiple true
 		files? <=> image_files? null
 		Icon <= Attach_icon $mol_icon_paperclip
 	Message_box $mol_view
@@ -2490,10 +2557,11 @@ $bog_gram_chat $bog_gram_page
 		quote_text <= message_quote_text* \
 		quote_jump? <=> message_quote_jump*? null
 		shot <= message_shot* false
-		shot_uri <= message_shot_uri* \
+		shots <= message_shots* /string
+		shot_uri* <= shot_uri* \
+		shot_ratio* <= shot_ratio* 1
 		shot_width <= message_shot_width* \
-		shot_ratio <= message_shot_ratio* \
-		zoom? <=> message_zoom*? null
+		shot_open*? <=> shot_zoom*? null
 		sound <= message_sound* false
 		sound_uri <= message_sound_uri* \
 		sound_span <= message_sound_span* 0
