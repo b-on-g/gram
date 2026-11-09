@@ -126,6 +126,54 @@ namespace $.$$ {
 
 		},
 
+		async 'Несколько фото уходят отдельными сообщениями по порядку выбора, без ключа — ни одного'( $ ) {
+
+			const later = {
+				async tick( name: string ) {
+					await Promise.resolve()
+					return name
+				},
+			}
+
+			const context = $.$mol_ambient({
+				$bog_gram_shrink: class extends $bog_gram_shrink {
+					static override shrink( file: Blob ) {
+						const name = $mol_wire_sync( later ).tick( ( file as File ).name )
+						return { bytes: new Uint8Array([ 1 ]), type: 'image/png', width: Number( name ), height: 1 }
+					}
+				},
+			})
+
+			const file = ( name: string )=> new File( [], name, { type: 'image/png' } )
+
+			const page = async ( saved: boolean, lost: boolean )=> {
+				const session = ( await $mol_wire_async( $.$giper_baza_glob ).land_grab() ).Data( $bog_gram_session )
+				const talk = $bog_gram_talk.make({ $: context, session: ()=> session, mates: ()=> saved ? [] : [ 'LordLost' ], saved_is: ()=> saved })
+				const people = $bog_gram_people.make({ $: context, pass_of: ()=> lost ? null : {} as $giper_baza_auth_pass, label: ()=> 'Борис' })
+				const chat = $bog_gram_chat.make({ $: context, dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
+				chat.land_closed = ()=> $giper_baza_land.make({ $ }).Data( $giper_baza_file )
+				const widths = ()=> ( session.Messages()?.remote_list() ?? [] ).map( message => message.Image_width()?.val() )
+				return { chat, widths }
+			}
+
+			const sent = await page( true, false )
+			await sent.chat.images_start([ file( '1' ), new File( [], 'notes.txt', { type: 'text/plain' } ), file( '2' ), file( '3' ) ])
+			$mol_assert_equal( sent.widths(), [ 1, 2, 3 ] )
+
+			const lost = await page( false, true )
+			let hints = 0
+			const hint = lost.chat.voice_hint.bind( lost.chat )
+			lost.chat.voice_hint = ( next?: string )=> {
+				if( next ) ++ hints
+				return hint( next )
+			}
+			await lost.chat.images_start([ file( '1' ), file( '2' ), file( '3' ) ])
+			$mol_assert_equal( lost.widths(), [] )
+			$mol_assert_equal( hints, 1 )
+			$mol_assert_equal( lost.chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+
+		},
+
 		'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )

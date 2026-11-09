@@ -14,6 +14,8 @@ namespace $.$$ {
 
 	const voice_short = 'Слишком коротко — запись отменена'
 
+	const image_limit = 10
+
 	export class $bog_gram_chat extends $.$bog_gram_chat {
 
 		saved() {
@@ -601,8 +603,7 @@ namespace $.$$ {
 
 		@ $mol_action
 		override image_files( next?: readonly File[] ) {
-			const file = ( next ?? [] ).find( item => this.$.$bog_gram_shrink.image_is( item ) )
-			if( file ) this.image_start( file )
+			this.images_start( next ?? [] )
 			return next ?? null
 		}
 
@@ -613,17 +614,16 @@ namespace $.$$ {
 			const items = event?.clipboardData?.items
 			if( !items ) return null
 
+			const files = [] as File[]
 			for( let i = 0; i < items.length; ++ i ) {
-
 				const file = items[ i ].getAsFile()
-				if( !file ) continue
-				if( !this.$.$bog_gram_shrink.image_is( file ) ) continue
-
-				event?.preventDefault()
-				this.image_start( file )
-
-				break
+				if( file && this.$.$bog_gram_shrink.image_is( file ) ) files.push( file )
 			}
+
+			if( !files.length ) return null
+
+			event?.preventDefault()
+			this.images_start( files )
 
 			return null
 		}
@@ -643,19 +643,53 @@ namespace $.$$ {
 			const files = event?.dataTransfer?.files
 			if( !files ) return null
 
-			const file = Array.from( files ).find( item => this.$.$bog_gram_shrink.image_is( item ) )
-			if( file ) this.image_start( file )
+			this.images_start( Array.from( files ) )
 
 			return null
 		}
 
-		image_start( file: File ) {
+		image_queue = [] as File[]
 
-			if( this.edit_id() ) {
-				this.edit_stop()
+		image_cut = 0
+
+		image_pump: Promise< void > | null = null
+
+		images_start( files: readonly File[] ) {
+
+			const images = files.filter( file => this.$.$bog_gram_shrink.image_is( file ) )
+			if( !images.length ) return this.image_pump
+
+			if( this.edit_id() ) this.edit_stop()
+
+			const room = image_limit - this.image_queue.length
+			this.image_cut += Math.max( 0, images.length - room )
+			this.image_queue.push( ... images.slice( 0, Math.max( 0, room ) ) )
+
+			if( !this.image_pump ) this.image_pump = this.images_pump().finally( ()=> this.image_pump = null )
+
+			return this.image_pump
+		}
+
+		async images_pump() {
+
+			while( this.image_queue.length ) {
+
+				const sent = await $mol_wire_async( this ).image_send( this.image_queue[0] ).catch( error => {
+					$mol_fail_log( error )
+					return ''
+				} )
+
+				if( !sent ) {
+					this.image_queue = []
+					this.image_cut = 0
+					return
+				}
+
+				this.image_queue.shift()
 			}
 
-			$mol_wire_async( this ).image_send( file )
+			if( this.image_cut ) this.voice_hint( `Отправлены первые ${ image_limit } фото: за раз можно не больше ${ image_limit }` )
+			this.image_cut = 0
 		}
 
 		passes() {

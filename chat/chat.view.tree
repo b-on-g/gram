@@ -107,7 +107,7 @@ $bog_gram_chat $bog_gram_page
 	Attach $bog_gram_attach
 		hint \Отправить картинку
 		accept \image/*
-		multiple false
+		multiple true
 		files? <=> image_files? null
 		Icon <= Attach_icon $mol_icon_paperclip
 	Message_box $mol_view
