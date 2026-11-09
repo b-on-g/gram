@@ -45847,7 +45847,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.133';
+    $.$bog_gram_version = '1.0.134';
 })($ || ($ = {}));
 
 ;
@@ -47272,7 +47272,6 @@ var $;
 		}
 		Member_row(id){
 			const obj = new this.$.$bog_gram_row();
-			(obj.enabled) = () => (false);
 			(obj.avatar_id) = () => ((this.person(id)));
 			(obj.tint) = () => ((this.tint(id)));
 			(obj.title) = () => ((this.member_title(id)));

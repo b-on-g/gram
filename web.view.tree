@@ -3101,7 +3101,6 @@ $bog_gram_members $bog_gram_page
 				sub /
 					<= Ask_reject_icon* $mol_icon_close
 	Member_row* $bog_gram_row
-		enabled false
 		avatar_id <= person* \
 		tint <= tint* 0
 		title <= member_title* \

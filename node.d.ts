@@ -41831,7 +41831,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.133";
+    const $bog_gram_version = "1.0.134";
 }
 
 declare namespace $ {
@@ -43059,62 +43059,57 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_row['tools'] >
 	>
-	type $bog_gram_row__enabled_bog_gram_members_64 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $bog_gram_row['enabled'] >
-	>
-	type $bog_gram_row__avatar_id_bog_gram_members_65 = $mol_type_enforce<
+	type $bog_gram_row__avatar_id_bog_gram_members_64 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['person'] >
 		,
 		ReturnType< $bog_gram_row['avatar_id'] >
 	>
-	type $bog_gram_row__tint_bog_gram_members_66 = $mol_type_enforce<
+	type $bog_gram_row__tint_bog_gram_members_65 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['tint'] >
 		,
 		ReturnType< $bog_gram_row['tint'] >
 	>
-	type $bog_gram_row__title_bog_gram_members_67 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_members_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['member_title'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_members_68 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_members_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['status'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__tools_bog_gram_members_69 = $mol_type_enforce<
+	type $bog_gram_row__tools_bog_gram_members_68 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_row['tools'] >
 	>
-	type $bog_gram_row__click_bog_gram_members_70 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_members_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['add'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__avatar_id_bog_gram_members_71 = $mol_type_enforce<
+	type $bog_gram_row__avatar_id_bog_gram_members_70 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['person'] >
 		,
 		ReturnType< $bog_gram_row['avatar_id'] >
 	>
-	type $bog_gram_row__tint_bog_gram_members_72 = $mol_type_enforce<
+	type $bog_gram_row__tint_bog_gram_members_71 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['tint'] >
 		,
 		ReturnType< $bog_gram_row['tint'] >
 	>
-	type $bog_gram_row__title_bog_gram_members_73 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_members_72 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['label'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_members_74 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_members_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_members['contact_source'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__marks_bog_gram_members_75 = $mol_type_enforce<
+	type $bog_gram_row__marks_bog_gram_members_74 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_row['marks'] >
