@@ -50,7 +50,10 @@ namespace $ {
 
 			}
 
-			if( !next ) next = this.grab()
+			if( !next ) {
+				next = this.grab()
+				$mol_state_local.value( 'bog_gram_born_' + next.pass().lord().str, true )
+			}
 
 			$mol_state_local.value( key_own, next.toString() + next.toStringPrivate() )
 

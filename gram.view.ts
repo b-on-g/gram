@@ -235,7 +235,18 @@ namespace $.$$ {
 			return theme.is_light_now() ? 'light' : 'dark'
 		}
 
+		account_open() {
+			return $bog_gram_soft( ()=> this.account_state(), 'wait' ) === 'ready'
+		}
+
+		override gate_sub() {
+			return this.account_state() === 'lost'
+				? [ this.Gate_lost(), this.Gate_retry() ]
+				: [ this.Gate_wait() ]
+		}
+
 		override pages() {
+			if( !this.account_open() ) return [ this.Gate() ]
 			const active = this.dialog_active()
 			return [
 				this.Menu(),
@@ -271,6 +282,7 @@ namespace $.$$ {
 		}
 
 		override Placeholder() {
+			if( !this.account_open() ) return null!
 			return this.dialog_active() || this.music_opened() || this.call_current() ? null! : super.Placeholder()
 		}
 
@@ -495,6 +507,7 @@ namespace $.$$ {
 		override auto() {
 			super.auto()
 			this.Layout_watch()
+			if( !this.account_open() ) return
 			$bog_gram_soft( ()=> this.account_ready(), null )
 			$bog_gram_soft( ()=> this.registry_remember(), null )
 			$bog_gram_soft( ()=> this.registry_keys_fill(), null )

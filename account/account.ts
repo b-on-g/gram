@@ -57,6 +57,8 @@ namespace $ {
 		@ $mol_mem
 		inbox_publish() {
 
+			this.dialogs_store()
+
 			const link = this.inbox_land().link().str
 			const prev = String( this.user_store().Inbox_land()?.val() ?? '' )
 			if( prev === link ) return link
@@ -138,6 +140,51 @@ namespace $ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( str ) )
 		}
 
+		@ $mol_mem
+		born() {
+			return Boolean( this.$.$mol_state_local.value( 'bog_gram_born_' + this.my_lord() ) )
+		}
+
+		pointer_limit() {
+			return 60_000
+		}
+
+		@ $mol_mem
+		pointer_lost( next?: boolean ) {
+			return next ?? false
+		}
+
+		@ $mol_mem
+		pointer_timer() {
+			return new this.$.$mol_after_timeout( this.pointer_limit(), ()=> this.pointer_lost( true ) )
+		}
+
+		pointer_wait() {
+			if( this.born() ) return
+			if( String( this.user_store().Dialogs_land()?.val() ?? '' ) ) return
+			if( this.pointer_lost() ) $mol_fail( new Error( 'Не удалось загрузить данные аккаунта' ) )
+			this.pointer_timer()
+			$mol_fail_hidden( new Promise( ()=> {} ) )
+		}
+
+		@ $mol_mem
+		pointer_state(): 'wait' | 'lost' | 'ready' {
+			try {
+				this.dialogs_land()
+				return 'ready'
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) return 'wait'
+				if( this.pointer_lost() ) return 'lost'
+				$mol_fail_hidden( error )
+			}
+		}
+
+		@ $mol_action
+		pointer_retry( next?: any ) {
+			this.pointer_lost( false )
+			return null
+		}
+
 		@ $mol_action
 		dialogs_land_make() {
 			const land = this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
@@ -146,8 +193,10 @@ namespace $ {
 		}
 
 		dialogs_land() {
-			const str = this.user_store().Dialogs_land()?.val()
-			return str ? this.land( String( str ) ) : this.dialogs_land_make()
+			const str = String( this.user_store().Dialogs_land()?.val() ?? '' )
+			if( str ) return this.land( str )
+			this.pointer_wait()
+			return this.dialogs_land_make()
 		}
 
 		@ $mol_action
@@ -158,8 +207,10 @@ namespace $ {
 		}
 
 		monitor_land() {
-			const str = this.user_store().Watch_land()?.val()
-			return str ? this.land( String( str ) ) : this.monitor_land_make()
+			const str = String( this.user_store().Watch_land()?.val() ?? '' )
+			if( str ) return this.land( str )
+			this.pointer_wait()
+			return this.monitor_land_make()
 		}
 
 		@ $mol_action
@@ -179,8 +230,10 @@ namespace $ {
 		}
 
 		devices_land() {
-			const str = this.user_store().Devices_land()?.val()
-			return str ? this.land( String( str ) ) : this.devices_land_make()
+			const str = String( this.user_store().Devices_land()?.val() ?? '' )
+			if( str ) return this.land( str )
+			this.pointer_wait()
+			return this.devices_land_make()
 		}
 
 		dialogs_store() {
@@ -274,10 +327,9 @@ namespace $ {
 
 		@ $mol_mem
 		ready() {
-			this.user_store()
+			this.dialogs_store()
 			this.inbox_open()
 			this.inbox_publish()
-			this.dialogs_land()
 			this.monitor_land()
 			this.device_ready()
 			$bog_gram_soft( ()=> this.decisions_flush(), 0 )

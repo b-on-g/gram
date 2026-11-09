@@ -13,6 +13,8 @@ $bog_gram $mol_book2
 		monitor_store => monitor_store
 		monitor_link => monitor_link
 		ready => account_ready
+		pointer_state => account_state
+		pointer_retry? => account_retry?
 	Registry $bog_gram_registry
 		Account <= Account
 		ids => registry_ids
@@ -139,6 +141,17 @@ $bog_gram $mol_book2
 	Pager $bog_kit_pager
 		count <= pager_count 0
 		current <= page_current 0
+	Gate $mol_view
+		sub /
+			<= Gate_plate $mol_view
+				sub <= gate_sub /
+	Gate_wait $mol_paragraph
+		title \Загружаем данные аккаунта…
+	Gate_lost $mol_paragraph
+		title \Не удалось загрузить данные аккаунта
+	Gate_retry $mol_button_minor
+		title \Повторить
+		click? <=> account_retry?
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
