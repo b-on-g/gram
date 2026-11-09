@@ -4,5 +4,4 @@ include \/bog/gram/auth
 include \/bog/gram/nozoom
 include \/bog/gram/notify
 include \/mol/offline/install
-include \/bog/install
 deploy \/bog/gram/logo
