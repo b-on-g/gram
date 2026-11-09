@@ -2,6 +2,31 @@ namespace $.$$ {
 
 	$mol_test({
 
+		'Открытый десктопный чат фокусирует поле сообщения'( $ ) {
+
+			let outer_focused = 0
+			let edit_focused = 0
+			const chat = $bog_gram_chat.make({ $ })
+			const match = chat.$.$mol_media.match
+			chat.Message_field = ()=> ({
+				bring: ()=> ++ outer_focused,
+				Edit: ()=> ({ bring: ()=> ++ edit_focused }),
+			}) as any
+			chat.$.$mol_media.match = ()=> true
+
+			chat.read_sync = ()=> 0
+			chat.stick_watch = ()=> 0
+			chat.stick_hold = ()=> 0
+			chat.cancel_rect = ()=> null
+			chat.follow = ()=> undefined
+			chat.auto()
+
+			$mol_assert_equal( outer_focused, 0 )
+			$mol_assert_equal( edit_focused, 1 )
+			chat.$.$mol_media.match = match
+
+		},
+
 		'Открывается с первого непрочитанного чужого сообщения'( $ ) {
 
 			const chat = $bog_gram_chat.make({ $ })

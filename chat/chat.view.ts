@@ -361,7 +361,7 @@ namespace $.$$ {
 		@ $mol_mem
 		field_focus() {
 			if( !this.$.$mol_media.match( '(pointer: fine)' ) ) return false
-			this.Message_field().bring()
+			this.Message_field().Edit().bring()
 			return true
 		}
 
@@ -375,7 +375,7 @@ namespace $.$$ {
 			}
 
 			this.reply_id( id )
-			this.Message_field().bring()
+			this.Message_field().Edit().bring()
 
 			return null
 		}
