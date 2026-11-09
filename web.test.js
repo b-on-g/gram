@@ -9017,6 +9017,54 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        'Ключ со стороны и пустой домашний ленд: ленды не заводятся, ждём указатель'($) {
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordForeignWait', user_store: () => profile });
+            $mol_assert_equal(account.pointer_state(), 'wait');
+            $mol_assert_equal($bog_gram_soft(() => account.ready(), false), false);
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), '');
+            $mol_assert_equal(String(profile.Watch_land()?.val() ?? ''), '');
+            $mol_assert_equal(String(profile.Devices_land()?.val() ?? ''), '');
+            $mol_assert_equal(String(profile.Inbox_land()?.val() ?? ''), '');
+        },
+        'Указатель приехал позже первого чтения: читается он, новый ленд не заводится'($) {
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const old = $giper_baza_land.make({ $ });
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordForeignLate', user_store: () => profile });
+            $mol_assert_equal(account.pointer_state(), 'wait');
+            profile.Dialogs_land('auto').val(old.link().str);
+            $mol_assert_equal(account.pointer_state(), 'ready');
+            $mol_assert_equal(account.dialogs_land().link().str, old.link().str);
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), old.link().str);
+        },
+        'Минута без указателя: не удалось, ленда нет, повтор снова ждёт'($) {
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordForeignLost', user_store: () => profile });
+            $mol_assert_equal(account.pointer_state(), 'wait');
+            $mol_after_mock_warp();
+            $mol_assert_equal(account.pointer_state(), 'lost');
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), '');
+            account.pointer_retry();
+            $mol_assert_equal(account.pointer_state(), 'wait');
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), '');
+        },
+        async 'Ключ со стороны, указатель диалогов приехал, монитора нет: монитор заводится'($) {
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const old = $giper_baza_land.make({ $ });
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordForeignArrived', user_store: () => profile });
+            profile.Dialogs_land('auto').val(old.link().str);
+            const land = await $mol_wire_async(account).monitor_land();
+            $mol_assert_equal(String(profile.Watch_land()?.val() ?? ''), land.link().str);
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), old.link().str);
+        },
+        async 'Ключ родился здесь: ленд заводится сразу'($) {
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordBornHere', user_store: () => profile });
+            $.$mol_state_local.value('bog_gram_born_LordBornHere', true);
+            const land = await $mol_wire_async(account).dialogs_land();
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), land.link().str);
+            $mol_assert_equal(account.pointer_state(), 'ready');
+        },
         'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'($) {
             const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
             const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
@@ -9034,7 +9082,8 @@ var $;
             const daemon = await $.$giper_baza_auth._generate();
             const stranger = await $.$giper_baza_auth._generate();
             const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
-            const account = $bog_gram_account.make({ $, user_store: () => profile });
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordMonitor', user_store: () => profile });
+            $.$mol_state_local.value('bog_gram_born_LordMonitor', true);
             const land = await $mol_wire_async(account).monitor_land();
             $mol_assert_equal(land.encrypted(), true);
             $mol_assert_equal(String(profile.Watch_land()?.val() ?? ''), land.link().str);

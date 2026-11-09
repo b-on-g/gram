@@ -45847,7 +45847,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.132';
+    $.$bog_gram_version = '1.0.133';
 })($ || ($ = {}));
 
 ;
@@ -48001,6 +48001,7 @@ var $;
             return true;
         }
         inbox_publish() {
+            this.dialogs_store();
             const link = this.inbox_land().link().str;
             const prev = String(this.user_store().Inbox_land()?.val() ?? '');
             if (prev === link)
@@ -48067,14 +48068,56 @@ var $;
         land(str) {
             return this.$.$giper_baza_glob.Land(new $giper_baza_link(str));
         }
+        born() {
+            return Boolean(this.$.$mol_state_local.value('bog_gram_born_' + this.my_lord()));
+        }
+        pointer_limit() {
+            return 60_000;
+        }
+        pointer_lost(next) {
+            return next ?? false;
+        }
+        pointer_timer() {
+            return new this.$.$mol_after_timeout(this.pointer_limit(), () => this.pointer_lost(true));
+        }
+        pointer_wait() {
+            if (this.born())
+                return;
+            if (String(this.user_store().Dialogs_land()?.val() ?? ''))
+                return;
+            if (this.pointer_lost())
+                $mol_fail(new Error('Не удалось загрузить данные аккаунта'));
+            this.pointer_timer();
+            $mol_fail_hidden(new Promise(() => { }));
+        }
+        pointer_state() {
+            try {
+                this.dialogs_land();
+                return 'ready';
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    return 'wait';
+                if (this.pointer_lost())
+                    return 'lost';
+                $mol_fail_hidden(error);
+            }
+        }
+        pointer_retry(next) {
+            this.pointer_lost(false);
+            return null;
+        }
         dialogs_land_make() {
             const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
             this.user_store().Dialogs_land('auto')?.val(land.link().str);
             return land;
         }
         dialogs_land() {
-            const str = this.user_store().Dialogs_land()?.val();
-            return str ? this.land(String(str)) : this.dialogs_land_make();
+            const str = String(this.user_store().Dialogs_land()?.val() ?? '');
+            if (str)
+                return this.land(str);
+            this.pointer_wait();
+            return this.dialogs_land_make();
         }
         monitor_land_make() {
             const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
@@ -48082,8 +48125,11 @@ var $;
             return land;
         }
         monitor_land() {
-            const str = this.user_store().Watch_land()?.val();
-            return str ? this.land(String(str)) : this.monitor_land_make();
+            const str = String(this.user_store().Watch_land()?.val() ?? '');
+            if (str)
+                return this.land(str);
+            this.pointer_wait();
+            return this.monitor_land_make();
         }
         monitor_grant(pass) {
             const daemon = $bog_gram_pass.parse(pass);
@@ -48099,8 +48145,11 @@ var $;
             return land;
         }
         devices_land() {
-            const str = this.user_store().Devices_land()?.val();
-            return str ? this.land(String(str)) : this.devices_land_make();
+            const str = String(this.user_store().Devices_land()?.val() ?? '');
+            if (str)
+                return this.land(str);
+            this.pointer_wait();
+            return this.devices_land_make();
         }
         dialogs_store() {
             return this.dialogs_land().Data($bog_gram_dialogs);
@@ -48183,10 +48232,9 @@ var $;
             return true;
         }
         ready() {
-            this.user_store();
+            this.dialogs_store();
             this.inbox_open();
             this.inbox_publish();
-            this.dialogs_land();
             this.monitor_land();
             this.device_ready();
             $bog_gram_soft(() => this.decisions_flush(), 0);
@@ -48236,6 +48284,21 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "denies_cut", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "born", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "pointer_lost", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "pointer_timer", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "pointer_state", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "pointer_retry", null);
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "dialogs_land_make", null);
@@ -60103,6 +60166,12 @@ var $;
 		account_ready(){
 			return (this.Account().ready());
 		}
+		account_state(){
+			return (this.Account().pointer_state());
+		}
+		account_retry(next){
+			return (this.Account().pointer_retry(next));
+		}
 		registry_ids(){
 			return (this.Registry().ids());
 		}
@@ -60390,6 +60459,14 @@ var $;
 		}
 		page_current(){
 			return 0;
+		}
+		gate_sub(){
+			return [];
+		}
+		Gate_plate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.gate_sub()));
+			return obj;
 		}
 		Intro_title(){
 			const obj = new this.$.$mol_paragraph();
@@ -60758,6 +60835,27 @@ var $;
 			(obj.current) = () => ((this.page_current()));
 			return obj;
 		}
+		Gate(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Gate_plate())]);
+			return obj;
+		}
+		Gate_wait(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Загружаем данные аккаунта…");
+			return obj;
+		}
+		Gate_lost(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Не удалось загрузить данные аккаунта");
+			return obj;
+		}
+		Gate_retry(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Повторить");
+			(obj.click) = (next) => ((this.account_retry(next)));
+			return obj;
+		}
 		Placeholder(){
 			return (this.Intro());
 		}
@@ -60793,6 +60891,7 @@ var $;
 	};
 	($mol_mem(($.$bog_gram.prototype), "Skin"));
 	($mol_mem(($.$bog_gram.prototype), "Theme"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_plate"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_title"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_hint"));
 	($mol_mem(($.$bog_gram.prototype), "Intro_plate"));
@@ -60840,6 +60939,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Invite"));
 	($mol_mem(($.$bog_gram.prototype), "Alerts"));
 	($mol_mem(($.$bog_gram.prototype), "Pager"));
+	($mol_mem(($.$bog_gram.prototype), "Gate"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_wait"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_lost"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_retry"));
 	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
 
@@ -61018,8 +61121,10 @@ var $;
                     });
                 }
             }
-            if (!next)
+            if (!next) {
                 next = this.grab();
+                $mol_state_local.value('bog_gram_born_' + next.pass().lord().str, true);
+            }
             $mol_state_local.value(key_own, next.toString() + next.toStringPrivate());
             return next;
         }
@@ -61254,7 +61359,17 @@ var $;
                     return 'system';
                 return theme.is_light_now() ? 'light' : 'dark';
             }
+            account_open() {
+                return $bog_gram_soft(() => this.account_state(), 'wait') === 'ready';
+            }
+            gate_sub() {
+                return this.account_state() === 'lost'
+                    ? [this.Gate_lost(), this.Gate_retry()]
+                    : [this.Gate_wait()];
+            }
             pages() {
+                if (!this.account_open())
+                    return [this.Gate()];
                 const active = this.dialog_active();
                 return [
                     this.Menu(),
@@ -61283,6 +61398,8 @@ var $;
                 return null;
             }
             Placeholder() {
+                if (!this.account_open())
+                    return null;
                 return this.dialog_active() || this.music_opened() || this.call_current() ? null : super.Placeholder();
             }
             dialog_open(lord, next) {
@@ -61469,6 +61586,8 @@ var $;
             auto() {
                 super.auto();
                 this.Layout_watch();
+                if (!this.account_open())
+                    return;
                 $bog_gram_soft(() => this.account_ready(), null);
                 $bog_gram_soft(() => this.registry_remember(), null);
                 $bog_gram_soft(() => this.registry_keys_fill(), null);
@@ -61666,6 +61785,39 @@ var $;
             },
             Call_page: {
                 width: '40rem',
+            },
+            Gate: {
+                flex: {
+                    grow: 1,
+                },
+                align: {
+                    items: 'center',
+                },
+                justify: {
+                    content: 'center',
+                },
+                padding: $mol_gap.block,
+            },
+            Gate_plate: {
+                flex: {
+                    direction: 'column',
+                },
+                gap: '0.25rem',
+                align: {
+                    items: 'center',
+                },
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                color: $mol_theme.shade,
+                padding: {
+                    top: '0.75rem',
+                    bottom: '0.75rem',
+                    left: '1.25rem',
+                    right: '1.25rem',
+                },
+                borderRadius: '1rem',
+                textAlign: 'center',
             },
             Intro: {
                 flex: {
