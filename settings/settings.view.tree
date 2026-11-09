@@ -28,6 +28,7 @@ $bog_gram_settings $bog_gram_page
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
+		<= Install $bog_install
 		<= Version $mol_labeler
 			title \Версия
 			content /
