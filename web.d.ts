@@ -47139,7 +47139,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.125";
+    const $bog_gram_version = "1.0.127";
 }
 
 declare namespace $ {
@@ -56009,6 +56009,18 @@ declare namespace $ {
 declare namespace $ {
     class $bog_gram_notify extends $mol_object {
         static base: string;
+        static api: {
+            permission_ask(): Promise<NotificationPermission>;
+            registration(): Promise<ServiceWorkerRegistration>;
+            subscription_get(reg: ServiceWorkerRegistration): Promise<PushSubscription | null>;
+            subscription_make(reg: ServiceWorkerRegistration, key: Uint8Array<ArrayBuffer>): Promise<PushSubscription>;
+            subscription_drop(sub: PushSubscription): Promise<boolean>;
+            signed(auth: $giper_baza_auth, action: string, lord: string, monitor: string, endpoint: string): Promise<{
+                time: number;
+                pass: string;
+                sign: string;
+            }>;
+        };
         static supported(): boolean;
         static permission(): NotificationPermission;
         static activated(): boolean;
@@ -56046,8 +56058,9 @@ declare namespace $ {
         raised(key: string): boolean;
         offer(): boolean;
         grant(): boolean;
+        active(): boolean;
         label(): "Выключить" | "Включить уведомления";
-        status(): "Не поддерживается этим браузером" | "Запрещены в браузере" | "Уведомления включены" | "Выключены" | "Спросим разрешение, когда откроете диалог";
+        status(): "Не поддерживается этим браузером" | "Запрещены в браузере" | "Уведомления включены" | "Браузер сбросил разрешение — включите снова" | "Выключены" | "Спросим разрешение, когда откроете диалог";
         toggle(next?: any): null;
         apply(on: boolean): boolean;
     }
@@ -58244,11 +58257,18 @@ declare namespace $ {
         cam_switch(): void;
         video_restore(): void;
         video_broken(): boolean;
+        video_lost(): void;
         video_watch(): $mol_dom_listener | null;
         visible(next?: boolean): boolean;
         visible_watch(): $mol_dom_listener;
         video_check(): null;
         unload_watch(): $mol_dom_listener;
+        page_hide(event: {
+            persisted: boolean;
+        }): void;
+        audio_session(): {
+            destructor: () => void;
+        } | null;
         media_apply(): MediaStream & {
             destructor: () => void;
         };

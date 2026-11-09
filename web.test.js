@@ -9484,7 +9484,49 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    function stand($, permission, current) {
+        const calls = { ask: 0, make: 0, sent: [] };
+        const sub = (endpoint) => ({
+            endpoint,
+            options: { applicationServerKey: new Uint8Array([1, 2, 3]).buffer },
+            toJSON: () => ({ endpoint }),
+        });
+        class Notify extends $bog_gram_notify {
+            static $ = $;
+            static api = {
+                ...$bog_gram_notify.api,
+                async permission_ask() { ++calls.ask; return permission; },
+                async registration() { return {}; },
+                async subscription_get() { return current && sub(current.endpoint); },
+                async subscription_make() { ++calls.make; return sub('https://push.example/new'); },
+            };
+            static supported() { return true; }
+            static permission() { return permission; }
+            static daemon() { return { key: 'AQID' }; }
+            static signed() { return { time: 0, pass: '', sign: '' }; }
+            static send(path, body) {
+                calls.sent.push(body.subscription.endpoint);
+                return null;
+            }
+        }
+        return { Notify, calls };
+    }
     $mol_test({
+        async 'Разрешение есть, а подписки нет — подписываемся заново без вопроса'($) {
+            const { Notify, calls } = stand($, 'granted', null);
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), true);
+            $mol_assert_equal(calls, { ask: 0, make: 1, sent: ['https://push.example/new'] });
+        },
+        async 'Сменившийся адрес подписки уходит демону без новой подписки'($) {
+            const { Notify, calls } = stand($, 'granted', { endpoint: 'https://push.example/rotated' });
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), true);
+            $mol_assert_equal(calls, { ask: 0, make: 0, sent: ['https://push.example/rotated'] });
+        },
+        async 'Запрещённые уведомления не трогаем'($) {
+            const { Notify, calls } = stand($, 'denied', null);
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), false);
+            $mol_assert_equal(calls, { ask: 1, make: 0, sent: [] });
+        },
         async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'($) {
             const auth = await $.$giper_baza_auth._generate();
             const lord = auth.pass().lord().str;
@@ -9565,6 +9607,31 @@ var $;
             alerts.auto();
             await Promise.resolve();
             $mol_assert_equal(applied, 1);
+        },
+        'Сбой подписки на старте не выключает уведомления, а сброшенное разрешение называется прямо'($) {
+            let tried = 0;
+            const context = $.$mol_ambient({
+                $bog_gram_notify: class extends $bog_gram_notify {
+                    static daemon() { return null; }
+                    static subscribe() { ++tried; return false; }
+                },
+            });
+            const make = (permission) => $bog_gram_alerts.make({ $: context,
+                supported: () => true,
+                permission: () => permission,
+                on: (next) => Alerts_switch.on(next),
+                off: () => false,
+                Account: () => ({ monitor_link: () => 'Monitor', my_lord: () => 'Lord' }),
+            });
+            Alerts_switch.on(true);
+            $mol_assert_equal(make('granted').apply(true), false);
+            $mol_assert_equal(tried, 1);
+            $mol_assert_equal(Alerts_switch.on(), true);
+            $mol_assert_equal(make('granted').status(), 'Уведомления включены');
+            const reset = make('default');
+            $mol_assert_equal(reset.status(), 'Браузер сбросил разрешение — включите снова');
+            $mol_assert_equal(reset.label(), 'Включить уведомления');
+            Alerts_switch.on(false);
         },
         'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
             const alerts = $bog_gram_alerts.make({ $ });
@@ -9882,6 +9949,32 @@ var $;
             $mol_assert_equal(first.kbps, 0);
             const next = $bog_gram_call_peer.stats_sum(entries(3_000, 250_000), first);
             $mol_assert_equal([next.fps, next.width, next.height, next.kbps, next.loss, next.rtt], [30, 640, 480, 1000, 0.5, 42]);
+        },
+        'Камера, потерянная в фоне, не запрашивается, пока страница скрыта'($) {
+            let opened = 0;
+            const room = $bog_gram_call_room.make({ $, video_restore: () => { ++opened; } });
+            room.visible(false);
+            room.video_lost();
+            $mol_assert_equal(opened, 0);
+            room.visible(true);
+            room.video_lost();
+            $mol_assert_equal(opened, 1);
+        },
+        'Уход в фон со страницей в кэше не выходит из звонка, закрытие выходит'($) {
+            let left = 0;
+            const room = $bog_gram_call_room.make({ $, leave: () => { ++left; } });
+            room.page_hide({ persisted: true });
+            $mol_assert_equal(left, 0);
+            room.page_hide({ persisted: false });
+            $mol_assert_equal(left, 1);
+        },
+        'На время звонка аудиосессия держит микрофон и звук, после возвращается в auto'($) {
+            const session = { type: 'auto' };
+            const room = $bog_gram_call_room.make({ $: $.$mol_ambient({ $mol_dom_context: { navigator: { audioSession: session } } }) });
+            const hold = room.audio_session();
+            $mol_assert_equal(session.type, 'play-and-record');
+            hold.destructor();
+            $mol_assert_equal(session.type, 'auto');
         },
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);

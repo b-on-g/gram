@@ -45826,7 +45826,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.125';
+    $.$bog_gram_version = '1.0.127';
 })($ || ($ = {}));
 
 ;
@@ -50496,6 +50496,7 @@ var $;
     }
     class $bog_gram_notify extends $mol_object {
         static base = 'https://push.91-188-212-151.ip.giper.dev';
+        static api = api;
         static supported() {
             if (typeof window === 'undefined')
                 return false;
@@ -50524,7 +50525,7 @@ var $;
             try {
                 if (!this.supported())
                     return 'denied';
-                return $mol_wire_sync(api).permission_ask();
+                return $mol_wire_sync(this.api).permission_ask();
             }
             catch (error) {
                 if ($mol_promise_like(error))
@@ -50538,7 +50539,7 @@ var $;
         }
         static signed(action, lord, monitor, endpoint) {
             const auth = this.$.$giper_baza_auth.current();
-            return $mol_wire_sync(api).signed(auth, action, lord, monitor, endpoint);
+            return $mol_wire_sync(this.api).signed(auth, action, lord, monitor, endpoint);
         }
         static daemon() {
             return this.$.$mol_fetch.json(this.base + '/push/key', {
@@ -50557,18 +50558,19 @@ var $;
                     return false;
                 if (!this.supported())
                     return false;
-                if ($mol_wire_sync(api).permission_ask() !== 'granted')
+                const granted = this.permission() === 'granted' || $mol_wire_sync(this.api).permission_ask() === 'granted';
+                if (!granted)
                     return false;
-                const reg = $mol_wire_sync(api).registration();
+                const reg = $mol_wire_sync(this.api).registration();
                 const key = this.daemon()?.key;
                 if (!key)
                     return false;
                 const bytes = key_bytes(key);
-                const current = $mol_wire_sync(api).subscription_get(reg);
+                const current = $mol_wire_sync(this.api).subscription_get(reg);
                 const same = current && key_same(current, bytes);
                 if (current && !same)
-                    $mol_wire_sync(api).subscription_drop(current);
-                const sub = same ? current : $mol_wire_sync(api).subscription_make(reg, bytes);
+                    $mol_wire_sync(this.api).subscription_drop(current);
+                const sub = same ? current : $mol_wire_sync(this.api).subscription_make(reg, bytes);
                 this.send('/push/subscribe', {
                     lord,
                     monitor,
@@ -50588,11 +50590,11 @@ var $;
             try {
                 let endpoint = '';
                 if (this.supported()) {
-                    const reg = $mol_wire_sync(api).registration();
-                    const sub = $mol_wire_sync(api).subscription_get(reg);
+                    const reg = $mol_wire_sync(this.api).registration();
+                    const sub = $mol_wire_sync(this.api).subscription_get(reg);
                     if (sub) {
                         endpoint = sub.endpoint;
-                        $mol_wire_sync(api).subscription_drop(sub);
+                        $mol_wire_sync(this.api).subscription_drop(sub);
                     }
                 }
                 if (lord)
@@ -50734,22 +50736,27 @@ var $;
             this.permission(answer);
             return answer === 'granted';
         }
+        active() {
+            return this.on() && this.permission() === 'granted';
+        }
         label() {
-            return this.on() ? 'Выключить' : 'Включить уведомления';
+            return this.active() ? 'Выключить' : 'Включить уведомления';
         }
         status() {
             if (!this.supported())
                 return 'Не поддерживается этим браузером';
             if (this.permission() === 'denied')
                 return 'Запрещены в браузере';
-            if (this.on())
+            if (this.active())
                 return 'Уведомления включены';
+            if (this.on())
+                return 'Браузер сбросил разрешение — включите снова';
             if (this.off())
                 return 'Выключены';
             return 'Спросим разрешение, когда откроете диалог';
         }
         toggle(next) {
-            $mol_wire_async(this).apply(!this.on());
+            $mol_wire_async(this).apply(!this.active());
             return null;
         }
         apply(on) {
@@ -50760,6 +50767,12 @@ var $;
                 this.on(false);
                 this.off(true);
                 return false;
+            }
+            if (this.permission() !== 'granted') {
+                const answer = notify.permission_request();
+                this.permission(answer);
+                if (answer !== 'granted')
+                    return false;
             }
             let daemon = '';
             try {
@@ -50773,11 +50786,11 @@ var $;
             if (daemon)
                 this.Account().monitor_grant(daemon);
             const ok = notify.subscribe(lord, this.Account().monitor_link());
-            this.permission(notify.permission());
-            this.on(ok);
-            if (ok)
-                this.off(false);
-            return ok;
+            if (!ok)
+                return false;
+            this.on(true);
+            this.off(false);
+            return true;
         }
     }
     __decorate([
@@ -52990,10 +53003,12 @@ var $;
                     }
                     catch { }
                 };
+                session.playbackState = 'playing';
                 for (const action in handlers)
                     put(action, handlers[action]);
                 return {
                     destructor: () => {
+                        session.playbackState = 'none';
                         for (const action in handlers)
                             put(action, null);
                     }
@@ -53335,12 +53350,17 @@ var $;
                 return false;
             return track.readyState === 'ended' || track.muted;
         }
+        video_lost() {
+            if (!this.visible())
+                return;
+            this.video_restore();
+        }
         video_watch() {
             this.video_changed();
             const track = this.media().getVideoTracks()[0];
             if (!track)
                 return null;
-            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_restore());
+            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_lost());
         }
         visible(next) {
             return next ?? $mol_dom_context.document.visibilityState !== 'hidden';
@@ -53357,7 +53377,21 @@ var $;
             return null;
         }
         unload_watch() {
-            return new $mol_dom_listener($mol_dom_context, 'pagehide', () => this.leave());
+            return new $mol_dom_listener($mol_dom_context, 'pagehide', (event) => this.page_hide(event));
+        }
+        page_hide(event) {
+            if (event.persisted)
+                return;
+            this.leave();
+        }
+        audio_session() {
+            const session = this.$.$mol_dom_context.navigator?.audioSession;
+            if (!session)
+                return null;
+            session.type = 'play-and-record';
+            return {
+                destructor: () => { session.type = 'auto'; },
+            };
         }
         media_apply() {
             this.video_changed();
@@ -53383,6 +53417,7 @@ var $;
             if (!this.joined())
                 return null;
             this.unload_watch();
+            this.audio_session();
             this.visible_watch();
             this.media_apply();
             this.video_watch();
@@ -53472,6 +53507,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "unload_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "audio_session", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "media_apply", null);

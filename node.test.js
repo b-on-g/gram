@@ -26126,7 +26126,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.125';
+    $.$bog_gram_version = '1.0.127';
 })($ || ($ = {}));
 
 ;
@@ -30983,6 +30983,7 @@ var $;
     }
     class $bog_gram_notify extends $mol_object {
         static base = 'https://push.91-188-212-151.ip.giper.dev';
+        static api = api;
         static supported() {
             if (typeof window === 'undefined')
                 return false;
@@ -31011,7 +31012,7 @@ var $;
             try {
                 if (!this.supported())
                     return 'denied';
-                return $mol_wire_sync(api).permission_ask();
+                return $mol_wire_sync(this.api).permission_ask();
             }
             catch (error) {
                 if ($mol_promise_like(error))
@@ -31025,7 +31026,7 @@ var $;
         }
         static signed(action, lord, monitor, endpoint) {
             const auth = this.$.$giper_baza_auth.current();
-            return $mol_wire_sync(api).signed(auth, action, lord, monitor, endpoint);
+            return $mol_wire_sync(this.api).signed(auth, action, lord, monitor, endpoint);
         }
         static daemon() {
             return this.$.$mol_fetch.json(this.base + '/push/key', {
@@ -31044,18 +31045,19 @@ var $;
                     return false;
                 if (!this.supported())
                     return false;
-                if ($mol_wire_sync(api).permission_ask() !== 'granted')
+                const granted = this.permission() === 'granted' || $mol_wire_sync(this.api).permission_ask() === 'granted';
+                if (!granted)
                     return false;
-                const reg = $mol_wire_sync(api).registration();
+                const reg = $mol_wire_sync(this.api).registration();
                 const key = this.daemon()?.key;
                 if (!key)
                     return false;
                 const bytes = key_bytes(key);
-                const current = $mol_wire_sync(api).subscription_get(reg);
+                const current = $mol_wire_sync(this.api).subscription_get(reg);
                 const same = current && key_same(current, bytes);
                 if (current && !same)
-                    $mol_wire_sync(api).subscription_drop(current);
-                const sub = same ? current : $mol_wire_sync(api).subscription_make(reg, bytes);
+                    $mol_wire_sync(this.api).subscription_drop(current);
+                const sub = same ? current : $mol_wire_sync(this.api).subscription_make(reg, bytes);
                 this.send('/push/subscribe', {
                     lord,
                     monitor,
@@ -31075,11 +31077,11 @@ var $;
             try {
                 let endpoint = '';
                 if (this.supported()) {
-                    const reg = $mol_wire_sync(api).registration();
-                    const sub = $mol_wire_sync(api).subscription_get(reg);
+                    const reg = $mol_wire_sync(this.api).registration();
+                    const sub = $mol_wire_sync(this.api).subscription_get(reg);
                     if (sub) {
                         endpoint = sub.endpoint;
-                        $mol_wire_sync(api).subscription_drop(sub);
+                        $mol_wire_sync(this.api).subscription_drop(sub);
                     }
                 }
                 if (lord)
@@ -31173,22 +31175,27 @@ var $;
             this.permission(answer);
             return answer === 'granted';
         }
+        active() {
+            return this.on() && this.permission() === 'granted';
+        }
         label() {
-            return this.on() ? 'Выключить' : 'Включить уведомления';
+            return this.active() ? 'Выключить' : 'Включить уведомления';
         }
         status() {
             if (!this.supported())
                 return 'Не поддерживается этим браузером';
             if (this.permission() === 'denied')
                 return 'Запрещены в браузере';
-            if (this.on())
+            if (this.active())
                 return 'Уведомления включены';
+            if (this.on())
+                return 'Браузер сбросил разрешение — включите снова';
             if (this.off())
                 return 'Выключены';
             return 'Спросим разрешение, когда откроете диалог';
         }
         toggle(next) {
-            $mol_wire_async(this).apply(!this.on());
+            $mol_wire_async(this).apply(!this.active());
             return null;
         }
         apply(on) {
@@ -31199,6 +31206,12 @@ var $;
                 this.on(false);
                 this.off(true);
                 return false;
+            }
+            if (this.permission() !== 'granted') {
+                const answer = notify.permission_request();
+                this.permission(answer);
+                if (answer !== 'granted')
+                    return false;
             }
             let daemon = '';
             try {
@@ -31212,11 +31225,11 @@ var $;
             if (daemon)
                 this.Account().monitor_grant(daemon);
             const ok = notify.subscribe(lord, this.Account().monitor_link());
-            this.permission(notify.permission());
-            this.on(ok);
-            if (ok)
-                this.off(false);
-            return ok;
+            if (!ok)
+                return false;
+            this.on(true);
+            this.off(false);
+            return true;
         }
     }
     __decorate([
@@ -34627,10 +34640,12 @@ var $;
                     }
                     catch { }
                 };
+                session.playbackState = 'playing';
                 for (const action in handlers)
                     put(action, handlers[action]);
                 return {
                     destructor: () => {
+                        session.playbackState = 'none';
                         for (const action in handlers)
                             put(action, null);
                     }
@@ -34972,12 +34987,17 @@ var $;
                 return false;
             return track.readyState === 'ended' || track.muted;
         }
+        video_lost() {
+            if (!this.visible())
+                return;
+            this.video_restore();
+        }
         video_watch() {
             this.video_changed();
             const track = this.media().getVideoTracks()[0];
             if (!track)
                 return null;
-            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_restore());
+            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_lost());
         }
         visible(next) {
             return next ?? $mol_dom_context.document.visibilityState !== 'hidden';
@@ -34994,7 +35014,21 @@ var $;
             return null;
         }
         unload_watch() {
-            return new $mol_dom_listener($mol_dom_context, 'pagehide', () => this.leave());
+            return new $mol_dom_listener($mol_dom_context, 'pagehide', (event) => this.page_hide(event));
+        }
+        page_hide(event) {
+            if (event.persisted)
+                return;
+            this.leave();
+        }
+        audio_session() {
+            const session = this.$.$mol_dom_context.navigator?.audioSession;
+            if (!session)
+                return null;
+            session.type = 'play-and-record';
+            return {
+                destructor: () => { session.type = 'auto'; },
+            };
         }
         media_apply() {
             this.video_changed();
@@ -35020,6 +35054,7 @@ var $;
             if (!this.joined())
                 return null;
             this.unload_watch();
+            this.audio_session();
             this.visible_watch();
             this.media_apply();
             this.video_watch();
@@ -35109,6 +35144,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "unload_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "audio_session", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "media_apply", null);
@@ -51748,7 +51786,49 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    function stand($, permission, current) {
+        const calls = { ask: 0, make: 0, sent: [] };
+        const sub = (endpoint) => ({
+            endpoint,
+            options: { applicationServerKey: new Uint8Array([1, 2, 3]).buffer },
+            toJSON: () => ({ endpoint }),
+        });
+        class Notify extends $bog_gram_notify {
+            static $ = $;
+            static api = {
+                ...$bog_gram_notify.api,
+                async permission_ask() { ++calls.ask; return permission; },
+                async registration() { return {}; },
+                async subscription_get() { return current && sub(current.endpoint); },
+                async subscription_make() { ++calls.make; return sub('https://push.example/new'); },
+            };
+            static supported() { return true; }
+            static permission() { return permission; }
+            static daemon() { return { key: 'AQID' }; }
+            static signed() { return { time: 0, pass: '', sign: '' }; }
+            static send(path, body) {
+                calls.sent.push(body.subscription.endpoint);
+                return null;
+            }
+        }
+        return { Notify, calls };
+    }
     $mol_test({
+        async 'Разрешение есть, а подписки нет — подписываемся заново без вопроса'($) {
+            const { Notify, calls } = stand($, 'granted', null);
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), true);
+            $mol_assert_equal(calls, { ask: 0, make: 1, sent: ['https://push.example/new'] });
+        },
+        async 'Сменившийся адрес подписки уходит демону без новой подписки'($) {
+            const { Notify, calls } = stand($, 'granted', { endpoint: 'https://push.example/rotated' });
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), true);
+            $mol_assert_equal(calls, { ask: 0, make: 0, sent: ['https://push.example/rotated'] });
+        },
+        async 'Запрещённые уведомления не трогаем'($) {
+            const { Notify, calls } = stand($, 'denied', null);
+            $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), false);
+            $mol_assert_equal(calls, { ask: 1, make: 0, sent: [] });
+        },
         async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'($) {
             const auth = await $.$giper_baza_auth._generate();
             const lord = auth.pass().lord().str;
@@ -51829,6 +51909,31 @@ var $;
             alerts.auto();
             await Promise.resolve();
             $mol_assert_equal(applied, 1);
+        },
+        'Сбой подписки на старте не выключает уведомления, а сброшенное разрешение называется прямо'($) {
+            let tried = 0;
+            const context = $.$mol_ambient({
+                $bog_gram_notify: class extends $bog_gram_notify {
+                    static daemon() { return null; }
+                    static subscribe() { ++tried; return false; }
+                },
+            });
+            const make = (permission) => $bog_gram_alerts.make({ $: context,
+                supported: () => true,
+                permission: () => permission,
+                on: (next) => Alerts_switch.on(next),
+                off: () => false,
+                Account: () => ({ monitor_link: () => 'Monitor', my_lord: () => 'Lord' }),
+            });
+            Alerts_switch.on(true);
+            $mol_assert_equal(make('granted').apply(true), false);
+            $mol_assert_equal(tried, 1);
+            $mol_assert_equal(Alerts_switch.on(), true);
+            $mol_assert_equal(make('granted').status(), 'Уведомления включены');
+            const reset = make('default');
+            $mol_assert_equal(reset.status(), 'Браузер сбросил разрешение — включите снова');
+            $mol_assert_equal(reset.label(), 'Включить уведомления');
+            Alerts_switch.on(false);
         },
         'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
             const alerts = $bog_gram_alerts.make({ $ });
@@ -52181,6 +52286,32 @@ var $;
             $mol_assert_equal(first.kbps, 0);
             const next = $bog_gram_call_peer.stats_sum(entries(3_000, 250_000), first);
             $mol_assert_equal([next.fps, next.width, next.height, next.kbps, next.loss, next.rtt], [30, 640, 480, 1000, 0.5, 42]);
+        },
+        'Камера, потерянная в фоне, не запрашивается, пока страница скрыта'($) {
+            let opened = 0;
+            const room = $bog_gram_call_room.make({ $, video_restore: () => { ++opened; } });
+            room.visible(false);
+            room.video_lost();
+            $mol_assert_equal(opened, 0);
+            room.visible(true);
+            room.video_lost();
+            $mol_assert_equal(opened, 1);
+        },
+        'Уход в фон со страницей в кэше не выходит из звонка, закрытие выходит'($) {
+            let left = 0;
+            const room = $bog_gram_call_room.make({ $, leave: () => { ++left; } });
+            room.page_hide({ persisted: true });
+            $mol_assert_equal(left, 0);
+            room.page_hide({ persisted: false });
+            $mol_assert_equal(left, 1);
+        },
+        'На время звонка аудиосессия держит микрофон и звук, после возвращается в auto'($) {
+            const session = { type: 'auto' };
+            const room = $bog_gram_call_room.make({ $: $.$mol_ambient({ $mol_dom_context: { navigator: { audioSession: session } } }) });
+            const hold = room.audio_session();
+            $mol_assert_equal(session.type, 'play-and-record');
+            hold.destructor();
+            $mol_assert_equal(session.type, 'auto');
         },
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);
