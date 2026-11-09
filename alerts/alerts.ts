@@ -75,21 +75,26 @@ namespace $ {
 			return answer === 'granted'
 		}
 
+		active() {
+			return this.on() && this.permission() === 'granted'
+		}
+
 		label() {
-			return this.on() ? 'Выключить' : 'Включить уведомления'
+			return this.active() ? 'Выключить' : 'Включить уведомления'
 		}
 
 		status() {
 			if( !this.supported() ) return 'Не поддерживается этим браузером'
 			if( this.permission() === 'denied' ) return 'Запрещены в браузере'
-			if( this.on() ) return 'Уведомления включены'
+			if( this.active() ) return 'Уведомления включены'
+			if( this.on() ) return 'Браузер сбросил разрешение — включите снова'
 			if( this.off() ) return 'Выключены'
 			return 'Спросим разрешение, когда откроете диалог'
 		}
 
 		@ $mol_action
 		toggle( next?: any ) {
-			$mol_wire_async( this ).apply( !this.on() )
+			$mol_wire_async( this ).apply( !this.active() )
 			return null
 		}
 
@@ -105,6 +110,12 @@ namespace $ {
 				return false
 			}
 
+			if( this.permission() !== 'granted' ) {
+				const answer = notify.permission_request()
+				this.permission( answer )
+				if( answer !== 'granted' ) return false
+			}
+
 			let daemon = ''
 			try {
 				daemon = notify.daemon()?.pass ?? ''
@@ -115,10 +126,11 @@ namespace $ {
 			if( daemon ) this.Account().monitor_grant( daemon )
 
 			const ok = notify.subscribe( lord, this.Account().monitor_link() )
-			this.permission( notify.permission() )
-			this.on( ok )
-			if( ok ) this.off( false )
-			return ok
+			if( !ok ) return false
+
+			this.on( true )
+			this.off( false )
+			return true
 		}
 
 	}

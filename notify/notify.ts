@@ -58,6 +58,8 @@ namespace $ {
 
 		static base = 'https://push.91-188-212-151.ip.giper.dev'
 
+		static api = api
+
 		static supported() {
 			if( typeof window === 'undefined' ) return false
 			if( typeof navigator === 'undefined' ) return false
@@ -83,7 +85,7 @@ namespace $ {
 		static permission_request() {
 			try {
 				if( !this.supported() ) return 'denied' as NotificationPermission
-				return $mol_wire_sync( api ).permission_ask()
+				return $mol_wire_sync( this.api ).permission_ask()
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				$mol_fail_log( error )
@@ -97,7 +99,7 @@ namespace $ {
 
 		static signed( action: string, lord: string, monitor: string, endpoint: string ) {
 			const auth = this.$.$giper_baza_auth.current()
-			return $mol_wire_sync( api ).signed( auth, action, lord, monitor, endpoint )
+			return $mol_wire_sync( this.api ).signed( auth, action, lord, monitor, endpoint )
 		}
 
 		static daemon() {
@@ -120,20 +122,21 @@ namespace $ {
 				if( !lord || !monitor ) return false
 				if( !this.supported() ) return false
 
-				if( $mol_wire_sync( api ).permission_ask() !== 'granted' ) return false
+				const granted = this.permission() === 'granted' || $mol_wire_sync( this.api ).permission_ask() === 'granted'
+				if( !granted ) return false
 
-				const reg = $mol_wire_sync( api ).registration()
+				const reg = $mol_wire_sync( this.api ).registration()
 
 				const key = this.daemon()?.key
 				if( !key ) return false
 
 				const bytes = key_bytes( key )
 
-				const current = $mol_wire_sync( api ).subscription_get( reg )
+				const current = $mol_wire_sync( this.api ).subscription_get( reg )
 				const same = current && key_same( current, bytes )
-				if( current && !same ) $mol_wire_sync( api ).subscription_drop( current )
+				if( current && !same ) $mol_wire_sync( this.api ).subscription_drop( current )
 
-				const sub = same ? current : $mol_wire_sync( api ).subscription_make( reg, bytes )
+				const sub = same ? current : $mol_wire_sync( this.api ).subscription_make( reg, bytes )
 
 				this.send( '/push/subscribe', {
 					lord,
@@ -158,11 +161,11 @@ namespace $ {
 				let endpoint = ''
 
 				if( this.supported() ) {
-					const reg = $mol_wire_sync( api ).registration()
-					const sub = $mol_wire_sync( api ).subscription_get( reg )
+					const reg = $mol_wire_sync( this.api ).registration()
+					const sub = $mol_wire_sync( this.api ).subscription_get( reg )
 					if( sub ) {
 						endpoint = sub.endpoint
-						$mol_wire_sync( api ).subscription_drop( sub )
+						$mol_wire_sync( this.api ).subscription_drop( sub )
 					}
 				}
 

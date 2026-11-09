@@ -1,6 +1,55 @@
 namespace $ {
 
+	function stand( $: $, permission: NotificationPermission, current: { endpoint: string } | null ) {
+
+		const calls = { ask: 0, make: 0, sent: [] as string[] }
+		const sub = ( endpoint: string )=> ({
+			endpoint,
+			options: { applicationServerKey: new Uint8Array([ 1, 2, 3 ]).buffer },
+			toJSON: ()=> ({ endpoint }),
+		}) as unknown as PushSubscription
+
+		class Notify extends $bog_gram_notify {
+			static override $ = $
+			static override api = {
+				... $bog_gram_notify.api,
+				async permission_ask() { ++ calls.ask; return permission },
+				async registration() { return {} as ServiceWorkerRegistration },
+				async subscription_get() { return current && sub( current.endpoint ) },
+				async subscription_make() { ++ calls.make; return sub( 'https://push.example/new' ) },
+			}
+			static override supported() { return true }
+			static override permission() { return permission }
+			static override daemon() { return { key: 'AQID' } }
+			static override signed() { return { time: 0, pass: '', sign: '' } }
+			static override send( path: string, body: { subscription: { endpoint: string } } ) {
+				calls.sent.push( body.subscription.endpoint )
+				return null!
+			}
+		}
+
+		return { Notify, calls }
+	}
+
 	$mol_test({
+
+		async 'Разрешение есть, а подписки нет — подписываемся заново без вопроса'( $ ) {
+			const { Notify, calls } = stand( $, 'granted', null )
+			$mol_assert_equal( await $mol_wire_async( Notify ).subscribe( 'Lord', 'Monitor' ), true )
+			$mol_assert_equal( calls, { ask: 0, make: 1, sent: [ 'https://push.example/new' ] } )
+		},
+
+		async 'Сменившийся адрес подписки уходит демону без новой подписки'( $ ) {
+			const { Notify, calls } = stand( $, 'granted', { endpoint: 'https://push.example/rotated' } )
+			$mol_assert_equal( await $mol_wire_async( Notify ).subscribe( 'Lord', 'Monitor' ), true )
+			$mol_assert_equal( calls, { ask: 0, make: 0, sent: [ 'https://push.example/rotated' ] } )
+		},
+
+		async 'Запрещённые уведомления не трогаем'( $ ) {
+			const { Notify, calls } = stand( $, 'denied', null )
+			$mol_assert_equal( await $mol_wire_async( Notify ).subscribe( 'Lord', 'Monitor' ), false )
+			$mol_assert_equal( calls, { ask: 1, make: 0, sent: [] } )
+		},
 
 		async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'( $ ) {
 
