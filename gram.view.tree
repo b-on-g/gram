@@ -15,6 +15,7 @@ $bog_gram $mol_book2
 		ready => account_ready
 		pointer_state => account_state
 		pointer_retry? => account_retry?
+		account_fresh? => account_fresh?
 	Registry $bog_gram_registry
 		Account <= Account
 		ids => registry_ids
@@ -149,9 +150,14 @@ $bog_gram $mol_book2
 		title \Загружаем данные аккаунта…
 	Gate_lost $mol_paragraph
 		title \Не удалось загрузить данные аккаунта
+	Gate_fresh_note $mol_paragraph
+		title \Если это первый вход в Gram на этом устройстве, создайте отдельный аккаунт. Общий ключ других приложений останется без изменений.
 	Gate_retry $mol_button_minor
 		title \Повторить
 		click? <=> account_retry?
+	Gate_fresh $mol_button_minor
+		title \Создать аккаунт Gram на этом устройстве
+		click? <=> account_fresh? null
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view

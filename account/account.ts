@@ -186,6 +186,13 @@ namespace $ {
 		}
 
 		@ $mol_action
+		account_fresh( next?: any ) {
+			this.$.$giper_baza_auth.current( null )
+			this.$.$mol_dom_context.location.reload()
+			return null
+		}
+
+		@ $mol_action
 		dialogs_land_make() {
 			const land = this.$.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
 			this.user_store().Dialogs_land( 'auto' )?.val( land.link().str )

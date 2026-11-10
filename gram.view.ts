@@ -241,7 +241,7 @@ namespace $.$$ {
 
 		override gate_sub() {
 			return this.account_state() === 'lost'
-				? [ this.Gate_lost(), this.Gate_retry() ]
+				? [ this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh() ]
 				: [ this.Gate_wait() ]
 		}
 
