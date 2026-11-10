@@ -2,8 +2,6 @@ namespace $ {
 
 	const key_own = 'bog_gram_auth'
 
-	const key_shared = '$giper_baza_auth'
-
 	const key_size = 128
 
 	export class $bog_gram_auth extends $giper_baza_auth {
@@ -25,15 +23,7 @@ namespace $ {
 
 			if( next === undefined ) {
 
-				let key = String( $mol_state_local.value( key_own ) ?? '' )
-
-				if( !key ) {
-					const shared = String( $mol_state_local.value( key_shared ) ?? '' )
-					if( shared ) {
-						$mol_state_local.value( key_own, shared )
-						key = shared
-					}
-				}
+				const key = String( $mol_state_local.value( key_own ) ?? '' )
 
 				if( key ) {
 

@@ -27,6 +27,9 @@ $bog_gram_settings_key $mol_view
 		blob <= blob null Blob
 	Import_form $mol_view
 		sub /
+			<= Shared_import $mol_button_minor
+				title <= shared_import_label \
+				click? <=> shared_import? null
 			<= Field $mol_string
 				hint \Ключ аккаунта
 				value? <=> input? \

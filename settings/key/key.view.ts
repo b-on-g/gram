@@ -16,6 +16,39 @@ namespace $.$$ {
 			return next ?? false
 		}
 
+		@ $mol_mem
+		shared_armed( next?: boolean ) {
+			return next ?? false
+		}
+
+		shared_import_label() {
+			return this.shared_armed() ? 'Точно восстановить общий аккаунт?' : 'Восстановить общий аккаунт Базы'
+		}
+
+		shared_key() {
+			return String( $mol_state_local.value( '$giper_baza_auth' ) ?? '' )
+		}
+
+		Shared_import() {
+			return this.shared_key() ? super.Shared_import() : null!
+		}
+
+		@ $mol_action
+		shared_import( next?: any ) {
+			const auth = this.auth_from( this.shared_key() )
+			if( !auth ) return null
+
+			if( !this.shared_armed() ) {
+				this.shared_armed( true )
+				return null
+			}
+
+			this.notify_on( false )
+			this.$.$giper_baza_auth.current( auth )
+			this.$.$mol_dom_context.location.reload()
+			return null
+		}
+
 		override toggle_label() {
 			return this.shown() ? 'Скрыть ключ' : 'Показать ключ'
 		}
