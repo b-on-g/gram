@@ -33851,6 +33851,147 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
+		theme(){
+			return "$mol_theme_base";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_install) = class $bog_install extends ($.$mol_labeler) {
+		install(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Install_button(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.button_title()));
+			(obj.click) = (next) => ((this.install(next)));
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_install_title"));
+		}
+		button_title(){
+			return (this.$.$mol_locale.text("$bog_install_button_title"));
+		}
+		install_ios_instruction(){
+			return (this.$.$mol_locale.text("$bog_install_install_ios_instruction"));
+		}
+		install_android_instruction(){
+			return (this.$.$mol_locale.text("$bog_install_install_android_instruction"));
+		}
+		install_desktop_instruction(){
+			return (this.$.$mol_locale.text("$bog_install_install_desktop_instruction"));
+		}
+		install_unsupported_browser(){
+			return (this.$.$mol_locale.text("$bog_install_install_unsupported_browser"));
+		}
+		install_already_installed(){
+			return (this.$.$mol_locale.text("$bog_install_install_already_installed"));
+		}
+		content(){
+			return [(this.Install_button())];
+		}
+	};
+	($mol_mem(($.$bog_install.prototype), "install"));
+	($mol_mem(($.$bog_install.prototype), "Install_button"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_install extends $.$bog_install {
+            prompt_event(next) {
+                return next ?? null;
+            }
+            installed(next) {
+                return next ?? false;
+            }
+            prompt_capture(event) {
+                event.preventDefault();
+                this.prompt_event(event);
+            }
+            listeners() {
+                const win = this.$.$mol_dom_context;
+                return [
+                    new $mol_dom_listener(win, 'beforeinstallprompt', (event) => this.prompt_capture(event)),
+                    new $mol_dom_listener(win, 'appinstalled', () => {
+                        this.prompt_event(null);
+                        this.installed(true);
+                    }),
+                ];
+            }
+            auto() {
+                super.auto();
+                this.listeners();
+            }
+            install() {
+                const prompt = this.prompt_event();
+                if (prompt) {
+                    prompt.prompt();
+                    prompt.userChoice.finally(() => this.prompt_event(null));
+                    return;
+                }
+                if (this.installed() || this.$.$mol_dom_context.matchMedia?.('(display-mode: standalone)')?.matches || this.$.$mol_dom_context.navigator.standalone) {
+                    this.$.$mol_dom_context.alert(this.install_already_installed());
+                    return;
+                }
+                const agent = this.$.$mol_dom_context.navigator.userAgent;
+                if (/iPad|iPhone|iPod/.test(agent)) {
+                    this.$.$mol_dom_context.alert(this.install_ios_instruction());
+                    return;
+                }
+                if (/Android/.test(agent)) {
+                    this.$.$mol_dom_context.alert(this.install_android_instruction());
+                    return;
+                }
+                if (/Windows|Macintosh|Linux/.test(agent)) {
+                    this.$.$mol_dom_context.alert(this.install_desktop_instruction());
+                    return;
+                }
+                this.$.$mol_dom_context.alert(this.install_unsupported_browser());
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_install.prototype, "prompt_event", null);
+        __decorate([
+            $mol_mem
+        ], $bog_install.prototype, "installed", null);
+        __decorate([
+            $mol_action
+        ], $bog_install.prototype, "prompt_capture", null);
+        __decorate([
+            $mol_mem
+        ], $bog_install.prototype, "listeners", null);
+        __decorate([
+            $mol_action
+        ], $bog_install.prototype, "install", null);
+        $$.$bog_install = $bog_install;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_string_button) = class $mol_string_button extends ($.$mol_string) {};
 
 
@@ -44965,25 +45106,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
-		theme(){
-			return "$mol_theme_base";
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
 	($.$bog_gram_settings_key) = class $bog_gram_settings_key extends ($.$mol_view) {
 		rows(){
 			return [];
@@ -45017,6 +45139,19 @@ var $;
 		}
 		blob(){
 			return null;
+		}
+		shared_import_label(){
+			return "";
+		}
+		shared_import(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Shared_import(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.shared_import_label()));
+			(obj.click) = (next) => ((this.shared_import(next)));
+			return obj;
 		}
 		input(next){
 			if(next !== undefined) return next;
@@ -45124,6 +45259,7 @@ var $;
 		Import_form(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
+				(this.Shared_import()), 
 				(this.Field()), 
 				(this.Load_row()), 
 				(this.Scan()), 
@@ -45137,6 +45273,8 @@ var $;
 	($mol_mem(($.$bog_gram_settings_key.prototype), "Text"));
 	($mol_mem(($.$bog_gram_settings_key.prototype), "Copy"));
 	($mol_mem(($.$bog_gram_settings_key.prototype), "Qr"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "shared_import"));
+	($mol_mem(($.$bog_gram_settings_key.prototype), "Shared_import"));
 	($mol_mem(($.$bog_gram_settings_key.prototype), "input"));
 	($mol_mem(($.$bog_gram_settings_key.prototype), "Field"));
 	($mol_mem(($.$bog_gram_settings_key.prototype), "Load_hint"));
@@ -45179,6 +45317,31 @@ var $;
             }
             shown(next) {
                 return next ?? false;
+            }
+            shared_armed(next) {
+                return next ?? false;
+            }
+            shared_import_label() {
+                return this.shared_armed() ? 'Точно восстановить общий аккаунт?' : 'Восстановить общий аккаунт Базы';
+            }
+            shared_key() {
+                return String($mol_state_local.value('$giper_baza_auth') ?? '');
+            }
+            Shared_import() {
+                return this.shared_key() ? super.Shared_import() : null;
+            }
+            shared_import(next) {
+                const auth = this.auth_from(this.shared_key());
+                if (!auth)
+                    return null;
+                if (!this.shared_armed()) {
+                    this.shared_armed(true);
+                    return null;
+                }
+                this.notify_on(false);
+                this.$.$giper_baza_auth.current(auth);
+                this.$.$mol_dom_context.location.reload();
+                return null;
             }
             toggle_label() {
                 return this.shown() ? 'Скрыть ключ' : 'Показать ключ';
@@ -45256,6 +45419,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_settings_key.prototype, "shown", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_settings_key.prototype, "shared_armed", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_settings_key.prototype, "shared_import", null);
         __decorate([
             $mol_action
         ], $bog_gram_settings_key.prototype, "toggle", null);
@@ -45394,6 +45563,10 @@ var $;
 			(obj.hint) = () => ("Закрыть");
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Install(){
+			const obj = new this.$.$bog_install();
 			return obj;
 		}
 		version(){
@@ -45698,6 +45871,7 @@ var $;
 		}
 		body(){
 			return [
+				(this.Install()), 
 				(this.Version()), 
 				(this.Name_field()), 
 				(this.My_id()), 
@@ -45745,6 +45919,7 @@ var $;
 	};
 	($mol_mem(($.$bog_gram_settings.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Install"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
@@ -45847,7 +46022,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.135';
+    $.$bog_gram_version = '1.0.142';
 })($ || ($ = {}));
 
 ;
@@ -48106,6 +48281,11 @@ var $;
             this.pointer_lost(false);
             return null;
         }
+        account_fresh(next) {
+            this.$.$giper_baza_auth.current(null);
+            this.$.$mol_dom_context.location.reload();
+            return null;
+        }
         dialogs_land_make() {
             const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
             this.user_store().Dialogs_land('auto')?.val(land.link().str);
@@ -48298,6 +48478,9 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "pointer_retry", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_account.prototype, "account_fresh", null);
     __decorate([
         $mol_action
     ], $bog_gram_account.prototype, "dialogs_land_make", null);
@@ -60171,6 +60354,9 @@ var $;
 		account_retry(next){
 			return (this.Account().pointer_retry(next));
 		}
+		account_fresh(next){
+			return (this.Account().account_fresh(next));
+		}
 		registry_ids(){
 			return (this.Registry().ids());
 		}
@@ -60849,10 +61035,21 @@ var $;
 			(obj.title) = () => ("Не удалось загрузить данные аккаунта");
 			return obj;
 		}
+		Gate_fresh_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Если это первый вход в Gram на этом устройстве, создайте отдельный аккаунт. Общий ключ других приложений останется без изменений.");
+			return obj;
+		}
 		Gate_retry(){
 			const obj = new this.$.$mol_button_minor();
 			(obj.title) = () => ("Повторить");
 			(obj.click) = (next) => ((this.account_retry(next)));
+			return obj;
+		}
+		Gate_fresh(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Создать аккаунт Gram на этом устройстве");
+			(obj.click) = (next) => ((this.account_fresh(next)));
 			return obj;
 		}
 		Placeholder(){
@@ -60941,7 +61138,9 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Gate"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_wait"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_lost"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_fresh_note"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_retry"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_fresh"));
 	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
 
@@ -61084,7 +61283,6 @@ var $;
 var $;
 (function ($) {
     const key_own = 'bog_gram_auth';
-    const key_shared = '$giper_baza_auth';
     const key_size = 128;
     class $bog_gram_auth extends $giper_baza_auth {
         static restore(key) {
@@ -61101,14 +61299,7 @@ var $;
         static current(next) {
             $mol_wire_solid();
             if (next === undefined) {
-                let key = String($mol_state_local.value(key_own) ?? '');
-                if (!key) {
-                    const shared = String($mol_state_local.value(key_shared) ?? '');
-                    if (shared) {
-                        $mol_state_local.value(key_own, shared);
-                        key = shared;
-                    }
-                }
+                const key = String($mol_state_local.value(key_own) ?? '');
                 if (key) {
                     const auth = this.restore(key);
                     if (auth)
@@ -61363,7 +61554,7 @@ var $;
             }
             gate_sub() {
                 return this.account_state() === 'lost'
-                    ? [this.Gate_lost(), this.Gate_retry()]
+                    ? [this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh()]
                     : [this.Gate_wait()];
             }
             pages() {

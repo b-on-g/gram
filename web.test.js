@@ -9017,6 +9017,18 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        'Создание нового аккаунта меняет только ключ Gram и перезагружает приложение'($) {
+            let key = undefined;
+            let reloads = 0;
+            const account = $bog_gram_account.make({ $: {
+                    ...$,
+                    $giper_baza_auth: { current: (next) => (key = next) },
+                    $mol_dom_context: { location: { reload: () => ++reloads } },
+                } });
+            account.account_fresh();
+            $mol_assert_equal(key, null);
+            $mol_assert_equal(reloads, 1);
+        },
         'Ключ со стороны и пустой домашний ленд: ленды не заводятся, ждём указатель'($) {
             const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
             const account = $bog_gram_account.make({ $, my_lord: () => 'LordForeignWait', user_store: () => profile });

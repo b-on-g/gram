@@ -2511,6 +2511,22 @@ $bog_gram_music $mol_page
 	Frame $mol_frame
 		uri <= uri
 
+$mol_button_major $mol_button_minor
+	theme \$mol_theme_base
+
+$bog_install $mol_labeler
+	title @ \Install app
+	button_title @ \Add to Home Screen
+	install_ios_instruction @ \To add this app to the Home Screen on iPhone or iPad, tap Share and choose “Add to Home Screen”.
+	install_android_instruction @ \In Chrome on Android, open the menu and choose “Install app”.
+	install_desktop_instruction @ \Use the install icon in the address bar or choose “Install app” in the browser menu.
+	install_unsupported_browser @ \Installation is not supported in this browser.
+	install_already_installed @ \The app is already installed.
+	content /
+		<= Install_button $mol_button_major
+			title <= button_title
+			click? <=> install? null
+
 $mol_string_button $mol_string
 
 $mol_icon_pencil $mol_icon path \M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z
@@ -2643,9 +2659,6 @@ $bog_gram_scan $mol_view
 			facing \environment
 			muted true
 
-$mol_button_major $mol_button_minor
-	theme \$mol_theme_base
-
 $bog_gram_settings_key $mol_view
 	notify_on? false
 	sub <= rows /
@@ -2675,6 +2688,9 @@ $bog_gram_settings_key $mol_view
 		blob <= blob null Blob
 	Import_form $mol_view
 		sub /
+			<= Shared_import $mol_button_minor
+				title <= shared_import_label \
+				click? <=> shared_import? null
 			<= Field $mol_string
 				hint \Ключ аккаунта
 				value? <=> input? \
@@ -2729,6 +2745,7 @@ $bog_gram_settings $bog_gram_page
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
+		<= Install $bog_install
 		<= Version $mol_labeler
 			title \Версия
 			content /
@@ -4084,6 +4101,7 @@ $bog_gram $mol_book2
 		ready => account_ready
 		pointer_state => account_state
 		pointer_retry? => account_retry?
+		account_fresh? => account_fresh?
 	Registry $bog_gram_registry
 		Account <= Account
 		ids => registry_ids
@@ -4218,9 +4236,14 @@ $bog_gram $mol_book2
 		title \Загружаем данные аккаунта…
 	Gate_lost $mol_paragraph
 		title \Не удалось загрузить данные аккаунта
+	Gate_fresh_note $mol_paragraph
+		title \Если это первый вход в Gram на этом устройстве, создайте отдельный аккаунт. Общий ключ других приложений останется без изменений.
 	Gate_retry $mol_button_minor
 		title \Повторить
 		click? <=> account_retry?
+	Gate_fresh $mol_button_minor
+		title \Создать аккаунт Gram на этом устройстве
+		click? <=> account_fresh?
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view

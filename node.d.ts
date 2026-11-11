@@ -41031,6 +41031,64 @@ declare namespace $ {
 
 declare namespace $ {
 
+	export class $mol_button_major extends $mol_button_minor {
+		theme( ): string
+	}
+	
+}
+
+//# sourceMappingURL=major.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_button_major__title_bog_install_1 = $mol_type_enforce<
+		ReturnType< $bog_install['button_title'] >
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_install_2 = $mol_type_enforce<
+		ReturnType< $bog_install['install'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	export class $bog_install extends $mol_labeler {
+		install( next?: any ): any
+		Install_button( ): $mol_button_major
+		title( ): string
+		button_title( ): string
+		install_ios_instruction( ): string
+		install_android_instruction( ): string
+		install_desktop_instruction( ): string
+		install_unsupported_browser( ): string
+		install_already_installed( ): string
+		content( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=install.view.tree.d.ts.map
+declare namespace $.$$ {
+    type Install_prompt = Event & {
+        prompt(): Promise<void>;
+        userChoice: Promise<{
+            outcome: 'accepted' | 'dismissed';
+        }>;
+    };
+    export class $bog_install extends $.$bog_install {
+        prompt_event(next?: Install_prompt | null): Install_prompt | null;
+        installed(next?: boolean): boolean;
+        prompt_capture(event: Install_prompt): void;
+        listeners(): $mol_dom_listener[];
+        auto(): void;
+        install(): void;
+    }
+    export {};
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
 	export class $mol_string_button extends $mol_string {
 	}
 	
@@ -41507,18 +41565,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_button_major extends $mol_button_minor {
-		theme( ): string
-	}
-	
-}
-
-//# sourceMappingURL=major.view.tree.d.ts.map
-declare namespace $ {
 
 	export class $mol_icon_upload extends $mol_icon {
 		path( ): string
@@ -41652,114 +41698,124 @@ declare namespace $ {
 		,
 		ReturnType< $bog_qr['gradient_stops'] >
 	>
-	type $mol_string__hint_bog_gram_settings_key_6 = $mol_type_enforce<
+	type $mol_button_minor__title_bog_gram_settings_key_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['shared_import_label'] >
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_gram_settings_key_7 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings_key['shared_import'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_string__hint_bog_gram_settings_key_8 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_settings_key_7 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_settings_key_9 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['input'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_key_8 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_key_10 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_open__hint_bog_gram_settings_key_9 = $mol_type_enforce<
+	type $mol_button_open__hint_bog_gram_settings_key_11 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_open['hint'] >
 	>
-	type $mol_button_open__accept_bog_gram_settings_key_10 = $mol_type_enforce<
+	type $mol_button_open__accept_bog_gram_settings_key_12 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_open['accept'] >
 	>
-	type $mol_button_open__multiple_bog_gram_settings_key_11 = $mol_type_enforce<
+	type $mol_button_open__multiple_bog_gram_settings_key_13 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $mol_button_open['multiple'] >
 	>
-	type $mol_button_open__files_bog_gram_settings_key_12 = $mol_type_enforce<
+	type $mol_button_open__files_bog_gram_settings_key_14 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['file'] >
 		,
 		ReturnType< $mol_button_open['files'] >
 	>
-	type $mol_view__sub_bog_gram_settings_key_13 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_key_15 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_scan__found_bog_gram_settings_key_14 = $mol_type_enforce<
+	type $bog_gram_scan__found_bog_gram_settings_key_16 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['scanned'] >
 		,
 		ReturnType< $bog_gram_scan['found'] >
 	>
-	type $mol_button_major__attr_bog_gram_settings_key_15 = $mol_type_enforce<
+	type $mol_button_major__attr_bog_gram_settings_key_17 = $mol_type_enforce<
 		({ 
 			'bog_gram_armed': ReturnType< $bog_gram_settings_key['armed'] >,
 		})  & ReturnType< $mol_button_major['attr'] >
 		,
 		ReturnType< $mol_button_major['attr'] >
 	>
-	type $mol_button_major__click_bog_gram_settings_key_16 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_settings_key_18 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['import'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_settings_key_17 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_settings_key_19 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_key_18 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_key_20 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['error'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__click_bog_gram_settings_key_19 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_settings_key_21 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_settings_key_20 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_settings_key_22 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_key_21 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_key_23 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_settings_key_22 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_key_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_settings_key_23 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_key_25 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_download__title_bog_gram_settings_key_24 = $mol_type_enforce<
+	type $mol_button_download__title_bog_gram_settings_key_26 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_download['title'] >
 	>
-	type $mol_button_download__file_name_bog_gram_settings_key_25 = $mol_type_enforce<
+	type $mol_button_download__file_name_bog_gram_settings_key_27 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_download['file_name'] >
 	>
-	type $mol_button_download__blob_bog_gram_settings_key_26 = $mol_type_enforce<
+	type $mol_button_download__blob_bog_gram_settings_key_28 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings_key['blob'] >
 		,
 		ReturnType< $mol_button_download['blob'] >
 	>
-	type $mol_view__sub_bog_gram_settings_key_27 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_key_29 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -41773,6 +41829,9 @@ declare namespace $ {
 		Copy( ): $mol_button_copy
 		Qr( ): $bog_qr
 		blob( ): Blob | null
+		shared_import_label( ): string
+		shared_import( next?: any ): any
+		Shared_import( ): $mol_button_minor
 		input( next?: string ): string
 		Field( ): $mol_string
 		Load_hint( ): $mol_paragraph
@@ -41805,6 +41864,11 @@ declare namespace $.$$ {
         text(): string;
         blob(): Blob;
         shown(next?: boolean): boolean;
+        shared_armed(next?: boolean): boolean;
+        shared_import_label(): "Точно восстановить общий аккаунт?" | "Восстановить общий аккаунт Базы";
+        shared_key(): string;
+        Shared_import(): $mol_button_minor;
+        shared_import(next?: any): null;
         toggle_label(): "Скрыть ключ" | "Показать ключ";
         toggle(next?: any): null;
         rows(): ($mol_view | $.$mol_paragraph | $.$mol_button_download)[];
@@ -41831,7 +41895,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.135";
+    const $bog_gram_version = "1.0.142";
 }
 
 declare namespace $ {
@@ -42189,6 +42253,7 @@ declare namespace $ {
 	export class $bog_gram_settings extends $bog_gram_page {
 		Close_icon( ): $mol_icon_close
 		Close( ): $mol_button_minor
+		Install( ): $bog_install
 		version( ): string
 		Version_text( ): $mol_paragraph
 		Version( ): $mol_labeler
@@ -44472,6 +44537,7 @@ declare namespace $ {
         pointer_wait(): void;
         pointer_state(): 'wait' | 'lost' | 'ready';
         pointer_retry(next?: any): null;
+        account_fresh(next?: any): null;
         dialogs_land_make(): $giper_baza_land;
         dialogs_land(): $giper_baza_land;
         monitor_land_make(): $giper_baza_land;
@@ -58690,1026 +58756,1046 @@ declare namespace $ {
 		Parameters< ReturnType< $bog_gram['Account'] >['pointer_retry'] >[0]
 	>
 	type __bog_gram_6 = $mol_type_enforce<
+		Parameters< $bog_gram['account_fresh'] >[0]
+		,
+		Parameters< ReturnType< $bog_gram['Account'] >['account_fresh'] >[0]
+	>
+	type __bog_gram_7 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_title'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['title'] >[0]
 	>
-	type __bog_gram_7 = $mol_type_enforce<
+	type __bog_gram_8 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_status'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['status'] >[0]
 	>
-	type __bog_gram_8 = $mol_type_enforce<
+	type __bog_gram_9 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_joined'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['joined'] >[0]
 	>
-	type __bog_gram_9 = $mol_type_enforce<
+	type __bog_gram_10 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_active_is'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['active_is'] >[0]
 	>
-	type __bog_gram_10 = $mol_type_enforce<
+	type __bog_gram_11 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_name'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['name'] >[0]
 	>
-	type __bog_gram_11 = $mol_type_enforce<
+	type __bog_gram_12 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_make'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['make'] >[0]
 	>
-	type __bog_gram_12 = $mol_type_enforce<
+	type __bog_gram_13 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_open'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['open'] >[0]
 	>
-	type __bog_gram_13 = $mol_type_enforce<
+	type __bog_gram_14 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_open'] >[1]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['open'] >[1]
 	>
-	type __bog_gram_14 = $mol_type_enforce<
+	type __bog_gram_15 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_join'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['join'] >[0]
 	>
-	type __bog_gram_15 = $mol_type_enforce<
+	type __bog_gram_16 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_join'] >[1]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['join'] >[1]
 	>
-	type __bog_gram_16 = $mol_type_enforce<
+	type __bog_gram_17 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_join_active'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['join_active'] >[0]
 	>
-	type __bog_gram_17 = $mol_type_enforce<
+	type __bog_gram_18 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_forget'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['forget'] >[0]
 	>
-	type __bog_gram_18 = $mol_type_enforce<
+	type __bog_gram_19 = $mol_type_enforce<
 		Parameters< $bog_gram['registry_forget'] >[1]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['forget'] >[1]
 	>
-	type __bog_gram_19 = $mol_type_enforce<
+	type __bog_gram_20 = $mol_type_enforce<
 		Parameters< $bog_gram['user_source'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Registry'] >['source_title'] >[0]
 	>
-	type __bog_gram_20 = $mol_type_enforce<
+	type __bog_gram_21 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_name'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['name'] >[0]
 	>
-	type __bog_gram_21 = $mol_type_enforce<
+	type __bog_gram_22 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_note'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['note'] >[0]
 	>
-	type __bog_gram_22 = $mol_type_enforce<
+	type __bog_gram_23 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_label'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['label'] >[0]
 	>
-	type __bog_gram_23 = $mol_type_enforce<
+	type __bog_gram_24 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_known'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['known'] >[0]
 	>
-	type __bog_gram_24 = $mol_type_enforce<
+	type __bog_gram_25 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_accept'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['accept'] >[0]
 	>
-	type __bog_gram_25 = $mol_type_enforce<
+	type __bog_gram_26 = $mol_type_enforce<
 		Parameters< $bog_gram['peer_pass_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['People'] >['pass_of'] >[0]
 	>
-	type __bog_gram_26 = $mol_type_enforce<
+	type __bog_gram_27 = $mol_type_enforce<
 		Parameters< $bog_gram['saved_is'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['saved_is'] >[0]
 	>
-	type __bog_gram_27 = $mol_type_enforce<
+	type __bog_gram_28 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_store'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['store'] >[0]
 	>
-	type __bog_gram_28 = $mol_type_enforce<
+	type __bog_gram_29 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_lords'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['lords'] >[0]
 	>
-	type __bog_gram_29 = $mol_type_enforce<
+	type __bog_gram_30 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_mates'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['mates'] >[0]
 	>
-	type __bog_gram_30 = $mol_type_enforce<
+	type __bog_gram_31 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_peer'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['peer'] >[0]
 	>
-	type __bog_gram_31 = $mol_type_enforce<
+	type __bog_gram_32 = $mol_type_enforce<
 		Parameters< $bog_gram['group_title'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['group_title'] >[0]
 	>
-	type __bog_gram_32 = $mol_type_enforce<
+	type __bog_gram_33 = $mol_type_enforce<
 		Parameters< $bog_gram['group_is'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['group_is'] >[0]
 	>
-	type __bog_gram_33 = $mol_type_enforce<
+	type __bog_gram_34 = $mol_type_enforce<
 		Parameters< $bog_gram['group_name_auto'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['group_name_auto'] >[0]
 	>
-	type __bog_gram_34 = $mol_type_enforce<
+	type __bog_gram_35 = $mol_type_enforce<
 		Parameters< $bog_gram['admin_lords'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['admins'] >[0]
 	>
-	type __bog_gram_35 = $mol_type_enforce<
+	type __bog_gram_36 = $mol_type_enforce<
 		Parameters< $bog_gram['admin_me'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['admin_me'] >[0]
 	>
-	type __bog_gram_36 = $mol_type_enforce<
+	type __bog_gram_37 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_owner'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['owner'] >[0]
 	>
-	type __bog_gram_37 = $mol_type_enforce<
+	type __bog_gram_38 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_own'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['own'] >[0]
 	>
-	type __bog_gram_38 = $mol_type_enforce<
+	type __bog_gram_39 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_title'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['title'] >[0]
 	>
-	type __bog_gram_39 = $mol_type_enforce<
+	type __bog_gram_40 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_avatar_id'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['avatar_id'] >[0]
 	>
-	type __bog_gram_40 = $mol_type_enforce<
+	type __bog_gram_41 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_tint'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['tint'] >[0]
 	>
-	type __bog_gram_41 = $mol_type_enforce<
+	type __bog_gram_42 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_moment'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['moment'] >[0]
 	>
-	type __bog_gram_42 = $mol_type_enforce<
+	type __bog_gram_43 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_alive'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['alive'] >[0]
 	>
-	type __bog_gram_43 = $mol_type_enforce<
+	type __bog_gram_44 = $mol_type_enforce<
 		Parameters< $bog_gram['session_links_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['links_of'] >[0]
 	>
-	type __bog_gram_44 = $mol_type_enforce<
+	type __bog_gram_45 = $mol_type_enforce<
 		Parameters< $bog_gram['session_land_by'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['land'] >[0]
 	>
-	type __bog_gram_45 = $mol_type_enforce<
+	type __bog_gram_46 = $mol_type_enforce<
 		Parameters< $bog_gram['session_lands_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['lands_of'] >[0]
 	>
-	type __bog_gram_46 = $mol_type_enforce<
+	type __bog_gram_47 = $mol_type_enforce<
 		Parameters< $bog_gram['session_land_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['land_of'] >[0]
 	>
-	type __bog_gram_47 = $mol_type_enforce<
+	type __bog_gram_48 = $mol_type_enforce<
 		Parameters< $bog_gram['session_store_last'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['session'] >[0]
 	>
-	type __bog_gram_48 = $mol_type_enforce<
+	type __bog_gram_49 = $mol_type_enforce<
 		Parameters< $bog_gram['messages_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['messages_of'] >[0]
 	>
-	type __bog_gram_49 = $mol_type_enforce<
+	type __bog_gram_50 = $mol_type_enforce<
 		Parameters< $bog_gram['messages_alive_of'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['messages_alive_of'] >[0]
 	>
-	type __bog_gram_50 = $mol_type_enforce<
+	type __bog_gram_51 = $mol_type_enforce<
 		Parameters< $bog_gram['unread_total'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['unread'] >[0]
 	>
-	type __bog_gram_51 = $mol_type_enforce<
+	type __bog_gram_52 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_preview'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['preview'] >[0]
 	>
-	type __bog_gram_52 = $mol_type_enforce<
+	type __bog_gram_53 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_time'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['time'] >[0]
 	>
-	type __bog_gram_53 = $mol_type_enforce<
+	type __bog_gram_54 = $mol_type_enforce<
 		Parameters< $bog_gram['mine_wrote'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Talk'] >['mine_wrote'] >[0]
 	>
-	type __bog_gram_54 = $mol_type_enforce<
+	type __bog_gram_55 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_kind'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Roster'] >['kind'] >[0]
 	>
-	type __bog_gram_55 = $mol_type_enforce<
+	type __bog_gram_56 = $mol_type_enforce<
 		Parameters< $bog_gram['archive_is'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Roster'] >['archive_is'] >[0]
 	>
-	type __bog_gram_56 = $mol_type_enforce<
+	type __bog_gram_57 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_with'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Roster'] >['with'] >[0]
 	>
-	type __bog_gram_57 = $mol_type_enforce<
+	type __bog_gram_58 = $mol_type_enforce<
 		Parameters< $bog_gram['contact_source'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Roster'] >['contact_source'] >[0]
 	>
-	type __bog_gram_58 = $mol_type_enforce<
+	type __bog_gram_59 = $mol_type_enforce<
 		Parameters< $bog_gram['member_error'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['error'] >[0]
 	>
-	type __bog_gram_59 = $mol_type_enforce<
+	type __bog_gram_60 = $mol_type_enforce<
 		Parameters< $bog_gram['member_history'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['history'] >[0]
 	>
-	type __bog_gram_60 = $mol_type_enforce<
+	type __bog_gram_61 = $mol_type_enforce<
 		Parameters< $bog_gram['group_name'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_name'] >[0]
 	>
-	type __bog_gram_61 = $mol_type_enforce<
+	type __bog_gram_62 = $mol_type_enforce<
 		Parameters< $bog_gram['group_id'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_id'] >[0]
 	>
-	type __bog_gram_62 = $mol_type_enforce<
+	type __bog_gram_63 = $mol_type_enforce<
 		Parameters< $bog_gram['group_pick'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_pick'] >[0]
 	>
-	type __bog_gram_63 = $mol_type_enforce<
+	type __bog_gram_64 = $mol_type_enforce<
 		Parameters< $bog_gram['group_pick'] >[1]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_pick'] >[1]
 	>
-	type __bog_gram_64 = $mol_type_enforce<
+	type __bog_gram_65 = $mol_type_enforce<
 		Parameters< $bog_gram['group_chosen_drop'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_drop'] >[0]
 	>
-	type __bog_gram_65 = $mol_type_enforce<
+	type __bog_gram_66 = $mol_type_enforce<
 		Parameters< $bog_gram['group_chosen_drop'] >[1]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_drop'] >[1]
 	>
-	type __bog_gram_66 = $mol_type_enforce<
+	type __bog_gram_67 = $mol_type_enforce<
 		Parameters< $bog_gram['group_id_add'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Crew'] >['draft_id_add'] >[0]
 	>
-	type __bog_gram_67 = $mol_type_enforce<
+	type __bog_gram_68 = $mol_type_enforce<
 		Parameters< $bog_gram['ask_lord'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Lobby'] >['lord_of'] >[0]
 	>
-	type __bog_gram_68 = $mol_type_enforce<
+	type __bog_gram_69 = $mol_type_enforce<
 		Parameters< $bog_gram['dialog_pending'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Invite'] >['pending'] >[0]
 	>
-	type __bog_gram_69 = $mol_type_enforce<
+	type __bog_gram_70 = $mol_type_enforce<
 		Parameters< $bog_gram['invite_drop'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Invite'] >['drop'] >[0]
 	>
-	type __bog_gram_70 = $mol_type_enforce<
+	type __bog_gram_71 = $mol_type_enforce<
 		Parameters< $bog_gram['notify_toggle'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Alerts'] >['toggle'] >[0]
 	>
-	type __bog_gram_71 = $mol_type_enforce<
+	type __bog_gram_72 = $mol_type_enforce<
 		Parameters< $bog_gram['notify_on'] >[0]
 		,
 		Parameters< ReturnType< $bog_gram['Alerts'] >['on'] >[0]
 	>
-	type $mol_view__sub_bog_gram_72 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_73 = $mol_type_enforce<
 		ReturnType< $bog_gram['gate_sub'] >
 		,
 		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__title_bog_gram_73 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_paragraph['title'] >
 	>
 	type $mol_paragraph__title_bog_gram_74 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_75 = $mol_type_enforce<
-		readonly(any)[]
+	type $mol_paragraph__title_bog_gram_75 = $mol_type_enforce<
+		string
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $mol_paragraph['title'] >
 	>
 	type $mol_view__sub_bog_gram_76 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_menu__Theme_bog_gram_77 = $mol_type_enforce<
-		ReturnType< $bog_gram['Theme'] >
-		,
-		ReturnType< $bog_gram_menu['Theme'] >
-	>
-	type $bog_gram_menu__compose_bog_gram_78 = $mol_type_enforce<
-		ReturnType< $bog_gram['compose_open'] >
-		,
-		ReturnType< $bog_gram_menu['compose'] >
-	>
-	type $bog_gram_menu__group_bog_gram_79 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_open'] >
-		,
-		ReturnType< $bog_gram_menu['group'] >
-	>
-	type $bog_gram_menu__music_bog_gram_80 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_open'] >
-		,
-		ReturnType< $bog_gram_menu['music'] >
-	>
-	type $bog_gram_menu__settings_bog_gram_81 = $mol_type_enforce<
-		ReturnType< $bog_gram['settings_open'] >
-		,
-		ReturnType< $bog_gram_menu['settings'] >
-	>
-	type $bog_gram_menu__invite_plate_text_bog_gram_82 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_plate_text'] >
-		,
-		ReturnType< $bog_gram_menu['invite_plate_text'] >
-	>
-	type $bog_gram_menu__invite_drop_bog_gram_83 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_drop'] >
-		,
-		ReturnType< $bog_gram_menu['invite_drop'] >
-	>
-	type $bog_gram_menu__ask_plate_text_bog_gram_84 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_plate_text'] >
-		,
-		ReturnType< $bog_gram_menu['ask_plate_text'] >
-	>
-	type $bog_gram_menu__visible_bog_gram_85 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_visible'] >
-		,
-		ReturnType< $bog_gram_menu['visible'] >
-	>
-	type $bog_gram_menu__archived_bog_gram_86 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_fresh'] >
-		,
-		ReturnType< $bog_gram_menu['archived'] >
-	>
-	type $bog_gram_menu__requests_bog_gram_87 = $mol_type_enforce<
-		ReturnType< $bog_gram['request_ids'] >
-		,
-		ReturnType< $bog_gram_menu['requests'] >
-	>
-	type $bog_gram_menu__dialog_title_bog_gram_88 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_title'] >
-		,
-		ReturnType< $bog_gram_menu['dialog_title'] >
-	>
-	type $bog_gram_menu__dialog_time_bog_gram_89 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_time'] >
-		,
-		ReturnType< $bog_gram_menu['dialog_time'] >
-	>
-	type $bog_gram_menu__dialog_preview_bog_gram_90 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_preview'] >
-		,
-		ReturnType< $bog_gram_menu['dialog_preview'] >
-	>
-	type $bog_gram_menu__dialog_avatar_id_bog_gram_91 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_avatar_id'] >
-		,
-		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
-	>
-	type $bog_gram_menu__dialog_tint_bog_gram_92 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_tint'] >
-		,
-		ReturnType< $bog_gram_menu['dialog_tint'] >
-	>
-	type $bog_gram_menu__unread_bog_gram_93 = $mol_type_enforce<
-		ReturnType< $bog_gram['unread_count'] >
-		,
-		ReturnType< $bog_gram_menu['unread'] >
-	>
-	type $bog_gram_menu__current_is_bog_gram_94 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_current_is'] >
-		,
-		ReturnType< $bog_gram_menu['current_is'] >
-	>
-	type $bog_gram_menu__request_is_bog_gram_95 = $mol_type_enforce<
-		ReturnType< $bog_gram['request_is'] >
-		,
-		ReturnType< $bog_gram_menu['request_is'] >
-	>
-	type $bog_gram_menu__archive_is_bog_gram_96 = $mol_type_enforce<
-		ReturnType< $bog_gram['archive_is'] >
-		,
-		ReturnType< $bog_gram_menu['archive_is'] >
-	>
-	type $bog_gram_menu__select_bog_gram_97 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_select'] >
-		,
-		ReturnType< $bog_gram_menu['select'] >
-	>
-	type $bog_gram_menu__archive_bog_gram_98 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_archive'] >
-		,
-		ReturnType< $bog_gram_menu['archive'] >
-	>
-	type $bog_gram_menu__unarchive_bog_gram_99 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_unarchive'] >
-		,
-		ReturnType< $bog_gram_menu['unarchive'] >
-	>
-	type $bog_gram_menu__drop_bog_gram_100 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_delete'] >
-		,
-		ReturnType< $bog_gram_menu['drop'] >
-	>
-	type $bog_gram_menu__accept_bog_gram_101 = $mol_type_enforce<
-		ReturnType< $bog_gram['request_accept'] >
-		,
-		ReturnType< $bog_gram_menu['accept'] >
-	>
-	type $bog_gram_menu__saved_title_bog_gram_102 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_title'] >
-		,
-		ReturnType< $bog_gram_menu['saved_title'] >
-	>
-	type $bog_gram_menu__saved_time_bog_gram_103 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_time'] >
-		,
-		ReturnType< $bog_gram_menu['saved_time'] >
-	>
-	type $bog_gram_menu__saved_preview_bog_gram_104 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_preview'] >
-		,
-		ReturnType< $bog_gram_menu['saved_preview'] >
-	>
-	type $bog_gram_menu__saved_current_bog_gram_105 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_current_is'] >
-		,
-		ReturnType< $bog_gram_menu['saved_current'] >
-	>
-	type $bog_gram_menu__saved_open_bog_gram_106 = $mol_type_enforce<
-		ReturnType< $bog_gram['saved_open'] >
-		,
-		ReturnType< $bog_gram_menu['saved_open'] >
-	>
-	type $bog_gram_music__hidden_bog_gram_107 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_hidden'] >
-		,
-		ReturnType< $bog_gram_music['hidden'] >
-	>
-	type $bog_gram_music__close_bog_gram_108 = $mol_type_enforce<
-		ReturnType< $bog_gram['music_close'] >
-		,
-		ReturnType< $bog_gram_music['close'] >
-	>
-	type $bog_gram_settings__close_bog_gram_109 = $mol_type_enforce<
-		ReturnType< $bog_gram['settings_close'] >
-		,
-		ReturnType< $bog_gram_settings['close'] >
-	>
-	type $bog_gram_settings__user_name_bog_gram_110 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_name'] >
-		,
-		ReturnType< $bog_gram_settings['user_name'] >
-	>
-	type $bog_gram_settings__my_lord_bog_gram_111 = $mol_type_enforce<
-		ReturnType< $bog_gram['my_lord'] >
-		,
-		ReturnType< $bog_gram_settings['my_lord'] >
-	>
-	type $bog_gram_settings__invite_link_bog_gram_112 = $mol_type_enforce<
-		ReturnType< $bog_gram['invite_link'] >
-		,
-		ReturnType< $bog_gram_settings['invite_link'] >
-	>
-	type $bog_gram_settings__notify_status_bog_gram_113 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_status'] >
-		,
-		ReturnType< $bog_gram_settings['notify_status'] >
-	>
-	type $bog_gram_settings__notify_label_bog_gram_114 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_label'] >
-		,
-		ReturnType< $bog_gram_settings['notify_label'] >
-	>
-	type $bog_gram_settings__notify_supported_bog_gram_115 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_supported'] >
-		,
-		ReturnType< $bog_gram_settings['notify_supported'] >
-	>
-	type $bog_gram_settings__notify_toggle_bog_gram_116 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_toggle'] >
-		,
-		ReturnType< $bog_gram_settings['notify_toggle'] >
-	>
-	type $bog_gram_settings__notify_on_bog_gram_117 = $mol_type_enforce<
-		ReturnType< $bog_gram['notify_on'] >
-		,
-		ReturnType< $bog_gram_settings['notify_on'] >
-	>
-	type $bog_gram_settings__registry_ids_bog_gram_118 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_ids'] >
-		,
-		ReturnType< $bog_gram_settings['registry_ids'] >
-	>
-	type $bog_gram_settings__registry_active_bog_gram_119 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_active'] >
-		,
-		ReturnType< $bog_gram_settings['registry_active'] >
-	>
-	type $bog_gram_settings__registry_uri_bog_gram_120 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_uri'] >
-		,
-		ReturnType< $bog_gram_settings['registry_uri'] >
-	>
-	type $bog_gram_settings__registry_name_bog_gram_121 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_name'] >
-		,
-		ReturnType< $bog_gram_settings['registry_name'] >
-	>
-	type $bog_gram_settings__registry_make_bog_gram_122 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_make'] >
-		,
-		ReturnType< $bog_gram_settings['registry_make'] >
-	>
-	type $bog_gram_settings__registry_title_bog_gram_123 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_title'] >
-		,
-		ReturnType< $bog_gram_settings['registry_title'] >
-	>
-	type $bog_gram_settings__registry_status_bog_gram_124 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_status'] >
-		,
-		ReturnType< $bog_gram_settings['registry_status'] >
-	>
-	type $bog_gram_settings__registry_joined_bog_gram_125 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_joined'] >
-		,
-		ReturnType< $bog_gram_settings['registry_joined'] >
-	>
-	type $bog_gram_settings__registry_active_is_bog_gram_126 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_active_is'] >
-		,
-		ReturnType< $bog_gram_settings['registry_active_is'] >
-	>
-	type $bog_gram_settings__registry_open_bog_gram_127 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_open'] >
-		,
-		ReturnType< $bog_gram_settings['registry_open'] >
-	>
-	type $bog_gram_settings__registry_join_bog_gram_128 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join'] >
-		,
-		ReturnType< $bog_gram_settings['registry_join'] >
-	>
-	type $bog_gram_settings__registry_forget_bog_gram_129 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_forget'] >
-		,
-		ReturnType< $bog_gram_settings['registry_forget'] >
-	>
-	type $bog_gram_compose__close_bog_gram_130 = $mol_type_enforce<
-		ReturnType< $bog_gram['compose_close'] >
-		,
-		ReturnType< $bog_gram_compose['close'] >
-	>
-	type $bog_gram_compose__open_bog_gram_131 = $mol_type_enforce<
-		ReturnType< $bog_gram['dialog_open'] >
-		,
-		ReturnType< $bog_gram_compose['open'] >
-	>
-	type $bog_gram_compose__users_bog_gram_132 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_lords'] >
-		,
-		ReturnType< $bog_gram_compose['users'] >
-	>
-	type $bog_gram_compose__user_title_bog_gram_133 = $mol_type_enforce<
-		ReturnType< $bog_gram['peer_label'] >
-		,
-		ReturnType< $bog_gram_compose['user_title'] >
-	>
-	type $bog_gram_compose__user_source_bog_gram_134 = $mol_type_enforce<
-		ReturnType< $bog_gram['user_source'] >
-		,
-		ReturnType< $bog_gram_compose['user_source'] >
-	>
-	type $bog_gram_compose__registry_ids_bog_gram_135 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_ids'] >
-		,
-		ReturnType< $bog_gram_compose['registry_ids'] >
-	>
-	type $bog_gram_compose__join_needed_bog_gram_136 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join_needed'] >
-		,
-		ReturnType< $bog_gram_compose['join_needed'] >
-	>
-	type $bog_gram_compose__join_bog_gram_137 = $mol_type_enforce<
-		ReturnType< $bog_gram['registry_join_active'] >
-		,
-		ReturnType< $bog_gram_compose['join'] >
-	>
-	type $bog_gram_group__close_bog_gram_138 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_close'] >
-		,
-		ReturnType< $bog_gram_group['close'] >
-	>
-	type $bog_gram_group__make_bog_gram_139 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_make'] >
-		,
-		ReturnType< $bog_gram_group['make'] >
-	>
-	type $bog_gram_group__name_bog_gram_140 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_name'] >
-		,
-		ReturnType< $bog_gram_group['name'] >
-	>
-	type $bog_gram_group__picked_bog_gram_141 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_picked'] >
-		,
-		ReturnType< $bog_gram_group['picked'] >
-	>
-	type $bog_gram_group__lost_bog_gram_142 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_lost'] >
-		,
-		ReturnType< $bog_gram_group['lost'] >
-	>
-	type $bog_gram_group__id_bog_gram_143 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id'] >
-		,
-		ReturnType< $bog_gram_group['id'] >
-	>
-	type $bog_gram_group__id_error_bog_gram_144 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id_error'] >
-		,
-		ReturnType< $bog_gram_group['id_error'] >
-	>
-	type $bog_gram_group__pick_bog_gram_145 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_pick'] >
-		,
-		ReturnType< $bog_gram_group['pick'] >
-	>
-	type $bog_gram_group__drop_bog_gram_146 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_chosen_drop'] >
-		,
-		ReturnType< $bog_gram_group['drop'] >
-	>
-	type $bog_gram_group__id_add_bog_gram_147 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_id_add'] >
-		,
-		ReturnType< $bog_gram_group['id_add'] >
-	>
-	type $bog_gram_group__label_bog_gram_148 = $mol_type_enforce<
-		ReturnType< $bog_gram['peer_label'] >
-		,
-		ReturnType< $bog_gram_group['label'] >
-	>
-	type $bog_gram_group__contact_lords_bog_gram_149 = $mol_type_enforce<
-		ReturnType< $bog_gram['contact_lords'] >
-		,
-		ReturnType< $bog_gram_group['contact_lords'] >
-	>
-	type $bog_gram_group__contact_source_bog_gram_150 = $mol_type_enforce<
-		ReturnType< $bog_gram['contact_source'] >
-		,
-		ReturnType< $bog_gram_group['contact_source'] >
-	>
-	type $bog_gram_members__close_bog_gram_151 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_close'] >
-		,
-		ReturnType< $bog_gram_members['close'] >
-	>
-	type $bog_gram_members__me_bog_gram_152 = $mol_type_enforce<
-		ReturnType< $bog_gram['my_lord'] >
-		,
-		ReturnType< $bog_gram_members['me'] >
-	>
-	type $bog_gram_members__lords_bog_gram_153 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_lords'] >
-		,
-		ReturnType< $bog_gram_members['lords'] >
-	>
-	type $bog_gram_members__label_bog_gram_154 = $mol_type_enforce<
-		ReturnType< $bog_gram['peer_label'] >
-		,
-		ReturnType< $bog_gram_members['label'] >
-	>
-	type $bog_gram_members__status_bog_gram_155 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_status'] >
-		,
-		ReturnType< $bog_gram_members['status'] >
-	>
-	type $bog_gram_members__admin_bog_gram_156 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_admin'] >
-		,
-		ReturnType< $bog_gram_members['admin'] >
-	>
-	type $bog_gram_members__owner_bog_gram_157 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_owner'] >
-		,
-		ReturnType< $bog_gram_members['owner'] >
-	>
-	type $bog_gram_members__admin_is_bog_gram_158 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_admin'] >
-		,
-		ReturnType< $bog_gram_members['admin_is'] >
-	>
-	type $bog_gram_members__error_bog_gram_159 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_error'] >
-		,
-		ReturnType< $bog_gram_members['error'] >
-	>
-	type $bog_gram_members__join_link_bog_gram_160 = $mol_type_enforce<
-		ReturnType< $bog_gram['join_link'] >
-		,
-		ReturnType< $bog_gram_members['join_link'] >
-	>
-	type $bog_gram_members__asks_bog_gram_161 = $mol_type_enforce<
-		ReturnType< $bog_gram['members_asks'] >
-		,
-		ReturnType< $bog_gram_members['asks'] >
-	>
-	type $bog_gram_members__ask_lord_bog_gram_162 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_lord'] >
-		,
-		ReturnType< $bog_gram_members['ask_lord'] >
-	>
-	type $bog_gram_members__accept_bog_gram_163 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_accept'] >
-		,
-		ReturnType< $bog_gram_members['accept'] >
-	>
-	type $bog_gram_members__reject_bog_gram_164 = $mol_type_enforce<
-		ReturnType< $bog_gram['ask_reject'] >
-		,
-		ReturnType< $bog_gram_members['reject'] >
-	>
-	type $bog_gram_members__candidates_bog_gram_165 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_candidates'] >
-		,
-		ReturnType< $bog_gram_members['candidates'] >
-	>
-	type $bog_gram_members__contact_source_bog_gram_166 = $mol_type_enforce<
-		ReturnType< $bog_gram['contact_source'] >
-		,
-		ReturnType< $bog_gram_members['contact_source'] >
-	>
-	type $bog_gram_members__history_bog_gram_167 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_history'] >
-		,
-		ReturnType< $bog_gram_members['history'] >
-	>
-	type $bog_gram_members__add_bog_gram_168 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_add'] >
-		,
-		ReturnType< $bog_gram_members['add'] >
-	>
-	type $bog_gram_members__part_bog_gram_169 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_drop'] >
-		,
-		ReturnType< $bog_gram_members['part'] >
-	>
-	type $bog_gram_members__promote_bog_gram_170 = $mol_type_enforce<
-		ReturnType< $bog_gram['member_raise'] >
-		,
-		ReturnType< $bog_gram_members['promote'] >
-	>
-	type $bog_gram_members__leave_bog_gram_171 = $mol_type_enforce<
-		ReturnType< $bog_gram['group_leave'] >
-		,
-		ReturnType< $bog_gram_members['leave'] >
-	>
-	type $bog_gram_registry__Account_bog_gram_172 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_registry['Account'] >
-	>
-	type $bog_gram_people__Account_bog_gram_173 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_people['Account'] >
-	>
-	type $bog_gram_people__Registry_bog_gram_174 = $mol_type_enforce<
-		ReturnType< $bog_gram['Registry'] >
-		,
-		ReturnType< $bog_gram_people['Registry'] >
-	>
-	type $bog_gram_people__Roster_bog_gram_175 = $mol_type_enforce<
-		ReturnType< $bog_gram['Roster'] >
-		,
-		ReturnType< $bog_gram_people['Roster'] >
-	>
-	type $bog_gram_talk__Account_bog_gram_176 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_talk['Account'] >
-	>
-	type $bog_gram_talk__People_bog_gram_177 = $mol_type_enforce<
-		ReturnType< $bog_gram['People'] >
-		,
-		ReturnType< $bog_gram_talk['People'] >
-	>
-	type $bog_gram_roster__Account_bog_gram_178 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_roster['Account'] >
-	>
-	type $bog_gram_roster__People_bog_gram_179 = $mol_type_enforce<
-		ReturnType< $bog_gram['People'] >
-		,
-		ReturnType< $bog_gram_roster['People'] >
-	>
-	type $bog_gram_roster__Talk_bog_gram_180 = $mol_type_enforce<
-		ReturnType< $bog_gram['Talk'] >
-		,
-		ReturnType< $bog_gram_roster['Talk'] >
-	>
-	type $bog_gram_crew__Account_bog_gram_181 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_crew['Account'] >
-	>
-	type $bog_gram_crew__People_bog_gram_182 = $mol_type_enforce<
-		ReturnType< $bog_gram['People'] >
-		,
-		ReturnType< $bog_gram_crew['People'] >
-	>
-	type $bog_gram_crew__Talk_bog_gram_183 = $mol_type_enforce<
-		ReturnType< $bog_gram['Talk'] >
-		,
-		ReturnType< $bog_gram_crew['Talk'] >
-	>
-	type $bog_gram_lobby__Account_bog_gram_184 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_lobby['Account'] >
-	>
-	type $bog_gram_lobby__People_bog_gram_185 = $mol_type_enforce<
-		ReturnType< $bog_gram['People'] >
-		,
-		ReturnType< $bog_gram_lobby['People'] >
-	>
-	type $bog_gram_lobby__Talk_bog_gram_186 = $mol_type_enforce<
-		ReturnType< $bog_gram['Talk'] >
-		,
-		ReturnType< $bog_gram_lobby['Talk'] >
-	>
-	type $bog_gram_lobby__Roster_bog_gram_187 = $mol_type_enforce<
-		ReturnType< $bog_gram['Roster'] >
-		,
-		ReturnType< $bog_gram_lobby['Roster'] >
-	>
-	type $bog_gram_lobby__Crew_bog_gram_188 = $mol_type_enforce<
-		ReturnType< $bog_gram['Crew'] >
-		,
-		ReturnType< $bog_gram_lobby['Crew'] >
-	>
-	type $bog_gram_invite__Account_bog_gram_189 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_invite['Account'] >
-	>
-	type $bog_gram_invite__People_bog_gram_190 = $mol_type_enforce<
-		ReturnType< $bog_gram['People'] >
-		,
-		ReturnType< $bog_gram_invite['People'] >
-	>
-	type $bog_gram_invite__Roster_bog_gram_191 = $mol_type_enforce<
-		ReturnType< $bog_gram['Roster'] >
-		,
-		ReturnType< $bog_gram_invite['Roster'] >
-	>
-	type $bog_gram_alerts__Account_bog_gram_192 = $mol_type_enforce<
-		ReturnType< $bog_gram['Account'] >
-		,
-		ReturnType< $bog_gram_alerts['Account'] >
-	>
-	type $bog_kit_pager__count_bog_gram_193 = $mol_type_enforce<
-		ReturnType< $bog_gram['pager_count'] >
-		,
-		ReturnType< $bog_kit_pager['count'] >
-	>
-	type $bog_kit_pager__current_bog_gram_194 = $mol_type_enforce<
-		ReturnType< $bog_gram['page_current'] >
-		,
-		ReturnType< $bog_kit_pager['current'] >
-	>
-	type $mol_view__sub_bog_gram_195 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_77 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_196 = $mol_type_enforce<
-		string
+	type $bog_gram_menu__Theme_bog_gram_78 = $mol_type_enforce<
+		ReturnType< $bog_gram['Theme'] >
 		,
-		ReturnType< $mol_paragraph['title'] >
+		ReturnType< $bog_gram_menu['Theme'] >
+	>
+	type $bog_gram_menu__compose_bog_gram_79 = $mol_type_enforce<
+		ReturnType< $bog_gram['compose_open'] >
+		,
+		ReturnType< $bog_gram_menu['compose'] >
+	>
+	type $bog_gram_menu__group_bog_gram_80 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_open'] >
+		,
+		ReturnType< $bog_gram_menu['group'] >
+	>
+	type $bog_gram_menu__music_bog_gram_81 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_open'] >
+		,
+		ReturnType< $bog_gram_menu['music'] >
+	>
+	type $bog_gram_menu__settings_bog_gram_82 = $mol_type_enforce<
+		ReturnType< $bog_gram['settings_open'] >
+		,
+		ReturnType< $bog_gram_menu['settings'] >
+	>
+	type $bog_gram_menu__invite_plate_text_bog_gram_83 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_plate_text'] >
+		,
+		ReturnType< $bog_gram_menu['invite_plate_text'] >
+	>
+	type $bog_gram_menu__invite_drop_bog_gram_84 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_drop'] >
+		,
+		ReturnType< $bog_gram_menu['invite_drop'] >
+	>
+	type $bog_gram_menu__ask_plate_text_bog_gram_85 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_plate_text'] >
+		,
+		ReturnType< $bog_gram_menu['ask_plate_text'] >
+	>
+	type $bog_gram_menu__visible_bog_gram_86 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_visible'] >
+		,
+		ReturnType< $bog_gram_menu['visible'] >
+	>
+	type $bog_gram_menu__archived_bog_gram_87 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_fresh'] >
+		,
+		ReturnType< $bog_gram_menu['archived'] >
+	>
+	type $bog_gram_menu__requests_bog_gram_88 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_ids'] >
+		,
+		ReturnType< $bog_gram_menu['requests'] >
+	>
+	type $bog_gram_menu__dialog_title_bog_gram_89 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_title'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_title'] >
+	>
+	type $bog_gram_menu__dialog_time_bog_gram_90 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_time'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_time'] >
+	>
+	type $bog_gram_menu__dialog_preview_bog_gram_91 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_preview'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_preview'] >
+	>
+	type $bog_gram_menu__dialog_avatar_id_bog_gram_92 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_avatar_id'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
+	>
+	type $bog_gram_menu__dialog_tint_bog_gram_93 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_tint'] >
+		,
+		ReturnType< $bog_gram_menu['dialog_tint'] >
+	>
+	type $bog_gram_menu__unread_bog_gram_94 = $mol_type_enforce<
+		ReturnType< $bog_gram['unread_count'] >
+		,
+		ReturnType< $bog_gram_menu['unread'] >
+	>
+	type $bog_gram_menu__current_is_bog_gram_95 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_current_is'] >
+		,
+		ReturnType< $bog_gram_menu['current_is'] >
+	>
+	type $bog_gram_menu__request_is_bog_gram_96 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_is'] >
+		,
+		ReturnType< $bog_gram_menu['request_is'] >
+	>
+	type $bog_gram_menu__archive_is_bog_gram_97 = $mol_type_enforce<
+		ReturnType< $bog_gram['archive_is'] >
+		,
+		ReturnType< $bog_gram_menu['archive_is'] >
+	>
+	type $bog_gram_menu__select_bog_gram_98 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_select'] >
+		,
+		ReturnType< $bog_gram_menu['select'] >
+	>
+	type $bog_gram_menu__archive_bog_gram_99 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_archive'] >
+		,
+		ReturnType< $bog_gram_menu['archive'] >
+	>
+	type $bog_gram_menu__unarchive_bog_gram_100 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_unarchive'] >
+		,
+		ReturnType< $bog_gram_menu['unarchive'] >
+	>
+	type $bog_gram_menu__drop_bog_gram_101 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_delete'] >
+		,
+		ReturnType< $bog_gram_menu['drop'] >
+	>
+	type $bog_gram_menu__accept_bog_gram_102 = $mol_type_enforce<
+		ReturnType< $bog_gram['request_accept'] >
+		,
+		ReturnType< $bog_gram_menu['accept'] >
+	>
+	type $bog_gram_menu__saved_title_bog_gram_103 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_title'] >
+		,
+		ReturnType< $bog_gram_menu['saved_title'] >
+	>
+	type $bog_gram_menu__saved_time_bog_gram_104 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_time'] >
+		,
+		ReturnType< $bog_gram_menu['saved_time'] >
+	>
+	type $bog_gram_menu__saved_preview_bog_gram_105 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_preview'] >
+		,
+		ReturnType< $bog_gram_menu['saved_preview'] >
+	>
+	type $bog_gram_menu__saved_current_bog_gram_106 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_current_is'] >
+		,
+		ReturnType< $bog_gram_menu['saved_current'] >
+	>
+	type $bog_gram_menu__saved_open_bog_gram_107 = $mol_type_enforce<
+		ReturnType< $bog_gram['saved_open'] >
+		,
+		ReturnType< $bog_gram_menu['saved_open'] >
+	>
+	type $bog_gram_music__hidden_bog_gram_108 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_hidden'] >
+		,
+		ReturnType< $bog_gram_music['hidden'] >
+	>
+	type $bog_gram_music__close_bog_gram_109 = $mol_type_enforce<
+		ReturnType< $bog_gram['music_close'] >
+		,
+		ReturnType< $bog_gram_music['close'] >
+	>
+	type $bog_gram_settings__close_bog_gram_110 = $mol_type_enforce<
+		ReturnType< $bog_gram['settings_close'] >
+		,
+		ReturnType< $bog_gram_settings['close'] >
+	>
+	type $bog_gram_settings__user_name_bog_gram_111 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_name'] >
+		,
+		ReturnType< $bog_gram_settings['user_name'] >
+	>
+	type $bog_gram_settings__my_lord_bog_gram_112 = $mol_type_enforce<
+		ReturnType< $bog_gram['my_lord'] >
+		,
+		ReturnType< $bog_gram_settings['my_lord'] >
+	>
+	type $bog_gram_settings__invite_link_bog_gram_113 = $mol_type_enforce<
+		ReturnType< $bog_gram['invite_link'] >
+		,
+		ReturnType< $bog_gram_settings['invite_link'] >
+	>
+	type $bog_gram_settings__notify_status_bog_gram_114 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_status'] >
+		,
+		ReturnType< $bog_gram_settings['notify_status'] >
+	>
+	type $bog_gram_settings__notify_label_bog_gram_115 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_label'] >
+		,
+		ReturnType< $bog_gram_settings['notify_label'] >
+	>
+	type $bog_gram_settings__notify_supported_bog_gram_116 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_supported'] >
+		,
+		ReturnType< $bog_gram_settings['notify_supported'] >
+	>
+	type $bog_gram_settings__notify_toggle_bog_gram_117 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_toggle'] >
+		,
+		ReturnType< $bog_gram_settings['notify_toggle'] >
+	>
+	type $bog_gram_settings__notify_on_bog_gram_118 = $mol_type_enforce<
+		ReturnType< $bog_gram['notify_on'] >
+		,
+		ReturnType< $bog_gram_settings['notify_on'] >
+	>
+	type $bog_gram_settings__registry_ids_bog_gram_119 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_ids'] >
+		,
+		ReturnType< $bog_gram_settings['registry_ids'] >
+	>
+	type $bog_gram_settings__registry_active_bog_gram_120 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_active'] >
+		,
+		ReturnType< $bog_gram_settings['registry_active'] >
+	>
+	type $bog_gram_settings__registry_uri_bog_gram_121 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_uri'] >
+		,
+		ReturnType< $bog_gram_settings['registry_uri'] >
+	>
+	type $bog_gram_settings__registry_name_bog_gram_122 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_name'] >
+		,
+		ReturnType< $bog_gram_settings['registry_name'] >
+	>
+	type $bog_gram_settings__registry_make_bog_gram_123 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_make'] >
+		,
+		ReturnType< $bog_gram_settings['registry_make'] >
+	>
+	type $bog_gram_settings__registry_title_bog_gram_124 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_title'] >
+		,
+		ReturnType< $bog_gram_settings['registry_title'] >
+	>
+	type $bog_gram_settings__registry_status_bog_gram_125 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_status'] >
+		,
+		ReturnType< $bog_gram_settings['registry_status'] >
+	>
+	type $bog_gram_settings__registry_joined_bog_gram_126 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_joined'] >
+		,
+		ReturnType< $bog_gram_settings['registry_joined'] >
+	>
+	type $bog_gram_settings__registry_active_is_bog_gram_127 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_active_is'] >
+		,
+		ReturnType< $bog_gram_settings['registry_active_is'] >
+	>
+	type $bog_gram_settings__registry_open_bog_gram_128 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_open'] >
+		,
+		ReturnType< $bog_gram_settings['registry_open'] >
+	>
+	type $bog_gram_settings__registry_join_bog_gram_129 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join'] >
+		,
+		ReturnType< $bog_gram_settings['registry_join'] >
+	>
+	type $bog_gram_settings__registry_forget_bog_gram_130 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_forget'] >
+		,
+		ReturnType< $bog_gram_settings['registry_forget'] >
+	>
+	type $bog_gram_compose__close_bog_gram_131 = $mol_type_enforce<
+		ReturnType< $bog_gram['compose_close'] >
+		,
+		ReturnType< $bog_gram_compose['close'] >
+	>
+	type $bog_gram_compose__open_bog_gram_132 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_open'] >
+		,
+		ReturnType< $bog_gram_compose['open'] >
+	>
+	type $bog_gram_compose__users_bog_gram_133 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_lords'] >
+		,
+		ReturnType< $bog_gram_compose['users'] >
+	>
+	type $bog_gram_compose__user_title_bog_gram_134 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_compose['user_title'] >
+	>
+	type $bog_gram_compose__user_source_bog_gram_135 = $mol_type_enforce<
+		ReturnType< $bog_gram['user_source'] >
+		,
+		ReturnType< $bog_gram_compose['user_source'] >
+	>
+	type $bog_gram_compose__registry_ids_bog_gram_136 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_ids'] >
+		,
+		ReturnType< $bog_gram_compose['registry_ids'] >
+	>
+	type $bog_gram_compose__join_needed_bog_gram_137 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join_needed'] >
+		,
+		ReturnType< $bog_gram_compose['join_needed'] >
+	>
+	type $bog_gram_compose__join_bog_gram_138 = $mol_type_enforce<
+		ReturnType< $bog_gram['registry_join_active'] >
+		,
+		ReturnType< $bog_gram_compose['join'] >
+	>
+	type $bog_gram_group__close_bog_gram_139 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_close'] >
+		,
+		ReturnType< $bog_gram_group['close'] >
+	>
+	type $bog_gram_group__make_bog_gram_140 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_make'] >
+		,
+		ReturnType< $bog_gram_group['make'] >
+	>
+	type $bog_gram_group__name_bog_gram_141 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_name'] >
+		,
+		ReturnType< $bog_gram_group['name'] >
+	>
+	type $bog_gram_group__picked_bog_gram_142 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_picked'] >
+		,
+		ReturnType< $bog_gram_group['picked'] >
+	>
+	type $bog_gram_group__lost_bog_gram_143 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_lost'] >
+		,
+		ReturnType< $bog_gram_group['lost'] >
+	>
+	type $bog_gram_group__id_bog_gram_144 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id'] >
+		,
+		ReturnType< $bog_gram_group['id'] >
+	>
+	type $bog_gram_group__id_error_bog_gram_145 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id_error'] >
+		,
+		ReturnType< $bog_gram_group['id_error'] >
+	>
+	type $bog_gram_group__pick_bog_gram_146 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_pick'] >
+		,
+		ReturnType< $bog_gram_group['pick'] >
+	>
+	type $bog_gram_group__drop_bog_gram_147 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_chosen_drop'] >
+		,
+		ReturnType< $bog_gram_group['drop'] >
+	>
+	type $bog_gram_group__id_add_bog_gram_148 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_id_add'] >
+		,
+		ReturnType< $bog_gram_group['id_add'] >
+	>
+	type $bog_gram_group__label_bog_gram_149 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_group['label'] >
+	>
+	type $bog_gram_group__contact_lords_bog_gram_150 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_lords'] >
+		,
+		ReturnType< $bog_gram_group['contact_lords'] >
+	>
+	type $bog_gram_group__contact_source_bog_gram_151 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_source'] >
+		,
+		ReturnType< $bog_gram_group['contact_source'] >
+	>
+	type $bog_gram_members__close_bog_gram_152 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_close'] >
+		,
+		ReturnType< $bog_gram_members['close'] >
+	>
+	type $bog_gram_members__me_bog_gram_153 = $mol_type_enforce<
+		ReturnType< $bog_gram['my_lord'] >
+		,
+		ReturnType< $bog_gram_members['me'] >
+	>
+	type $bog_gram_members__lords_bog_gram_154 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_lords'] >
+		,
+		ReturnType< $bog_gram_members['lords'] >
+	>
+	type $bog_gram_members__label_bog_gram_155 = $mol_type_enforce<
+		ReturnType< $bog_gram['peer_label'] >
+		,
+		ReturnType< $bog_gram_members['label'] >
+	>
+	type $bog_gram_members__status_bog_gram_156 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_status'] >
+		,
+		ReturnType< $bog_gram_members['status'] >
+	>
+	type $bog_gram_members__admin_bog_gram_157 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_admin'] >
+		,
+		ReturnType< $bog_gram_members['admin'] >
+	>
+	type $bog_gram_members__owner_bog_gram_158 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_owner'] >
+		,
+		ReturnType< $bog_gram_members['owner'] >
+	>
+	type $bog_gram_members__admin_is_bog_gram_159 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_admin'] >
+		,
+		ReturnType< $bog_gram_members['admin_is'] >
+	>
+	type $bog_gram_members__error_bog_gram_160 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_error'] >
+		,
+		ReturnType< $bog_gram_members['error'] >
+	>
+	type $bog_gram_members__join_link_bog_gram_161 = $mol_type_enforce<
+		ReturnType< $bog_gram['join_link'] >
+		,
+		ReturnType< $bog_gram_members['join_link'] >
+	>
+	type $bog_gram_members__asks_bog_gram_162 = $mol_type_enforce<
+		ReturnType< $bog_gram['members_asks'] >
+		,
+		ReturnType< $bog_gram_members['asks'] >
+	>
+	type $bog_gram_members__ask_lord_bog_gram_163 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_lord'] >
+		,
+		ReturnType< $bog_gram_members['ask_lord'] >
+	>
+	type $bog_gram_members__accept_bog_gram_164 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_accept'] >
+		,
+		ReturnType< $bog_gram_members['accept'] >
+	>
+	type $bog_gram_members__reject_bog_gram_165 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_reject'] >
+		,
+		ReturnType< $bog_gram_members['reject'] >
+	>
+	type $bog_gram_members__candidates_bog_gram_166 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_candidates'] >
+		,
+		ReturnType< $bog_gram_members['candidates'] >
+	>
+	type $bog_gram_members__contact_source_bog_gram_167 = $mol_type_enforce<
+		ReturnType< $bog_gram['contact_source'] >
+		,
+		ReturnType< $bog_gram_members['contact_source'] >
+	>
+	type $bog_gram_members__history_bog_gram_168 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_history'] >
+		,
+		ReturnType< $bog_gram_members['history'] >
+	>
+	type $bog_gram_members__add_bog_gram_169 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_add'] >
+		,
+		ReturnType< $bog_gram_members['add'] >
+	>
+	type $bog_gram_members__part_bog_gram_170 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_drop'] >
+		,
+		ReturnType< $bog_gram_members['part'] >
+	>
+	type $bog_gram_members__promote_bog_gram_171 = $mol_type_enforce<
+		ReturnType< $bog_gram['member_raise'] >
+		,
+		ReturnType< $bog_gram_members['promote'] >
+	>
+	type $bog_gram_members__leave_bog_gram_172 = $mol_type_enforce<
+		ReturnType< $bog_gram['group_leave'] >
+		,
+		ReturnType< $bog_gram_members['leave'] >
+	>
+	type $bog_gram_registry__Account_bog_gram_173 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_registry['Account'] >
+	>
+	type $bog_gram_people__Account_bog_gram_174 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_people['Account'] >
+	>
+	type $bog_gram_people__Registry_bog_gram_175 = $mol_type_enforce<
+		ReturnType< $bog_gram['Registry'] >
+		,
+		ReturnType< $bog_gram_people['Registry'] >
+	>
+	type $bog_gram_people__Roster_bog_gram_176 = $mol_type_enforce<
+		ReturnType< $bog_gram['Roster'] >
+		,
+		ReturnType< $bog_gram_people['Roster'] >
+	>
+	type $bog_gram_talk__Account_bog_gram_177 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_talk['Account'] >
+	>
+	type $bog_gram_talk__People_bog_gram_178 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_talk['People'] >
+	>
+	type $bog_gram_roster__Account_bog_gram_179 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_roster['Account'] >
+	>
+	type $bog_gram_roster__People_bog_gram_180 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_roster['People'] >
+	>
+	type $bog_gram_roster__Talk_bog_gram_181 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_roster['Talk'] >
+	>
+	type $bog_gram_crew__Account_bog_gram_182 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_crew['Account'] >
+	>
+	type $bog_gram_crew__People_bog_gram_183 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_crew['People'] >
+	>
+	type $bog_gram_crew__Talk_bog_gram_184 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_crew['Talk'] >
+	>
+	type $bog_gram_lobby__Account_bog_gram_185 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_lobby['Account'] >
+	>
+	type $bog_gram_lobby__People_bog_gram_186 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_lobby['People'] >
+	>
+	type $bog_gram_lobby__Talk_bog_gram_187 = $mol_type_enforce<
+		ReturnType< $bog_gram['Talk'] >
+		,
+		ReturnType< $bog_gram_lobby['Talk'] >
+	>
+	type $bog_gram_lobby__Roster_bog_gram_188 = $mol_type_enforce<
+		ReturnType< $bog_gram['Roster'] >
+		,
+		ReturnType< $bog_gram_lobby['Roster'] >
+	>
+	type $bog_gram_lobby__Crew_bog_gram_189 = $mol_type_enforce<
+		ReturnType< $bog_gram['Crew'] >
+		,
+		ReturnType< $bog_gram_lobby['Crew'] >
+	>
+	type $bog_gram_invite__Account_bog_gram_190 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_invite['Account'] >
+	>
+	type $bog_gram_invite__People_bog_gram_191 = $mol_type_enforce<
+		ReturnType< $bog_gram['People'] >
+		,
+		ReturnType< $bog_gram_invite['People'] >
+	>
+	type $bog_gram_invite__Roster_bog_gram_192 = $mol_type_enforce<
+		ReturnType< $bog_gram['Roster'] >
+		,
+		ReturnType< $bog_gram_invite['Roster'] >
+	>
+	type $bog_gram_alerts__Account_bog_gram_193 = $mol_type_enforce<
+		ReturnType< $bog_gram['Account'] >
+		,
+		ReturnType< $bog_gram_alerts['Account'] >
+	>
+	type $bog_kit_pager__count_bog_gram_194 = $mol_type_enforce<
+		ReturnType< $bog_gram['pager_count'] >
+		,
+		ReturnType< $bog_kit_pager['count'] >
+	>
+	type $bog_kit_pager__current_bog_gram_195 = $mol_type_enforce<
+		ReturnType< $bog_gram['page_current'] >
+		,
+		ReturnType< $bog_kit_pager['current'] >
+	>
+	type $mol_view__sub_bog_gram_196 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_paragraph__title_bog_gram_197 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__title_bog_gram_198 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_198 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_gram_199 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__title_bog_gram_200 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['title'] >
 	>
-	type $mol_button_minor__click_bog_gram_199 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_201 = $mol_type_enforce<
 		ReturnType< $bog_gram['account_retry'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $bog_gram_chat__dialog_bog_gram_200 = $mol_type_enforce<
+	type $mol_button_minor__title_bog_gram_202 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_gram_203 = $mol_type_enforce<
+		ReturnType< $bog_gram['account_fresh'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $bog_gram_chat__dialog_bog_gram_204 = $mol_type_enforce<
 		ReturnType< $bog_gram['chat_dialog'] >
 		,
 		ReturnType< $bog_gram_chat['dialog'] >
 	>
-	type $bog_gram_chat__my_lord_bog_gram_201 = $mol_type_enforce<
+	type $bog_gram_chat__my_lord_bog_gram_205 = $mol_type_enforce<
 		ReturnType< $bog_gram['my_lord'] >
 		,
 		ReturnType< $bog_gram_chat['my_lord'] >
 	>
-	type $bog_gram_chat__Talk_bog_gram_202 = $mol_type_enforce<
+	type $bog_gram_chat__Talk_bog_gram_206 = $mol_type_enforce<
 		ReturnType< $bog_gram['Talk'] >
 		,
 		ReturnType< $bog_gram_chat['Talk'] >
 	>
-	type $bog_gram_chat__People_bog_gram_203 = $mol_type_enforce<
+	type $bog_gram_chat__People_bog_gram_207 = $mol_type_enforce<
 		ReturnType< $bog_gram['People'] >
 		,
 		ReturnType< $bog_gram_chat['People'] >
 	>
-	type $bog_gram_chat__Alerts_bog_gram_204 = $mol_type_enforce<
+	type $bog_gram_chat__Alerts_bog_gram_208 = $mol_type_enforce<
 		ReturnType< $bog_gram['Alerts'] >
 		,
 		ReturnType< $bog_gram_chat['Alerts'] >
 	>
-	type $bog_gram_chat__close_bog_gram_205 = $mol_type_enforce<
+	type $bog_gram_chat__close_bog_gram_209 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_close'] >
 		,
 		ReturnType< $bog_gram_chat['close'] >
 	>
-	type $bog_gram_chat__members_bog_gram_206 = $mol_type_enforce<
+	type $bog_gram_chat__members_bog_gram_210 = $mol_type_enforce<
 		ReturnType< $bog_gram['members_open'] >
 		,
 		ReturnType< $bog_gram_chat['members'] >
 	>
-	type $bog_gram_chat__call_open_bog_gram_207 = $mol_type_enforce<
+	type $bog_gram_chat__call_open_bog_gram_211 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_open'] >
 		,
 		ReturnType< $bog_gram_chat['call_open'] >
 	>
-	type $bog_gram_call__land_bog_gram_208 = $mol_type_enforce<
+	type $bog_gram_call__land_bog_gram_212 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_land'] >
 		,
 		ReturnType< $bog_gram_call['land'] >
 	>
-	type $bog_gram_call__name_bog_gram_209 = $mol_type_enforce<
+	type $bog_gram_call__name_bog_gram_213 = $mol_type_enforce<
 		ReturnType< $bog_gram['user_name'] >
 		,
 		ReturnType< $bog_gram_call['name'] >
 	>
-	type $bog_gram_call__close_bog_gram_210 = $mol_type_enforce<
+	type $bog_gram_call__close_bog_gram_214 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_close'] >
 		,
 		ReturnType< $bog_gram_call['close'] >
@@ -59727,6 +59813,7 @@ declare namespace $ {
 		account_ready( ): ReturnType< ReturnType< $bog_gram['Account'] >['ready'] >
 		account_state( ): ReturnType< ReturnType< $bog_gram['Account'] >['pointer_state'] >
 		account_retry( next?: ReturnType< ReturnType< $bog_gram['Account'] >['pointer_retry'] > ): ReturnType< ReturnType< $bog_gram['Account'] >['pointer_retry'] >
+		account_fresh( next?: ReturnType< ReturnType< $bog_gram['Account'] >['account_fresh'] > ): ReturnType< ReturnType< $bog_gram['Account'] >['account_fresh'] >
 		registry_ids( ): ReturnType< ReturnType< $bog_gram['Registry'] >['ids'] >
 		registry_active( ): ReturnType< ReturnType< $bog_gram['Registry'] >['active'] >
 		registry_title( id: any): ReturnType< ReturnType< $bog_gram['Registry'] >['title'] >
@@ -59894,7 +59981,9 @@ declare namespace $ {
 		Gate( ): $mol_view
 		Gate_wait( ): $mol_paragraph
 		Gate_lost( ): $mol_paragraph
+		Gate_fresh_note( ): $mol_paragraph
 		Gate_retry( ): $mol_button_minor
+		Gate_fresh( ): $mol_button_minor
 		Placeholder( ): ReturnType< $bog_gram['Intro'] >
 		pages( ): readonly(any)[]
 		Chat_page( id: any): $bog_gram_chat
