@@ -124,7 +124,11 @@ namespace $.$$ {
 
 		@ $mol_mem
 		settings_opened( next?: boolean ) {
-			return next ?? false
+
+			const arg = this.$.$mol_state_arg
+			if( next !== undefined ) arg.value( 'settings', next ? '' : null )
+
+			return arg.value( 'settings' ) !== null
 		}
 
 		@ $mol_mem

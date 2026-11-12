@@ -33,6 +33,27 @@ namespace $.$$ {
 
 		},
 
+		'Настройки открываются по ссылке'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			$mol_assert_equal( app.settings_opened(), false )
+
+			app.settings_open()
+			$mol_assert_equal( app.settings_opened(), true )
+
+			app.settings_close()
+			$mol_assert_equal( app.settings_opened(), false )
+
+		},
+
+		'Ссылка на настройки разбирается как ссылка Gram'() {
+			$mol_assert_equal(
+				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!settings' ),
+				{ settings: '' },
+			)
+		},
+
 	})
 
 }
