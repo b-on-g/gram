@@ -1112,9 +1112,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -1915,6 +1912,15 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_after_frame = $mol_after_mock_commmon;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 /** @jsx $mol_jsx */
 var $;
 (function ($) {
@@ -1978,15 +1984,6 @@ var $;
             $mol_assert_equal($mol_key(/./), '/./');
             $mol_assert_equal($mol_key(/\./gimsu), '/\\./gimsu');
         },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_after_frame = $mol_after_mock_commmon;
     });
 })($ || ($ = {}));
 
@@ -2090,6 +2087,84 @@ var $;
 (function ($) {
     $mol_wire_log.active();
 })($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push(context => {
+        class $mol_state_arg_mock extends $mol_state_arg {
+            static $ = context;
+            static href(next) { return next || ''; }
+            static go(next) {
+                this.href(this.link(next));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_state_arg_mock, "href", null);
+        __decorate([
+            $mol_action
+        ], $mol_state_arg_mock, "go", null);
+        context.$mol_state_arg = $mol_state_arg_mock;
+    });
+    $mol_test({
+        'args as dictionary'($) {
+            $.$mol_state_arg.href('#!foo=bar/xxx');
+            $mol_assert_equal($.$mol_state_arg.dict(), { foo: 'bar', xxx: '' });
+            $.$mol_state_arg.dict({ foo: null, yyy: '', lol: '123' });
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!yyy/lol=123');
+        },
+        'one value from args'($) {
+            $.$mol_state_arg.href('#!foo=bar/xxx');
+            $mol_assert_equal($.$mol_state_arg.value('foo'), 'bar');
+            $mol_assert_equal($.$mol_state_arg.value('xxx'), '');
+            $.$mol_state_arg.value('foo', 'lol');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=lol/xxx');
+            $.$mol_state_arg.value('foo', '');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo/xxx');
+            $.$mol_state_arg.value('foo', null);
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!xxx');
+        },
+        'nested args'($) {
+            const base = new $.$mol_state_arg('nested.');
+            class Nested extends $mol_state_arg {
+                constructor(prefix) {
+                    super(base.prefix + prefix);
+                }
+                static value = (key, next) => base.value(key, next);
+            }
+            $.$mol_state_arg.href('#!foo=bar/nested.xxx=123');
+            $mol_assert_equal(Nested.value('foo'), null);
+            $mol_assert_equal(Nested.value('xxx'), '123');
+            Nested.value('foo', 'lol');
+            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=bar/nested.xxx=123/nested.foo=lol');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Из ссылки Gram берутся только свои параметры'() {
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
+        },
+        'Чужой QR и мусор ничего не открывают'() {
+            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
+            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -3366,61 +3441,6 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push(context => {
-        class $mol_state_arg_mock extends $mol_state_arg {
-            static $ = context;
-            static href(next) { return next || ''; }
-            static go(next) {
-                this.href(this.link(next));
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_state_arg_mock, "href", null);
-        __decorate([
-            $mol_action
-        ], $mol_state_arg_mock, "go", null);
-        context.$mol_state_arg = $mol_state_arg_mock;
-    });
-    $mol_test({
-        'args as dictionary'($) {
-            $.$mol_state_arg.href('#!foo=bar/xxx');
-            $mol_assert_equal($.$mol_state_arg.dict(), { foo: 'bar', xxx: '' });
-            $.$mol_state_arg.dict({ foo: null, yyy: '', lol: '123' });
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!yyy/lol=123');
-        },
-        'one value from args'($) {
-            $.$mol_state_arg.href('#!foo=bar/xxx');
-            $mol_assert_equal($.$mol_state_arg.value('foo'), 'bar');
-            $mol_assert_equal($.$mol_state_arg.value('xxx'), '');
-            $.$mol_state_arg.value('foo', 'lol');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=lol/xxx');
-            $.$mol_state_arg.value('foo', '');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo/xxx');
-            $.$mol_state_arg.value('foo', null);
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!xxx');
-        },
-        'nested args'($) {
-            const base = new $.$mol_state_arg('nested.');
-            class Nested extends $mol_state_arg {
-                constructor(prefix) {
-                    super(base.prefix + prefix);
-                }
-                static value = (key, next) => base.value(key, next);
-            }
-            $.$mol_state_arg.href('#!foo=bar/nested.xxx=123');
-            $mol_assert_equal(Nested.value('foo'), null);
-            $mol_assert_equal(Nested.value('xxx'), '123');
-            Nested.value('foo', 'lol');
-            $mol_assert_equal($.$mol_state_arg.href().replace(/.*#/, '#'), '#!foo=bar/nested.xxx=123/nested.foo=lol');
-        },
-    });
 })($ || ($ = {}));
 
 ;
@@ -7753,26 +7773,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Из ссылки Gram берутся только свои параметры'() {
-            const lord = 'AAAAAAAA_BBBBBBBB';
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
-        },
-        'Чужой QR и мусор ничего не открывают'() {
-            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
-            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     $mol_test({
         async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
@@ -10481,6 +10481,17 @@ var $;
                 const app = $bog_gram.make({ $ });
                 app.pages_overflow = () => false;
                 $mol_assert_equal(app.pager_count(), 0);
+            },
+            'Настройки открываются по ссылке'($) {
+                const app = $bog_gram.make({ $ });
+                $mol_assert_equal(app.settings_opened(), false);
+                app.settings_open();
+                $mol_assert_equal(app.settings_opened(), true);
+                app.settings_close();
+                $mol_assert_equal(app.settings_opened(), false);
+            },
+            'Ссылка на настройки разбирается как ссылка Gram'() {
+                $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!settings'), { settings: '' });
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

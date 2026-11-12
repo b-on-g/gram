@@ -26258,7 +26258,7 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_follow extends $mol_object {
-        static keys = ['invite', 'key', 'join', 'by', 'users'];
+        static keys = ['invite', 'key', 'join', 'by', 'users', 'settings'];
         static params(uri) {
             const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
             const out = {};
@@ -26271,7 +26271,7 @@ var $;
                     continue;
                 out[name] = this.decode(rest.join('='));
             }
-            if (!out.invite && !out.join && !out.users)
+            if (!out.invite && !out.join && !out.users && out.settings === undefined)
                 return {};
             return out;
         }
@@ -26301,7 +26301,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.142';
+    $.$bog_gram_version = '1.0.143';
 })($ || ($ = {}));
 
 ;
@@ -43188,7 +43188,10 @@ var $;
                 return next ?? false;
             }
             settings_opened(next) {
-                return next ?? false;
+                const arg = this.$.$mol_state_arg;
+                if (next !== undefined)
+                    arg.value('settings', next ? '' : null);
+                return arg.value('settings') !== null;
             }
             group_opened(next) {
                 return next ?? false;
@@ -45096,9 +45099,6 @@ var $;
 
 ;
 "use strict";
-
-;
-"use strict";
 var $;
 (function ($_1) {
     $mol_test({
@@ -45773,149 +45773,6 @@ var $;
 
 ;
 "use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'run callback'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            $mol_assert_equal(Plus1.run(() => 2), 3);
-        },
-        'wrap function'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            const obj = {
-                level: 2,
-                pow: Plus1.func(function (a) {
-                    return a ** this.level;
-                })
-            };
-            $mol_assert_equal(obj.pow(2), 5);
-        },
-        'decorate field getter'() {
-            class Plus1 extends $mol_wrapper {
-                static last = 0;
-                static wrap(task) {
-                    return function (...args) {
-                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static get two() {
-                    return 1;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                Plus1.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Plus1.last, 2);
-            $mol_assert_equal(Foo.two, 2);
-        },
-        'decorate instance method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo1 {
-                level = 2;
-                pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo1.prototype, "pow", null);
-            const Foo2 = Foo1;
-            const foo = new Foo2;
-            $mol_assert_equal(foo.pow(2), 5);
-        },
-        'decorate static method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static level = 2;
-                static pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo, "pow", null);
-            $mol_assert_equal(Foo.pow(2), 5);
-        },
-        'decorate class'() {
-            class BarInc extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        const foo = task.call(this, ...args);
-                        foo.bar++;
-                        return foo;
-                    };
-                }
-            }
-            let Foo = class Foo {
-                bar;
-                constructor(bar) {
-                    this.bar = bar;
-                }
-            };
-            Foo = __decorate([
-                BarInc.class
-            ], Foo);
-            $mol_assert_equal(new Foo(2).bar, 3);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'memoize field'() {
-            class Foo {
-                static one = 1;
-                static get two() {
-                    return ++this.one;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                $mol_memo.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Foo.two, 3);
-            $mol_assert_equal(Foo.two, 3);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
 /** @jsx $mol_jsx */
 var $;
 (function ($) {
@@ -46066,6 +45923,194 @@ var $;
 var $;
 (function ($) {
     $mol_wire_log.active();
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test_mocks.push(context => {
+        class $mol_state_arg_mock extends $mol_state_arg {
+            static $ = context;
+            static href(next) { return next || ''; }
+            static go(next) {
+                this.href(this.link(next));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_state_arg_mock, "href", null);
+        __decorate([
+            $mol_action
+        ], $mol_state_arg_mock, "go", null);
+        context.$mol_state_arg = $mol_state_arg_mock;
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Из ссылки Gram берутся только свои параметры'() {
+            const lord = 'AAAAAAAA_BBBBBBBB';
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
+        },
+        'Чужой QR и мусор ничего не открывают'() {
+            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
+            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
+            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'run callback'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            $mol_assert_equal(Plus1.run(() => 2), 3);
+        },
+        'wrap function'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            const obj = {
+                level: 2,
+                pow: Plus1.func(function (a) {
+                    return a ** this.level;
+                })
+            };
+            $mol_assert_equal(obj.pow(2), 5);
+        },
+        'decorate field getter'() {
+            class Plus1 extends $mol_wrapper {
+                static last = 0;
+                static wrap(task) {
+                    return function (...args) {
+                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static get two() {
+                    return 1;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                Plus1.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Plus1.last, 2);
+            $mol_assert_equal(Foo.two, 2);
+        },
+        'decorate instance method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo1 {
+                level = 2;
+                pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo1.prototype, "pow", null);
+            const Foo2 = Foo1;
+            const foo = new Foo2;
+            $mol_assert_equal(foo.pow(2), 5);
+        },
+        'decorate static method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static level = 2;
+                static pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo, "pow", null);
+            $mol_assert_equal(Foo.pow(2), 5);
+        },
+        'decorate class'() {
+            class BarInc extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        const foo = task.call(this, ...args);
+                        foo.bar++;
+                        return foo;
+                    };
+                }
+            }
+            let Foo = class Foo {
+                bar;
+                constructor(bar) {
+                    this.bar = bar;
+                }
+            };
+            Foo = __decorate([
+                BarInc.class
+            ], Foo);
+            $mol_assert_equal(new Foo(2).bar, 3);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'memoize field'() {
+            class Foo {
+                static one = 1;
+                static get two() {
+                    return ++this.one;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                $mol_memo.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Foo.two, 3);
+            $mol_assert_equal(Foo.two, 3);
+        },
+    });
 })($ || ($ = {}));
 
 ;
@@ -47156,28 +47201,6 @@ var $;
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test_mocks.push(context => {
-        class $mol_state_arg_mock extends $mol_state_arg {
-            static $ = context;
-            static href(next) { return next || ''; }
-            static go(next) {
-                this.href(this.link(next));
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_state_arg_mock, "href", null);
-        __decorate([
-            $mol_action
-        ], $mol_state_arg_mock, "go", null);
-        context.$mol_state_arg = $mol_state_arg_mock;
-    });
 })($ || ($ = {}));
 
 ;
@@ -51070,26 +51093,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    $mol_test({
-        'Из ссылки Gram берутся только свои параметры'() {
-            const lord = 'AAAAAAAA_BBBBBBBB';
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
-            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
-        },
-        'Чужой QR и мусор ничего не открывают'() {
-            $mol_assert_equal($bog_gram_follow.params('https://example.com/'), {});
-            $mol_assert_equal($bog_gram_follow.params('просто текст'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!key=only'), {});
-            $mol_assert_equal($bog_gram_follow.params('https://x/#!invite=%E0%A4%A'), {});
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
 (function ($_1) {
     $mol_test({
         async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
@@ -53863,6 +53866,17 @@ var $;
                 const app = $bog_gram.make({ $ });
                 app.pages_overflow = () => false;
                 $mol_assert_equal(app.pager_count(), 0);
+            },
+            'Настройки открываются по ссылке'($) {
+                const app = $bog_gram.make({ $ });
+                $mol_assert_equal(app.settings_opened(), false);
+                app.settings_open();
+                $mol_assert_equal(app.settings_opened(), true);
+                app.settings_close();
+                $mol_assert_equal(app.settings_opened(), false);
+            },
+            'Ссылка на настройки разбирается как ссылка Gram'() {
+                $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!settings'), { settings: '' });
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

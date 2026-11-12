@@ -45979,7 +45979,7 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_follow extends $mol_object {
-        static keys = ['invite', 'key', 'join', 'by', 'users'];
+        static keys = ['invite', 'key', 'join', 'by', 'users', 'settings'];
         static params(uri) {
             const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
             const out = {};
@@ -45992,7 +45992,7 @@ var $;
                     continue;
                 out[name] = this.decode(rest.join('='));
             }
-            if (!out.invite && !out.join && !out.users)
+            if (!out.invite && !out.join && !out.users && out.settings === undefined)
                 return {};
             return out;
         }
@@ -46022,7 +46022,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.142';
+    $.$bog_gram_version = '1.0.143';
 })($ || ($ = {}));
 
 ;
@@ -61468,7 +61468,10 @@ var $;
                 return next ?? false;
             }
             settings_opened(next) {
-                return next ?? false;
+                const arg = this.$.$mol_state_arg;
+                if (next !== undefined)
+                    arg.value('settings', next ? '' : null);
+                return arg.value('settings') !== null;
             }
             group_opened(next) {
                 return next ?? false;

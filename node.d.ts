@@ -41887,7 +41887,7 @@ declare namespace $.$$ {
 
 declare namespace $ {
     class $bog_gram_follow extends $mol_object {
-        static keys: readonly ["invite", "key", "join", "by", "users"];
+        static keys: readonly ["invite", "key", "join", "by", "users", "settings"];
         static params(uri: string): Record<string, string>;
         static decode(str: string): string;
         static go(uri: string): boolean;
@@ -41895,7 +41895,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.142";
+    const $bog_gram_version = "1.0.143";
 }
 
 declare namespace $ {
