@@ -1,0 +1,22 @@
+[bog_gram_body][mol_view] {
+	display: block;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+[bog_gram_body_link][mol_view] {
+	display: inline;
+	padding: 0;
+	min-width: 0;
+	min-height: 0;
+	border-radius: 0;
+	color: var(--mol_theme_focus);
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+	cursor: pointer;
+}
+
+[bog_gram_body_link][mol_view]:hover {
+	background: none;
+}

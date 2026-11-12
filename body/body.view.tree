@@ -1,0 +1,10 @@
+$bog_gram_body $mol_view
+	text \
+	dom_name \span
+	link_uri* \
+	link_text* \
+	sub /$mol_view_content
+	Link* $mol_link
+		uri <= link_uri*
+		hint <= link_uri*
+		sub / <= link_text*

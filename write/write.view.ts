@@ -3,7 +3,7 @@ namespace $.$$ {
 	export class $bog_gram_write extends $.$bog_gram_write {
 
 		enter_sends() {
-			return this.$.$mol_media.match( '(pointer: fine)' )
+			return this.$.$mol_media.match( '(any-pointer: fine)' )
 		}
 
 		override submit( event?: KeyboardEvent ) {
