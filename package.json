@@ -548,6 +548,7 @@
     "$bog_gram_call_peer",
     "$bog_gram_call_tile",
     "$mol_icon_microphone_off",
+    "$bog_gram_body",
     "$bog_gram_shrink",
     "$bog_gram_awake",
     "$bog_gram_mine",

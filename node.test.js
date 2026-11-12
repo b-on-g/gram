@@ -26301,7 +26301,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.143';
+    $.$bog_gram_version = '1.0.144';
 })($ || ($ = {}));
 
 ;
@@ -33245,7 +33245,7 @@ var $;
     (function ($$) {
         class $bog_gram_write extends $.$bog_gram_write {
             enter_sends() {
-                return this.$.$mol_media.match('(pointer: fine)');
+                return this.$.$mol_media.match('(any-pointer: fine)');
             }
             submit(event) {
                 if (!this.enter_sends())
@@ -36415,6 +36415,98 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_gram_body) = class $bog_gram_body extends ($.$mol_view) {
+		text(){
+			return "";
+		}
+		dom_name(){
+			return "span";
+		}
+		link_uri(id){
+			return "";
+		}
+		link_text(id){
+			return "";
+		}
+		sub(){
+			return [];
+		}
+		Link(id){
+			const obj = new this.$.$mol_link();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.hint) = () => ((this.link_uri(id)));
+			(obj.sub) = () => ([(this.link_text(id))]);
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$bog_gram_body.prototype), "Link"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_body extends $.$bog_gram_body {
+            tokens() {
+                const tokens = [];
+                this.$.$mol_syntax2_md_line.tokenize(this.text(), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            sub() {
+                const parts = [];
+                let text = '';
+                for (const [index, token] of this.tokens().entries()) {
+                    if (token.name !== 'text-link-http' && token.name !== 'text-link') {
+                        text += token.found;
+                        continue;
+                    }
+                    if (text) {
+                        parts.push(text);
+                        text = '';
+                    }
+                    parts.push(this.Link(index));
+                }
+                if (text)
+                    parts.push(text);
+                return parts;
+            }
+            link_uri(index) {
+                const token = this.tokens()[index];
+                return token.name === 'text-link'
+                    ? token.chunks[1]
+                    : token.found;
+            }
+            link_text(index) {
+                const token = this.tokens()[index];
+                return token.name === 'text-link'
+                    ? token.chunks[0]
+                    : token.found;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_body.prototype, "tokens", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_body.prototype, "sub", null);
+        $$.$bog_gram_body = $bog_gram_body;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/body/body.view.css", "[bog_gram_body][mol_view] {\n\tdisplay: block;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_gram_body_link][mol_view] {\n\tdisplay: inline;\n\tpadding: 0;\n\tmin-width: 0;\n\tmin-height: 0;\n\tborder-radius: 0;\n\tcolor: var(--mol_theme_focus);\n\ttext-decoration: underline;\n\ttext-underline-offset: 0.15em;\n\tcursor: pointer;\n}\n\n[bog_gram_body_link][mol_view]:hover {\n\tbackground: none;\n}\n");
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		mouse_down(next){
 			if(next !== undefined) return next;
@@ -36468,8 +36560,8 @@ var $;
 			return obj;
 		}
 		Body(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.body()));
+			const obj = new this.$.$bog_gram_body();
+			(obj.text) = () => ((this.body()));
 			return obj;
 		}
 		Time(){
@@ -53554,6 +53646,40 @@ var $;
                 $mol_assert_equal(closed, 1);
                 $mol_assert_equal(call.joined(), false);
                 $mol_assert_equal(room_b.mates(), []);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'В тексте сообщения http-адрес становится ссылкой, остальное остаётся текстом'($) {
+                const body = $bog_gram_body.make({ $, text: () => 'смотри https://example.com/a?b=1 или https://ya.ru. всё' });
+                const parts = body.sub();
+                $mol_assert_equal(parts.length, 5);
+                $mol_assert_equal(parts[0], 'смотри ');
+                $mol_assert_equal(String(parts[1]), '$bog_gram_body<>.Link<1>');
+                $mol_assert_equal(parts[2], ' или ');
+                $mol_assert_equal(String(parts[3]), '$bog_gram_body<>.Link<3>');
+                $mol_assert_equal(parts[4], '. всё');
+            },
+            'Ссылка ведёт по адресу из текста и подписана им же'($) {
+                const body = $bog_gram_body.make({ $, text: () => 'https://example.com/a?b=1' });
+                $mol_assert_equal(body.link_uri(0), 'https://example.com/a?b=1');
+                $mol_assert_equal(body.link_text(0), 'https://example.com/a?b=1');
+            },
+            'Разметка в тексте сообщения не толкуется: звёздочки и обратные кавычки остаются как есть'($) {
+                const body = $bog_gram_body.make({ $, text: () => '**жирный** и `код` без адресов' });
+                $mol_assert_equal(body.sub(), ['**жирный** и `код` без адресов']);
+            },
+            'Пустой текст не даёт ни частей, ни ссылок'($) {
+                const body = $bog_gram_body.make({ $, text: () => '' });
+                $mol_assert_equal(body.sub(), []);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

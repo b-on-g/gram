@@ -41895,7 +41895,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.143";
+    const $bog_gram_version = "1.0.144";
 }
 
 declare namespace $ {
@@ -56220,6 +56220,51 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
+	type $mol_link__uri_bog_gram_body_1 = $mol_type_enforce<
+		ReturnType< $bog_gram_body['link_uri'] >
+		,
+		ReturnType< $mol_link['uri'] >
+	>
+	type $mol_link__hint_bog_gram_body_2 = $mol_type_enforce<
+		ReturnType< $bog_gram_body['link_uri'] >
+		,
+		ReturnType< $mol_link['hint'] >
+	>
+	type $mol_link__sub_bog_gram_body_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	export class $bog_gram_body extends $mol_view {
+		text( ): string
+		dom_name( ): string
+		link_uri( id: any): string
+		link_text( id: any): string
+		sub( ): readonly($mol_view_content)[]
+		Link( id: any): $mol_link
+	}
+	
+}
+
+//# sourceMappingURL=body.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_body extends $.$bog_gram_body {
+        tokens(): readonly {
+            name: string;
+            found: string;
+            chunks: readonly string[];
+        }[];
+        sub(): $mol_view_content[];
+        link_uri(index: number): string;
+        link_text(index: number): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
 	type $mol_view__attr_bog_gram_bubble_1 = $mol_type_enforce<
 		({ 
 			'bog_gram_tint': ReturnType< $bog_gram_bubble['author_tint'] >,
@@ -56317,10 +56362,10 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_call_card['click'] >
 	>
-	type $mol_paragraph__title_bog_gram_bubble_20 = $mol_type_enforce<
+	type $bog_gram_body__text_bog_gram_bubble_20 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['body'] >
 		,
-		ReturnType< $mol_paragraph['title'] >
+		ReturnType< $bog_gram_body['text'] >
 	>
 	type $mol_view__sub_bog_gram_bubble_21 = $mol_type_enforce<
 		readonly(any)[]
@@ -56399,7 +56444,7 @@ declare namespace $ {
 		Shot( ): $bog_gram_album
 		Sound( ): $bog_gram_sound
 		Call( ): $bog_gram_call_card
-		Body( ): $mol_paragraph
+		Body( ): $bog_gram_body
 		Time( ): $mol_view
 		Edited( ): $mol_view
 		Checks( ): $mol_view
@@ -56467,7 +56512,7 @@ declare namespace $.$$ {
         Shot(): $.$bog_gram_album;
         Sound(): $.$bog_gram_sound;
         Call(): $.$bog_gram_call_card;
-        Body(): $.$mol_paragraph;
+        Body(): $.$bog_gram_body;
         Edited(): $mol_view;
         Checks(): $mol_view;
         Actions(): $mol_view;

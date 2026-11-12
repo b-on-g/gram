@@ -26310,7 +26310,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.143';
+    $.$bog_gram_version = '1.0.144';
 })($ || ($ = {}));
 
 ;
@@ -33254,7 +33254,7 @@ var $;
     (function ($$) {
         class $bog_gram_write extends $.$bog_gram_write {
             enter_sends() {
-                return this.$.$mol_media.match('(pointer: fine)');
+                return this.$.$mol_media.match('(any-pointer: fine)');
             }
             submit(event) {
                 if (!this.enter_sends())
@@ -36424,6 +36424,98 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_gram_body) = class $bog_gram_body extends ($.$mol_view) {
+		text(){
+			return "";
+		}
+		dom_name(){
+			return "span";
+		}
+		link_uri(id){
+			return "";
+		}
+		link_text(id){
+			return "";
+		}
+		sub(){
+			return [];
+		}
+		Link(id){
+			const obj = new this.$.$mol_link();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.hint) = () => ((this.link_uri(id)));
+			(obj.sub) = () => ([(this.link_text(id))]);
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$bog_gram_body.prototype), "Link"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_body extends $.$bog_gram_body {
+            tokens() {
+                const tokens = [];
+                this.$.$mol_syntax2_md_line.tokenize(this.text(), (name, found, chunks) => tokens.push({ name, found, chunks }));
+                return tokens;
+            }
+            sub() {
+                const parts = [];
+                let text = '';
+                for (const [index, token] of this.tokens().entries()) {
+                    if (token.name !== 'text-link-http' && token.name !== 'text-link') {
+                        text += token.found;
+                        continue;
+                    }
+                    if (text) {
+                        parts.push(text);
+                        text = '';
+                    }
+                    parts.push(this.Link(index));
+                }
+                if (text)
+                    parts.push(text);
+                return parts;
+            }
+            link_uri(index) {
+                const token = this.tokens()[index];
+                return token.name === 'text-link'
+                    ? token.chunks[1]
+                    : token.found;
+            }
+            link_text(index) {
+                const token = this.tokens()[index];
+                return token.name === 'text-link'
+                    ? token.chunks[0]
+                    : token.found;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_body.prototype, "tokens", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_body.prototype, "sub", null);
+        $$.$bog_gram_body = $bog_gram_body;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/body/body.view.css", "[bog_gram_body][mol_view] {\n\tdisplay: block;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_gram_body_link][mol_view] {\n\tdisplay: inline;\n\tpadding: 0;\n\tmin-width: 0;\n\tmin-height: 0;\n\tborder-radius: 0;\n\tcolor: var(--mol_theme_focus);\n\ttext-decoration: underline;\n\ttext-underline-offset: 0.15em;\n\tcursor: pointer;\n}\n\n[bog_gram_body_link][mol_view]:hover {\n\tbackground: none;\n}\n");
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		mouse_down(next){
 			if(next !== undefined) return next;
@@ -36477,8 +36569,8 @@ var $;
 			return obj;
 		}
 		Body(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.body()));
+			const obj = new this.$.$bog_gram_body();
+			(obj.text) = () => ((this.body()));
 			return obj;
 		}
 		Time(){
