@@ -21,18 +21,24 @@ namespace $.$$ {
 		}
 
 		override press( event: KeyboardEvent ) {
-
+		
 			if( event.keyCode === $mol_keyboard_code.tab ) return
-
-			if( event.keyCode === $mol_keyboard_code.enter && ( event.ctrlKey || event.metaKey ) && !event.altKey ) {
-				event.preventDefault()
-				this.newline()
-				return
+		
+			if( event.keyCode === $mol_keyboard_code.enter ) {
+		
+				if( event.ctrlKey || event.metaKey ) {
+					event.preventDefault()
+					this.newline()
+					return
+				}
+		
+				if( event.shiftKey || !this.enter_sends() ) return 
+		
+				return this.send( event )
 			}
-			
-			if( event.keyCode === $mol_keyboard_code.enter ) return this.send(event)
-
+		
 			super.press( event )
+		
 		}
 
 	}
