@@ -62499,19 +62499,23 @@ declare namespace $ {
         static buffer_high: number;
         static gather_limit: number;
         static open_limit: number;
-        static rtc(): RTCPeerConnection;
+        static rtc(tag: string): RTCPeerConnection;
+        static candidates(sdp: string): string;
+        static candidate_text(stats: RTCStatsReport, id: string): string;
+        static route(rtc: RTCPeerConnection): Promise<string>;
+        static trace(rtc: RTCPeerConnection, tag: string): void;
         static gather(rtc: RTCPeerConnection): Promise<string>;
-        static offer(): Promise<{
+        static offer(tag?: string): Promise<{
             rtc: RTCPeerConnection;
             channel: RTCDataChannel;
             sdp: string;
         }>;
-        static answer(offer: string): Promise<{
+        static answer(offer: string, tag?: string): Promise<{
             rtc: RTCPeerConnection;
             channel: Promise<RTCDataChannel>;
             sdp: string;
         }>;
-        static finish(rtc: RTCPeerConnection, answer: string): Promise<void>;
+        static finish(rtc: RTCPeerConnection, answer: string, tag?: string): Promise<void>;
         static opened(channel: RTCDataChannel): Promise<RTCDataChannel>;
         static idle_limit: number;
         static ack_limit: number;
@@ -69020,7 +69024,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.153";
+    const $bog_gram_version = "1.0.154";
 }
 
 declare namespace $ {
@@ -84078,8 +84082,6 @@ declare namespace $ {
         /** Перенос запускается один раз на всю страницу. */
         static migrate(): Promise<boolean>;
         static run(): Promise<boolean>;
-        /** Логируем, какой ленд читается из локальной базы. */
-        units_load(): readonly $giper_baza_unit[];
     }
 }
 
@@ -84094,8 +84096,6 @@ declare namespace $ {
         static restore(key: string): $bog_gram_auth | null;
         /** Метит лорда как созданного на этом устройстве. */
         static born(auth: $giper_baza_auth): void;
-        /** Логируем, с каким ключом реально стартует приложение. */
-        static current(next?: $giper_baza_auth | null): $giper_baza_auth;
         /**
          * Новый ключ рождается здесь, и home-ленд у него заведомо пустой: гейту
          * незачем ждать его загрузки. Ключ, принесённый ссылкой или файлом, так
