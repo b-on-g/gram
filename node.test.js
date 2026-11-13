@@ -41813,7 +41813,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.157';
+    $.$bog_gram_version = '1.0.158';
 })($ || ($ = {}));
 
 ;
@@ -53368,10 +53368,11 @@ var $;
             }
             stick_watch() {
                 const top = this.Body().scroll_top();
-                const node = this.Body().dom_node();
-                const gap = node.scrollHeight - top - node.clientHeight;
+                const gap = this.content_height() - top - (this.Body().view_rect()?.height ?? 0);
                 const last = $mol_wire_probe(() => this.stick_watch()) ?? top;
-                if (top < last - 4 && gap > 4)
+                if (gap <= 4)
+                    this.stick_end(true);
+                else if (top < last - 4)
                     this.stick_end(false);
                 return top;
             }
