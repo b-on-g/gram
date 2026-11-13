@@ -29,6 +29,8 @@ namespace $.$$ {
 				this.newline()
 				return
 			}
+			
+			if( event.keyCode === $mol_keyboard_code.enter ) return this.send(event)
 
 			super.press( event )
 		}
