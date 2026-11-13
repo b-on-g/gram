@@ -64380,7 +64380,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.155";
+    const $bog_gram_version = "1.0.156";
 }
 
 declare namespace $ {
@@ -79844,21 +79844,32 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $bog_gram_clip_read = {
+        bytes: Uint8Array<ArrayBuffer>;
+        type: string;
+        width: number;
+        height: number;
+    };
     class $bog_gram_clip extends $mol_object {
+        static lib: string;
         static limit: number;
+        static source_limit: number;
+        static side: number;
+        static video_rate: number;
+        static audio_rate: number;
         static wait: number;
         static video_is(file: File): boolean;
         static type_of(file: File): string;
+        static fit(width: number, height: number): {
+            width: number;
+            height: number;
+        };
         static size(file: Blob): Promise<{
             width: number;
             height: number;
         }>;
-        static read(file: File): Promise<{
-            width: number;
-            height: number;
-            bytes: Uint8Array<ArrayBuffer>;
-            type: string;
-        }>;
+        static squeeze(file: File, progress?: (done: number) => void): Promise<Blob | null>;
+        static read(file: File, progress?: (done: number) => void): Promise<$bog_gram_clip_read>;
     }
 }
 
@@ -80617,7 +80628,8 @@ declare namespace $.$$ {
         };
         image_send(file: File): string;
         images_send(files: readonly File[]): string;
-        video_send(file: File): string;
+        video_read(file: File): Promise<$bog_gram_clip_read | null>;
+        video_send(clip: $bog_gram_clip_read): string;
         message_video(id: string): boolean;
         message_video_uri(id: string): string;
         message_video_ratio(id: string): number;

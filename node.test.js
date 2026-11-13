@@ -41813,7 +41813,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.155';
+    $.$bog_gram_version = '1.0.156';
 })($ || ($ = {}));
 
 ;
@@ -52321,7 +52321,12 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_clip extends $mol_object {
+        static lib = 'https://cdn.jsdelivr.net/npm/mediabunny@1.66.0/+esm';
         static limit = 20 * 2 ** 20;
+        static source_limit = 500 * 2 ** 20;
+        static side = 480;
+        static video_rate = 800_000;
+        static audio_rate = 64_000;
         static wait = 3000;
         static video_is(file) {
             if (file.type.startsWith('video/'))
@@ -52336,6 +52341,12 @@ var $;
             if (/\.mov$/i.test(file.name))
                 return 'video/quicktime';
             return 'video/mp4';
+        }
+        static fit(width, height) {
+            const short = Math.min(width, height);
+            const scale = short > this.side ? this.side / short : 1;
+            const even = (side) => Math.max(2, Math.round(side * scale / 2) * 2);
+            return { width: even(width), height: even(height) };
         }
         static size(file) {
             return new Promise(done => {
@@ -52356,9 +52367,46 @@ var $;
                 video.src = uri;
             });
         }
-        static async read(file) {
-            const [buffer, size] = await Promise.all([file.arrayBuffer(), this.size(file)]);
-            return { bytes: new Uint8Array(buffer), type: this.type_of(file), ...size };
+        static async squeeze(file, progress) {
+            if (typeof VideoEncoder === 'undefined')
+                return null;
+            const lib = await this.$.$mol_import.module_async(this.lib);
+            const input = new lib.Input({ source: new lib.BlobSource(file), formats: lib.ALL_FORMATS });
+            const target = new lib.BufferTarget();
+            const output = new lib.Output({ format: new lib.Mp4OutputFormat({ fastStart: 'in-memory' }), target });
+            const conversion = await lib.Conversion.init({
+                input,
+                output,
+                video: async (track) => ({
+                    ...this.fit(await track.getDisplayWidth(), await track.getDisplayHeight()),
+                    fit: 'fill',
+                    codec: 'avc',
+                    bitrate: this.video_rate,
+                    forceTranscode: true,
+                }),
+                audio: {
+                    bitrate: this.audio_rate,
+                },
+            });
+            const broken = ['unknown_source_codec', 'undecodable_source_codec', 'no_encodable_target_codec'];
+            const lost = conversion.discardedTracks.filter(one => broken.includes(one.reason));
+            if (!conversion.isValid || lost.length)
+                return null;
+            if (progress)
+                conversion.onProgress = progress;
+            await conversion.execute();
+            const buffer = target.buffer;
+            return buffer ? new Blob([buffer], { type: 'video/mp4' }) : null;
+        }
+        static async read(file, progress) {
+            const squeezed = await this.squeeze(file, progress).catch(error => {
+                $mol_fail_log(error);
+                return null;
+            });
+            const blob = squeezed && squeezed.size < file.size ? squeezed : file;
+            const type = blob === file ? this.type_of(file) : 'video/mp4';
+            const [buffer, size] = await Promise.all([blob.arrayBuffer(), this.size(blob)]);
+            return { bytes: new Uint8Array(buffer), type, ...size };
         }
     }
     $.$bog_gram_clip = $bog_gram_clip;
@@ -52944,11 +52992,15 @@ var $;
                 if (this.edit_id())
                     this.edit_stop();
                 for (const video of videos) {
-                    await $mol_wire_async(this).video_send(video).catch(error => {
+                    try {
+                        const clip = await this.video_read(video);
+                        if (clip)
+                            await $mol_wire_async(this).video_send(clip);
+                    }
+                    catch (error) {
                         $mol_fail_log(error);
                         this.voice_hint('Видео не отправилось');
-                        return '';
-                    });
+                    }
                 }
                 if (!images.length)
                     return '';
@@ -53026,7 +53078,23 @@ var $;
                 this.voice_hint('');
                 return message.link().str;
             }
-            video_send(file) {
+            async video_read(file) {
+                const clip = this.$.$bog_gram_clip;
+                const mb = (size) => Math.ceil(size / 2 ** 20);
+                if (file.size > clip.source_limit) {
+                    this.voice_hint(`Видео больше ${mb(clip.source_limit)} МБ не сжать, это ${mb(file.size)} МБ`);
+                    return null;
+                }
+                this.voice_hint('Сжимаю видео…');
+                const read = await clip.read(file, done => this.voice_hint(`Сжимаю видео: ${Math.round(done * 100)}%`));
+                if (read.bytes.byteLength > clip.limit) {
+                    this.voice_hint(`Видео не влезает: после сжатия ${mb(read.bytes.byteLength)} МБ, можно до ${mb(clip.limit)} МБ`);
+                    return null;
+                }
+                this.voice_hint('');
+                return read;
+            }
+            video_send(clip) {
                 const session = this.Talk().session(this.dialog());
                 if (!session)
                     return '';
@@ -53035,12 +53103,6 @@ var $;
                     this.voice_hint(this.lost_hint('Видео'));
                     return '';
                 }
-                const limit = this.$.$bog_gram_clip.limit;
-                if (file.size > limit) {
-                    this.voice_hint(`Видео больше ${limit / 2 ** 20} МБ не отправить, это ${Math.ceil(file.size / 2 ** 20)} МБ`);
-                    return '';
-                }
-                const clip = $mol_wire_sync(this.$.$bog_gram_clip).read(file);
                 const store = this.land_closed(clip.bytes, clip.type, passes);
                 const text = this.message_text().trim();
                 const message = session.Messages('auto').make(null);
