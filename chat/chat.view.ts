@@ -403,6 +403,7 @@ namespace $.$$ {
 
 			if( pawn.Image()?.val() ) return 'Фото'
 			if( pawn.Voice()?.val() ) return 'Голосовое сообщение'
+			if( pawn.Video()?.val() ) return 'Видео'
 
 			return ''
 		}
@@ -682,10 +683,21 @@ namespace $.$$ {
 
 		async images_start( files: readonly File[] ) {
 
-			const images = files.filter( file => this.$.$bog_gram_shrink.image_is( file ) )
-			if( !images.length ) return ''
+			const videos = files.filter( file => this.$.$bog_gram_clip.video_is( file ) )
+			const images = files.filter( file => !this.$.$bog_gram_clip.video_is( file ) && this.$.$bog_gram_shrink.image_is( file ) )
+			if( !images.length && !videos.length ) return ''
 
 			if( this.edit_id() ) this.edit_stop()
+
+			for( const video of videos ) {
+				await $mol_wire_async( this ).video_send( video ).catch( error => {
+					$mol_fail_log( error )
+					this.voice_hint( 'Видео не отправилось' )
+					return ''
+				} )
+			}
+
+			if( !images.length ) return ''
 
 			const sent = await $mol_wire_async( this ).images_send( images.slice( 0, image_limit ) ).catch( error => {
 				$mol_fail_log( error )
@@ -780,6 +792,62 @@ namespace $.$$ {
 			this.voice_hint( '' )
 
 			return message.link().str
+		}
+
+		video_send( file: File ) {
+
+			const session = this.Talk().session( this.dialog() )
+			if( !session ) return ''
+
+			const passes = this.passes()
+			if( !passes ) {
+				this.voice_hint( this.lost_hint( 'Видео' ) )
+				return ''
+			}
+
+			const limit = this.$.$bog_gram_clip.limit
+			if( file.size > limit ) {
+				this.voice_hint( `Видео больше ${ limit / 2 ** 20 } МБ не отправить, это ${ Math.ceil( file.size / 2 ** 20 ) } МБ` )
+				return ''
+			}
+
+			const clip = $mol_wire_sync( this.$.$bog_gram_clip ).read( file )
+			const store = this.land_closed( clip.bytes, clip.type, passes )
+
+			const text = this.message_text().trim()
+			const message = session.Messages( 'auto' )!.make( null )
+
+			message.Video( 'auto' )!.remote( store )
+			if( clip.width && clip.height ) {
+				message.Video_width( 'auto' )?.val( clip.width )
+				message.Video_height( 'auto' )?.val( clip.height )
+			}
+			if( text ) message.Text( 'auto' )?.val( text )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
+
+			this.message_text( '' )
+			this.voice_hint( '' )
+
+			return message.link().str
+		}
+
+		@ $mol_mem_key
+		override message_video( id: string ) {
+			return Boolean( this.message_pawn( id )?.Video()?.val() )
+		}
+
+		@ $mol_mem_key
+		override message_video_uri( id: string ) {
+			return $bog_gram_soft( ()=> this.file_uri( this.message_pawn( id )?.Video()?.remote() ), '' )
+		}
+
+		@ $mol_mem_key
+		override message_video_ratio( id: string ) {
+			const pawn = this.message_pawn( id )
+			const width = Number( pawn?.Video_width()?.val() ?? 0 )
+			const height = Number( pawn?.Video_height()?.val() ?? 0 )
+			return width && height ? width / height : 16 / 9
 		}
 
 		override voice_ready() {

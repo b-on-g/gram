@@ -299,6 +299,7 @@ namespace $ {
 			const text = String( last.Text()?.val() ?? '' )
 			const kind = last.Image()?.val() ? 'Фото'
 				: last.Voice()?.val() ? 'Голосовое сообщение'
+				: last.Video()?.val() ? 'Видео'
 				: last.Call()?.val() ? 'Звонок'
 				: ''
 			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text

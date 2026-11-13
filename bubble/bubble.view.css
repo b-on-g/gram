@@ -6,6 +6,10 @@
 	background-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );
 }
 
+[bog_gram_bubble]:not([bog_gram_bubble_out="true"]) ::selection {
+	background: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );
+}
+
 [bog_gram_bubble][bog_gram_bubble_menu="true"] > [bog_gram_bubble_actions] {
 	display: flex;
 }

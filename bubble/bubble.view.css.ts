@@ -133,6 +133,17 @@ namespace $.$$ {
 			maxWidth: '100%',
 		},
 
+		Clip: {
+			display: 'block',
+			width: '15rem',
+			maxWidth: '100%',
+			maxHeight: '60vh',
+			borderRadius: '0.5rem',
+			background: {
+				color: '#000',
+			},
+		},
+
 		Sound: {
 			alignSelf: 'stretch',
 			minWidth: 0,

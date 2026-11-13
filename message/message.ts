@@ -12,6 +12,9 @@ namespace $ {
 		Shots: $giper_baza_list_link_to( ()=> $bog_gram_shot ),
 		Voice: $bog_gram_link_synced( ()=> $giper_baza_file ),
 		Voice_span: $giper_baza_atom_real,
+		Video: $bog_gram_link_synced( ()=> $giper_baza_file ),
+		Video_width: $giper_baza_atom_real,
+		Video_height: $giper_baza_atom_real,
 		Reply: $giper_baza_atom_text,
 		Call: $giper_baza_atom_link,
 	}) {}
