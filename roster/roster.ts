@@ -23,10 +23,16 @@ namespace $ {
 
 		@ $mol_mem
 		ids() {
-			const all = new Set( ( this.store().Dialogs()?.items() ?? [] ).map( String ) )
+			const stored = ( this.store().Dialogs()?.items() ?? [] ).map( String )
+			const all = new Set( stored )
 			for( const link of this.invited() ) all.add( link )
 			const hidden = new Set( this.hidden() )
-			return [ ... all ].filter( id => !hidden.has( id ) )
+			const ids = [ ... all ].filter( id => !hidden.has( id ) )
+			console.log( '[bog_gram/roster] ids: в Dialogs =', stored.length,
+				'приглашений =', all.size - stored.length,
+				'скрыто =', hidden.size,
+				'итого =', ids.length )
+			return ids
 		}
 
 		@ $mol_mem
