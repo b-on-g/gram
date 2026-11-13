@@ -39,6 +39,12 @@ namespace $.$$ {
 
 			const reset = new this.$.$mol_view()
 			reset.sub = () => [ hint ]
+			
+			const empty = new this.$.$mol_view()
+			empty.sub = () => []
+
+			account.Export = () => empty
+			account.Import = () => empty
 
 			account.Reset = () => reset
 
