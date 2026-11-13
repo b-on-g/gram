@@ -27,12 +27,7 @@ namespace $ {
 			const all = new Set( stored )
 			for( const link of this.invited() ) all.add( link )
 			const hidden = new Set( this.hidden() )
-			const ids = [ ... all ].filter( id => !hidden.has( id ) )
-			console.log( '[bog_gram/roster] ids: в Dialogs =', stored.length,
-				'приглашений =', all.size - stored.length,
-				'скрыто =', hidden.size,
-				'итого =', ids.length )
-			return ids
+			return [ ... all ].filter( id => !hidden.has( id ) )
 		}
 
 		@ $mol_mem

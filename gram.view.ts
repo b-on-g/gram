@@ -256,15 +256,11 @@ namespace $.$$ {
 		}
 
 		account_open() {
-			const state = $bog_gram_soft( ()=> this.account_state(), 'wait' )
-			console.log( '[bog_gram/view] account_open: состояние =', state )
-			return state === 'ready'
+			return $bog_gram_soft( ()=> this.account_state(), 'wait' ) === 'ready'
 		}
 
 		override gate_sub() {
-			const state = this.account_state()
-			console.log( '[bog_gram/view] gate_sub: состояние =', state )
-			return state === 'lost'
+			return this.account_state() === 'lost'
 				? [ this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh() ]
 				: [ this.Gate_wait() ]
 		}

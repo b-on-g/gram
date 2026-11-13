@@ -59,7 +59,6 @@ namespace $ {
 				$mol_db_response( store.native.getAll() as IDBRequest< $bog_gram_mine_schema[ Name ][ 'Doc' ][] > ),
 				$mol_db_response( store.native.getAllKeys() as unknown as IDBRequest< $bog_gram_mine_schema[ Name ][ 'Key' ][] > ),
 			])
-			console.log( '[bog_gram/mine] dump', name, ': записей =', docs.length, 'ключей =', keys.length )
 			return keys.map( ( key, i )=> [ key, docs[ i ] ] as const )
 		}
 
@@ -80,23 +79,16 @@ namespace $ {
 			const units = await this.dump( old, 'Unit' )
 			const balls = await this.dump( old, 'Ball' )
 
-			if( !units.length ) {
-				console.log( '[bog_gram/mine] copy: юнитов нет, копировать нечего' )
-				return 0
-			}
+			if( !units.length ) return 0
 
 			const change = next.change( 'Unit', 'Ball' )
-			console.log( '[bog_gram/mine] copy: кладу юнитов =', units.length, 'болов =', balls.length )
 
 			try {
 				const { Unit, Ball } = change.stores
 				for( const [ key, doc ] of units ) Unit.put( doc, key )
 				for( const [ key, doc ] of balls ) Ball.put( doc, key )
-				console.log( '[bog_gram/mine] copy: запросы отправлены, жду commit' )
 				await change.commit()
-				console.log( '[bog_gram/mine] copy: commit прошёл' )
 			} catch( error ) {
-				console.error( '[bog_gram/mine] copy: ошибка транзакции', error )
 				change.abort()
 				throw error
 			}
@@ -125,21 +117,14 @@ namespace $ {
 				}
 			}
 
-			if( !junk.length ) {
-				console.log( '[bog_gram/mine] clean: мусора нет' )
-				return 0
-			}
-
-			console.log( '[bog_gram/mine] clean: мусорных записей =', junk.length, 'пример ключа =', junk[0]?.[1] )
+			if( !junk.length ) return 0
 
 			const change = db.change( 'Unit', 'Ball' )
 
 			try {
 				for( const [ name, key ] of junk ) change.stores[ name ]!.drop( key as any )
 				await change.commit()
-				console.log( '[bog_gram/mine] clean: commit прошёл' )
 			} catch( error ) {
-				console.error( '[bog_gram/mine] clean: ошибка транзакции', error )
 				change.abort()
 				throw error
 			}
