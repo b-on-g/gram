@@ -238,6 +238,10 @@
 	deploy \/giper/baza/diagram/files.png
 	deploy \/giper/baza/diagram/network.png
 	deploy \/giper/baza/diagram/jepsen.png
+\/bog/music/app
+	include \/bog/yard
+	include \/mol/offline/install
+	deploy \/bog/music/app/favicon.svg
 \/bog/gram
 	include \/bog/gram/mine
 	include \/bog/yard

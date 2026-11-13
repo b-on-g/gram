@@ -7774,6 +7774,628 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    function page($) {
+        const dom = $.$mol_dom_context;
+        const root = dom.document.createElement('div');
+        root.innerHTML = `
+			<button ${$bog_tooltip_hush_tip}="Первая"><span id="deep">жми</span></button>
+			<button ${$bog_tooltip_hush_tip}="Вторая"></button>
+			<button id="bare"></button>
+		`;
+        return root;
+    }
+    $mol_test({
+        'the hush marks the host of the node it was given, tip and all'($) {
+            const root = page($);
+            const deep = root.querySelector('#deep');
+            $mol_assert_equal($bog_tooltip_hush(deep), 'Первая');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 1);
+        },
+        'a node with no host above it is left alone'($) {
+            const root = page($);
+            $mol_assert_equal($bog_tooltip_hush(root.querySelector('#bare')), '');
+            $mol_assert_equal($bog_tooltip_hush(null), '');
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+        },
+        'the next focus takes every mark away'($) {
+            const root = page($);
+            $bog_tooltip_hush(root.querySelector('#deep'));
+            $bog_tooltip_hush(root.querySelectorAll('button')[1]);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 2);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 2);
+            $mol_assert_equal(root.querySelectorAll(`[${$bog_tooltip_hush_mark}]`).length, 0);
+            $mol_assert_equal($bog_tooltip_hush_off(root), 0);
+            $mol_assert_equal($bog_tooltip_hush_off(null), 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'room is counted from the host center to both edges of the view'() {
+            $mol_assert_like($bog_tooltip_room({ left: 12, width: 40 }, 1280), { left: 32, right: 1248, flip: false, lift: 0 });
+            $mol_assert_like($bog_tooltip_room({ left: 1228, width: 40 }, 1280), { left: 1248, right: 32, flip: false, lift: 0 });
+        },
+        'host past the right edge leaves negative room on that side'() {
+            $mol_assert_like($bog_tooltip_room({ left: 1270, width: 40 }, 1280), { left: 1290, right: -10, flip: false, lift: 0 });
+        },
+        'a host with room below keeps the tip below it'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 200, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, false);
+            $mol_assert_equal(room.lift, 0);
+        },
+        'a host at the floor flips the tip up over its own height and the gap'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 790, height: 40 }, 1280, 800);
+            $mol_assert_equal(room.flip, true);
+            $mol_assert_equal(room.lift, 40 + $bog_tooltip_room_gap);
+        },
+        'a host with no room on either side keeps the tip below'() {
+            const room = $bog_tooltip_room({ left: 100, width: 40, bottom: 30, height: 30 }, 1280, 40);
+            $mol_assert_equal(room.flip, false);
+        },
+        'the room below is counted up to the need, not to the last pixel'() {
+            const tight = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need + 1, height: 40 }, 1280, 800);
+            const enough = $bog_tooltip_room({ left: 100, width: 40, bottom: 800 - $bog_tooltip_room_need, height: 40 }, 1280, 800);
+            $mol_assert_equal(tight.flip, true);
+            $mol_assert_equal(enough.flip, false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function fake_dir() {
+        const files = new Map();
+        const dir = {
+            async getFileHandle(name, opts) {
+                if (!files.has(name)) {
+                    if (!opts?.create)
+                        throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+                    files.set(name, new Blob([]));
+                }
+                return {
+                    async getFile() {
+                        return new File([files.get(name)], name);
+                    },
+                    async createWritable() {
+                        const parts = [];
+                        return {
+                            async write(blob) { parts.push(blob); },
+                            async close() { files.set(name, new Blob(parts)); },
+                        };
+                    },
+                };
+            },
+            async removeEntry(name) {
+                if (!files.delete(name))
+                    throw Object.assign(new Error('no'), { name: 'NotFoundError' });
+            },
+            async *keys() {
+                yield* files.keys();
+            },
+        };
+        return dir;
+    }
+    $mol_test({
+        async 'put, read range, list and drop'() {
+            $bog_music_disk._dir = Promise.resolve(fake_dir());
+            const bytes = new Uint8Array([0, 0, 0, 0, 102, 116, 121, 112, 1, 2, 3, 4, 5, 6]);
+            await $bog_music_disk.put('tube/x y', bytes);
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), true);
+            $mol_assert_equal(await $bog_music_disk.keys(), ['tube/x y']);
+            const range = await $bog_music_disk.bytes('tube/x y', 10, -1);
+            $mol_assert_equal(range.total, 14);
+            $mol_assert_equal(range.mime, 'audio/mp4');
+            $mol_assert_equal([...new Uint8Array(range.bytes)], [3, 4, 5, 6]);
+            await $bog_music_disk.drop('tube/x y');
+            $mol_assert_equal($bog_music_disk.has('tube/x y'), false);
+            $mol_assert_equal(await $bog_music_disk.file('tube/x y'), null);
+            $mol_assert_equal(await $bog_music_disk.bytes('tube/x y', 0, -1), null);
+            $bog_music_disk._dir = null;
+        },
+        'mime by magic bytes'() {
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x4F, 0x67, 0x67, 0x53])), 'audio/ogg');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0xFF, 0xF1, 0x50])), 'audio/aac');
+            $mol_assert_equal($bog_music_disk.mime(new Uint8Array([0x49, 0x44, 0x33])), 'audio/mpeg');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'iPhone and iPad with desktop Safari agent are not Mac'() {
+            const agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15';
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 390), 'iPhone · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 5, 820), 'iPad · Safari');
+            $mol_assert_equal($bog_music_device.title_of(agent, 0, 900), 'Mac · Safari');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Мощность 100-мс кусков постоянного сигнала с заданным средним квадратом. */
+    function power_of(hops, mean_square, hop) {
+        const power = new Float64Array(hops);
+        power.fill(mean_square * hop);
+        return power;
+    }
+    $mol_test({
+        'Множитель приводит запись к целевой громкости'() {
+            $mol_assert_equal($bog_music_gain.factor(null), 1);
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-14) * 1000), 1000);
+            // Тише цели на 6 dB — усиление вдвое.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-20) * 100), 200);
+            // Громче цели на 6 dB — вдвое тише.
+            $mol_assert_equal(Math.round($bog_music_gain.factor(-8) * 100), 50);
+        },
+        'Множитель зажат пределами'() {
+            $mol_assert_equal($bog_music_gain.factor(-100), Math.pow(10, 12 / 20));
+            $mol_assert_equal($bog_music_gain.factor(20), Math.pow(10, -20 / 20));
+        },
+        'Громкость ровного сигнала'() {
+            const hop = 4800;
+            const lufs = $bog_music_gain.integrated(power_of(20, 0.01, hop), hop);
+            // -0.691 + 10 * log10( 0.01 )
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.01);
+        },
+        'Тишина в конце записи не занижает громкость'() {
+            const hop = 4800;
+            const power = new Float64Array(40);
+            power.set(power_of(20, 0.01, hop), 0);
+            power.fill(1e-9 * hop, 20);
+            const lufs = $bog_music_gain.integrated(power, hop);
+            $mol_assert_ok(Math.abs(lufs + 20.691) < 0.5);
+        },
+        'Сплошная тишина не измеряется'() {
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(20), 4800), null);
+            $mol_assert_equal($bog_music_gain.integrated(new Float64Array(2), 4800), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Пресеты покрывают все полосы и лежат в диапазоне'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal(preset.gains.length, $bog_music_eq.bands.length);
+                for (const db of preset.gains) {
+                    $mol_assert_ok(Math.abs(db) <= $bog_music_eq.range_db);
+                }
+            }
+        },
+        'Пресет узнаётся по своему же набору'() {
+            for (const preset of $bog_music_eq.presets) {
+                $mol_assert_equal($bog_music_eq.preset_of(preset.gains), preset.id);
+            }
+        },
+        'Набор мимо пресетов — «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of([1, 2, 3, 4, 5]), '');
+        },
+        'Ровный набор — это пресет «По умолчанию», а не «Свой»'() {
+            $mol_assert_equal($bog_music_eq.preset_of($bog_music_eq.flat()), 'default');
+        },
+        'Чужой набор приводится к нашим полосам'() {
+            // Короче — недостающие полосы в ноль, длиннее — лишние прочь.
+            $mol_assert_equal($bog_music_eq.clamp([3]).join(), '3,0,0,0,0,0');
+            $mol_assert_equal($bog_music_eq.clamp([1, 1, 1, 1, 1, 1, 1, 1]).join(), '1,1,1,1,1,1');
+            // За пределом — в потолок, дробное — к целым dB.
+            $mol_assert_equal($bog_music_eq.clamp([99, -99, 2.4, 2.6, NaN, 5]).join(), '12,-12,2,3,0,5');
+        },
+        'Настройка от пятиполосной версии не роняет полосы'() {
+            // В baza могла остаться строка на пять значений: шестая полоса в ноль,
+            // первые пять сохраняются как были.
+            $mol_assert_equal($bog_music_eq.parse('8,4,0,0,1').join(), '8,4,0,0,1,0');
+        },
+        'Цвет едет от зелёного через жёлтый к красному'() {
+            $mol_assert_equal($bog_music_eq.color(-12), 'hsl( 120 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(0), 'hsl( 50 80% 55% )');
+            $mol_assert_equal($bog_music_eq.color(12), 'hsl( 0 80% 55% )');
+            // За пределом диапазона цвет не уезжает дальше края.
+            $mol_assert_equal($bog_music_eq.color(99), $bog_music_eq.color(12));
+        },
+        'Набор переживает запись строкой и чтение обратно'() {
+            const gains = $bog_music_eq.preset('bass');
+            $mol_assert_equal($bog_music_eq.parse($bog_music_eq.stringify(gains)).join(), gains.join());
+            // Пусто в baza (настройки ещё не сохраняли) — плоский набор.
+            $mol_assert_equal($bog_music_eq.parse('').join(), $bog_music_eq.flat().join());
+            $mol_assert_equal($bog_music_eq.parse(null).join(), $bog_music_eq.flat().join());
+        },
+        'Неизвестный пресет не выдумывается'() {
+            $mol_assert_equal($bog_music_eq.preset('nope'), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function pair() {
+        const make = () => Object.assign(new EventTarget, {
+            readyState: 'open',
+            bufferedAmount: 0,
+            bufferedAmountLowThreshold: 0,
+            binaryType: 'arraybuffer',
+            other: null,
+            send(data) {
+                const target = this.other;
+                setTimeout(() => target.dispatchEvent(new MessageEvent('message', { data })));
+            },
+        });
+        const left = make();
+        const right = make();
+        left.other = right;
+        right.other = left;
+        return [left, right];
+    }
+    $mol_test({
+        async 'waiting for message fails when other side is silent'() {
+            const [channel] = pair();
+            const got = await $bog_music_peer.message(channel, 10).then(() => 'got', error => error.message);
+            $mol_assert_equal(got, 'Другое устройство замолчало');
+        },
+        async 'drain fails when channel closes with full buffer'() {
+            const [channel] = pair();
+            Object.assign(channel, { bufferedAmount: $bog_music_peer.buffer_high });
+            const wait = $bog_music_peer.drain(channel).then(() => 'drained', error => error.message);
+            Object.assign(channel, { readyState: 'closed' });
+            channel.dispatchEvent(new Event('close'));
+            $mol_assert_equal(await wait, 'Соединение оборвалось');
+        },
+        async 'files go through channel in chunks with meta'() {
+            const [sender, receiver] = pair();
+            const big = new Uint8Array($bog_music_peer.chunk * 2 + 5).map((_, i) => i % 251);
+            const items = [
+                { key: 'a', meta: { title: 'A', artist: 'X', duration: 1, cover: '' }, file: new Blob([big]) },
+                { key: 'b', meta: { title: 'B', artist: 'Y', duration: 2, cover: '' }, file: new Blob([new Uint8Array([7])]) },
+            ];
+            const got = [];
+            const counted = [];
+            const [count] = await Promise.all([
+                $bog_music_peer.receive(receiver, async (item) => { got.push(item); }, (done, all) => counted.push(`${done}/${all}`)),
+                $bog_music_peer.send(sender, items),
+            ]);
+            $mol_assert_equal(count, 2);
+            $mol_assert_equal(got.map(item => item.key), ['a', 'b']);
+            $mol_assert_equal(got[0].meta.title, 'A');
+            $mol_assert_equal([...got[0].bytes], [...big]);
+            $mol_assert_equal([...got[1].bytes], [7]);
+            $mol_assert_equal(counted, ['0/2', '1/2', '2/2']);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'Sizes'() {
+            const secret = $mol_crypto_sacred.make();
+            const key = secret.asArray();
+            $mol_assert_equal(key.byteLength, $mol_crypto_sacred.size);
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            $mol_assert_equal(closed.byteLength, $mol_crypto_sacred.size);
+            const self_closed = await secret.close(secret, salt);
+            $mol_assert_equal(self_closed.byteLength, $mol_crypto_sacred.size);
+        },
+        async 'Decrypt self encrypted'() {
+            const secret = $mol_crypto_sacred.make();
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const closed = await secret.encrypt(data, salt);
+            const opened = await secret.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+        async 'Decrypt encrypted with exported key'() {
+            const data = new Uint8Array([1, 2, 3]);
+            const salt = $mol_crypto_salt();
+            const Alice = $mol_crypto_sacred.make();
+            const closed = await Alice.encrypt(data, salt);
+            const Bob = $mol_crypto_sacred.from(Alice.asArray());
+            const opened = await Bob.decrypt(closed, salt);
+            $mol_assert_equal(data, opened);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function vec(...nums) {
+        return new Float32Array(nums);
+    }
+    let ns_seq = 0;
+    function ns(prefix) {
+        return `${prefix}_${Date.now()}_${++ns_seq}`;
+    }
+    $mol_test({
+        'empty pool returns empty result'($) {
+            const out = $.$bog_recsys.recommend([]);
+            $mol_assert_equal(out.length, 0);
+        },
+        'single-item pool always returns that item'($) {
+            $.$bog_recsys.namespace(ns('single'));
+            $.$bog_recsys.epsilon(0);
+            const only = { id: 'only', embedding: vec(1, 0) };
+            const out = $.$bog_recsys.recommend([only], { limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'only');
+        },
+        'excludes ids in exclude set'($) {
+            $.$bog_recsys.namespace(ns('exclude'));
+            $.$bog_recsys.epsilon(0);
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(1, 0) },
+                { id: 'c', embedding: vec(1, 0) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, {
+                exclude: ['a', 'b'],
+                limit: 5,
+            });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'c');
+        },
+        'exclude as Set works'($) {
+            $.$bog_recsys.namespace(ns('exclude_set'));
+            $.$bog_recsys.epsilon(0);
+            const out = $.$bog_recsys.recommend([{ id: 'a' }, { id: 'b' }], { exclude: new Set(['a']), limit: 5 });
+            $mol_assert_equal(out.length, 1);
+            $mol_assert_equal(out[0].id, 'b');
+        },
+        'parallel embeddings rank above orthogonal'($) {
+            $.$bog_recsys.namespace(ns('cosine'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0, 0) };
+            const parallel = { id: 'par', embedding: vec(2, 0, 0) };
+            const orthogonal = { id: 'ort', embedding: vec(0, 1, 0) };
+            const out = $.$bog_recsys.recommend([orthogonal, parallel], {
+                seed,
+                limit: 2,
+            });
+            $mol_assert_equal(out[0].id, 'par');
+            $mol_assert_equal(out[1].id, 'ort');
+        },
+        'no seed: ranking falls back to tag rewards'($) {
+            $.$bog_recsys.namespace(ns('no_seed'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            const out = $.$bog_recsys.recommend([
+                { id: 'm', tags: ['metal'] },
+                { id: 'j', tags: ['jazz'] },
+            ], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'j');
+        },
+        'play raises tag reward, skip lowers it'($) {
+            $.$bog_recsys.namespace(ns('play_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'play');
+            const after_play = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_play > 0, true);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['pop'] }, 'skip');
+            const after_skip = $.$bog_recsys.rewards().pop ?? 0;
+            $mol_assert_equal(after_skip < after_play, true);
+        },
+        'dislike pushes reward more negative than a single skip'($) {
+            $.$bog_recsys.namespace(ns('dislike_vs_skip'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'skip');
+            const skipped = $.$bog_recsys.rewards().punk ?? 0;
+            $.$bog_recsys.namespace(ns('dislike_vs_skip2'));
+            $.$bog_recsys.feedback({ id: 'a', tags: ['punk'] }, 'dislike');
+            const disliked = $.$bog_recsys.rewards().punk ?? 0;
+            $mol_assert_equal(disliked < skipped, true);
+        },
+        'decay attenuates old reward when new feedback arrives'($) {
+            $.$bog_recsys.namespace(ns('decay'));
+            $.$bog_recsys.decay(0.5);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 0 * 0.5 + 1 = 1
+            const r1 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r1, 1);
+            $.$bog_recsys.feedback({ id: 'a', tags: ['rock'] }, 'like'); // 1 * 0.5 + 1 = 1.5
+            const r2 = $.$bog_recsys.rewards().rock;
+            $mol_assert_equal(r2, 1.5);
+            // reset decay back to default for other tests
+            $.$bog_recsys.decay(0.92);
+        },
+        'namespaces are isolated'($) {
+            const a = ns('iso_a');
+            const b = ns('iso_b');
+            $.$bog_recsys.namespace(a);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['jazz'] }, 'like');
+            $.$bog_recsys.namespace(b);
+            const rewards_b = $.$bog_recsys.rewards();
+            $mol_assert_equal(Object.keys(rewards_b).length, 0);
+            $.$bog_recsys.namespace(a);
+            const rewards_a = $.$bog_recsys.rewards();
+            $mol_assert_equal((rewards_a.jazz ?? 0) > 0, true);
+        },
+        'limit returns up to N distinct items'($) {
+            $.$bog_recsys.namespace(ns('limit'));
+            $.$bog_recsys.epsilon(0);
+            const seed = { id: 'seed', embedding: vec(1, 0) };
+            const pool = [
+                { id: 'a', embedding: vec(1, 0) },
+                { id: 'b', embedding: vec(0.9, 0.1) },
+                { id: 'c', embedding: vec(0.5, 0.5) },
+                { id: 'd', embedding: vec(0, 1) },
+            ];
+            const out = $.$bog_recsys.recommend(pool, { seed, limit: 3 });
+            $mol_assert_equal(out.length, 3);
+            $mol_assert_equal(new Set(out.map(i => i.id)).size, 3);
+        },
+        'feedback raises tag reward and shifts ranking'($) {
+            $.$bog_recsys.namespace(ns('feedback_shift'));
+            $.$bog_recsys.epsilon(0);
+            const liked = { id: 'liked', tags: ['jazz'] };
+            const other = { id: 'other', tags: ['metal'] };
+            $.$bog_recsys.feedback(liked, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().jazz > 0, true);
+            const out = $.$bog_recsys.recommend([other, liked], { limit: 2 });
+            $mol_assert_equal(out[0].id, 'liked');
+        },
+        'reset clears persisted state'($) {
+            $.$bog_recsys.namespace(ns('reset'));
+            $.$bog_recsys.epsilon(0);
+            $.$bog_recsys.feedback({ id: 'x', tags: ['pop'] }, 'like');
+            $mol_assert_equal($.$bog_recsys.rewards().pop > 0, true);
+            $.$bog_recsys.reset();
+            $mol_assert_equal(Object.keys($.$bog_recsys.rewards()).length, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    /** Поддельный сокет: открывается через заданную задержку, либо молчит. */
+    class $bog_yard_test_socket {
+        url;
+        static made = [];
+        static delays = new Map();
+        static reset() {
+            this.made = [];
+            this.delays.clear();
+        }
+        binaryType = '';
+        closed = false;
+        onopen = null;
+        onerror = null;
+        onclose = null;
+        onmessage = null;
+        constructor(url) {
+            this.url = url;
+            $bog_yard_test_socket.made.push(this);
+            const delay = $bog_yard_test_socket.delays.get(url);
+            if (delay == null)
+                return;
+            setTimeout(() => this.onopen?.(), delay);
+        }
+        send() { }
+        close() {
+            this.closed = true;
+        }
+    }
+    /** Контекст с поддельным `WebSocket` и подменённым синхронизатором. */
+    function $bog_yard_test_context(ambient, Yard) {
+        const context = Object.create(ambient);
+        context.$mol_dom_context = Object.assign(Object.create(ambient.$mol_dom_context), {
+            WebSocket: $bog_yard_test_socket,
+        });
+        context.$giper_baza_yard = Yard;
+        return context;
+    }
+    $mol_test({
+        async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://alive.example/', 5);
+            class Yard extends $bog_yard {
+                static stagger = 10;
+                static masters() {
+                    return ['https://silent.example/', 'https://alive.example/'];
+                }
+            }
+            const yard = Yard.make({ $: $bog_yard_test_context($, Yard) });
+            const began = Date.now();
+            const port = await $mol_wire_async(yard).master();
+            const spent = Date.now() - began;
+            $mol_assert_equal(yard.master_cursor(), 1);
+            $mol_assert_equal(port.socket.url, 'wss://alive.example/');
+            $mol_assert_equal($bog_yard_test_socket.made[0].closed, true);
+            $mol_assert_equal(spent < 500, true);
+            $mol_assert_equal(yard.master_rtt() > 0, true);
+            port.destructor();
+        },
+        async 'Обрыв связи сдвигает курсор на следующего мастера'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://alive.example/', 5);
+            class Yard extends $bog_yard {
+                static stagger = 10;
+                static reconnect_delay = 1;
+                static masters() {
+                    return ['https://silent.example/', 'https://alive.example/'];
+                }
+            }
+            const yard = Yard.make({ $: $bog_yard_test_context($, Yard) });
+            const port = await $mol_wire_async(yard).master();
+            $mol_assert_equal(yard.master_cursor(), 1);
+            port.socket.onclose?.();
+            await new Promise(done => setTimeout(done, 20));
+            $mol_assert_equal(yard.master_cursor(), 0);
+            port.destructor();
+        },
+        async 'Проверка выбирает мастера, который открывается быстрее'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://slow.example/', 60);
+            $bog_yard_test_socket.delays.set('wss://fast.example/', 5);
+            class Yard extends $bog_yard {
+                static masters() {
+                    return ['https://current.example/', 'https://slow.example/', 'https://fast.example/'];
+                }
+            }
+            const yard = Yard.make({ $: $bog_yard_test_context($, Yard) });
+            const best = await $mol_wire_async(yard).probe_best(0);
+            $mol_assert_equal(best?.index, 2);
+            $mol_assert_equal(best.rtt < 50, true);
+            $mol_assert_equal($bog_yard_test_socket.made.every(socket => socket.closed), true);
+        },
+        async 'Проверка переключается на заметно более быстрого мастера'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://fast.example/', 5);
+            class Yard extends $bog_yard {
+                static switch_margin = 0;
+                static masters() {
+                    return ['https://current.example/', 'https://fast.example/'];
+                }
+            }
+            const yard = Yard.make({ $: $bog_yard_test_context($, Yard) });
+            yard.master_cursor(0);
+            yard.master_rtt(100);
+            const switched = await $mol_wire_async(yard).probe_check();
+            $mol_assert_equal(switched, true);
+            $mol_assert_equal(yard.master_cursor(), 1);
+            $mol_assert_equal(yard.master_rtt() < 50, true);
+        },
+        async 'Проверка не трогает связь, если кандидат не быстрее'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://other.example/', 5);
+            class Yard extends $bog_yard {
+                static masters() {
+                    return ['https://current.example/', 'https://other.example/'];
+                }
+            }
+            const yard = Yard.make({ $: $bog_yard_test_context($, Yard) });
+            yard.master_cursor(0);
+            yard.master_rtt(50);
+            const switched = await $mol_wire_async(yard).probe_check();
+            $mol_assert_equal(switched, false);
+            $mol_assert_equal(yard.master_cursor(), 0);
+            $mol_assert_equal(yard.master_rtt(), 50);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     $mol_test({
         async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
             const auth = await $.$giper_baza_auth._generate();
@@ -10450,43 +11072,52 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
-        async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
-            const made = [];
-            class Fake {
-                url;
-                binaryType = '';
-                closed = false;
-                onopen = null;
-                onerror = null;
-                onclose = null;
-                onmessage = null;
-                constructor(url) {
-                    this.url = url;
-                    made.push(this);
-                    if (url.includes('alive'))
-                        setTimeout(() => this.onopen?.(), 5);
-                }
-                send() { }
-                close() { this.closed = true; }
+        async 'Перенос кладёт юниты под их прежние ключи, а не под числовые'($) {
+            const old = await $.$mol_db('bog_gram_mine_test_old', mig => mig.store_make('Unit'), mig => mig.store_make('Ball'));
+            const next = await $.$mol_db('bog_gram_mine_test_new', mig => mig.store_make('Unit'), mig => mig.store_make('Ball'));
+            try {
+                const change = old.change('Unit', 'Ball');
+                const unit = [new Uint8Array([1, 2, 3]).buffer];
+                const ball = [new Uint8Array([4, 5]).buffer];
+                await change.stores.Unit.put(unit, ['land_a', 'sand:x']);
+                await change.stores.Ball.put(ball, ['land_a', 'sand:x']);
+                await change.commit();
+                $mol_assert_equal(await $bog_gram_mine.copy(old, next), 1);
+                const unit_got = await next.read('Unit').Unit.get(['land_a', 'sand:x']);
+                const ball_got = await next.read('Ball').Ball.get(['land_a', 'sand:x']);
+                $mol_assert_equal([...new Uint8Array(unit_got[0])], [1, 2, 3]);
+                $mol_assert_equal([...new Uint8Array(ball_got[0])], [4, 5]);
+                const range = $.$mol_dom_context.IDBKeyRange.bound(['land_a', ''], ['land_a', '\uFFFF']);
+                $mol_assert_equal((await next.read('Unit').Unit.select(range)).length, 1);
             }
-            class Yard extends $bog_yard {
-                static stagger = 10;
-                static masters() {
-                    return ['https://silent.example/', 'https://alive.example/'];
-                }
+            finally {
+                old.destructor();
+                await old.kill();
+                next.destructor();
+                await next.kill();
             }
-            const context = Object.create($);
-            context.$mol_dom_context = Object.assign(Object.create($.$mol_dom_context), { WebSocket: Fake });
-            context.$giper_baza_yard = Yard;
-            const yard = Yard.make({ $: context });
-            const began = Date.now();
-            const port = await $mol_wire_async(yard).master();
-            const spent = Date.now() - began;
-            $mol_assert_equal(yard.master_cursor(), 1);
-            $mol_assert_equal(port.socket.url, 'wss://alive.example/');
-            $mol_assert_equal(made[0].closed, true);
-            $mol_assert_equal(spent < 500, true);
-            port.destructor();
+        },
+        async 'Записи под числовыми ключами вычищаются, нормальные остаются'($) {
+            const db = await $.$mol_db('bog_gram_mine_test_clean', mig => mig.store_make('Unit'), mig => mig.store_make('Ball'));
+            try {
+                const change = db.change('Unit', 'Ball');
+                await change.stores.Unit.put([new Uint8Array([1]).buffer]);
+                await change.stores.Unit.put([new Uint8Array([2]).buffer], ['land_a', 'sand:x']);
+                await change.stores.Ball.put([new Uint8Array([3]).buffer]);
+                await change.commit();
+                await $bog_gram_mine.clean(db);
+                $mol_assert_equal(await db.read('Unit').Unit.count(), 1);
+                $mol_assert_equal(await db.read('Ball').Ball.count(), 0);
+            }
+            finally {
+                db.destructor();
+                await db.kill();
+            }
+        },
+        'Из общей базы ничего не выкидывается, если ключи нормальные'($) {
+            $mol_assert_equal($bog_gram_mine.key_ok(['land_a', 'sand:x']), true);
+            $mol_assert_equal($bog_gram_mine.key_ok([1]), false);
+            $mol_assert_equal($bog_gram_mine.key_ok(['land_a']), false);
         },
     });
 })($ || ($ = {}));
@@ -10524,8 +11155,24 @@ var $;
                 app.settings_close();
                 $mol_assert_equal(app.settings_opened(), false);
             },
+            'Музыка открывается по ссылке и остаётся в книге после закрытия'($) {
+                const app = $bog_gram.make({ $ });
+                $mol_assert_equal(app.music_opened(), false);
+                $mol_assert_equal(app.music_alive(), false);
+                app.music_open();
+                $mol_assert_equal(app.music_opened(), true);
+                $mol_assert_equal(app.music_alive(), true);
+                $mol_assert_equal(app.music_hidden(), false);
+                app.music_close();
+                $mol_assert_equal(app.music_opened(), false);
+                $mol_assert_equal(app.music_alive(), true);
+                $mol_assert_equal(app.music_hidden(), true);
+            },
             'Ссылка на настройки разбирается как ссылка Gram'() {
                 $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!settings'), { settings: '' });
+            },
+            'Ссылка на музыку разбирается как ссылка Gram'() {
+                $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!music'), { music: '' });
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
