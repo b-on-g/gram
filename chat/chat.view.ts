@@ -1164,10 +1164,10 @@ namespace $.$$ {
 		@ $mol_mem
 		stick_watch(): number {
 			const top = this.Body().scroll_top()
-			const node = this.Body().dom_node() as HTMLElement
-			const gap = node.scrollHeight - top - node.clientHeight
+			const gap = this.content_height() - top - ( this.Body().view_rect()?.height ?? 0 )
 			const last = $mol_wire_probe( ()=> this.stick_watch() ) ?? top
-			if( top < last - 4 && gap > 4 ) this.stick_end( false )
+			if( gap <= 4 ) this.stick_end( true )
+			else if( top < last - 4 ) this.stick_end( false )
 			return top
 		}
 
