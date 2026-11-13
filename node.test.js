@@ -40428,6 +40428,10 @@ var $;
                 hint.title = () => 'Аккаунт в Music общий с Gram: ключ, переписка и скачанные треки одни на оба приложения. Сброса здесь нет — он стёр бы аккаунт в Gram, а треки тоже будут удалены. Сменить аккаунт можно в Gram, но треки тоже будут удалены.';
                 const reset = new this.$.$mol_view();
                 reset.sub = () => [hint];
+                const empty = new this.$.$mol_view();
+                empty.sub = () => [];
+                account.Export = () => empty;
+                account.Import = () => empty;
                 account.Reset = () => reset;
                 return account;
             }
@@ -41720,7 +41724,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.152';
+    $.$bog_gram_version = '1.0.153';
 })($ || ($ = {}));
 
 ;
