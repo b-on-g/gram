@@ -690,11 +690,13 @@ namespace $.$$ {
 			if( this.edit_id() ) this.edit_stop()
 
 			for( const video of videos ) {
-				await $mol_wire_async( this ).video_send( video ).catch( error => {
+				try {
+					const clip = await this.video_read( video )
+					if( clip ) await $mol_wire_async( this ).video_send( clip )
+				} catch( error ) {
 					$mol_fail_log( error )
 					this.voice_hint( 'Видео не отправилось' )
-					return ''
-				} )
+				}
 			}
 
 			if( !images.length ) return ''
@@ -794,7 +796,29 @@ namespace $.$$ {
 			return message.link().str
 		}
 
-		video_send( file: File ) {
+		async video_read( file: File ) {
+
+			const clip = this.$.$bog_gram_clip
+			const mb = ( size: number )=> Math.ceil( size / 2 ** 20 )
+
+			if( file.size > clip.source_limit ) {
+				this.voice_hint( `Видео больше ${ mb( clip.source_limit ) } МБ не сжать, это ${ mb( file.size ) } МБ` )
+				return null
+			}
+
+			this.voice_hint( 'Сжимаю видео…' )
+			const read = await clip.read( file, done => this.voice_hint( `Сжимаю видео: ${ Math.round( done * 100 ) }%` ) )
+
+			if( read.bytes.byteLength > clip.limit ) {
+				this.voice_hint( `Видео не влезает: после сжатия ${ mb( read.bytes.byteLength ) } МБ, можно до ${ mb( clip.limit ) } МБ` )
+				return null
+			}
+
+			this.voice_hint( '' )
+			return read
+		}
+
+		video_send( clip: $bog_gram_clip_read ) {
 
 			const session = this.Talk().session( this.dialog() )
 			if( !session ) return ''
@@ -805,13 +829,6 @@ namespace $.$$ {
 				return ''
 			}
 
-			const limit = this.$.$bog_gram_clip.limit
-			if( file.size > limit ) {
-				this.voice_hint( `Видео больше ${ limit / 2 ** 20 } МБ не отправить, это ${ Math.ceil( file.size / 2 ** 20 ) } МБ` )
-				return ''
-			}
-
-			const clip = $mol_wire_sync( this.$.$bog_gram_clip ).read( file )
 			const store = this.land_closed( clip.bytes, clip.type, passes )
 
 			const text = this.message_text().trim()
