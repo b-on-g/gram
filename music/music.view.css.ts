@@ -10,13 +10,6 @@ namespace $.$$ {
 			},
 		},
 
-		Frame: {
-			flex: {
-				grow: 1,
-			},
-			width: '100%',
-		},
-
 	} )
 
 }

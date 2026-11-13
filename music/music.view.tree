@@ -1,14 +1,14 @@
-$bog_gram_music $mol_page
-	title \Музыка
-	uri \https://b-on-g.github.io/music/
+$bog_gram_music $bog_music_app
+	Theme_btn null
+	Sync_status null
+	Version null
 	attr *
 		^
 		bog_gram_music_hidden <= hidden false
 	tools /
+		^
 		<= Close $mol_button_minor
 			hint \Свернуть
 			click? <=> close? null
 			sub /
 				<= Close_icon $mol_icon_close
-	Frame $mol_frame
-		uri <= uri

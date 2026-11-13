@@ -2,7 +2,7 @@ namespace $ {
 
 	export class $bog_gram_follow extends $mol_object {
 
-		static keys = [ 'invite', 'key', 'join', 'by', 'users', 'settings' ] as const
+		static keys = [ 'invite', 'key', 'join', 'by', 'users', 'settings', 'music' ] as const
 
 		static params( uri: string ) {
 
@@ -17,7 +17,7 @@ namespace $ {
 				out[ name ] = this.decode( rest.join( '=' ) )
 			}
 
-			if( !out.invite && !out.join && !out.users && out.settings === undefined ) return {}
+			if( !out.invite && !out.join && !out.users && out.settings === undefined && out.music === undefined ) return {}
 
 			return out
 		}

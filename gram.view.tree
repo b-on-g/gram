@@ -151,12 +151,12 @@ $bog_gram $mol_book2
 	Gate_lost $mol_paragraph
 		title \Не удалось загрузить данные аккаунта
 	Gate_fresh_note $mol_paragraph
-		title \Если это первый вход в Gram на этом устройстве, создайте отдельный аккаунт. Общий ключ других приложений останется без изменений.
+		title \Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.
 	Gate_retry $mol_button_minor
 		title \Повторить
 		click? <=> account_retry?
 	Gate_fresh $mol_button_minor
-		title \Создать аккаунт Gram на этом устройстве
+		title \Создать аккаунт на этом устройстве
 		click? <=> account_fresh?
 	Placeholder <= Intro $mol_view
 		sub /

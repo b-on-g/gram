@@ -204,14 +204,27 @@ namespace $.$$ {
 			return null
 		}
 
+		/** Открыта ли страница музыки. Как у настроек, состоянием владеет ссылка. */
 		@ $mol_mem
 		music_opened( next?: boolean ) {
+
+			const arg = this.$.$mol_state_arg
+			if( next !== undefined ) arg.value( 'music', next ? '' : null )
+
+			return arg.value( 'music' ) !== null
+		}
+
+		/**
+		 * Страница музыки остаётся в книге после закрытия: фрейм, убранный из
+		 * документа, уносит с собой плеер, а музыка должна играть дальше.
+		 */
+		@ $mol_mem
+		music_pinned( next?: boolean ) {
 			return next ?? false
 		}
 
-		@ $mol_mem
-		music_alive( next?: boolean ) {
-			return next ?? false
+		music_alive() {
+			return this.music_pinned() || this.music_opened()
 		}
 
 		override music_hidden() {
@@ -221,7 +234,10 @@ namespace $.$$ {
 		@ $mol_action
 		music_open( next?: any ) {
 			const open = !this.music_opened()
-			this.music_alive( true )
+			this.music_pinned( true )
+			this.compose_opened( false )
+			this.settings_opened( false )
+			this.group_opened( false )
 			this.music_opened( open )
 			if( open ) this.Music_page().bring()
 			return null

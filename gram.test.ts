@@ -47,10 +47,36 @@ namespace $.$$ {
 
 		},
 
+		'Музыка открывается по ссылке и остаётся в книге после закрытия'( $ ) {
+
+			const app = $bog_gram.make({ $ })
+
+			$mol_assert_equal( app.music_opened(), false )
+			$mol_assert_equal( app.music_alive(), false )
+
+			app.music_open()
+			$mol_assert_equal( app.music_opened(), true )
+			$mol_assert_equal( app.music_alive(), true )
+			$mol_assert_equal( app.music_hidden(), false )
+
+			app.music_close()
+			$mol_assert_equal( app.music_opened(), false )
+			$mol_assert_equal( app.music_alive(), true )
+			$mol_assert_equal( app.music_hidden(), true )
+
+		},
+
 		'Ссылка на настройки разбирается как ссылка Gram'() {
 			$mol_assert_equal(
 				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!settings' ),
 				{ settings: '' },
+			)
+		},
+
+		'Ссылка на музыку разбирается как ссылка Gram'() {
+			$mol_assert_equal(
+				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!music' ),
+				{ music: '' },
 			)
 		},
 
