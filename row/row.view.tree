@@ -26,7 +26,6 @@ $bog_gram_row $mol_button_minor
 		pointerup? <=> swipe_end? null
 		pointercancel? <=> swipe_cancel? null
 		wheel? <=> swipe_wheel? null
-		focusin? <=> swipe_focus? null
 	sub /
 		<= Avatar $bog_gram_avatar
 			id <= avatar_id
@@ -56,4 +55,5 @@ $bog_gram_row $mol_button_minor
 			event *
 				^
 				click? <=> tools_click? null
+				focusin? <=> swipe_focus? null
 			sub <= tools

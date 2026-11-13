@@ -21,8 +21,6 @@ namespace $ {
 
 		static audio_rate = 64_000
 
-		static wait = 3000
-
 		static video_is( file: File ) {
 			if( file.type.startsWith( 'video/' ) ) return true
 			return /\.(mp4|m4v|mov|webm|mkv|3gp)$/i.test( file.name )
@@ -42,31 +40,20 @@ namespace $ {
 			return { width: even( width ), height: even( height ) }
 		}
 
-		static size( file: Blob ) {
+		static input( lib: any, file: Blob ) {
+			return new lib.Input({ source: new lib.BlobSource( file ), formats: lib.ALL_FORMATS })
+		}
 
-			return new Promise< { width: number, height: number } >( done => {
-
-				const dom = this.$.$mol_dom_context
-				const video = dom.document.createElement( 'video' )
-				const uri = dom.URL.createObjectURL( file )
-
-				const finish = ( width: number, height: number )=> {
-					clearTimeout( timer )
-					video.removeAttribute( 'src' )
-					dom.URL.revokeObjectURL( uri )
-					done({ width, height })
-				}
-
-				const timer = setTimeout( ()=> finish( 0, 0 ), this.wait )
-
-				video.preload = 'metadata'
-				video.muted = true
-				video.onloadedmetadata = ()=> finish( video.videoWidth, video.videoHeight )
-				video.onerror = ()=> finish( 0, 0 )
-				video.src = uri
-
-			} )
-
+		static async size( file: Blob ) {
+			try {
+				const lib = await this.$.$mol_import.module_async( this.lib )
+				const track = await this.input( lib, file ).getPrimaryVideoTrack()
+				if( !track ) return { width: 0, height: 0 }
+				return { width: await track.getDisplayWidth() as number, height: await track.getDisplayHeight() as number }
+			} catch( error ) {
+				$mol_fail_log( error )
+				return { width: 0, height: 0 }
+			}
 		}
 
 		static async squeeze( file: File, progress?: ( done: number )=> void ): Promise< Blob | null > {
@@ -75,7 +62,7 @@ namespace $ {
 
 			const lib = await this.$.$mol_import.module_async( this.lib )
 
-			const input = new lib.Input({ source: new lib.BlobSource( file ), formats: lib.ALL_FORMATS })
+			const input = this.input( lib, file )
 			const target = new lib.BufferTarget()
 			const output = new lib.Output({ format: new lib.Mp4OutputFormat({ fastStart: 'in-memory' }), target })
 

@@ -480,22 +480,13 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem
-		layout_epoch( next?: number ) {
-			return next ?? 0
-		}
-
-		@ $mol_mem
-		Layout_watch() {
-			this.pages_shown()
-			this.$.$mol_window.size()
-			return new this.$.$mol_after_frame( ()=> this.layout_epoch( this.layout_epoch() + 1 ) )
-		}
-
-		@ $mol_mem
 		pages_overflow() {
-			this.layout_epoch()
-			const node = this.dom_node() as HTMLElement
-			return node.scrollWidth > node.clientWidth + 1
+			const own = this.view_rect()
+			const pages = this.pages_shown()
+			const first = pages[ 0 ]?.view_rect()
+			const last = pages[ pages.length - 1 ]?.view_rect()
+			if( !own || !first || !last ) return false
+			return last.right - first.left > own.width + 1
 		}
 
 		override pager_count() {
@@ -509,13 +500,12 @@ namespace $.$$ {
 
 		@ $mol_mem
 		override page_current() {
-			this.layout_epoch()
-			const node = this.dom_node() as HTMLElement
+			const own = this.view_rect()
 			const frames = this.pages_shown().map( page => {
-				const el = page.dom_node() as HTMLElement
-				return [ el.offsetLeft - node.offsetLeft, el.offsetWidth ] as const
+				const rect = page.view_rect()
+				return [ rect?.left ?? 0, rect?.width ?? 0 ] as const
 			} )
-			return this.page_at( frames, this.scroll_left() + node.clientWidth / 2 )
+			return this.page_at( frames, ( own?.left ?? 0 ) + ( own?.width ?? 0 ) / 2 )
 		}
 
 		join_request( id: string, by: string ) {
@@ -526,7 +516,6 @@ namespace $.$$ {
 
 		override auto() {
 			super.auto()
-			this.Layout_watch()
 			if( !this.account_open() ) return
 			$bog_gram_soft( ()=> this.account_ready(), null )
 			$bog_gram_soft( ()=> this.registry_remember(), null )

@@ -109,10 +109,10 @@ namespace $.$$ {
 			})
 			row.swipe_measure = ()=> { row.swipe_width = 120 }
 
-			row.swipe_focus({ target: row.Info().dom_node() } as any )
+			$mol_assert_equal( 'focusin' in row.event(), false )
 			$mol_assert_equal( row.swipe_open(), false )
 
-			row.swipe_focus({ target: row.Tools().dom_node() } as any )
+			row.Tools().event().focusin( new Event( 'focusin' ) )
 			$mol_assert_equal( row.swipe_open(), true )
 
 		},

@@ -38,7 +38,13 @@ namespace $.$$ {
 			return null
 		}
 
+		@ $mol_mem
+		tools_width() {
+			return this.swipe_able() ? this.Tools().view_rect()?.width ?? 0 : 0
+		}
+
 		override style() {
+			this.tools_width()
 			return {
 				... super.style(),
 				'--bog_gram_row_shift': this.swipe_shift() + 'px',
@@ -163,7 +169,7 @@ namespace $.$$ {
 		}
 
 		swipe_measure() {
-			this.swipe_width = ( this.Tools().dom_node() as HTMLElement ).offsetWidth
+			this.swipe_width = this.tools_width()
 		}
 
 		wheel_from = null as null | {
@@ -217,7 +223,6 @@ namespace $.$$ {
 		override swipe_focus( event?: FocusEvent ) {
 
 			if( !event || !this.swipe_able() || this.swipe_open() ) return null
-			if( !( this.Tools().dom_node() as HTMLElement ).contains( event.target as Node ) ) return null
 
 			this.swipe_measure()
 			this.swipe_open( true )

@@ -122,15 +122,15 @@ namespace $.$$ {
 			if( !event || event.pointerType === 'mouse' ) return null
 			if( ( event.target as Element ).closest?.( '[mol_button]' ) ) return null
 
-			const node = this.dom_node() as HTMLElement
-			this.height = node.clientHeight
+			const rect = this.view_rect()
+			this.height = rect?.height ?? 0
 			this.swipe_from = {
 				x: event.clientX,
 				y: event.clientY,
 				time: event.timeStamp,
 				axis: 'wait',
 				speed: 0,
-				width: node.clientWidth,
+				width: rect?.width ?? 0,
 			}
 
 			return null
@@ -253,11 +253,11 @@ namespace $.$$ {
 
 		@ $mol_mem
 		focus_grab() {
-			const node = this.dom_node() as HTMLElement
-			return new this.$.$mol_after_frame( ()=> node.focus?.() )
+			return new this.$.$mol_after_frame( ()=> this.focused( true ) )
 		}
 
 		override auto() {
+			this.view_rect()
 			this.focus_grab()
 		}
 
