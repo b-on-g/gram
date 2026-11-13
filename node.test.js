@@ -22198,10 +22198,6 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		swipe_focus(next){
-			if(next !== undefined) return next;
-			return null;
-		}
 		Avatar(){
 			const obj = new this.$.$bog_gram_avatar();
 			(obj.id) = () => ((this.avatar_id()));
@@ -22252,9 +22248,17 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		swipe_focus(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Tools(){
 			const obj = new this.$.$mol_view();
-			(obj.event) = () => ({...(this.$.$mol_view.prototype.event.call(obj)), "click": (next) => (this.tools_click(next))});
+			(obj.event) = () => ({
+				...(this.$.$mol_view.prototype.event.call(obj)), 
+				"click": (next) => (this.tools_click(next)), 
+				"focusin": (next) => (this.swipe_focus(next))
+			});
 			(obj.sub) = () => ((this.tools()));
 			return obj;
 		}
@@ -22315,8 +22319,7 @@ var $;
 				"pointermove": (next) => (this.swipe_move(next)), 
 				"pointerup": (next) => (this.swipe_end(next)), 
 				"pointercancel": (next) => (this.swipe_cancel(next)), 
-				"wheel": (next) => (this.swipe_wheel(next)), 
-				"focusin": (next) => (this.swipe_focus(next))
+				"wheel": (next) => (this.swipe_wheel(next))
 			};
 		}
 		sub(){
@@ -22333,7 +22336,6 @@ var $;
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_end"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_cancel"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_wheel"));
-	($mol_mem(($.$bog_gram_row.prototype), "swipe_focus"));
 	($mol_mem(($.$bog_gram_row.prototype), "Avatar"));
 	($mol_mem(($.$bog_gram_row.prototype), "Sign"));
 	($mol_mem(($.$bog_gram_row.prototype), "Title"));
@@ -22344,6 +22346,7 @@ var $;
 	($mol_mem(($.$bog_gram_row.prototype), "Bottom"));
 	($mol_mem(($.$bog_gram_row.prototype), "Info"));
 	($mol_mem(($.$bog_gram_row.prototype), "tools_click"));
+	($mol_mem(($.$bog_gram_row.prototype), "swipe_focus"));
 	($mol_mem(($.$bog_gram_row.prototype), "Tools"));
 	($mol_mem(($.$bog_gram_row.prototype), "swipe_open"));
 
@@ -22388,7 +22391,11 @@ var $;
                 next?.stopPropagation();
                 return null;
             }
+            tools_width() {
+                return this.swipe_able() ? this.Tools().view_rect()?.width ?? 0 : 0;
+            }
             style() {
+                this.tools_width();
                 return {
                     ...super.style(),
                     '--bog_gram_row_shift': this.swipe_shift() + 'px',
@@ -22489,7 +22496,7 @@ var $;
                 return this.swipe() && this.tools().length > 0;
             }
             swipe_measure() {
-                this.swipe_width = this.Tools().dom_node().offsetWidth;
+                this.swipe_width = this.tools_width();
             }
             wheel_from = null;
             swipe_wheel(event) {
@@ -22527,8 +22534,6 @@ var $;
             swipe_focus(event) {
                 if (!event || !this.swipe_able() || this.swipe_open())
                     return null;
-                if (!this.Tools().dom_node().contains(event.target))
-                    return null;
                 this.swipe_measure();
                 this.swipe_open(true);
                 return null;
@@ -22544,6 +22549,9 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_row.prototype, "tools_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_row.prototype, "tools_width", null);
         __decorate([
             $mol_mem
         ], $bog_gram_row.prototype, "swipe_drag", null);
@@ -41813,7 +41821,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.158';
+    $.$bog_gram_version = '1.0.159';
 })($ || ($ = {}));
 
 ;
@@ -48104,15 +48112,15 @@ var $;
                     return null;
                 if (event.target.closest?.('[mol_button]'))
                     return null;
-                const node = this.dom_node();
-                this.height = node.clientHeight;
+                const rect = this.view_rect();
+                this.height = rect?.height ?? 0;
                 this.swipe_from = {
                     x: event.clientX,
                     y: event.clientY,
                     time: event.timeStamp,
                     axis: 'wait',
                     speed: 0,
-                    width: node.clientWidth,
+                    width: rect?.width ?? 0,
                 };
                 return null;
             }
@@ -48215,10 +48223,10 @@ var $;
                 return null;
             }
             focus_grab() {
-                const node = this.dom_node();
-                return new this.$.$mol_after_frame(() => node.focus?.());
+                return new this.$.$mol_after_frame(() => this.focused(true));
             }
             auto() {
+                this.view_rect();
                 this.focus_grab();
             }
         }
@@ -52327,7 +52335,6 @@ var $;
         static side = 480;
         static video_rate = 800_000;
         static audio_rate = 64_000;
-        static wait = 3000;
         static video_is(file) {
             if (file.type.startsWith('video/'))
                 return true;
@@ -52348,30 +52355,27 @@ var $;
             const even = (side) => Math.max(2, Math.round(side * scale / 2) * 2);
             return { width: even(width), height: even(height) };
         }
-        static size(file) {
-            return new Promise(done => {
-                const dom = this.$.$mol_dom_context;
-                const video = dom.document.createElement('video');
-                const uri = dom.URL.createObjectURL(file);
-                const finish = (width, height) => {
-                    clearTimeout(timer);
-                    video.removeAttribute('src');
-                    dom.URL.revokeObjectURL(uri);
-                    done({ width, height });
-                };
-                const timer = setTimeout(() => finish(0, 0), this.wait);
-                video.preload = 'metadata';
-                video.muted = true;
-                video.onloadedmetadata = () => finish(video.videoWidth, video.videoHeight);
-                video.onerror = () => finish(0, 0);
-                video.src = uri;
-            });
+        static input(lib, file) {
+            return new lib.Input({ source: new lib.BlobSource(file), formats: lib.ALL_FORMATS });
+        }
+        static async size(file) {
+            try {
+                const lib = await this.$.$mol_import.module_async(this.lib);
+                const track = await this.input(lib, file).getPrimaryVideoTrack();
+                if (!track)
+                    return { width: 0, height: 0 };
+                return { width: await track.getDisplayWidth(), height: await track.getDisplayHeight() };
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                return { width: 0, height: 0 };
+            }
         }
         static async squeeze(file, progress) {
             if (typeof VideoEncoder === 'undefined')
                 return null;
             const lib = await this.$.$mol_import.module_async(this.lib);
-            const input = new lib.Input({ source: new lib.BlobSource(file), formats: lib.ALL_FORMATS });
+            const input = this.input(lib, file);
             const target = new lib.BufferTarget();
             const output = new lib.Output({ format: new lib.Mp4OutputFormat({ fastStart: 'in-memory' }), target });
             const conversion = await lib.Conversion.init({
@@ -56678,18 +56682,14 @@ var $;
                 const music = this.music_alive() && this.music_hidden();
                 return music ? this.pages().slice(0, -1) : this.pages();
             }
-            layout_epoch(next) {
-                return next ?? 0;
-            }
-            Layout_watch() {
-                this.pages_shown();
-                this.$.$mol_window.size();
-                return new this.$.$mol_after_frame(() => this.layout_epoch(this.layout_epoch() + 1));
-            }
             pages_overflow() {
-                this.layout_epoch();
-                const node = this.dom_node();
-                return node.scrollWidth > node.clientWidth + 1;
+                const own = this.view_rect();
+                const pages = this.pages_shown();
+                const first = pages[0]?.view_rect();
+                const last = pages[pages.length - 1]?.view_rect();
+                if (!own || !first || !last)
+                    return false;
+                return last.right - first.left > own.width + 1;
             }
             pager_count() {
                 return this.pages_overflow() ? this.pages_shown().length : 0;
@@ -56699,13 +56699,12 @@ var $;
                 return index < 0 ? frames.length - 1 : index;
             }
             page_current() {
-                this.layout_epoch();
-                const node = this.dom_node();
+                const own = this.view_rect();
                 const frames = this.pages_shown().map(page => {
-                    const el = page.dom_node();
-                    return [el.offsetLeft - node.offsetLeft, el.offsetWidth];
+                    const rect = page.view_rect();
+                    return [rect?.left ?? 0, rect?.width ?? 0];
                 });
-                return this.page_at(frames, this.scroll_left() + node.clientWidth / 2);
+                return this.page_at(frames, (own?.left ?? 0) + (own?.width ?? 0) / 2);
             }
             join_request(id, by) {
                 const plan = this.Lobby().join_take(id, by);
@@ -56715,7 +56714,6 @@ var $;
             }
             auto() {
                 super.auto();
-                this.Layout_watch();
                 if (!this.account_open())
                     return;
                 $bog_gram_soft(() => this.account_ready(), null);
@@ -56876,12 +56874,6 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "join_handle", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "layout_epoch", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "Layout_watch", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "pages_overflow", null);
@@ -64186,9 +64178,9 @@ var $;
                     tools: () => [new $mol_view],
                 });
                 row.swipe_measure = () => { row.swipe_width = 120; };
-                row.swipe_focus({ target: row.Info().dom_node() });
+                $mol_assert_equal('focusin' in row.event(), false);
                 $mol_assert_equal(row.swipe_open(), false);
-                row.swipe_focus({ target: row.Tools().dom_node() });
+                row.Tools().event().focusin(new Event('focusin'));
                 $mol_assert_equal(row.swipe_open(), true);
             },
         });

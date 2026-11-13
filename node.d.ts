@@ -40220,6 +40220,7 @@ declare namespace $ {
 	type $mol_view__event_bog_gram_row_11 = $mol_type_enforce<
 		({ 
 			click( next?: ReturnType< $bog_gram_row['tools_click'] > ): ReturnType< $bog_gram_row['tools_click'] >,
+			focusin( next?: ReturnType< $bog_gram_row['swipe_focus'] > ): ReturnType< $bog_gram_row['swipe_focus'] >,
 		})  & ReturnType< $mol_view['event'] >
 		,
 		ReturnType< $mol_view['event'] >
@@ -40236,7 +40237,6 @@ declare namespace $ {
 		swipe_end( next?: any ): any
 		swipe_cancel( next?: any ): any
 		swipe_wheel( next?: any ): any
-		swipe_focus( next?: any ): any
 		Avatar( ): $bog_gram_avatar
 		Sign( ): $mol_view
 		Title( ): $mol_view
@@ -40247,6 +40247,7 @@ declare namespace $ {
 		Bottom( ): $mol_view
 		Info( ): $mol_view
 		tools_click( next?: any ): any
+		swipe_focus( next?: any ): any
 		Tools( ): $mol_view
 		current( ): boolean
 		size( ): string
@@ -40274,7 +40275,6 @@ declare namespace $ {
 			pointerup( next?: ReturnType< $bog_gram_row['swipe_end'] > ): ReturnType< $bog_gram_row['swipe_end'] >,
 			pointercancel( next?: ReturnType< $bog_gram_row['swipe_cancel'] > ): ReturnType< $bog_gram_row['swipe_cancel'] >,
 			wheel( next?: ReturnType< $bog_gram_row['swipe_wheel'] > ): ReturnType< $bog_gram_row['swipe_wheel'] >,
-			focusin( next?: ReturnType< $bog_gram_row['swipe_focus'] > ): ReturnType< $bog_gram_row['swipe_focus'] >,
 		})  & ReturnType< $mol_button_minor['event'] >
 		sub( ): readonly(any)[]
 	}
@@ -40291,6 +40291,7 @@ declare namespace $.$$ {
         Note(): $mol_view;
         Badge(): $mol_view;
         tools_click(next?: Event): null;
+        tools_width(): number;
         style(): {
             '--bog_gram_row_shift': string;
         };
@@ -64380,7 +64381,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.158";
+    const $bog_gram_version = "1.0.159";
 }
 
 declare namespace $ {
@@ -79857,13 +79858,13 @@ declare namespace $ {
         static side: number;
         static video_rate: number;
         static audio_rate: number;
-        static wait: number;
         static video_is(file: File): boolean;
         static type_of(file: File): string;
         static fit(width: number, height: number): {
             width: number;
             height: number;
         };
+        static input(lib: any, file: Blob): any;
         static size(file: Blob): Promise<{
             width: number;
             height: number;
@@ -82517,8 +82518,6 @@ declare namespace $.$$ {
         join_handle(): string;
         placeholders(): $mol_view[];
         pages_shown(): $mol_view[] | ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_call | $.$bog_gram_chat)[];
-        layout_epoch(next?: number): number;
-        Layout_watch(): $mol_after_frame;
         pages_overflow(): boolean;
         pager_count(): number;
         page_at(frames: readonly (readonly [number, number])[], middle: number): number;

@@ -6695,9 +6695,9 @@ var $;
                     tools: () => [new $mol_view],
                 });
                 row.swipe_measure = () => { row.swipe_width = 120; };
-                row.swipe_focus({ target: row.Info().dom_node() });
+                $mol_assert_equal('focusin' in row.event(), false);
                 $mol_assert_equal(row.swipe_open(), false);
-                row.swipe_focus({ target: row.Tools().dom_node() });
+                row.Tools().event().focusin(new Event('focusin'));
                 $mol_assert_equal(row.swipe_open(), true);
             },
         });

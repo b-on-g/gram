@@ -858,7 +858,6 @@ $bog_gram_row $mol_button_minor
 		pointerup? <=> swipe_end? null
 		pointercancel? <=> swipe_cancel? null
 		wheel? <=> swipe_wheel? null
-		focusin? <=> swipe_focus? null
 	sub /
 		<= Avatar $bog_gram_avatar
 			id <= avatar_id
@@ -888,6 +887,7 @@ $bog_gram_row $mol_button_minor
 			event *
 				^
 				click? <=> tools_click? null
+				focusin? <=> swipe_focus? null
 			sub <= tools
 
 $mol_icon_archive_arrow_down $mol_icon path \M3 3H21V7H3V3M4 21V8H20V21H4M14 14V11H10V14H7L12 19L17 14H14Z
