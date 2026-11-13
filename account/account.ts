@@ -8,7 +8,9 @@ namespace $ {
 
 		@ $mol_mem
 		my_lord() {
-			return this.$.$giper_baza_auth.current().pass().lord().str
+			const lord = this.$.$giper_baza_auth.current().pass().lord().str
+			console.log( '[bog_gram/account] my_lord =', lord )
+			return lord
 		}
 
 		@ $mol_mem
@@ -142,7 +144,9 @@ namespace $ {
 
 		@ $mol_mem
 		born() {
-			return Boolean( this.$.$mol_state_local.value( 'bog_gram_born_' + this.my_lord() ) )
+			const born = Boolean( this.$.$mol_state_local.value( 'bog_gram_born_' + this.my_lord() ) )
+			console.log( '[bog_gram/account] born', this.my_lord(), '=', born )
+			return born
 		}
 
 		pointer_limit() {
@@ -156,25 +160,45 @@ namespace $ {
 
 		@ $mol_mem
 		pointer_timer() {
-			return new this.$.$mol_after_timeout( this.pointer_limit(), ()=> this.pointer_lost( true ) )
+			console.log( '[bog_gram/account] pointer_timer: взвожу таймер на', this.pointer_limit(), 'мс' )
+			return new this.$.$mol_after_timeout( this.pointer_limit(), ()=> {
+				console.log( '[bog_gram/account] pointer_timer: время вышло, ставлю lost' )
+				this.pointer_lost( true )
+			} )
 		}
 
 		pointer_wait() {
-			if( this.born() ) return
-			if( String( this.user_store().Dialogs_land()?.val() ?? '' ) ) return
+
+			const born = this.born()
+			const dialogs = String( this.user_store().Dialogs_land()?.val() ?? '' )
+			console.log( '[bog_gram/account] pointer_wait: born =', born,
+				'Dialogs_land =', dialogs || '(пусто)',
+				'lost =', this.pointer_lost() )
+
+			if( born ) return
+			if( dialogs ) return
 			if( this.pointer_lost() ) $mol_fail( new Error( 'Не удалось загрузить данные аккаунта' ) )
 			this.pointer_timer()
+			console.log( '[bog_gram/account] pointer_wait: ЖДУ появления Dialogs_land' )
 			$mol_fail_hidden( new Promise( ()=> {} ) )
 		}
 
 		@ $mol_mem
 		pointer_state(): 'wait' | 'lost' | 'ready' {
 			try {
-				this.dialogs_land()
+				const land = this.dialogs_land()
+				console.log( '[bog_gram/account] pointer_state: ready, ленд =', land.link().str )
 				return 'ready'
 			} catch( error ) {
-				if( $mol_promise_like( error ) ) return 'wait'
-				if( this.pointer_lost() ) return 'lost'
+				if( $mol_promise_like( error ) ) {
+					console.log( '[bog_gram/account] pointer_state: wait (обещание)' )
+					return 'wait'
+				}
+				if( this.pointer_lost() ) {
+					console.log( '[bog_gram/account] pointer_state: lost' )
+					return 'lost'
+				}
+				console.log( '[bog_gram/account] pointer_state: ошибка', error )
 				$mol_fail_hidden( error )
 			}
 		}
@@ -201,6 +225,7 @@ namespace $ {
 
 		dialogs_land() {
 			const str = String( this.user_store().Dialogs_land()?.val() ?? '' )
+			console.log( '[bog_gram/account] dialogs_land: из user_store =', str || '(пусто)' )
 			if( str ) return this.land( str )
 			this.pointer_wait()
 			return this.dialogs_land_make()
