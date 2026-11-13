@@ -4729,6 +4729,9 @@ $bog_gram_bubble $mol_view
 	sound_playing false
 	sound_toggle? null
 	sound_ended? null
+	video false
+	video_uri \
+	video_ratio 1.78
 	call false
 	call_land null
 	call_open? null
@@ -4781,6 +4784,12 @@ $bog_gram_bubble $mol_view
 			playing <= sound_playing
 			toggle? <=> sound_toggle?
 			ended? <=> sound_ended?
+		<= Clip $mol_video_player
+			uri <= video_uri
+			autoplay false
+			style *
+				^
+				aspectRatio <= video_ratio
 		<= Call $bog_gram_call_card
 			land <= call_land
 			click? <=> call_open?
@@ -4924,8 +4933,8 @@ $bog_gram_chat $bog_gram_page
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
-		hint \Отправить картинку
-		accept \image/*
+		hint \Отправить фото или видео
+		accept \image/*,video/*
 		multiple true
 		files? <=> image_files? null
 		Icon <= Attach_icon $mol_icon_paperclip
@@ -4990,6 +4999,9 @@ $bog_gram_chat $bog_gram_page
 		sound_playing <= message_sound_playing* false
 		sound_toggle? <=> message_sound_toggle*? null
 		sound_ended? <=> message_sound_ended*? null
+		video <= message_video* false
+		video_uri <= message_video_uri* \
+		video_ratio <= message_video_ratio* 1.78
 		call <= message_call* false
 		call_land <= message_call_land* null
 		call_open? <=> message_call_open*? null

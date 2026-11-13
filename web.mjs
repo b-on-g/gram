@@ -60237,7 +60237,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.154';
+    $.$bog_gram_version = '1.0.155';
 })($ || ($ = {}));
 
 ;
@@ -63056,6 +63056,9 @@ var $;
         Shots: $giper_baza_list_link_to(() => $bog_gram_shot),
         Voice: $bog_gram_link_synced(() => $giper_baza_file),
         Voice_span: $giper_baza_atom_real,
+        Video: $bog_gram_link_synced(() => $giper_baza_file),
+        Video_width: $giper_baza_atom_real,
+        Video_height: $giper_baza_atom_real,
         Reply: $giper_baza_atom_text,
         Call: $giper_baza_atom_link,
     }) {
@@ -63391,8 +63394,9 @@ var $;
             const text = String(last.Text()?.val() ?? '');
             const kind = last.Image()?.val() ? 'Фото'
                 : last.Voice()?.val() ? 'Голосовое сообщение'
-                    : last.Call()?.val() ? 'Звонок'
-                        : '';
+                    : last.Video()?.val() ? 'Видео'
+                        : last.Call()?.val() ? 'Звонок'
+                            : '';
             const body = kind ? (text ? kind + ' · ' + text : kind) : text;
             if (this.saved_is(id))
                 return body;
@@ -69053,6 +69057,13 @@ var $;
 			(obj.ended) = (next) => ((this.sound_ended(next)));
 			return obj;
 		}
+		Clip(){
+			const obj = new this.$.$mol_video_player();
+			(obj.uri) = () => ((this.video_uri()));
+			(obj.autoplay) = () => (false);
+			(obj.style) = () => ({...(this.$.$mol_video_player.prototype.style.call(obj)), "aspectRatio": (this.video_ratio())});
+			return obj;
+		}
 		Call(){
 			const obj = new this.$.$bog_gram_call_card();
 			(obj.land) = () => ((this.call_land()));
@@ -69193,6 +69204,15 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		video(){
+			return false;
+		}
+		video_uri(){
+			return "";
+		}
+		video_ratio(){
+			return 1.78;
+		}
 		call(){
 			return false;
 		}
@@ -69258,6 +69278,7 @@ var $;
 				(this.Quote()), 
 				(this.Shot()), 
 				(this.Sound()), 
+				(this.Clip()), 
 				(this.Call()), 
 				(this.Line()), 
 				(this.Actions())
@@ -69271,6 +69292,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Quote"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Shot"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Sound"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Clip"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Call"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
@@ -69319,6 +69341,9 @@ var $;
             Sound() {
                 return this.sound() ? super.Sound() : null;
             }
+            Clip() {
+                return this.video() ? super.Clip() : null;
+            }
             Call() {
                 return this.call() ? super.Call() : null;
             }
@@ -69364,7 +69389,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -69493,6 +69518,16 @@ var $;
             Shot: {
                 alignSelf: 'flex-start',
                 maxWidth: '100%',
+            },
+            Clip: {
+                display: 'block',
+                width: '15rem',
+                maxWidth: '100%',
+                maxHeight: '60vh',
+                borderRadius: '0.5rem',
+                background: {
+                    color: '#000',
+                },
             },
             Sound: {
                 alignSelf: 'stretch',
@@ -69882,6 +69917,15 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_video(id){
+			return false;
+		}
+		message_video_uri(id){
+			return "";
+		}
+		message_video_ratio(id){
+			return 1.78;
+		}
 		message_call(id){
 			return false;
 		}
@@ -70077,8 +70121,8 @@ var $;
 		}
 		Attach(){
 			const obj = new this.$.$bog_gram_attach();
-			(obj.hint) = () => ("Отправить картинку");
-			(obj.accept) = () => ("image/*");
+			(obj.hint) = () => ("Отправить фото или видео");
+			(obj.accept) = () => ("image/*,video/*");
 			(obj.multiple) = () => (true);
 			(obj.files) = (next) => ((this.image_files(next)));
 			(obj.Icon) = () => ((this.Attach_icon()));
@@ -70150,6 +70194,9 @@ var $;
 			(obj.sound_playing) = () => ((this.message_sound_playing(id)));
 			(obj.sound_toggle) = (next) => ((this.message_sound_toggle(id, next)));
 			(obj.sound_ended) = (next) => ((this.message_sound_ended(id, next)));
+			(obj.video) = () => ((this.message_video(id)));
+			(obj.video_uri) = () => ((this.message_video_uri(id)));
+			(obj.video_ratio) = () => ((this.message_video_ratio(id)));
 			(obj.call) = () => ((this.message_call(id)));
 			(obj.call_land) = () => ((this.message_call_land(id)));
 			(obj.call_open) = (next) => ((this.message_call_open(id, next)));
@@ -70420,6 +70467,54 @@ var $;
         }
     }
     $.$bog_gram_shrink = $bog_gram_shrink;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_clip extends $mol_object {
+        static limit = 20 * 2 ** 20;
+        static wait = 3000;
+        static video_is(file) {
+            if (file.type.startsWith('video/'))
+                return true;
+            return /\.(mp4|m4v|mov|webm|mkv|3gp)$/i.test(file.name);
+        }
+        static type_of(file) {
+            if (file.type)
+                return file.type;
+            if (/\.webm$/i.test(file.name))
+                return 'video/webm';
+            if (/\.mov$/i.test(file.name))
+                return 'video/quicktime';
+            return 'video/mp4';
+        }
+        static size(file) {
+            return new Promise(done => {
+                const dom = this.$.$mol_dom_context;
+                const video = dom.document.createElement('video');
+                const uri = dom.URL.createObjectURL(file);
+                const finish = (width, height) => {
+                    clearTimeout(timer);
+                    video.removeAttribute('src');
+                    dom.URL.revokeObjectURL(uri);
+                    done({ width, height });
+                };
+                const timer = setTimeout(() => finish(0, 0), this.wait);
+                video.preload = 'metadata';
+                video.muted = true;
+                video.onloadedmetadata = () => finish(video.videoWidth, video.videoHeight);
+                video.onerror = () => finish(0, 0);
+                video.src = uri;
+            });
+        }
+        static async read(file) {
+            const [buffer, size] = await Promise.all([file.arrayBuffer(), this.size(file)]);
+            return { bytes: new Uint8Array(buffer), type: this.type_of(file), ...size };
+        }
+    }
+    $.$bog_gram_clip = $bog_gram_clip;
 })($ || ($ = {}));
 
 ;
@@ -70776,6 +70871,8 @@ var $;
                     return 'Фото';
                 if (pawn.Voice()?.val())
                     return 'Голосовое сообщение';
+                if (pawn.Video()?.val())
+                    return 'Видео';
                 return '';
             }
             reply_title() {
@@ -70993,11 +71090,21 @@ var $;
                 return null;
             }
             async images_start(files) {
-                const images = files.filter(file => this.$.$bog_gram_shrink.image_is(file));
-                if (!images.length)
+                const videos = files.filter(file => this.$.$bog_gram_clip.video_is(file));
+                const images = files.filter(file => !this.$.$bog_gram_clip.video_is(file) && this.$.$bog_gram_shrink.image_is(file));
+                if (!images.length && !videos.length)
                     return '';
                 if (this.edit_id())
                     this.edit_stop();
+                for (const video of videos) {
+                    await $mol_wire_async(this).video_send(video).catch(error => {
+                        $mol_fail_log(error);
+                        this.voice_hint('Видео не отправилось');
+                        return '';
+                    });
+                }
+                if (!images.length)
+                    return '';
                 const sent = await $mol_wire_async(this).images_send(images.slice(0, image_limit)).catch(error => {
                     $mol_fail_log(error);
                     return '';
@@ -71071,6 +71178,49 @@ var $;
                 this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
+            }
+            video_send(file) {
+                const session = this.Talk().session(this.dialog());
+                if (!session)
+                    return '';
+                const passes = this.passes();
+                if (!passes) {
+                    this.voice_hint(this.lost_hint('Видео'));
+                    return '';
+                }
+                const limit = this.$.$bog_gram_clip.limit;
+                if (file.size > limit) {
+                    this.voice_hint(`Видео больше ${limit / 2 ** 20} МБ не отправить, это ${Math.ceil(file.size / 2 ** 20)} МБ`);
+                    return '';
+                }
+                const clip = $mol_wire_sync(this.$.$bog_gram_clip).read(file);
+                const store = this.land_closed(clip.bytes, clip.type, passes);
+                const text = this.message_text().trim();
+                const message = session.Messages('auto').make(null);
+                message.Video('auto').remote(store);
+                if (clip.width && clip.height) {
+                    message.Video_width('auto')?.val(clip.width);
+                    message.Video_height('auto')?.val(clip.height);
+                }
+                if (text)
+                    message.Text('auto')?.val(text);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
+                this.message_text('');
+                this.voice_hint('');
+                return message.link().str;
+            }
+            message_video(id) {
+                return Boolean(this.message_pawn(id)?.Video()?.val());
+            }
+            message_video_uri(id) {
+                return $bog_gram_soft(() => this.file_uri(this.message_pawn(id)?.Video()?.remote()), '');
+            }
+            message_video_ratio(id) {
+                const pawn = this.message_pawn(id);
+                const width = Number(pawn?.Video_width()?.val() ?? 0);
+                const height = Number(pawn?.Video_height()?.val() ?? 0);
+                return width && height ? width / height : 16 / 9;
             }
             voice_ready() {
                 return this.$.$bog_gram_voice.supported();
@@ -71469,6 +71619,15 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "image_frame", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_video", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_video_uri", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_video_ratio", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "voice_clock", null);
