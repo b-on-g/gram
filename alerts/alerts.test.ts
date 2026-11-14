@@ -65,11 +65,11 @@ namespace $ {
 			$mol_assert_equal( make( 'granted' ).apply( true ), false )
 			$mol_assert_equal( tried, 1 )
 			$mol_assert_equal( Alerts_switch.on(), true )
-			$mol_assert_equal( make( 'granted' ).status(), 'Уведомления включены' )
+			$mol_assert_equal( make( 'granted' ).status(), $bog_gram_text.make({ $ }).alerts_active() )
 
 			const reset = make( 'default' )
-			$mol_assert_equal( reset.status(), 'Браузер сбросил разрешение — включите снова' )
-			$mol_assert_equal( reset.label(), 'Включить уведомления' )
+			$mol_assert_equal( reset.status(), $bog_gram_text.make({ $ }).alerts_reset() )
+			$mol_assert_equal( reset.label(), $bog_gram_text.make({ $ }).alerts_on_label() )
 
 			Alerts_switch.on( false )
 
@@ -103,11 +103,11 @@ namespace $ {
 				off: ()=> off,
 			})
 
-			$mol_assert_equal( make( false, 'default', false, false ).status(), 'Не поддерживается этим браузером' )
-			$mol_assert_equal( make( true, 'denied', false, false ).status(), 'Запрещены в браузере' )
-			$mol_assert_equal( make( true, 'granted', true, false ).status(), 'Уведомления включены' )
-			$mol_assert_equal( make( true, 'default', false, true ).status(), 'Выключены' )
-			$mol_assert_equal( make( true, 'default', false, false ).status(), 'Спросим разрешение, когда откроете диалог' )
+			$mol_assert_equal( make( false, 'default', false, false ).status(), $bog_gram_text.make({ $ }).alerts_unsupported() )
+			$mol_assert_equal( make( true, 'denied', false, false ).status(), $bog_gram_text.make({ $ }).alerts_denied() )
+			$mol_assert_equal( make( true, 'granted', true, false ).status(), $bog_gram_text.make({ $ }).alerts_active() )
+			$mol_assert_equal( make( true, 'default', false, true ).status(), $bog_gram_text.make({ $ }).alerts_off() )
+			$mol_assert_equal( make( true, 'default', false, false ).status(), $bog_gram_text.make({ $ }).alerts_later() )
 
 		},
 

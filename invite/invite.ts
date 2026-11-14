@@ -5,6 +5,11 @@ namespace $ {
 	export class $bog_gram_invite extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -109,14 +114,14 @@ namespace $ {
 		@ $mol_mem
 		plate() {
 
-			if( this.lost() ) return 'Ссылка на диалог битая — попросите свежую'
+			if( this.lost() ) return this.Text().invite_lost()
 
 			const peer = this.pending()
 			if( !peer ) return ''
 
-			if( this.late() !== peer ) return 'Открываем диалог — ищем ключ собеседника'
+			if( this.late() !== peer ) return this.Text().invite_wait()
 
-			return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку'
+			return this.Text().invite_late()
 		}
 
 	}

@@ -59,9 +59,10 @@ namespace $.$$ {
 		}
 
 		override counter() {
-			return this.counter_pattern()
-				.replace( '{index}', String( this.index() + 1 ) )
-				.replace( '{count}', String( this.ids().length ) )
+			return $bog_gram_text_fill( this.counter_pattern(), {
+				index: this.index() + 1,
+				count: this.ids().length,
+			} )
 		}
 
 		override Prev() {

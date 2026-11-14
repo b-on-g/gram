@@ -1,25 +1,23 @@
 namespace $ {
 
-	export class $bog_gram_count extends $mol_object {
+	export function $bog_gram_count_people( this: $, count: number ) {
+		const text = this.$bog_gram_text.make({ $: this })
+		return $bog_gram_text_plural( count, {
+			one: text.count_people_one(),
+			few: text.count_people_few(),
+			many: text.count_people_many(),
+			other: text.count_people_other(),
+		}, this.$mol_locale.lang() )
+	}
 
-		static plural( count: number, one: string, few: string, many: string ) {
-			const tens = count % 100
-			const ones = count % 10
-			if( tens < 11 || tens > 14 ) {
-				if( ones === 1 ) return count + ' ' + one
-				if( ones >= 2 && ones <= 4 ) return count + ' ' + few
-			}
-			return count + ' ' + many
-		}
-
-		static people( count: number ) {
-			return this.plural( count, 'участник', 'участника', 'участников' )
-		}
-
-		static dialogs( count: number ) {
-			return this.plural( count, 'диалог', 'диалога', 'диалогов' )
-		}
-
+	export function $bog_gram_count_dialogs( this: $, count: number ) {
+		const text = this.$bog_gram_text.make({ $: this })
+		return $bog_gram_text_plural( count, {
+			one: text.count_dialogs_one(),
+			few: text.count_dialogs_few(),
+			many: text.count_dialogs_many(),
+			other: text.count_dialogs_other(),
+		}, this.$mol_locale.lang() )
 	}
 
 }

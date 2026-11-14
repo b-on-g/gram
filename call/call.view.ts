@@ -32,7 +32,7 @@ namespace $.$$ {
 		override lobby_text() {
 			const names = this.Room().seats_alive().map( seat => this.Room().seat_name( seat ) )
 			if( !names.length ) return this.lobby_empty()
-			return this.lobby_some().replace( '{names}', names.join( ', ' ) )
+			return $bog_gram_text_fill( this.lobby_some(), { names: names.join( ', ' ) } )
 		}
 
 		override join() {

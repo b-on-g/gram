@@ -123,7 +123,7 @@ namespace $.$$ {
 		}
 
 		override asks_head() {
-			return this.asks_pattern().replace( '{count}', String( this.asks().length ) )
+			return $bog_gram_text_fill( this.asks_pattern(), { count: this.asks().length } )
 		}
 
 		@ $mol_mem

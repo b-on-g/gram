@@ -5,7 +5,7 @@ namespace $.$$ {
 		override count_text() {
 			const count = this.Room().seats_alive().length
 			if( !count ) return this.count_none()
-			return this.count_some().replace( '{count}', String( count ) )
+			return $bog_gram_text_fill( this.count_some(), { count } )
 		}
 
 	}

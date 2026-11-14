@@ -3,6 +3,11 @@ namespace $ {
 	export class $bog_gram_alerts extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -80,16 +85,16 @@ namespace $ {
 		}
 
 		label() {
-			return this.active() ? 'Выключить' : 'Включить уведомления'
+			return this.active() ? this.Text().alerts_off_label() : this.Text().alerts_on_label()
 		}
 
 		status() {
-			if( !this.supported() ) return 'Не поддерживается этим браузером'
-			if( this.permission() === 'denied' ) return 'Запрещены в браузере'
-			if( this.active() ) return 'Уведомления включены'
-			if( this.on() ) return 'Браузер сбросил разрешение — включите снова'
-			if( this.off() ) return 'Выключены'
-			return 'Спросим разрешение, когда откроете диалог'
+			if( !this.supported() ) return this.Text().alerts_unsupported()
+			if( this.permission() === 'denied' ) return this.Text().alerts_denied()
+			if( this.active() ) return this.Text().alerts_active()
+			if( this.on() ) return this.Text().alerts_reset()
+			if( this.off() ) return this.Text().alerts_off()
+			return this.Text().alerts_later()
 		}
 
 		@ $mol_action

@@ -60,7 +60,7 @@ namespace $.$$ {
 			})
 
 			$mol_assert_equal( menu.archive_unread_label(), '5' )
-			$mol_assert_equal( menu.archive_note(), '2 диалога' )
+			$mol_assert_equal( menu.archive_note(), $.$bog_gram_count_dialogs( 2 ) )
 
 		},
 

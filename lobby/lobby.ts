@@ -3,6 +3,11 @@ namespace $ {
 	export class $bog_gram_lobby extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -164,7 +169,7 @@ namespace $ {
 
 			const pass = $bog_gram_pass.verified( ask.lord, ask.pass )
 			if( !pass ) {
-				this.Crew().error( 'Ключ в заявке не сходится со своим владельцем: заявка отклонена' )
+				this.Crew().error( this.Text().lobby_key_bad() )
 				this.forget( entry )
 				return ''
 			}
@@ -387,19 +392,21 @@ namespace $ {
 		@ $mol_mem
 		plate() {
 
-			if( this.lost() ) return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую'
+			const text = this.Text()
+
+			if( this.lost() ) return text.lobby_lost()
 
 			const denied = this.denied().length
-			if( denied === 1 ) return 'Заявку отклонили — попроситься снова можно по той же ссылке'
-			if( denied ) return 'Заявок отклонено: ' + denied + ' — попроситься снова можно по тем же ссылкам'
+			if( denied === 1 ) return text.lobby_denied_one()
+			if( denied ) return $bog_gram_text_fill( text.lobby_denied_some(), { n: denied } )
 
 			const queued = this.pending_queued().length
-			if( queued === 1 ) return 'Заявка отправляется — это не мгновенно'
-			if( queued ) return 'Отправляется заявок: ' + queued
+			if( queued === 1 ) return text.lobby_queued_one()
+			if( queued ) return $bog_gram_text_fill( text.lobby_queued_some(), { n: queued } )
 
 			const sent = this.pending_sent().length
-			if( sent === 1 ) return 'Заявка отправлена — ждём, пока её примут'
-			if( sent ) return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут'
+			if( sent === 1 ) return text.lobby_sent_one()
+			if( sent ) return $bog_gram_text_fill( text.lobby_sent_some(), { n: sent } )
 
 			return ''
 		}

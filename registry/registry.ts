@@ -3,6 +3,11 @@ namespace $ {
 	export class $bog_gram_registry extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -46,8 +51,11 @@ namespace $ {
 
 		@ $mol_mem_key
 		status( id: string ) {
-			const mine = this.joined( id ) ? 'вы в списке' : 'только смотрите'
-			return $bog_gram_count.people( this.lords( id ).length ) + ' · ' + mine
+			const text = this.Text()
+			return $bog_gram_text_fill( text.registry_status(), {
+				people: this.$.$bog_gram_count_people( this.lords( id ).length ),
+				mine: this.joined( id ) ? text.registry_joined() : text.registry_watching(),
+			} )
 		}
 
 		uri() {

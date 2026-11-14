@@ -113,7 +113,7 @@ namespace $.$$ {
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( this.call_lost_pattern().replace( '{names}', this.lost_names() ) )
+				this.voice_hint( $bog_gram_text_fill( this.call_lost_pattern(), { names: this.lost_names() } ) )
 				return ''
 			}
 
@@ -189,7 +189,7 @@ namespace $.$$ {
 		}
 
 		override day_title( key: string ) {
-			return $bog_gram_clock.day_title( key )
+			return this.$.$bog_gram_clock_day_title( key )
 		}
 
 		@ $mol_mem
@@ -239,9 +239,10 @@ namespace $.$$ {
 				const reads: Record< string, number > = {}
 				for( const lord of mates ) reads[ lord ] = this.Talk().read_moment_of( dialog, lord )
 
-				return this.read_pattern()
-					.replace( '{count}', String( this.read_tally( reads, mates, moment ) ) )
-					.replace( '{total}', String( mates.length ) )
+				return $bog_gram_text_fill( this.read_pattern(), {
+					count: this.read_tally( reads, mates, moment ),
+					total: mates.length,
+				} )
 
 			}
 
@@ -407,7 +408,7 @@ namespace $.$$ {
 		}
 
 		override reply_title() {
-			return this.reply_pattern().replace( '{name}', this.quote_author( this.reply_id() ) )
+			return $bog_gram_text_fill( this.reply_pattern(), { name: this.quote_author( this.reply_id() ) } )
 		}
 
 		override reply_text() {
@@ -727,7 +728,7 @@ namespace $.$$ {
 		}
 
 		lost_hint( what: string ) {
-			return this.lost_pattern().replace( '{what}', what ).replace( '{names}', this.lost_names() )
+			return $bog_gram_text_fill( this.lost_pattern(), { what, names: this.lost_names() } )
 		}
 
 		land_closed( bytes: Uint8Array< ArrayBuffer >, type: string, passes: readonly $giper_baza_auth_pass[] ) {
@@ -800,15 +801,15 @@ namespace $.$$ {
 			const mb = ( size: number )=> Math.ceil( size / 2 ** 20 )
 
 			if( file.size > clip.source_limit ) {
-				this.voice_hint( this.video_big_pattern().replace( '{limit}', String( mb( clip.source_limit ) ) ).replace( '{size}', String( mb( file.size ) ) ) )
+				this.voice_hint( $bog_gram_text_fill( this.video_big_pattern(), { limit: mb( clip.source_limit ), size: mb( file.size ) } ) )
 				return null
 			}
 
 			this.voice_hint( this.video_packing() )
-			const read = await clip.read( file, done => this.voice_hint( this.video_progress_pattern().replace( '{percent}', String( Math.round( done * 100 ) ) ) ) )
+			const read = await clip.read( file, done => this.voice_hint( $bog_gram_text_fill( this.video_progress_pattern(), { percent: Math.round( done * 100 ) } ) ) )
 
 			if( read.bytes.byteLength > clip.limit ) {
-				this.voice_hint( this.video_over_pattern().replace( '{size}', String( mb( read.bytes.byteLength ) ) ).replace( '{limit}', String( mb( clip.limit ) ) ) )
+				this.voice_hint( $bog_gram_text_fill( this.video_over_pattern(), { size: mb( read.bytes.byteLength ), limit: mb( clip.limit ) } ) )
 				return null
 			}
 

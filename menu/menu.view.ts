@@ -175,7 +175,7 @@ namespace $.$$ {
 		}
 
 		override archive_note() {
-			return $bog_gram_count.dialogs( this.archived().length )
+			return this.$.$bog_gram_count_dialogs( this.archived().length )
 		}
 
 		@ $mol_mem

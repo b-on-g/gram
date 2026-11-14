@@ -40,16 +40,16 @@ namespace $ {
 			$mol_assert_equal( invite.plate(), '' )
 
 			invite.pending( other )
-			$mol_assert_equal( invite.plate(), 'Открываем диалог — ищем ключ собеседника' )
+			$mol_assert_equal( invite.plate(), $bog_gram_text.make({ $ }).invite_wait() )
 
 			invite.late( other )
-			$mol_assert_equal( invite.plate().startsWith( 'Ключ собеседника не нашёлся' ), true )
+			$mol_assert_equal( invite.plate(), $bog_gram_text.make({ $ }).invite_late() )
 
 			invite.pending( 'LordThrd_Cccccccc' )
-			$mol_assert_equal( invite.plate(), 'Открываем диалог — ищем ключ собеседника' )
+			$mol_assert_equal( invite.plate(), $bog_gram_text.make({ $ }).invite_wait() )
 
 			invite.lost( 'мусор' )
-			$mol_assert_equal( invite.plate(), 'Ссылка на диалог битая — попросите свежую' )
+			$mol_assert_equal( invite.plate(), $bog_gram_text.make({ $ }).invite_lost() )
 
 			invite.drop()
 			$mol_assert_equal( invite.plate(), '' )

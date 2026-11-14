@@ -3,6 +3,11 @@ namespace $ {
 	export class $bog_gram_roster extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -212,7 +217,7 @@ namespace $ {
 				if( talk.group_is( id ) ) continue
 				const peer = $bog_gram_soft( ()=> talk.peer( id ), '' )
 				if( !peer || peer === my || sources[ peer ] ) continue
-				sources[ peer ] = 'из переписки'
+				sources[ peer ] = this.Text().roster_from_chats()
 			}
 
 			const registry = this.People().Registry()

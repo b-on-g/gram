@@ -32,14 +32,14 @@ namespace $.$$ {
 		override chosen_head() {
 			const count = this.picked().length
 			if( !count ) return this.chosen_none()
-			return $bog_gram_count.people( count )
+			return this.$.$bog_gram_count_people( count )
 		}
 
 		override lost_note() {
 			const lost = this.lost()
 			if( !lost.length ) return ''
 			const names = lost.map( lord => this.label( lord ) ).join( ', ' )
-			return this.lost_pattern().replace( '{names}', names )
+			return $bog_gram_text_fill( this.lost_pattern(), { names } )
 		}
 
 		override Lost_note() {

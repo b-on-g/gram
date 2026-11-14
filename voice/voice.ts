@@ -16,6 +16,11 @@ namespace $ {
 
 	export class $bog_gram_voice extends $mol_object {
 
+		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
 		static stamp( span: number ) {
 			const whole = Math.max( 0, Math.round( span ) )
 			const min = Math.floor( whole / 60 )
@@ -57,7 +62,7 @@ namespace $ {
 		async open_run() {
 
 			const type = $bog_gram_voice.type()
-			if( !type ) throw new Error( 'Запись звука тут не поддерживается' )
+			if( !type ) throw new Error( this.Text().voice_unsupported() )
 
 			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true })
 

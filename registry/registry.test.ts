@@ -55,7 +55,7 @@ namespace $ {
 			users.Keys( 'auto' )?.key( ann_lord, 'auto' )?.Pass( 'auto' )?.val( ann.pass().toString() )
 
 			$mol_assert_equal( registry.title( id ), 'Соседи по даче' )
-			$mol_assert_equal( registry.status( id ), '2 участника · вы в списке' )
+			$mol_assert_equal( registry.status( id ), $bog_gram_text_fill( registry.Text().registry_status(), { people: $.$bog_gram_count_people( 2 ), mine: registry.Text().registry_joined() } ) )
 			$mol_assert_equal( Object.keys( registry.sources() ), [ ann_lord ] )
 			$mol_assert_equal( registry.source_title( ann_lord ), '' )
 			$mol_assert_equal( registry.pass_of( ann_lord )?.lord().str, ann_lord )

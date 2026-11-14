@@ -2,19 +2,24 @@ namespace $ {
 
 	const day = 24 * 60 * 60 * 1000
 
+	export function $bog_gram_clock_day_title( this: $, key: string ) {
+
+		if( !key ) return ''
+
+		const now = new Date()
+		const text = this.$bog_gram_text.make({ $: this })
+
+		if( key === now.toDateString() ) return text.clock_today()
+		if( key === new Date( now.getTime() - day ).toDateString() ) return text.clock_yesterday()
+
+		return new Date( key ).toLocaleDateString( this.$mol_locale.lang() )
+	}
+
 	export class $bog_gram_clock extends $mol_object {
 
 		static day_key( moment: number ) {
 			if( !moment ) return ''
 			return new Date( moment ).toDateString()
-		}
-
-		static day_title( key: string ) {
-			if( !key ) return ''
-			const now = new Date()
-			if( key === now.toDateString() ) return 'Сегодня'
-			if( key === new Date( now.getTime() - day ).toDateString() ) return 'Вчера'
-			return new Date( key ).toLocaleDateString( 'ru' )
 		}
 
 		static time( moment: number ) {

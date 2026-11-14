@@ -3,6 +3,11 @@ namespace $ {
 	export class $bog_gram_crew extends $mol_object {
 
 		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
+		@ $mol_mem
 		Account() {
 			return this.$.$bog_gram_account.make({ $: this.$ })
 		}
@@ -76,12 +81,12 @@ namespace $ {
 			if( !lord ) return null
 
 			if( lord === this.Account().my_lord() ) {
-				this.draft_error( 'Это ваш собственный идентификатор' )
+				this.draft_error( this.Text().crew_self() )
 				return null
 			}
 
 			if( !$giper_baza_link.check( lord ) ) {
-				this.draft_error( 'Это не похоже на идентификатор' )
+				this.draft_error( this.Text().crew_bad_id() )
 				return null
 			}
 
@@ -190,7 +195,7 @@ namespace $ {
 
 			const pass = known ?? this.People().pass_of( lord )
 			if( !pass ) {
-				this.error( 'Не нашли ключ этого человека: без ключа он не прочитает переписку' )
+				this.error( this.Text().crew_no_key_read() )
 				return ''
 			}
 
@@ -198,7 +203,7 @@ namespace $ {
 
 			const stay = history ? [] : this.stay( id, lord )
 			if( !stay ) {
-				this.error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
+				this.error( this.Text().crew_no_keys() )
 				return ''
 			}
 
@@ -240,7 +245,7 @@ namespace $ {
 
 			const stay = this.stay( id, lord )
 			if( !stay ) {
-				this.error( 'Не нашли ключей всех участников: новый отсек переписки без них не завести' )
+				this.error( this.Text().crew_no_keys() )
 				return ''
 			}
 
@@ -269,7 +274,7 @@ namespace $ {
 
 			const pass = this.People().pass_of( lord )
 			if( !pass ) {
-				this.error( 'Не нашли ключ этого человека: права ему не выдать' )
+				this.error( this.Text().crew_no_key_grant() )
 				return ''
 			}
 

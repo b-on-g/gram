@@ -61,13 +61,13 @@ namespace $ {
 				Roster: ()=> $bog_gram_roster.make({ $, ids: ()=> ids }),
 			})
 
-			$mol_assert_equal( make( [ task ], [], [] ).plate(), 'Заявка отправляется — это не мгновенно' )
-			$mol_assert_equal( make( [], [ task ], [] ).plate(), 'Заявка отправлена — ждём, пока её примут' )
+			$mol_assert_equal( make( [ task ], [], [] ).plate(), $bog_gram_text.make({ $ }).lobby_queued_one() )
+			$mol_assert_equal( make( [], [ task ], [] ).plate(), $bog_gram_text.make({ $ }).lobby_sent_one() )
 			$mol_assert_equal( make( [], [ task ], [ group ] ).plate(), '' )
 
 			const lost = make( [], [], [] )
 			lost.lost( group )
-			$mol_assert_equal( lost.plate(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую' )
+			$mol_assert_equal( lost.plate(), $bog_gram_text.make({ $ }).lobby_lost() )
 
 		},
 
@@ -82,12 +82,12 @@ namespace $ {
 			const task = lobby.task( group, owner )
 
 			store.Asked( 'auto' )!.add( task )
-			$mol_assert_equal( lobby.plate(), 'Заявка отправлена — ждём, пока её примут' )
+			$mol_assert_equal( lobby.plate(), $bog_gram_text.make({ $ }).lobby_sent_one() )
 
 			inbox.Denies( 'auto' )!.add( group )
 
 			$mol_assert_equal( lobby.denied(), [ group ] )
-			$mol_assert_equal( lobby.plate(), 'Заявку отклонили — попроситься снова можно по той же ссылке' )
+			$mol_assert_equal( lobby.plate(), $bog_gram_text.make({ $ }).lobby_denied_one() )
 			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).map( String ), [ task ] )
 			$mol_assert_equal( ( inbox.Denies()!.items() as readonly string[] ).map( String ), [ group ] )
 
@@ -98,7 +98,7 @@ namespace $ {
 			$mol_assert_equal( lobby.asks()[ group ], { owner, state: 'queued' } )
 			$mol_assert_equal( ( store.Asks()!.items() as readonly string[] ).map( String ), [ task ] )
 			$mol_assert_equal( ( store.Asked()!.items() as readonly string[] ).length, 0 )
-			$mol_assert_equal( lobby.plate(), 'Заявка отправляется — это не мгновенно' )
+			$mol_assert_equal( lobby.plate(), $bog_gram_text.make({ $ }).lobby_queued_one() )
 
 		},
 

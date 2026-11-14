@@ -2,6 +2,11 @@ namespace $ {
 
 	export class $bog_gram_account extends $mol_object {
 
+		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
 		user_store() {
 			return this.$.$giper_baza_glob.home().land().Data( $bog_gram_user )
 		}
@@ -168,7 +173,7 @@ namespace $ {
 
 			if( born ) return
 			if( dialogs ) return
-			if( this.pointer_lost() ) $mol_fail( new Error( 'Не удалось загрузить данные аккаунта' ) )
+			if( this.pointer_lost() ) $mol_fail( new Error( this.Text().account_lost() ) )
 			this.pointer_timer()
 			$mol_fail_hidden( new Promise( ()=> {} ) )
 		}

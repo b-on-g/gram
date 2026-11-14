@@ -13,7 +13,7 @@ namespace $ {
 			$mol_assert_equal( group.Pick_mark( 'LordA' ), null )
 			$mol_assert_equal( group.Pick_mark( 'LordB' ) === null, false )
 			$mol_assert_equal( group.chosen_rows().length, 1 )
-			$mol_assert_equal( group.chosen_head(), '1 участник' )
+			$mol_assert_equal( group.chosen_head(), $.$bog_gram_count_people( 1 ) )
 
 			const empty = $bog_gram_group.make({ $ })
 			$mol_assert_equal( empty.chosen_head(), empty.chosen_none() )

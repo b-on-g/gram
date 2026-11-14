@@ -20,8 +20,13 @@ namespace $ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
 		}
 
+		@ $mol_mem
+		Text() {
+			return this.$.$bog_gram_text.make({ $: this.$ })
+		}
+
 		saved_title() {
-			return 'Избранное'
+			return this.Text().talk_saved()
 		}
 
 		@ $mol_action
@@ -297,16 +302,17 @@ namespace $ {
 			if( !last ) return ''
 
 			const text = String( last.Text()?.val() ?? '' )
-			const kind = last.Image()?.val() ? 'Фото'
-				: last.Voice()?.val() ? 'Голосовое сообщение'
-				: last.Video()?.val() ? 'Видео'
-				: last.Call()?.val() ? 'Звонок'
+			const words = this.Text()
+			const kind = last.Image()?.val() ? words.talk_photo()
+				: last.Voice()?.val() ? words.talk_voice()
+				: last.Video()?.val() ? words.talk_video()
+				: last.Call()?.val() ? words.talk_call()
 				: ''
 			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text
 			if( this.saved_is( id ) ) return body
 
 			const author = String( last.Author()?.val() ?? '' )
-			if( author === this.my() ) return 'Вы: ' + body
+			if( author === this.my() ) return $bog_gram_text_fill( words.talk_mine(), { text: body } )
 			if( author && this.group_is( id ) ) return this.People().label( author ) + ': ' + body
 
 			return body

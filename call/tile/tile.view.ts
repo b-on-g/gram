@@ -35,11 +35,11 @@ namespace $.$$ {
 			if( !stats ) return ''
 
 			switch( id ) {
-				case 'fps': return this.stat_fps().replace( '{n}', String( stats.fps ) )
-				case 'size': return this.stat_size().replace( '{n}', `${ stats.width }×${ stats.height }` )
-				case 'kbps': return this.stat_kbps().replace( '{n}', String( stats.kbps ) )
-				case 'loss': return this.stat_loss().replace( '{n}', String( stats.loss ) )
-				case 'rtt': return this.stat_rtt().replace( '{n}', String( stats.rtt ) )
+				case 'fps': return $bog_gram_text_fill( this.stat_fps(), { n: stats.fps } )
+				case 'size': return $bog_gram_text_fill( this.stat_size(), { n: `${ stats.width }×${ stats.height }` } )
+				case 'kbps': return $bog_gram_text_fill( this.stat_kbps(), { n: stats.kbps } )
+				case 'loss': return $bog_gram_text_fill( this.stat_loss(), { n: stats.loss } )
+				case 'rtt': return $bog_gram_text_fill( this.stat_rtt(), { n: stats.rtt } )
 			}
 
 			return ''
