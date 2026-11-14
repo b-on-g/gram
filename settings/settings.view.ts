@@ -34,6 +34,10 @@ namespace $.$$ {
 			return $bog_gram_version
 		}
 
+		override install_content() {
+			return [ this.Install().Install_button(), this.Lang() ]
+		}
+
 		override Notify_toggle() {
 			return this.notify_supported() ? super.Notify_toggle() : null!
 		}

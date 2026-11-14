@@ -23,6 +23,12 @@ $bog_gram_settings $bog_gram_page
 	registry_forget*? null
 	close? null
 	logs? null
+	Lang $mol_locale_select
+		hint @ \Language
+		dictionary *
+			en \English
+			ru \Русский
+			zh \中文
 	tools /
 		<= Close $mol_button_minor
 			hint @ \Close
@@ -31,6 +37,7 @@ $bog_gram_settings $bog_gram_page
 				<= Close_icon $mol_icon_close
 	body /
 		<= Install $bog_install
+			content <= install_content /
 		<= Version $mol_labeler
 			title @ \Version
 			content /
