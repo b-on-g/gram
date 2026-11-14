@@ -15,9 +15,9 @@ namespace $ {
 
 		static source_limit = 500 * 2 ** 20
 
-		static side = 480
+		static side = 720
 
-		static video_rate = 800_000
+		static video_rate = 1_500_000
 
 		static audio_rate = 64_000
 
