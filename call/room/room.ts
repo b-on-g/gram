@@ -254,6 +254,7 @@ namespace $ {
 				})
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				this.log( `камера не открылась: ${ ( error as Error ).name || error }` )
 				stream = devices.getUserMedia({ audio: true })
 			}
 

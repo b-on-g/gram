@@ -51,19 +51,49 @@ namespace $.$$ {
 			return ( $bog_gram_call_peer.stats_bad( stats ) as Record< string, boolean > )[ id ] ?? false
 		}
 
+		part( kind: 'audio' | 'video' ) {
+
+			const stream = this.stream() as MediaStream | null
+			if( !stream ) return null
+
+			const tracks = stream.getTracks().filter( track => track.kind === kind )
+			if( !tracks.length ) return null
+
+			return new MediaStream( tracks )
+		}
+
+		@ $mol_mem
+		override picture() {
+			return this.part( 'video' )
+		}
+
+		@ $mol_mem
+		override sound() {
+			return this.part( 'audio' )
+		}
+
 		video() {
 			return this.Video().dom_node() as HTMLVideoElement
+		}
+
+		audio() {
+			return this.Sound().dom_node() as HTMLAudioElement
 		}
 
 		override auto() {
 
 			const video = this.video()
-			video.muted = this.muted()
+			video.muted = true
+
+			const audio = this.audio()
+			audio.muted = this.muted()
 
 			this.Video().pause_event()
-			if( !this.awake() || !this.stream() || !video.paused ) return
+			this.Sound().pause_event()
+			if( !this.awake() ) return
 
-			video.play().catch( ()=> {} )
+			if( this.picture() && video.paused ) video.play().catch( ()=> {} )
+			if( this.sound() && audio.paused ) audio.play().catch( ()=> {} )
 
 		}
 

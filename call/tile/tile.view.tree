@@ -26,12 +26,17 @@ $bog_gram_call_tile $mol_view
 		bog_gram_call_tile_mirror <= mirror
 	sub /
 		<= Video $mol_video_player
-			stream <= stream
+			stream <= picture null
 			controls false
-			muted <= muted
+			muted true
 			attr *
 				^
 				autopictureinpicture true
+		<= Sound $mol_video_player
+			dom_name \audio
+			stream <= sound null
+			controls false
+			muted <= muted
 		<= Face $mol_view
 			sub /
 				<= letter \

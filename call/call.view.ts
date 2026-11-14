@@ -109,8 +109,8 @@ namespace $.$$ {
 		}
 
 		pip_video() {
-			const mate = this.Room().mates().find( mate => this.mate_stream( mate ) )
-			return ( mate ? this.Mate( mate ) : this.Self() ).Video().dom_node() as HTMLVideoElement
+			const videos = [ ... this.Room().mates().map( mate => this.Mate( mate ) ), this.Self() ].map( tile => tile.Video().dom_node() as HTMLVideoElement )
+			return videos.find( video => video.readyState >= 1 ) ?? null
 		}
 
 		override pip() {
@@ -122,7 +122,7 @@ namespace $.$$ {
 				return null
 			}
 
-			this.pip_video().requestPictureInPicture().catch( $mol_fail_log )
+			this.pip_video()?.requestPictureInPicture().catch( $mol_fail_log )
 
 			return null
 		}
