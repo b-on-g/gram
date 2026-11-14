@@ -7,14 +7,8 @@ $bog_gram_text $mol_object
 	talk_mine @ \You: {text}
 	clock_today @ \Today
 	clock_yesterday @ \Yesterday
-	count_people_one @ \{n} member
-	count_people_few @ \{n} members
-	count_people_many @ \{n} members
-	count_people_other @ \{n} members
-	count_dialogs_one @ \{n} dialog
-	count_dialogs_few @ \{n} dialogs
-	count_dialogs_many @ \{n} dialogs
-	count_dialogs_other @ \{n} dialogs
+	count_people @ \{n} member|{n} members
+	count_dialogs @ \{n} dialog|{n} dialogs
 	lobby_key_bad @ \The key in the request does not match its owner: request rejected
 	lobby_lost @ \The link has no group creator, there is no one to take the request to. Ask for a fresh link
 	lobby_denied_one @ \Your request was declined. You can ask again with the same link

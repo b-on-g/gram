@@ -11,14 +11,8 @@ namespace $ {
 					}
 				},
 				$bog_gram_text: class extends $.$bog_gram_text {
-					override count_dialogs_one() { return '{n} диалог' }
-					override count_dialogs_few() { return '{n} диалога' }
-					override count_dialogs_many() { return '{n} диалогов' }
-					override count_dialogs_other() { return '{n} диалога' }
-					override count_people_one() { return '{n} участник' }
-					override count_people_few() { return '{n} участника' }
-					override count_people_many() { return '{n} участников' }
-					override count_people_other() { return '{n} участника' }
+					override count_dialogs() { return '{n} диалог|{n} диалога|{n} диалогов' }
+					override count_people() { return '{n} участник|{n} участника|{n} участников' }
 				},
 			})
 

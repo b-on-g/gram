@@ -16,24 +16,34 @@ namespace $ {
 			$mol_assert_equal( $bog_gram_text_fill( '{a} и {b}, {c}', { a: 1, b: 'два' } ), '1 и два, {c}' )
 		},
 
-		'Число склоняется по правилам языка'() {
+		'Число склоняется по правилам языка, недостающие формы берутся из последней'( $ ) {
 
-			const forms = { one: '{n} диалог', few: '{n} диалога', many: '{n} диалогов', other: '{n} диалога' }
+			const lang = ( name: string )=> $.$mol_ambient({
+				$mol_locale: class extends $.$mol_locale {
+					static override lang() {
+						return name
+					}
+				},
+			})
 
-			$mol_assert_equal( $bog_gram_text_plural( 1, forms, 'ru' ), '1 диалог' )
-			$mol_assert_equal( $bog_gram_text_plural( 3, forms, 'ru' ), '3 диалога' )
-			$mol_assert_equal( $bog_gram_text_plural( 5, forms, 'ru' ), '5 диалогов' )
-			$mol_assert_equal( $bog_gram_text_plural( 11, forms, 'ru' ), '11 диалогов' )
-			$mol_assert_equal( $bog_gram_text_plural( 21, forms, 'ru' ), '21 диалог' )
-			$mol_assert_equal( $bog_gram_text_plural( 22, forms, 'ru' ), '22 диалога' )
-			$mol_assert_equal( $bog_gram_text_plural( 112, forms, 'ru' ), '112 диалогов' )
+			const ru = lang( 'ru' )
+			const forms = '{n} диалог|{n} диалога|{n} диалогов'
 
-			const en = { one: '{n} dialog', few: '{n} dialogs', many: '{n} dialogs', other: '{n} dialogs' }
-			$mol_assert_equal( $bog_gram_text_plural( 1, en, 'en' ), '1 dialog' )
-			$mol_assert_equal( $bog_gram_text_plural( 3, en, 'en' ), '3 dialogs' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 1, forms ), '1 диалог' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 3, forms ), '3 диалога' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 5, forms ), '5 диалогов' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 11, forms ), '11 диалогов' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 21, forms ), '21 диалог' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 22, forms ), '22 диалога' )
+			$mol_assert_equal( ru.$bog_gram_text_plural( 112, forms ), '112 диалогов' )
 
-			const zh = { one: '{n} 个', few: '-', many: '-', other: '{n} 个对话' }
-			$mol_assert_equal( $bog_gram_text_plural( 1, zh, 'zh' ), '1 个对话' )
+			const en = lang( 'en' )
+			$mol_assert_equal( en.$bog_gram_text_plural( 1, '{n} dialog|{n} dialogs' ), '1 dialog' )
+			$mol_assert_equal( en.$bog_gram_text_plural( 3, '{n} dialog|{n} dialogs' ), '3 dialogs' )
+
+			const zh = lang( 'zh' )
+			$mol_assert_equal( zh.$bog_gram_text_plural( 1, '{n} 个对话' ), '1 个对话' )
+			$mol_assert_equal( zh.$bog_gram_text_plural( 5, '{n} 个对话' ), '5 个对话' )
 
 		},
 
