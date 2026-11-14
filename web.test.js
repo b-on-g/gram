@@ -3491,6 +3491,77 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($_1) {
+    class $bog_gram_text_locale extends $mol_locale {
+        static source(lang) {
+            return {};
+        }
+    }
+    $mol_test_mocks.push($ => {
+        $.$mol_locale = $bog_gram_text_locale;
+    });
+    $mol_test({
+        'Подстановка заполняет известные места и не трогает неизвестные'() {
+            $mol_assert_equal($bog_gram_text_fill('{a} и {b}, {c}', { a: 1, b: 'два' }), '1 и два, {c}');
+        },
+        'Число склоняется по правилам языка, недостающие формы берутся из последней'($) {
+            const lang = (name) => $.$mol_ambient({
+                $mol_locale: class extends $.$mol_locale {
+                    static lang() {
+                        return name;
+                    }
+                },
+            });
+            const ru = lang('ru');
+            const forms = '{n} диалог|{n} диалога|{n} диалогов';
+            $mol_assert_equal(ru.$bog_gram_text_plural(1, forms), '1 диалог');
+            $mol_assert_equal(ru.$bog_gram_text_plural(3, forms), '3 диалога');
+            $mol_assert_equal(ru.$bog_gram_text_plural(5, forms), '5 диалогов');
+            $mol_assert_equal(ru.$bog_gram_text_plural(11, forms), '11 диалогов');
+            $mol_assert_equal(ru.$bog_gram_text_plural(21, forms), '21 диалог');
+            $mol_assert_equal(ru.$bog_gram_text_plural(22, forms), '22 диалога');
+            $mol_assert_equal(ru.$bog_gram_text_plural(112, forms), '112 диалогов');
+            const en = lang('en');
+            $mol_assert_equal(en.$bog_gram_text_plural(1, '{n} dialog|{n} dialogs'), '1 dialog');
+            $mol_assert_equal(en.$bog_gram_text_plural(3, '{n} dialog|{n} dialogs'), '3 dialogs');
+            const zh = lang('zh');
+            $mol_assert_equal(zh.$bog_gram_text_plural(1, '{n} 个对话'), '1 个对话');
+            $mol_assert_equal(zh.$bog_gram_text_plural(5, '{n} 个对话'), '5 个对话');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Числительные склоняются по-русски'($) {
+            const ru = $.$mol_ambient({
+                $mol_locale: class extends $.$mol_locale {
+                    static lang() {
+                        return 'ru';
+                    }
+                },
+                $bog_gram_text: class extends $.$bog_gram_text {
+                    count_dialogs() { return '{n} диалог|{n} диалога|{n} диалогов'; }
+                    count_people() { return '{n} участник|{n} участника|{n} участников'; }
+                },
+            });
+            $mol_assert_equal(ru.$bog_gram_count_dialogs(1), '1 диалог');
+            $mol_assert_equal(ru.$bog_gram_count_dialogs(3), '3 диалога');
+            $mol_assert_equal(ru.$bog_gram_count_dialogs(5), '5 диалогов');
+            $mol_assert_equal(ru.$bog_gram_count_dialogs(11), '11 диалогов');
+            $mol_assert_equal(ru.$bog_gram_count_dialogs(21), '21 диалог');
+            $mol_assert_equal(ru.$bog_gram_count_people(112), '112 участников');
+            $mol_assert_equal(ru.$bog_gram_count_people(22), '22 участника');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 /** @jsx $mol_jsx */
 /** @jsxFrag $mol_jsx_frag */
 var $;
@@ -7663,23 +7734,6 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'Числительные склоняются по-русски'() {
-            $mol_assert_equal($bog_gram_count.dialogs(1), '1 диалог');
-            $mol_assert_equal($bog_gram_count.dialogs(3), '3 диалога');
-            $mol_assert_equal($bog_gram_count.dialogs(5), '5 диалогов');
-            $mol_assert_equal($bog_gram_count.dialogs(11), '11 диалогов');
-            $mol_assert_equal($bog_gram_count.dialogs(21), '21 диалог');
-            $mol_assert_equal($bog_gram_count.people(112), '112 участников');
-            $mol_assert_equal($bog_gram_count.people(22), '22 участника');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
         'Ожидание заменяется запасным значением, готовое отдаётся как есть'() {
             const wait = new Promise(() => { });
             $mol_assert_equal($bog_gram_soft(() => { throw wait; }, 'запас'), 'запас');
@@ -7717,7 +7771,7 @@ var $;
                 const menu = $bog_gram_menu.make({ $, drop: (id) => { dropped.push(id); return null; } });
                 menu.delete_click('A');
                 $mol_assert_equal(menu.delete_armed('A'), true);
-                $mol_assert_equal(menu.delete_hint('A'), 'Точно удалить?');
+                $mol_assert_equal(menu.delete_hint('A'), menu.delete_sure());
                 menu.archive_toggle();
                 $mol_assert_equal(menu.delete_armed('A'), false);
                 menu.delete_click('A');
@@ -7736,7 +7790,7 @@ var $;
                     unread: (id) => id === 'X' ? 2 : 3,
                 });
                 $mol_assert_equal(menu.archive_unread_label(), '5');
-                $mol_assert_equal(menu.archive_note(), '2 диалога');
+                $mol_assert_equal(menu.archive_note(), $.$bog_gram_count_dialogs(2));
             },
             'Открыта одна строка, тап по списку закрывает её вместо перехода'($) {
                 const picked = [];
@@ -8408,15 +8462,15 @@ var $;
             $mol_assert_equal(block.armed(), false);
             block.Scan().found('https://example.org/');
             $mol_assert_equal(block.input(), 'https://example.org/');
-            $mol_assert_equal(block.error(), 'В QR не ключ аккаунта');
+            $mol_assert_equal(block.error(), block.error_qr());
         },
         'Вход по ключу взводится первым нажатием, мусор до взвода не доходит'($) {
             const block = $bog_gram_settings_key.make({ $ });
             block.import();
-            $mol_assert_equal(block.error(), 'Вставьте ключ или загрузите файл');
+            $mol_assert_equal(block.error(), block.error_empty());
             block.input('не ключ');
             block.import();
-            $mol_assert_equal(block.error(), 'Это не похоже на ключ аккаунта');
+            $mol_assert_equal(block.error(), block.error_bad());
             $mol_assert_equal(block.armed(), false);
         },
         'Пока ключ скрыт, его нет ни в тексте, ни в коде'($) {
@@ -8425,7 +8479,7 @@ var $;
             $mol_assert_equal(block.rows().includes(block.Qr_box()), false);
             block.toggle();
             $mol_assert_equal(block.rows().includes(block.Row()), true);
-            $mol_assert_equal(block.toggle_label(), 'Скрыть ключ');
+            $mol_assert_equal(block.toggle_label(), block.toggle_hide());
         },
     });
 })($ || ($ = {}));
@@ -8515,9 +8569,9 @@ var $;
         'Без людей список объясняет, откуда их взять'($) {
             const lonely = $bog_gram_compose.make({ $, users: () => [], registry_ids: () => [] });
             $mol_assert_equal(lonely.user_rows(), [lonely.Users_empty()]);
-            $mol_assert_equal(lonely.users_empty_text(), 'Вы не состоите ни в одном реестре. Создайте свой в настройках');
+            $mol_assert_equal(lonely.users_empty_text(), lonely.users_none());
             const alone = $bog_gram_compose.make({ $, users: () => [], registry_ids: () => ['Registry'] });
-            $mol_assert_equal(alone.users_empty_text(), 'Кроме вас в реестрах пока никого нет');
+            $mol_assert_equal(alone.users_empty_text(), alone.users_alone());
             const crowd = $bog_gram_compose.make({ $, users: () => ['LordA', 'LordB'] });
             $mol_assert_equal(crowd.user_rows().length, 2);
         },
@@ -8538,20 +8592,21 @@ var $;
             $mol_assert_equal(group.Pick_mark('LordA'), null);
             $mol_assert_equal(group.Pick_mark('LordB') === null, false);
             $mol_assert_equal(group.chosen_rows().length, 1);
-            $mol_assert_equal(group.chosen_head(), '1 участник');
+            $mol_assert_equal(group.chosen_head(), $.$bog_gram_count_people(1));
             const empty = $bog_gram_group.make({ $ });
-            $mol_assert_equal(empty.chosen_head(), 'Пока никого не выбрали');
+            $mol_assert_equal(empty.chosen_head(), empty.chosen_none());
         },
         'Потерянные ключи называются по именам, а кнопка создаёт без них'($) {
             const group = $bog_gram_group.make({ $,
                 lost: () => ['LordA'],
+                lost_pattern: () => 'Not found: {names}.',
                 label: (lord) => lord === 'LordA' ? 'Аня' : lord,
             });
-            $mol_assert_equal(group.lost_note().startsWith('Не нашли ключей: Аня.'), true);
-            $mol_assert_equal(group.make_label(), 'Создать без них');
+            $mol_assert_equal(group.lost_note().startsWith('Not found: Аня.'), true);
+            $mol_assert_equal(group.make_label(), group.make_without());
             const clean = $bog_gram_group.make({ $ });
             $mol_assert_equal(clean.Lost_note(), null);
-            $mol_assert_equal(clean.make_label(), 'Создать группу');
+            $mol_assert_equal(clean.make_label(), clean.make_group());
         },
     });
 })($ || ($ = {}));
@@ -8576,7 +8631,7 @@ var $;
             $mol_assert_equal(owner.add_rows().includes(owner.Admin_note()), true);
             $mol_assert_equal(owner.Rule('Ann') === null, false);
             $mol_assert_equal(owner.Rule('Bob'), null);
-            $mol_assert_equal(owner.member_title('Me'), 'Вы');
+            $mol_assert_equal(owner.member_title('Me'), owner.self_name());
         },
         'Убрать участника можно только вторым нажатием'($) {
             const parted = [];
@@ -8586,7 +8641,7 @@ var $;
             });
             members.drop_click('Ann');
             $mol_assert_equal(members.armed('Ann'), true);
-            $mol_assert_equal(members.drop_hint('Ann'), 'Точно убрать? Прошлые сообщения у него останутся');
+            $mol_assert_equal(members.drop_hint('Ann'), members.drop_hint_armed());
             members.drop_click('Bob');
             $mol_assert_equal(members.armed('Ann'), false);
             $mol_assert_equal(parted, []);
@@ -8601,10 +8656,10 @@ var $;
             });
             members.id('ikjOnflc_WufmHhGH');
             members.id_add();
-            $mol_assert_equal(members.error(), 'Это ваш собственный идентификатор');
+            $mol_assert_equal(members.error(), members.error_self());
             members.id('мусор');
             members.id_add();
-            $mol_assert_equal(members.error(), 'Это не похоже на идентификатор');
+            $mol_assert_equal(members.error(), members.error_bad());
             members.id('AAAAAAAA_BBBBBBBB');
             members.id_add();
             $mol_assert_equal(members.error(), '');
@@ -9265,7 +9320,7 @@ var $;
             users.Lords('auto').add(ann_lord);
             users.Keys('auto')?.key(ann_lord, 'auto')?.Pass('auto')?.val(ann.pass().toString());
             $mol_assert_equal(registry.title(id), 'Соседи по даче');
-            $mol_assert_equal(registry.status(id), '2 участника · вы в списке');
+            $mol_assert_equal(registry.status(id), $bog_gram_text_fill(registry.Text().registry_status(), { people: $.$bog_gram_count_people(2), mine: registry.Text().registry_joined() }));
             $mol_assert_equal(Object.keys(registry.sources()), [ann_lord]);
             $mol_assert_equal(registry.source_title(ann_lord), '');
             $mol_assert_equal(registry.pass_of(ann_lord)?.lord().str, ann_lord);
@@ -9289,14 +9344,20 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
+(function ($_1) {
     $mol_test({
-        'Заголовок дня и время сообщения форматируются по-человечески'() {
+        'Заголовок дня и время сообщения форматируются по-человечески'($) {
             const now = new Date();
-            $mol_assert_equal($bog_gram_clock.day_title(now.toDateString()), 'Сегодня');
-            $mol_assert_equal($bog_gram_clock.day_title(new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString()), 'Вчера');
-            $mol_assert_equal($bog_gram_clock.day_title(''), '');
-            $mol_assert_equal($bog_gram_clock.day_title(new Date(2020, 0, 15).toDateString()).includes('2020'), true);
+            const ru = $.$mol_ambient({
+                $bog_gram_text: class extends $.$bog_gram_text {
+                    clock_today() { return 'Сегодня'; }
+                    clock_yesterday() { return 'Вчера'; }
+                },
+            });
+            $mol_assert_equal(ru.$bog_gram_clock_day_title(now.toDateString()), 'Сегодня');
+            $mol_assert_equal(ru.$bog_gram_clock_day_title(new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString()), 'Вчера');
+            $mol_assert_equal(ru.$bog_gram_clock_day_title(''), '');
+            $mol_assert_equal(ru.$bog_gram_clock_day_title(new Date(2020, 0, 15).toDateString()).includes('2020'), true);
             $mol_assert_equal($bog_gram_clock.time(new Date(2020, 0, 15, 9, 5).getTime()), '09:05');
             $mol_assert_equal($bog_gram_clock.time(new Date(2020, 0, 15, 23, 59).getTime()), '23:59');
         },
@@ -9967,12 +10028,12 @@ var $;
                 denied: () => [],
                 Roster: () => $bog_gram_roster.make({ $, ids: () => ids }),
             });
-            $mol_assert_equal(make([task], [], []).plate(), 'Заявка отправляется — это не мгновенно');
-            $mol_assert_equal(make([], [task], []).plate(), 'Заявка отправлена — ждём, пока её примут');
+            $mol_assert_equal(make([task], [], []).plate(), $bog_gram_text.make({ $ }).lobby_queued_one());
+            $mol_assert_equal(make([], [task], []).plate(), $bog_gram_text.make({ $ }).lobby_sent_one());
             $mol_assert_equal(make([], [task], [group]).plate(), '');
             const lost = make([], [], []);
             lost.lost(group);
-            $mol_assert_equal(lost.plate(), 'В ссылке нет создателя группы — заявку нести некому, попросите свежую');
+            $mol_assert_equal(lost.plate(), $bog_gram_text.make({ $ }).lobby_lost());
         },
         'Отказ выводится из лобби без перекладывания, повторная заявка его снимает'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
@@ -9982,10 +10043,10 @@ var $;
             const owner = 'CCCCCCCC_DDDDDDDD';
             const task = lobby.task(group, owner);
             store.Asked('auto').add(task);
-            $mol_assert_equal(lobby.plate(), 'Заявка отправлена — ждём, пока её примут');
+            $mol_assert_equal(lobby.plate(), $bog_gram_text.make({ $ }).lobby_sent_one());
             inbox.Denies('auto').add(group);
             $mol_assert_equal(lobby.denied(), [group]);
-            $mol_assert_equal(lobby.plate(), 'Заявку отклонили — попроситься снова можно по той же ссылке');
+            $mol_assert_equal(lobby.plate(), $bog_gram_text.make({ $ }).lobby_denied_one());
             $mol_assert_equal(store.Asked().items().map(String), [task]);
             $mol_assert_equal(inbox.Denies().items().map(String), [group]);
             lobby.send(group, owner);
@@ -9994,7 +10055,7 @@ var $;
             $mol_assert_equal(lobby.asks()[group], { owner, state: 'queued' });
             $mol_assert_equal(store.Asks().items().map(String), [task]);
             $mol_assert_equal(store.Asked().items().length, 0);
-            $mol_assert_equal(lobby.plate(), 'Заявка отправляется — это не мгновенно');
+            $mol_assert_equal(lobby.plate(), $bog_gram_text.make({ $ }).lobby_queued_one());
         },
         'Чужой отказ не трогает заявку'($) {
             const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
@@ -10150,13 +10211,13 @@ var $;
             const other = 'LordOthr_Bbbbbbbb';
             $mol_assert_equal(invite.plate(), '');
             invite.pending(other);
-            $mol_assert_equal(invite.plate(), 'Открываем диалог — ищем ключ собеседника');
+            $mol_assert_equal(invite.plate(), $bog_gram_text.make({ $ }).invite_wait());
             invite.late(other);
-            $mol_assert_equal(invite.plate().startsWith('Ключ собеседника не нашёлся'), true);
+            $mol_assert_equal(invite.plate(), $bog_gram_text.make({ $ }).invite_late());
             invite.pending('LordThrd_Cccccccc');
-            $mol_assert_equal(invite.plate(), 'Открываем диалог — ищем ключ собеседника');
+            $mol_assert_equal(invite.plate(), $bog_gram_text.make({ $ }).invite_wait());
             invite.lost('мусор');
-            $mol_assert_equal(invite.plate(), 'Ссылка на диалог битая — попросите свежую');
+            $mol_assert_equal(invite.plate(), $bog_gram_text.make({ $ }).invite_lost());
             invite.drop();
             $mol_assert_equal(invite.plate(), '');
         },
@@ -10310,10 +10371,10 @@ var $;
             $mol_assert_equal(make('granted').apply(true), false);
             $mol_assert_equal(tried, 1);
             $mol_assert_equal(Alerts_switch.on(), true);
-            $mol_assert_equal(make('granted').status(), 'Уведомления включены');
+            $mol_assert_equal(make('granted').status(), $bog_gram_text.make({ $ }).alerts_active());
             const reset = make('default');
-            $mol_assert_equal(reset.status(), 'Браузер сбросил разрешение — включите снова');
-            $mol_assert_equal(reset.label(), 'Включить уведомления');
+            $mol_assert_equal(reset.status(), $bog_gram_text.make({ $ }).alerts_reset());
+            $mol_assert_equal(reset.label(), $bog_gram_text.make({ $ }).alerts_on_label());
             Alerts_switch.on(false);
         },
         'Уведомления включаются сами, но выключенные руками не возвращаются'($) {
@@ -10336,11 +10397,11 @@ var $;
                 on: () => on,
                 off: () => off,
             });
-            $mol_assert_equal(make(false, 'default', false, false).status(), 'Не поддерживается этим браузером');
-            $mol_assert_equal(make(true, 'denied', false, false).status(), 'Запрещены в браузере');
-            $mol_assert_equal(make(true, 'granted', true, false).status(), 'Уведомления включены');
-            $mol_assert_equal(make(true, 'default', false, true).status(), 'Выключены');
-            $mol_assert_equal(make(true, 'default', false, false).status(), 'Спросим разрешение, когда откроете диалог');
+            $mol_assert_equal(make(false, 'default', false, false).status(), $bog_gram_text.make({ $ }).alerts_unsupported());
+            $mol_assert_equal(make(true, 'denied', false, false).status(), $bog_gram_text.make({ $ }).alerts_denied());
+            $mol_assert_equal(make(true, 'granted', true, false).status(), $bog_gram_text.make({ $ }).alerts_active());
+            $mol_assert_equal(make(true, 'default', false, true).status(), $bog_gram_text.make({ $ }).alerts_off());
+            $mol_assert_equal(make(true, 'default', false, false).status(), $bog_gram_text.make({ $ }).alerts_later());
         },
     });
 })($ || ($ = {}));
@@ -10550,14 +10611,14 @@ var $;
             },
             'Дописанный в конец кадр не сдвигает текущий, счётчик растёт'($) {
                 let ids = ['a', 'b'];
-                const gallery = $bog_gram_gallery.make({ $, ids: () => ids });
+                const gallery = $bog_gram_gallery.make({ $, ids: () => ids, counter_pattern: () => '{index} of {count}' });
                 gallery.current('b');
-                $mol_assert_equal(gallery.counter(), '2 из 2');
+                $mol_assert_equal(gallery.counter(), '2 of 2');
                 $mol_assert_equal(gallery.Next(), null);
                 ids = ['a', 'b', 'c'];
                 gallery.ids = () => ids;
                 $mol_assert_equal(gallery.current(), 'b');
-                $mol_assert_equal(gallery.counter(), '2 из 3');
+                $mol_assert_equal(gallery.counter(), '2 of 3');
                 gallery.next();
                 $mol_assert_equal(gallery.current(), 'c');
             },
@@ -10777,6 +10838,64 @@ var $;
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);
             $mol_assert_equal($bog_gram_call_room.signal_parse('{"id":1}'), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Отвечающий не пересобирает ответ, когда в комнате рукопожатие чужой пары'($) {
+            const { room_a } = await $bog_gram_call_room_pair($);
+            room_a.seat('b');
+            let built = 0;
+            const peer = $bog_gram_call_peer.make({
+                $,
+                room: () => room_a,
+                mate: () => 'a',
+                answer_build: () => `answer ${++built}`,
+            });
+            room_a.signal_put('Offers', 'a>b', JSON.stringify({ id: '0.X', sdp: 'offer' }));
+            $mol_assert_equal(peer.sync(), true);
+            $mol_assert_equal(built, 1);
+            room_a.signal_put('Offers', 'b>c', JSON.stringify({ id: '0.Y', sdp: 'offer' }));
+            room_a.signal_put('Answers', 'b>c', JSON.stringify({ id: '0.Y', sdp: 'answer' }));
+            $mol_assert_equal(peer.sync(), true);
+            $mol_assert_equal(built, 1);
+            room_a.signal_put('Offers', 'a>b', JSON.stringify({ id: '1.Z', sdp: 'offer' }));
+            $mol_assert_equal(peer.sync(), true);
+            $mol_assert_equal(built, 2);
+        },
+        async 'Предлагающий принимает ответ один раз, чужие пары его не трогают'($) {
+            const { room_a } = await $bog_gram_call_room_pair($);
+            room_a.seat('a');
+            let applied = 0;
+            const peer = $bog_gram_call_peer.make({
+                $,
+                room: () => room_a,
+                mate: () => 'b',
+                rtc: () => ({ connectionState: 'connected' }),
+                offer_build: () => 'offer',
+                answer_use: () => { ++applied; },
+            });
+            $mol_assert_equal(peer.sync(), false);
+            const id = $bog_gram_call_room.signal_parse(room_a.signal('Offers', 'a>b')).id;
+            room_a.signal_put('Answers', 'a>b', JSON.stringify({ id, sdp: 'answer' }));
+            $mol_assert_equal(peer.sync(), true);
+            $mol_assert_equal(applied, 1);
+            room_a.signal_put('Offers', 'a>c', JSON.stringify({ id: '0.Y', sdp: 'offer' }));
+            room_a.signal_put('Answers', 'a>c', JSON.stringify({ id: '0.Y', sdp: 'answer' }));
+            $mol_assert_equal(peer.sync(), true);
+            $mol_assert_equal(applied, 1);
+            $mol_assert_equal($bog_gram_call_room.signal_parse(room_a.signal('Offers', 'a>b')).id, id);
+        },
+        'Сводка краснеет при низких кадрах, потерях выше 2% и задержке выше 300 мс'() {
+            const stats = { time: 0, bytes: 0, fps: 30, width: 640, height: 480, kbps: 500, lost: 0, packets: 0, loss: 0, rtt: 40 };
+            $mol_assert_equal($bog_gram_call_peer.stats_bad(stats), { fps: false, loss: false, rtt: false });
+            $mol_assert_equal($bog_gram_call_peer.stats_bad({ ...stats, fps: 10, loss: 2.5, rtt: 450 }), { fps: true, loss: true, rtt: true });
+            $mol_assert_equal($bog_gram_call_peer.stats_bad({ ...stats, fps: 15, loss: 2, rtt: 300 }), { fps: false, loss: false, rtt: false });
         },
     });
 })($ || ($ = {}));
@@ -11024,7 +11143,7 @@ var $;
                     const session = (await $mol_wire_async($.$giper_baza_glob).land_grab()).Data($bog_gram_session);
                     const talk = $bog_gram_talk.make({ $: context, session: () => session, mates: () => saved ? [] : ['LordLost'], saved_is: () => saved });
                     const people = $bog_gram_people.make({ $: context, pass_of: () => lost ? null : {}, label: () => 'Борис' });
-                    const chat = $bog_gram_chat.make({ $: context, dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
+                    const chat = $bog_gram_chat.make({ $: context, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
                     chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
                     const widths = () => (session.Messages()?.remote_list() ?? []).map(message => [
                         message.Image_width()?.val(),
@@ -11046,7 +11165,7 @@ var $;
                 await lost.chat.images_start([file('1'), file('2'), file('3')]);
                 $mol_assert_equal(lost.widths(), []);
                 $mol_assert_equal(hints, 1);
-                $mol_assert_equal(lost.chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                $mol_assert_equal(lost.chat.voice_hint(), 'Photo: no key for Борис');
             },
             'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
@@ -11056,12 +11175,12 @@ var $;
                     pass_of: (lord) => lord === 'LordKnown' ? pass : null,
                     label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
                 });
-                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people });
+                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people });
                 $mol_assert_equal(chat.image_send(new File([], 'a.jpg', { type: 'image/jpeg' })), '');
-                $mol_assert_equal(chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                $mol_assert_equal(chat.voice_hint(), 'Photo: no key for Борис');
                 chat.voice_hint('');
                 $mol_assert_equal(chat.voice_send({}), '');
-                $mol_assert_equal(chat.voice_hint(), 'Голосовое не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже');
+                $mol_assert_equal(chat.voice_hint(), 'Voice: no key for Борис');
                 $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
             },
             'Без ключа участника звонок не начинается молча, а называет, чей ключ не доехал'($) {
@@ -11073,9 +11192,9 @@ var $;
                     label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
                 });
                 let opened = 0;
-                const chat = $bog_gram_chat.make({ $, dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
+                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
                 $mol_assert_equal(chat.call_send(), '');
-                $mol_assert_equal(chat.voice_hint(), 'Звонок не начат: не доехал ключ — Борис. Позвоните ещё раз чуть позже');
+                $mol_assert_equal(chat.voice_hint(), 'Call: no key for Борис');
                 $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
                 $mol_assert_equal(opened, 0);
             },

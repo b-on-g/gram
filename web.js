@@ -32968,7 +32968,7 @@ var $;
 		}
 		Compose_open(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Новый диалог");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Compose_open_hint")));
 			(obj.click) = (next) => ((this.compose(next)));
 			(obj.sub) = () => ([(this.Compose_open_icon())]);
 			return obj;
@@ -32979,7 +32979,7 @@ var $;
 		}
 		Group_open(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Новая группа");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Group_open_hint")));
 			(obj.click) = (next) => ((this.group(next)));
 			(obj.sub) = () => ([(this.Group_open_icon())]);
 			return obj;
@@ -32990,7 +32990,7 @@ var $;
 		}
 		Music_open(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Музыка");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Music_open_hint")));
 			(obj.click) = (next) => ((this.music(next)));
 			(obj.sub) = () => ([(this.Music_open_icon())]);
 			return obj;
@@ -33001,7 +33001,7 @@ var $;
 		}
 		Settings_open(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Настройки");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Settings_open_hint")));
 			(obj.click) = (next) => ((this.settings(next)));
 			(obj.sub) = () => ([(this.Settings_open_icon())]);
 			return obj;
@@ -33022,7 +33022,7 @@ var $;
 		}
 		Invite_drop(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Invite_drop_hint")));
 			(obj.click) = (next) => ((this.invite_drop(next)));
 			(obj.sub) = () => ([(this.Invite_drop_icon())]);
 			return obj;
@@ -33052,7 +33052,7 @@ var $;
 		}
 		Dialogs_empty_text(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Пока нет диалогов");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Dialogs_empty_text_title")));
 			return obj;
 		}
 		swiped_is(id, next){
@@ -33188,6 +33188,18 @@ var $;
 		ask_plate_text(){
 			return "";
 		}
+		delete_sure(){
+			return (this.$.$mol_locale.text("$bog_gram_menu_delete_sure"));
+		}
+		delete_idle(){
+			return (this.$.$mol_locale.text("$bog_gram_menu_delete_idle"));
+		}
+		unarchive_text(){
+			return (this.$.$mol_locale.text("$bog_gram_menu_unarchive_text"));
+		}
+		archive_text(){
+			return (this.$.$mol_locale.text("$bog_gram_menu_archive_text"));
+		}
 		visible(){
 			return [];
 		}
@@ -33308,14 +33320,14 @@ var $;
 		}
 		Request_accept(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Принять");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Request_accept_hint")));
 			(obj.click) = (next) => ((this.request_accept(id, next)));
 			(obj.sub) = () => ([(this.Request_accept_icon(id))]);
 			return obj;
 		}
 		Request_reject(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отклонить");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Request_reject_hint")));
 			(obj.click) = (next) => ((this.request_reject(id, next)));
 			(obj.sub) = () => ([(this.Request_reject_icon(id))]);
 			return obj;
@@ -33323,7 +33335,7 @@ var $;
 		Saved_row(){
 			const obj = new this.$.$bog_gram_row();
 			(obj.size) = () => ("large");
-			(obj.hint) = () => ("Заметки для себя");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Saved_row_hint")));
 			(obj.click) = (next) => ((this.saved_pick(next)));
 			(obj.current) = () => ((this.saved_current()));
 			(obj.Icon) = () => ((this.Saved_icon()));
@@ -33335,10 +33347,10 @@ var $;
 		Archive_row(){
 			const obj = new this.$.$bog_gram_row();
 			(obj.size) = () => ("large");
-			(obj.hint) = () => ("Спрятанные диалоги");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Archive_row_hint")));
 			(obj.click) = (next) => ((this.archive_toggle(next)));
 			(obj.Icon) = () => ((this.Archive_icon()));
-			(obj.title) = () => ("Архив");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Archive_row_title")));
 			(obj.note) = () => ((this.archive_note()));
 			(obj.badge) = () => ((this.archive_unread_label()));
 			return obj;
@@ -33346,11 +33358,11 @@ var $;
 		Requests_row(){
 			const obj = new this.$.$bog_gram_row();
 			(obj.size) = () => ("large");
-			(obj.hint) = () => ("Запросы на переписку");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Requests_row_hint")));
 			(obj.click) = (next) => ((this.requests_toggle(next)));
 			(obj.Icon) = () => ((this.Requests_icon()));
-			(obj.title) = () => ("Запросы");
-			(obj.note) = () => ("Хотят вам написать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Requests_row_title")));
+			(obj.note) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Requests_row_note")));
 			(obj.badge) = () => ((this.requests_count_label()));
 			return obj;
 		}
@@ -33415,29 +33427,164 @@ var $;
 
 
 ;
+	($.$bog_gram_text) = class $bog_gram_text extends ($.$mol_object) {
+		talk_saved(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_saved"));
+		}
+		talk_photo(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_photo"));
+		}
+		talk_voice(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_voice"));
+		}
+		talk_video(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_video"));
+		}
+		talk_call(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_call"));
+		}
+		talk_mine(){
+			return (this.$.$mol_locale.text("$bog_gram_text_talk_mine"));
+		}
+		clock_today(){
+			return (this.$.$mol_locale.text("$bog_gram_text_clock_today"));
+		}
+		clock_yesterday(){
+			return (this.$.$mol_locale.text("$bog_gram_text_clock_yesterday"));
+		}
+		count_people(){
+			return (this.$.$mol_locale.text("$bog_gram_text_count_people"));
+		}
+		count_dialogs(){
+			return (this.$.$mol_locale.text("$bog_gram_text_count_dialogs"));
+		}
+		lobby_key_bad(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_key_bad"));
+		}
+		lobby_lost(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_lost"));
+		}
+		lobby_denied_one(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_denied_one"));
+		}
+		lobby_denied_some(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_denied_some"));
+		}
+		lobby_queued_one(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_queued_one"));
+		}
+		lobby_queued_some(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_queued_some"));
+		}
+		lobby_sent_one(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_sent_one"));
+		}
+		lobby_sent_some(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_sent_some"));
+		}
+		crew_self(){
+			return (this.$.$mol_locale.text("$bog_gram_text_crew_self"));
+		}
+		crew_bad_id(){
+			return (this.$.$mol_locale.text("$bog_gram_text_crew_bad_id"));
+		}
+		crew_no_key_read(){
+			return (this.$.$mol_locale.text("$bog_gram_text_crew_no_key_read"));
+		}
+		crew_no_keys(){
+			return (this.$.$mol_locale.text("$bog_gram_text_crew_no_keys"));
+		}
+		crew_no_key_grant(){
+			return (this.$.$mol_locale.text("$bog_gram_text_crew_no_key_grant"));
+		}
+		alerts_off_label(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_off_label"));
+		}
+		alerts_on_label(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_on_label"));
+		}
+		alerts_unsupported(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_unsupported"));
+		}
+		alerts_denied(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_denied"));
+		}
+		alerts_active(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_active"));
+		}
+		alerts_reset(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_reset"));
+		}
+		alerts_off(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_off"));
+		}
+		alerts_later(){
+			return (this.$.$mol_locale.text("$bog_gram_text_alerts_later"));
+		}
+		invite_lost(){
+			return (this.$.$mol_locale.text("$bog_gram_text_invite_lost"));
+		}
+		invite_wait(){
+			return (this.$.$mol_locale.text("$bog_gram_text_invite_wait"));
+		}
+		invite_late(){
+			return (this.$.$mol_locale.text("$bog_gram_text_invite_late"));
+		}
+		roster_from_chats(){
+			return (this.$.$mol_locale.text("$bog_gram_text_roster_from_chats"));
+		}
+		registry_status(){
+			return (this.$.$mol_locale.text("$bog_gram_text_registry_status"));
+		}
+		registry_joined(){
+			return (this.$.$mol_locale.text("$bog_gram_text_registry_joined"));
+		}
+		registry_watching(){
+			return (this.$.$mol_locale.text("$bog_gram_text_registry_watching"));
+		}
+		account_lost(){
+			return (this.$.$mol_locale.text("$bog_gram_text_account_lost"));
+		}
+		voice_unsupported(){
+			return (this.$.$mol_locale.text("$bog_gram_text_voice_unsupported"));
+		}
+	};
+
+
+;
 "use strict";
 var $;
 (function ($) {
-    class $bog_gram_count extends $mol_object {
-        static plural(count, one, few, many) {
-            const tens = count % 100;
-            const ones = count % 10;
-            if (tens < 11 || tens > 14) {
-                if (ones === 1)
-                    return count + ' ' + one;
-                if (ones >= 2 && ones <= 4)
-                    return count + ' ' + few;
-            }
-            return count + ' ' + many;
-        }
-        static people(count) {
-            return this.plural(count, 'участник', 'участника', 'участников');
-        }
-        static dialogs(count) {
-            return this.plural(count, 'диалог', 'диалога', 'диалогов');
-        }
+    function $bog_gram_text_fill(pattern, vars) {
+        return pattern.replace(/\{(\w+)\}/g, (all, key) => key in vars ? String(vars[key]) : all);
     }
-    $.$bog_gram_count = $bog_gram_count;
+    $.$bog_gram_text_fill = $bog_gram_text_fill;
+    const $bog_gram_text_rules = ['one', 'few', 'many', 'other'];
+    function $bog_gram_text_plural(count, forms) {
+        const list = forms.split('|');
+        const rule = new Intl.PluralRules(this.$mol_locale.lang()).select(count);
+        const form = list[Math.min($bog_gram_text_rules.indexOf(rule), list.length - 1)] ?? list[list.length - 1];
+        return $bog_gram_text_fill(form, { n: count });
+    }
+    $.$bog_gram_text_plural = $bog_gram_text_plural;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $bog_gram_count_people(count) {
+        return this.$bog_gram_text_plural(count, this.$bog_gram_text.make({ $: this }).count_people());
+    }
+    $.$bog_gram_count_people = $bog_gram_count_people;
+    function $bog_gram_count_dialogs(count) {
+        return this.$bog_gram_text_plural(count, this.$bog_gram_text.make({ $: this }).count_dialogs());
+    }
+    $.$bog_gram_count_dialogs = $bog_gram_count_dialogs;
 })($ || ($ = {}));
 
 ;
@@ -33510,7 +33657,7 @@ var $;
                 return this.armed() === id;
             }
             delete_hint(id) {
-                return this.delete_armed(id) ? 'Точно удалить?' : 'Удалить диалог';
+                return this.delete_armed(id) ? this.delete_sure() : this.delete_idle();
             }
             swiped(next) {
                 return next ?? '';
@@ -33598,7 +33745,7 @@ var $;
                 return null;
             }
             archive_hint(id) {
-                return this.archive_is(id) ? 'Вернуть из архива' : 'В архив';
+                return this.archive_is(id) ? this.unarchive_text() : this.archive_text();
             }
             archive_icons(id) {
                 return [this.archive_is(id) ? this.Dialog_unarchive_icon(id) : this.Dialog_archive_icon(id)];
@@ -33614,7 +33761,7 @@ var $;
                 return null;
             }
             archive_note() {
-                return $bog_gram_count.dialogs(this.archived().length);
+                return this.$.$bog_gram_count_dialogs(this.archived().length);
             }
             archive_unread_label() {
                 let count = 0;
@@ -52955,16 +53102,10 @@ var $;
                 await $mol_wire_async(this).signal('offer', me, from, req, JSON.stringify({ at, sdp }));
                 $bog_music_log.act(`${tag}: запрос записан в Базу, жду ответ`);
                 let answer = null;
-                let skewed = false;
                 while (Date.now() - at < $bog_music_beam.answer_limit) {
                     answer = $bog_music_beam.signal_parse(await $mol_wire_async(this).signal('answer', from, me, req));
-                    if (answer && answer.at >= at)
+                    if (answer)
                         break;
-                    if (answer && !skewed) {
-                        skewed = true;
-                        $bog_music_log.err(`${tag}: ответ есть, но его время ${answer.at} раньше запроса ${at} на ${at - answer.at} мс, часы устройств расходятся`);
-                    }
-                    answer = null;
                     await new Promise(done => setTimeout(done, 1000));
                 }
                 if (!answer)
@@ -57052,7 +57193,7 @@ var $;
 var $;
 (function ($) {
     // Инкрементится автоматически git-хуком hooks/pre-push при каждом push.
-    $.$bog_music_version = 'v1.100';
+    $.$bog_music_version = 'v1.101';
 })($ || ($ = {}));
 
 ;
@@ -58938,10 +59079,16 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Свернуть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_music_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_music_title"));
+		}
+		account_note(){
+			return (this.$.$mol_locale.text("$bog_gram_music_account_note"));
 		}
 		Theme_btn(){
 			return null;
@@ -58975,10 +59122,6 @@ var $;
     var $$;
     (function ($$) {
         class $bog_gram_music extends $.$bog_gram_music {
-            /** В книге Gram страница называется по-русски, как и остальные. */
-            title() {
-                return 'Музыка';
-            }
             /** Палитра приходит от Gram: свой Skin тут только спорил бы с ним. */
             Skin() {
                 return null;
@@ -59002,7 +59145,7 @@ var $;
             Account() {
                 const account = super.Account();
                 const hint = new this.$.$mol_paragraph();
-                hint.title = () => 'Аккаунт в Music общий с Gram: ключ, переписка и скачанные треки одни на оба приложения. Сброса здесь нет — он стёр бы аккаунт в Gram, а треки тоже будут удалены. Сменить аккаунт можно в Gram, но треки тоже будут удалены.';
+                hint.title = () => this.account_note();
                 const reset = new this.$.$mol_view();
                 reset.sub = () => [hint];
                 const empty = new this.$.$mol_view();
@@ -59397,7 +59540,7 @@ var $;
 		}
 		Copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Copy_title")));
 			(obj.text) = () => ((this.text()));
 			return obj;
 		}
@@ -59416,13 +59559,13 @@ var $;
 		}
 		Field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Ключ аккаунта");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Field_hint")));
 			(obj.value) = (next) => ((this.input(next)));
 			return obj;
 		}
 		Load_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Или загрузите файл с ключом");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Load_hint_title")));
 			return obj;
 		}
 		file(next){
@@ -59431,7 +59574,7 @@ var $;
 		}
 		Open(){
 			const obj = new this.$.$mol_button_open();
-			(obj.hint) = () => ("Выбрать файл");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Open_hint")));
 			(obj.accept) = () => (".key,text/plain");
 			(obj.multiple) = () => (false);
 			(obj.files) = (next) => ((this.file(next)));
@@ -59482,6 +59625,27 @@ var $;
 			if(next !== undefined) return next;
 			return false;
 		}
+		toggle_hide(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_toggle_hide"));
+		}
+		toggle_show(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_toggle_show"));
+		}
+		import_sure(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_import_sure"));
+		}
+		import_idle(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_import_idle"));
+		}
+		error_empty(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_error_empty"));
+		}
+		error_bad(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_error_bad"));
+		}
+		error_qr(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_key_error_qr"));
+		}
 		sub(){
 			return (this.rows());
 		}
@@ -59493,7 +59657,7 @@ var $;
 		}
 		Warning(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ключ — это полный доступ к аккаунту. Он один на все приложения на этом домене, включая Music. Не показывайте его никому и не публикуйте.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Warning_title")));
 			return obj;
 		}
 		Row(){
@@ -59508,7 +59672,7 @@ var $;
 		}
 		Save(){
 			const obj = new this.$.$mol_button_download();
-			(obj.title) = () => ("Скачать файл");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_key_Save_title")));
 			(obj.file_name) = () => ("gram-account.key");
 			(obj.blob) = () => ((this.blob()));
 			return obj;
@@ -59573,7 +59737,7 @@ var $;
                 return next ?? false;
             }
             toggle_label() {
-                return this.shown() ? 'Скрыть ключ' : 'Показать ключ';
+                return this.shown() ? this.toggle_hide() : this.toggle_show();
             }
             toggle(next) {
                 this.shown(!this.shown());
@@ -59588,7 +59752,7 @@ var $;
                 return this.error() ? super.Error() : null;
             }
             import_label() {
-                return this.armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу';
+                return this.armed() ? this.import_sure() : this.import_idle();
             }
             auth_from(str) {
                 try {
@@ -59604,13 +59768,13 @@ var $;
             import(next) {
                 const str = this.input().trim();
                 if (!str) {
-                    this.error('Вставьте ключ или загрузите файл');
+                    this.error(this.error_empty());
                     return null;
                 }
                 const auth = this.auth_from(str);
                 if (!auth) {
                     this.armed(false);
-                    this.error('Это не похоже на ключ аккаунта');
+                    this.error(this.error_bad());
                     return null;
                 }
                 if (!this.armed()) {
@@ -59641,7 +59805,7 @@ var $;
                 const str = next.trim();
                 this.input(str);
                 this.armed(false);
-                this.error(this.auth_from(str) ? '' : 'В QR не ключ аккаунта');
+                this.error(this.auth_from(str) ? '' : this.error_qr());
                 return str;
             }
         }
@@ -59783,7 +59947,7 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
@@ -59802,13 +59966,29 @@ var $;
 		}
 		Version(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Версия");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Version_title")));
 			(obj.content) = () => ([(this.Version_text())]);
+			return obj;
+		}
+		logs(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Logs_open(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Logs_open_title")));
+			(obj.click) = (next) => ((this.logs(next)));
+			return obj;
+		}
+		Logs(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Logs_title")));
+			(obj.content) = () => ([(this.Logs_open())]);
 			return obj;
 		}
 		Name_field(){
 			const obj = new this.$.$bog_gram_field();
-			(obj.hint) = () => ("Ваше имя — видят только собеседники");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Name_field_hint")));
 			(obj.value) = (next) => ((this.user_name(next)));
 			return obj;
 		}
@@ -59819,19 +59999,19 @@ var $;
 		}
 		My_id_copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_My_id_copy_title")));
 			(obj.text) = () => ((this.my_lord()));
 			return obj;
 		}
 		My_id(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Мой ID");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_My_id_title")));
 			(obj.content) = () => ([(this.My_id_text()), (this.My_id_copy())]);
 			return obj;
 		}
 		Invite_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Отправьте эту ссылку — у собеседника сразу откроется диалог с вами");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Invite_hint_title")));
 			return obj;
 		}
 		Invite_text(){
@@ -59841,7 +60021,7 @@ var $;
 		}
 		Invite_copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Invite_copy_title")));
 			(obj.text) = () => ((this.invite_link()));
 			return obj;
 		}
@@ -59858,7 +60038,7 @@ var $;
 		}
 		Follow_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Follow_hint_title")));
 			return obj;
 		}
 		follow(next){
@@ -59867,7 +60047,7 @@ var $;
 		}
 		Follow(){
 			const obj = new this.$.$bog_gram_scan();
-			(obj.toggle_title) = () => ("Сканировать ссылку");
+			(obj.toggle_title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Follow_toggle_title")));
 			(obj.prefix) = () => ("#!");
 			(obj.found) = (next) => ((this.follow(next)));
 			return obj;
@@ -59882,15 +60062,18 @@ var $;
 		}
 		Paste_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Или вставьте ссылку-приглашение");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Paste_field_hint")));
 			(obj.value) = (next) => ((this.paste_uri(next)));
 			(obj.submit) = (next) => ((this.paste_open(next)));
 			return obj;
 		}
+		paste_open_label(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_paste_open_label"));
+		}
 		Paste_open(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.paste_open(next)));
-			(obj.sub) = () => (["Открыть"]);
+			(obj.sub) = () => ([(this.paste_open_label())]);
 			return obj;
 		}
 		Paste(){
@@ -59923,7 +60106,7 @@ var $;
 		}
 		Invite(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Ссылка на меня");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Invite_title")));
 			(obj.content) = () => ([(this.Invite_body())]);
 			return obj;
 		}
@@ -59945,7 +60128,7 @@ var $;
 		}
 		Notify(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Уведомления");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Notify_title")));
 			(obj.content) = () => ([(this.Notify_body())]);
 			return obj;
 		}
@@ -59954,7 +60137,7 @@ var $;
 		}
 		Registry_block(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Реестры");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_block_title")));
 			(obj.content) = () => ((this.registry_content()));
 			return obj;
 		}
@@ -59965,7 +60148,7 @@ var $;
 		}
 		Account(){
 			const obj = new this.$.$mol_labeler();
-			(obj.title) = () => ("Аккаунт");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Account_title")));
 			(obj.content) = () => ([(this.Key())]);
 			return obj;
 		}
@@ -59974,33 +60157,39 @@ var $;
 		}
 		Registry_share_text(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ссылка-приглашение в активный реестр");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_share_text_title")));
 			return obj;
 		}
 		Registry_share_copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать ссылку");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_share_copy_title")));
 			(obj.text) = () => ((this.registry_uri()));
 			return obj;
 		}
 		Registry_name(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Название реестра");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_name_hint")));
 			(obj.value) = (next) => ((this.registry_name(next)));
 			(obj.submit) = (next) => ((this.registry_make(next)));
 			return obj;
 		}
+		registry_make_label(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_registry_make_label"));
+		}
 		Registry_make(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.registry_make(next)));
-			(obj.sub) = () => (["Создать реестр"]);
+			(obj.sub) = () => ([(this.registry_make_label())]);
 			return obj;
+		}
+		registry_join_label(id){
+			return (this.$.$mol_locale.text("$bog_gram_settings_registry_join_label"));
 		}
 		Registry_join(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Вступить в реестр");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_join_hint")));
 			(obj.click) = (next) => ((this.registry_join(id, next)));
-			(obj.sub) = () => (["Вступить"]);
+			(obj.sub) = () => ([(this.registry_join_label(id))]);
 			return obj;
 		}
 		Registry_drop_icon(id){
@@ -60009,17 +60198,20 @@ var $;
 		}
 		Registry_drop(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать из своего списка");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_drop_hint")));
 			(obj.click) = (next) => ((this.registry_forget(id, next)));
 			(obj.sub) = () => ([(this.Registry_drop_icon(id))]);
 			return obj;
 		}
 		title(){
-			return "Настройки";
+			return (this.$.$mol_locale.text("$bog_gram_settings_title"));
 		}
 		user_name(next){
 			if(next !== undefined) return next;
 			return "";
+		}
+		link_unknown(){
+			return (this.$.$mol_locale.text("$bog_gram_settings_link_unknown"));
 		}
 		my_lord(){
 			return "";
@@ -60096,6 +60288,7 @@ var $;
 			return [
 				(this.Install()), 
 				(this.Version()), 
+				(this.Logs()), 
 				(this.Name_field()), 
 				(this.My_id()), 
 				(this.Invite()), 
@@ -60106,7 +60299,7 @@ var $;
 		}
 		Registry_empty(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Вы не состоите ни в одном реестре");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_empty_title")));
 			return obj;
 		}
 		Registry_list(){
@@ -60116,7 +60309,7 @@ var $;
 		}
 		Registry_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Registry_note_title")));
 			return obj;
 		}
 		Registry_share(){
@@ -60145,6 +60338,9 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Install"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Version_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Version"));
+	($mol_mem(($.$bog_gram_settings.prototype), "logs"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Logs_open"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Logs"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_text"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_copy"));
@@ -60245,7 +60441,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.159';
+    $.$bog_gram_version = '1.0.163';
 })($ || ($ = {}));
 
 ;
@@ -60266,7 +60462,7 @@ var $;
             }
             paste_open() {
                 if (!this.$.$bog_gram_follow.go(this.paste_uri().trim())) {
-                    this.paste_error('Ссылка не распознана: нужна ссылка Gram на человека, группу или реестр');
+                    this.paste_error(this.link_unknown());
                     return null;
                 }
                 this.paste_uri('');
@@ -60533,6 +60729,47 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_gram_logs) = class $bog_gram_logs extends ($.$bog_gram_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_logs_Close_hint")));
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Log(){
+			const obj = new this.$.$bog_music_log_view();
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_logs_title"));
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [(this.Log())];
+		}
+	};
+	($mol_mem(($.$bog_gram_logs.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_logs.prototype), "Close"));
+	($mol_mem(($.$bog_gram_logs.prototype), "Log"));
+	($mol_mem(($.$bog_gram_logs.prototype), "close"));
+
+
+;
+"use strict";
+
+
+;
 	($.$bog_gram_compose) = class $bog_gram_compose extends ($.$bog_gram_page) {
 		Close_icon(){
 			const obj = new this.$.$mol_icon_close();
@@ -60540,7 +60777,7 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_compose_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
@@ -60555,15 +60792,18 @@ var $;
 		}
 		Peer_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID собеседника");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_compose_Peer_field_hint")));
 			(obj.value) = (next) => ((this.peer(next)));
 			(obj.submit) = (next) => ((this.start(next)));
 			return obj;
 		}
+		start_label(){
+			return (this.$.$mol_locale.text("$bog_gram_compose_start_label"));
+		}
 		Peer_start(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.start(next)));
-			(obj.sub) = () => (["Начать диалог"]);
+			(obj.sub) = () => ([(this.start_label())]);
 			return obj;
 		}
 		Peer_form(){
@@ -60573,18 +60813,21 @@ var $;
 		}
 		Users_title(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Пользователи");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_compose_Users_title_title")));
 			return obj;
 		}
 		Join_plate_text(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Вас нет в этом реестре — другие вас тут не найдут");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_compose_Join_plate_text_title")));
 			return obj;
+		}
+		join_label(){
+			return (this.$.$mol_locale.text("$bog_gram_compose_join_label"));
 		}
 		Join_plate_button(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.join(next)));
-			(obj.sub) = () => (["Вступить"]);
+			(obj.sub) = () => ([(this.join_label())]);
 			return obj;
 		}
 		Join_plate(){
@@ -60619,7 +60862,7 @@ var $;
 			return 0;
 		}
 		title(){
-			return "Новый диалог";
+			return (this.$.$mol_locale.text("$bog_gram_compose_title"));
 		}
 		close(next){
 			if(next !== undefined) return next;
@@ -60643,6 +60886,12 @@ var $;
 		}
 		join_needed(){
 			return false;
+		}
+		users_none(){
+			return (this.$.$mol_locale.text("$bog_gram_compose_users_none"));
+		}
+		users_alone(){
+			return (this.$.$mol_locale.text("$bog_gram_compose_users_alone"));
 		}
 		join(next){
 			if(next !== undefined) return next;
@@ -60763,8 +61012,8 @@ var $;
             }
             users_empty_text() {
                 if (!this.registry_ids().length)
-                    return 'Вы не состоите ни в одном реестре. Создайте свой в настройках';
-                return 'Кроме вас в реестрах пока никого нет';
+                    return this.users_none();
+                return this.users_alone();
             }
             user_lord(lord) {
                 return lord;
@@ -60870,14 +61119,14 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_group_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
 		Name_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("Название группы");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_group_Name_field_hint")));
 			(obj.value) = (next) => ((this.name(next)));
 			return obj;
 		}
@@ -60916,15 +61165,18 @@ var $;
 		}
 		Id_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID участника");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_group_Id_field_hint")));
 			(obj.value) = (next) => ((this.id(next)));
 			(obj.submit) = (next) => ((this.id_add(next)));
 			return obj;
 		}
+		id_add_label(){
+			return (this.$.$mol_locale.text("$bog_gram_group_id_add_label"));
+		}
 		Id_add(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.id_add(next)));
-			(obj.sub) = () => (["Добавить"]);
+			(obj.sub) = () => ([(this.id_add_label())]);
 			return obj;
 		}
 		Id_form(){
@@ -60939,7 +61191,7 @@ var $;
 		}
 		Pick_head(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Кого позвать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_group_Pick_head_title")));
 			return obj;
 		}
 		pick_rows(){
@@ -60969,13 +61221,13 @@ var $;
 		}
 		Chosen_drop(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать из списка");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_group_Chosen_drop_hint")));
 			(obj.click) = (next) => ((this.drop(id, next)));
 			(obj.sub) = () => ([(this.Chosen_drop_icon(id))]);
 			return obj;
 		}
 		title(){
-			return "Новая группа";
+			return (this.$.$mol_locale.text("$bog_gram_group_title"));
 		}
 		close(next){
 			if(next !== undefined) return next;
@@ -61022,6 +61274,18 @@ var $;
 		}
 		contact_source(id){
 			return "";
+		}
+		chosen_none(){
+			return (this.$.$mol_locale.text("$bog_gram_group_chosen_none"));
+		}
+		lost_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_group_lost_pattern"));
+		}
+		make_without(){
+			return (this.$.$mol_locale.text("$bog_gram_group_make_without"));
+		}
+		make_group(){
+			return (this.$.$mol_locale.text("$bog_gram_group_make_group"));
 		}
 		tools(){
 			return [(this.Close())];
@@ -61120,21 +61384,21 @@ var $;
             chosen_head() {
                 const count = this.picked().length;
                 if (!count)
-                    return 'Пока никого не выбрали';
-                return $bog_gram_count.people(count);
+                    return this.chosen_none();
+                return this.$.$bog_gram_count_people(count);
             }
             lost_note() {
                 const lost = this.lost();
                 if (!lost.length)
                     return '';
                 const names = lost.map(lord => this.label(lord)).join(', ');
-                return 'Не нашли ключей: ' + names + '. Без ключа человек не прочитает переписку — группу можно создать без него.';
+                return $bog_gram_text_fill(this.lost_pattern(), { names });
             }
             Lost_note() {
                 return this.lost().length ? super.Lost_note() : null;
             }
             make_label() {
-                return this.lost().length ? 'Создать без них' : 'Создать группу';
+                return this.lost().length ? this.make_without() : this.make_group();
             }
             Id_error() {
                 return this.id_error() ? super.Id_error() : null;
@@ -61274,7 +61538,7 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
@@ -61289,7 +61553,7 @@ var $;
 		}
 		Drop_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Drop_note_title")));
 			return obj;
 		}
 		add_rows(){
@@ -61302,7 +61566,7 @@ var $;
 		}
 		Leave_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Leave_note_title")));
 			return obj;
 		}
 		leave_armed(next){
@@ -61318,7 +61582,7 @@ var $;
 		}
 		Leave(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Убрать группу из своего списка");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Leave_hint")));
 			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_armed": (this.leave_armed())});
 			(obj.click) = (next) => ((this.leave_click(next)));
 			(obj.sub) = () => ([(this.leave_label())]);
@@ -61326,7 +61590,7 @@ var $;
 		}
 		History_head(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Что увидит новый участник");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_History_head_title")));
 			return obj;
 		}
 		history_open(){
@@ -61336,12 +61600,15 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		history_all_label(){
+			return (this.$.$mol_locale.text("$bog_gram_members_history_all_label"));
+		}
 		History_all(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Выдать ключи от всех прошлых сообщений");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_History_all_hint")));
 			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_open())});
 			(obj.click) = (next) => ((this.history_all(next)));
-			(obj.sub) = () => (["Всю переписку"]);
+			(obj.sub) = () => ([(this.history_all_label())]);
 			return obj;
 		}
 		history_shut(){
@@ -61351,12 +61618,15 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		history_new_label(){
+			return (this.$.$mol_locale.text("$bog_gram_members_history_new_label"));
+		}
 		History_new(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Завести новый отсек переписки");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_History_new_hint")));
 			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_current": (this.history_shut())});
 			(obj.click) = (next) => ((this.history_new(next)));
-			(obj.sub) = () => (["Только новые"]);
+			(obj.sub) = () => ([(this.history_new_label())]);
 			return obj;
 		}
 		History_row(){
@@ -61382,15 +61652,18 @@ var $;
 		}
 		Id_field(){
 			const obj = new this.$.$mol_string();
-			(obj.hint) = () => ("ID участника");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Id_field_hint")));
 			(obj.value) = (next) => ((this.id(next)));
 			(obj.submit) = (next) => ((this.id_add(next)));
 			return obj;
 		}
+		id_add_label(){
+			return (this.$.$mol_locale.text("$bog_gram_members_id_add_label"));
+		}
 		Id_add(){
 			const obj = new this.$.$mol_button_major();
 			(obj.click) = (next) => ((this.id_add(next)));
-			(obj.sub) = () => (["Добавить"]);
+			(obj.sub) = () => ([(this.id_add_label())]);
 			return obj;
 		}
 		pick_rows(){
@@ -61398,12 +61671,12 @@ var $;
 		}
 		Join_head(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Ссылка-приглашение в группу");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Join_head_title")));
 			return obj;
 		}
 		Join_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Join_hint_title")));
 			return obj;
 		}
 		Join_text(){
@@ -61413,7 +61686,7 @@ var $;
 		}
 		Join_copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ("Скопировать");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Join_copy_title")));
 			(obj.text) = () => ((this.join_link()));
 			return obj;
 		}
@@ -61449,7 +61722,7 @@ var $;
 		}
 		Ask_accept(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Принять в группу");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Ask_accept_hint")));
 			(obj.click) = (next) => ((this.accept(id, next)));
 			(obj.sub) = () => ([(this.Ask_accept_icon(id))]);
 			return obj;
@@ -61460,7 +61733,7 @@ var $;
 		}
 		Ask_reject(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отклонить заявку");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Ask_reject_hint")));
 			(obj.click) = (next) => ((this.reject(id, next)));
 			(obj.sub) = () => ([(this.Ask_reject_icon(id))]);
 			return obj;
@@ -61484,7 +61757,7 @@ var $;
 		}
 		Rule(id){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Назначить админом");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Rule_hint")));
 			(obj.click) = (next) => ((this.rule_click(id, next)));
 			(obj.sub) = () => ([(this.Rule_icon(id))]);
 			return obj;
@@ -61517,7 +61790,7 @@ var $;
 			return obj;
 		}
 		title(){
-			return "Участники";
+			return (this.$.$mol_locale.text("$bog_gram_members_title"));
 		}
 		close(next){
 			if(next !== undefined) return next;
@@ -61575,6 +61848,36 @@ var $;
 			if(next !== undefined) return next;
 			return true;
 		}
+		self_name(){
+			return (this.$.$mol_locale.text("$bog_gram_members_self_name"));
+		}
+		drop_hint_armed(){
+			return (this.$.$mol_locale.text("$bog_gram_members_drop_hint_armed"));
+		}
+		drop_hint_idle(){
+			return (this.$.$mol_locale.text("$bog_gram_members_drop_hint_idle"));
+		}
+		history_all_note(){
+			return (this.$.$mol_locale.text("$bog_gram_members_history_all_note"));
+		}
+		history_new_note(){
+			return (this.$.$mol_locale.text("$bog_gram_members_history_new_note"));
+		}
+		error_self(){
+			return (this.$.$mol_locale.text("$bog_gram_members_error_self"));
+		}
+		error_bad(){
+			return (this.$.$mol_locale.text("$bog_gram_members_error_bad"));
+		}
+		asks_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_members_asks_pattern"));
+		}
+		leave_sure(){
+			return (this.$.$mol_locale.text("$bog_gram_members_leave_sure"));
+		}
+		leave_idle(){
+			return (this.$.$mol_locale.text("$bog_gram_members_leave_idle"));
+		}
 		add(id, next){
 			if(next !== undefined) return next;
 			return null;
@@ -61605,7 +61908,7 @@ var $;
 		}
 		Add_title(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Добавить участника");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Add_title_title")));
 			return obj;
 		}
 		History(){
@@ -61634,7 +61937,7 @@ var $;
 		}
 		Admin_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Admin_note_title")));
 			return obj;
 		}
 		Join(){
@@ -61771,7 +62074,7 @@ var $;
             }
             member_title(lord) {
                 if (lord === this.me())
-                    return 'Вы';
+                    return this.self_name();
                 return this.label(lord);
             }
             Drop_note() {
@@ -61794,7 +62097,7 @@ var $;
                 return super.Drop(lord);
             }
             drop_hint(lord) {
-                return this.armed(lord) ? 'Точно убрать? Прошлые сообщения у него останутся' : 'Убрать из группы';
+                return this.armed(lord) ? this.drop_hint_armed() : this.drop_hint_idle();
             }
             disarm() {
                 for (const lord of this.lords())
@@ -61834,8 +62137,8 @@ var $;
             }
             history_note() {
                 return this.history()
-                    ? 'Новый участник получит ключи от всех прошлых сообщений группы'
-                    : 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше';
+                    ? this.history_all_note()
+                    : this.history_new_note();
             }
             pick_rows() {
                 return this.candidates().map(lord => this.Pick_row(lord));
@@ -61845,11 +62148,11 @@ var $;
                 if (!lord)
                     return null;
                 if (lord === this.me()) {
-                    this.error('Это ваш собственный идентификатор');
+                    this.error(this.error_self());
                     return null;
                 }
                 if (!$giper_baza_link.check(lord)) {
-                    this.error('Это не похоже на идентификатор');
+                    this.error(this.error_bad());
                     return null;
                 }
                 this.error('');
@@ -61858,7 +62161,7 @@ var $;
                 return null;
             }
             asks_head() {
-                return 'Заявки: ' + this.asks().length;
+                return $bog_gram_text_fill(this.asks_pattern(), { count: this.asks().length });
             }
             ask_rows() {
                 return this.asks().map(entry => this.Ask_row(entry));
@@ -61887,7 +62190,7 @@ var $;
                 ];
             }
             leave_label() {
-                return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы';
+                return this.leave_armed() ? this.leave_sure() : this.leave_idle();
             }
             leave_click(next) {
                 if (!this.leave_armed()) {
@@ -62356,6 +62659,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_account extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         user_store() {
             return this.$.$giper_baza_glob.home().land().Data($bog_gram_user);
         }
@@ -62487,7 +62793,7 @@ var $;
             if (dialogs)
                 return;
             if (this.pointer_lost())
-                $mol_fail(new Error('Не удалось загрузить данные аккаунта'));
+                $mol_fail(new Error(this.Text().account_lost()));
             this.pointer_timer();
             $mol_fail_hidden(new Promise(() => { }));
         }
@@ -62650,6 +62956,9 @@ var $;
     }
     __decorate([
         $mol_mem
+    ], $bog_gram_account.prototype, "Text", null);
+    __decorate([
+        $mol_mem
     ], $bog_gram_account.prototype, "my_lord", null);
     __decorate([
         $mol_mem
@@ -62767,6 +63076,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_registry extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -62795,8 +63107,11 @@ var $;
             return this.active() === id;
         }
         status(id) {
-            const mine = this.joined(id) ? 'вы в списке' : 'только смотрите';
-            return $bog_gram_count.people(this.lords(id).length) + ' · ' + mine;
+            const text = this.Text();
+            return $bog_gram_text_fill(text.registry_status(), {
+                people: this.$.$bog_gram_count_people(this.lords(id).length),
+                mine: this.joined(id) ? text.registry_joined() : text.registry_watching(),
+            });
         }
         uri() {
             const id = this.active();
@@ -62926,6 +63241,9 @@ var $;
             return null;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_registry.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_registry.prototype, "Account", null);
@@ -63103,21 +63421,23 @@ var $;
 var $;
 (function ($) {
     const day = 24 * 60 * 60 * 1000;
+    function $bog_gram_clock_day_title(key) {
+        if (!key)
+            return '';
+        const now = new Date();
+        const text = this.$bog_gram_text.make({ $: this });
+        if (key === now.toDateString())
+            return text.clock_today();
+        if (key === new Date(now.getTime() - day).toDateString())
+            return text.clock_yesterday();
+        return new Date(key).toLocaleDateString(this.$mol_locale.lang());
+    }
+    $.$bog_gram_clock_day_title = $bog_gram_clock_day_title;
     class $bog_gram_clock extends $mol_object {
         static day_key(moment) {
             if (!moment)
                 return '';
             return new Date(moment).toDateString();
-        }
-        static day_title(key) {
-            if (!key)
-                return '';
-            const now = new Date();
-            if (key === now.toDateString())
-                return 'Сегодня';
-            if (key === new Date(now.getTime() - day).toDateString())
-                return 'Вчера';
-            return new Date(key).toLocaleDateString('ru');
         }
         static time(moment) {
             const date = new Date(moment);
@@ -63152,8 +63472,11 @@ var $;
         land(id) {
             return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
         }
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         saved_title() {
-            return 'Избранное';
+            return this.Text().talk_saved();
         }
         saved_land_make() {
             const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
@@ -63400,17 +63723,18 @@ var $;
             if (!last)
                 return '';
             const text = String(last.Text()?.val() ?? '');
-            const kind = last.Image()?.val() ? 'Фото'
-                : last.Voice()?.val() ? 'Голосовое сообщение'
-                    : last.Video()?.val() ? 'Видео'
-                        : last.Call()?.val() ? 'Звонок'
+            const words = this.Text();
+            const kind = last.Image()?.val() ? words.talk_photo()
+                : last.Voice()?.val() ? words.talk_voice()
+                    : last.Video()?.val() ? words.talk_video()
+                        : last.Call()?.val() ? words.talk_call()
                             : '';
             const body = kind ? (text ? kind + ' · ' + text : kind) : text;
             if (this.saved_is(id))
                 return body;
             const author = String(last.Author()?.val() ?? '');
             if (author === this.my())
-                return 'Вы: ' + body;
+                return $bog_gram_text_fill(words.talk_mine(), { text: body });
             if (author && this.group_is(id))
                 return this.People().label(author) + ': ' + body;
             return body;
@@ -63438,6 +63762,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_talk.prototype, "People", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_talk.prototype, "Text", null);
     __decorate([
         $mol_action
     ], $bog_gram_talk.prototype, "saved_land_make", null);
@@ -63562,6 +63889,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_roster extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -63739,7 +64069,7 @@ var $;
                 const peer = $bog_gram_soft(() => talk.peer(id), '');
                 if (!peer || peer === my || sources[peer])
                     continue;
-                sources[peer] = 'из переписки';
+                sources[peer] = this.Text().roster_from_chats();
             }
             const registry = this.People().Registry();
             const registries = registry.sources();
@@ -63816,6 +64146,9 @@ var $;
             return true;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_roster.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_roster.prototype, "Account", null);
@@ -64075,6 +64408,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_crew extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -64125,11 +64461,11 @@ var $;
             if (!lord)
                 return null;
             if (lord === this.Account().my_lord()) {
-                this.draft_error('Это ваш собственный идентификатор');
+                this.draft_error(this.Text().crew_self());
                 return null;
             }
             if (!$giper_baza_link.check(lord)) {
-                this.draft_error('Это не похоже на идентификатор');
+                this.draft_error(this.Text().crew_bad_id());
                 return null;
             }
             this.draft_error('');
@@ -64225,13 +64561,13 @@ var $;
                 return '';
             const pass = known ?? this.People().pass_of(lord);
             if (!pass) {
-                this.error('Не нашли ключ этого человека: без ключа он не прочитает переписку');
+                this.error(this.Text().crew_no_key_read());
                 return '';
             }
             const links = talk.links_of(id);
             const stay = history ? [] : this.stay(id, lord);
             if (!stay) {
-                this.error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                this.error(this.Text().crew_no_keys());
                 return '';
             }
             const fresh = history ? null : this.grab();
@@ -64268,7 +64604,7 @@ var $;
                 return '';
             const stay = this.stay(id, lord);
             if (!stay) {
-                this.error('Не нашли ключей всех участников: новый отсек переписки без них не завести');
+                this.error(this.Text().crew_no_keys());
                 return '';
             }
             const fresh = this.grab();
@@ -64293,7 +64629,7 @@ var $;
                 return '';
             const pass = this.People().pass_of(lord);
             if (!pass) {
-                this.error('Не нашли ключ этого человека: права ему не выдать');
+                this.error(this.Text().crew_no_key_grant());
                 return '';
             }
             const links = talk.links_of(id);
@@ -64306,6 +64642,9 @@ var $;
             return lord;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_crew.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_crew.prototype, "Account", null);
@@ -64353,6 +64692,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_lobby extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -64489,7 +64831,7 @@ var $;
                 return '';
             const pass = $bog_gram_pass.verified(ask.lord, ask.pass);
             if (!pass) {
-                this.Crew().error('Ключ в заявке не сходится со своим владельцем: заявка отклонена');
+                this.Crew().error(this.Text().lobby_key_bad());
                 this.forget(entry);
                 return '';
             }
@@ -64675,23 +65017,24 @@ var $;
             return this.waiting(this.sent());
         }
         plate() {
+            const text = this.Text();
             if (this.lost())
-                return 'В ссылке нет создателя группы — заявку нести некому, попросите свежую';
+                return text.lobby_lost();
             const denied = this.denied().length;
             if (denied === 1)
-                return 'Заявку отклонили — попроситься снова можно по той же ссылке';
+                return text.lobby_denied_one();
             if (denied)
-                return 'Заявок отклонено: ' + denied + ' — попроситься снова можно по тем же ссылкам';
+                return $bog_gram_text_fill(text.lobby_denied_some(), { n: denied });
             const queued = this.pending_queued().length;
             if (queued === 1)
-                return 'Заявка отправляется — это не мгновенно';
+                return text.lobby_queued_one();
             if (queued)
-                return 'Отправляется заявок: ' + queued;
+                return $bog_gram_text_fill(text.lobby_queued_some(), { n: queued });
             const sent = this.pending_sent().length;
             if (sent === 1)
-                return 'Заявка отправлена — ждём, пока её примут';
+                return text.lobby_sent_one();
             if (sent)
-                return 'Заявок отправлено: ' + sent + ' — ждём, пока их примут';
+                return $bog_gram_text_fill(text.lobby_sent_some(), { n: sent });
             return '';
         }
         taken(id) {
@@ -64742,6 +65085,9 @@ var $;
             return groups.length;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_lobby.prototype, "Account", null);
@@ -64832,6 +65178,9 @@ var $;
 (function ($) {
     const wait = 15000;
     class $bog_gram_invite extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -64914,15 +65263,18 @@ var $;
         }
         plate() {
             if (this.lost())
-                return 'Ссылка на диалог битая — попросите свежую';
+                return this.Text().invite_lost();
             const peer = this.pending();
             if (!peer)
                 return '';
             if (this.late() !== peer)
-                return 'Открываем диалог — ищем ключ собеседника';
-            return 'Ключ собеседника не нашёлся: скорее всего, он ещё не заходил в Gram или подключён к другому мастеру. Попросите свежую ссылку';
+                return this.Text().invite_wait();
+            return this.Text().invite_late();
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_invite.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_invite.prototype, "Account", null);
@@ -65190,6 +65542,9 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_alerts extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         Account() {
             return this.$.$bog_gram_account.make({ $: this.$ });
         }
@@ -65252,20 +65607,20 @@ var $;
             return this.on() && this.permission() === 'granted';
         }
         label() {
-            return this.active() ? 'Выключить' : 'Включить уведомления';
+            return this.active() ? this.Text().alerts_off_label() : this.Text().alerts_on_label();
         }
         status() {
             if (!this.supported())
-                return 'Не поддерживается этим браузером';
+                return this.Text().alerts_unsupported();
             if (this.permission() === 'denied')
-                return 'Запрещены в браузере';
+                return this.Text().alerts_denied();
             if (this.active())
-                return 'Уведомления включены';
+                return this.Text().alerts_active();
             if (this.on())
-                return 'Браузер сбросил разрешение — включите снова';
+                return this.Text().alerts_reset();
             if (this.off())
-                return 'Выключены';
-            return 'Спросим разрешение, когда откроете диалог';
+                return this.Text().alerts_off();
+            return this.Text().alerts_later();
         }
         toggle(next) {
             $mol_wire_async(this).apply(!this.active());
@@ -65305,6 +65660,9 @@ var $;
             return true;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_alerts.prototype, "Text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_alerts.prototype, "Account", null);
@@ -66051,7 +66409,7 @@ var $;
 		}
 		Prev(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Предыдущее");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_gallery_Prev_hint")));
 			(obj.click) = (next) => ((this.prev(next)));
 			(obj.sub) = () => ([(this.Prev_icon())]);
 			return obj;
@@ -66062,7 +66420,7 @@ var $;
 		}
 		Next(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Следующее");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_gallery_Next_hint")));
 			(obj.click) = (next) => ((this.next(next)));
 			(obj.sub) = () => ([(this.Next_icon())]);
 			return obj;
@@ -66073,7 +66431,7 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_gallery_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
@@ -66096,7 +66454,7 @@ var $;
 			return null;
 		}
 		counter_pattern(){
-			return "{index} из {count}";
+			return (this.$.$mol_locale.text("$bog_gram_gallery_counter_pattern"));
 		}
 		attr(){
 			return {
@@ -66221,9 +66579,10 @@ var $;
                 return this.ids().indexOf(id) - this.index();
             }
             counter() {
-                return this.counter_pattern()
-                    .replace('{index}', String(this.index() + 1))
-                    .replace('{count}', String(this.ids().length));
+                return $bog_gram_text_fill(this.counter_pattern(), {
+                    index: this.index() + 1,
+                    count: this.ids().length,
+                });
             }
             Prev() {
                 return this.near(-1) === this.current() ? null : super.Prev();
@@ -66673,7 +67032,7 @@ var $;
 		}
 		Tile(id){
 			const obj = new this.$.$bog_gram_photo();
-			(obj.hint) = () => ("Открыть картинку");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_album_Tile_hint")));
 			(obj.uri) = () => ((this.uri(id)));
 			(obj.click) = (next) => ((this.open(id, next)));
 			(obj.style) = () => ({
@@ -66930,7 +67289,7 @@ var $;
 		}
 		Toggle(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Прослушать");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_sound_Toggle_hint")));
 			(obj.click) = (next) => ((this.toggle(next)));
 			(obj.sub) = () => ((this.toggle_icons()));
 			return obj;
@@ -67016,6 +67375,9 @@ var $;
     const span_limit = 5 * 60;
     const span_min = 0.7;
     class $bog_gram_voice extends $mol_object {
+        Text() {
+            return this.$.$bog_gram_text.make({ $: this.$ });
+        }
         static stamp(span) {
             const whole = Math.max(0, Math.round(span));
             const min = Math.floor(whole / 60);
@@ -67048,7 +67410,7 @@ var $;
         async open_run() {
             const type = $bog_gram_voice.type();
             if (!type)
-                throw new Error('Запись звука тут не поддерживается');
+                throw new Error(this.Text().voice_unsupported());
             const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true });
             if (this.asked) {
                 this.hush(stream);
@@ -67119,6 +67481,9 @@ var $;
             return this.result;
         }
     }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_voice.prototype, "Text", null);
     $.$bog_gram_voice = $bog_gram_voice;
 })($ || ($ = {}));
 
@@ -67343,6 +67708,12 @@ var $;
 
 ;
 	($.$bog_gram_call_tile) = class $bog_gram_call_tile extends ($.$mol_view) {
+		stat_bad(id){
+			return false;
+		}
+		stat_text(id){
+			return "";
+		}
 		Video(){
 			const obj = new this.$.$mol_video_player();
 			(obj.stream) = () => ((this.stream()));
@@ -67359,9 +67730,12 @@ var $;
 			(obj.sub) = () => ([(this.letter())]);
 			return obj;
 		}
+		stat_parts(){
+			return [];
+		}
 		Stats(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.stats())]);
+			(obj.sub) = () => ((this.stat_parts()));
 			return obj;
 		}
 		Name(){
@@ -67418,7 +67792,28 @@ var $;
 			return "";
 		}
 		stats(){
-			return "";
+			return null;
+		}
+		stat_fps(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_fps"));
+		}
+		stat_size(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_size"));
+		}
+		stat_kbps(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_kbps"));
+		}
+		stat_loss(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_loss"));
+		}
+		stat_rtt(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_rtt"));
+		}
+		Stat(id){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({"bog_gram_call_tile_stat_bad": (this.stat_bad(id))});
+			(obj.sub) = () => ([(this.stat_text(id))]);
+			return obj;
 		}
 		failed_text(){
 			return (this.$.$mol_locale.text("$bog_gram_call_tile_failed_text"));
@@ -67449,6 +67844,7 @@ var $;
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Mic_off"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Status"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Label"));
+	($mol_mem_key(($.$bog_gram_call_tile.prototype), "Stat"));
 
 
 ;
@@ -67482,6 +67878,28 @@ var $;
             }
             Stats() {
                 return this.stats() ? super.Stats() : null;
+            }
+            stat_parts() {
+                return ['fps', 'size', 'kbps', 'loss', 'rtt'].map(id => this.Stat(id));
+            }
+            stat_text(id) {
+                const stats = this.stats();
+                if (!stats)
+                    return '';
+                switch (id) {
+                    case 'fps': return $bog_gram_text_fill(this.stat_fps(), { n: stats.fps });
+                    case 'size': return $bog_gram_text_fill(this.stat_size(), { n: `${stats.width}×${stats.height}` });
+                    case 'kbps': return $bog_gram_text_fill(this.stat_kbps(), { n: stats.kbps });
+                    case 'loss': return $bog_gram_text_fill(this.stat_loss(), { n: stats.loss });
+                    case 'rtt': return $bog_gram_text_fill(this.stat_rtt(), { n: stats.rtt });
+                }
+                return '';
+            }
+            stat_bad(id) {
+                const stats = this.stats();
+                if (!stats)
+                    return false;
+                return $bog_gram_call_peer.stats_bad(stats)[id] ?? false;
             }
             video() {
                 return this.Video().dom_node();
@@ -67557,10 +67975,26 @@ var $;
                 background: {
                     color: $mol_theme.back,
                 },
+                gap: '.75ch',
+                flex: {
+                    wrap: 'wrap',
+                },
                 font: {
                     size: '.75rem',
                 },
                 opacity: .8,
+            },
+            Stat: {
+                '@': {
+                    bog_gram_call_tile_stat_bad: {
+                        true: {
+                            color: 'hsl( 0, 85%, 62% )',
+                            font: {
+                                weight: 'bold',
+                            },
+                        },
+                    },
+                },
             },
             Label: {
                 position: 'absolute',
@@ -67658,7 +68092,7 @@ var $;
 			return "";
 		}
 		mate_stats(id){
-			return "";
+			return null;
 		}
 		lobby_text(){
 			return "";
@@ -67838,9 +68272,6 @@ var $;
 		lobby_some(){
 			return (this.$.$mol_locale.text("$bog_gram_call_lobby_some"));
 		}
-		stats_pattern(){
-			return (this.$.$mol_locale.text("$bog_gram_call_stats_pattern"));
-		}
 	};
 	($mol_mem(($.$bog_gram_call.prototype), "close_click"));
 	($mol_mem(($.$bog_gram_call.prototype), "Close_icon"));
@@ -67913,7 +68344,7 @@ var $;
                 const names = this.Room().seats_alive().map(seat => this.Room().seat_name(seat));
                 if (!names.length)
                     return this.lobby_empty();
-                return this.lobby_some().replace('{names}', names.join(', '));
+                return $bog_gram_text_fill(this.lobby_some(), { names: names.join(', ') });
             }
             join() {
                 this.Room().join();
@@ -67955,16 +68386,8 @@ var $;
             }
             mate_stats(mate) {
                 if (!this.stats_show())
-                    return '';
-                const stats = this.Room().peer(mate).stats();
-                if (!stats)
-                    return '';
-                return this.stats_pattern()
-                    .replace('{fps}', String(stats.fps))
-                    .replace('{size}', `${stats.width}×${stats.height}`)
-                    .replace('{kbps}', String(stats.kbps))
-                    .replace('{loss}', String(stats.loss))
-                    .replace('{rtt}', String(stats.rtt));
+                    return null;
+                return this.Room().peer(mate).stats();
             }
             mate_name(mate) {
                 return this.Room().seat_name(mate);
@@ -68144,6 +68567,9 @@ var $;
         static pair(me, mate) {
             return this.offerer(me, mate) ? `${me}>${mate}` : `${mate}>${me}`;
         }
+        static seat_short(id) {
+            return id.slice(0, 4);
+        }
         static signal_parse(text) {
             try {
                 const data = JSON.parse(text);
@@ -68211,12 +68637,18 @@ var $;
             seat.Joined('auto').val(Date.now());
             this.seat(me);
             this.entered(true);
+            this.mates_logged = [];
+            this.log(`вошёл, место ${$bog_gram_call_room.seat_short(me)}`);
         }
         leave() {
             if (!this.entered())
                 return;
             this.data().Seats('auto')?.key(this.seat(), 'auto')?.Left('auto')?.val(Date.now());
             this.entered(false);
+            this.log('вышел');
+        }
+        log(text) {
+            $bog_music_log.act(`звонок: ${text}`);
         }
         beat() {
             if (!this.joined())
@@ -68279,6 +68711,12 @@ var $;
         }
         signal(box, key) {
             return this.data()[box]()?.key(key)?.val() ?? '';
+        }
+        offer_text(key) {
+            return this.signal('Offers', key);
+        }
+        answer_text(key) {
+            return this.signal('Answers', key);
         }
         signal_put(box, key, text) {
             const atom = this.data()[box]('auto').key(key, 'auto');
@@ -68412,10 +68850,24 @@ var $;
                 mate: $mol_const(mate),
             });
         }
+        mates_logged = [];
+        mates_log(mates) {
+            const prev = this.mates_logged;
+            this.mates_logged = mates;
+            const label = (id) => `${this.seat_name(id)} ${$bog_gram_call_room.seat_short(id)}`;
+            for (const id of mates)
+                if (!prev.includes(id))
+                    this.log(`пришёл ${label(id)}`);
+            for (const id of prev)
+                if (!mates.includes(id))
+                    this.log(`ушёл ${label(id)}`);
+        }
         peers() {
             if (!this.joined())
                 return [];
-            return this.mates().map(mate => this.peer(mate));
+            const mates = this.mates();
+            this.mates_log(mates);
+            return mates.map(mate => this.peer(mate));
         }
         run() {
             if (!this.joined())
@@ -68475,6 +68927,12 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "mates", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "offer_text", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "answer_text", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "media", null);
@@ -68614,10 +69072,13 @@ var $;
                 return null;
             return new MediaStream(tracks);
         }
+        log(text) {
+            this.room().log(`${$bog_gram_call_room.seat_short(this.mate())}: ${text}`);
+        }
         offer_their() {
             if (this.offerer())
                 return null;
-            return $bog_gram_call_room.signal_parse(this.room().signal('Offers', this.key()));
+            return $bog_gram_call_room.signal_parse(this.room().offer_text(this.key()));
         }
         offer_id() {
             return this.offer_their()?.id ?? '';
@@ -68627,66 +69088,98 @@ var $;
             if (!round)
                 return null;
             const rtc = new RTCPeerConnection({ iceServers: $bog_gram_call_peer.ice });
-            rtc.addEventListener('connectionstatechange', () => this.state_change(rtc));
+            const born = Date.now();
+            this.log(`соединение ${round} создано, я ${this.offerer() ? 'предлагаю' : 'отвечаю'}`);
+            rtc.addEventListener('connectionstatechange', () => this.state_change(rtc, round, born));
             rtc.addEventListener('track', () => this.tracked(this.tracked() + 1));
             return Object.assign(rtc, {
-                destructor: () => rtc.close()
+                destructor: () => {
+                    this.log(`соединение ${round} закрыто`);
+                    rtc.close();
+                }
             });
         }
-        state_change(rtc) {
+        state_change(rtc, round, born) {
             const state = rtc.connectionState;
             if (state === 'closed')
                 return;
+            this.log(state === 'connected'
+                ? `соединение ${round}: connected через ${Date.now() - born} мс`
+                : `соединение ${round}: ${state}`);
             this.changed(this.changed() + 1);
             if (!this.offerer())
                 return;
             if (state === 'failed')
-                this.restart(rtc);
+                this.restart(rtc, 'failed');
             if (state === 'disconnected')
                 setTimeout(() => {
                     if (rtc.connectionState === 'disconnected')
-                        this.restart(rtc);
+                        this.restart(rtc, `disconnected дольше ${$bog_gram_call_peer.restart_after} мс`);
                 }, $bog_gram_call_peer.restart_after);
         }
-        restart(rtc) {
+        restart(rtc, reason) {
             if (rtc.connectionState === 'closed')
                 return;
             if (rtc.connectionState === 'connected')
                 return;
+            this.log(`перезапуск после попытки ${this.attempt()}: ${reason}`);
             this.attempt(this.attempt() + 1);
+        }
+        offer_build() {
+            return $mol_wire_sync($bog_gram_call_peer).offer_make(this.rtc(), this.room().media());
+        }
+        answer_build(offer) {
+            return $mol_wire_sync($bog_gram_call_peer).answer_make(this.rtc(), offer, this.room().media());
+        }
+        answer_use(answer) {
+            $mol_wire_sync($bog_gram_call_peer).answer_apply(this.rtc(), answer);
         }
         offer_mine() {
             if (!this.offerer())
                 return null;
             const rtc = this.rtc();
-            const sdp = $mol_wire_sync($bog_gram_call_peer).offer_make(rtc, this.room().media());
-            setTimeout(() => this.restart(rtc), $bog_gram_call_peer.connect_limit);
+            const sdp = this.offer_build();
+            new this.$.$mol_after_timeout($bog_gram_call_peer.connect_limit, () => this.restart(rtc, `нет связи за ${$bog_gram_call_peer.connect_limit} мс`));
             return { id: `${this.attempt()}.${$mol_guid()}`, sdp };
         }
+        offered = '';
         offer_post() {
             const offer = this.offer_mine();
             if (!offer)
                 return '';
+            if (this.offered === offer.id)
+                return offer.id;
             this.room().signal_put('Offers', this.key(), JSON.stringify(offer));
+            this.offered = offer.id;
+            this.log(`предложение ${offer.id} записано`);
             return offer.id;
         }
+        applied = '';
         answer_take() {
             const id = this.offer_post();
             if (!id)
                 return false;
-            const answer = $bog_gram_call_room.signal_parse(this.room().signal('Answers', this.key()));
+            const answer = $bog_gram_call_room.signal_parse(this.room().answer_text(this.key()));
             if (answer?.id !== id)
                 return false;
-            $mol_wire_sync($bog_gram_call_peer).answer_apply(this.rtc(), answer.sdp);
+            if (this.applied === id)
+                return true;
+            this.answer_use(answer.sdp);
+            this.applied = id;
+            this.log(`ответ на ${id} принят`);
             return true;
         }
+        answered = '';
         answer_post() {
             const offer = this.offer_their();
             if (!offer)
                 return false;
-            const rtc = this.rtc();
-            const sdp = $mol_wire_sync($bog_gram_call_peer).answer_make(rtc, offer.sdp, this.room().media());
+            if (this.answered === offer.id)
+                return true;
+            const sdp = this.answer_build(offer.sdp);
             this.room().signal_put('Answers', this.key(), JSON.stringify({ id: offer.id, sdp }));
+            this.answered = offer.id;
+            this.log(`ответ на ${offer.id} записан`);
             return true;
         }
         sync() {
@@ -68712,6 +69205,15 @@ var $;
             const next = $bog_gram_call_peer.stats_sum([...report.values()], this.stats_last);
             this.stats_last = next;
             return next;
+        }
+        static stats_limit = { fps: 15, loss: 2, rtt: 300 };
+        static stats_bad(stats) {
+            const limit = this.stats_limit;
+            return {
+                fps: stats.fps < limit.fps,
+                loss: stats.loss > limit.loss,
+                rtt: stats.rtt > limit.rtt,
+            };
         }
         static stats_sum(entries, last) {
             const sum = {
@@ -68874,7 +69376,7 @@ var $;
                 const count = this.Room().seats_alive().length;
                 if (!count)
                     return this.count_none();
-                return this.count_some().replace('{count}', String(count));
+                return $bog_gram_text_fill(this.count_some(), { count });
             }
         }
         $$.$bog_gram_call_card = $bog_gram_call_card;
@@ -69042,7 +69544,7 @@ var $;
 		}
 		Quote(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Перейти к сообщению");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Quote_hint")));
 			(obj.click) = (next) => ((this.quote_jump(next)));
 			(obj.sub) = () => ([(this.Quote_author()), (this.Quote_text())]);
 			return obj;
@@ -69088,9 +69590,12 @@ var $;
 			(obj.sub) = () => ([(this.time())]);
 			return obj;
 		}
+		edited_label(){
+			return (this.$.$mol_locale.text("$bog_gram_bubble_edited_label"));
+		}
 		Edited(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["изменено"]);
+			(obj.sub) = () => ([(this.edited_label())]);
 			return obj;
 		}
 		Checks(){
@@ -69122,7 +69627,7 @@ var $;
 		}
 		Edit(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Редактировать");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Edit_hint")));
 			(obj.click) = (next) => ((this.edit(next)));
 			(obj.sub) = () => ([(this.Edit_icon())]);
 			return obj;
@@ -69133,7 +69638,7 @@ var $;
 		}
 		Delete(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Удалить");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Delete_hint")));
 			(obj.click) = (next) => ((this.delete(next)));
 			(obj.sub) = () => ([(this.Delete_icon())]);
 			return obj;
@@ -69662,7 +70167,7 @@ var $;
 		}
 		Back(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Назад");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Back_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Back_icon())]);
 			return obj;
@@ -69677,7 +70182,7 @@ var $;
 		}
 		Call(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Звонок");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Call_hint")));
 			(obj.click) = (next) => ((this.call_start(next)));
 			(obj.sub) = () => ([(this.Call_icon())]);
 			return obj;
@@ -69688,7 +70193,7 @@ var $;
 		}
 		Members(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Участники");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Members_hint")));
 			(obj.click) = (next) => ((this.members(next)));
 			(obj.sub) = () => ([(this.Members_icon())]);
 			return obj;
@@ -69699,7 +70204,7 @@ var $;
 		}
 		Close(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Закрыть");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Close_hint")));
 			(obj.click) = (next) => ((this.close(next)));
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
@@ -69741,7 +70246,7 @@ var $;
 		}
 		Reply_cancel(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить ответ");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Reply_cancel_hint")));
 			(obj.click) = (next) => ((this.reply_cancel(next)));
 			(obj.sub) = () => ([(this.Reply_cancel_icon())]);
 			return obj;
@@ -69757,7 +70262,7 @@ var $;
 		}
 		Edit_banner_text(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Редактирование");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Edit_banner_text_title")));
 			return obj;
 		}
 		edit_cancel(next){
@@ -69770,7 +70275,7 @@ var $;
 		}
 		Edit_cancel(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отменить правку");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Edit_cancel_hint")));
 			(obj.click) = (next) => ((this.edit_cancel(next)));
 			(obj.sub) = () => ([(this.Edit_cancel_icon())]);
 			return obj;
@@ -69807,7 +70312,7 @@ var $;
 		}
 		Message_field(){
 			const obj = new this.$.$bog_gram_write();
-			(obj.hint) = () => ("Сообщение…");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Message_field_hint")));
 			(obj.value) = (next) => ((this.message_text(next)));
 			(obj.send) = (next) => ((this.message_send(next)));
 			return obj;
@@ -69845,9 +70350,12 @@ var $;
 			const obj = new this.$.$mol_icon_close();
 			return obj;
 		}
+		voice_cancel_label(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_voice_cancel_label"));
+		}
 		Voice_cancel_text(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => (["Отмена"]);
+			(obj.sub) = () => ([(this.voice_cancel_label())]);
 			return obj;
 		}
 		line_content(id){
@@ -70048,6 +70556,54 @@ var $;
 			if(next !== undefined) return next;
 			return "";
 		}
+		voice_denied(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_voice_denied"));
+		}
+		voice_short(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_voice_short"));
+		}
+		call_lost_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_call_lost_pattern"));
+		}
+		read_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_read_pattern"));
+		}
+		self_name(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_self_name"));
+		}
+		kind_photo(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_kind_photo"));
+		}
+		kind_voice(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_kind_voice"));
+		}
+		kind_video(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_kind_video"));
+		}
+		reply_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_reply_pattern"));
+		}
+		video_failed(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_video_failed"));
+		}
+		images_capped_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_images_capped_pattern"));
+		}
+		lost_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_lost_pattern"));
+		}
+		video_big_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_video_big_pattern"));
+		}
+		video_packing(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_video_packing"));
+		}
+		video_progress_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_video_progress_pattern"));
+		}
+		video_over_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_video_over_pattern"));
+		}
 		edit_id(next){
 			if(next !== undefined) return next;
 			return "";
@@ -70129,7 +70685,7 @@ var $;
 		}
 		Attach(){
 			const obj = new this.$.$bog_gram_attach();
-			(obj.hint) = () => ("Отправить фото или видео");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Attach_hint")));
 			(obj.accept) = () => ("image/*,video/*");
 			(obj.multiple) = () => (true);
 			(obj.files) = (next) => ((this.image_files(next)));
@@ -70143,14 +70699,14 @@ var $;
 		}
 		Send(){
 			const obj = new this.$.$mol_button_major();
-			(obj.hint) = () => ("Отправить");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Send_hint")));
 			(obj.click) = (next) => ((this.message_send(next)));
 			(obj.sub) = () => ([(this.Send_icon())]);
 			return obj;
 		}
 		Voice(){
 			const obj = new this.$.$bog_gram_hold();
-			(obj.hint) = () => ("Удерживайте для записи");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Voice_hint")));
 			(obj.press) = (next) => ((this.voice_press(next)));
 			(obj.release) = (next) => ((this.voice_release(next)));
 			(obj.abort) = (next) => ((this.voice_cancel(next)));
@@ -70164,7 +70720,7 @@ var $;
 		}
 		Voice_cancel(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ("Отпустите здесь, чтобы отменить");
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Voice_cancel_hint")));
 			(obj.click) = (next) => ((this.voice_cancel(next)));
 			(obj.sub) = () => ([(this.Voice_cancel_icon()), (this.Voice_cancel_text())]);
 			return obj;
@@ -70622,8 +71178,6 @@ var $;
         const shot_side = 15;
         const rem_px = 16;
         const clock_tick = 200;
-        const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера';
-        const voice_short = 'Слишком коротко — запись отменена';
         const image_limit = 10;
         class $bog_gram_chat extends $.$bog_gram_chat {
             saved() {
@@ -70708,7 +71262,7 @@ var $;
                     return '';
                 const passes = this.passes();
                 if (!passes) {
-                    this.voice_hint(`Звонок не начат: не доехал ключ — ${this.lost_names()}. Позвоните ещё раз чуть позже`);
+                    this.voice_hint($bog_gram_text_fill(this.call_lost_pattern(), { names: this.lost_names() }));
                     return '';
                 }
                 const land = this.$.$bog_gram_call_room.grab(passes);
@@ -70765,7 +71319,7 @@ var $;
                 return Number(this.message_pawn(id)?.Moment()?.val() ?? 0);
             }
             day_title(key) {
-                return $bog_gram_clock.day_title(key);
+                return this.$.$bog_gram_clock_day_title(key);
             }
             rows() {
                 return this.messages().map(message => this.Line(message.link().str));
@@ -70800,7 +71354,10 @@ var $;
                     const reads = {};
                     for (const lord of mates)
                         reads[lord] = this.Talk().read_moment_of(dialog, lord);
-                    return 'Прочитали ' + this.read_tally(reads, mates, moment) + ' из ' + mates.length;
+                    return $bog_gram_text_fill(this.read_pattern(), {
+                        count: this.read_tally(reads, mates, moment),
+                        total: mates.length,
+                    });
                 }
                 const peer = this.Talk().peer(dialog);
                 if (!peer)
@@ -70909,7 +71466,7 @@ var $;
                 if (!lord)
                     return '';
                 if (lord === this.my_lord())
-                    return 'Вы';
+                    return this.self_name();
                 return this.People().label(lord);
             }
             quote_text(id) {
@@ -70920,15 +71477,15 @@ var $;
                 if (text)
                     return text;
                 if (pawn.Image()?.val())
-                    return 'Фото';
+                    return this.kind_photo();
                 if (pawn.Voice()?.val())
-                    return 'Голосовое сообщение';
+                    return this.kind_voice();
                 if (pawn.Video()?.val())
-                    return 'Видео';
+                    return this.kind_video();
                 return '';
             }
             reply_title() {
-                return 'Ответ ' + this.quote_author(this.reply_id());
+                return $bog_gram_text_fill(this.reply_pattern(), { name: this.quote_author(this.reply_id()) });
             }
             reply_text() {
                 return this.quote_text(this.reply_id());
@@ -71156,7 +71713,7 @@ var $;
                     }
                     catch (error) {
                         $mol_fail_log(error);
-                        this.voice_hint('Видео не отправилось');
+                        this.voice_hint(this.video_failed());
                     }
                 }
                 if (!images.length)
@@ -71166,7 +71723,7 @@ var $;
                     return '';
                 });
                 if (sent && images.length > image_limit) {
-                    this.voice_hint(`Отправлены первые ${image_limit} фото: за раз можно не больше ${image_limit}`);
+                    this.voice_hint(this.images_capped_pattern().replaceAll('{limit}', String(image_limit)));
                 }
                 return sent;
             }
@@ -71183,7 +71740,7 @@ var $;
                 return this.passes_lost().map(lord => this.People().label(lord)).join(', ');
             }
             lost_hint(what) {
-                return `${what} не отправлено: не доехал ключ — ${this.lost_names()}. Отправьте ещё раз чуть позже`;
+                return $bog_gram_text_fill(this.lost_pattern(), { what, names: this.lost_names() });
             }
             land_closed(bytes, type, passes) {
                 const land = this.$.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
@@ -71209,7 +71766,7 @@ var $;
                     return '';
                 const passes = this.passes();
                 if (!passes) {
-                    this.voice_hint(this.lost_hint('Фото'));
+                    this.voice_hint(this.lost_hint(this.kind_photo()));
                     return '';
                 }
                 const frames = files.map(file => this.image_frame(file));
@@ -71239,13 +71796,13 @@ var $;
                 const clip = this.$.$bog_gram_clip;
                 const mb = (size) => Math.ceil(size / 2 ** 20);
                 if (file.size > clip.source_limit) {
-                    this.voice_hint(`Видео больше ${mb(clip.source_limit)} МБ не сжать, это ${mb(file.size)} МБ`);
+                    this.voice_hint($bog_gram_text_fill(this.video_big_pattern(), { limit: mb(clip.source_limit), size: mb(file.size) }));
                     return null;
                 }
-                this.voice_hint('Сжимаю видео…');
-                const read = await clip.read(file, done => this.voice_hint(`Сжимаю видео: ${Math.round(done * 100)}%`));
+                this.voice_hint(this.video_packing());
+                const read = await clip.read(file, done => this.voice_hint($bog_gram_text_fill(this.video_progress_pattern(), { percent: Math.round(done * 100) })));
                 if (read.bytes.byteLength > clip.limit) {
-                    this.voice_hint(`Видео не влезает: после сжатия ${mb(read.bytes.byteLength)} МБ, можно до ${mb(clip.limit)} МБ`);
+                    this.voice_hint($bog_gram_text_fill(this.video_over_pattern(), { size: mb(read.bytes.byteLength), limit: mb(clip.limit) }));
                     return null;
                 }
                 this.voice_hint('');
@@ -71257,7 +71814,7 @@ var $;
                     return '';
                 const passes = this.passes();
                 if (!passes) {
-                    this.voice_hint(this.lost_hint('Видео'));
+                    this.voice_hint(this.lost_hint(this.kind_video()));
                     return '';
                 }
                 const store = this.land_closed(clip.bytes, clip.type, passes);
@@ -71349,7 +71906,7 @@ var $;
                         this.voice_live = null;
                         this.voice_start(0);
                     }
-                    this.voice_hint(voice_denied);
+                    this.voice_hint(this.voice_denied());
                     return false;
                 }
                 return true;
@@ -71402,12 +71959,12 @@ var $;
                     return '';
                 const passes = this.passes();
                 if (!passes) {
-                    this.voice_hint(this.lost_hint('Голосовое'));
+                    this.voice_hint(this.lost_hint(this.kind_voice()));
                     return '';
                 }
                 const sound = $mol_wire_sync(take).take();
                 if (!sound) {
-                    this.voice_hint(voice_short);
+                    this.voice_hint(this.voice_short());
                     return '';
                 }
                 const store = this.land_closed(sound.bytes, sound.type, passes);
@@ -73559,12 +74116,12 @@ var $;
 		}
 		Intro_title(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Выберите диалог");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Intro_title_title")));
 			return obj;
 		}
 		Intro_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Или начните новый: кнопка в шапке списка");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Intro_hint_title")));
 			return obj;
 		}
 		Intro_plate(){
@@ -73689,9 +74246,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		logs_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Settings_page(){
 			const obj = new this.$.$bog_gram_settings();
 			(obj.close) = (next) => ((this.settings_close(next)));
+			(obj.logs) = (next) => ((this.logs_open(next)));
 			(obj.user_name) = (next) => ((this.user_name(next)));
 			(obj.my_lord) = () => ((this.my_lord()));
 			(obj.invite_link) = () => ((this.invite_link()));
@@ -73712,6 +74274,15 @@ var $;
 			(obj.registry_open) = (id, next) => ((this.registry_open(id, next)));
 			(obj.registry_join) = (id, next) => ((this.registry_join(id, next)));
 			(obj.registry_forget) = (id, next) => ((this.registry_forget(id, next)));
+			return obj;
+		}
+		logs_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Logs_page(){
+			const obj = new this.$.$bog_gram_logs();
+			(obj.close) = (next) => ((this.logs_close(next)));
 			return obj;
 		}
 		compose_close(next){
@@ -73924,6 +74495,12 @@ var $;
 			(obj.current) = () => ((this.page_current()));
 			return obj;
 		}
+		status_owner(){
+			return (this.$.$mol_locale.text("$bog_gram_status_owner"));
+		}
+		status_admin(){
+			return (this.$.$mol_locale.text("$bog_gram_status_admin"));
+		}
 		Gate(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.Gate_plate())]);
@@ -73931,28 +74508,28 @@ var $;
 		}
 		Gate_wait(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Загружаем данные аккаунта…");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_wait_title")));
 			return obj;
 		}
 		Gate_lost(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Не удалось загрузить данные аккаунта");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_lost_title")));
 			return obj;
 		}
 		Gate_fresh_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_fresh_note_title")));
 			return obj;
 		}
 		Gate_retry(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.title) = () => ("Повторить");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_retry_title")));
 			(obj.click) = (next) => ((this.account_retry(next)));
 			return obj;
 		}
 		Gate_fresh(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.title) = () => ("Создать аккаунт на этом устройстве");
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_fresh_title")));
 			(obj.click) = (next) => ((this.account_fresh(next)));
 			return obj;
 		}
@@ -73964,6 +74541,7 @@ var $;
 				(this.Menu()), 
 				(this.Music_page()), 
 				(this.Settings_page()), 
+				(this.Logs_page()), 
 				(this.Compose_page()), 
 				(this.Group_page()), 
 				(this.Members_page())
@@ -74010,7 +74588,10 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "music_close"));
 	($mol_mem(($.$bog_gram.prototype), "Music_page"));
 	($mol_mem(($.$bog_gram.prototype), "settings_close"));
+	($mol_mem(($.$bog_gram.prototype), "logs_open"));
 	($mol_mem(($.$bog_gram.prototype), "Settings_page"));
+	($mol_mem(($.$bog_gram.prototype), "logs_close"));
+	($mol_mem(($.$bog_gram.prototype), "Logs_page"));
 	($mol_mem(($.$bog_gram.prototype), "compose_close"));
 	($mol_mem_key(($.$bog_gram.prototype), "dialog_open"));
 	($mol_mem(($.$bog_gram.prototype), "Compose_page"));
@@ -74464,7 +75045,22 @@ var $;
                 return null;
             }
             settings_close(next) {
+                this.logs_opened(false);
                 this.settings_opened(false);
+                return null;
+            }
+            logs_opened(next) {
+                const arg = this.$.$mol_state_arg;
+                if (next !== undefined)
+                    arg.value('logs', next ? '' : null);
+                return arg.value('logs') !== null;
+            }
+            logs_open(next) {
+                this.logs_opened(!this.logs_opened());
+                return null;
+            }
+            logs_close(next) {
+                this.logs_opened(false);
                 return null;
             }
             group_open(next) {
@@ -74547,6 +75143,7 @@ var $;
                 return [
                     this.Menu(),
                     ...this.settings_opened() ? [this.Settings_page()] : [],
+                    ...this.settings_opened() && this.logs_opened() ? [this.Logs_page()] : [],
                     ...this.compose_opened() ? [this.Compose_page()] : [],
                     ...this.group_opened() ? [this.Group_page()] : [],
                     ...active ? [this.Chat_page(active)] : [],
@@ -74628,8 +75225,8 @@ var $;
                 if (!id)
                     return '';
                 if (this.dialog_owner(id) === lord)
-                    return 'создатель';
-                return this.admin_is(id, lord) ? 'админ' : '';
+                    return this.status_owner();
+                return this.admin_is(id, lord) ? this.status_admin() : '';
             }
             members_admin() {
                 return this.admin_me(this.dialog_active());
@@ -74753,6 +75350,7 @@ var $;
             }
             auto() {
                 super.auto();
+                $bog_music_log.init();
                 if (!this.account_open())
                     return;
                 $bog_gram_soft(() => this.account_ready(), null);
@@ -74835,6 +75433,15 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "settings_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "logs_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "logs_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "logs_close", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "group_open", null);

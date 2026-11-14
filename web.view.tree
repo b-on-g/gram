@@ -2367,6 +2367,10 @@ $bog_gram_menu $bog_gram_page
 	invite_plate_text \
 	invite_drop? null
 	ask_plate_text \
+	delete_sure @ \Really delete?
+	delete_idle @ \Delete chat
+	unarchive_text @ \Restore from archive
+	archive_text @ \Archive
 	visible /string
 	archived /string
 	requests /string
@@ -2392,22 +2396,22 @@ $bog_gram_menu $bog_gram_page
 	tools /
 		<= Status $giper_baza_status
 		<= Compose_open $mol_button_minor
-			hint \Новый диалог
+			hint @ \New chat
 			click? <=> compose?
 			sub /
 				<= Compose_open_icon $mol_icon_message_plus
 		<= Group_open $mol_button_minor
-			hint \Новая группа
+			hint @ \New group
 			click? <=> group?
 			sub /
 				<= Group_open_icon $mol_icon_account_multiple_plus
 		<= Music_open $mol_button_minor
-			hint \Музыка
+			hint @ \Music
 			click? <=> music?
 			sub /
 				<= Music_open_icon $mol_icon_music
 		<= Settings_open $mol_button_minor
-			hint \Настройки
+			hint @ \Settings
 			click? <=> settings?
 			sub /
 				<= Settings_open_icon $mol_icon_cog
@@ -2419,7 +2423,7 @@ $bog_gram_menu $bog_gram_page
 				<= Invite_plate_text $mol_paragraph
 					title <= invite_plate_text
 				<= Invite_drop $mol_button_minor
-					hint \Отменить
+					hint @ \Dismiss
 					click? <=> invite_drop?
 					sub /
 						<= Invite_drop_icon $mol_icon_close
@@ -2432,7 +2436,7 @@ $bog_gram_menu $bog_gram_page
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
-				title \Пока нет диалогов
+				title @ \No chats yet
 	Dialog_row* $bog_gram_row
 		size \large
 		swipe true
@@ -2461,18 +2465,18 @@ $bog_gram_menu $bog_gram_page
 	Dialog_archive_icon* $mol_icon_archive_arrow_down
 	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
 	Request_accept* $mol_button_minor
-		hint \Принять
+		hint @ \Accept
 		click? <=> request_accept*? null
 		sub /
 			<= Request_accept_icon* $mol_icon_check
 	Request_reject* $mol_button_minor
-		hint \Отклонить
+		hint @ \Decline
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
 	Saved_row $bog_gram_row
 		size \large
-		hint \Заметки для себя
+		hint @ \Notes to self
 		click? <=> saved_pick? null
 		current <= saved_current
 		Icon <= Saved_icon $mol_icon_bookmark
@@ -2481,20 +2485,62 @@ $bog_gram_menu $bog_gram_page
 		note <= saved_preview
 	Archive_row $bog_gram_row
 		size \large
-		hint \Спрятанные диалоги
+		hint @ \Hidden chats
 		click? <=> archive_toggle? null
 		Icon <= Archive_icon $mol_icon_archive
-		title \Архив
+		title @ \Archive
 		note <= archive_note \
 		badge <= archive_unread_label \
 	Requests_row $bog_gram_row
 		size \large
-		hint \Запросы на переписку
+		hint @ \Conversation requests
 		click? <=> requests_toggle? null
 		Icon <= Requests_icon $mol_icon_account_question
-		title \Запросы
-		note \Хотят вам написать
+		title @ \Requests
+		note @ \Want to write to you
 		badge <= requests_count_label \
+
+$bog_gram_text $mol_object
+	talk_saved @ \Saved
+	talk_photo @ \Photo
+	talk_voice @ \Voice message
+	talk_video @ \Video
+	talk_call @ \Call
+	talk_mine @ \You: {text}
+	clock_today @ \Today
+	clock_yesterday @ \Yesterday
+	count_people @ \{n} member|{n} members
+	count_dialogs @ \{n} dialog|{n} dialogs
+	lobby_key_bad @ \The key in the request does not match its owner: request rejected
+	lobby_lost @ \The link has no group creator, there is no one to take the request to. Ask for a fresh link
+	lobby_denied_one @ \Your request was declined. You can ask again with the same link
+	lobby_denied_some @ \Requests declined: {n}. You can ask again with the same links
+	lobby_queued_one @ \The request is being sent, it is not instant
+	lobby_queued_some @ \Requests being sent: {n}
+	lobby_sent_one @ \Request sent, waiting for it to be accepted
+	lobby_sent_some @ \Requests sent: {n}, waiting for them to be accepted
+	crew_self @ \This is your own ID
+	crew_bad_id @ \This does not look like an ID
+	crew_no_key_read @ \Could not find this person's key: without it they cannot read the conversation
+	crew_no_keys @ \Could not find the keys of all members: a new part of the conversation cannot be started without them
+	crew_no_key_grant @ \Could not find this person's key: cannot grant them rights
+	alerts_off_label @ \Turn off
+	alerts_on_label @ \Turn on notifications
+	alerts_unsupported @ \Not supported by this browser
+	alerts_denied @ \Blocked in the browser
+	alerts_active @ \Notifications are on
+	alerts_reset @ \The browser reset the permission, turn them on again
+	alerts_off @ \Off
+	alerts_later @ \We will ask for permission when you open a conversation
+	invite_lost @ \The link to the conversation is broken, ask for a fresh one
+	invite_wait @ \Opening the conversation, looking for the other person's key
+	invite_late @ \The other person's key was not found: most likely they have not opened Gram yet or are connected to a different master. Ask for a fresh link
+	roster_from_chats @ \from conversations
+	registry_status @ \{people} · {mine}
+	registry_joined @ \you are on the list
+	registry_watching @ \view only
+	account_lost @ \Could not load account data
+	voice_unsupported @ \Audio recording is not supported here
 
 $bog_popup_plugin $mol_plugin
 
@@ -3836,6 +3882,8 @@ $bog_music_track $mol_view
 						click? <=> delete_confirm? null
 
 $bog_gram_music $bog_music_app
+	title @ \Music
+	account_note @ \The Music account is shared with Gram: key, chats and downloaded tracks are the same in both apps. There is no reset here: it would erase the Gram account, and the tracks would be deleted too. You can switch the account in Gram, but the tracks will be deleted too.
 	Theme_btn null
 	Sync_status null
 	Version null
@@ -3845,7 +3893,7 @@ $bog_gram_music $bog_music_app
 	tools /
 		^
 		<= Close $mol_button_minor
-			hint \Свернуть
+			hint @ \Collapse
 			click? <=> close? null
 			sub /
 				<= Close_icon $mol_icon_close
@@ -3882,7 +3930,7 @@ $bog_gram_scan $mol_view
 	found? \
 	sub /
 		<= Toggle $mol_check
-			title <= toggle_title @ \Сканировать QR
+			title <= toggle_title @ \Scan QR
 			checked? <=> scanning?
 		<= Camera $mol_video_camera
 			facing \environment
@@ -3890,19 +3938,26 @@ $bog_gram_scan $mol_view
 
 $bog_gram_settings_key $mol_view
 	notify_on? false
+	toggle_hide @ \Hide key
+	toggle_show @ \Show key
+	import_sure @ \Really sign in? The current account will be replaced
+	import_idle @ \Sign in with key
+	error_empty @ \Paste the key or upload a file
+	error_bad @ \This does not look like an account key
+	error_qr @ \The QR does not contain an account key
 	sub <= rows /
 	Toggle $mol_button_minor
 		click? <=> toggle? null
 		sub /
 			<= toggle_label \
 	Warning $mol_paragraph
-		title \Ключ — это полный доступ к аккаунту. Он один на все приложения на этом домене, включая Music. Не показывайте его никому и не публикуйте.
+		title @ \A key is full access to the account. It is the same for all apps on this domain, including Music. Do not show it to anyone and do not publish it.
 	Row $mol_view
 		sub /
 			<= Text $mol_paragraph
 				title <= text \
 			<= Copy $mol_button_copy
-				title \Скопировать
+				title @ \Copy
 				text <= text
 	Qr_box $mol_view
 		sub /
@@ -3912,20 +3967,20 @@ $bog_gram_settings_key $mol_view
 					\#e14b4b
 					\#f0a04b
 	Save $mol_button_download
-		title \Скачать файл
+		title @ \Download file
 		file_name \gram-account.key
 		blob <= blob null Blob
 	Import_form $mol_view
 		sub /
 			<= Field $mol_string
-				hint \Ключ аккаунта
+				hint @ \Account key
 				value? <=> input? \
 			<= Load_row $mol_view
 				sub /
 					<= Load_hint $mol_paragraph
-						title \Или загрузите файл с ключом
+						title @ \Or upload a file with the key
 					<= Open $mol_button_open
-						hint \Выбрать файл
+						hint @ \Choose file
 						accept \.key,text/plain
 						multiple false
 						files? <=> file? null
@@ -3942,8 +3997,9 @@ $bog_gram_settings_key $mol_view
 				title <= error? \
 
 $bog_gram_settings $bog_gram_page
-	title \Настройки
+	title @ \Settings
 	user_name? \
+	link_unknown @ \Link not recognized: a Gram link to a person, group or registry is needed
 	my_lord \
 	invite_link \
 	notify_status \
@@ -3964,41 +4020,48 @@ $bog_gram_settings $bog_gram_page
 	registry_join*? null
 	registry_forget*? null
 	close? null
+	logs? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
 		<= Install $bog_install
 		<= Version $mol_labeler
-			title \Версия
+			title @ \Version
 			content /
 				<= Version_text $mol_paragraph
 					title <= version \
+		<= Logs $mol_labeler
+			title @ \Journal
+			content /
+				<= Logs_open $mol_button_minor
+					title @ \Open the log of events and errors
+					click? <=> logs? null
 		<= Name_field $bog_gram_field
-			hint \Ваше имя — видят только собеседники
+			hint @ \Your name: only your contacts see it
 			value? <=> user_name?
 		<= My_id $mol_labeler
-			title \Мой ID
+			title @ \My ID
 			content /
 				<= My_id_text $mol_paragraph
 					title <= my_lord
 				<= My_id_copy $mol_button_copy
-					title \Скопировать
+					title @ \Copy
 					text <= my_lord
 		<= Invite $mol_labeler
-			title \Ссылка на меня
+			title @ \Link to me
 			content /
 				<= Invite_body $mol_view
 					sub /
 						<= Invite_hint $mol_paragraph
-							title \Отправьте эту ссылку — у собеседника сразу откроется диалог с вами
+							title @ \Send this link: the chat with you opens right away for the other person
 						<= Invite_text $mol_paragraph
 							title <= invite_link
 						<= Invite_copy $mol_button_copy
-							title \Скопировать
+							title @ \Copy
 							text <= invite_link
 						<= Invite_qr_box $mol_view
 							sub /
@@ -4008,25 +4071,25 @@ $bog_gram_settings $bog_gram_page
 										\#229ED9
 										\#5ED0F5
 						<= Follow_hint $mol_paragraph
-							title \Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере
+							title @ \Or scan someone else's QR: the chat, group or registry opens right here, not in the browser
 						<= Follow $bog_gram_scan
-							toggle_title \Сканировать ссылку
+							toggle_title @ \Scan link
 							prefix \#!
 							found? <=> follow? \
 						<= Paste $mol_view
 							sub /
 								<= Paste_field $mol_string
-									hint \Или вставьте ссылку-приглашение
+									hint @ \Or paste an invitation link
 									value? <=> paste_uri? \
 									submit? <=> paste_open? null
 								<= Paste_open $mol_button_major
 									click? <=> paste_open? null
 									sub /
-										\Открыть
+										<= paste_open_label @ \Open
 						<= Paste_error $mol_paragraph
 							title <= paste_error? \
 		<= Notify $mol_labeler
-			title \Уведомления
+			title @ \Notifications
 			content /
 				<= Notify_body $mol_view
 					sub /
@@ -4037,36 +4100,36 @@ $bog_gram_settings $bog_gram_page
 							sub /
 								<= notify_label
 		<= Registry_block $mol_labeler
-			title \Реестры
+			title @ \Registries
 			content <= registry_content /
 		<= Account $mol_labeler
-			title \Аккаунт
+			title @ \Account
 			content /
 				<= Key $bog_gram_settings_key
 					notify_on? <=> notify_on?
 	Registry_empty $mol_paragraph
-		title \Вы не состоите ни в одном реестре
+		title @ \You are not in any registry
 	Registry_list $mol_list
 		rows <= registry_rows /
 	Registry_note $mol_paragraph
-		title \Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.
+		title @ \You can only remove it from your own list: the entry in the registry itself stays forever.
 	Registry_share $mol_view
 		sub /
 			<= Registry_share_text $mol_paragraph
-				title \Ссылка-приглашение в активный реестр
+				title @ \Invitation link to the active registry
 			<= Registry_share_copy $mol_button_copy
-				title \Скопировать ссылку
+				title @ \Copy link
 				text <= registry_uri
 	Registry_form $mol_view
 		sub /
 			<= Registry_name $mol_string
-				hint \Название реестра
+				hint @ \Registry name
 				value? <=> registry_name?
 				submit? <=> registry_make?
 			<= Registry_make $mol_button_major
 				click? <=> registry_make?
 				sub /
-					\Создать реестр
+					<= registry_make_label @ \Create registry
 	Registry_row* $bog_gram_row
 		faced false
 		click? <=> registry_open*?
@@ -4075,18 +4138,30 @@ $bog_gram_settings $bog_gram_page
 		note <= registry_status*
 		tools /
 			<= Registry_join* $mol_button_minor
-				hint \Вступить в реестр
+				hint @ \Join registry
 				click? <=> registry_join*?
 				sub /
-					\Вступить
+					<= registry_join_label* @ \Join
 			<= Registry_drop* $mol_button_minor
-				hint \Убрать из своего списка
+				hint @ \Remove from your list
 				click? <=> registry_forget*?
 				sub /
 					<= Registry_drop_icon* $mol_icon_close
 
+$bog_gram_logs $bog_gram_page
+	title @ \Journal
+	close? null
+	tools /
+		<= Close $mol_button_minor
+			hint @ \Close
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Log $bog_music_log_view
+
 $bog_gram_compose $bog_gram_page
-	title \Новый диалог
+	title @ \New chat
 	close? null
 	open*? null
 	users /string
@@ -4094,10 +4169,12 @@ $bog_gram_compose $bog_gram_page
 	user_source* \
 	registry_ids /string
 	join_needed false
+	users_none @ \You are not in any registry. Create your own in settings
+	users_alone @ \Nobody else is in the registries yet
 	join? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -4105,23 +4182,23 @@ $bog_gram_compose $bog_gram_page
 		<= Peer_form $mol_view
 			sub /
 				<= Peer_field $mol_string
-					hint \ID собеседника
+					hint @ \Peer ID
 					value? <=> peer? \
 					submit? <=> start? null
 				<= Peer_start $mol_button_major
 					click? <=> start? null
 					sub /
-						\Начать диалог
+						<= start_label @ \Start chat
 		<= Users_title $mol_paragraph
-			title \Пользователи
+			title @ \Users
 		<= Join_plate $mol_view
 			sub /
 				<= Join_plate_text $mol_paragraph
-					title \Вас нет в этом реестре — другие вас тут не найдут
+					title @ \You are not in this registry: others will not find you here
 				<= Join_plate_button $mol_button_major
 					click? <=> join?
 					sub /
-						\Вступить
+						<= join_label @ \Join
 		<= Users_list $mol_list
 			rows <= user_rows /
 	Users_empty $mol_view
@@ -4136,7 +4213,7 @@ $bog_gram_compose $bog_gram_page
 		note <= user_source*
 
 $bog_gram_group $bog_gram_page
-	title \Новая группа
+	title @ \New group
 	close? null
 	name? \
 	picked /string
@@ -4150,15 +4227,19 @@ $bog_gram_group $bog_gram_page
 	label* \
 	contact_lords /string
 	contact_source* \
+	chosen_none @ \Nobody picked yet
+	lost_pattern @ \Keys not found: {names}. Without a key a person cannot read the chat, but the group can be created without them.
+	make_without @ \Create without them
+	make_group @ \Create group
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
 		<= Name_field $mol_string
-			hint \Название группы
+			hint @ \Group name
 			value? <=> name?
 		<= Chosen_head $mol_paragraph
 			title <= chosen_head \
@@ -4173,17 +4254,17 @@ $bog_gram_group $bog_gram_page
 		<= Id_form $mol_view
 			sub /
 				<= Id_field $mol_string
-					hint \ID участника
+					hint @ \Member ID
 					value? <=> id?
 					submit? <=> id_add?
 				<= Id_add $mol_button_major
 					click? <=> id_add?
 					sub /
-						\Добавить
+						<= id_add_label @ \Add
 		<= Id_error $mol_paragraph
 			title <= id_error
 		<= Pick_head $mol_paragraph
-			title \Кого позвать
+			title @ \Whom to invite
 		<= Pick_list $mol_list
 			rows <= pick_rows /
 	Pick_row* $bog_gram_row
@@ -4203,7 +4284,7 @@ $bog_gram_group $bog_gram_page
 		title <= label*
 		tools /
 			<= Chosen_drop* $mol_button_minor
-				hint \Убрать из списка
+				hint @ \Remove from the list
 				click? <=> drop*?
 				sub /
 					<= Chosen_drop_icon* $mol_icon_close
@@ -4217,7 +4298,7 @@ $mol_icon_account_remove $mol_icon path \M15,14C17.67,14 23,15.33 23,18V20H7V18C
 $mol_icon_account_plus $mol_icon path \M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z
 
 $bog_gram_members $bog_gram_page
-	title \Участники
+	title @ \Members
 	close? null
 	me \
 	lords /string
@@ -4235,13 +4316,23 @@ $bog_gram_members $bog_gram_page
 	candidates /string
 	contact_source* \
 	history? true
+	self_name @ \You
+	drop_hint_armed @ \Really remove? Past messages will stay with them
+	drop_hint_idle @ \Remove from group
+	history_all_note @ \The new member will get keys to all past group messages
+	history_new_note @ \We will start a new chat compartment: the past stays closed, and everyone will see only what is written next
+	error_self @ \This is your own identifier
+	error_bad @ \This does not look like an identifier
+	asks_pattern @ \Requests: {count}
+	leave_sure @ \Really leave?
+	leave_idle @ \Leave group
 	add*? null
 	part*? null
 	promote*? null
 	leave? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -4249,13 +4340,13 @@ $bog_gram_members $bog_gram_page
 		<= List $mol_list
 			rows <= member_rows /
 		<= Drop_note $mol_paragraph
-			title \«Убрать» заводит новый отсек переписки без человека. Прошлые сообщения у него останутся: ключ от них уже выдан, и отобрать его нечем. Новых он не увидит.
+			title @ \"Remove" starts a new chat compartment without the person. Past messages stay with them: the key to them is already given and cannot be taken back. They will not see new ones.
 		<= Add_block $mol_view
 			sub <= add_rows /
 		<= Leave_note $mol_paragraph
-			title \«Выйти» убирает группу из вашего списка. У остальных она остаётся, и ваши прошлые сообщения в ней тоже.
+			title @ \"Leave" removes the group from your list. It stays for the others, and so do your past messages in it.
 		<= Leave $mol_button_minor
-			hint \Убрать группу из своего списка
+			hint @ \Remove group from your list
 			attr *
 				^
 				bog_gram_armed <= leave_armed? false
@@ -4263,29 +4354,29 @@ $bog_gram_members $bog_gram_page
 			sub /
 				<= leave_label \
 	Add_title $mol_paragraph
-		title \Добавить участника
+		title @ \Add member
 	History $mol_view
 		sub /
 			<= History_head $mol_paragraph
-				title \Что увидит новый участник
+				title @ \What the new member will see
 			<= History_row $mol_view
 				sub /
 					<= History_all $mol_button_minor
-						hint \Выдать ключи от всех прошлых сообщений
+						hint @ \Give keys to all past messages
 						attr *
 							^
 							bog_gram_current <= history_open false
 						click? <=> history_all? null
 						sub /
-							\Всю переписку
+							<= history_all_label @ \Whole chat
 					<= History_new $mol_button_minor
-						hint \Завести новый отсек переписки
+						hint @ \Start a new chat compartment
 						attr *
 							^
 							bog_gram_current <= history_shut false
 						click? <=> history_new? null
 						sub /
-							\Только новые
+							<= history_new_label @ \Only new ones
 			<= History_note $mol_paragraph
 				title <= history_note \
 	Error $mol_paragraph
@@ -4293,27 +4384,27 @@ $bog_gram_members $bog_gram_page
 	Id_form $mol_view
 		sub /
 			<= Id_field $mol_string
-				hint \ID участника
+				hint @ \Member ID
 				value? <=> id? \
 				submit? <=> id_add? null
 			<= Id_add $mol_button_major
 				click? <=> id_add? null
 				sub /
-					\Добавить
+					<= id_add_label @ \Add
 	Pick_list $mol_list
 		rows <= pick_rows /
 	Admin_note $mol_paragraph
-		title \Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.
+		title @ \An admin gets full control of the land: they can both invite people and change other people's rights. These abilities cannot be split.
 	Join $mol_view
 		sub /
 			<= Join_head $mol_paragraph
-				title \Ссылка-приглашение в группу
+				title @ \Group invitation link
 			<= Join_hint $mol_paragraph
-				title \Мгновенно по ней не вступишь: перешедший пришлёт заявку, а принимать её вам — ключ от переписки выдаётся человеку поимённо
+				title @ \You will not join instantly with it: whoever follows it sends a request, and you have to accept it, since the key to the chat is given to a person by name
 			<= Join_text $mol_paragraph
 				title <= join_link
 			<= Join_copy $mol_button_copy
-				title \Скопировать
+				title @ \Copy
 				text <= join_link
 			<= Join_qr_box $mol_view
 				sub /
@@ -4334,12 +4425,12 @@ $bog_gram_members $bog_gram_page
 		note <= ask_status* \
 		tools /
 			<= Ask_accept* $mol_button_minor
-				hint \Принять в группу
+				hint @ \Accept into group
 				click? <=> accept*?
 				sub /
 					<= Ask_accept_icon* $mol_icon_check
 			<= Ask_reject* $mol_button_minor
-				hint \Отклонить заявку
+				hint @ \Decline request
 				click? <=> reject*?
 				sub /
 					<= Ask_reject_icon* $mol_icon_close
@@ -4350,7 +4441,7 @@ $bog_gram_members $bog_gram_page
 		note <= status*
 		tools /
 			<= Rule* $mol_button_minor
-				hint \Назначить админом
+				hint @ \Make admin
 				click? <=> rule_click*? null
 				sub /
 					<= Rule_icon* $mol_icon_shield_crown
@@ -4410,7 +4501,7 @@ $bog_gram_gallery $mol_view
 	current? \
 	uri* \
 	close? null
-	counter_pattern \{index} из {count}
+	counter_pattern @ \{index} of {count}
 	attr *
 		^
 		tabindex 0
@@ -4437,17 +4528,17 @@ $bog_gram_gallery $mol_view
 			sub /
 				<= counter \
 		<= Prev $mol_button_minor
-			hint \Предыдущее
+			hint @ \Previous
 			click? <=> prev?
 			sub /
 				<= Prev_icon $mol_icon_chevron_left
 		<= Next $mol_button_minor
-			hint \Следующее
+			hint @ \Next
 			click? <=> next?
 			sub /
 				<= Next_icon $mol_icon_chevron_right
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -4506,7 +4597,7 @@ $bog_gram_album $mol_view
 			flexGrow <= column_grow* \1
 		sub <= column_tiles* /
 	Tile* $bog_gram_photo
-		hint \Открыть картинку
+		hint @ \Open picture
 		uri <= uri*
 		click? <=> open*?
 		style *
@@ -4536,7 +4627,7 @@ $bog_gram_sound $mol_view
 	ended? null
 	sub /
 		<= Toggle $mol_button_minor
-			hint \Прослушать
+			hint @ \Listen
 			click? <=> toggle?
 			sub <= toggle_icons /
 		<= Track $mol_view
@@ -4576,9 +4667,19 @@ $bog_gram_call_tile $mol_view
 	awake true
 	name \
 	status \
-	stats \
-	failed_text @ \Нет связи
-	connecting_text @ \Соединяюсь…
+	stats null
+	stat_fps @ \{n} fps
+	stat_size @ \{n}
+	stat_kbps @ \{n} kbps
+	stat_loss @ \loss {n}%
+	stat_rtt @ \{n} ms
+	Stat* $mol_view
+		attr *
+			bog_gram_call_tile_stat_bad <= stat_bad* false
+		sub /
+			<= stat_text* \
+	failed_text @ \No connection
+	connecting_text @ \Connecting…
 	attr *
 		^
 		bog_gram_call_tile_cam <= cam
@@ -4595,8 +4696,7 @@ $bog_gram_call_tile $mol_view
 			sub /
 				<= letter \
 		<= Stats $mol_view
-			sub /
-				<= stats
+			sub <= stat_parts /
 		<= Label $mol_view
 			sub <= label /
 				<= Name $mol_view
@@ -4614,10 +4714,10 @@ $bog_gram_call $mol_page
 	Room $bog_gram_call_room
 		land <= land
 		name <= name
-	title @ \Звонок
+	title @ \Call
 	tools /
 		<= Close $mol_button_minor
-			hint @ \Выйти и закрыть
+			hint @ \Exit and close
 			click? <=> close_click? null
 			sub /
 				<= Close_icon $mol_icon_close
@@ -4632,7 +4732,7 @@ $bog_gram_call $mol_page
 		awake <= awake true
 		cam <= cam
 		mic <= mic
-		name <= self_name @ \Вы
+		name <= self_name @ \You
 	Mate* $bog_gram_call_tile
 		stream <= mate_stream* null
 		awake <= awake
@@ -4640,45 +4740,44 @@ $bog_gram_call $mol_page
 		mic <= mate_mic* true
 		name <= mate_name* \
 		status <= mate_status* \
-		stats <= mate_stats* \
+		stats <= mate_stats* null
 	Lobby $mol_list
 		rows /
 			<= Lobby_text $mol_paragraph
 				title <= lobby_text \
 			<= Join $mol_button_major
-				title @ \Войти в звонок
+				title @ \Join the call
 				click? <=> join? null
 	Mic $mol_check_icon
 		Icon <= Mic_icon $mol_icon_microphone
-		hint @ \Микрофон
+		hint @ \Microphone
 		checked? <=> mic? true
 	Cam $mol_check_icon
 		Icon <= Cam_icon $mol_icon_video
-		hint @ \Камера
+		hint @ \Camera
 		checked? <=> cam? true
 		enabled <= cam_able true
 	Flip $mol_button_minor
-		hint @ \Сменить камеру
+		hint @ \Flip camera
 		click? <=> cam_switch? null
 		sub /
 			<= Flip_icon $mol_icon_camera_flip
 	Stats_show $mol_check_icon
 		Icon <= Stats_icon $mol_icon_signal
-		hint @ \Показать FPS и сеть
+		hint @ \Show FPS and network
 		checked? <=> stats_show? true
 	Pip $mol_button_minor
-		hint @ \Картинка в картинке
+		hint @ \Picture in picture
 		click? <=> pip? null
 		sub /
 			<= Pip_icon $mol_icon_picture_in_picture_bottom_right
 	Leave $mol_button_minor
-		hint @ \Выйти из звонка
+		hint @ \Leave the call
 		click? <=> leave? null
 		sub /
 			<= Leave_icon $mol_icon_phone_hangup
-	lobby_empty @ \В звонке пока никого
-	lobby_some @ \В звонке: {names}
-	stats_pattern @ \{fps} к/с · {size} · {kbps} кбит/с · потери {loss}% · {rtt} мс
+	lobby_empty @ \Nobody in the call yet
+	lobby_some @ \In the call: {names}
 
 $bog_gram_call_card $mol_button_minor
 	land null
@@ -4690,12 +4789,12 @@ $bog_gram_call_card $mol_button_minor
 			sub /
 				<= Title $mol_view
 					sub /
-						<= title @ \Звонок
+						<= title @ \Call
 				<= Count $mol_view
 					sub /
 						<= count_text \
-	count_none @ \Сейчас никого, нажмите, чтобы войти
-	count_some @ \В звонке: {count}
+	count_none @ \Nobody here now, tap to join
+	count_some @ \In the call: {count}
 
 $bog_gram_body $mol_view
 	text \
@@ -4763,7 +4862,7 @@ $bog_gram_bubble $mol_view
 			sub /
 				<= author
 		<= Quote $mol_button_minor
-			hint \Перейти к сообщению
+			hint @ \Go to message
 			click? <=> quote_jump?
 			sub /
 				<= Quote_author $mol_view
@@ -4804,7 +4903,7 @@ $bog_gram_bubble $mol_view
 								<= time
 						<= Edited $mol_view
 							sub /
-								\изменено
+								<= edited_label @ \edited
 						<= Checks $mol_view
 							sub /
 								<= checks
@@ -4815,12 +4914,12 @@ $bog_gram_bubble $mol_view
 				pointerup? <=> actions_touch? null
 			sub /
 				<= Edit $mol_button_minor
-					hint \Редактировать
+					hint @ \Edit
 					click? <=> edit?
 					sub /
 						<= Edit_icon $mol_icon_pencil
 				<= Delete $mol_button_minor
-					hint \Удалить
+					hint @ \Delete
 					click? <=> delete?
 					sub /
 						<= Delete_icon $mol_icon_delete
@@ -4847,6 +4946,22 @@ $bog_gram_chat $bog_gram_page
 	voice_on false
 	voice_clock \
 	voice_hint? \
+	voice_denied @ \Microphone unavailable: allow recording in the browser settings
+	voice_short @ \Too short, recording cancelled
+	call_lost_pattern @ \Call not started: key not delivered — {names}. Call again a bit later
+	read_pattern @ \Read by {count} of {total}
+	self_name @ \You
+	kind_photo @ \Photo
+	kind_voice @ \Voice message
+	kind_video @ \Video
+	reply_pattern @ \Reply to {name}
+	video_failed @ \Video was not sent
+	images_capped_pattern @ \Only the first {limit} photos were sent: at most {limit} at a time
+	lost_pattern @ \{what} not sent: key not delivered — {names}. Send again a bit later
+	video_big_pattern @ \Video over {limit} MB cannot be compressed, this one is {size} MB
+	video_packing @ \Compressing video…
+	video_progress_pattern @ \Compressing video: {percent}%
+	video_over_pattern @ \Video does not fit: {size} MB after compression, the limit is {limit} MB
 	edit_id? \
 	reply_id? \
 	message_menu? \
@@ -4877,7 +4992,7 @@ $bog_gram_chat $bog_gram_page
 				<= title
 	head /
 		<= Back $mol_button_minor
-			hint \Назад
+			hint @ \Back
 			click? <=> close?
 			sub /
 				<= Back_icon $mol_icon_arrow_left
@@ -4885,17 +5000,17 @@ $bog_gram_chat $bog_gram_page
 		<= Tools
 	tools /
 		<= Call $mol_button_minor
-			hint \Звонок
+			hint @ \Call
 			click? <=> call_start? null
 			sub /
 				<= Call_icon $mol_icon_phone
 		<= Members $mol_button_minor
-			hint \Участники
+			hint @ \Members
 			click? <=> members?
 			sub /
 				<= Members_icon $mol_icon_account_multiple
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -4915,16 +5030,16 @@ $bog_gram_chat $bog_gram_page
 							sub /
 								<= reply_text
 				<= Reply_cancel $mol_button_minor
-					hint \Отменить ответ
+					hint @ \Cancel reply
 					click? <=> reply_cancel? null
 					sub /
 						<= Reply_cancel_icon $mol_icon_close
 		<= Edit_banner $mol_view
 			sub /
 				<= Edit_banner_text $mol_paragraph
-					title \Редактирование
+					title @ \Editing
 				<= Edit_cancel $mol_button_minor
-					hint \Отменить правку
+					hint @ \Cancel edit
 					click? <=> edit_cancel? null
 					sub /
 						<= Edit_cancel_icon $mol_icon_close
@@ -4933,7 +5048,7 @@ $bog_gram_chat $bog_gram_page
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
-		hint \Отправить фото или видео
+		hint @ \Send photo or video
 		accept \image/*,video/*
 		multiple true
 		files? <=> image_files? null
@@ -4941,16 +5056,16 @@ $bog_gram_chat $bog_gram_page
 	Message_box $mol_view
 		sub /
 			<= Message_field $bog_gram_write
-				hint \Сообщение…
+				hint @ \Message…
 				value? <=> message_text?
 				send? <=> message_send? null
 	Send $mol_button_major
-		hint \Отправить
+		hint @ \Send
 		click? <=> message_send?
 		sub /
 			<= Send_icon $mol_icon_send
 	Voice $bog_gram_hold
-		hint \Удерживайте для записи
+		hint @ \Hold to record
 		press? <=> voice_press? null
 		release? <=> voice_release? null
 		abort? <=> voice_cancel? null
@@ -4963,13 +5078,13 @@ $bog_gram_chat $bog_gram_page
 				sub /
 					<= voice_clock
 	Voice_cancel $mol_button_minor
-		hint \Отпустите здесь, чтобы отменить
+		hint @ \Release here to cancel
 		click? <=> voice_cancel?
 		sub /
 			<= Voice_cancel_icon $mol_icon_close
 			<= Voice_cancel_text $mol_view
 				sub /
-					\Отмена
+					<= voice_cancel_label @ \Cancel
 	Line* $mol_view
 		minimal_height 48
 		sub <= line_content* /
@@ -5214,30 +5329,32 @@ $bog_gram $mol_book2
 	Pager $bog_kit_pager
 		count <= pager_count 0
 		current <= page_current 0
+	status_owner @ \creator
+	status_admin @ \admin
 	Gate $mol_view
 		sub /
 			<= Gate_plate $mol_view
 				sub <= gate_sub /
 	Gate_wait $mol_paragraph
-		title \Загружаем данные аккаунта…
+		title @ \Loading account data…
 	Gate_lost $mol_paragraph
-		title \Не удалось загрузить данные аккаунта
+		title @ \Could not load account data
 	Gate_fresh_note $mol_paragraph
-		title \Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.
+		title @ \If this is your first time in Gram on this device, create an account. It will be shared by all apps on this domain.
 	Gate_retry $mol_button_minor
-		title \Повторить
+		title @ \Retry
 		click? <=> account_retry?
 	Gate_fresh $mol_button_minor
-		title \Создать аккаунт на этом устройстве
+		title @ \Create account on this device
 		click? <=> account_fresh?
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
 				sub /
 					<= Intro_title $mol_paragraph
-						title \Выберите диалог
+						title @ \Pick a chat
 					<= Intro_hint $mol_paragraph
-						title \Или начните новый: кнопка в шапке списка
+						title @ \Or start a new one: the button in the list header
 	pages /
 		<= Menu $bog_gram_menu
 			Theme <= Theme
@@ -5275,6 +5392,7 @@ $bog_gram $mol_book2
 			close? <=> music_close? null
 		<= Settings_page $bog_gram_settings
 			close? <=> settings_close? null
+			logs? <=> logs_open? null
 			user_name? <=> user_name?
 			my_lord <= my_lord
 			invite_link <= invite_link
@@ -5295,6 +5413,8 @@ $bog_gram $mol_book2
 			registry_open*? <=> registry_open*?
 			registry_join*? <=> registry_join*?
 			registry_forget*? <=> registry_forget*?
+		<= Logs_page $bog_gram_logs
+			close? <=> logs_close? null
 		<= Compose_page $bog_gram_compose
 			close? <=> compose_close? null
 			open*? <=> dialog_open*? null
