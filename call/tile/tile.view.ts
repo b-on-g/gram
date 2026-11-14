@@ -25,6 +25,32 @@ namespace $.$$ {
 			return this.stats() ? super.Stats() : null!
 		}
 
+		override stat_parts() {
+			return [ 'fps', 'size', 'kbps', 'loss', 'rtt' ].map( id => this.Stat( id ) )
+		}
+
+		override stat_text( id: string ) {
+
+			const stats = this.stats() as $bog_gram_call_peer_stats | null
+			if( !stats ) return ''
+
+			switch( id ) {
+				case 'fps': return this.stat_fps().replace( '{n}', String( stats.fps ) )
+				case 'size': return this.stat_size().replace( '{n}', `${ stats.width }×${ stats.height }` )
+				case 'kbps': return this.stat_kbps().replace( '{n}', String( stats.kbps ) )
+				case 'loss': return this.stat_loss().replace( '{n}', String( stats.loss ) )
+				case 'rtt': return this.stat_rtt().replace( '{n}', String( stats.rtt ) )
+			}
+
+			return ''
+		}
+
+		override stat_bad( id: string ) {
+			const stats = this.stats() as $bog_gram_call_peer_stats | null
+			if( !stats ) return false
+			return ( $bog_gram_call_peer.stats_bad( stats ) as Record< string, boolean > )[ id ] ?? false
+		}
+
 		video() {
 			return this.Video().dom_node() as HTMLVideoElement
 		}

@@ -203,6 +203,7 @@ $bog_gram $mol_book2
 			close? <=> music_close? null
 		<= Settings_page $bog_gram_settings
 			close? <=> settings_close? null
+			logs? <=> logs_open? null
 			user_name? <=> user_name?
 			my_lord <= my_lord
 			invite_link <= invite_link
@@ -223,6 +224,8 @@ $bog_gram $mol_book2
 			registry_open*? <=> registry_open*?
 			registry_join*? <=> registry_join*?
 			registry_forget*? <=> registry_forget*?
+		<= Logs_page $bog_gram_logs
+			close? <=> logs_close? null
 		<= Compose_page $bog_gram_compose
 			close? <=> compose_close? null
 			open*? <=> dialog_open*? null

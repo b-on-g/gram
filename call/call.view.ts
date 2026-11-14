@@ -87,17 +87,8 @@ namespace $.$$ {
 
 		override mate_stats( mate: string ) {
 
-			if( !this.stats_show() ) return ''
-
-			const stats = this.Room().peer( mate ).stats()
-			if( !stats ) return ''
-
-			return this.stats_pattern()
-				.replace( '{fps}', String( stats.fps ) )
-				.replace( '{size}', `${ stats.width }×${ stats.height }` )
-				.replace( '{kbps}', String( stats.kbps ) )
-				.replace( '{loss}', String( stats.loss ) )
-				.replace( '{rtt}', String( stats.rtt ) )
+			if( !this.stats_show() ) return null
+			return this.Room().peer( mate ).stats()
 		}
 
 		override mate_name( mate: string ) {

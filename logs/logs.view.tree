@@ -1,0 +1,11 @@
+$bog_gram_logs $bog_gram_page
+	title \Журнал
+	close? null
+	tools /
+		<= Close $mol_button_minor
+			hint \Закрыть
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Log $bog_music_log_view

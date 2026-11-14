@@ -126,10 +126,14 @@ namespace $ {
 			return new MediaStream( tracks )
 		}
 
+		log( text: string ) {
+			this.room().log( `${ $bog_gram_call_room.seat_short( this.mate() ) }: ${ text }` )
+		}
+
 		@ $mol_mem
 		offer_their() {
 			if( this.offerer() ) return null
-			return $bog_gram_call_room.signal_parse( this.room().signal( 'Offers', this.key() ) )
+			return $bog_gram_call_room.signal_parse( this.room().offer_text( this.key() ) )
 		}
 
 		@ $mol_mem
@@ -144,34 +148,58 @@ namespace $ {
 			if( !round ) return null
 
 			const rtc = new RTCPeerConnection({ iceServers: $bog_gram_call_peer.ice })
+			const born = Date.now()
 
-			rtc.addEventListener( 'connectionstatechange', ()=> this.state_change( rtc ) )
+			this.log( `соединение ${ round } создано, я ${ this.offerer() ? 'предлагаю' : 'отвечаю' }` )
+
+			rtc.addEventListener( 'connectionstatechange', ()=> this.state_change( rtc, round, born ) )
 			rtc.addEventListener( 'track', ()=> this.tracked( this.tracked() + 1 ) )
 
 			return Object.assign( rtc, {
-				destructor: ()=> rtc.close()
+				destructor: ()=> {
+					this.log( `соединение ${ round } закрыто` )
+					rtc.close()
+				}
 			} )
 		}
 
-		state_change( rtc: RTCPeerConnection ) {
+		state_change( rtc: RTCPeerConnection, round: string, born: number ) {
 
 			const state = rtc.connectionState
 			if( state === 'closed' ) return
+
+			this.log( state === 'connected'
+				? `соединение ${ round }: connected через ${ Date.now() - born } мс`
+				: `соединение ${ round }: ${ state }`
+			)
 
 			this.changed( this.changed() + 1 )
 
 			if( !this.offerer() ) return
 
-			if( state === 'failed' ) this.restart( rtc )
+			if( state === 'failed' ) this.restart( rtc, 'failed' )
 			if( state === 'disconnected' ) setTimeout( ()=> {
-				if( rtc.connectionState === 'disconnected' ) this.restart( rtc )
+				if( rtc.connectionState === 'disconnected' ) this.restart( rtc, `disconnected дольше ${ $bog_gram_call_peer.restart_after } мс` )
 			}, $bog_gram_call_peer.restart_after )
 		}
 
-		restart( rtc: RTCPeerConnection ) {
+		restart( rtc: RTCPeerConnection, reason: string ) {
 			if( rtc.connectionState === 'closed' ) return
 			if( rtc.connectionState === 'connected' ) return
+			this.log( `перезапуск после попытки ${ this.attempt() }: ${ reason }` )
 			this.attempt( this.attempt() + 1 )
+		}
+
+		offer_build() {
+			return $mol_wire_sync( $bog_gram_call_peer ).offer_make( this.rtc()!, this.room().media() )
+		}
+
+		answer_build( offer: string ) {
+			return $mol_wire_sync( $bog_gram_call_peer ).answer_make( this.rtc()!, offer, this.room().media() )
+		}
+
+		answer_use( answer: string ) {
+			$mol_wire_sync( $bog_gram_call_peer ).answer_apply( this.rtc()!, answer )
 		}
 
 		@ $mol_mem
@@ -180,23 +208,30 @@ namespace $ {
 			if( !this.offerer() ) return null
 
 			const rtc = this.rtc()!
-			const sdp = $mol_wire_sync( $bog_gram_call_peer ).offer_make( rtc, this.room().media() )
+			const sdp = this.offer_build()
 
-			setTimeout( ()=> this.restart( rtc ), $bog_gram_call_peer.connect_limit )
+			new this.$.$mol_after_timeout( $bog_gram_call_peer.connect_limit, ()=> this.restart( rtc, `нет связи за ${ $bog_gram_call_peer.connect_limit } мс` ) )
 
 			return { id: `${ this.attempt() }.${ $mol_guid() }`, sdp } as $bog_gram_call_signal
 		}
+
+		offered = ''
 
 		@ $mol_mem
 		offer_post() {
 
 			const offer = this.offer_mine()
 			if( !offer ) return ''
+			if( this.offered === offer.id ) return offer.id
 
 			this.room().signal_put( 'Offers', this.key(), JSON.stringify( offer ) )
+			this.offered = offer.id
+			this.log( `предложение ${ offer.id } записано` )
 
 			return offer.id
 		}
+
+		applied = ''
 
 		@ $mol_mem
 		answer_take() {
@@ -204,24 +239,31 @@ namespace $ {
 			const id = this.offer_post()
 			if( !id ) return false
 
-			const answer = $bog_gram_call_room.signal_parse( this.room().signal( 'Answers', this.key() ) )
+			const answer = $bog_gram_call_room.signal_parse( this.room().answer_text( this.key() ) )
 			if( answer?.id !== id ) return false
+			if( this.applied === id ) return true
 
-			$mol_wire_sync( $bog_gram_call_peer ).answer_apply( this.rtc()!, answer.sdp )
+			this.answer_use( answer.sdp )
+			this.applied = id
+			this.log( `ответ на ${ id } принят` )
 
 			return true
 		}
+
+		answered = ''
 
 		@ $mol_mem
 		answer_post() {
 
 			const offer = this.offer_their()
 			if( !offer ) return false
+			if( this.answered === offer.id ) return true
 
-			const rtc = this.rtc()!
-			const sdp = $mol_wire_sync( $bog_gram_call_peer ).answer_make( rtc, offer.sdp, this.room().media() )
+			const sdp = this.answer_build( offer.sdp )
 
 			this.room().signal_put( 'Answers', this.key(), JSON.stringify({ id: offer.id, sdp }) )
+			this.answered = offer.id
+			this.log( `ответ на ${ offer.id } записан` )
 
 			return true
 		}
@@ -258,6 +300,17 @@ namespace $ {
 			this.stats_last = next
 
 			return next
+		}
+
+		static stats_limit = { fps: 15, loss: 2, rtt: 300 }
+
+		static stats_bad( stats: $bog_gram_call_peer_stats ) {
+			const limit = this.stats_limit
+			return {
+				fps: stats.fps < limit.fps,
+				loss: stats.loss > limit.loss,
+				rtt: stats.rtt > limit.rtt,
+			}
 		}
 
 		static stats_sum( entries: readonly any[], last: $bog_gram_call_peer_stats | null ): $bog_gram_call_peer_stats {

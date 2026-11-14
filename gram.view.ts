@@ -167,7 +167,29 @@ namespace $.$$ {
 
 		@ $mol_action
 		settings_close( next?: any ) {
+			this.logs_opened( false )
 			this.settings_opened( false )
+			return null
+		}
+
+		@ $mol_mem
+		logs_opened( next?: boolean ) {
+
+			const arg = this.$.$mol_state_arg
+			if( next !== undefined ) arg.value( 'logs', next ? '' : null )
+
+			return arg.value( 'logs' ) !== null
+		}
+
+		@ $mol_action
+		logs_open( next?: any ) {
+			this.logs_opened( !this.logs_opened() )
+			return null
+		}
+
+		@ $mol_action
+		logs_close( next?: any ) {
+			this.logs_opened( false )
 			return null
 		}
 
@@ -271,6 +293,7 @@ namespace $.$$ {
 			return [
 				this.Menu(),
 				... this.settings_opened() ? [ this.Settings_page() ] : [],
+				... this.settings_opened() && this.logs_opened() ? [ this.Logs_page() ] : [],
 				... this.compose_opened() ? [ this.Compose_page() ] : [],
 				... this.group_opened() ? [ this.Group_page() ] : [],
 				... active ? [ this.Chat_page( active ) ] : [],
@@ -516,6 +539,7 @@ namespace $.$$ {
 
 		override auto() {
 			super.auto()
+			$bog_music_log.init()
 			if( !this.account_open() ) return
 			$bog_gram_soft( ()=> this.account_ready(), null )
 			$bog_gram_soft( ()=> this.registry_remember(), null )

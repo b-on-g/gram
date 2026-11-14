@@ -7,7 +7,17 @@ $bog_gram_call_tile $mol_view
 	awake true
 	name \
 	status \
-	stats \
+	stats null
+	stat_fps @ \{n} к/с
+	stat_size @ \{n}
+	stat_kbps @ \{n} кбит/с
+	stat_loss @ \потери {n}%
+	stat_rtt @ \{n} мс
+	Stat* $mol_view
+		attr *
+			bog_gram_call_tile_stat_bad <= stat_bad* false
+		sub /
+			<= stat_text* \
 	failed_text @ \Нет связи
 	connecting_text @ \Соединяюсь…
 	attr *
@@ -26,8 +36,7 @@ $bog_gram_call_tile $mol_view
 			sub /
 				<= letter \
 		<= Stats $mol_view
-			sub /
-				<= stats
+			sub <= stat_parts /
 		<= Label $mol_view
 			sub <= label /
 				<= Name $mol_view

@@ -31,7 +31,7 @@ $bog_gram_call $mol_page
 		mic <= mate_mic* true
 		name <= mate_name* \
 		status <= mate_status* \
-		stats <= mate_stats* \
+		stats <= mate_stats* null
 	Lobby $mol_list
 		rows /
 			<= Lobby_text $mol_paragraph
@@ -69,4 +69,3 @@ $bog_gram_call $mol_page
 			<= Leave_icon $mol_icon_phone_hangup
 	lobby_empty @ \В звонке пока никого
 	lobby_some @ \В звонке: {names}
-	stats_pattern @ \{fps} к/с · {size} · {kbps} кбит/с · потери {loss}% · {rtt} мс

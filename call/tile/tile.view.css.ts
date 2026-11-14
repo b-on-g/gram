@@ -56,10 +56,27 @@ namespace $.$$ {
 			background: {
 				color: $mol_theme.back,
 			},
+			gap: '.75ch',
+			flex: {
+				wrap: 'wrap',
+			},
 			font: {
 				size: '.75rem',
 			},
 			opacity: .8,
+		},
+
+		Stat: {
+			'@': {
+				bog_gram_call_tile_stat_bad: {
+					true: {
+						color: 'hsl( 0, 85%, 62% )',
+						font: {
+							weight: 'bold',
+						},
+					},
+				},
+			},
 		},
 
 		Label: {

@@ -39,7 +39,11 @@ namespace $ {
 			return this.offerer( me, mate ) ? `${ me }>${ mate }` : `${ mate }>${ me }`
 		}
 
-		static signal_parse( text: string ): $bog_gram_call_signal | null {
+		static seat_short( id: string ) {
+			return id.slice( 0, 4 )
+		}
+
+		static signal_parse(text: string ): $bog_gram_call_signal | null {
 			try {
 				const data = JSON.parse( text )
 				if( typeof data?.id !== 'string' || typeof data?.sdp !== 'string' ) return null
@@ -125,6 +129,8 @@ namespace $ {
 
 			this.seat( me )
 			this.entered( true )
+			this.mates_logged = []
+			this.log( `вошёл, место ${ $bog_gram_call_room.seat_short( me ) }` )
 		}
 
 		@ $mol_action
@@ -132,6 +138,11 @@ namespace $ {
 			if( !this.entered() ) return
 			this.data().Seats( 'auto' )?.key( this.seat(), 'auto' )?.Left( 'auto' )?.val( Date.now() )
 			this.entered( false )
+			this.log( 'вышел' )
+		}
+
+		log( text: string ) {
+			$bog_music_log.act( `звонок: ${ text }` )
 		}
 
 		@ $mol_mem
@@ -212,6 +223,16 @@ namespace $ {
 
 		signal( box: $bog_gram_call_box, key: string ) {
 			return this.data()[ box ]()?.key( key )?.val() ?? ''
+		}
+
+		@ $mol_mem_key
+		offer_text( key: string ) {
+			return this.signal( 'Offers', key )
+		}
+
+		@ $mol_mem_key
+		answer_text( key: string ) {
+			return this.signal( 'Answers', key )
 		}
 
 		signal_put( box: $bog_gram_call_box, key: string, text: string ) {
@@ -390,10 +411,29 @@ namespace $ {
 			})
 		}
 
+		mates_logged = [] as readonly string[]
+
+		mates_log( mates: readonly string[] ) {
+
+			const prev = this.mates_logged
+			this.mates_logged = mates
+
+			const label = ( id: string )=> `${ this.seat_name( id ) } ${ $bog_gram_call_room.seat_short( id ) }`
+
+			for( const id of mates ) if( !prev.includes( id ) ) this.log( `пришёл ${ label( id ) }` )
+			for( const id of prev ) if( !mates.includes( id ) ) this.log( `ушёл ${ label( id ) }` )
+
+		}
+
 		@ $mol_mem
 		peers() {
+
 			if( !this.joined() ) return []
-			return this.mates().map( mate => this.peer( mate ) )
+
+			const mates = this.mates()
+			this.mates_log( mates )
+
+			return mates.map( mate => this.peer( mate ) )
 		}
 
 		@ $mol_mem

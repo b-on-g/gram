@@ -21,6 +21,7 @@ $bog_gram_settings $bog_gram_page
 	registry_join*? null
 	registry_forget*? null
 	close? null
+	logs? null
 	tools /
 		<= Close $mol_button_minor
 			hint \Закрыть
@@ -34,6 +35,12 @@ $bog_gram_settings $bog_gram_page
 			content /
 				<= Version_text $mol_paragraph
 					title <= version \
+		<= Logs $mol_labeler
+			title \Журнал
+			content /
+				<= Logs_open $mol_button_minor
+					title \Открыть журнал событий и ошибок
+					click? <=> logs? null
 		<= Name_field $bog_gram_field
 			hint \Ваше имя — видят только собеседники
 			value? <=> user_name?
