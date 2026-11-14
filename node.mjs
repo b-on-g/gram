@@ -42074,7 +42074,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.166';
+    $.$bog_gram_version = '1.0.167';
 })($ || ($ = {}));
 
 ;
@@ -42179,6 +42179,11 @@ var $;
             color: $mol_theme.shade,
         };
         $mol_style_define($bog_gram_settings, {
+            Install: {
+                Content: {
+                    gap: $mol_gap.block,
+                },
+            },
             Name_field: {
                 alignSelf: 'stretch',
             },
