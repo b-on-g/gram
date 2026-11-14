@@ -9870,6 +9870,98 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    async function stand($) {
+        const from = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+        const into = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+        const auth = await $.$giper_baza_auth._generate();
+        const pass = auth.pass();
+        const forward = $bog_gram_forward.make({
+            $,
+            Account: () => ({ my_lord: () => 'Me' }),
+            Talk: () => ({
+                session: () => into,
+                saved_is: () => false,
+                mates: () => ['Mate'],
+            }),
+            People: () => ({
+                passes_of: (lords) => lords.map(() => pass),
+                pass_of: (lord) => lord === 'Known' ? pass : null,
+                name: () => 'Иван',
+                label: (lord) => lord,
+            }),
+        });
+        const write = () => {
+            const message = from.Messages('auto').make(null);
+            message.Author('auto')?.val('Author');
+            message.Moment('auto')?.val(1000);
+            return message;
+        };
+        const file = (bytes) => {
+            const store = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]).Data($giper_baza_file);
+            store.buffer(new Uint8Array(bytes));
+            store.type('image/png');
+            return store;
+        };
+        const sent = () => (into.Messages()?.items() ?? [])
+            .map(link => into.land().Pawn($bog_gram_message).Head(link.head()));
+        return { forward, write, file, sent, pass };
+    }
+    $mol_test({
+        async 'Пересланный текст — копия без автора оригинала и без ответа'($) {
+            const { forward, write, sent } = await stand($);
+            const source = write();
+            source.Text('auto')?.val('привет');
+            source.Reply('auto')?.val('Somewhere');
+            $mol_assert_equal(Boolean(await $mol_wire_async(forward).copy(source, 'Target')), true);
+            const [copy] = sent();
+            $mol_assert_equal(sent().length, 1);
+            $mol_assert_equal(copy.Text()?.val(), 'привет');
+            $mol_assert_equal(copy.Forwarded()?.val(), true);
+            $mol_assert_equal(copy.Author()?.val(), 'Me');
+            $mol_assert_equal(copy.Reply()?.val() ?? '', '');
+        },
+        async 'Кадр пересылается в новый закрытый ленд с теми же байтами'($) {
+            const { forward, write, file, sent } = await stand($);
+            const source = write();
+            const origin = await $mol_wire_async(file)([1, 2, 3]);
+            source.Image('auto').remote(origin);
+            source.Image_width('auto')?.val(30);
+            source.Image_height('auto')?.val(20);
+            await $mol_wire_async(forward).copy(source, 'Target');
+            const [copy] = sent();
+            const image = copy.Image().remote();
+            $mol_assert_equal([...await $mol_wire_async(image).buffer()], [1, 2, 3]);
+            $mol_assert_equal(image.land().link().str === origin.land().link().str, false);
+            $mol_assert_equal(copy.Image_width()?.val(), 30);
+            $mol_assert_equal(copy.Shots()?.remote_list().length, 1);
+        },
+        async 'Незагруженное вложение не пересылается и ничего не пишет'($) {
+            const { forward, write, file, sent } = await stand($);
+            const source = write();
+            source.Voice('auto').remote(await $mol_wire_async(file)([]));
+            $mol_assert_equal(await $mol_wire_async(forward).copy(source, 'Target'), '');
+            $mol_assert_equal(forward.error(), forward.Text().forward_unloaded());
+            $mol_assert_equal(sent().length, 0);
+        },
+        async 'Контакт уходит ключом и именем, без ключа делиться нечем'($) {
+            const { forward, sent, pass: known } = await stand($);
+            $mol_assert_equal(await $mol_wire_async(forward).contact('Stranger', 'Target'), '');
+            $mol_assert_equal(forward.error(), forward.Text().contact_unknown());
+            $mol_assert_equal(sent().length, 0);
+            await $mol_wire_async(forward).contact('Known', 'Target');
+            const [card] = sent();
+            const pass = String(card.Contact()?.val());
+            $mol_assert_equal($bog_gram_forward.contact_lord(pass), known.lord().str);
+            $mol_assert_equal(card.Contact_name()?.val(), 'Иван');
+            $mol_assert_equal($bog_gram_forward.contact_lord('мусор'), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     $mol_test({
         'Без ключа человека группа сперва не создаётся, а называет потерю'($) {
             const people = $bog_gram_people.make({ $, pass_of: () => null });
@@ -10521,6 +10613,33 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'Длительность показывается минутами и секундами, доли округляются'() {
+            $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
+            $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
+            $mol_assert_equal($bog_gram_voice.stamp(59), '0:59');
+            $mol_assert_equal($bog_gram_voice.stamp(60), '1:00');
+            $mol_assert_equal($bog_gram_voice.stamp(125), '2:05');
+            $mol_assert_equal($bog_gram_voice.stamp(5 * 60), '5:00');
+            $mol_assert_equal($bog_gram_voice.stamp(7.4), '0:07');
+            $mol_assert_equal($bog_gram_voice.stamp(7.6), '0:08');
+            $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
+        },
+        'Волна — столбики пиков по отрезкам, громкий отрезок в самый верх, тишина в ноль'() {
+            const samples = [0, 0.1, -0.5, 0.2, 0, 0, 1, -0.25];
+            const code = $bog_gram_voice.wave_code(samples, 4);
+            $mol_assert_equal(code.length, 4);
+            $mol_assert_equal($bog_gram_voice.wave_levels(code).map(level => Math.round(level * 100)), [10, 52, 0, 100]);
+            $mol_assert_equal($bog_gram_voice.wave_code([0, 0, 0, 0], 2), '00');
+            $mol_assert_equal($bog_gram_voice.wave_code([]), '');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'Большая сторона вписывается в предел с сохранением пропорций'() {
             $mol_assert_equal($bog_gram_shrink.fit(4000, 3000, 1600), { width: 1600, height: 1200 });
             $mol_assert_equal($bog_gram_shrink.fit(3000, 4000, 1600), { width: 1200, height: 1600 });
@@ -10559,25 +10678,6 @@ var $;
             $mol_assert_equal($bog_gram_shrink.sniff(bytes([0, 0, 0, 24], 'ftypisom')), '');
             $mol_assert_equal($bog_gram_shrink.sniff(bytes('%PDF-1.7')), '');
             $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Длительность показывается минутами и секундами, доли округляются'() {
-            $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
-            $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
-            $mol_assert_equal($bog_gram_voice.stamp(59), '0:59');
-            $mol_assert_equal($bog_gram_voice.stamp(60), '1:00');
-            $mol_assert_equal($bog_gram_voice.stamp(125), '2:05');
-            $mol_assert_equal($bog_gram_voice.stamp(5 * 60), '5:00');
-            $mol_assert_equal($bog_gram_voice.stamp(7.4), '0:07');
-            $mol_assert_equal($bog_gram_voice.stamp(7.6), '0:08');
-            $mol_assert_equal($bog_gram_voice.stamp(-5), '0:00');
         },
     });
 })($ || ($ = {}));
@@ -11065,7 +11165,6 @@ var $;
                 chat.read_sync = () => 0;
                 chat.stick_watch = () => 0;
                 chat.stick_hold = () => 0;
-                chat.cancel_rect = () => null;
                 chat.follow = () => undefined;
                 chat.auto();
                 $mol_assert_equal(outer_focused, 0);
@@ -11114,13 +11213,36 @@ var $;
                 $mol_assert_equal(chat.read_tally({}, mates, 1000), 0);
                 $mol_assert_equal(chat.read_tally(reads, [], 1000), 0);
             },
-            'Отпускание над крестиком отменяет запись, мимо него — нет'($) {
+            'Свайп влево отменяет запись, вверх закрепляет, мелкая дрожь пальца — ничего'() {
+                const from = { x: 300, y: 500 };
+                const shift = (dx, dy) => $bog_gram_chat_record_shift(from, { clientX: from.x + dx, clientY: from.y + dy });
+                $mol_assert_equal(shift(-120, 0), 'cancel');
+                $mol_assert_equal(shift(-120, -30), 'cancel');
+                $mol_assert_equal(shift(0, -90), 'lock');
+                $mol_assert_equal(shift(-20, -90), 'lock');
+                $mol_assert_equal(shift(-40, -20), '');
+                $mol_assert_equal(shift(150, 0), '');
+                $mol_assert_equal(shift(0, 150), '');
+            },
+            'Короткий тап по микрофону переключает на кружок и обратно, удержание начинает запись'($) {
                 const chat = $bog_gram_chat.make({ $ });
-                chat.cancel_rect = () => ({ left: 100, right: 200, top: 10, bottom: 50, width: 100, height: 40 });
-                $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 30 }), true);
-                $mol_assert_equal(chat.voice_on_cancel({ clientX: 250, clientY: 30 }), false);
-                $mol_assert_equal(chat.voice_on_cancel({ clientX: 150, clientY: 60 }), false);
-                $mol_assert_equal(chat.voice_on_cancel(), false);
+                chat.voice_ready = () => true;
+                chat.$.$bog_gram_voice = class extends $bog_gram_voice {
+                    static supported() { return true; }
+                };
+                const begun = [];
+                chat.record_begin = () => { begun.push(chat.record_mode()); return null; };
+                const mode = chat.record_mode();
+                chat.voice_press({ clientX: 0, clientY: 0 });
+                chat.voice_release();
+                $mol_assert_equal(chat.record_mode(), mode === 'voice' ? 'round' : 'voice');
+                chat.voice_press({ clientX: 0, clientY: 0 });
+                chat.voice_release();
+                $mol_assert_equal(chat.record_mode(), mode);
+                $mol_assert_equal(begun, []);
+                chat.voice_press({ clientX: 0, clientY: 0 });
+                chat.tap_timer.task();
+                $mol_assert_equal(begun, [mode]);
             },
             'Черновик живёт у своего диалога, переживает перезагрузку и уходит с отправкой'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
@@ -11187,7 +11309,7 @@ var $;
                     const session = (await $mol_wire_async($.$giper_baza_glob).land_grab()).Data($bog_gram_session);
                     const talk = $bog_gram_talk.make({ $: context, session: () => session, mates: () => saved ? [] : ['LordLost'], saved_is: () => saved });
                     const people = $bog_gram_people.make({ $: context, pass_of: () => lost ? null : {}, label: () => 'Борис' });
-                    const chat = $bog_gram_chat.make({ $: context, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
+                    const chat = $bog_gram_chat.make({ $: context, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', kind_round: () => 'Round', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', my_lord: () => 'LordMe', Talk: () => talk, People: () => people });
                     chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
                     const widths = () => (session.Messages()?.remote_list() ?? []).map(message => [
                         message.Image_width()?.val(),
@@ -11219,12 +11341,15 @@ var $;
                     pass_of: (lord) => lord === 'LordKnown' ? pass : null,
                     label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
                 });
-                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people });
+                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', kind_round: () => 'Round', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people });
                 $mol_assert_equal(chat.image_send(new File([], 'a.jpg', { type: 'image/jpeg' })), '');
                 $mol_assert_equal(chat.voice_hint(), 'Photo: no key for Борис');
                 chat.voice_hint('');
-                $mol_assert_equal(chat.voice_send({}), '');
+                $mol_assert_equal(chat.voice_send({ kind: () => 'voice' }), '');
                 $mol_assert_equal(chat.voice_hint(), 'Voice: no key for Борис');
+                chat.voice_hint('');
+                $mol_assert_equal(chat.voice_send({ kind: () => 'round' }), '');
+                $mol_assert_equal(chat.voice_hint(), 'Round: no key for Борис');
                 $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
             },
             'Без ключа участника звонок не начинается молча, а называет, чей ключ не доехал'($) {
@@ -11236,7 +11361,7 @@ var $;
                     label: (lord) => lord === 'LordLost' ? 'Борис' : 'Алиса',
                 });
                 let opened = 0;
-                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
+                const chat = $bog_gram_chat.make({ $, lost_pattern: () => '{what}: no key for {names}', kind_photo: () => 'Photo', kind_voice: () => 'Voice', kind_round: () => 'Round', call_lost_pattern: () => 'Call: no key for {names}', dialog: () => 'Dialog', Talk: () => talk, People: () => people, call_open: () => ++opened });
                 $mol_assert_equal(chat.call_send(), '');
                 $mol_assert_equal(chat.voice_hint(), 'Call: no key for Борис');
                 $mol_assert_equal(session.Messages()?.items().length ?? 0, 0);
