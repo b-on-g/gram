@@ -30,6 +30,12 @@ namespace $.$$ {
 
 	$mol_style_define( $bog_gram_settings, {
 
+		Install: {
+			Content: {
+				gap: $mol_gap.block,
+			},
+		},
+
 		Name_field: {
 			alignSelf: 'stretch',
 		},
