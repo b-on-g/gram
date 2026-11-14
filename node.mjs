@@ -42074,7 +42074,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.167';
+    $.$bog_gram_version = '1.0.168';
 })($ || ($ = {}));
 
 ;
@@ -53046,8 +53046,8 @@ var $;
         static lib = 'https://cdn.jsdelivr.net/npm/mediabunny@1.66.0/+esm';
         static limit = 20 * 2 ** 20;
         static source_limit = 500 * 2 ** 20;
-        static side = 480;
-        static video_rate = 800_000;
+        static side = 720;
+        static video_rate = 1_500_000;
         static audio_rate = 64_000;
         static video_is(file) {
             if (file.type.startsWith('video/'))
