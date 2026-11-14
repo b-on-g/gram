@@ -42017,7 +42017,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.164';
+    $.$bog_gram_version = '1.0.165';
 })($ || ($ = {}));
 
 ;
@@ -45255,8 +45255,17 @@ var $;
             }
             return null;
         }
+        wrote_moment_of(key) {
+            const [id, lord] = key;
+            const all = this.messages_of(id);
+            for (let i = all.length - 1; i >= 0; --i) {
+                if (String(all[i].Author()?.val() ?? '') === lord)
+                    return Number(all[i].Moment()?.val() ?? 0);
+            }
+            return 0;
+        }
         read_moment_of(id, lord) {
-            let last = 0;
+            let last = this.wrote_moment_of([id, lord]);
             for (const land of this.lands_of(id)) {
                 try {
                     const moment = Number(land.Data($bog_gram_session).Reads()?.key(lord)?.Moment()?.val() ?? 0);
@@ -45395,6 +45404,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "last", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "wrote_moment_of", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "unread", null);
@@ -66691,6 +66703,19 @@ var $;
             $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 2000), 2);
             $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 5000), 0);
             $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0, 2), 2);
+        },
+        'Свой ответ отмечает прочитанным всё до него'($) {
+            const land = $giper_baza_land.make({ $ });
+            const talk = $bog_gram_talk.make({ $, lands_of: () => [land], messages_of: () => list_of(land) });
+            write(land, 1000, 'старое', 'LordPeer');
+            write(land, 2000, 'ещё старое', 'LordPeer');
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 0);
+            write(land, 3000, 'ответ', 'LordMine');
+            write(land, 4000, 'новое', 'LordPeer');
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 3000);
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordPeer'), 4000);
+            land.Data($bog_gram_session).Reads('auto').key('LordMine', 'auto').Moment('auto').val(4000);
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 4000);
         },
         'Пока отметка прочтения едет, её чтение ждёт, а не отдаёт ноль'($) {
             const wait = new Promise(() => { });

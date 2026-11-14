@@ -9457,6 +9457,19 @@ var $;
             $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 5000), 0);
             $mol_assert_equal(talk.unread_since(list_of(land), 'LordMine', 0, 2), 2);
         },
+        'Свой ответ отмечает прочитанным всё до него'($) {
+            const land = $giper_baza_land.make({ $ });
+            const talk = $bog_gram_talk.make({ $, lands_of: () => [land], messages_of: () => list_of(land) });
+            write(land, 1000, 'старое', 'LordPeer');
+            write(land, 2000, 'ещё старое', 'LordPeer');
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 0);
+            write(land, 3000, 'ответ', 'LordMine');
+            write(land, 4000, 'новое', 'LordPeer');
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 3000);
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordPeer'), 4000);
+            land.Data($bog_gram_session).Reads('auto').key('LordMine', 'auto').Moment('auto').val(4000);
+            $mol_assert_equal(talk.read_moment_of('dialog', 'LordMine'), 4000);
+        },
         'Пока отметка прочтения едет, её чтение ждёт, а не отдаёт ноль'($) {
             const wait = new Promise(() => { });
             const talk = $bog_gram_talk.make({ $, lands_of: () => [{ Data: () => { throw wait; } }] });

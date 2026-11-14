@@ -42026,7 +42026,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.164';
+    $.$bog_gram_version = '1.0.165';
 })($ || ($ = {}));
 
 ;
@@ -45264,8 +45264,17 @@ var $;
             }
             return null;
         }
+        wrote_moment_of(key) {
+            const [id, lord] = key;
+            const all = this.messages_of(id);
+            for (let i = all.length - 1; i >= 0; --i) {
+                if (String(all[i].Author()?.val() ?? '') === lord)
+                    return Number(all[i].Moment()?.val() ?? 0);
+            }
+            return 0;
+        }
         read_moment_of(id, lord) {
-            let last = 0;
+            let last = this.wrote_moment_of([id, lord]);
             for (const land of this.lands_of(id)) {
                 try {
                     const moment = Number(land.Data($bog_gram_session).Reads()?.key(lord)?.Moment()?.val() ?? 0);
@@ -45404,6 +45413,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "last", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "wrote_moment_of", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "unread", null);

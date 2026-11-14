@@ -64442,7 +64442,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.164";
+    const $bog_gram_version = "1.0.165";
 }
 
 declare namespace $ {
@@ -76660,6 +76660,7 @@ declare namespace $ {
         messages_of(id: string): $bog_gram_message[];
         messages_alive_of(id: string): $bog_gram_message[];
         last(id: string): $bog_gram_message | null;
+        wrote_moment_of(key: readonly [string, string]): number;
         read_moment_of(id: string, lord: string): number;
         unread(id: string): number;
         unread_since(messages: readonly $bog_gram_message[], my: string, seen: number, limit?: number): number;
