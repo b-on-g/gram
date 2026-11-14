@@ -10271,6 +10271,24 @@ var $;
             $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), false);
             $mol_assert_equal(calls, { ask: 1, make: 0, sent: [] });
         },
+        'Пуш при открытом окне не показывается, а Apple, где молчать нельзя, получает его без звука и сразу закрытым'() {
+            const chrome = 'Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+            const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+            $mol_assert_equal($bog_gram_notify.push_mode([], chrome), 'show');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'hidden' }], iphone), 'show');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'hidden' }, { visibilityState: 'visible' }], chrome), 'skip');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'visible' }], iphone), 'flash');
+        },
+        async 'Открытое приложение закрывает висящие уведомления'($) {
+            const { Notify } = stand($, 'granted', null);
+            let closed = 0;
+            Notify.api = {
+                ...Notify.api,
+                async notifications() { return [{ close: () => ++closed }, { close: () => ++closed }]; },
+            };
+            $mol_assert_equal(await $mol_wire_async(Notify).clear(), 2);
+            $mol_assert_equal(closed, 2);
+        },
         async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'($) {
             const auth = await $.$giper_baza_auth._generate();
             const lord = auth.pass().lord().str;
@@ -10311,6 +10329,26 @@ var $;
             $mol_assert_equal(await auth.pass().auditor().verify(text('Monitor'), sign), true);
             $mol_assert_equal(await auth.pass().auditor().verify(text('Stolen'), sign), false);
             $mol_assert_equal(await other.pass().auditor().verify(text('Monitor'), sign), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Скрытая вкладка и окно без фокуса не перед глазами'($) {
+            const doc = { visibilityState: 'visible', hasFocus: () => true };
+            class Awake extends $bog_gram_awake {
+                static $ = $.$mol_ambient({ $mol_dom_context: { document: doc } });
+            }
+            $mol_assert_equal(Awake.now(), true);
+            doc.visibilityState = 'hidden';
+            $mol_assert_equal(Awake.now(), false);
+            doc.visibilityState = 'visible';
+            doc.hasFocus = () => false;
+            $mol_assert_equal(Awake.now(), false);
         },
     });
 })($ || ($ = {}));
@@ -10927,6 +10965,19 @@ var $;
                 $mol_assert_equal(call.joined(), false);
                 $mol_assert_equal(room_b.mates(), []);
             },
+            async 'Собеседник подписан моим именем для него, а без подписи своим'($) {
+                const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+                room_a.join();
+                room_a.beat();
+                room_b.join();
+                room_b.beat();
+                await swap();
+                const mate = room_b.seat();
+                const named = $bog_gram_call.make({ $, Room: () => room_a, note: (lord) => lord === room_b.lord() ? 'Иван' : '' });
+                const plain = $bog_gram_call.make({ $, Room: () => room_a });
+                $mol_assert_equal(named.mate_name(mate), 'Иван');
+                $mol_assert_equal(plain.mate_name(mate), room_a.seat_name(mate));
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
@@ -10977,26 +11028,6 @@ var $;
                 file('IMG_1.MOV'),
                 file('a.png', 'image/png'),
             ].map(one => $bog_gram_clip.video_is(one)), [true, true, false]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'Скрытая вкладка и окно без фокуса не перед глазами'($) {
-            const doc = { visibilityState: 'visible', hasFocus: () => true };
-            class Awake extends $bog_gram_awake {
-                static $ = $.$mol_ambient({ $mol_dom_context: { document: doc } });
-            }
-            $mol_assert_equal(Awake.now(), true);
-            doc.visibilityState = 'hidden';
-            $mol_assert_equal(Awake.now(), false);
-            doc.visibilityState = 'visible';
-            doc.hasFocus = () => false;
-            $mol_assert_equal(Awake.now(), false);
         },
     });
 })($ || ($ = {}));

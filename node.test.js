@@ -42017,7 +42017,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.163';
+    $.$bog_gram_version = '1.0.164';
 })($ || ($ = {}));
 
 ;
@@ -46910,6 +46910,9 @@ var $;
         async subscription_drop(sub) {
             return await sub.unsubscribe();
         },
+        async notifications(reg) {
+            return await reg.getNotifications({ tag: 'gram' });
+        },
         async signed(auth, action, lord, monitor, endpoint) {
             const time = Date.now();
             const data = $mol_charset_encode(proof(action, lord, monitor, endpoint, time));
@@ -46972,6 +46975,29 @@ var $;
                     $mol_fail_hidden(error);
                 $mol_fail_log(error);
                 return 'default';
+            }
+        }
+        static push_mode(windows, agent) {
+            if (!windows.some(win => win.visibilityState === 'visible'))
+                return 'show';
+            const apple = /AppleWebKit/.test(agent) && !/Chrome|Chromium|Edg|Firefox/.test(agent);
+            return apple ? 'flash' : 'skip';
+        }
+        static clear() {
+            try {
+                if (!this.supported())
+                    return 0;
+                const reg = $mol_wire_sync(this.api).registration();
+                const list = $mol_wire_sync(this.api).notifications(reg);
+                for (const item of list)
+                    item.close();
+                return list.length;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return 0;
             }
         }
         static proof(action, lord, monitor, endpoint, time) {
@@ -47058,11 +47084,52 @@ var $;
     ], $bog_gram_notify, "permission_request", null);
     __decorate([
         $mol_action
+    ], $bog_gram_notify, "clear", null);
+    __decorate([
+        $mol_action
     ], $bog_gram_notify, "subscribe", null);
     __decorate([
         $mol_action
     ], $bog_gram_notify, "unsubscribe", null);
     $.$bog_gram_notify = $bog_gram_notify;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_awake extends $mol_object {
+        static now() {
+            const doc = this.$.$mol_dom_context.document;
+            if (!doc)
+                return true;
+            if (doc.visibilityState === 'hidden')
+                return false;
+            return doc.hasFocus?.() ?? true;
+        }
+        static listeners() {
+            const win = this.$.$mol_dom_context;
+            if (!win.document?.addEventListener)
+                return [];
+            const check = () => this.active(this.now());
+            return [
+                new this.$.$mol_dom_listener(win.document, 'visibilitychange', check),
+                new this.$.$mol_dom_listener(win, 'focus', check),
+                new this.$.$mol_dom_listener(win, 'blur', check),
+            ];
+        }
+        static active(next) {
+            this.listeners();
+            return next ?? this.now();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_awake, "listeners", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_awake, "active", null);
+    $.$bog_gram_awake = $bog_gram_awake;
 })($ || ($ = {}));
 
 ;
@@ -47105,7 +47172,14 @@ var $;
         plan_now() {
             return this.plan(this.supported(), this.permission(), this.on(), this.off(), this.asked());
         }
+        seen() {
+            if (!this.$.$bog_gram_awake.active())
+                return false;
+            $mol_wire_async(this.$.$bog_gram_notify).clear();
+            return true;
+        }
         auto() {
+            this.seen();
             if (this.plan_now() !== 'subscribe')
                 return false;
             const monitor = this.Account().monitor_link();
@@ -47197,6 +47271,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_alerts.prototype, "permission", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_alerts.prototype, "seen", null);
     __decorate([
         $mol_mem
     ], $bog_gram_alerts.prototype, "auto", null);
@@ -50016,6 +50093,9 @@ var $;
 		name(){
 			return "";
 		}
+		note(id){
+			return "";
+		}
 		close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -50237,7 +50317,8 @@ var $;
                 return this.Room().peer(mate).stats();
             }
             mate_name(mate) {
-                return this.Room().seat_name(mate);
+                const lord = this.Room().seat_pawn(mate)?.Lord()?.val() ?? '';
+                return (lord && this.note(lord)) || this.Room().seat_name(mate);
             }
             mate_mic(mate) {
                 return this.Room().seat_mic(mate);
@@ -52974,44 +53055,6 @@ var $;
 
 ;
 "use strict";
-var $;
-(function ($) {
-    class $bog_gram_awake extends $mol_object {
-        static now() {
-            const doc = this.$.$mol_dom_context.document;
-            if (!doc)
-                return true;
-            if (doc.visibilityState === 'hidden')
-                return false;
-            return doc.hasFocus?.() ?? true;
-        }
-        static listeners() {
-            const win = this.$.$mol_dom_context;
-            if (!win.document?.addEventListener)
-                return [];
-            const check = () => this.active(this.now());
-            return [
-                new this.$.$mol_dom_listener(win.document, 'visibilitychange', check),
-                new this.$.$mol_dom_listener(win, 'focus', check),
-                new this.$.$mol_dom_listener(win, 'blur', check),
-            ];
-        }
-        static active(next) {
-            this.listeners();
-            return next ?? this.now();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $bog_gram_awake, "listeners", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_awake, "active", null);
-    $.$bog_gram_awake = $bog_gram_awake;
-})($ || ($ = {}));
-
-;
-"use strict";
 
 
 ;
@@ -53918,7 +53961,7 @@ var $;
                     return;
                 }
                 if (rows.length > this.rows_seen())
-                    this.reveal(last, 'end');
+                    this.stick_end(true);
                 this.rows_seen(rows.length);
             }
             reveal(row, align) {
@@ -56272,6 +56315,9 @@ var $;
 		call_land(id){
 			return null;
 		}
+		people_note(id){
+			return "";
+		}
 		call_close(next){
 			if(next !== undefined) return next;
 			return null;
@@ -56410,6 +56456,7 @@ var $;
 			const obj = new this.$.$bog_gram_call();
 			(obj.land) = () => ((this.call_land(id)));
 			(obj.name) = () => ((this.user_name()));
+			(obj.note) = (id) => ((this.people_note(id)));
 			(obj.close) = (next) => ((this.call_close(next)));
 			return obj;
 		}
@@ -57118,6 +57165,9 @@ var $;
             }
             call_land(id) {
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+            }
+            people_note(lord) {
+                return this.People().note(lord);
             }
             call_open(next) {
                 if (typeof next === 'string' && next)
@@ -67456,6 +67506,24 @@ var $;
             $mol_assert_equal(await $mol_wire_async(Notify).subscribe('Lord', 'Monitor'), false);
             $mol_assert_equal(calls, { ask: 1, make: 0, sent: [] });
         },
+        'Пуш при открытом окне не показывается, а Apple, где молчать нельзя, получает его без звука и сразу закрытым'() {
+            const chrome = 'Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+            const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+            $mol_assert_equal($bog_gram_notify.push_mode([], chrome), 'show');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'hidden' }], iphone), 'show');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'hidden' }, { visibilityState: 'visible' }], chrome), 'skip');
+            $mol_assert_equal($bog_gram_notify.push_mode([{ visibilityState: 'visible' }], iphone), 'flash');
+        },
+        async 'Открытое приложение закрывает висящие уведомления'($) {
+            const { Notify } = stand($, 'granted', null);
+            let closed = 0;
+            Notify.api = {
+                ...Notify.api,
+                async notifications() { return [{ close: () => ++closed }, { close: () => ++closed }]; },
+            };
+            $mol_assert_equal(await $mol_wire_async(Notify).clear(), 2);
+            $mol_assert_equal(closed, 2);
+        },
         async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'($) {
             const auth = await $.$giper_baza_auth._generate();
             const lord = auth.pass().lord().str;
@@ -67496,6 +67564,26 @@ var $;
             $mol_assert_equal(await auth.pass().auditor().verify(text('Monitor'), sign), true);
             $mol_assert_equal(await auth.pass().auditor().verify(text('Stolen'), sign), false);
             $mol_assert_equal(await other.pass().auditor().verify(text('Monitor'), sign), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Скрытая вкладка и окно без фокуса не перед глазами'($) {
+            const doc = { visibilityState: 'visible', hasFocus: () => true };
+            class Awake extends $bog_gram_awake {
+                static $ = $.$mol_ambient({ $mol_dom_context: { document: doc } });
+            }
+            $mol_assert_equal(Awake.now(), true);
+            doc.visibilityState = 'hidden';
+            $mol_assert_equal(Awake.now(), false);
+            doc.visibilityState = 'visible';
+            doc.hasFocus = () => false;
+            $mol_assert_equal(Awake.now(), false);
         },
     });
 })($ || ($ = {}));
@@ -68112,6 +68200,19 @@ var $;
                 $mol_assert_equal(call.joined(), false);
                 $mol_assert_equal(room_b.mates(), []);
             },
+            async 'Собеседник подписан моим именем для него, а без подписи своим'($) {
+                const { room_a, room_b, swap } = await $bog_gram_call_room_pair($);
+                room_a.join();
+                room_a.beat();
+                room_b.join();
+                room_b.beat();
+                await swap();
+                const mate = room_b.seat();
+                const named = $bog_gram_call.make({ $, Room: () => room_a, note: (lord) => lord === room_b.lord() ? 'Иван' : '' });
+                const plain = $bog_gram_call.make({ $, Room: () => room_a });
+                $mol_assert_equal(named.mate_name(mate), 'Иван');
+                $mol_assert_equal(plain.mate_name(mate), room_a.seat_name(mate));
+            },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
@@ -68162,26 +68263,6 @@ var $;
                 file('IMG_1.MOV'),
                 file('a.png', 'image/png'),
             ].map(one => $bog_gram_clip.video_is(one)), [true, true, false]);
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'Скрытая вкладка и окно без фокуса не перед глазами'($) {
-            const doc = { visibilityState: 'visible', hasFocus: () => true };
-            class Awake extends $bog_gram_awake {
-                static $ = $.$mol_ambient({ $mol_dom_context: { document: doc } });
-            }
-            $mol_assert_equal(Awake.now(), true);
-            doc.visibilityState = 'hidden';
-            $mol_assert_equal(Awake.now(), false);
-            doc.visibilityState = 'visible';
-            doc.hasFocus = () => false;
-            $mol_assert_equal(Awake.now(), false);
         },
     });
 })($ || ($ = {}));

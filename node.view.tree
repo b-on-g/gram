@@ -3558,6 +3558,7 @@ $bog_gram_call_tile $mol_view
 $bog_gram_call $mol_page
 	land null
 	name \
+	note* \
 	close? null
 	Room $bog_gram_call_room
 		land <= land
@@ -4320,4 +4321,5 @@ $bog_gram $mol_book2
 	Call_page* $bog_gram_call
 		land <= call_land* null
 		name <= user_name
+		note* <= people_note* \
 		close? <=> call_close? null

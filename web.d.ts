@@ -69086,7 +69086,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.163";
+    const $bog_gram_version = "1.0.164";
 }
 
 declare namespace $ {
@@ -81526,6 +81526,7 @@ declare namespace $ {
             subscription_get(reg: ServiceWorkerRegistration): Promise<PushSubscription | null>;
             subscription_make(reg: ServiceWorkerRegistration, key: Uint8Array<ArrayBuffer>): Promise<PushSubscription>;
             subscription_drop(sub: PushSubscription): Promise<boolean>;
+            notifications(reg: ServiceWorkerRegistration): Promise<Notification[]>;
             signed(auth: $giper_baza_auth, action: string, lord: string, monitor: string, endpoint: string): Promise<{
                 time: number;
                 pass: string;
@@ -81536,6 +81537,10 @@ declare namespace $ {
         static permission(): NotificationPermission;
         static activated(): boolean;
         static permission_request(): NotificationPermission;
+        static push_mode(windows: readonly {
+            visibilityState?: string;
+        }[], agent: string): 'show' | 'skip' | 'flash';
+        static clear(): number;
         static proof(action: string, lord: string, monitor: string, endpoint: string, time: number): string;
         static signed(action: string, lord: string, monitor: string, endpoint: string): {
             time: number;
@@ -81556,6 +81561,14 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $bog_gram_awake extends $mol_object {
+        static now(): boolean;
+        static listeners(): $mol_dom_listener[];
+        static active(next?: boolean): boolean;
+    }
+}
+
+declare namespace $ {
     class $bog_gram_alerts extends $mol_object {
         Text(): $bog_gram_text;
         Account(): $bog_gram_account;
@@ -81566,6 +81579,7 @@ declare namespace $ {
         asked(next?: boolean): boolean;
         plan(supported: boolean, permission: NotificationPermission, on: boolean, off: boolean, asked: boolean): 'skip' | 'subscribe' | 'ask';
         plan_now(): "skip" | "ask" | "subscribe";
+        seen(): boolean;
         auto(): boolean;
         raised(key: string): boolean;
         offer(): boolean;
@@ -82844,6 +82858,7 @@ declare namespace $ {
 		Leave_icon( ): $mol_icon_phone_hangup
 		land( ): any
 		name( ): string
+		note( id: any): string
 		close( next?: any ): any
 		Room( ): $bog_gram_call_room
 		title( ): string
@@ -84535,14 +84550,6 @@ declare namespace $ {
         }>;
         static squeeze(file: File, progress?: (done: number) => void): Promise<Blob | null>;
         static read(file: File, progress?: (done: number) => void): Promise<$bog_gram_clip_read>;
-    }
-}
-
-declare namespace $ {
-    class $bog_gram_awake extends $mol_object {
-        static now(): boolean;
-        static listeners(): $mol_dom_listener[];
-        static active(next?: boolean): boolean;
     }
 }
 
@@ -86842,7 +86849,12 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_call['name'] >
 	>
-	type $bog_gram_call__close_bog_gram_216 = $mol_type_enforce<
+	type $bog_gram_call__note_bog_gram_216 = $mol_type_enforce<
+		ReturnType< $bog_gram['people_note'] >
+		,
+		ReturnType< $bog_gram_call['note'] >
+	>
+	type $bog_gram_call__close_bog_gram_217 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_close'] >
 		,
 		ReturnType< $bog_gram_call['close'] >
@@ -87016,6 +87028,7 @@ declare namespace $ {
 		members_open( next?: any ): any
 		call_open( next?: any ): any
 		call_land( id: any): any
+		people_note( id: any): string
 		call_close( next?: any ): any
 		plugins( ): readonly(any)[]
 		Account( ): $bog_gram_account
@@ -87098,6 +87111,7 @@ declare namespace $.$$ {
         pages(): $mol_view[] | ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_call | $.$bog_gram_chat | $bog_gram_logs)[];
         call_current(next?: string): string;
         call_land(id: string): $giper_baza_land;
+        people_note(lord: string): string;
         call_open(next?: any): null;
         call_close(next?: any): null;
         Placeholder(): $mol_view;
