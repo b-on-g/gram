@@ -92,7 +92,8 @@ namespace $.$$ {
 		}
 
 		override mate_name( mate: string ) {
-			return this.Room().seat_name( mate )
+			const lord = this.Room().seat_pawn( mate )?.Lord()?.val() ?? ''
+			return ( lord && this.note( lord ) ) || this.Room().seat_name( mate )
 		}
 
 		override mate_mic( mate: string ) {

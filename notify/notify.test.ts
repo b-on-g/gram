@@ -51,6 +51,33 @@ namespace $ {
 			$mol_assert_equal( calls, { ask: 1, make: 0, sent: [] } )
 		},
 
+		'Пуш при открытом окне не показывается, а Apple, где молчать нельзя, получает его без звука и сразу закрытым'() {
+
+			const chrome = 'Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
+			const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+
+			$mol_assert_equal( $bog_gram_notify.push_mode( [], chrome ), 'show' )
+			$mol_assert_equal( $bog_gram_notify.push_mode( [ { visibilityState: 'hidden' } ], iphone ), 'show' )
+			$mol_assert_equal( $bog_gram_notify.push_mode( [ { visibilityState: 'hidden' }, { visibilityState: 'visible' } ], chrome ), 'skip' )
+			$mol_assert_equal( $bog_gram_notify.push_mode( [ { visibilityState: 'visible' } ], iphone ), 'flash' )
+
+		},
+
+		async 'Открытое приложение закрывает висящие уведомления'( $ ) {
+
+			const { Notify } = stand( $, 'granted', null )
+
+			let closed = 0
+			Notify.api = {
+				... Notify.api,
+				async notifications() { return [ { close: ()=> ++ closed }, { close: ()=> ++ closed } ] as unknown as Notification[] },
+			}
+
+			$mol_assert_equal( await $mol_wire_async( Notify ).clear(), 2 )
+			$mol_assert_equal( closed, 2 )
+
+		},
+
 		async 'Подпись переживает перезапуск фибры и не заводит новую на каждом заходе'( $ ) {
 
 			const auth = await $.$giper_baza_auth._generate()

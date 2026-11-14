@@ -1,6 +1,7 @@
 $bog_gram_call $mol_page
 	land null
 	name \
+	note* \
 	close? null
 	Room $bog_gram_call_room
 		land <= land

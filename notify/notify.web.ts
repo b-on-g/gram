@@ -21,12 +21,14 @@ namespace $ {
 
 	interface Gram_client {
 		url: string
+		visibilityState?: string
 		focus(): Promise< unknown >
 	}
 
 	interface Gram_scope {
 		registration: {
 			showNotification( title: string, options?: object ): Promise< void >
+			getNotifications( filter?: { tag?: string } ): Promise< readonly Gram_notification[] >
 		}
 		clients: {
 			matchAll( options?: {
@@ -62,11 +64,24 @@ namespace $ {
 				console.warn( error )
 			}
 
-			push.waitUntil( scope.registration.showNotification( title, {
-				body,
-				tag: 'gram',
-				data: { url },
-			} ) )
+			push.waitUntil( ( async ()=> {
+
+				const windows = await scope.clients.matchAll({ type: 'window', includeUncontrolled: true })
+				const mode = $bog_gram_notify.push_mode( windows, navigator.userAgent )
+				if( mode === 'skip' ) return
+
+				await scope.registration.showNotification( title, {
+					body,
+					tag: 'gram',
+					data: { url },
+					silent: mode === 'flash',
+				} )
+
+				if( mode !== 'flash' ) return
+
+				for( const item of await scope.registration.getNotifications({ tag: 'gram' }) ) item.close()
+
+			} )() )
 
 		} )
 

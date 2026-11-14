@@ -312,6 +312,10 @@ namespace $.$$ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
 		}
 
+		override people_note( lord: string ) {
+			return this.People().note( lord )
+		}
+
 		@ $mol_action
 		override call_open( next?: any ) {
 			if( typeof next === 'string' && next ) this.call_current( next )

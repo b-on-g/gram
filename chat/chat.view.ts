@@ -1149,7 +1149,7 @@ namespace $.$$ {
 				return
 			}
 
-			if( rows.length > this.rows_seen() ) this.reveal( last, 'end' )
+			if( rows.length > this.rows_seen() ) this.stick_end( true )
 			this.rows_seen( rows.length )
 		}
 

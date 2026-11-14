@@ -52,7 +52,15 @@ namespace $ {
 		}
 
 		@ $mol_mem
+		seen() {
+			if( !this.$.$bog_gram_awake.active() ) return false
+			$mol_wire_async( this.$.$bog_gram_notify ).clear()
+			return true
+		}
+
+		@ $mol_mem
 		auto() {
+			this.seen()
 			if( this.plan_now() !== 'subscribe' ) return false
 			const monitor = this.Account().monitor_link()
 			if( !monitor ) return false

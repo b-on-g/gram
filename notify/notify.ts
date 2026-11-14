@@ -29,6 +29,10 @@ namespace $ {
 			return await sub.unsubscribe()
 		},
 
+		async notifications( reg: ServiceWorkerRegistration ) {
+			return await reg.getNotifications({ tag: 'gram' })
+		},
+
 		async signed( auth: $giper_baza_auth, action: string, lord: string, monitor: string, endpoint: string ) {
 			const time = Date.now()
 			const data = $mol_charset_encode( proof( action, lord, monitor, endpoint, time ) )
@@ -90,6 +94,33 @@ namespace $ {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				$mol_fail_log( error )
 				return 'default' as NotificationPermission
+			}
+		}
+
+		static push_mode( windows: readonly { visibilityState?: string }[], agent: string ): 'show' | 'skip' | 'flash' {
+
+			if( !windows.some( win => win.visibilityState === 'visible' ) ) return 'show'
+
+			const apple = /AppleWebKit/.test( agent ) && !/Chrome|Chromium|Edg|Firefox/.test( agent )
+			return apple ? 'flash' : 'skip'
+		}
+
+		@ $mol_action
+		static clear() {
+			try {
+
+				if( !this.supported() ) return 0
+
+				const reg = $mol_wire_sync( this.api ).registration()
+				const list = $mol_wire_sync( this.api ).notifications( reg )
+				for( const item of list ) item.close()
+
+				return list.length
+
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				$mol_fail_log( error )
+				return 0
 			}
 		}
 
