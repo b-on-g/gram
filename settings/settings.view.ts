@@ -10,7 +10,7 @@ namespace $.$$ {
 		override paste_open() {
 
 			if( !this.$.$bog_gram_follow.go( this.paste_uri().trim() ) ) {
-				this.paste_error( 'Ссылка не распознана: нужна ссылка Gram на человека, группу или реестр' )
+				this.paste_error( this.link_unknown() )
 				return null
 			}
 

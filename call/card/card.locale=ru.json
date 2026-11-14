@@ -1,0 +1,5 @@
+{
+	"$bog_gram_call_card_title": "Звонок",
+	"$bog_gram_call_card_count_none": "Сейчас никого, нажмите, чтобы войти",
+	"$bog_gram_call_card_count_some": "В звонке: {count}"
+}

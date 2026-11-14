@@ -1,0 +1,15 @@
+{
+	"$bog_gram_settings_key_Copy_title": "复制",
+	"$bog_gram_settings_key_Field_hint": "账号密钥",
+	"$bog_gram_settings_key_Load_hint_title": "或上传密钥文件",
+	"$bog_gram_settings_key_Open_hint": "选择文件",
+	"$bog_gram_settings_key_toggle_hide": "隐藏密钥",
+	"$bog_gram_settings_key_toggle_show": "显示密钥",
+	"$bog_gram_settings_key_import_sure": "确定登录？当前账号将被替换",
+	"$bog_gram_settings_key_import_idle": "使用密钥登录",
+	"$bog_gram_settings_key_error_empty": "请粘贴密钥或上传文件",
+	"$bog_gram_settings_key_error_bad": "这看起来不像账号密钥",
+	"$bog_gram_settings_key_error_qr": "二维码中不是账号密钥",
+	"$bog_gram_settings_key_Warning_title": "密钥就是账号的完全访问权限。此域名下的所有应用（包括 Music）共用同一个密钥。请勿向任何人展示或公开。",
+	"$bog_gram_settings_key_Save_title": "下载文件"
+}

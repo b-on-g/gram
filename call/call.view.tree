@@ -5,10 +5,10 @@ $bog_gram_call $mol_page
 	Room $bog_gram_call_room
 		land <= land
 		name <= name
-	title @ \Звонок
+	title @ \Call
 	tools /
 		<= Close $mol_button_minor
-			hint @ \Выйти и закрыть
+			hint @ \Exit and close
 			click? <=> close_click? null
 			sub /
 				<= Close_icon $mol_icon_close
@@ -23,7 +23,7 @@ $bog_gram_call $mol_page
 		awake <= awake true
 		cam <= cam
 		mic <= mic
-		name <= self_name @ \Вы
+		name <= self_name @ \You
 	Mate* $bog_gram_call_tile
 		stream <= mate_stream* null
 		awake <= awake
@@ -37,35 +37,35 @@ $bog_gram_call $mol_page
 			<= Lobby_text $mol_paragraph
 				title <= lobby_text \
 			<= Join $mol_button_major
-				title @ \Войти в звонок
+				title @ \Join the call
 				click? <=> join? null
 	Mic $mol_check_icon
 		Icon <= Mic_icon $mol_icon_microphone
-		hint @ \Микрофон
+		hint @ \Microphone
 		checked? <=> mic? true
 	Cam $mol_check_icon
 		Icon <= Cam_icon $mol_icon_video
-		hint @ \Камера
+		hint @ \Camera
 		checked? <=> cam? true
 		enabled <= cam_able true
 	Flip $mol_button_minor
-		hint @ \Сменить камеру
+		hint @ \Flip camera
 		click? <=> cam_switch? null
 		sub /
 			<= Flip_icon $mol_icon_camera_flip
 	Stats_show $mol_check_icon
 		Icon <= Stats_icon $mol_icon_signal
-		hint @ \Показать FPS и сеть
+		hint @ \Show FPS and network
 		checked? <=> stats_show? true
 	Pip $mol_button_minor
-		hint @ \Картинка в картинке
+		hint @ \Picture in picture
 		click? <=> pip? null
 		sub /
 			<= Pip_icon $mol_icon_picture_in_picture_bottom_right
 	Leave $mol_button_minor
-		hint @ \Выйти из звонка
+		hint @ \Leave the call
 		click? <=> leave? null
 		sub /
 			<= Leave_icon $mol_icon_phone_hangup
-	lobby_empty @ \В звонке пока никого
-	lobby_some @ \В звонке: {names}
+	lobby_empty @ \Nobody in the call yet
+	lobby_some @ \In the call: {names}

@@ -1,0 +1,5 @@
+{
+	"$bog_gram_call_card_title": "通话",
+	"$bog_gram_call_card_count_none": "现在没有人，点按加入",
+	"$bog_gram_call_card_count_some": "通话中：{count}"
+}

@@ -1,0 +1,13 @@
+{
+	"$bog_gram_group_Close_hint": "Закрыть",
+	"$bog_gram_group_Name_field_hint": "Название группы",
+	"$bog_gram_group_Id_field_hint": "ID участника",
+	"$bog_gram_group_id_add_label": "Добавить",
+	"$bog_gram_group_Pick_head_title": "Кого позвать",
+	"$bog_gram_group_Chosen_drop_hint": "Убрать из списка",
+	"$bog_gram_group_title": "Новая группа",
+	"$bog_gram_group_chosen_none": "Пока никого не выбрали",
+	"$bog_gram_group_lost_pattern": "Не нашли ключей: {names}. Без ключа человек не прочитает переписку — группу можно создать без него.",
+	"$bog_gram_group_make_without": "Создать без них",
+	"$bog_gram_group_make_group": "Создать группу"
+}

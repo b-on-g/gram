@@ -1,0 +1,11 @@
+{
+	"$bog_gram_Intro_title_title": "请选择对话",
+	"$bog_gram_Intro_hint_title": "或开始新对话：列表标题栏中的按钮",
+	"$bog_gram_status_owner": "创建者",
+	"$bog_gram_status_admin": "管理员",
+	"$bog_gram_Gate_wait_title": "正在加载账号数据…",
+	"$bog_gram_Gate_lost_title": "无法加载账号数据",
+	"$bog_gram_Gate_fresh_note_title": "如果这是你第一次在此设备上使用 Gram，请创建账号。该账号将由此域名下的所有应用共用。",
+	"$bog_gram_Gate_retry_title": "重试",
+	"$bog_gram_Gate_fresh_title": "在此设备上创建账号"
+}

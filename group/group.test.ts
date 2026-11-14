@@ -16,7 +16,7 @@ namespace $ {
 			$mol_assert_equal( group.chosen_head(), '1 участник' )
 
 			const empty = $bog_gram_group.make({ $ })
-			$mol_assert_equal( empty.chosen_head(), 'Пока никого не выбрали' )
+			$mol_assert_equal( empty.chosen_head(), empty.chosen_none() )
 
 		},
 
@@ -24,15 +24,16 @@ namespace $ {
 
 			const group = $bog_gram_group.make({ $,
 				lost: ()=> [ 'LordA' ],
+				lost_pattern: ()=> 'Not found: {names}.',
 				label: ( lord: string )=> lord === 'LordA' ? 'Аня' : lord,
 			})
 
-			$mol_assert_equal( group.lost_note().startsWith( 'Не нашли ключей: Аня.' ), true )
-			$mol_assert_equal( group.make_label(), 'Создать без них' )
+			$mol_assert_equal( group.lost_note().startsWith( 'Not found: Аня.' ), true )
+			$mol_assert_equal( group.make_label(), group.make_without() )
 
 			const clean = $bog_gram_group.make({ $ })
 			$mol_assert_equal( clean.Lost_note(), null )
-			$mol_assert_equal( clean.make_label(), 'Создать группу' )
+			$mol_assert_equal( clean.make_label(), clean.make_group() )
 
 		},
 

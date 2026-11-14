@@ -1,0 +1,13 @@
+{
+	"$bog_gram_group_Close_hint": "关闭",
+	"$bog_gram_group_Name_field_hint": "群组名称",
+	"$bog_gram_group_Id_field_hint": "成员 ID",
+	"$bog_gram_group_id_add_label": "添加",
+	"$bog_gram_group_Pick_head_title": "邀请谁",
+	"$bog_gram_group_Chosen_drop_hint": "从列表中移除",
+	"$bog_gram_group_title": "新群组",
+	"$bog_gram_group_chosen_none": "尚未选择任何人",
+	"$bog_gram_group_lost_pattern": "未找到密钥：{names}。没有密钥的人无法阅读聊天记录，但仍可在没有他们的情况下创建群组。",
+	"$bog_gram_group_make_without": "不含他们创建",
+	"$bog_gram_group_make_group": "创建群组"
+}

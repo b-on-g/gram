@@ -31,7 +31,7 @@ namespace $.$$ {
 
 		override chosen_head() {
 			const count = this.picked().length
-			if( !count ) return 'Пока никого не выбрали'
+			if( !count ) return this.chosen_none()
 			return $bog_gram_count.people( count )
 		}
 
@@ -39,7 +39,7 @@ namespace $.$$ {
 			const lost = this.lost()
 			if( !lost.length ) return ''
 			const names = lost.map( lord => this.label( lord ) ).join( ', ' )
-			return 'Не нашли ключей: ' + names + '. Без ключа человек не прочитает переписку — группу можно создать без него.'
+			return this.lost_pattern().replace( '{names}', names )
 		}
 
 		override Lost_note() {
@@ -47,7 +47,7 @@ namespace $.$$ {
 		}
 
 		override make_label() {
-			return this.lost().length ? 'Создать без них' : 'Создать группу'
+			return this.lost().length ? this.make_without() : this.make_group()
 		}
 
 		override Id_error() {

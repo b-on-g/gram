@@ -57,7 +57,7 @@ namespace $.$$ {
 		}
 
 		override delete_hint( id: string ) {
-			return this.delete_armed( id ) ? 'Точно удалить?' : 'Удалить диалог'
+			return this.delete_armed( id ) ? this.delete_sure() : this.delete_idle()
 		}
 
 		@ $mol_mem
@@ -153,7 +153,7 @@ namespace $.$$ {
 		}
 
 		override archive_hint( id: string ) {
-			return this.archive_is( id ) ? 'Вернуть из архива' : 'В архив'
+			return this.archive_is( id ) ? this.unarchive_text() : this.archive_text()
 		}
 
 		override archive_icons( id: string ) {

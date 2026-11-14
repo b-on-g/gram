@@ -31,7 +31,7 @@ namespace $.$$ {
 
 			menu.delete_click( 'A' )
 			$mol_assert_equal( menu.delete_armed( 'A' ), true )
-			$mol_assert_equal( menu.delete_hint( 'A' ), 'Точно удалить?' )
+			$mol_assert_equal( menu.delete_hint( 'A' ), menu.delete_sure() )
 
 			menu.archive_toggle()
 			$mol_assert_equal( menu.delete_armed( 'A' ), false )

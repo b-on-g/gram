@@ -1,9 +1,9 @@
 $bog_gram_logs $bog_gram_page
-	title \Журнал
+	title @ \Journal
 	close? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close

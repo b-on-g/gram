@@ -1,0 +1,11 @@
+{
+	"$bog_gram_compose_Close_hint": "Закрыть",
+	"$bog_gram_compose_Peer_field_hint": "ID собеседника",
+	"$bog_gram_compose_start_label": "Начать диалог",
+	"$bog_gram_compose_Users_title_title": "Пользователи",
+	"$bog_gram_compose_Join_plate_text_title": "Вас нет в этом реестре — другие вас тут не найдут",
+	"$bog_gram_compose_join_label": "Вступить",
+	"$bog_gram_compose_title": "Новый диалог",
+	"$bog_gram_compose_users_none": "Вы не состоите ни в одном реестре. Создайте свой в настройках",
+	"$bog_gram_compose_users_alone": "Кроме вас в реестрах пока никого нет"
+}

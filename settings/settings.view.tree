@@ -1,6 +1,7 @@
 $bog_gram_settings $bog_gram_page
-	title \Настройки
+	title @ \Settings
 	user_name? \
+	link_unknown @ \Link not recognized: a Gram link to a person, group or registry is needed
 	my_lord \
 	invite_link \
 	notify_status \
@@ -24,45 +25,45 @@ $bog_gram_settings $bog_gram_page
 	logs? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
 		<= Install $bog_install
 		<= Version $mol_labeler
-			title \Версия
+			title @ \Version
 			content /
 				<= Version_text $mol_paragraph
 					title <= version \
 		<= Logs $mol_labeler
-			title \Журнал
+			title @ \Journal
 			content /
 				<= Logs_open $mol_button_minor
-					title \Открыть журнал событий и ошибок
+					title @ \Open the log of events and errors
 					click? <=> logs? null
 		<= Name_field $bog_gram_field
-			hint \Ваше имя — видят только собеседники
+			hint @ \Your name: only your contacts see it
 			value? <=> user_name?
 		<= My_id $mol_labeler
-			title \Мой ID
+			title @ \My ID
 			content /
 				<= My_id_text $mol_paragraph
 					title <= my_lord
 				<= My_id_copy $mol_button_copy
-					title \Скопировать
+					title @ \Copy
 					text <= my_lord
 		<= Invite $mol_labeler
-			title \Ссылка на меня
+			title @ \Link to me
 			content /
 				<= Invite_body $mol_view
 					sub /
 						<= Invite_hint $mol_paragraph
-							title \Отправьте эту ссылку — у собеседника сразу откроется диалог с вами
+							title @ \Send this link: the chat with you opens right away for the other person
 						<= Invite_text $mol_paragraph
 							title <= invite_link
 						<= Invite_copy $mol_button_copy
-							title \Скопировать
+							title @ \Copy
 							text <= invite_link
 						<= Invite_qr_box $mol_view
 							sub /
@@ -72,25 +73,25 @@ $bog_gram_settings $bog_gram_page
 										\#229ED9
 										\#5ED0F5
 						<= Follow_hint $mol_paragraph
-							title \Или отсканируйте чужой QR: диалог, группа или реестр откроются прямо здесь, а не в браузере
+							title @ \Or scan someone else's QR: the chat, group or registry opens right here, not in the browser
 						<= Follow $bog_gram_scan
-							toggle_title \Сканировать ссылку
+							toggle_title @ \Scan link
 							prefix \#!
 							found? <=> follow? \
 						<= Paste $mol_view
 							sub /
 								<= Paste_field $mol_string
-									hint \Или вставьте ссылку-приглашение
+									hint @ \Or paste an invitation link
 									value? <=> paste_uri? \
 									submit? <=> paste_open? null
 								<= Paste_open $mol_button_major
 									click? <=> paste_open? null
 									sub /
-										\Открыть
+										<= paste_open_label @ \Open
 						<= Paste_error $mol_paragraph
 							title <= paste_error? \
 		<= Notify $mol_labeler
-			title \Уведомления
+			title @ \Notifications
 			content /
 				<= Notify_body $mol_view
 					sub /
@@ -101,36 +102,36 @@ $bog_gram_settings $bog_gram_page
 							sub /
 								<= notify_label
 		<= Registry_block $mol_labeler
-			title \Реестры
+			title @ \Registries
 			content <= registry_content /
 		<= Account $mol_labeler
-			title \Аккаунт
+			title @ \Account
 			content /
 				<= Key $bog_gram_settings_key
 					notify_on? <=> notify_on?
 	Registry_empty $mol_paragraph
-		title \Вы не состоите ни в одном реестре
+		title @ \You are not in any registry
 	Registry_list $mol_list
 		rows <= registry_rows /
 	Registry_note $mol_paragraph
-		title \Убрать можно только из своего списка: запись в самом реестре остаётся навсегда.
+		title @ \You can only remove it from your own list: the entry in the registry itself stays forever.
 	Registry_share $mol_view
 		sub /
 			<= Registry_share_text $mol_paragraph
-				title \Ссылка-приглашение в активный реестр
+				title @ \Invitation link to the active registry
 			<= Registry_share_copy $mol_button_copy
-				title \Скопировать ссылку
+				title @ \Copy link
 				text <= registry_uri
 	Registry_form $mol_view
 		sub /
 			<= Registry_name $mol_string
-				hint \Название реестра
+				hint @ \Registry name
 				value? <=> registry_name?
 				submit? <=> registry_make?
 			<= Registry_make $mol_button_major
 				click? <=> registry_make?
 				sub /
-					\Создать реестр
+					<= registry_make_label @ \Create registry
 	Registry_row* $bog_gram_row
 		faced false
 		click? <=> registry_open*?
@@ -139,12 +140,12 @@ $bog_gram_settings $bog_gram_page
 		note <= registry_status*
 		tools /
 			<= Registry_join* $mol_button_minor
-				hint \Вступить в реестр
+				hint @ \Join registry
 				click? <=> registry_join*?
 				sub /
-					\Вступить
+					<= registry_join_label* @ \Join
 			<= Registry_drop* $mol_button_minor
-				hint \Убрать из своего списка
+				hint @ \Remove from your list
 				click? <=> registry_forget*?
 				sub /
 					<= Registry_drop_icon* $mol_icon_close

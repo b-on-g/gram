@@ -389,8 +389,8 @@ namespace $.$$ {
 		override member_status( lord: string ) {
 			const id = this.dialog_active()
 			if( !id ) return ''
-			if( this.dialog_owner( id ) === lord ) return 'создатель'
-			return this.admin_is( id, lord ) ? 'админ' : ''
+			if( this.dialog_owner( id ) === lord ) return this.status_owner()
+			return this.admin_is( id, lord ) ? this.status_admin() : ''
 		}
 
 		override members_admin() {

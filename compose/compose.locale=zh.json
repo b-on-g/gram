@@ -1,0 +1,11 @@
+{
+	"$bog_gram_compose_Close_hint": "关闭",
+	"$bog_gram_compose_Peer_field_hint": "对方 ID",
+	"$bog_gram_compose_start_label": "开始对话",
+	"$bog_gram_compose_Users_title_title": "用户",
+	"$bog_gram_compose_Join_plate_text_title": "你不在此登记册中：其他人在这里找不到你",
+	"$bog_gram_compose_join_label": "加入",
+	"$bog_gram_compose_title": "新对话",
+	"$bog_gram_compose_users_none": "你不在任何登记册中。请在设置中创建自己的登记册",
+	"$bog_gram_compose_users_alone": "登记册中除你之外暂时没有其他人"
+}

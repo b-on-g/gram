@@ -16,17 +16,17 @@ namespace $.$$ {
 		'Дописанный в конец кадр не сдвигает текущий, счётчик растёт'( $ ) {
 
 			let ids = [ 'a', 'b' ]
-			const gallery = $bog_gram_gallery.make({ $, ids: ()=> ids })
+			const gallery = $bog_gram_gallery.make({ $, ids: ()=> ids, counter_pattern: ()=> '{index} of {count}' })
 			gallery.current( 'b' )
 
-			$mol_assert_equal( gallery.counter(), '2 из 2' )
+			$mol_assert_equal( gallery.counter(), '2 of 2' )
 			$mol_assert_equal( gallery.Next(), null )
 
 			ids = [ 'a', 'b', 'c' ]
 			gallery.ids = ()=> ids
 
 			$mol_assert_equal( gallery.current(), 'b' )
-			$mol_assert_equal( gallery.counter(), '2 из 3' )
+			$mol_assert_equal( gallery.counter(), '2 of 3' )
 
 			gallery.next()
 			$mol_assert_equal( gallery.current(), 'c' )

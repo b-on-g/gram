@@ -1,0 +1,9 @@
+{
+	"$bog_gram_call_tile_stat_fps": "{n} 帧/秒",
+	"$bog_gram_call_tile_stat_size": "{n}",
+	"$bog_gram_call_tile_stat_kbps": "{n} 千比特/秒",
+	"$bog_gram_call_tile_stat_loss": "丢包 {n}%",
+	"$bog_gram_call_tile_stat_rtt": "{n} 毫秒",
+	"$bog_gram_call_tile_failed_text": "无连接",
+	"$bog_gram_call_tile_connecting_text": "正在连接…"
+}

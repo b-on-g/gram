@@ -1,0 +1,15 @@
+{
+	"$bog_gram_settings_key_Copy_title": "Скопировать",
+	"$bog_gram_settings_key_Field_hint": "Ключ аккаунта",
+	"$bog_gram_settings_key_Load_hint_title": "Или загрузите файл с ключом",
+	"$bog_gram_settings_key_Open_hint": "Выбрать файл",
+	"$bog_gram_settings_key_toggle_hide": "Скрыть ключ",
+	"$bog_gram_settings_key_toggle_show": "Показать ключ",
+	"$bog_gram_settings_key_import_sure": "Точно войти? Текущий аккаунт будет заменён",
+	"$bog_gram_settings_key_import_idle": "Войти по ключу",
+	"$bog_gram_settings_key_error_empty": "Вставьте ключ или загрузите файл",
+	"$bog_gram_settings_key_error_bad": "Это не похоже на ключ аккаунта",
+	"$bog_gram_settings_key_error_qr": "В QR не ключ аккаунта",
+	"$bog_gram_settings_key_Warning_title": "Ключ — это полный доступ к аккаунту. Он один на все приложения на этом домене, включая Music. Не показывайте его никому и не публикуйте.",
+	"$bog_gram_settings_key_Save_title": "Скачать файл"
+}

@@ -8,18 +8,18 @@ $bog_gram_call_tile $mol_view
 	name \
 	status \
 	stats null
-	stat_fps @ \{n} к/с
+	stat_fps @ \{n} fps
 	stat_size @ \{n}
-	stat_kbps @ \{n} кбит/с
-	stat_loss @ \потери {n}%
-	stat_rtt @ \{n} мс
+	stat_kbps @ \{n} kbps
+	stat_loss @ \loss {n}%
+	stat_rtt @ \{n} ms
 	Stat* $mol_view
 		attr *
 			bog_gram_call_tile_stat_bad <= stat_bad* false
 		sub /
 			<= stat_text* \
-	failed_text @ \Нет связи
-	connecting_text @ \Соединяюсь…
+	failed_text @ \No connection
+	connecting_text @ \Connecting…
 	attr *
 		^
 		bog_gram_call_tile_cam <= cam

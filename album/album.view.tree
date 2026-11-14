@@ -16,7 +16,7 @@ $bog_gram_album $mol_view
 			flexGrow <= column_grow* \1
 		sub <= column_tiles* /
 	Tile* $bog_gram_photo
-		hint \Открыть картинку
+		hint @ \Open picture
 		uri <= uri*
 		click? <=> open*?
 		style *

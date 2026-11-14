@@ -17,7 +17,7 @@ namespace $.$$ {
 
 		@ $mol_mem_key
 		override member_title( lord: string ) {
-			if( lord === this.me() ) return 'Вы'
+			if( lord === this.me() ) return this.self_name()
 			return this.label( lord )
 		}
 
@@ -40,7 +40,7 @@ namespace $.$$ {
 
 		@ $mol_mem_key
 		override drop_hint( lord: string ) {
-			return this.armed( lord ) ? 'Точно убрать? Прошлые сообщения у него останутся' : 'Убрать из группы'
+			return this.armed( lord ) ? this.drop_hint_armed() : this.drop_hint_idle()
 		}
 
 		@ $mol_action
@@ -90,8 +90,8 @@ namespace $.$$ {
 
 		override history_note() {
 			return this.history()
-				? 'Новый участник получит ключи от всех прошлых сообщений группы'
-				: 'Заведём новый отсек переписки: прошлое останется закрытым, и все увидят только то, что напишут дальше'
+				? this.history_all_note()
+				: this.history_new_note()
 		}
 
 		@ $mol_mem
@@ -106,12 +106,12 @@ namespace $.$$ {
 			if( !lord ) return null
 
 			if( lord === this.me() ) {
-				this.error( 'Это ваш собственный идентификатор' )
+				this.error( this.error_self() )
 				return null
 			}
 
 			if( !$giper_baza_link.check( lord ) ) {
-				this.error( 'Это не похоже на идентификатор' )
+				this.error( this.error_bad() )
 				return null
 			}
 
@@ -123,7 +123,7 @@ namespace $.$$ {
 		}
 
 		override asks_head() {
-			return 'Заявки: ' + this.asks().length
+			return this.asks_pattern().replace( '{count}', String( this.asks().length ) )
 		}
 
 		@ $mol_mem
@@ -161,7 +161,7 @@ namespace $.$$ {
 		}
 
 		override leave_label() {
-			return this.leave_armed() ? 'Точно выйти?' : 'Выйти из группы'
+			return this.leave_armed() ? this.leave_sure() : this.leave_idle()
 		}
 
 		@ $mol_action

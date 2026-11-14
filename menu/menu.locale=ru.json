@@ -1,0 +1,20 @@
+{
+	"$bog_gram_menu_Compose_open_hint": "Новый диалог",
+	"$bog_gram_menu_Group_open_hint": "Новая группа",
+	"$bog_gram_menu_Music_open_hint": "Музыка",
+	"$bog_gram_menu_Settings_open_hint": "Настройки",
+	"$bog_gram_menu_Invite_drop_hint": "Отменить",
+	"$bog_gram_menu_Dialogs_empty_text_title": "Пока нет диалогов",
+	"$bog_gram_menu_delete_sure": "Точно удалить?",
+	"$bog_gram_menu_delete_idle": "Удалить диалог",
+	"$bog_gram_menu_unarchive_text": "Вернуть из архива",
+	"$bog_gram_menu_archive_text": "Архив",
+	"$bog_gram_menu_Request_accept_hint": "Принять",
+	"$bog_gram_menu_Request_reject_hint": "Отклонить",
+	"$bog_gram_menu_Saved_row_hint": "Заметки для себя",
+	"$bog_gram_menu_Archive_row_hint": "Спрятанные диалоги",
+	"$bog_gram_menu_Archive_row_title": "Архив",
+	"$bog_gram_menu_Requests_row_hint": "Запросы на переписку",
+	"$bog_gram_menu_Requests_row_title": "Запросы",
+	"$bog_gram_menu_Requests_row_note": "Хотят вам написать"
+}

@@ -1,0 +1,14 @@
+{
+	"$bog_gram_call_Close_hint": "退出并关闭",
+	"$bog_gram_call_self_name": "你",
+	"$bog_gram_call_Join_title": "加入通话",
+	"$bog_gram_call_title": "通话",
+	"$bog_gram_call_Mic_hint": "麦克风",
+	"$bog_gram_call_Cam_hint": "摄像头",
+	"$bog_gram_call_Flip_hint": "切换摄像头",
+	"$bog_gram_call_Stats_show_hint": "显示帧率和网络",
+	"$bog_gram_call_Pip_hint": "画中画",
+	"$bog_gram_call_Leave_hint": "退出通话",
+	"$bog_gram_call_lobby_empty": "通话中暂时没有人",
+	"$bog_gram_call_lobby_some": "通话中：{names}"
+}

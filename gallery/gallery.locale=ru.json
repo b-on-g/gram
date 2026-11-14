@@ -1,0 +1,6 @@
+{
+	"$bog_gram_gallery_Prev_hint": "Предыдущее",
+	"$bog_gram_gallery_Next_hint": "Следующее",
+	"$bog_gram_gallery_Close_hint": "Закрыть",
+	"$bog_gram_gallery_counter_pattern": "{index} из {count}"
+}

@@ -1,5 +1,5 @@
 $bog_gram_compose $bog_gram_page
-	title \Новый диалог
+	title @ \New chat
 	close? null
 	open*? null
 	users /string
@@ -7,10 +7,12 @@ $bog_gram_compose $bog_gram_page
 	user_source* \
 	registry_ids /string
 	join_needed false
+	users_none @ \You are not in any registry. Create your own in settings
+	users_alone @ \Nobody else is in the registries yet
 	join? null
 	tools /
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -18,23 +20,23 @@ $bog_gram_compose $bog_gram_page
 		<= Peer_form $mol_view
 			sub /
 				<= Peer_field $mol_string
-					hint \ID собеседника
+					hint @ \Peer ID
 					value? <=> peer? \
 					submit? <=> start? null
 				<= Peer_start $mol_button_major
 					click? <=> start? null
 					sub /
-						\Начать диалог
+						<= start_label @ \Start chat
 		<= Users_title $mol_paragraph
-			title \Пользователи
+			title @ \Users
 		<= Join_plate $mol_view
 			sub /
 				<= Join_plate_text $mol_paragraph
-					title \Вас нет в этом реестре — другие вас тут не найдут
+					title @ \You are not in this registry: others will not find you here
 				<= Join_plate_button $mol_button_major
 					click? <=> join?
 					sub /
-						\Вступить
+						<= join_label @ \Join
 		<= Users_list $mol_list
 			rows <= user_rows /
 	Users_empty $mol_view

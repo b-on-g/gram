@@ -53,7 +53,7 @@ $bog_gram_bubble $mol_view
 			sub /
 				<= author
 		<= Quote $mol_button_minor
-			hint \Перейти к сообщению
+			hint @ \Go to message
 			click? <=> quote_jump?
 			sub /
 				<= Quote_author $mol_view
@@ -94,7 +94,7 @@ $bog_gram_bubble $mol_view
 								<= time
 						<= Edited $mol_view
 							sub /
-								\изменено
+								<= edited_label @ \edited
 						<= Checks $mol_view
 							sub /
 								<= checks
@@ -105,12 +105,12 @@ $bog_gram_bubble $mol_view
 				pointerup? <=> actions_touch? null
 			sub /
 				<= Edit $mol_button_minor
-					hint \Редактировать
+					hint @ \Edit
 					click? <=> edit?
 					sub /
 						<= Edit_icon $mol_icon_pencil
 				<= Delete $mol_button_minor
-					hint \Удалить
+					hint @ \Delete
 					click? <=> delete?
 					sub /
 						<= Delete_icon $mol_icon_delete

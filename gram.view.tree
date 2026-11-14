@@ -142,30 +142,32 @@ $bog_gram $mol_book2
 	Pager $bog_kit_pager
 		count <= pager_count 0
 		current <= page_current 0
+	status_owner @ \creator
+	status_admin @ \admin
 	Gate $mol_view
 		sub /
 			<= Gate_plate $mol_view
 				sub <= gate_sub /
 	Gate_wait $mol_paragraph
-		title \Загружаем данные аккаунта…
+		title @ \Loading account data…
 	Gate_lost $mol_paragraph
-		title \Не удалось загрузить данные аккаунта
+		title @ \Could not load account data
 	Gate_fresh_note $mol_paragraph
-		title \Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.
+		title @ \If this is your first time in Gram on this device, create an account. It will be shared by all apps on this domain.
 	Gate_retry $mol_button_minor
-		title \Повторить
+		title @ \Retry
 		click? <=> account_retry?
 	Gate_fresh $mol_button_minor
-		title \Создать аккаунт на этом устройстве
+		title @ \Create account on this device
 		click? <=> account_fresh?
 	Placeholder <= Intro $mol_view
 		sub /
 			<= Intro_plate $mol_view
 				sub /
 					<= Intro_title $mol_paragraph
-						title \Выберите диалог
+						title @ \Pick a chat
 					<= Intro_hint $mol_paragraph
-						title \Или начните новый: кнопка в шапке списка
+						title @ \Or start a new one: the button in the list header
 	pages /
 		<= Menu $bog_gram_menu
 			Theme <= Theme

@@ -1,0 +1,20 @@
+{
+	"$bog_gram_menu_Compose_open_hint": "新对话",
+	"$bog_gram_menu_Group_open_hint": "新群组",
+	"$bog_gram_menu_Music_open_hint": "音乐",
+	"$bog_gram_menu_Settings_open_hint": "设置",
+	"$bog_gram_menu_Invite_drop_hint": "忽略",
+	"$bog_gram_menu_Dialogs_empty_text_title": "暂无对话",
+	"$bog_gram_menu_delete_sure": "确定删除？",
+	"$bog_gram_menu_delete_idle": "删除对话",
+	"$bog_gram_menu_unarchive_text": "从归档恢复",
+	"$bog_gram_menu_archive_text": "归档",
+	"$bog_gram_menu_Request_accept_hint": "接受",
+	"$bog_gram_menu_Request_reject_hint": "拒绝",
+	"$bog_gram_menu_Saved_row_hint": "给自己的笔记",
+	"$bog_gram_menu_Archive_row_hint": "隐藏的对话",
+	"$bog_gram_menu_Archive_row_title": "归档",
+	"$bog_gram_menu_Requests_row_hint": "聊天请求",
+	"$bog_gram_menu_Requests_row_title": "请求",
+	"$bog_gram_menu_Requests_row_note": "想给你发消息"
+}

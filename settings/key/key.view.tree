@@ -1,18 +1,25 @@
 $bog_gram_settings_key $mol_view
 	notify_on? false
+	toggle_hide @ \Hide key
+	toggle_show @ \Show key
+	import_sure @ \Really sign in? The current account will be replaced
+	import_idle @ \Sign in with key
+	error_empty @ \Paste the key or upload a file
+	error_bad @ \This does not look like an account key
+	error_qr @ \The QR does not contain an account key
 	sub <= rows /
 	Toggle $mol_button_minor
 		click? <=> toggle? null
 		sub /
 			<= toggle_label \
 	Warning $mol_paragraph
-		title \Ключ — это полный доступ к аккаунту. Он один на все приложения на этом домене, включая Music. Не показывайте его никому и не публикуйте.
+		title @ \A key is full access to the account. It is the same for all apps on this domain, including Music. Do not show it to anyone and do not publish it.
 	Row $mol_view
 		sub /
 			<= Text $mol_paragraph
 				title <= text \
 			<= Copy $mol_button_copy
-				title \Скопировать
+				title @ \Copy
 				text <= text
 	Qr_box $mol_view
 		sub /
@@ -22,20 +29,20 @@ $bog_gram_settings_key $mol_view
 					\#e14b4b
 					\#f0a04b
 	Save $mol_button_download
-		title \Скачать файл
+		title @ \Download file
 		file_name \gram-account.key
 		blob <= blob null Blob
 	Import_form $mol_view
 		sub /
 			<= Field $mol_string
-				hint \Ключ аккаунта
+				hint @ \Account key
 				value? <=> input? \
 			<= Load_row $mol_view
 				sub /
 					<= Load_hint $mol_paragraph
-						title \Или загрузите файл с ключом
+						title @ \Or upload a file with the key
 					<= Open $mol_button_open
-						hint \Выбрать файл
+						hint @ \Choose file
 						accept \.key,text/plain
 						multiple false
 						files? <=> file? null

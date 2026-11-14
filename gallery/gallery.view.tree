@@ -3,7 +3,7 @@ $bog_gram_gallery $mol_view
 	current? \
 	uri* \
 	close? null
-	counter_pattern \{index} из {count}
+	counter_pattern @ \{index} of {count}
 	attr *
 		^
 		tabindex 0
@@ -30,17 +30,17 @@ $bog_gram_gallery $mol_view
 			sub /
 				<= counter \
 		<= Prev $mol_button_minor
-			hint \Предыдущее
+			hint @ \Previous
 			click? <=> prev?
 			sub /
 				<= Prev_icon $mol_icon_chevron_left
 		<= Next $mol_button_minor
-			hint \Следующее
+			hint @ \Next
 			click? <=> next?
 			sub /
 				<= Next_icon $mol_icon_chevron_right
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close

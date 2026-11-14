@@ -20,7 +20,7 @@ namespace $ {
 			$mol_assert_equal( owner.add_rows().includes( owner.Admin_note() ), true )
 			$mol_assert_equal( owner.Rule( 'Ann' ) === null, false )
 			$mol_assert_equal( owner.Rule( 'Bob' ), null )
-			$mol_assert_equal( owner.member_title( 'Me' ), 'Вы' )
+			$mol_assert_equal( owner.member_title( 'Me' ), owner.self_name() )
 
 		},
 
@@ -34,7 +34,7 @@ namespace $ {
 
 			members.drop_click( 'Ann' )
 			$mol_assert_equal( members.armed( 'Ann' ), true )
-			$mol_assert_equal( members.drop_hint( 'Ann' ), 'Точно убрать? Прошлые сообщения у него останутся' )
+			$mol_assert_equal( members.drop_hint( 'Ann' ), members.drop_hint_armed() )
 
 			members.drop_click( 'Bob' )
 			$mol_assert_equal( members.armed( 'Ann' ), false )
@@ -55,11 +55,11 @@ namespace $ {
 
 			members.id( 'ikjOnflc_WufmHhGH' )
 			members.id_add()
-			$mol_assert_equal( members.error(), 'Это ваш собственный идентификатор' )
+			$mol_assert_equal( members.error(), members.error_self() )
 
 			members.id( 'мусор' )
 			members.id_add()
-			$mol_assert_equal( members.error(), 'Это не похоже на идентификатор' )
+			$mol_assert_equal( members.error(), members.error_bad() )
 
 			members.id( 'AAAAAAAA_BBBBBBBB' )
 			members.id_add()

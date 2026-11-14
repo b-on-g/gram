@@ -18,7 +18,7 @@ namespace $ {
 			block.Scan().found( 'https://example.org/' )
 
 			$mol_assert_equal( block.input(), 'https://example.org/' )
-			$mol_assert_equal( block.error(), 'В QR не ключ аккаунта' )
+			$mol_assert_equal( block.error(), block.error_qr() )
 
 		},
 
@@ -27,11 +27,11 @@ namespace $ {
 			const block = $bog_gram_settings_key.make({ $ })
 
 			block.import()
-			$mol_assert_equal( block.error(), 'Вставьте ключ или загрузите файл' )
+			$mol_assert_equal( block.error(), block.error_empty() )
 
 			block.input( 'не ключ' )
 			block.import()
-			$mol_assert_equal( block.error(), 'Это не похоже на ключ аккаунта' )
+			$mol_assert_equal( block.error(), block.error_bad() )
 			$mol_assert_equal( block.armed(), false )
 
 		},
@@ -45,7 +45,7 @@ namespace $ {
 
 			block.toggle()
 			$mol_assert_equal( block.rows().includes( block.Row() ), true )
-			$mol_assert_equal( block.toggle_label(), 'Скрыть ключ' )
+			$mol_assert_equal( block.toggle_label(), block.toggle_hide() )
 
 		},
 

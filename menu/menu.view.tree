@@ -8,6 +8,10 @@ $bog_gram_menu $bog_gram_page
 	invite_plate_text \
 	invite_drop? null
 	ask_plate_text \
+	delete_sure @ \Really delete?
+	delete_idle @ \Delete chat
+	unarchive_text @ \Restore from archive
+	archive_text @ \Archive
 	visible /string
 	archived /string
 	requests /string
@@ -33,22 +37,22 @@ $bog_gram_menu $bog_gram_page
 	tools /
 		<= Status $giper_baza_status
 		<= Compose_open $mol_button_minor
-			hint \Новый диалог
+			hint @ \New chat
 			click? <=> compose?
 			sub /
 				<= Compose_open_icon $mol_icon_message_plus
 		<= Group_open $mol_button_minor
-			hint \Новая группа
+			hint @ \New group
 			click? <=> group?
 			sub /
 				<= Group_open_icon $mol_icon_account_multiple_plus
 		<= Music_open $mol_button_minor
-			hint \Музыка
+			hint @ \Music
 			click? <=> music?
 			sub /
 				<= Music_open_icon $mol_icon_music
 		<= Settings_open $mol_button_minor
-			hint \Настройки
+			hint @ \Settings
 			click? <=> settings?
 			sub /
 				<= Settings_open_icon $mol_icon_cog
@@ -60,7 +64,7 @@ $bog_gram_menu $bog_gram_page
 				<= Invite_plate_text $mol_paragraph
 					title <= invite_plate_text
 				<= Invite_drop $mol_button_minor
-					hint \Отменить
+					hint @ \Dismiss
 					click? <=> invite_drop?
 					sub /
 						<= Invite_drop_icon $mol_icon_close
@@ -73,7 +77,7 @@ $bog_gram_menu $bog_gram_page
 	Dialogs_empty $mol_view
 		sub /
 			<= Dialogs_empty_text $mol_paragraph
-				title \Пока нет диалогов
+				title @ \No chats yet
 	Dialog_row* $bog_gram_row
 		size \large
 		swipe true
@@ -102,18 +106,18 @@ $bog_gram_menu $bog_gram_page
 	Dialog_archive_icon* $mol_icon_archive_arrow_down
 	Dialog_unarchive_icon* $mol_icon_archive_arrow_up
 	Request_accept* $mol_button_minor
-		hint \Принять
+		hint @ \Accept
 		click? <=> request_accept*? null
 		sub /
 			<= Request_accept_icon* $mol_icon_check
 	Request_reject* $mol_button_minor
-		hint \Отклонить
+		hint @ \Decline
 		click? <=> request_reject*? null
 		sub /
 			<= Request_reject_icon* $mol_icon_close
 	Saved_row $bog_gram_row
 		size \large
-		hint \Заметки для себя
+		hint @ \Notes to self
 		click? <=> saved_pick? null
 		current <= saved_current
 		Icon <= Saved_icon $mol_icon_bookmark
@@ -122,17 +126,17 @@ $bog_gram_menu $bog_gram_page
 		note <= saved_preview
 	Archive_row $bog_gram_row
 		size \large
-		hint \Спрятанные диалоги
+		hint @ \Hidden chats
 		click? <=> archive_toggle? null
 		Icon <= Archive_icon $mol_icon_archive
-		title \Архив
+		title @ \Archive
 		note <= archive_note \
 		badge <= archive_unread_label \
 	Requests_row $bog_gram_row
 		size \large
-		hint \Запросы на переписку
+		hint @ \Conversation requests
 		click? <=> requests_toggle? null
 		Icon <= Requests_icon $mol_icon_account_question
-		title \Запросы
-		note \Хотят вам написать
+		title @ \Requests
+		note @ \Want to write to you
 		badge <= requests_count_label \

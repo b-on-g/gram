@@ -8,9 +8,9 @@ $bog_gram_call_card $mol_button_minor
 			sub /
 				<= Title $mol_view
 					sub /
-						<= title @ \Звонок
+						<= title @ \Call
 				<= Count $mol_view
 					sub /
 						<= count_text \
-	count_none @ \Сейчас никого, нажмите, чтобы войти
-	count_some @ \В звонке: {count}
+	count_none @ \Nobody here now, tap to join
+	count_some @ \In the call: {count}

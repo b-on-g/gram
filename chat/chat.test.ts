@@ -182,7 +182,7 @@ namespace $.$$ {
 				const session = ( await $mol_wire_async( $.$giper_baza_glob ).land_grab() ).Data( $bog_gram_session )
 				const talk = $bog_gram_talk.make({ $: context, session: ()=> session, mates: ()=> saved ? [] : [ 'LordLost' ], saved_is: ()=> saved })
 				const people = $bog_gram_people.make({ $: context, pass_of: ()=> lost ? null : {} as $giper_baza_auth_pass, label: ()=> 'Борис' })
-				const chat = $bog_gram_chat.make({ $: context, dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
+				const chat = $bog_gram_chat.make({ $: context, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
 				chat.land_closed = ()=> $giper_baza_land.make({ $ }).Data( $giper_baza_file )
 				const widths = ()=> ( session.Messages()?.remote_list() ?? [] ).map( message => [
 					message.Image_width()?.val(),
@@ -205,7 +205,7 @@ namespace $.$$ {
 			await lost.chat.images_start([ file( '1' ), file( '2' ), file( '3' ) ])
 			$mol_assert_equal( lost.widths(), [] )
 			$mol_assert_equal( hints, 1 )
-			$mol_assert_equal( lost.chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+			$mol_assert_equal( lost.chat.voice_hint(), 'Photo: no key for Борис' )
 
 		},
 
@@ -218,14 +218,14 @@ namespace $.$$ {
 				pass_of: ( lord: string )=> lord === 'LordKnown' ? pass : null,
 				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
 			})
-			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people })
+			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people })
 
 			$mol_assert_equal( chat.image_send( new File( [], 'a.jpg', { type: 'image/jpeg' } ) ), '' )
-			$mol_assert_equal( chat.voice_hint(), 'Фото не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+			$mol_assert_equal( chat.voice_hint(), 'Photo: no key for Борис' )
 
 			chat.voice_hint( '' )
 			$mol_assert_equal( chat.voice_send( {} as $bog_gram_voice ), '' )
-			$mol_assert_equal( chat.voice_hint(), 'Голосовое не отправлено: не доехал ключ — Борис. Отправьте ещё раз чуть позже' )
+			$mol_assert_equal( chat.voice_hint(), 'Voice: no key for Борис' )
 
 			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
 
@@ -241,10 +241,10 @@ namespace $.$$ {
 				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
 			})
 			let opened = 0
-			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people, call_open: ()=> ++ opened })
+			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people, call_open: ()=> ++ opened })
 
 			$mol_assert_equal( chat.call_send(), '' )
-			$mol_assert_equal( chat.voice_hint(), 'Звонок не начат: не доехал ключ — Борис. Позвоните ещё раз чуть позже' )
+			$mol_assert_equal( chat.voice_hint(), 'Call: no key for Борис' )
 			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
 			$mol_assert_equal( opened, 0 )
 

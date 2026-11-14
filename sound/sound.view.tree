@@ -6,7 +6,7 @@ $bog_gram_sound $mol_view
 	ended? null
 	sub /
 		<= Toggle $mol_button_minor
-			hint \Прослушать
+			hint @ \Listen
 			click? <=> toggle?
 			sub <= toggle_icons /
 		<= Track $mol_view

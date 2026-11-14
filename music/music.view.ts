@@ -2,11 +2,6 @@ namespace $.$$ {
 
 	export class $bog_gram_music extends $.$bog_gram_music {
 
-		/** В книге Gram страница называется по-русски, как и остальные. */
-		override title() {
-			return 'Музыка'
-		}
-
 		/** Палитра приходит от Gram: свой Skin тут только спорил бы с ним. */
 		override Skin() {
 			return null!
@@ -35,7 +30,7 @@ namespace $.$$ {
 			const account = super.Account()
 
 			const hint = new this.$.$mol_paragraph()
-			hint.title = () => 'Аккаунт в Music общий с Gram: ключ, переписка и скачанные треки одни на оба приложения. Сброса здесь нет — он стёр бы аккаунт в Gram, а треки тоже будут удалены. Сменить аккаунт можно в Gram, но треки тоже будут удалены.'
+			hint.title = () => this.account_note()
 
 			const reset = new this.$.$mol_view()
 			reset.sub = () => [ hint ]

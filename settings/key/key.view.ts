@@ -17,7 +17,7 @@ namespace $.$$ {
 		}
 
 		override toggle_label() {
-			return this.shown() ? 'Скрыть ключ' : 'Показать ключ'
+			return this.shown() ? this.toggle_hide() : this.toggle_show()
 		}
 
 		@ $mol_action
@@ -37,7 +37,7 @@ namespace $.$$ {
 		}
 
 		override import_label() {
-			return this.armed() ? 'Точно войти? Текущий аккаунт будет заменён' : 'Войти по ключу'
+			return this.armed() ? this.import_sure() : this.import_idle()
 		}
 
 		auth_from( str: string ) {
@@ -55,14 +55,14 @@ namespace $.$$ {
 
 			const str = this.input().trim()
 			if( !str ) {
-				this.error( 'Вставьте ключ или загрузите файл' )
+				this.error( this.error_empty() )
 				return null
 			}
 
 			const auth = this.auth_from( str )
 			if( !auth ) {
 				this.armed( false )
-				this.error( 'Это не похоже на ключ аккаунта' )
+				this.error( this.error_bad() )
 				return null
 			}
 
@@ -97,7 +97,7 @@ namespace $.$$ {
 			const str = next.trim()
 			this.input( str )
 			this.armed( false )
-			this.error( this.auth_from( str ) ? '' : 'В QR не ключ аккаунта' )
+			this.error( this.auth_from( str ) ? '' : this.error_qr() )
 			return str
 		}
 

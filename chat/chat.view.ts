@@ -10,10 +10,6 @@ namespace $.$$ {
 
 	const clock_tick = 200
 
-	const voice_denied = 'Микрофон недоступен: разрешите запись в настройках браузера'
-
-	const voice_short = 'Слишком коротко — запись отменена'
-
 	const image_limit = 10
 
 	export class $bog_gram_chat extends $.$bog_gram_chat {
@@ -117,7 +113,7 @@ namespace $.$$ {
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( `Звонок не начат: не доехал ключ — ${ this.lost_names() }. Позвоните ещё раз чуть позже` )
+				this.voice_hint( this.call_lost_pattern().replace( '{names}', this.lost_names() ) )
 				return ''
 			}
 
@@ -243,7 +239,9 @@ namespace $.$$ {
 				const reads: Record< string, number > = {}
 				for( const lord of mates ) reads[ lord ] = this.Talk().read_moment_of( dialog, lord )
 
-				return 'Прочитали ' + this.read_tally( reads, mates, moment ) + ' из ' + mates.length
+				return this.read_pattern()
+					.replace( '{count}', String( this.read_tally( reads, mates, moment ) ) )
+					.replace( '{total}', String( mates.length ) )
 
 			}
 
@@ -389,7 +387,7 @@ namespace $.$$ {
 		quote_author( id: string ) {
 			const lord = this.message_lord( id )
 			if( !lord ) return ''
-			if( lord === this.my_lord() ) return 'Вы'
+			if( lord === this.my_lord() ) return this.self_name()
 			return this.People().label( lord )
 		}
 
@@ -401,15 +399,15 @@ namespace $.$$ {
 			const text = String( pawn.Text()?.val() ?? '' ).replace( /\s+/g, ' ' ).trim()
 			if( text ) return text
 
-			if( pawn.Image()?.val() ) return 'Фото'
-			if( pawn.Voice()?.val() ) return 'Голосовое сообщение'
-			if( pawn.Video()?.val() ) return 'Видео'
+			if( pawn.Image()?.val() ) return this.kind_photo()
+			if( pawn.Voice()?.val() ) return this.kind_voice()
+			if( pawn.Video()?.val() ) return this.kind_video()
 
 			return ''
 		}
 
 		override reply_title() {
-			return 'Ответ ' + this.quote_author( this.reply_id() )
+			return this.reply_pattern().replace( '{name}', this.quote_author( this.reply_id() ) )
 		}
 
 		override reply_text() {
@@ -695,7 +693,7 @@ namespace $.$$ {
 					if( clip ) await $mol_wire_async( this ).video_send( clip )
 				} catch( error ) {
 					$mol_fail_log( error )
-					this.voice_hint( 'Видео не отправилось' )
+					this.voice_hint( this.video_failed() )
 				}
 			}
 
@@ -707,7 +705,7 @@ namespace $.$$ {
 			} )
 
 			if( sent && images.length > image_limit ) {
-				this.voice_hint( `Отправлены первые ${ image_limit } фото: за раз можно не больше ${ image_limit }` )
+				this.voice_hint( this.images_capped_pattern().replaceAll( '{limit}', String( image_limit ) ) )
 			}
 
 			return sent
@@ -729,7 +727,7 @@ namespace $.$$ {
 		}
 
 		lost_hint( what: string ) {
-			return `${ what } не отправлено: не доехал ключ — ${ this.lost_names() }. Отправьте ещё раз чуть позже`
+			return this.lost_pattern().replace( '{what}', what ).replace( '{names}', this.lost_names() )
 		}
 
 		land_closed( bytes: Uint8Array< ArrayBuffer >, type: string, passes: readonly $giper_baza_auth_pass[] ) {
@@ -765,7 +763,7 @@ namespace $.$$ {
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( this.lost_hint( 'Фото' ) )
+				this.voice_hint( this.lost_hint( this.kind_photo() ) )
 				return ''
 			}
 
@@ -802,15 +800,15 @@ namespace $.$$ {
 			const mb = ( size: number )=> Math.ceil( size / 2 ** 20 )
 
 			if( file.size > clip.source_limit ) {
-				this.voice_hint( `Видео больше ${ mb( clip.source_limit ) } МБ не сжать, это ${ mb( file.size ) } МБ` )
+				this.voice_hint( this.video_big_pattern().replace( '{limit}', String( mb( clip.source_limit ) ) ).replace( '{size}', String( mb( file.size ) ) ) )
 				return null
 			}
 
-			this.voice_hint( 'Сжимаю видео…' )
-			const read = await clip.read( file, done => this.voice_hint( `Сжимаю видео: ${ Math.round( done * 100 ) }%` ) )
+			this.voice_hint( this.video_packing() )
+			const read = await clip.read( file, done => this.voice_hint( this.video_progress_pattern().replace( '{percent}', String( Math.round( done * 100 ) ) ) ) )
 
 			if( read.bytes.byteLength > clip.limit ) {
-				this.voice_hint( `Видео не влезает: после сжатия ${ mb( read.bytes.byteLength ) } МБ, можно до ${ mb( clip.limit ) } МБ` )
+				this.voice_hint( this.video_over_pattern().replace( '{size}', String( mb( read.bytes.byteLength ) ) ).replace( '{limit}', String( mb( clip.limit ) ) ) )
 				return null
 			}
 
@@ -825,7 +823,7 @@ namespace $.$$ {
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( this.lost_hint( 'Видео' ) )
+				this.voice_hint( this.lost_hint( this.kind_video() ) )
 				return ''
 			}
 
@@ -942,7 +940,7 @@ namespace $.$$ {
 					this.voice_start( 0 )
 				}
 
-				this.voice_hint( voice_denied )
+				this.voice_hint( this.voice_denied() )
 
 				return false
 			}
@@ -1008,13 +1006,13 @@ namespace $.$$ {
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( this.lost_hint( 'Голосовое' ) )
+				this.voice_hint( this.lost_hint( this.kind_voice() ) )
 				return ''
 			}
 
 			const sound = $mol_wire_sync( take ).take()
 			if( !sound ) {
-				this.voice_hint( voice_short )
+				this.voice_hint( this.voice_short() )
 				return ''
 			}
 

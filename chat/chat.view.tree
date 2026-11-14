@@ -20,6 +20,22 @@ $bog_gram_chat $bog_gram_page
 	voice_on false
 	voice_clock \
 	voice_hint? \
+	voice_denied @ \Microphone unavailable: allow recording in the browser settings
+	voice_short @ \Too short, recording cancelled
+	call_lost_pattern @ \Call not started: key not delivered — {names}. Call again a bit later
+	read_pattern @ \Read by {count} of {total}
+	self_name @ \You
+	kind_photo @ \Photo
+	kind_voice @ \Voice message
+	kind_video @ \Video
+	reply_pattern @ \Reply to {name}
+	video_failed @ \Video was not sent
+	images_capped_pattern @ \Only the first {limit} photos were sent: at most {limit} at a time
+	lost_pattern @ \{what} not sent: key not delivered — {names}. Send again a bit later
+	video_big_pattern @ \Video over {limit} MB cannot be compressed, this one is {size} MB
+	video_packing @ \Compressing video…
+	video_progress_pattern @ \Compressing video: {percent}%
+	video_over_pattern @ \Video does not fit: {size} MB after compression, the limit is {limit} MB
 	edit_id? \
 	reply_id? \
 	message_menu? \
@@ -50,7 +66,7 @@ $bog_gram_chat $bog_gram_page
 				<= title
 	head /
 		<= Back $mol_button_minor
-			hint \Назад
+			hint @ \Back
 			click? <=> close?
 			sub /
 				<= Back_icon $mol_icon_arrow_left
@@ -58,17 +74,17 @@ $bog_gram_chat $bog_gram_page
 		<= Tools
 	tools /
 		<= Call $mol_button_minor
-			hint \Звонок
+			hint @ \Call
 			click? <=> call_start? null
 			sub /
 				<= Call_icon $mol_icon_phone
 		<= Members $mol_button_minor
-			hint \Участники
+			hint @ \Members
 			click? <=> members?
 			sub /
 				<= Members_icon $mol_icon_account_multiple
 		<= Close $mol_button_minor
-			hint \Закрыть
+			hint @ \Close
 			click? <=> close?
 			sub /
 				<= Close_icon $mol_icon_close
@@ -88,16 +104,16 @@ $bog_gram_chat $bog_gram_page
 							sub /
 								<= reply_text
 				<= Reply_cancel $mol_button_minor
-					hint \Отменить ответ
+					hint @ \Cancel reply
 					click? <=> reply_cancel? null
 					sub /
 						<= Reply_cancel_icon $mol_icon_close
 		<= Edit_banner $mol_view
 			sub /
 				<= Edit_banner_text $mol_paragraph
-					title \Редактирование
+					title @ \Editing
 				<= Edit_cancel $mol_button_minor
-					hint \Отменить правку
+					hint @ \Cancel edit
 					click? <=> edit_cancel? null
 					sub /
 						<= Edit_cancel_icon $mol_icon_close
@@ -106,7 +122,7 @@ $bog_gram_chat $bog_gram_page
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
-		hint \Отправить фото или видео
+		hint @ \Send photo or video
 		accept \image/*,video/*
 		multiple true
 		files? <=> image_files? null
@@ -114,16 +130,16 @@ $bog_gram_chat $bog_gram_page
 	Message_box $mol_view
 		sub /
 			<= Message_field $bog_gram_write
-				hint \Сообщение…
+				hint @ \Message…
 				value? <=> message_text?
 				send? <=> message_send? null
 	Send $mol_button_major
-		hint \Отправить
+		hint @ \Send
 		click? <=> message_send?
 		sub /
 			<= Send_icon $mol_icon_send
 	Voice $bog_gram_hold
-		hint \Удерживайте для записи
+		hint @ \Hold to record
 		press? <=> voice_press? null
 		release? <=> voice_release? null
 		abort? <=> voice_cancel? null
@@ -136,13 +152,13 @@ $bog_gram_chat $bog_gram_page
 				sub /
 					<= voice_clock
 	Voice_cancel $mol_button_minor
-		hint \Отпустите здесь, чтобы отменить
+		hint @ \Release here to cancel
 		click? <=> voice_cancel?
 		sub /
 			<= Voice_cancel_icon $mol_icon_close
 			<= Voice_cancel_text $mol_view
 				sub /
-					\Отмена
+					<= voice_cancel_label @ \Cancel
 	Line* $mol_view
 		minimal_height 48
 		sub <= line_content* /

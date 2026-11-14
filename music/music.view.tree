@@ -1,4 +1,6 @@
 $bog_gram_music $bog_music_app
+	title @ \Music
+	account_note @ \The Music account is shared with Gram: key, chats and downloaded tracks are the same in both apps. There is no reset here: it would erase the Gram account, and the tracks would be deleted too. You can switch the account in Gram, but the tracks will be deleted too.
 	Theme_btn null
 	Sync_status null
 	Version null
@@ -8,7 +10,7 @@ $bog_gram_music $bog_music_app
 	tools /
 		^
 		<= Close $mol_button_minor
-			hint \Свернуть
+			hint @ \Collapse
 			click? <=> close? null
 			sub /
 				<= Close_icon $mol_icon_close

@@ -1,0 +1,11 @@
+{
+	"$bog_gram_Intro_title_title": "Выберите диалог",
+	"$bog_gram_Intro_hint_title": "Или начните новый: кнопка в шапке списка",
+	"$bog_gram_status_owner": "создатель",
+	"$bog_gram_status_admin": "админ",
+	"$bog_gram_Gate_wait_title": "Загружаем данные аккаунта…",
+	"$bog_gram_Gate_lost_title": "Не удалось загрузить данные аккаунта",
+	"$bog_gram_Gate_fresh_note_title": "Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.",
+	"$bog_gram_Gate_retry_title": "Повторить",
+	"$bog_gram_Gate_fresh_title": "Создать аккаунт на этом устройстве"
+}

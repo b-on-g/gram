@@ -1,0 +1,9 @@
+{
+	"$bog_gram_call_tile_stat_fps": "{n} к/с",
+	"$bog_gram_call_tile_stat_size": "{n}",
+	"$bog_gram_call_tile_stat_kbps": "{n} кбит/с",
+	"$bog_gram_call_tile_stat_loss": "потери {n}%",
+	"$bog_gram_call_tile_stat_rtt": "{n} мс",
+	"$bog_gram_call_tile_failed_text": "Нет связи",
+	"$bog_gram_call_tile_connecting_text": "Соединяюсь…"
+}

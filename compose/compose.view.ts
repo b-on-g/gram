@@ -31,8 +31,8 @@ namespace $.$$ {
 		}
 
 		override users_empty_text() {
-			if( !this.registry_ids().length ) return 'Вы не состоите ни в одном реестре. Создайте свой в настройках'
-			return 'Кроме вас в реестрах пока никого нет'
+			if( !this.registry_ids().length ) return this.users_none()
+			return this.users_alone()
 		}
 
 		override user_lord( lord: string ) {

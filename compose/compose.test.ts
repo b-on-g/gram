@@ -23,10 +23,10 @@ namespace $ {
 
 			const lonely = $bog_gram_compose.make({ $, users: ()=> [], registry_ids: ()=> [] })
 			$mol_assert_equal( lonely.user_rows(), [ lonely.Users_empty() ] )
-			$mol_assert_equal( lonely.users_empty_text(), 'Вы не состоите ни в одном реестре. Создайте свой в настройках' )
+			$mol_assert_equal( lonely.users_empty_text(), lonely.users_none() )
 
 			const alone = $bog_gram_compose.make({ $, users: ()=> [], registry_ids: ()=> [ 'Registry' ] })
-			$mol_assert_equal( alone.users_empty_text(), 'Кроме вас в реестрах пока никого нет' )
+			$mol_assert_equal( alone.users_empty_text(), alone.users_alone() )
 
 			const crowd = $bog_gram_compose.make({ $, users: ()=> [ 'LordA', 'LordB' ] })
 			$mol_assert_equal( crowd.user_rows().length, 2 )
