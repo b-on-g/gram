@@ -377,35 +377,77 @@ namespace $.$$ {
 			whiteSpace: 'nowrap',
 		},
 
-		Voice_cancel: {
+		Round_icon: {
+			width: '1.25rem',
+			height: '1.25rem',
+		},
+
+		Record_slide: {
 			flex: {
-				shrink: 0,
+				grow: 1,
+				shrink: 1,
 			},
-			align: {
-				items: 'center',
+			minWidth: 0,
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			whiteSpace: 'nowrap',
+			color: $mol_theme.shade,
+			font: {
+				size: '0.8rem',
 			},
-			gap: '0.25rem',
-			minHeight: '2.5rem',
-			padding: {
-				top: '0.25rem',
-				bottom: '0.25rem',
-				left: '0.625rem',
-				right: '0.625rem',
-			},
-			borderRadius: '1rem',
+		},
+
+		Record_drop: {
+			... round,
 			color: $bog_gram_tone.alert,
 		},
 
-		Voice_cancel_icon: {
-			flex: {
-				shrink: 0,
-			},
-			width: '1rem',
-			height: '1rem',
+		Record_stop: {
+			... round,
+			color: $bog_gram_tone.alert,
 		},
 
-		Voice_cancel_text: {
-			whiteSpace: 'nowrap',
+		Record_send: {
+			... round,
+			background: {
+				color: $mol_theme.control,
+			},
+			color: '#ffffff',
+		},
+
+		Draft: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			justify: {
+				content: 'center',
+			},
+		},
+
+		Draft_sound: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+		},
+
+		Draft_round: {
+			width: '8rem',
+		},
+
+		Round_live: {
+			alignSelf: 'center',
+			width: '13rem',
+			maxWidth: '60vw',
+			aspectRatio: 1,
+			borderRadius: '50%',
+			objectFit: 'cover',
+			transform: 'scaleX(-1)',
+			margin: {
+				bottom: '0.5rem',
+			},
 		},
 
 		Voice_note: {
@@ -436,9 +478,9 @@ namespace $.$$ {
 				Members: finger,
 				Attach: finger,
 				Voice: finger,
-				Voice_cancel: {
-					minHeight: '2.75rem',
-				},
+				Record_drop: finger,
+				Record_stop: finger,
+				Record_send: finger,
 			},
 
 		},

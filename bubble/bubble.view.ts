@@ -18,6 +18,10 @@ namespace $.$$ {
 			return this.sound() ? super.Sound() : null!
 		}
 
+		override Round() {
+			return this.round() ? super.Round() : null!
+		}
+
 		override Clip() {
 			return this.video() ? super.Clip() : null!
 		}
@@ -62,12 +66,16 @@ namespace $.$$ {
 			return this.out() ? super.Delete() : null!
 		}
 
+		players() {
+			return [ this.Sound(), this.Round() ].filter( Boolean ) as ( $.$$.$bog_gram_sound | $.$$.$bog_gram_round )[]
+		}
+
 		sound_start() {
-			( this.Sound() as $.$$.$bog_gram_sound | null )?.start()
+			for( const player of this.players() ) player.start()
 		}
 
 		sound_stop() {
-			( this.Sound() as $.$$.$bog_gram_sound | null )?.stop()
+			for( const player of this.players() ) player.stop()
 		}
 
 		@ $mol_action

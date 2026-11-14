@@ -19,6 +19,11 @@ $bog_gram_bubble $mol_view
 	sound_playing false
 	sound_toggle? null
 	sound_ended? null
+	round false
+	round_uri \
+	round_span 0
+	round_toggle? null
+	round_ended? null
 	video false
 	video_uri \
 	video_ratio 1.78
@@ -84,6 +89,12 @@ $bog_gram_bubble $mol_view
 			playing <= sound_playing
 			toggle? <=> sound_toggle?
 			ended? <=> sound_ended?
+		<= Round $bog_gram_round
+			uri <= round_uri
+			span <= round_span
+			playing <= sound_playing
+			toggle? <=> round_toggle?
+			ended? <=> round_ended?
 		<= Clip $mol_video_player
 			uri <= video_uri
 			autoplay false

@@ -316,6 +316,7 @@ namespace $ {
 			const kind = last.Image()?.val() ? words.talk_photo()
 				: last.Voice()?.val() ? words.talk_voice()
 				: last.Video()?.val() ? words.talk_video()
+				: last.Round()?.val() ? words.talk_round()
 				: last.Call()?.val() ? words.talk_call()
 				: last.Contact()?.val() ? words.talk_contact()
 				: ''

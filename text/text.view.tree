@@ -4,6 +4,7 @@ $bog_gram_text $mol_object
 	talk_voice @ \Voice message
 	talk_video @ \Video
 	talk_call @ \Call
+	talk_round @ \Video message
 	talk_contact @ \Contact
 	talk_mine @ \You: {text}
 	clock_today @ \Today

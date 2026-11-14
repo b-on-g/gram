@@ -17,7 +17,6 @@ namespace $.$$ {
 			chat.read_sync = ()=> 0
 			chat.stick_watch = ()=> 0
 			chat.stick_hold = ()=> 0
-			chat.cancel_rect = ()=> null
 			chat.follow = ()=> undefined
 			chat.auto()
 
@@ -86,15 +85,46 @@ namespace $.$$ {
 
 		},
 
-		'Отпускание над крестиком отменяет запись, мимо него — нет'( $ ) {
+		'Свайп влево отменяет запись, вверх закрепляет, мелкая дрожь пальца — ничего'() {
+
+			const from = { x: 300, y: 500 }
+			const shift = ( dx: number, dy: number )=> $bog_gram_chat_record_shift( from, { clientX: from.x + dx, clientY: from.y + dy } )
+
+			$mol_assert_equal( shift( -120, 0 ), 'cancel' )
+			$mol_assert_equal( shift( -120, -30 ), 'cancel' )
+			$mol_assert_equal( shift( 0, -90 ), 'lock' )
+			$mol_assert_equal( shift( -20, -90 ), 'lock' )
+			$mol_assert_equal( shift( -40, -20 ), '' )
+			$mol_assert_equal( shift( 150, 0 ), '' )
+			$mol_assert_equal( shift( 0, 150 ), '' )
+
+		},
+
+		'Короткий тап по микрофону переключает на кружок и обратно, удержание начинает запись'( $ ) {
 
 			const chat = $bog_gram_chat.make({ $ })
-			chat.cancel_rect = ()=> ({ left: 100, right: 200, top: 10, bottom: 50, width: 100, height: 40 })
+			chat.voice_ready = ()=> true
+			chat.$.$bog_gram_voice = class extends $bog_gram_voice {
+				static override supported() { return true }
+			} as any
 
-			$mol_assert_equal( chat.voice_on_cancel( { clientX: 150, clientY: 30 } as PointerEvent ), true )
-			$mol_assert_equal( chat.voice_on_cancel( { clientX: 250, clientY: 30 } as PointerEvent ), false )
-			$mol_assert_equal( chat.voice_on_cancel( { clientX: 150, clientY: 60 } as PointerEvent ), false )
-			$mol_assert_equal( chat.voice_on_cancel(), false )
+			const begun = [] as string[]
+			chat.record_begin = ()=> { begun.push( chat.record_mode() ); return null }
+
+			const mode = chat.record_mode()
+
+			chat.voice_press( { clientX: 0, clientY: 0 } as PointerEvent )
+			chat.voice_release()
+			$mol_assert_equal( chat.record_mode(), mode === 'voice' ? 'round' : 'voice' )
+
+			chat.voice_press( { clientX: 0, clientY: 0 } as PointerEvent )
+			chat.voice_release()
+			$mol_assert_equal( chat.record_mode(), mode )
+			$mol_assert_equal( begun, [] )
+
+			chat.voice_press( { clientX: 0, clientY: 0 } as PointerEvent )
+			chat.tap_timer!.task()
+			$mol_assert_equal( begun, [ mode ] )
 
 		},
 
@@ -182,7 +212,7 @@ namespace $.$$ {
 				const session = ( await $mol_wire_async( $.$giper_baza_glob ).land_grab() ).Data( $bog_gram_session )
 				const talk = $bog_gram_talk.make({ $: context, session: ()=> session, mates: ()=> saved ? [] : [ 'LordLost' ], saved_is: ()=> saved })
 				const people = $bog_gram_people.make({ $: context, pass_of: ()=> lost ? null : {} as $giper_baza_auth_pass, label: ()=> 'Борис' })
-				const chat = $bog_gram_chat.make({ $: context, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
+				const chat = $bog_gram_chat.make({ $: context, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', kind_round: ()=> 'Round', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', my_lord: ()=> 'LordMe', Talk: ()=> talk, People: ()=> people })
 				chat.land_closed = ()=> $giper_baza_land.make({ $ }).Data( $giper_baza_file )
 				const widths = ()=> ( session.Messages()?.remote_list() ?? [] ).map( message => [
 					message.Image_width()?.val(),
@@ -218,14 +248,18 @@ namespace $.$$ {
 				pass_of: ( lord: string )=> lord === 'LordKnown' ? pass : null,
 				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
 			})
-			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people })
+			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', kind_round: ()=> 'Round', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people })
 
 			$mol_assert_equal( chat.image_send( new File( [], 'a.jpg', { type: 'image/jpeg' } ) ), '' )
 			$mol_assert_equal( chat.voice_hint(), 'Photo: no key for Борис' )
 
 			chat.voice_hint( '' )
-			$mol_assert_equal( chat.voice_send( {} as $bog_gram_voice ), '' )
+			$mol_assert_equal( chat.voice_send( { kind: ()=> 'voice' } as $bog_gram_voice ), '' )
 			$mol_assert_equal( chat.voice_hint(), 'Voice: no key for Борис' )
+
+			chat.voice_hint( '' )
+			$mol_assert_equal( chat.voice_send( { kind: ()=> 'round' } as $bog_gram_voice ), '' )
+			$mol_assert_equal( chat.voice_hint(), 'Round: no key for Борис' )
 
 			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
 
@@ -241,7 +275,7 @@ namespace $.$$ {
 				label: ( lord: string )=> lord === 'LordLost' ? 'Борис' : 'Алиса',
 			})
 			let opened = 0
-			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people, call_open: ()=> ++ opened })
+			const chat = $bog_gram_chat.make({ $, lost_pattern: ()=> '{what}: no key for {names}', kind_photo: ()=> 'Photo', kind_voice: ()=> 'Voice', kind_round: ()=> 'Round', call_lost_pattern: ()=> 'Call: no key for {names}', dialog: ()=> 'Dialog', Talk: ()=> talk, People: ()=> people, call_open: ()=> ++ opened })
 
 			$mol_assert_equal( chat.call_send(), '' )
 			$mol_assert_equal( chat.voice_hint(), 'Call: no key for Борис' )

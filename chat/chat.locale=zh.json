@@ -7,7 +7,6 @@
 	"$bog_gram_chat_Edit_banner_text_title": "编辑中",
 	"$bog_gram_chat_Edit_cancel_hint": "取消编辑",
 	"$bog_gram_chat_Message_field_hint": "消息…",
-	"$bog_gram_chat_voice_cancel_label": "取消",
 	"$bog_gram_chat_voice_denied": "麦克风不可用：请在浏览器设置中允许录音",
 	"$bog_gram_chat_voice_short": "时间太短，录音已取消",
 	"$bog_gram_chat_call_lost_pattern": "通话未开始：密钥未送达 — {names}。请稍后再拨",
@@ -26,8 +25,13 @@
 	"$bog_gram_chat_video_over_pattern": "视频太大：压缩后为 {size} MB，上限为 {limit} MB",
 	"$bog_gram_chat_Attach_hint": "发送照片或视频",
 	"$bog_gram_chat_Send_hint": "发送",
-	"$bog_gram_chat_Voice_hint": "按住录音",
-	"$bog_gram_chat_Voice_cancel_hint": "在此松开以取消",
 	"$bog_gram_chat_kind_contact": "联系人",
-	"$bog_gram_chat_Share_hint": "分享此联系人"
+	"$bog_gram_chat_Share_hint": "分享此联系人",
+	"$bog_gram_chat_record_slide_text": "← 左滑取消 · ↑ 上滑锁定",
+	"$bog_gram_chat_kind_round": "视频消息",
+	"$bog_gram_chat_voice_mode_hint": "按住录制语音，轻点切换为视频消息",
+	"$bog_gram_chat_round_mode_hint": "按住录制视频消息，轻点切换为语音",
+	"$bog_gram_chat_Record_drop_hint": "删除录音",
+	"$bog_gram_chat_Record_stop_hint": "停止并试听",
+	"$bog_gram_chat_Record_send_hint": "发送录音"
 }

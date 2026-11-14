@@ -42,5 +42,6 @@
 	"$bog_gram_text_forward_lost": "Не переслано: ключ не доехал — {names}. Попробуйте чуть позже",
 	"$bog_gram_text_forward_unloaded": "Вложение ещё не загрузилось: откройте его и повторите",
 	"$bog_gram_text_contact_unknown": "Ключ этого человека пока неизвестен, делиться нечем",
-	"$bog_gram_text_talk_contact": "Контакт"
+	"$bog_gram_text_talk_contact": "Контакт",
+	"$bog_gram_text_talk_round": "Кружок"
 }

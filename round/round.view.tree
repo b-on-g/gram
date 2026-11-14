@@ -1,0 +1,27 @@
+$bog_gram_round $mol_view
+	uri \
+	span 0
+	playing false
+	toggle? null
+	ended? null
+	event *
+		^
+		click? <=> toggle?
+	style *
+		^
+		--bog_gram_round_share <= share \0
+	sub /
+		<= Video $mol_video_player
+			uri <= uri
+			controls false
+			autoplay false
+			event *
+				^
+				ended? <=> ended?
+		<= Ring $mol_view
+		<= Stamp $mol_view
+			sub /
+				<= stamp \
+		<= Play $mol_view
+			sub /
+				<= Play_icon $mol_icon_play

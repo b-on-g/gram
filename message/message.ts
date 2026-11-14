@@ -15,6 +15,8 @@ namespace $ {
 		Video: $bog_gram_link_synced( ()=> $giper_baza_file ),
 		Video_width: $giper_baza_atom_real,
 		Video_height: $giper_baza_atom_real,
+		Round: $bog_gram_link_synced( ()=> $giper_baza_file ),
+		Round_span: $giper_baza_atom_real,
 		Reply: $giper_baza_atom_text,
 		Call: $giper_baza_atom_link,
 		Forwarded: $giper_baza_atom_bool,

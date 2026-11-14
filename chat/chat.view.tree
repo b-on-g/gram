@@ -32,6 +32,9 @@ $bog_gram_chat $bog_gram_page
 	kind_voice @ \Voice message
 	kind_video @ \Video
 	kind_contact @ \Contact
+	kind_round @ \Video message
+	record_mode? \voice
+	record_stream? null
 	reply_pattern @ \Reply to {name}
 	video_failed @ \Video was not sent
 	images_capped_pattern @ \Only the first {limit} photos were sent: at most {limit} at a time
@@ -128,6 +131,10 @@ $bog_gram_chat $bog_gram_page
 						<= Edit_cancel_icon $mol_icon_close
 		<= Voice_note $mol_paragraph
 			title <= voice_hint
+		<= Round_live $mol_video_player
+			stream <= record_stream?
+			controls false
+			muted true
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
@@ -148,26 +155,55 @@ $bog_gram_chat $bog_gram_page
 		sub /
 			<= Send_icon $mol_icon_send
 	Voice $bog_gram_hold
-		hint @ \Hold to record
+		hint <= voice_hint_text \
 		press? <=> voice_press? null
+		move? <=> voice_move? null
 		release? <=> voice_release? null
-		abort? <=> voice_cancel? null
+		abort? <=> voice_abort? null
 		sub /
-			<= Voice_icon $mol_icon_microphone
+			<= record_icon $mol_icon_microphone
+	voice_mode_hint @ \Hold to record a voice message, tap for a video message
+	round_mode_hint @ \Hold to record a video message, tap for a voice message
+	Voice_icon $mol_icon_microphone
+	Round_icon $mol_icon_video
 	Record_state $mol_view
 		sub /
 			<= Record_dot $mol_view
 			<= Record_time $mol_view
 				sub /
 					<= voice_clock
-	Voice_cancel $mol_button_minor
-		hint @ \Release here to cancel
-		click? <=> voice_cancel?
+	Record_slide $mol_view
 		sub /
-			<= Voice_cancel_icon $mol_icon_close
-			<= Voice_cancel_text $mol_view
-				sub /
-					<= voice_cancel_label @ \Cancel
+			<= record_slide_text @ \← slide to cancel · ↑ to lock
+	Record_drop $mol_button_minor
+		hint @ \Delete recording
+		click? <=> voice_cancel? null
+		sub /
+			<= Record_drop_icon $mol_icon_delete
+	Record_stop $mol_button_minor
+		hint @ \Stop and listen
+		click? <=> record_stop? null
+		sub /
+			<= Record_stop_icon $mol_icon_stop
+	Record_send $mol_button_major
+		hint @ \Send recording
+		click? <=> record_send? null
+		sub /
+			<= Record_send_icon $mol_icon_send
+	Draft $mol_view
+		sub <= draft_sub /
+	Draft_sound $bog_gram_sound
+		uri <= draft_uri \
+		span <= draft_span 0
+		playing <= draft_playing? false
+		toggle? <=> draft_toggle? null
+		ended? <=> draft_ended? null
+	Draft_round $bog_gram_round
+		uri <= draft_uri
+		span <= draft_span
+		playing <= draft_playing?
+		toggle? <=> draft_toggle?
+		ended? <=> draft_ended?
 	Line* $mol_view
 		minimal_height 48
 		sub <= line_content* /
@@ -197,6 +233,11 @@ $bog_gram_chat $bog_gram_page
 		sound_playing <= message_sound_playing* false
 		sound_toggle? <=> message_sound_toggle*? null
 		sound_ended? <=> message_sound_ended*? null
+		round <= message_round* false
+		round_uri <= message_round_uri* \
+		round_span <= message_round_span* 0
+		round_toggle? <=> message_sound_toggle*?
+		round_ended? <=> message_sound_ended*?
 		video <= message_video* false
 		video_uri <= message_video_uri* \
 		video_ratio <= message_video_ratio* 1.78

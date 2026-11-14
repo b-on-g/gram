@@ -12,6 +12,20 @@ namespace $.$$ {
 
 	const image_limit = 10
 
+	const tap_limit = 250
+
+	const slide_cancel = 96
+
+	const slide_lock = 72
+
+	export function $bog_gram_chat_record_shift( from: { x: number, y: number }, to: { clientX: number, clientY: number } ) {
+		const dx = to.clientX - from.x
+		const dy = to.clientY - from.y
+		if( dx < -slide_cancel && -dx > -dy ) return 'cancel'
+		if( dy < -slide_lock && -dy >= -dx ) return 'lock'
+		return ''
+	}
+
 	export class $bog_gram_chat extends $.$bog_gram_chat {
 
 		saved() {
@@ -452,6 +466,7 @@ namespace $.$$ {
 			if( pawn.Image()?.val() ) return this.kind_photo()
 			if( pawn.Voice()?.val() ) return this.kind_voice()
 			if( pawn.Video()?.val() ) return this.kind_video()
+			if( pawn.Round()?.val() ) return this.kind_round()
 			if( pawn.Contact()?.val() ) return this.kind_contact()
 
 			return ''
@@ -917,13 +932,39 @@ namespace $.$$ {
 		}
 
 		override voice_ready() {
-			return this.$.$bog_gram_voice.supported()
+			const voice = this.$.$bog_gram_voice
+			return voice.supported( 'voice' ) || voice.supported( 'round' )
+		}
+
+		@ $mol_mem
+		override record_mode( next?: $bog_gram_voice_kind ): $bog_gram_voice_kind {
+			const mode = this.$.$mol_state_local.value< $bog_gram_voice_kind >( 'bog_gram_record_mode', next ) ?? 'voice'
+			if( this.$.$bog_gram_voice.supported( mode ) ) return mode
+			return mode === 'voice' ? 'round' : 'voice'
+		}
+
+		override record_icon() {
+			return this.record_mode() === 'round' ? this.Round_icon() : this.Voice_icon()
+		}
+
+		override voice_hint_text() {
+			return this.record_mode() === 'round' ? this.round_mode_hint() : this.voice_mode_hint()
+		}
+
+		record_toggle() {
+			const next = this.record_mode() === 'voice' ? 'round' : 'voice'
+			if( this.$.$bog_gram_voice.supported( next ) ) this.record_mode( next )
 		}
 
 		voice_live: $bog_gram_voice | null = null
 
+		@ $mol_mem
+		record_phase( next?: '' | 'hold' | 'locked' | 'review' ) {
+			return next ?? ''
+		}
+
 		override voice_on() {
-			return Boolean( this.voice_start() )
+			return Boolean( this.record_phase() )
 		}
 
 		@ $mol_mem
@@ -936,6 +977,10 @@ namespace $.$$ {
 
 		override Voice_note() {
 			return this.voice_hint() ? super.Voice_note() : null!
+		}
+
+		override Round_live() {
+			return this.record_stream() ? super.Round_live() : null!
 		}
 
 		send_is() {
@@ -954,23 +999,57 @@ namespace $.$$ {
 
 		@ $mol_mem
 		override send_tools() {
-			if( this.voice_on() ) return [ this.Record_state(), this.Voice_cancel(), this.Voice() ]
+			switch( this.record_phase() ) {
+				case 'hold': return [ this.Record_state(), this.Record_slide(), this.Voice() ]
+				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_stop(), this.Record_send() ]
+				case 'review': return [ this.Record_drop(), this.Draft(), this.Record_send() ]
+			}
 			return [ this.Attach(), this.Message_box(), this.Send(), this.Voice() ]
 		}
 
-		@ $mol_action
-		override voice_press( next?: Event ) {
+		press_at = { x: 0, y: 0 }
 
-			if( this.voice_live ) return null
+		tap_timer: $mol_after_timeout | null = null
+
+		tap_stop() {
+			const pending = Boolean( this.tap_timer )
+			this.tap_timer?.destructor()
+			this.tap_timer = null
+			return pending
+		}
+
+		@ $mol_action
+		override voice_press( next?: PointerEvent ) {
+
+			if( this.record_phase() ) return null
 			if( !this.voice_ready() ) return null
 
+			this.press_at = { x: next?.clientX ?? 0, y: next?.clientY ?? 0 }
+
+			this.tap_stop()
+			this.tap_timer = new this.$.$mol_after_timeout( tap_limit, ()=> this.record_begin() )
+
+			return null
+		}
+
+		@ $mol_action
+		record_begin() {
+
+			this.tap_timer = null
+
+			const kind = this.record_mode()
 			const take = this.$.$bog_gram_voice.make({
-				filled: ()=> this.voice_finish(),
+				kind: ()=> kind,
+				filled: ()=> this.record_send(),
+				opened: ( stream: MediaStream )=> {
+					if( kind === 'round' && this.voice_live === take ) this.record_stream( stream )
+				},
 			})
 
 			this.voice_live = take
 			this.voice_hint( '' )
 			this.voice_start( Date.now() )
+			this.record_phase( 'hold' )
 
 			$mol_wire_async( this ).voice_open( take )
 
@@ -986,10 +1065,7 @@ namespace $.$$ {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				$mol_fail_log( error )
 
-				if( this.voice_live === take ) {
-					this.voice_live = null
-					this.voice_start( 0 )
-				}
+				if( this.voice_live === take ) this.record_reset()
 
 				this.voice_hint( this.voice_denied() )
 
@@ -999,65 +1075,162 @@ namespace $.$$ {
 			return true
 		}
 
-		@ $mol_mem
-		cancel_rect() {
-			if( !this.voice_on() ) return null
-			return this.Voice_cancel().view_rect()
-		}
+		@ $mol_action
+		override voice_move( next?: PointerEvent ) {
 
-		voice_on_cancel( next?: Event ) {
+			if( this.record_phase() !== 'hold' || !next ) return null
 
-			const event = next as PointerEvent | undefined
-			if( event?.clientX === undefined ) return false
+			const shift = $bog_gram_chat_record_shift( this.press_at, next )
+			if( shift === 'cancel' ) return this.voice_cancel()
+			if( shift === 'lock' ) this.record_phase( 'locked' )
 
-			const rect = this.cancel_rect()
-			if( !rect ) return false
-
-			if( event.clientX < rect.left || event.clientX > rect.right ) return false
-			if( event.clientY < rect.top || event.clientY > rect.bottom ) return false
-
-			return true
+			return null
 		}
 
 		@ $mol_action
 		override voice_release( next?: Event ) {
-			if( !this.voice_live ) return null
-			if( this.voice_on_cancel( next ) ) return this.voice_cancel()
-			return this.voice_finish()
+
+			if( this.tap_stop() ) {
+				this.record_toggle()
+				return null
+			}
+
+			if( this.record_phase() === 'hold' ) return this.record_send()
+
+			return null
 		}
 
 		@ $mol_action
-		voice_finish() {
+		override voice_abort( next?: Event ) {
+			if( this.tap_stop() ) return null
+			if( this.record_phase() === 'hold' ) return this.voice_cancel()
+			return null
+		}
+
+		record_reset() {
+			this.voice_live = null
+			this.voice_start( 0 )
+			this.record_phase( '' )
+			this.record_stream( null )
+			this.record_draft( null )
+			this.draft_playing( false )
+		}
+
+		@ $mol_action
+		override voice_cancel( next?: any ) {
+			const take = this.voice_live
+			this.record_reset()
+			take?.drop()
+			return null
+		}
+
+		@ $mol_action
+		override record_stop( next?: any ) {
 
 			const take = this.voice_live
 			if( !take ) return null
 
-			this.voice_live = null
-			this.voice_start( 0 )
 			take.stop()
+			this.voice_start( 0 )
+			this.record_stream( null )
+			this.record_phase( 'review' )
+
+			$mol_wire_async( this ).draft_load( take )
+
+			return null
+		}
+
+		draft_load( take: $bog_gram_voice ) {
+
+			const result = $mol_wire_sync( take ).take()
+			if( this.voice_live !== take ) return null
+
+			if( !result ) {
+				this.voice_hint( this.voice_short() )
+				this.record_reset()
+				return null
+			}
+
+			this.record_draft({ ... result, kind: take.kind() })
+
+			return null
+		}
+
+		@ $mol_mem
+		record_draft( next?: ( $bog_gram_voice_take & { kind: $bog_gram_voice_kind } ) | null ) {
+			return next ?? null
+		}
+
+		draft_url = ''
+
+		@ $mol_mem
+		override draft_uri() {
+
+			if( this.draft_url ) URL.revokeObjectURL( this.draft_url )
+			this.draft_url = ''
+
+			const draft = this.record_draft()
+			if( !draft ) return ''
+
+			this.draft_url = URL.createObjectURL( new Blob( [ draft.bytes ], { type: draft.type } ) )
+			return this.draft_url
+		}
+
+		override draft_span() {
+			return this.record_draft()?.span ?? 0
+		}
+
+		override draft_sub() {
+			const draft = this.record_draft()
+			if( !draft ) return [ this.Record_state() ]
+			return [ draft.kind === 'round' ? this.Draft_round() : this.Draft_sound() ]
+		}
+
+		draft_player() {
+			return ( this.record_draft()?.kind === 'round' ? this.Draft_round() : this.Draft_sound() ) as $.$$.$bog_gram_round | $.$$.$bog_gram_sound
+		}
+
+		@ $mol_action
+		override draft_toggle( next?: any ) {
+			const playing = !this.draft_playing()
+			this.draft_playing( playing )
+			if( playing ) this.draft_player().start()
+			else this.draft_player().stop()
+			return null
+		}
+
+		@ $mol_action
+		override draft_ended( next?: any ) {
+			this.draft_playing( false )
+			return null
+		}
+
+		@ $mol_action
+		override record_send( next?: any ) {
+
+			const take = this.voice_live
+			if( !take ) return null
+
+			if( this.draft_playing() ) this.draft_player().stop()
+
+			take.stop()
+			this.record_reset()
 
 			$mol_wire_async( this ).voice_send( take )
 
 			return null
 		}
 
-		@ $mol_action
-		override voice_cancel( next?: any ) {
-			const take = this.voice_live
-			this.voice_live = null
-			this.voice_start( 0 )
-			take?.drop()
-			return null
-		}
-
 		voice_send( take: $bog_gram_voice ) {
+
+			const round = take.kind() === 'round'
 
 			const session = this.Talk().session( this.dialog() )
 			if( !session ) return ''
 
 			const passes = this.passes()
 			if( !passes ) {
-				this.voice_hint( this.lost_hint( this.kind_voice() ) )
+				this.voice_hint( this.lost_hint( round ? this.kind_round() : this.kind_voice() ) )
 				return ''
 			}
 
@@ -1070,14 +1243,34 @@ namespace $.$$ {
 			const store = this.land_closed( sound.bytes, sound.type, passes )
 			const message = session.Messages( 'auto' )!.make( null )
 
-			message.Voice( 'auto' )!.remote( store )
-			message.Voice_span( 'auto' )?.val( sound.span )
+			if( round ) {
+				message.Round( 'auto' )!.remote( store )
+				message.Round_span( 'auto' )?.val( sound.span )
+			} else {
+				message.Voice( 'auto' )!.remote( store )
+				message.Voice_span( 'auto' )?.val( sound.span )
+			}
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
 
 			this.voice_hint( '' )
 
 			return message.link().str
+		}
+
+		@ $mol_mem_key
+		override message_round( id: string ) {
+			return Boolean( this.message_pawn( id )?.Round()?.val() )
+		}
+
+		@ $mol_mem_key
+		override message_round_span( id: string ) {
+			return Number( this.message_pawn( id )?.Round_span()?.val() ?? 0 )
+		}
+
+		@ $mol_mem_key
+		override message_round_uri( id: string ) {
+			return $bog_gram_soft( ()=> this.file_uri( this.message_pawn( id )?.Round()?.remote() ), '' )
 		}
 
 		@ $mol_mem_key
@@ -1110,7 +1303,7 @@ namespace $.$$ {
 			const now = this.voice_playing()
 			if( now ) this.bubble( now ).sound_stop()
 
-			if( now === id || !this.message_sound_uri( id ) ) {
+			if( now === id || !( this.message_sound_uri( id ) || this.message_round_uri( id ) ) ) {
 				this.voice_playing( '' )
 				return null
 			}
@@ -1239,7 +1432,6 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.field_focus(), false )
 			$bog_gram_soft( ()=> this.stick_watch(), 0 )
 			$bog_gram_soft( ()=> this.stick_hold(), 0 )
-			$bog_gram_soft( ()=> this.cancel_rect(), null )
 			$bog_gram_soft( ()=> this.follow(), undefined )
 		}
 

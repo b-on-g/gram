@@ -42,5 +42,6 @@
 	"$bog_gram_text_forward_lost": "未转发：密钥尚未送达 — {names}。请稍后再试",
 	"$bog_gram_text_forward_unloaded": "附件尚未加载：请先打开它再重试",
 	"$bog_gram_text_contact_unknown": "尚不知道此人的密钥，无法分享",
-	"$bog_gram_text_talk_contact": "联系人"
+	"$bog_gram_text_talk_contact": "联系人",
+	"$bog_gram_text_talk_round": "视频消息"
 }

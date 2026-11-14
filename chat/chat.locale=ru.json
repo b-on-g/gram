@@ -7,7 +7,6 @@
 	"$bog_gram_chat_Edit_banner_text_title": "Редактирование",
 	"$bog_gram_chat_Edit_cancel_hint": "Отменить правку",
 	"$bog_gram_chat_Message_field_hint": "Сообщение…",
-	"$bog_gram_chat_voice_cancel_label": "Отмена",
 	"$bog_gram_chat_voice_denied": "Микрофон недоступен: разрешите запись в настройках браузера",
 	"$bog_gram_chat_voice_short": "Слишком коротко — запись отменена",
 	"$bog_gram_chat_call_lost_pattern": "Звонок не начат: не доехал ключ — {names}. Позвоните ещё раз чуть позже",
@@ -26,8 +25,13 @@
 	"$bog_gram_chat_video_over_pattern": "Видео не влезает: после сжатия {size} МБ, можно до {limit} МБ",
 	"$bog_gram_chat_Attach_hint": "Отправить фото или видео",
 	"$bog_gram_chat_Send_hint": "Отправить",
-	"$bog_gram_chat_Voice_hint": "Удерживайте для записи",
-	"$bog_gram_chat_Voice_cancel_hint": "Отпустите здесь, чтобы отменить",
 	"$bog_gram_chat_kind_contact": "Контакт",
-	"$bog_gram_chat_Share_hint": "Поделиться этим контактом"
+	"$bog_gram_chat_Share_hint": "Поделиться этим контактом",
+	"$bog_gram_chat_record_slide_text": "← влево — отмена · ↑ вверх — закрепить",
+	"$bog_gram_chat_kind_round": "Кружок",
+	"$bog_gram_chat_voice_mode_hint": "Удерживайте для голосового, тап — переключить на кружок",
+	"$bog_gram_chat_round_mode_hint": "Удерживайте для кружка, тап — переключить на голосовое",
+	"$bog_gram_chat_Record_drop_hint": "Удалить запись",
+	"$bog_gram_chat_Record_stop_hint": "Остановить и прослушать",
+	"$bog_gram_chat_Record_send_hint": "Отправить запись"
 }

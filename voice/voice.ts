@@ -1,10 +1,21 @@
 namespace $ {
 
-	const rate = 32000
+	export type $bog_gram_voice_kind = 'voice' | 'round'
 
-	const types = [ 'audio/webm;codecs=opus', 'audio/webm', 'audio/mp4' ]
-
-	const span_limit = 5 * 60
+	const kinds = {
+		voice: {
+			types: [ 'audio/webm;codecs=opus', 'audio/webm', 'audio/mp4' ],
+			audio: 32_000,
+			video: 0,
+			limit: 5 * 60,
+		},
+		round: {
+			types: [ 'video/mp4;codecs=avc1,mp4a', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm' ],
+			audio: 64_000,
+			video: 1_000_000,
+			limit: 60,
+		},
+	}
 
 	const span_min = 0.7
 
@@ -28,18 +39,32 @@ namespace $ {
 			return min + ':' + String( sec ).padStart( 2, '0' )
 		}
 
-		static type() {
+		static type( kind: $bog_gram_voice_kind = 'voice' ) {
 			const maker = $mol_dom_context.MediaRecorder
 			if( !maker ) return ''
-			return types.find( type => maker.isTypeSupported( type ) ) ?? ''
+			return kinds[ kind ].types.find( type => maker.isTypeSupported( type ) ) ?? ''
 		}
 
-		static supported() {
+		static supported( kind: $bog_gram_voice_kind = 'voice' ) {
 			if( !$mol_dom_context.navigator?.mediaDevices?.getUserMedia ) return false
-			return Boolean( this.type() )
+			return Boolean( this.type( kind ) )
+		}
+
+		static constraints( kind: $bog_gram_voice_kind ): MediaStreamConstraints {
+			if( kind === 'voice' ) return { audio: true }
+			return {
+				audio: true,
+				video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } },
+			}
+		}
+
+		kind(): $bog_gram_voice_kind {
+			return 'voice'
 		}
 
 		filled = ()=> {}
+
+		opened = ( stream: MediaStream )=> {}
 
 		done = ( take: $bog_gram_voice_take | null )=> {}
 		result = new Promise< $bog_gram_voice_take | null >( done => { this.done = done } )
@@ -61,10 +86,13 @@ namespace $ {
 
 		async open_run() {
 
-			const type = $bog_gram_voice.type()
+			const kind = this.kind()
+			const setup = kinds[ kind ]
+
+			const type = $bog_gram_voice.type( kind )
 			if( !type ) throw new Error( this.Text().voice_unsupported() )
 
-			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ audio: true })
+			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia( $bog_gram_voice.constraints( kind ) )
 
 			if( this.asked ) {
 				this.hush( stream )
@@ -76,7 +104,8 @@ namespace $ {
 
 			const recorder = new $mol_dom_context.MediaRecorder( stream, {
 				mimeType: type,
-				audioBitsPerSecond: rate,
+				audioBitsPerSecond: setup.audio,
+				... setup.video ? { videoBitsPerSecond: setup.video } : {},
 			} )
 
 			recorder.ondataavailable = event => {
@@ -95,8 +124,9 @@ namespace $ {
 			this.moment = Date.now()
 
 			recorder.start()
+			this.opened( stream )
 
-			this.limit = $mol_dom_context.setTimeout( ()=> this.filled(), span_limit * 1000 )
+			this.limit = $mol_dom_context.setTimeout( ()=> this.filled(), setup.limit * 1000 )
 
 			return true
 		}

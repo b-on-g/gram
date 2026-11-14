@@ -113,13 +113,15 @@ namespace $ {
 			const frames = this.frames( source ).map( frame => ({ ... frame, data: this.file( frame.file ) }) )
 			const voice = source.Voice()?.val() ? this.file( source.Voice()?.remote() ) : null
 			const video = source.Video()?.val() ? this.file( source.Video()?.remote() ) : null
+			const round = source.Round()?.val() ? this.file( source.Round()?.remote() ) : null
 
 			const unloaded = frames.some( frame => !frame.data )
 				|| ( Boolean( source.Voice()?.val() ) && !voice )
 				|| ( Boolean( source.Video()?.val() ) && !video )
+				|| ( Boolean( source.Round()?.val() ) && !round )
 			if( unloaded ) return this.fail( this.Text().forward_unloaded() )
 
-			const passes = frames.length || voice || video ? this.passes( target ) : []
+			const passes = frames.length || voice || video || round ? this.passes( target ) : []
 			if( !passes ) return this.fail( $bog_gram_text_fill( this.Text().forward_lost(), { names: this.lost( target ) } ) )
 
 			const message = this.message( target )
@@ -161,6 +163,11 @@ namespace $ {
 					message.Video_width( 'auto' )?.val( width )
 					message.Video_height( 'auto' )?.val( height )
 				}
+			}
+
+			if( round ) {
+				message.Round( 'auto' )!.remote( this.closed( round, passes ) )
+				message.Round_span( 'auto' )?.val( Number( source.Round_span()?.val() ?? 0 ) )
 			}
 
 			const contact = String( source.Contact()?.val() ?? '' )
