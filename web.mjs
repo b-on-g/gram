@@ -59940,6 +59940,39 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_locale_select) = class $mol_locale_select extends ($.$mol_select) {
+		langs(){
+			return ["en"];
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_locale_select extends $.$mol_locale_select {
+            value(next) {
+                return this.$.$mol_locale.lang(next);
+            }
+            dictionary(next) {
+                return next ?? Object.fromEntries(this.langs().map(code => [code, code]));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_locale_select.prototype, "dictionary", null);
+        $$.$mol_locale_select = $mol_locale_select;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_settings) = class $bog_gram_settings extends ($.$bog_gram_page) {
 		Close_icon(){
 			const obj = new this.$.$mol_icon_close();
@@ -59952,8 +59985,12 @@ var $;
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
+		install_content(){
+			return [];
+		}
 		Install(){
 			const obj = new this.$.$bog_install();
+			(obj.content) = () => ((this.install_content()));
 			return obj;
 		}
 		version(){
@@ -60281,6 +60318,16 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		Lang(){
+			const obj = new this.$.$mol_locale_select();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Lang_hint")));
+			(obj.dictionary) = () => ({
+				"en": "English", 
+				"ru": "Русский", 
+				"zh": "中文"
+			});
+			return obj;
+		}
 		tools(){
 			return [(this.Close())];
 		}
@@ -60385,6 +60432,7 @@ var $;
 	($mol_mem_key(($.$bog_gram_settings.prototype), "registry_join"));
 	($mol_mem_key(($.$bog_gram_settings.prototype), "registry_forget"));
 	($mol_mem(($.$bog_gram_settings.prototype), "close"));
+	($mol_mem(($.$bog_gram_settings.prototype), "Lang"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_empty"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_list"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Registry_note"));
@@ -60441,7 +60489,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.165';
+    $.$bog_gram_version = '1.0.166';
 })($ || ($ = {}));
 
 ;
@@ -60480,6 +60528,9 @@ var $;
             }
             version() {
                 return $bog_gram_version;
+            }
+            install_content() {
+                return [this.Install().Install_button(), this.Lang()];
             }
             Notify_toggle() {
                 return this.notify_supported() ? super.Notify_toggle() : null;

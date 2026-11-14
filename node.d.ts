@@ -64433,6 +64433,27 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+
+	type $mol_locale_select_langs__1 = $mol_type_enforce<
+		`en`
+		,
+		string
+	>
+	export class $mol_locale_select extends $mol_select {
+		langs( ): readonly(string)[]
+	}
+	
+}
+
+//# sourceMappingURL=select.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $mol_locale_select extends $.$mol_locale_select {
+        value(next?: string): string;
+        dictionary(next?: Record<string, string>): Record<string, string>;
+    }
+}
+
+declare namespace $ {
     class $bog_gram_follow extends $mol_object {
         static keys: readonly ["invite", "key", "join", "by", "users", "settings", "music"];
         static params(uri: string): Record<string, string>;
@@ -64442,7 +64463,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.165";
+    const $bog_gram_version = "1.0.166";
 }
 
 declare namespace $ {
@@ -64462,357 +64483,376 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_4 = $mol_type_enforce<
+	type $bog_install__content_bog_gram_settings_4 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['install_content'] >
+		,
+		ReturnType< $bog_install['content'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_5 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['version'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_5 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_6 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_6 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_7 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_button_minor__title_bog_gram_settings_7 = $mol_type_enforce<
+	type $mol_button_minor__title_bog_gram_settings_8 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['title'] >
 	>
-	type $mol_button_minor__click_bog_gram_settings_8 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_settings_9 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['logs'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_9 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_10 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_10 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_11 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $bog_gram_field__hint_bog_gram_settings_11 = $mol_type_enforce<
+	type $bog_gram_field__hint_bog_gram_settings_12 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_field['hint'] >
 	>
-	type $bog_gram_field__value_bog_gram_settings_12 = $mol_type_enforce<
+	type $bog_gram_field__value_bog_gram_settings_13 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['user_name'] >
 		,
 		ReturnType< $bog_gram_field['value'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_13 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_14 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['my_lord'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_copy__title_bog_gram_settings_14 = $mol_type_enforce<
+	type $mol_button_copy__title_bog_gram_settings_15 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['title'] >
 	>
-	type $mol_button_copy__text_bog_gram_settings_15 = $mol_type_enforce<
+	type $mol_button_copy__text_bog_gram_settings_16 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['my_lord'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_16 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_17 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_17 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_18 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_18 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_19 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_19 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_20 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['invite_link'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_copy__title_bog_gram_settings_20 = $mol_type_enforce<
+	type $mol_button_copy__title_bog_gram_settings_21 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['title'] >
 	>
-	type $mol_button_copy__text_bog_gram_settings_21 = $mol_type_enforce<
+	type $mol_button_copy__text_bog_gram_settings_22 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['invite_link'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
 	>
-	type $bog_qr__uri_bog_gram_settings_22 = $mol_type_enforce<
+	type $bog_qr__uri_bog_gram_settings_23 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['invite_link'] >
 		,
 		ReturnType< $bog_qr['uri'] >
 	>
-	type $bog_qr__gradient_stops_bog_gram_settings_23 = $mol_type_enforce<
+	type $bog_qr__gradient_stops_bog_gram_settings_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_qr['gradient_stops'] >
 	>
-	type $mol_view__sub_bog_gram_settings_24 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_25 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_25 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_26 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $bog_gram_scan__toggle_title_bog_gram_settings_26 = $mol_type_enforce<
+	type $bog_gram_scan__toggle_title_bog_gram_settings_27 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_scan['toggle_title'] >
 	>
-	type $bog_gram_scan__prefix_bog_gram_settings_27 = $mol_type_enforce<
+	type $bog_gram_scan__prefix_bog_gram_settings_28 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_scan['prefix'] >
 	>
-	type $bog_gram_scan__found_bog_gram_settings_28 = $mol_type_enforce<
+	type $bog_gram_scan__found_bog_gram_settings_29 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['follow'] >
 		,
 		ReturnType< $bog_gram_scan['found'] >
 	>
-	type $mol_string__hint_bog_gram_settings_29 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_settings_30 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_settings_30 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_settings_31 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['paste_uri'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_settings_31 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_settings_32 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['paste_open'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__click_bog_gram_settings_32 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_settings_33 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['paste_open'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_settings_33 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_settings_34 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_settings_34 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_35 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_35 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_36 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['paste_error'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_settings_36 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_37 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_37 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_38 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_38 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_39 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_39 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_40 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['notify_status'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_major__click_bog_gram_settings_40 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_settings_41 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['notify_toggle'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_settings_41 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_settings_42 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_settings_42 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_43 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_43 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_44 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_44 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_45 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_45 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_46 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_46 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_47 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_content'] >
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $bog_gram_settings_key__notify_on_bog_gram_settings_47 = $mol_type_enforce<
+	type $bog_gram_settings_key__notify_on_bog_gram_settings_48 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['notify_on'] >
 		,
 		ReturnType< $bog_gram_settings_key['notify_on'] >
 	>
-	type $mol_labeler__title_bog_gram_settings_48 = $mol_type_enforce<
+	type $mol_labeler__title_bog_gram_settings_49 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_labeler__content_bog_gram_settings_49 = $mol_type_enforce<
+	type $mol_labeler__content_bog_gram_settings_50 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_labeler['content'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_50 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_51 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_copy__title_bog_gram_settings_51 = $mol_type_enforce<
+	type $mol_button_copy__title_bog_gram_settings_52 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['title'] >
 	>
-	type $mol_button_copy__text_bog_gram_settings_52 = $mol_type_enforce<
+	type $mol_button_copy__text_bog_gram_settings_53 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_uri'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
 	>
-	type $mol_string__hint_bog_gram_settings_53 = $mol_type_enforce<
+	type $mol_string__hint_bog_gram_settings_54 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_string['hint'] >
 	>
-	type $mol_string__value_bog_gram_settings_54 = $mol_type_enforce<
+	type $mol_string__value_bog_gram_settings_55 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_name'] >
 		,
 		ReturnType< $mol_string['value'] >
 	>
-	type $mol_string__submit_bog_gram_settings_55 = $mol_type_enforce<
+	type $mol_string__submit_bog_gram_settings_56 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_make'] >
 		,
 		ReturnType< $mol_string['submit'] >
 	>
-	type $mol_button_major__click_bog_gram_settings_56 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_settings_57 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_make'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_settings_57 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_settings_58 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_settings_58 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_settings_59 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_settings_59 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_settings_60 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_join'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_settings_60 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_settings_61 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_settings_61 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_settings_62 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_settings_62 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_settings_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_forget'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_settings_63 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_settings_64 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_64 = $mol_type_enforce<
+	type $mol_locale_select__hint_bog_gram_settings_65 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_locale_select['hint'] >
+	>
+	type $mol_locale_select__dictionary_bog_gram_settings_66 = $mol_type_enforce<
+		({ 
+			'en': string,
+			'ru': string,
+			'zh': string,
+		}) 
+		,
+		ReturnType< $mol_locale_select['dictionary'] >
+	>
+	type $mol_paragraph__title_bog_gram_settings_67 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_list__rows_bog_gram_settings_65 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_settings_68 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_66 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_69 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_settings_67 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_70 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_settings_68 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_71 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_row__faced_bog_gram_settings_69 = $mol_type_enforce<
+	type $bog_gram_row__faced_bog_gram_settings_72 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_row['faced'] >
 	>
-	type $bog_gram_row__click_bog_gram_settings_70 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_settings_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_open'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__current_bog_gram_settings_71 = $mol_type_enforce<
+	type $bog_gram_row__current_bog_gram_settings_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_active_is'] >
 		,
 		ReturnType< $bog_gram_row['current'] >
 	>
-	type $bog_gram_row__title_bog_gram_settings_72 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_settings_75 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_title'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_settings_73 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_settings_76 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_status'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__tools_bog_gram_settings_74 = $mol_type_enforce<
+	type $bog_gram_row__tools_bog_gram_settings_77 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_row['tools'] >
@@ -64820,6 +64860,7 @@ declare namespace $ {
 	export class $bog_gram_settings extends $bog_gram_page {
 		Close_icon( ): $mol_icon_close
 		Close( ): $mol_button_minor
+		install_content( ): readonly(any)[]
 		Install( ): $bog_install
 		version( ): string
 		Version_text( ): $mol_paragraph
@@ -64890,6 +64931,7 @@ declare namespace $ {
 		registry_join( id: any, next?: any ): any
 		registry_forget( id: any, next?: any ): any
 		close( next?: any ): any
+		Lang( ): $mol_locale_select
 		tools( ): readonly(any)[]
 		body( ): readonly(any)[]
 		Registry_empty( ): $mol_paragraph
@@ -64910,6 +64952,7 @@ declare namespace $.$$ {
         paste_uri(next?: string): string;
         Paste_error(): $.$mol_paragraph;
         version(): string;
+        install_content(): ($mol_button_major | $.$mol_locale_select)[];
         Notify_toggle(): $mol_button_major;
         Registry_join(id: string): $mol_button_minor;
         registry_rows(): $.$bog_gram_row[];

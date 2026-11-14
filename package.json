@@ -528,6 +528,7 @@
     "$bog_gram_scan",
     "$bog_gram_settings_key",
     "$mol_button_download",
+    "$mol_locale_select",
     "$bog_gram_follow",
     "$bog_gram_version",
     "$bog_gram_logs",
