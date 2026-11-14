@@ -1,11 +1,12 @@
 namespace $ {
 
-	function stand( $: $ ) {
+	async function stand( $: $ ) {
 
 		const from = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
 		const into = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
 
-		const pass = $giper_baza_auth.current().pass()
+		const auth = await $.$giper_baza_auth._generate()
+		const pass = auth.pass()
 
 		const forward = $bog_gram_forward.make({
 			$,
@@ -40,20 +41,20 @@ namespace $ {
 		const sent = ()=> ( ( into.Messages()?.items() ?? [] ) as readonly $giper_baza_link[] )
 			.map( link => into.land().Pawn( $bog_gram_message ).Head( link.head() ) )
 
-		return { forward, write, file, sent }
+		return { forward, write, file, sent, pass }
 	}
 
 	$mol_test({
 
-		'Пересланный текст — копия без автора оригинала и без ответа'( $ ) {
+		async 'Пересланный текст — копия без автора оригинала и без ответа'( $ ) {
 
-			const { forward, write, sent } = stand( $ )
+			const { forward, write, sent } = await stand( $ )
 
 			const source = write()
 			source.Text( 'auto' )?.val( 'привет' )
 			source.Reply( 'auto' )?.val( 'Somewhere' )
 
-			$mol_assert_equal( Boolean( forward.copy( source, 'Target' ) ), true )
+			$mol_assert_equal( Boolean( await $mol_wire_async( forward ).copy( source, 'Target' ) ), true )
 
 			const [ copy ] = sent()
 			$mol_assert_equal( sent().length, 1 )
@@ -66,7 +67,7 @@ namespace $ {
 
 		async 'Кадр пересылается в новый закрытый ленд с теми же байтами'( $ ) {
 
-			const { forward, write, file, sent } = stand( $ )
+			const { forward, write, file, sent } = await stand( $ )
 
 			const source = write()
 			const origin = await $mol_wire_async( file )([ 1, 2, 3 ])
@@ -88,7 +89,7 @@ namespace $ {
 
 		async 'Незагруженное вложение не пересылается и ничего не пишет'( $ ) {
 
-			const { forward, write, file, sent } = stand( $ )
+			const { forward, write, file, sent } = await stand( $ )
 
 			const source = write()
 			source.Voice( 'auto' )!.remote( await $mol_wire_async( file )( [] ) )
@@ -99,19 +100,19 @@ namespace $ {
 
 		},
 
-		'Контакт уходит ключом и именем, без ключа делиться нечем'( $ ) {
+		async 'Контакт уходит ключом и именем, без ключа делиться нечем'( $ ) {
 
-			const { forward, sent } = stand( $ )
+			const { forward, sent, pass: known } = await stand( $ )
 
-			$mol_assert_equal( forward.contact( 'Stranger', 'Target' ), '' )
+			$mol_assert_equal( await $mol_wire_async( forward ).contact( 'Stranger', 'Target' ), '' )
 			$mol_assert_equal( forward.error(), forward.Text().contact_unknown() )
 			$mol_assert_equal( sent().length, 0 )
 
-			forward.contact( 'Known', 'Target' )
+			await $mol_wire_async( forward ).contact( 'Known', 'Target' )
 
 			const [ card ] = sent()
 			const pass = String( card.Contact()?.val() )
-			$mol_assert_equal( $bog_gram_forward.contact_lord( pass ), $giper_baza_auth.current().pass().lord().str )
+			$mol_assert_equal( $bog_gram_forward.contact_lord( pass ), known.lord().str )
 			$mol_assert_equal( card.Contact_name()?.val(), 'Иван' )
 			$mol_assert_equal( $bog_gram_forward.contact_lord( 'мусор' ), '' )
 
