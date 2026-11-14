@@ -16,6 +16,7 @@ $bog_gram_bubble $mol_view
 	sound false
 	sound_uri \
 	sound_span 0
+	sound_wave \
 	sound_playing false
 	sound_toggle? null
 	sound_ended? null
@@ -86,6 +87,7 @@ $bog_gram_bubble $mol_view
 		<= Sound $bog_gram_sound
 			uri <= sound_uri
 			span <= sound_span
+			wave <= sound_wave
 			playing <= sound_playing
 			toggle? <=> sound_toggle?
 			ended? <=> sound_ended?

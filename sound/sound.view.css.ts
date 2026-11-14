@@ -45,25 +45,59 @@ namespace $.$$ {
 			height: '1.125rem',
 		},
 
-		Track: {
+		Wave: {
 			flex: {
 				grow: 1,
 				shrink: 1,
 			},
-			minWidth: '3rem',
-			height: '0.25rem',
-			borderRadius: '0.25rem',
+			minWidth: '6rem',
+			height: '1.5rem',
+			align: {
+				items: 'center',
+			},
+			gap: '2px',
+			cursor: 'pointer',
+		},
+
+		Bar: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+				basis: 0,
+			},
+			minWidth: '2px',
+			borderRadius: '1px',
 			background: {
 				color: $bog_gram_tone.veil,
 			},
-			overflow: 'hidden',
+			'@': {
+				bog_gram_sound_bar_played: {
+					true: {
+						background: {
+							color: $mol_theme.control,
+						},
+					},
+				},
+			},
 		},
 
-		Fill: {
-			height: '100%',
-			background: {
-				color: $mol_theme.control,
+		Rate: {
+			flex: {
+				shrink: 0,
 			},
+			minHeight: '1.5rem',
+			padding: {
+				top: 0,
+				bottom: 0,
+				left: '0.375rem',
+				right: '0.375rem',
+			},
+			borderRadius: '0.75rem',
+			font: {
+				size: '0.75rem',
+				weight: 'bold',
+			},
+			color: $mol_theme.control,
 		},
 
 		Stamp: {

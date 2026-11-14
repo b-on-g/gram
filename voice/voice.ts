@@ -19,10 +19,15 @@ namespace $ {
 
 	const span_min = 0.7
 
+	const wave_bars = 48
+
+	const wave_digits = '0123456789abcdefghijklmnopqrstuv'
+
 	export type $bog_gram_voice_take = {
 		bytes: Uint8Array< ArrayBuffer >,
 		type: string,
 		span: number,
+		wave: string,
 	}
 
 	export class $bog_gram_voice extends $mol_object {
@@ -37,6 +42,47 @@ namespace $ {
 			const min = Math.floor( whole / 60 )
 			const sec = whole % 60
 			return min + ':' + String( sec ).padStart( 2, '0' )
+		}
+
+		static wave_code( samples: ArrayLike< number >, bars = wave_bars ) {
+
+			if( !samples.length ) return ''
+
+			const peaks = [] as number[]
+			const step = samples.length / bars
+
+			for( let bar = 0; bar < bars; ++ bar ) {
+				let peak = 0
+				const end = Math.min( samples.length, Math.floor( ( bar + 1 ) * step ) )
+				for( let i = Math.floor( bar * step ); i < end; ++ i ) peak = Math.max( peak, Math.abs( samples[ i ] ) )
+				peaks.push( peak )
+			}
+
+			const top = Math.max( ... peaks )
+			if( !top ) return wave_digits[ 0 ].repeat( bars )
+
+			return peaks.map( peak => wave_digits[ Math.round( peak / top * ( wave_digits.length - 1 ) ) ] ).join( '' )
+		}
+
+		static wave_levels( code: string ) {
+			return [ ... code ].map( digit => Math.max( 0, wave_digits.indexOf( digit ) ) / ( wave_digits.length - 1 ) )
+		}
+
+		static async wave( bytes: Uint8Array< ArrayBuffer > ) {
+
+			const Context = $mol_dom_context.AudioContext ?? ( $mol_dom_context as any ).webkitAudioContext as typeof AudioContext | undefined
+			if( !Context ) return ''
+
+			const context = new Context()
+			try {
+				const audio = await context.decodeAudioData( bytes.slice().buffer )
+				return this.wave_code( audio.getChannelData( 0 ) )
+			} catch( error ) {
+				$mol_fail_log( error )
+				return ''
+			} finally {
+				context.close().catch( ()=> {} )
+			}
 		}
 
 		static type( kind: $bog_gram_voice_kind = 'voice' ) {
@@ -135,7 +181,8 @@ namespace $ {
 			try {
 				const blob = new $mol_blob( chunks, { type } )
 				const bytes = new Uint8Array( await blob.arrayBuffer() )
-				this.done({ bytes, type: blob.type || type, span })
+				const wave = this.kind() === 'voice' ? await $bog_gram_voice.wave( bytes ) : ''
+				this.done({ bytes, type: blob.type || type, span, wave })
 			} catch( error ) {
 				$mol_fail_log( error )
 				this.done( null )

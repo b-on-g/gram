@@ -1,12 +1,17 @@
 $bog_gram_sound_node $mol_view
 	dom_name \audio
 	uri \
+	rate 1
 	retime? null
 	ended? null
 	attr *
 		^
 		src <= uri
 		preload \metadata
+	field *
+		^
+		playbackRate <= rate
+		defaultPlaybackRate <= rate
 	event *
 		^
 		timeupdate? <=> retime? null

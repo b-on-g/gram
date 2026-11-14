@@ -153,6 +153,8 @@ namespace $ {
 			if( voice ) {
 				message.Voice( 'auto' )!.remote( this.closed( voice, passes ) )
 				message.Voice_span( 'auto' )?.val( Number( source.Voice_span()?.val() ?? 0 ) )
+				const wave = String( source.Voice_wave()?.val() ?? '' )
+				if( wave ) message.Voice_wave( 'auto' )?.val( wave )
 			}
 
 			if( video ) {

@@ -1249,6 +1249,7 @@ namespace $.$$ {
 			} else {
 				message.Voice( 'auto' )!.remote( store )
 				message.Voice_span( 'auto' )?.val( sound.span )
+				if( sound.wave ) message.Voice_wave( 'auto' )?.val( sound.wave )
 			}
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
@@ -1276,6 +1277,15 @@ namespace $.$$ {
 		@ $mol_mem_key
 		override message_sound( id: string ) {
 			return Boolean( this.message_pawn( id )?.Voice()?.val() )
+		}
+
+		@ $mol_mem_key
+		override message_sound_wave( id: string ) {
+			return String( this.message_pawn( id )?.Voice_wave()?.val() ?? '' )
+		}
+
+		override draft_wave() {
+			return this.record_draft()?.wave ?? ''
 		}
 
 		@ $mol_mem_key

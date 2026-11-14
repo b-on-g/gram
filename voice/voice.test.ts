@@ -16,6 +16,18 @@ namespace $ {
 
 		},
 
+		'Волна — столбики пиков по отрезкам, громкий отрезок в самый верх, тишина в ноль'() {
+
+			const samples = [ 0, 0.1, -0.5, 0.2, 0, 0, 1, -0.25 ]
+			const code = $bog_gram_voice.wave_code( samples, 4 )
+
+			$mol_assert_equal( code.length, 4 )
+			$mol_assert_equal( $bog_gram_voice.wave_levels( code ).map( level => Math.round( level * 100 ) ), [ 10, 52, 0, 100 ] )
+			$mol_assert_equal( $bog_gram_voice.wave_code( [ 0, 0, 0, 0 ], 2 ), '00' )
+			$mol_assert_equal( $bog_gram_voice.wave_code( [] ), '' )
+
+		},
+
 	})
 
 }

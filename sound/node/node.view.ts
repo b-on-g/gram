@@ -15,7 +15,12 @@ namespace $.$$ {
 		start() {
 			const node = this.dom_node()
 			if( node.ended ) node.currentTime = 0
+			node.playbackRate = this.rate()
 			node.play().catch( error => $mol_fail_log( error ) )
+		}
+
+		seek( time: number ) {
+			this.dom_node().currentTime = Math.max( 0, time )
 		}
 
 		stop() {

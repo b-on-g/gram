@@ -1,6 +1,7 @@
 $bog_gram_sound $mol_view
 	uri \
 	span 0
+	wave \
 	playing false
 	toggle? null
 	ended? null
@@ -9,16 +10,26 @@ $bog_gram_sound $mol_view
 			hint @ \Listen
 			click? <=> toggle?
 			sub <= toggle_icons /
-		<= Track $mol_view
-			sub /
-				<= Fill $mol_view
-					style *
-						width <= fill_width \0%
+		<= Wave $mol_view
+			event *
+				^
+				click? <=> seek? null
+			sub <= bars /
 		<= Stamp $mol_view
 			sub /
 				<= stamp \
+		<= Rate $mol_button_minor
+			hint @ \Playback speed
+			click? <=> rate_next? null
+			title <= rate_label \
 		<= Node $bog_gram_sound_node
 			uri <= uri
+			rate <= rate? 1
 			ended? <=> ended?
+	Bar* $mol_view
+		attr *
+			bog_gram_sound_bar_played <= bar_played* false
+		style *
+			height <= bar_height* \0%
 	Play_icon $mol_icon_play
 	Pause_icon $mol_icon_pause
