@@ -38,5 +38,9 @@
 	"$bog_gram_text_registry_joined": "вы в списке",
 	"$bog_gram_text_registry_watching": "только смотрите",
 	"$bog_gram_text_account_lost": "Не удалось загрузить данные аккаунта",
-	"$bog_gram_text_voice_unsupported": "Запись звука тут не поддерживается"
+	"$bog_gram_text_voice_unsupported": "Запись звука тут не поддерживается",
+	"$bog_gram_text_forward_lost": "Не переслано: ключ не доехал — {names}. Попробуйте чуть позже",
+	"$bog_gram_text_forward_unloaded": "Вложение ещё не загрузилось: откройте его и повторите",
+	"$bog_gram_text_contact_unknown": "Ключ этого человека пока неизвестен, делиться нечем",
+	"$bog_gram_text_talk_contact": "Контакт"
 }

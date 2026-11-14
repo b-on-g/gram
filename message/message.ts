@@ -17,6 +17,9 @@ namespace $ {
 		Video_height: $giper_baza_atom_real,
 		Reply: $giper_baza_atom_text,
 		Call: $giper_baza_atom_link,
+		Forwarded: $giper_baza_atom_bool,
+		Contact: $giper_baza_atom_text,
+		Contact_name: $giper_baza_atom_text,
 	}) {}
 
 }

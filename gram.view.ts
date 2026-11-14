@@ -300,6 +300,7 @@ namespace $.$$ {
 				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
 				... this.call_current() ? [ this.Call_page( this.call_current() ) ] : [],
 				... this.music_alive() ? [ this.Music_page() ] : [],
+				... this.pick_shown() ? [ this.Pick_page() ] : [],
 			]
 		}
 
@@ -310,6 +311,95 @@ namespace $.$$ {
 
 		override call_land( id: string ) {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
+		}
+
+		@ $mol_mem
+		forward_source( next?: { dialog: string, message: string } | null ) {
+			return next ?? null
+		}
+
+		@ $mol_mem
+		share_lord( next?: string ) {
+			return next ?? ''
+		}
+
+		pick_shown() {
+			return Boolean( this.forward_source() || this.share_lord() )
+		}
+
+		@ $mol_action
+		override forward_open( next?: any ) {
+			if( typeof next !== 'string' || !next ) return null
+			this.pick_close()
+			this.forward_source({ dialog: this.dialog_active(), message: next })
+			return null
+		}
+
+		@ $mol_action
+		override contact_share( next?: any ) {
+			if( typeof next !== 'string' || !next ) return null
+			this.pick_close()
+			this.share_lord( next )
+			return null
+		}
+
+		@ $mol_action
+		override contact_open( next?: any ) {
+
+			if( typeof next !== 'string' || !next ) return null
+
+			const lord = $bog_gram_forward.contact_lord( next )
+			if( !lord || lord === this.my_lord() ) return null
+
+			this.People().pass_learn( lord, next )
+			this.dialog_open( lord )
+
+			return null
+		}
+
+		override pick_title() {
+			return this.share_lord() ? this.share_title() : this.forward_title()
+		}
+
+		override pick_error() {
+			return this.forward_error()
+		}
+
+		@ $mol_action
+		override pick_close( next?: any ) {
+			this.forward_source( null )
+			this.share_lord( '' )
+			this.forward_error( '' )
+			return null
+		}
+
+		@ $mol_action
+		override pick_done( id: string, next?: any ) {
+			if( id ) $mol_wire_async( this ).pick_send( id )
+			return null
+		}
+
+		pick_send( id: string ) {
+
+			const lord = this.share_lord()
+			const sent = lord ? this.Forward().contact( lord, id ) : this.forward_copy( id )
+			if( !sent ) return ''
+
+			this.pick_close()
+			this.dialog_select( id )
+
+			return sent
+		}
+
+		forward_copy( id: string ) {
+
+			const source = this.forward_source()
+			if( !source ) return ''
+
+			const pawn = this.Talk().messages_of( source.dialog ).find( message => message.link().str === source.message )
+			if( !pawn ) return ''
+
+			return this.Forward().copy( pawn, id )
 		}
 
 		override people_note( lord: string ) {

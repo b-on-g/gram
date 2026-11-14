@@ -27,5 +27,7 @@
 	"$bog_gram_chat_Attach_hint": "发送照片或视频",
 	"$bog_gram_chat_Send_hint": "发送",
 	"$bog_gram_chat_Voice_hint": "按住录音",
-	"$bog_gram_chat_Voice_cancel_hint": "在此松开以取消"
+	"$bog_gram_chat_Voice_cancel_hint": "在此松开以取消",
+	"$bog_gram_chat_kind_contact": "联系人",
+	"$bog_gram_chat_Share_hint": "分享此联系人"
 }

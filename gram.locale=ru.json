@@ -7,5 +7,7 @@
 	"$bog_gram_Gate_lost_title": "Не удалось загрузить данные аккаунта",
 	"$bog_gram_Gate_fresh_note_title": "Если это первый вход в Gram на этом устройстве, создайте аккаунт. Он будет общим для всех приложений на этом домене.",
 	"$bog_gram_Gate_retry_title": "Повторить",
-	"$bog_gram_Gate_fresh_title": "Создать аккаунт на этом устройстве"
+	"$bog_gram_Gate_fresh_title": "Создать аккаунт на этом устройстве",
+	"$bog_gram_forward_title": "Переслать в…",
+	"$bog_gram_share_title": "Поделиться контактом с…"
 }

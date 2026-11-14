@@ -7,6 +7,9 @@ $bog_gram_chat $bog_gram_page
 	close? null
 	members? null
 	call_open? null
+	forward_open? null
+	contact_share? null
+	contact_open? null
 	note? \
 	note_hint \
 	note_editable false
@@ -28,6 +31,7 @@ $bog_gram_chat $bog_gram_page
 	kind_photo @ \Photo
 	kind_voice @ \Voice message
 	kind_video @ \Video
+	kind_contact @ \Contact
 	reply_pattern @ \Reply to {name}
 	video_failed @ \Video was not sent
 	images_capped_pattern @ \Only the first {limit} photos were sent: at most {limit} at a time
@@ -73,6 +77,11 @@ $bog_gram_chat $bog_gram_page
 		<= Title
 		<= Tools
 	tools /
+		<= Share $mol_button_minor
+			hint @ \Share this contact
+			click? <=> share? null
+			sub /
+				<= Share_icon $mol_icon_account_arrow_right
 		<= Call $mol_button_minor
 			hint @ \Call
 			click? <=> call_start? null
@@ -194,6 +203,12 @@ $bog_gram_chat $bog_gram_page
 		call <= message_call* false
 		call_land <= message_call_land* null
 		call_open? <=> message_call_open*? null
+		forwarded <= message_forwarded* false
+		contact <= message_contact* false
+		contact_name <= message_contact_name* \
+		contact_open? <=> message_contact_open*? null
+		forwardable <= message_forwardable* true
+		forward? <=> message_forward*? null
 		body <= message_body* \
 		time <= message_time* \
 		edited <= message_edited* false

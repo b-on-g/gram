@@ -2,5 +2,9 @@
 	"$bog_gram_bubble_Quote_hint": "转到消息",
 	"$bog_gram_bubble_edited_label": "已编辑",
 	"$bog_gram_bubble_Edit_hint": "编辑",
-	"$bog_gram_bubble_Delete_hint": "删除"
+	"$bog_gram_bubble_Delete_hint": "删除",
+	"$bog_gram_bubble_forwarded_label": "已转发",
+	"$bog_gram_bubble_Contact_open_title": "发消息",
+	"$bog_gram_bubble_Copy_hint": "复制文本",
+	"$bog_gram_bubble_Forward_hint": "转发"
 }

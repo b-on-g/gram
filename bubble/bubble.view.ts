@@ -38,8 +38,28 @@ namespace $.$$ {
 			return this.checks() ? super.Checks() : null!
 		}
 
-		override Actions() {
-			return this.out() ? super.Actions() : null!
+		override Forwarded() {
+			return this.forwarded() ? super.Forwarded() : null!
+		}
+
+		override Contact() {
+			return this.contact() ? super.Contact() : null!
+		}
+
+		override Copy() {
+			return this.body() ? super.Copy() : null!
+		}
+
+		override Forward() {
+			return this.forwardable() ? super.Forward() : null!
+		}
+
+		override Edit() {
+			return this.out() ? super.Edit() : null!
+		}
+
+		override Delete() {
+			return this.out() ? super.Delete() : null!
 		}
 
 		sound_start() {

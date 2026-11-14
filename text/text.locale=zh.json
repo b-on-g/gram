@@ -38,5 +38,9 @@
 	"$bog_gram_text_registry_joined": "你在名单中",
 	"$bog_gram_text_registry_watching": "仅查看",
 	"$bog_gram_text_account_lost": "无法加载账户数据",
-	"$bog_gram_text_voice_unsupported": "此处不支持录音"
+	"$bog_gram_text_voice_unsupported": "此处不支持录音",
+	"$bog_gram_text_forward_lost": "未转发：密钥尚未送达 — {names}。请稍后再试",
+	"$bog_gram_text_forward_unloaded": "附件尚未加载：请先打开它再重试",
+	"$bog_gram_text_contact_unknown": "尚不知道此人的密钥，无法分享",
+	"$bog_gram_text_talk_contact": "联系人"
 }

@@ -317,6 +317,7 @@ namespace $ {
 				: last.Voice()?.val() ? words.talk_voice()
 				: last.Video()?.val() ? words.talk_video()
 				: last.Call()?.val() ? words.talk_call()
+				: last.Contact()?.val() ? words.talk_contact()
 				: ''
 			const body = kind ? ( text ? kind + ' · ' + text : kind ) : text
 			if( this.saved_is( id ) ) return body

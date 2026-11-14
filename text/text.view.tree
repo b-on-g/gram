@@ -4,6 +4,7 @@ $bog_gram_text $mol_object
 	talk_voice @ \Voice message
 	talk_video @ \Video
 	talk_call @ \Call
+	talk_contact @ \Contact
 	talk_mine @ \You: {text}
 	clock_today @ \Today
 	clock_yesterday @ \Yesterday
@@ -39,3 +40,6 @@ $bog_gram_text $mol_object
 	registry_watching @ \view only
 	account_lost @ \Could not load account data
 	voice_unsupported @ \Audio recording is not supported here
+	forward_lost @ \Not forwarded: key not delivered — {names}. Try again a bit later
+	forward_unloaded @ \The attachment has not loaded yet: open it and try again
+	contact_unknown @ \This person's key is not known yet, there is nothing to share

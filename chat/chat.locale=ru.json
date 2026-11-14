@@ -27,5 +27,7 @@
 	"$bog_gram_chat_Attach_hint": "Отправить фото или видео",
 	"$bog_gram_chat_Send_hint": "Отправить",
 	"$bog_gram_chat_Voice_hint": "Удерживайте для записи",
-	"$bog_gram_chat_Voice_cancel_hint": "Отпустите здесь, чтобы отменить"
+	"$bog_gram_chat_Voice_cancel_hint": "Отпустите здесь, чтобы отменить",
+	"$bog_gram_chat_kind_contact": "Контакт",
+	"$bog_gram_chat_Share_hint": "Поделиться этим контактом"
 }

@@ -98,6 +98,11 @@ $bog_gram $mol_book2
 		names_fill => names_fill
 		contact_lords => contact_lords
 		contact_source* => contact_source*
+	Forward $bog_gram_forward
+		Account <= Account
+		People <= People
+		Talk <= Talk
+		error? => forward_error?
 	Crew $bog_gram_crew
 		Account <= Account
 		People <= People
@@ -282,6 +287,22 @@ $bog_gram $mol_book2
 		close? <=> dialog_close? null
 		members? <=> members_open? null
 		call_open? <=> call_open? null
+		forward_open? <=> forward_open? null
+		contact_share? <=> contact_share? null
+		contact_open? <=> contact_open? null
+	Pick_page $bog_gram_pick
+		title <= pick_title \
+		close? <=> pick_close? null
+		saved <= saved_id
+		saved_title <= saved_title
+		ids <= dialog_visible
+		error <= pick_error \
+		pick*? <=> pick_done*? null
+		dialog_title* <= dialog_title*
+		dialog_avatar_id* <= dialog_avatar_id*
+		dialog_tint* <= dialog_tint*
+	forward_title @ \Forward to…
+	share_title @ \Share contact with…
 	Call_page* $bog_gram_call
 		land <= call_land* null
 		name <= user_name

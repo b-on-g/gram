@@ -21,7 +21,7 @@
 }
 
 @media (hover: none) {
-	[bog_gram_bubble][bog_gram_bubble_out="true"] {
+	[bog_gram_bubble] {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		user-select: none;

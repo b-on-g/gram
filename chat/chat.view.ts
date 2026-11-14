@@ -82,6 +82,59 @@ namespace $.$$ {
 			return this.saved() ? null! : super.Call()
 		}
 
+		override Share() {
+			return this.peer() ? super.Share() : null!
+		}
+
+		@ $mol_action
+		override share( next?: any ) {
+			const lord = this.peer()
+			if( lord ) this.contact_share( lord )
+			return null
+		}
+
+		@ $mol_mem_key
+		override message_forwarded( id: string ) {
+			return Boolean( this.message_pawn( id )?.Forwarded()?.val() )
+		}
+
+		message_contact_pass( id: string ) {
+			return String( this.message_pawn( id )?.Contact()?.val() ?? '' )
+		}
+
+		@ $mol_mem_key
+		override message_contact( id: string ) {
+			return Boolean( this.message_contact_pass( id ) )
+		}
+
+		@ $mol_mem_key
+		override message_contact_name( id: string ) {
+			const lord = $bog_gram_forward.contact_lord( this.message_contact_pass( id ) )
+			if( !lord ) return ''
+			if( lord === this.my_lord() ) return this.self_name()
+			const sent = String( this.message_pawn( id )?.Contact_name()?.val() ?? '' )
+			return $bog_gram_lord.label( lord, this.People().note( lord ), this.People().name( lord ) || sent )
+		}
+
+		@ $mol_action
+		override message_contact_open( id: string, next?: any ) {
+			const pass = this.message_contact_pass( id )
+			if( pass ) this.contact_open( pass )
+			return null
+		}
+
+		@ $mol_mem_key
+		override message_forwardable( id: string ) {
+			return !this.message_call( id )
+		}
+
+		@ $mol_action
+		override message_forward( id: string, next?: any ) {
+			this.message_menu( '' )
+			this.forward_open( id )
+			return null
+		}
+
 		@ $mol_mem_key
 		override message_call( id: string ) {
 			return Boolean( this.message_pawn( id )?.Call()?.val() )
@@ -289,8 +342,6 @@ namespace $.$$ {
 			this.press_row = id
 			this.press_held = false
 
-			if( !this.message_out( id ) ) return null
-
 			this.press_timer = new this.$.$mol_after_timeout( press_delay, ()=> this.message_hold( id ) )
 
 			return null
@@ -329,8 +380,6 @@ namespace $.$$ {
 
 		@ $mol_action
 		override message_context( id: string, next?: Event ) {
-
-			if( !this.message_out( id ) ) return null
 
 			next?.preventDefault()
 
@@ -403,6 +452,7 @@ namespace $.$$ {
 			if( pawn.Image()?.val() ) return this.kind_photo()
 			if( pawn.Voice()?.val() ) return this.kind_voice()
 			if( pawn.Video()?.val() ) return this.kind_video()
+			if( pawn.Contact()?.val() ) return this.kind_contact()
 
 			return ''
 		}

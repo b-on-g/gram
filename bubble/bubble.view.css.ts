@@ -61,6 +61,56 @@ namespace $.$$ {
 			},
 		},
 
+		Forwarded: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.25rem',
+			color: $mol_theme.shade,
+			font: {
+				size: '0.8rem',
+				style: 'italic',
+			},
+		},
+
+		Forwarded_icon: {
+			width: '0.875rem',
+			height: '0.875rem',
+		},
+
+		Contact: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.5rem',
+			minWidth: '12rem',
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+			},
+		},
+
+		Contact_icon: {
+			width: '2rem',
+			height: '2rem',
+			flex: {
+				shrink: 0,
+			},
+			color: $mol_theme.control,
+		},
+
+		Contact_name: {
+			... line,
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			font: {
+				weight: 'bold',
+			},
+		},
+
 		Quote: {
 			display: 'flex',
 			flex: {
@@ -205,9 +255,18 @@ namespace $.$$ {
 			},
 		},
 
+		Copy: control,
+
+		Forward: control,
+
 		Edit: control,
 
 		Delete: control,
+
+		Forward_icon: {
+			width: '1.125rem',
+			height: '1.125rem',
+		},
 
 		Edit_icon: {
 			width: '1.125rem',
@@ -222,6 +281,14 @@ namespace $.$$ {
 		'@media': {
 			'(max-width: 30rem)': {
 				maxWidth: '85%',
+				Copy: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+				Forward: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
 				Edit: {
 					minWidth: '2.75rem',
 					minHeight: '2.75rem',

@@ -2,5 +2,9 @@
 	"$bog_gram_bubble_Quote_hint": "Перейти к сообщению",
 	"$bog_gram_bubble_edited_label": "изменено",
 	"$bog_gram_bubble_Edit_hint": "Редактировать",
-	"$bog_gram_bubble_Delete_hint": "Удалить"
+	"$bog_gram_bubble_Delete_hint": "Удалить",
+	"$bog_gram_bubble_forwarded_label": "Переслано",
+	"$bog_gram_bubble_Contact_open_title": "Написать",
+	"$bog_gram_bubble_Copy_hint": "Копировать текст",
+	"$bog_gram_bubble_Forward_hint": "Переслать"
 }

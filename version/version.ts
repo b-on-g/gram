@@ -1,5 +1,5 @@
 namespace $ {
 
-	export const $bog_gram_version = '1.0.168'
+	export const $bog_gram_version = '1.0.169'
 
 }

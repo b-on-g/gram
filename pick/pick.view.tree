@@ -1,0 +1,31 @@
+$bog_gram_pick $bog_gram_page
+	title \
+	close? null
+	saved \
+	saved_title \
+	ids /string
+	error \
+	pick*? null
+	dialog_title* \
+	dialog_avatar_id* \
+	dialog_tint* 0
+	tools /
+		<= Close $mol_button_minor
+			hint @ \Close
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Error $mol_paragraph
+			title <= error
+		<= List $mol_list
+			rows <= rows /
+	Saved_row $bog_gram_row
+		click? <=> saved_pick? null
+		Icon <= Saved_icon $mol_icon_bookmark
+		title <= saved_title
+	Row* $bog_gram_row
+		click? <=> pick*?
+		avatar_id <= dialog_avatar_id*
+		tint <= dialog_tint*
+		title <= dialog_title*
