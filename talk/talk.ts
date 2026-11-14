@@ -260,8 +260,18 @@ namespace $ {
 			return null
 		}
 
+		@ $mol_mem_key
+		wrote_moment_of( key: readonly [ string, string ] ) {
+			const [ id, lord ] = key
+			const all = this.messages_of( id )
+			for( let i = all.length - 1; i >= 0; -- i ) {
+				if( String( all[ i ].Author()?.val() ?? '' ) === lord ) return Number( all[ i ].Moment()?.val() ?? 0 )
+			}
+			return 0
+		}
+
 		read_moment_of( id: string, lord: string ) {
-			let last = 0
+			let last = this.wrote_moment_of([ id, lord ])
 			for( const land of this.lands_of( id ) ) {
 				try {
 					const moment = Number( land.Data( $bog_gram_session ).Reads()?.key( lord )?.Moment()?.val() ?? 0 )
