@@ -42089,7 +42089,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.172';
+    $.$bog_gram_version = '1.0.173';
 })($ || ($ = {}));
 
 ;
@@ -50391,12 +50391,26 @@ var $;
 		stat_text(id){
 			return "";
 		}
+		picture(){
+			return null;
+		}
 		Video(){
 			const obj = new this.$.$mol_video_player();
-			(obj.stream) = () => ((this.stream()));
+			(obj.stream) = () => ((this.picture()));
+			(obj.controls) = () => (false);
+			(obj.muted) = () => (true);
+			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "autopictureinpicture": true});
+			return obj;
+		}
+		sound(){
+			return null;
+		}
+		Sound(){
+			const obj = new this.$.$mol_video_player();
+			(obj.dom_name) = () => ("audio");
+			(obj.stream) = () => ((this.sound()));
 			(obj.controls) = () => (false);
 			(obj.muted) = () => ((this.muted()));
-			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "autopictureinpicture": true});
 			return obj;
 		}
 		letter(){
@@ -50508,6 +50522,7 @@ var $;
 		sub(){
 			return [
 				(this.Video()), 
+				(this.Sound()), 
 				(this.Face()), 
 				(this.Stats()), 
 				(this.Label())
@@ -50515,6 +50530,7 @@ var $;
 		}
 	};
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Video"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Sound"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Face"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Stats"));
 	($mol_mem(($.$bog_gram_call_tile.prototype), "Name"));
@@ -50578,18 +50594,48 @@ var $;
                     return false;
                 return $bog_gram_call_peer.stats_bad(stats)[id] ?? false;
             }
+            part(kind) {
+                const stream = this.stream();
+                if (!stream)
+                    return null;
+                const tracks = stream.getTracks().filter(track => track.kind === kind);
+                if (!tracks.length)
+                    return null;
+                return new MediaStream(tracks);
+            }
+            picture() {
+                return this.part('video');
+            }
+            sound() {
+                return this.part('audio');
+            }
             video() {
                 return this.Video().dom_node();
             }
+            audio() {
+                return this.Sound().dom_node();
+            }
             auto() {
                 const video = this.video();
-                video.muted = this.muted();
+                video.muted = true;
+                const audio = this.audio();
+                audio.muted = this.muted();
                 this.Video().pause_event();
-                if (!this.awake() || !this.stream() || !video.paused)
+                this.Sound().pause_event();
+                if (!this.awake())
                     return;
-                video.play().catch(() => { });
+                if (this.picture() && video.paused)
+                    video.play().catch(() => { });
+                if (this.sound() && audio.paused)
+                    audio.play().catch(() => { });
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call_tile.prototype, "picture", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call_tile.prototype, "sound", null);
         $$.$bog_gram_call_tile = $bog_gram_call_tile;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -51083,8 +51129,8 @@ var $;
                 return Boolean($mol_dom_context.document.pictureInPictureEnabled);
             }
             pip_video() {
-                const mate = this.Room().mates().find(mate => this.mate_stream(mate));
-                return (mate ? this.Mate(mate) : this.Self()).Video().dom_node();
+                const videos = [...this.Room().mates().map(mate => this.Mate(mate)), this.Self()].map(tile => tile.Video().dom_node());
+                return videos.find(video => video.readyState >= 1) ?? null;
             }
             pip() {
                 const doc = $mol_dom_context.document;
@@ -51092,7 +51138,7 @@ var $;
                     doc.exitPictureInPicture().catch($mol_fail_log);
                     return null;
                 }
-                this.pip_video().requestPictureInPicture().catch($mol_fail_log);
+                this.pip_video()?.requestPictureInPicture().catch($mol_fail_log);
                 return null;
             }
             session() {
@@ -51416,6 +51462,7 @@ var $;
             catch (error) {
                 if ($mol_promise_like(error))
                     $mol_fail_hidden(error);
+                this.log(`камера не открылась: ${error.name || error}`);
                 stream = devices.getUserMedia({ audio: true });
             }
             return Object.assign(stream, {

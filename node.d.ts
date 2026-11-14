@@ -64468,7 +64468,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.172";
+    const $bog_gram_version = "1.0.173";
 }
 
 declare namespace $ {
@@ -79629,7 +79629,7 @@ declare namespace $ {
 declare namespace $ {
 
 	type $mol_video_player__stream_bog_gram_call_tile_1 = $mol_type_enforce<
-		ReturnType< $bog_gram_call_tile['stream'] >
+		ReturnType< $bog_gram_call_tile['picture'] >
 		,
 		ReturnType< $mol_video_player['stream'] >
 	>
@@ -79639,7 +79639,7 @@ declare namespace $ {
 		ReturnType< $mol_video_player['controls'] >
 	>
 	type $mol_video_player__muted_bog_gram_call_tile_3 = $mol_type_enforce<
-		ReturnType< $bog_gram_call_tile['muted'] >
+		boolean
 		,
 		ReturnType< $mol_video_player['muted'] >
 	>
@@ -79650,39 +79650,59 @@ declare namespace $ {
 		,
 		ReturnType< $mol_video_player['attr'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_5 = $mol_type_enforce<
+	type $mol_video_player__dom_name_bog_gram_call_tile_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_video_player['dom_name'] >
+	>
+	type $mol_video_player__stream_bog_gram_call_tile_6 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_tile['sound'] >
+		,
+		ReturnType< $mol_video_player['stream'] >
+	>
+	type $mol_video_player__controls_bog_gram_call_tile_7 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $mol_video_player['controls'] >
+	>
+	type $mol_video_player__muted_bog_gram_call_tile_8 = $mol_type_enforce<
+		ReturnType< $bog_gram_call_tile['muted'] >
+		,
+		ReturnType< $mol_video_player['muted'] >
+	>
+	type $mol_view__sub_bog_gram_call_tile_9 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_6 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_call_tile_10 = $mol_type_enforce<
 		ReturnType< $bog_gram_call_tile['stat_parts'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_7 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_call_tile_11 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_8 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_call_tile_12 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_9 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_call_tile_13 = $mol_type_enforce<
 		ReturnType< $bog_gram_call_tile['label'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__attr_bog_gram_call_tile_10 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_call_tile_14 = $mol_type_enforce<
 		({ 
 			'bog_gram_call_tile_stat_bad': ReturnType< $bog_gram_call_tile['stat_bad'] >,
 		}) 
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__sub_bog_gram_call_tile_11 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_call_tile_15 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -79690,7 +79710,10 @@ declare namespace $ {
 	export class $bog_gram_call_tile extends $mol_view {
 		stat_bad( id: any): boolean
 		stat_text( id: any): string
+		picture( ): any
 		Video( ): $mol_video_player
+		sound( ): any
+		Sound( ): $mol_video_player
 		letter( ): string
 		Face( ): $mol_view
 		stat_parts( ): readonly(any)[]
@@ -79737,7 +79760,11 @@ declare namespace $.$$ {
         stat_parts(): $mol_view[];
         stat_text(id: string): string;
         stat_bad(id: string): boolean;
+        part(kind: 'audio' | 'video'): MediaStream | null;
+        picture(): MediaStream | null;
+        sound(): MediaStream | null;
         video(): HTMLVideoElement;
+        audio(): HTMLAudioElement;
         auto(): void;
     }
 }
@@ -80046,7 +80073,7 @@ declare namespace $.$$ {
         mate_mic(mate: string): boolean;
         mate_cam(mate: string): boolean;
         pip_able(): boolean;
-        pip_video(): HTMLVideoElement;
+        pip_video(): HTMLVideoElement | null;
         pip(): null;
         session(): {
             destructor: () => void;
