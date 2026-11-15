@@ -86,3 +86,9 @@
 [mol_button] {
 	touch-action: manipulation;
 }
+
+[bog_gram] :not([mol_textarea_clickable]) > [mol_textarea_view] {
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
+}

@@ -10,6 +10,7 @@
 	"$bog_gram_text_count_people": "{n} 位成员",
 	"$bog_gram_text_count_dialogs": "{n} 个对话",
 	"$bog_gram_text_lobby_key_bad": "申请中的密钥与其所有者不符：申请已被拒绝",
+	"$bog_gram_text_lobby_accept_failed": "申请未通过：群组尚未加载完成，或你不是群管理员。请再试一次",
 	"$bog_gram_text_lobby_lost": "链接中没有群组创建者，无人接收申请，请索取新链接",
 	"$bog_gram_text_lobby_denied_one": "你的申请被拒绝了，可以用同一链接再次申请",
 	"$bog_gram_text_lobby_denied_some": "被拒绝的申请：{n}，可以用相同的链接再次申请",

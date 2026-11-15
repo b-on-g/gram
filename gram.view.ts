@@ -536,8 +536,33 @@ namespace $.$$ {
 		@ $mol_action
 		override ask_accept( entry: string, next?: any ) {
 			if( !entry ) return null
-			$mol_wire_async( this.Lobby() ).apply( entry, this.member_history() )
+
+			this.member_error( '' )
+			$bog_music_log.act( 'заявка: принимаю' )
+
+			$mol_wire_async( this ).ask_apply( entry ).catch( ( error: unknown )=> {
+				const text = error instanceof Error ? error.message : String( error )
+				$bog_music_log.act( `заявка: ошибка ${ text }` )
+				this.member_error( text )
+			} )
+
 			return null
+		}
+
+		@ $mol_action
+		ask_apply( entry: string ) {
+
+			const joined = this.Lobby().apply( entry, this.member_history() )
+
+			if( joined ) {
+				$bog_music_log.act( 'заявка: принята' )
+				return joined
+			}
+
+			if( !this.member_error() ) this.member_error( this.Lobby().Text().lobby_accept_failed() )
+			$bog_music_log.act( `заявка: не принята, ${ this.member_error() }` )
+
+			return joined
 		}
 
 		@ $mol_action
