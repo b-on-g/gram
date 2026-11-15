@@ -69112,7 +69112,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.173";
+    const $bog_gram_version = "1.0.174";
 }
 
 declare namespace $ {
@@ -85658,7 +85658,10 @@ declare namespace $ {
         cameras(): number;
         cam_switch_able(): boolean;
         self_stream(): MediaStream;
+        video_close(): void;
         video_open(facing: $bog_gram_call_facing): void;
+        video_off(): void;
+        video_sync(): null;
         cam_switch(): void;
         video_restore(): void;
         video_broken(): boolean;
@@ -85736,7 +85739,7 @@ declare namespace $ {
         answered: string;
         answer_post(): boolean;
         sync(): boolean;
-        video_replace(track: MediaStreamTrack): void;
+        video_replace(track: MediaStreamTrack | null): void;
         stats_last: $bog_gram_call_peer_stats | null;
         stats(): $bog_gram_call_peer_stats | null;
         static stats_limit: {

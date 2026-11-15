@@ -60504,7 +60504,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.173';
+    $.$bog_gram_version = '1.0.174';
 })($ || ($ = {}));
 
 ;
@@ -69631,7 +69631,6 @@ var $;
             return next ?? 'user';
         }
         cam_able() {
-            this.video_changed();
             return this.media().getVideoTracks().length > 0;
         }
         cameras() {
@@ -69646,25 +69645,56 @@ var $;
             this.video_changed();
             return new MediaStream(this.media().getTracks());
         }
-        video_open(facing) {
+        video_close() {
             const stream = this.media();
             for (const old of stream.getVideoTracks()) {
                 old.stop();
                 stream.removeTrack(old);
             }
+        }
+        video_open(facing) {
+            this.video_close();
             const fresh = $mol_wire_sync(navigator.mediaDevices).getUserMedia({
                 video: $bog_gram_call_room.video_constraints(facing),
             });
             const track = fresh.getVideoTracks()[0];
-            track.enabled = this.cam();
-            stream.addTrack(track);
-            for (const peer of this.peers())
-                peer.video_replace(track);
             this.facing(facing);
+            if (this.cam()) {
+                this.video_close();
+                this.media().addTrack(track);
+                for (const peer of this.peers())
+                    peer.video_replace(track);
+            }
+            else {
+                track.stop();
+            }
             this.video_changed(this.video_changed() + 1);
         }
+        video_off() {
+            this.video_close();
+            for (const peer of this.peers())
+                peer.video_replace(null);
+            this.video_changed(this.video_changed() + 1);
+        }
+        video_sync() {
+            this.video_changed();
+            if (!this.cam_able())
+                return null;
+            const open = this.media().getVideoTracks().length > 0;
+            if (open === this.cam())
+                return null;
+            if (open)
+                this.video_off();
+            else
+                $mol_wire_async(this).video_open(this.facing()).catch($mol_fail_log);
+            return null;
+        }
         cam_switch() {
-            this.video_open(this.facing() === 'user' ? 'environment' : 'user');
+            const facing = this.facing() === 'user' ? 'environment' : 'user';
+            if (this.cam())
+                this.video_open(facing);
+            else
+                this.facing(facing);
         }
         video_restore() {
             this.video_open(this.facing());
@@ -69759,6 +69789,7 @@ var $;
             this.audio_session();
             this.visible_watch();
             this.media_apply();
+            this.video_sync();
             this.video_watch();
             this.video_check();
             this.beat();
@@ -69837,6 +69868,12 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_call_room.prototype, "video_open", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "video_off", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_sync", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "video_watch", null);

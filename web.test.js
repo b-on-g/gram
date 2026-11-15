@@ -10970,6 +10970,31 @@ var $;
             room.video_lost();
             $mol_assert_equal(opened, 1);
         },
+        'Выключенная камера останавливается, включённая открывается заново'($) {
+            let stopped = 0;
+            let opened = 0;
+            const tracks = [{ kind: 'video', stop: () => { ++stopped; } }];
+            const stream = {
+                getVideoTracks: () => tracks,
+                getTracks: () => tracks,
+                removeTrack: (track) => tracks.splice(tracks.indexOf(track), 1),
+            };
+            const room = $bog_gram_call_room.make({
+                $,
+                media: () => stream,
+                cam_able: () => true,
+                peers: () => [],
+                video_open: () => { ++opened; },
+            });
+            room.video_sync();
+            $mol_assert_equal([stopped, opened], [0, 0]);
+            room.cam(false);
+            room.video_sync();
+            $mol_assert_equal([stopped, tracks.length, opened], [1, 0, 0]);
+            room.cam(true);
+            room.video_sync();
+            $mol_assert_equal(opened, 1);
+        },
         'Уход в фон со страницей в кэше не выходит из звонка, закрытие выходит'($) {
             let left = 0;
             const room = $bog_gram_call_room.make({ $, leave: () => { ++left; } });
