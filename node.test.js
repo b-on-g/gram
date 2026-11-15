@@ -23267,6 +23267,9 @@ var $;
 		lobby_key_bad(){
 			return (this.$.$mol_locale.text("$bog_gram_text_lobby_key_bad"));
 		}
+		lobby_accept_failed(){
+			return (this.$.$mol_locale.text("$bog_gram_text_lobby_accept_failed"));
+		}
 		lobby_lost(){
 			return (this.$.$mol_locale.text("$bog_gram_text_lobby_lost"));
 		}
@@ -42080,7 +42083,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.175';
+    $.$bog_gram_version = '1.0.177';
 })($ || ($ = {}));
 
 ;
@@ -59200,8 +59203,25 @@ var $;
             ask_accept(entry, next) {
                 if (!entry)
                     return null;
-                $mol_wire_async(this.Lobby()).apply(entry, this.member_history());
+                this.member_error('');
+                $bog_music_log.act('заявка: принимаю');
+                $mol_wire_async(this).ask_apply(entry).catch((error) => {
+                    const text = error instanceof Error ? error.message : String(error);
+                    $bog_music_log.act(`заявка: ошибка ${text}`);
+                    this.member_error(text);
+                });
                 return null;
+            }
+            ask_apply(entry) {
+                const joined = this.Lobby().apply(entry, this.member_history());
+                if (joined) {
+                    $bog_music_log.act('заявка: принята');
+                    return joined;
+                }
+                if (!this.member_error())
+                    this.member_error(this.Lobby().Text().lobby_accept_failed());
+                $bog_music_log.act(`заявка: не принята, ${this.member_error()}`);
+                return joined;
             }
             ask_reject(entry, next) {
                 if (!entry)
@@ -59460,6 +59480,9 @@ var $;
         ], $bog_gram.prototype, "ask_accept", null);
         __decorate([
             $mol_action
+        ], $bog_gram.prototype, "ask_apply", null);
+        __decorate([
+            $mol_action
         ], $bog_gram.prototype, "ask_reject", null);
         __decorate([
             $mol_action
@@ -59487,7 +59510,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gram.view.css", "[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n\t--bog_kit_seam: var(--mol_theme_line);\n\t--bog_kit_key: var(--mol_theme_control);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n");
+    $mol_style_attach("bog/gram/gram.view.css", "[bog_gram][bog_builderui_base][bog_builderui_lights=\"light\"] {\n\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t--bog_builderui_back: #faf9f7;\n\t--bog_builderui_card: #ffffff;\n}\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"dark\"],\n[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t--bog_builderui_control: hsl( 210, 72%, 64% );\n\t--bog_builderui_focus: hsl( 210, 76%, 72% );\n\t--bog_builderui_current: hsl( 30, 85%, 60% );\n\t--bog_builderui_special: hsl( 30, 85%, 60% );\n\t--bog_builderui_text: #d4d4d8;\n\t--bog_builderui_back: #18181b;\n\t--bog_builderui_card: #09090b;\n}\n@media ( prefers-color-scheme: light ) {\n\t[bog_gram][bog_builderui_base][bog_builderui_lights=\"system\"] {\n\t\t--bog_builderui_control: hsl( 210, 68%, 42% );\n\t\t--bog_builderui_focus: hsl( 210, 72%, 36% );\n\t\t--bog_builderui_current: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_special: hsl( 26, 82%, 44% );\n\t\t--bog_builderui_text: #09090b;\n\t\t--bog_builderui_back: #faf9f7;\n\t\t--bog_builderui_card: #ffffff;\n\t}\n}\n\n[bog_gram][bog_builderui_lights] {\n\t--mol_theme_back: var(--bog_builderui_back);\n\t--mol_theme_card: var(--bog_builderui_card);\n\t--mol_theme_field: var(--bog_builderui_field);\n\t--mol_theme_hover: var(--bog_builderui_hover);\n\t--mol_theme_text: var(--bog_builderui_text);\n\t--mol_theme_shade: var(--bog_builderui_shade);\n\t--mol_theme_line: var(--bog_builderui_line);\n\t--mol_theme_focus: var(--bog_builderui_focus);\n\t--mol_theme_control: var(--bog_builderui_control);\n\t--mol_theme_current: var(--bog_builderui_current);\n\t--mol_theme_special: var(--bog_builderui_special);\n\t--bog_kit_seam: var(--mol_theme_line);\n\t--bog_kit_key: var(--mol_theme_control);\n}\n\n[bog_gram] [mol_page_head] {\n\tbackground-color: var(--mol_theme_back);\n\tborder-radius: 0;\n\tborder-bottom: 1px solid var(--mol_theme_line);\n\tbox-shadow: none;\n}\n\n[bog_gram_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] {\n\tbackground-color: #e14b4b;\n\tcolor: #ffffff;\n}\n\n[bog_gram_armed=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[mol_view_root] input,\n[mol_view_root] textarea {\n\tfont-size: 16px;\n}\n\n[mol_view_root] {\n\toverscroll-behavior: none;\n\t-webkit-text-size-adjust: 100%;\n}\n\n[mol_view] {\n\t-webkit-tap-highlight-color: transparent;\n}\n\n[mol_button] {\n\ttouch-action: manipulation;\n}\n\n[bog_gram] :not([mol_textarea_clickable]) > [mol_textarea_view] {\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n");
 })($ || ($ = {}));
 
 ;

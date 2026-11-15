@@ -244,6 +244,7 @@
 	"$bog_gram_text_invite_late": "The other person's key was not found: most likely they have not opened Gram yet or are connected to a different master. Ask for a fresh link",
 	"$bog_gram_text_invite_lost": "The link to the conversation is broken, ask for a fresh one",
 	"$bog_gram_text_invite_wait": "Opening the conversation, looking for the other person's key",
+	"$bog_gram_text_lobby_accept_failed": "Request not accepted: the group has not loaded yet or you are not its admin. Try again",
 	"$bog_gram_text_lobby_denied_one": "Your request was declined. You can ask again with the same link",
 	"$bog_gram_text_lobby_denied_some": "Requests declined: {n}. You can ask again with the same links",
 	"$bog_gram_text_lobby_key_bad": "The key in the request does not match its owner: request rejected",

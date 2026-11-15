@@ -224,6 +224,7 @@
 	"$bog_gram_text_invite_late": "未找到对方的密钥：对方可能还没打开过 Gram，或连接到了其他主节点。请索取新链接",
 	"$bog_gram_text_invite_lost": "对话链接已损坏，请索取新链接",
 	"$bog_gram_text_invite_wait": "正在打开对话，查找对方的密钥",
+	"$bog_gram_text_lobby_accept_failed": "申请未通过：群组尚未加载完成，或你不是群管理员。请再试一次",
 	"$bog_gram_text_lobby_denied_one": "你的申请被拒绝了，可以用同一链接再次申请",
 	"$bog_gram_text_lobby_denied_some": "被拒绝的申请：{n}，可以用相同的链接再次申请",
 	"$bog_gram_text_lobby_key_bad": "申请中的密钥与其所有者不符：申请已被拒绝",

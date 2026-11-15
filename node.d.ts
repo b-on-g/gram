@@ -40375,6 +40375,7 @@ declare namespace $ {
 		count_people( ): string
 		count_dialogs( ): string
 		lobby_key_bad( ): string
+		lobby_accept_failed( ): string
 		lobby_lost( ): string
 		lobby_denied_one( ): string
 		lobby_denied_some( ): string
@@ -64468,7 +64469,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.175";
+    const $bog_gram_version = "1.0.177";
 }
 
 declare namespace $ {
@@ -85025,6 +85026,7 @@ declare namespace $.$$ {
         member_drop(lord: string, next?: any): null;
         member_raise(lord: string, next?: any): null;
         ask_accept(entry: string, next?: any): null;
+        ask_apply(entry: string): string;
         ask_reject(entry: string, next?: any): null;
         group_leave(next?: any): null;
         unread_count(id: string): number;
