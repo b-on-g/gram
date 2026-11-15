@@ -275,7 +275,6 @@ namespace $ {
 
 		@ $mol_mem
 		cam_able() {
-			this.video_changed()
 			return this.media().getVideoTracks().length > 0
 		}
 
@@ -296,8 +295,7 @@ namespace $ {
 			return new MediaStream( this.media().getTracks() )
 		}
 
-		@ $mol_action
-		video_open( facing: $bog_gram_call_facing ) {
+		video_close() {
 
 			const stream = this.media()
 
@@ -306,22 +304,61 @@ namespace $ {
 				stream.removeTrack( old )
 			}
 
+		}
+
+		@ $mol_action
+		video_open( facing: $bog_gram_call_facing ) {
+
+			this.video_close()
+
 			const fresh = $mol_wire_sync( navigator.mediaDevices ).getUserMedia({
 				video: $bog_gram_call_room.video_constraints( facing ),
 			})
 
 			const track = fresh.getVideoTracks()[ 0 ]
-			track.enabled = this.cam()
-			stream.addTrack( track )
-
-			for( const peer of this.peers() ) peer.video_replace( track )
 
 			this.facing( facing )
+
+			if( this.cam() ) {
+				this.video_close()
+				this.media().addTrack( track )
+				for( const peer of this.peers() ) peer.video_replace( track )
+			} else {
+				track.stop()
+			}
+
 			this.video_changed( this.video_changed() + 1 )
 		}
 
+		@ $mol_action
+		video_off() {
+
+			this.video_close()
+
+			for( const peer of this.peers() ) peer.video_replace( null )
+
+			this.video_changed( this.video_changed() + 1 )
+		}
+
+		@ $mol_mem
+		video_sync() {
+
+			this.video_changed()
+			if( !this.cam_able() ) return null
+
+			const open = this.media().getVideoTracks().length > 0
+			if( open === this.cam() ) return null
+
+			if( open ) this.video_off()
+			else $mol_wire_async( this ).video_open( this.facing() ).catch( $mol_fail_log )
+
+			return null
+		}
+
 		cam_switch() {
-			this.video_open( this.facing() === 'user' ? 'environment' : 'user' )
+			const facing = this.facing() === 'user' ? 'environment' : 'user'
+			if( this.cam() ) this.video_open( facing )
+			else this.facing( facing )
 		}
 
 		video_restore() {
@@ -446,6 +483,7 @@ namespace $ {
 			this.audio_session()
 			this.visible_watch()
 			this.media_apply()
+			this.video_sync()
 			this.video_watch()
 			this.video_check()
 			this.beat()

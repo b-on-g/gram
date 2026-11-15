@@ -273,7 +273,7 @@ namespace $ {
 			return this.offerer() ? this.answer_take() : this.answer_post()
 		}
 
-		video_replace( track: MediaStreamTrack ) {
+		video_replace( track: MediaStreamTrack | null ) {
 
 			const rtc = this.rtc()
 			if( !rtc ) return
