@@ -42080,7 +42080,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.174';
+    $.$bog_gram_version = '1.0.175';
 })($ || ($ = {}));
 
 ;
@@ -53196,6 +53196,21 @@ var $;
 			(obj.rows) = () => ((this.rows()));
 			return obj;
 		}
+		down_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Down_icon(){
+			const obj = new this.$.$mol_icon_chevron_down();
+			return obj;
+		}
+		Down(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Down_hint")));
+			(obj.click) = (next) => ((this.down_click(next)));
+			(obj.sub) = () => ([(this.Down_icon())]);
+			return obj;
+		}
 		Reply_icon(){
 			const obj = new this.$.$mol_icon_reply();
 			return obj;
@@ -53291,6 +53306,10 @@ var $;
 		Attach_icon(){
 			const obj = new this.$.$mol_icon_paperclip();
 			return obj;
+		}
+		box_click(next){
+			if(next !== undefined) return next;
+			return null;
 		}
 		message_send(next){
 			if(next !== undefined) return next;
@@ -53768,6 +53787,7 @@ var $;
 		}
 		foot(){
 			return [
+				(this.Down()), 
 				(this.Reply_banner()), 
 				(this.Edit_banner()), 
 				(this.Voice_note()), 
@@ -53786,6 +53806,7 @@ var $;
 		}
 		Message_box(){
 			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({"click": (next) => (this.box_click(next))});
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
@@ -53958,6 +53979,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
+	($mol_mem(($.$bog_gram_chat.prototype), "down_click"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Down_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Down"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Reply_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Reply_title"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Reply_text"));
@@ -53976,6 +54000,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
@@ -55417,9 +55442,45 @@ var $;
                     this.reveal(row, focus ? 'start' : 'end');
                     return;
                 }
-                if (rows.length > this.rows_seen())
-                    this.stick_end(true);
+                const grown = rows.length > this.rows_seen();
                 this.rows_seen(rows.length);
+                const messages = this.messages();
+                if (grown && this.message_out(messages[messages.length - 1].link().str))
+                    this.stick_end(true);
+            }
+            Down() {
+                if (!this.rows().length)
+                    return null;
+                if (this.stick_end())
+                    return null;
+                return super.Down();
+            }
+            down_click(next) {
+                const rows = this.rows();
+                if (rows.length)
+                    this.reveal(rows[rows.length - 1], 'end');
+                return null;
+            }
+            box_click(next) {
+                if (next?.target === this.Message_field().Edit().dom_node())
+                    return null;
+                this.Message_field().Edit().bring();
+                return null;
+            }
+            stick_observer() {
+                const body = this.Body().dom_node();
+                const Observer = this.$.$mol_dom_context.ResizeObserver;
+                if (!Observer)
+                    return null;
+                const observer = new Observer(() => {
+                    if (!$mol_wire_probe(() => this.stick_end()))
+                        return;
+                    body.scrollTop = body.scrollHeight;
+                });
+                observer.observe(this.Body_content().dom_node());
+                return {
+                    destructor: () => observer.disconnect(),
+                };
             }
             reveal(row, align) {
                 this.stick_end(align === 'end');
@@ -55454,6 +55515,7 @@ var $;
                 $bog_gram_soft(() => this.field_focus(), false);
                 $bog_gram_soft(() => this.stick_watch(), 0);
                 $bog_gram_soft(() => this.stick_hold(), 0);
+                $bog_gram_soft(() => this.stick_observer(), null);
                 $bog_gram_soft(() => this.follow(), undefined);
             }
         }
@@ -55704,6 +55766,15 @@ var $;
             $mol_mem
         ], $bog_gram_chat.prototype, "read_sync", null);
         __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "down_click", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "box_click", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "stick_observer", null);
+        __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "stick_watch", null);
         __decorate([
@@ -55901,7 +55972,24 @@ var $;
                 },
                 borderRadius: '1rem',
             },
+            Down: {
+                ...round,
+                position: 'absolute',
+                bottom: '100%',
+                right: '0.75rem',
+                margin: {
+                    bottom: '0.5rem',
+                },
+                borderRadius: '50%',
+                background: {
+                    color: $mol_theme.card,
+                },
+                boxShadow: `0 0 0 1px ${$mol_theme.line}`,
+                color: $mol_theme.shade,
+                zIndex: 1,
+            },
             Foot: {
+                position: 'relative',
                 flex: {
                     direction: 'column',
                 },
@@ -70280,10 +70368,28 @@ var $;
                 chat.stick_watch = () => 0;
                 chat.stick_hold = () => 0;
                 chat.follow = () => undefined;
+                chat.stick_observer = () => null;
                 chat.auto();
                 $mol_assert_equal(outer_focused, 0);
                 $mol_assert_equal(edit_focused, 1);
                 chat.$.$mol_media.match = match;
+            },
+            'Чужое новое сообщение не срывает прокрутку вниз, своё возвращает к низу'($) {
+                const ids = ['a', 'b'];
+                const chat = $bog_gram_chat.make({ $ });
+                chat.messages = () => ids.map(id => ({ link: () => ({ str: id }) }));
+                chat.rows = () => ids.map(id => chat.Line(id));
+                chat.message_out = (id) => id === 'mine';
+                chat.focus = () => 'a';
+                chat.reveal = () => { };
+                chat.follow();
+                chat.stick_end(false);
+                ids.push('theirs');
+                chat.follow();
+                $mol_assert_equal(chat.stick_end(), false);
+                ids.push('mine');
+                chat.follow();
+                $mol_assert_equal(chat.stick_end(), true);
             },
             'Открывается с первого непрочитанного чужого сообщения'($) {
                 const chat = $bog_gram_chat.make({ $ });
