@@ -18,11 +18,35 @@ namespace $.$$ {
 			chat.stick_watch = ()=> 0
 			chat.stick_hold = ()=> 0
 			chat.follow = ()=> undefined
+			chat.stick_observer = ()=> null
 			chat.auto()
 
 			$mol_assert_equal( outer_focused, 0 )
 			$mol_assert_equal( edit_focused, 1 )
 			chat.$.$mol_media.match = match
+
+		},
+
+		'Чужое новое сообщение не срывает прокрутку вниз, своё возвращает к низу'( $ ) {
+
+			const ids = [ 'a', 'b' ]
+			const chat = $bog_gram_chat.make({ $ })
+			chat.messages = ()=> ids.map( id => ({ link: ()=> ({ str: id }) }) ) as any
+			chat.rows = ()=> ids.map( id => chat.Line( id ) )
+			chat.message_out = ( id: string )=> id === 'mine'
+			chat.focus = ()=> 'a'
+			chat.reveal = ()=> {}
+
+			chat.follow()
+			chat.stick_end( false )
+
+			ids.push( 'theirs' )
+			chat.follow()
+			$mol_assert_equal( chat.stick_end(), false )
+
+			ids.push( 'mine' )
+			chat.follow()
+			$mol_assert_equal( chat.stick_end(), true )
 
 		},
 

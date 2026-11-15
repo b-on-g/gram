@@ -1402,8 +1402,50 @@ namespace $.$$ {
 				return
 			}
 
-			if( rows.length > this.rows_seen() ) this.stick_end( true )
+			const grown = rows.length > this.rows_seen()
 			this.rows_seen( rows.length )
+
+			const messages = this.messages()
+			if( grown && this.message_out( messages[ messages.length - 1 ].link().str ) ) this.stick_end( true )
+		}
+
+		override Down() {
+			if( !this.rows().length ) return null!
+			if( this.stick_end() ) return null!
+			return super.Down()
+		}
+
+		@ $mol_action
+		override down_click( next?: Event ) {
+			const rows = this.rows()
+			if( rows.length ) this.reveal( rows[ rows.length - 1 ], 'end' )
+			return null
+		}
+
+		@ $mol_action
+		override box_click( next?: Event ) {
+			if( next?.target === this.Message_field().Edit().dom_node() ) return null
+			this.Message_field().Edit().bring()
+			return null
+		}
+
+		@ $mol_mem
+		stick_observer() {
+
+			const body = this.Body().dom_node() as HTMLElement
+			const Observer = ( this.$.$mol_dom_context as any ).ResizeObserver as typeof ResizeObserver | undefined
+			if( !Observer ) return null
+
+			const observer = new Observer( ()=> {
+				if( !$mol_wire_probe( ()=> this.stick_end() ) ) return
+				body.scrollTop = body.scrollHeight
+			} )
+
+			observer.observe( this.Body_content().dom_node() as Element )
+
+			return {
+				destructor: ()=> observer.disconnect(),
+			}
 		}
 
 		reveal( row: $mol_view, align: ScrollLogicalPosition ) {
@@ -1442,6 +1484,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.field_focus(), false )
 			$bog_gram_soft( ()=> this.stick_watch(), 0 )
 			$bog_gram_soft( ()=> this.stick_hold(), 0 )
+			$bog_gram_soft( ()=> this.stick_observer(), null )
 			$bog_gram_soft( ()=> this.follow(), undefined )
 		}
 

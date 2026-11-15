@@ -193,7 +193,25 @@ namespace $.$$ {
 			borderRadius: '1rem',
 		},
 
+		Down: {
+			... round,
+			position: 'absolute',
+			bottom: '100%',
+			right: '0.75rem',
+			margin: {
+				bottom: '0.5rem',
+			},
+			borderRadius: '50%',
+			background: {
+				color: $mol_theme.card,
+			},
+			boxShadow: `0 0 0 1px ${ $mol_theme.line }`,
+			color: $mol_theme.shade,
+			zIndex: 1,
+		},
+
 		Foot: {
+			position: 'relative',
 			flex: {
 				direction: 'column',
 			},

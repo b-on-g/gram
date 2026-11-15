@@ -104,6 +104,11 @@ $bog_gram_chat $bog_gram_page
 		<= Messages $mol_list
 			rows <= rows /$mol_view
 	foot /
+		<= Down $mol_button_minor
+			hint @ \Scroll to latest
+			click? <=> down_click? null
+			sub /
+				<= Down_icon $mol_icon_chevron_down
 		<= Reply_banner $mol_view
 			sub /
 				<= Reply_icon $mol_icon_reply
@@ -144,6 +149,8 @@ $bog_gram_chat $bog_gram_page
 		files? <=> image_files? null
 		Icon <= Attach_icon $mol_icon_paperclip
 	Message_box $mol_view
+		event *
+			click? <=> box_click? null
 		sub /
 			<= Message_field $bog_gram_write
 				hint @ \Message…
