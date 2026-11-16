@@ -42083,7 +42083,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.180';
+    $.$bog_gram_version = '1.0.181';
 })($ || ($ = {}));
 
 ;
@@ -49439,8 +49439,14 @@ var $;
             const side = Math.min(width, height);
             return { left: (width - side) / 2, top: (height - side) / 2, side };
         }
+        static flip(mirror, side) {
+            return mirror ? [-1, 0, 0, 1, side, 0] : [1, 0, 0, 1, 0, 0];
+        }
         side() {
             return 480;
+        }
+        mirror() {
+            return false;
         }
         fps() {
             return 30;
@@ -49476,7 +49482,10 @@ var $;
                 return;
             if (video.videoWidth && video.videoHeight) {
                 const crop = $bog_gram_stage.crop(video.videoWidth, video.videoHeight);
-                canvas.getContext('2d')?.drawImage(video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height);
+                const context = canvas.getContext('2d');
+                const [a, b, c, d, e, f] = $bog_gram_stage.flip(this.mirror(), canvas.width);
+                context?.setTransform(a, b, c, d, e, f);
+                context?.drawImage(video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height);
             }
             this.frame = $mol_dom_context.requestAnimationFrame(this.draw);
         };
@@ -49676,7 +49685,7 @@ var $;
             if (this.kind() !== 'round' || !$bog_gram_voice.turn_live())
                 return stream;
             try {
-                const stage = $bog_gram_stage.make({});
+                const stage = $bog_gram_stage.make({ mirror: () => this.face() === 'user' });
                 const sight = stage.start($bog_gram_voice.preview(stream));
                 this.stage = stage;
                 return new $mol_dom_context.MediaStream([...stream.getAudioTracks(), ...sight]);
@@ -70348,6 +70357,15 @@ var $;
             $mol_assert_equal($bog_gram_stage.crop(640, 480), { left: 80, top: 0, side: 480 });
             $mol_assert_equal($bog_gram_stage.crop(480, 640), { left: 0, top: 80, side: 480 });
             $mol_assert_equal($bog_gram_stage.crop(480, 480), { left: 0, top: 0, side: 480 });
+        },
+        'Фронтальная камера пишется зеркально, как в превью: икс разворачивается от правого края'() {
+            const point = (matrix, x) => matrix[0] * x + matrix[4];
+            const mirror = $bog_gram_stage.flip(true, 480);
+            $mol_assert_equal(point(mirror, 0), 480);
+            $mol_assert_equal(point(mirror, 480), 0);
+            $mol_assert_equal(point(mirror, 100), 380);
+            const plain = $bog_gram_stage.flip(false, 480);
+            $mol_assert_equal(point(plain, 100), 100);
         },
     });
 })($ || ($ = {}));

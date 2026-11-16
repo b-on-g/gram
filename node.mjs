@@ -42092,7 +42092,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.180';
+    $.$bog_gram_version = '1.0.181';
 })($ || ($ = {}));
 
 ;
@@ -49448,8 +49448,14 @@ var $;
             const side = Math.min(width, height);
             return { left: (width - side) / 2, top: (height - side) / 2, side };
         }
+        static flip(mirror, side) {
+            return mirror ? [-1, 0, 0, 1, side, 0] : [1, 0, 0, 1, 0, 0];
+        }
         side() {
             return 480;
+        }
+        mirror() {
+            return false;
         }
         fps() {
             return 30;
@@ -49485,7 +49491,10 @@ var $;
                 return;
             if (video.videoWidth && video.videoHeight) {
                 const crop = $bog_gram_stage.crop(video.videoWidth, video.videoHeight);
-                canvas.getContext('2d')?.drawImage(video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height);
+                const context = canvas.getContext('2d');
+                const [a, b, c, d, e, f] = $bog_gram_stage.flip(this.mirror(), canvas.width);
+                context?.setTransform(a, b, c, d, e, f);
+                context?.drawImage(video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height);
             }
             this.frame = $mol_dom_context.requestAnimationFrame(this.draw);
         };
@@ -49685,7 +49694,7 @@ var $;
             if (this.kind() !== 'round' || !$bog_gram_voice.turn_live())
                 return stream;
             try {
-                const stage = $bog_gram_stage.make({});
+                const stage = $bog_gram_stage.make({ mirror: () => this.face() === 'user' });
                 const sight = stage.start($bog_gram_voice.preview(stream));
                 this.stage = stage;
                 return new $mol_dom_context.MediaStream([...stream.getAudioTracks(), ...sight]);

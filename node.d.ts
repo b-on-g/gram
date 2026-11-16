@@ -64469,7 +64469,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.180";
+    const $bog_gram_version = "1.0.181";
 }
 
 declare namespace $ {
@@ -79224,7 +79224,9 @@ declare namespace $ {
             top: number;
             side: number;
         };
+        static flip(mirror: boolean, side: number): readonly [-1, 0, 0, 1, number, 0] | readonly [1, 0, 0, 1, 0, 0];
         side(): number;
+        mirror(): boolean;
         fps(): number;
         canvas: HTMLCanvasElement | null;
         video: HTMLVideoElement | null;
