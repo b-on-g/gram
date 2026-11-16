@@ -3363,6 +3363,12 @@ $mol_icon_microphone $mol_icon path \M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3
 
 $mol_icon_stop $mol_icon path \M18,18H6V6H18V18Z
 
+$mol_icon_camera $mol_icon path \M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z
+
+$mol_icon_camera_flip $mol_icon path \M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z
+
+$mol_icon_record $mol_icon path \M19,12C19,15.86 15.86,19 12,19C8.14,19 5,15.86 5,12C5,8.14 8.14,5 12,5C15.86,5 19,8.14 19,12Z
+
 $mol_icon_chevron_right $mol_icon path \M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z
 
 $bog_gram_gallery $mol_view
@@ -3560,10 +3566,6 @@ $bog_gram_album $mol_view
 			width \
 			aspectRatio \
 			flexGrow <= tile_grow* \1
-
-$mol_icon_camera $mol_icon path \M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z
-
-$mol_icon_camera_flip $mol_icon path \M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z
 
 $mol_icon_signal $mol_icon path \M3,21H6V18H3M8,21H11V14H8M13,21H16V9H13M18,21H21V3H18V21Z
 
@@ -3780,6 +3782,7 @@ $bog_gram_bubble $mol_view
 		^
 		bog_gram_bubble_out <= out
 		bog_gram_bubble_menu <= menu
+		bog_gram_bubble_bare <= bare false
 	event *
 		^
 		pointerdown? <=> press?
@@ -4023,11 +4026,14 @@ $bog_gram_chat $bog_gram_page
 					sub /
 						<= Edit_cancel_icon $mol_icon_close
 		<= Voice_note $mol_paragraph
-			title <= voice_hint
+			title <= voice_note_text \
 		<= Round_live $mol_video_player
 			stream <= record_stream?
 			controls false
 			muted true
+			attr *
+				^
+				bog_gram_chat_mirror <= record_mirror true
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
@@ -4044,8 +4050,10 @@ $bog_gram_chat $bog_gram_page
 				hint @ \Message…
 				value? <=> message_text?
 				send? <=> message_send? null
+	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
 		hint @ \Send
+		enabled <= send_enabled true
 		click? <=> message_send?
 		sub /
 			<= Send_icon $mol_icon_send
@@ -4058,7 +4066,7 @@ $bog_gram_chat $bog_gram_page
 		sub /
 			<= record_icon $mol_icon_microphone
 	voice_mode_hint @ \Hold to record a voice message, tap for a video message
-	round_mode_hint @ \Hold to record a video message, tap for a voice message
+	round_mode_hint @ \Hold to open the camera for a video message, tap for a voice message
 	Voice_icon $mol_icon_microphone
 	Round_icon $mol_icon_video
 	Record_state $mol_view
@@ -4080,6 +4088,19 @@ $bog_gram_chat $bog_gram_page
 		click? <=> record_stop? null
 		sub /
 			<= Record_stop_icon $mol_icon_stop
+	Record_aim $mol_view
+		sub /
+			<= record_aim_text @ \Pick a camera and start recording
+	Record_turn $mol_button_minor
+		hint @ \Switch camera
+		click? <=> record_turn? null
+		sub /
+			<= Record_turn_icon $mol_icon_camera_flip
+	Record_go $mol_button_major
+		hint @ \Start recording
+		click? <=> record_go? null
+		sub /
+			<= Record_go_icon $mol_icon_record
 	Record_send $mol_button_major
 		hint @ \Send recording
 		click? <=> record_send? null

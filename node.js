@@ -3247,14 +3247,14 @@ var $;
     class $mol_view_selection extends $mol_object {
         static focused(next, notify) {
             const parents = [];
-            let element = next?.[0] ?? $mol_dom_context.document.activeElement;
+            let element = next?.[0] ?? $mol_dom.document.activeElement;
             while (element?.shadowRoot) {
                 element = element.shadowRoot.activeElement;
             }
             while (element) {
                 parents.push(element);
                 const parent = element.parentNode;
-                if (parent instanceof ShadowRoot)
+                if (parent instanceof $mol_dom.ShadowRoot)
                     element = parent.host;
                 else
                     element = parent;
@@ -3266,7 +3266,7 @@ var $;
                 if (element)
                     element.focus();
                 else
-                    $mol_dom_context.blur();
+                    $mol_dom.blur();
             });
             return parents;
         }
@@ -19702,7 +19702,7 @@ var $;
     }, 'Subj') {
         static meta = new $giper_baza_link(`${$.$giper_baza_flex_deck_link.str}_U2e5XejQ`);
         name(next) {
-            return this.Name(next)?.val(next) ?? this.link().str;
+            return this.Name(next)?.val(next) ?? '';
         }
         icon(next) {
             return this.Icon(next)?.val(next) ?? '💫';
@@ -42092,7 +42092,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.177';
+    $.$bog_gram_version = '1.0.178';
 })($ || ($ = {}));
 
 ;
@@ -45319,27 +45319,54 @@ var $;
         session(id) {
             return this.land_of(id)?.Data($bog_gram_session) ?? null;
         }
+        message_live(message) {
+            if (!message)
+                return false;
+            if (message.Deleted()?.val())
+                return false;
+            if (!message.Moment()?.val())
+                return false;
+            return this.message_filled(message);
+        }
+        message_filled(message) {
+            if (String(message.Text()?.val() ?? '').trim())
+                return true;
+            return Boolean(message.Image()?.val()
+                || message.Voice()?.val()
+                || message.Video()?.val()
+                || message.Round()?.val()
+                || message.Call()?.val()
+                || message.Contact()?.val());
+        }
+        bucket_end(bucket) {
+            for (let i = bucket.length - 1; i >= 0; --i) {
+                const moment = Number(bucket[i].Moment()?.val() ?? 0);
+                if (moment)
+                    return moment;
+            }
+            return 0;
+        }
         messages_merge(buckets) {
             return buckets
                 .filter(bucket => bucket.length)
                 .map(bucket => ({
                 bucket,
-                start: Number(bucket[0].Moment()?.val() ?? 0),
+                end: this.bucket_end(bucket),
                 link: bucket[0].link().str,
             }))
-                .sort((a, b) => (a.start - b.start) || (a.link < b.link ? -1 : a.link > b.link ? 1 : 0))
+                .sort((a, b) => (a.end - b.end) || (a.link < b.link ? -1 : a.link > b.link ? 1 : 0))
                 .flatMap(item => item.bucket);
         }
         messages_of(id) {
             return this.messages_merge(this.lands_of(id).map(land => $bog_gram_soft(() => land.Data($bog_gram_session).Messages()?.remote_list() ?? [], [])));
         }
         messages_alive_of(id) {
-            return this.messages_of(id).filter(message => !message.Deleted()?.val());
+            return this.messages_of(id).filter(message => this.message_live(message));
         }
         last(id) {
             const all = this.messages_of(id);
             for (let i = all.length - 1; i >= 0; --i) {
-                if (!all[i].Deleted()?.val())
+                if (this.message_live(all[i]))
                     return all[i];
             }
             return null;
@@ -48568,6 +48595,42 @@ var $;
 
 
 ;
+	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
+		path(){
+			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_camera_flip) = class $mol_icon_camera_flip extends ($.$mol_icon) {
+		path(){
+			return "M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_record) = class $mol_icon_record extends ($.$mol_icon) {
+		path(){
+			return "M19,12C19,15.86 15.86,19 12,19C8.14,19 5,15.86 5,12C5,8.14 8.14,5 12,5C15.86,5 19,8.14 19,12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_chevron_right) = class $mol_icon_chevron_right extends ($.$mol_icon) {
 		path(){
 			return "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z";
@@ -49449,19 +49512,35 @@ var $;
                 return false;
             return Boolean(this.type(kind));
         }
-        static constraints(kind) {
+        static hearing = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+        static sight(facing) {
+            return { facingMode: facing, width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } };
+        }
+        static constraints(kind, facing = 'user') {
             if (kind === 'voice')
-                return { audio: true };
-            return {
-                audio: true,
-                video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } },
-            };
+                return { audio: this.hearing };
+            return { audio: this.hearing, video: this.sight(facing) };
+        }
+        static preview(stream) {
+            return new $mol_dom_context.MediaStream(stream.getVideoTracks());
+        }
+        static async cameras() {
+            const devices = await $mol_dom_context.navigator.mediaDevices.enumerateDevices().catch(() => []);
+            return devices.filter(device => device.kind === 'videoinput').length;
         }
         kind() {
             return 'voice';
         }
+        facing() {
+            return 'user';
+        }
+        face_now = null;
+        face() {
+            return this.face_now ?? this.facing();
+        }
         filled = () => { };
-        opened = (stream) => { };
+        opened = (preview) => { };
+        turning = null;
         done = (take) => { };
         result = new Promise(done => { this.done = done; });
         opening = null;
@@ -49475,16 +49554,45 @@ var $;
         }
         async open_run() {
             const kind = this.kind();
-            const setup = kinds[kind];
             const type = $bog_gram_voice.type(kind);
             if (!type)
                 throw new Error(this.Text().voice_unsupported());
-            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia($bog_gram_voice.constraints(kind));
+            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia($bog_gram_voice.constraints(kind, this.face()));
             if (this.asked) {
                 this.hush(stream);
                 this.done(null);
                 return false;
             }
+            this.stream = stream;
+            this.opened($bog_gram_voice.preview(stream));
+            return true;
+        }
+        turn() {
+            if (this.recorder || this.asked || !this.stream)
+                return Promise.resolve(false);
+            return this.turning ??= this.turn_run().finally(() => { this.turning = null; });
+        }
+        async turn_run() {
+            const face = this.face() === 'user' ? 'environment' : 'user';
+            for (const track of this.stream?.getVideoTracks() ?? [])
+                track.stop();
+            const sight = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ video: $bog_gram_voice.sight(face) });
+            if (this.asked || this.recorder || !this.stream) {
+                this.hush(sight);
+                return false;
+            }
+            this.face_now = face;
+            this.stream = new $mol_dom_context.MediaStream([...this.stream.getAudioTracks(), ...sight.getVideoTracks()]);
+            this.opened($bog_gram_voice.preview(this.stream));
+            return true;
+        }
+        record() {
+            const stream = this.stream;
+            if (!stream || this.recorder || this.asked || this.turning)
+                return false;
+            const kind = this.kind();
+            const setup = kinds[kind];
+            const type = $bog_gram_voice.type(kind);
             const chunks = [];
             const recorder = new $mol_dom_context.MediaRecorder(stream, {
                 mimeType: type,
@@ -49502,11 +49610,9 @@ var $;
                     return this.done(null);
                 void this.pack(chunks, type, span);
             };
-            this.stream = stream;
             this.recorder = recorder;
             this.moment = Date.now();
             recorder.start();
-            this.opened(stream);
             this.limit = $mol_dom_context.setTimeout(() => this.filled(), setup.limit * 1000);
             return true;
         }
@@ -49534,9 +49640,7 @@ var $;
                 $mol_dom_context.clearTimeout(this.limit);
             this.limit = null;
             const recorder = this.recorder;
-            if (!recorder)
-                return;
-            if (recorder.state === 'inactive') {
+            if (!recorder || recorder.state === 'inactive') {
                 this.hush(this.stream);
                 this.done(null);
             }
@@ -50313,30 +50417,6 @@ var $;
         });
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-
-;
-	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
-		path(){
-			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_camera_flip) = class $mol_icon_camera_flip extends ($.$mol_icon) {
-		path(){
-			return "M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z";
-		}
-	};
-
-
-;
-"use strict";
-
 
 ;
 	($.$mol_icon_signal) = class $mol_icon_signal extends ($.$mol_icon) {
@@ -52290,6 +52370,9 @@ var $;
 
 ;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
+		bare(){
+			return false;
+		}
 		mouse_down(next){
 			if(next !== undefined) return next;
 			return null;
@@ -52649,7 +52732,8 @@ var $;
 			return {
 				...(super.attr()), 
 				"bog_gram_bubble_out": (this.out()), 
-				"bog_gram_bubble_menu": (this.menu())
+				"bog_gram_bubble_menu": (this.menu()), 
+				"bog_gram_bubble_bare": (this.bare())
 			};
 		}
 		event(){
@@ -52751,6 +52835,9 @@ var $;
             Round() {
                 return this.round() ? super.Round() : null;
             }
+            bare() {
+                return this.round() && !this.body() && !this.quote_shown();
+            }
             Clip() {
                 return this.video() ? super.Clip() : null;
             }
@@ -52819,7 +52906,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -53291,16 +53378,23 @@ var $;
 			(obj.sub) = () => ([(this.Edit_banner_text()), (this.Edit_cancel())]);
 			return obj;
 		}
+		voice_note_text(){
+			return "";
+		}
 		Voice_note(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.voice_hint()));
+			(obj.title) = () => ((this.voice_note_text()));
 			return obj;
+		}
+		record_mirror(){
+			return true;
 		}
 		Round_live(){
 			const obj = new this.$.$mol_video_player();
 			(obj.stream) = () => ((this.record_stream()));
 			(obj.controls) = () => (false);
 			(obj.muted) = () => (true);
+			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "bog_gram_chat_mirror": (this.record_mirror())});
 			return obj;
 		}
 		send_tools(){
@@ -53333,6 +53427,9 @@ var $;
 			(obj.value) = (next) => ((this.message_text(next)));
 			(obj.send) = (next) => ((this.message_send(next)));
 			return obj;
+		}
+		send_enabled(){
+			return true;
 		}
 		Send_icon(){
 			const obj = new this.$.$mol_icon_send();
@@ -53387,6 +53484,25 @@ var $;
 		}
 		Record_stop_icon(){
 			const obj = new this.$.$mol_icon_stop();
+			return obj;
+		}
+		record_aim_text(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_record_aim_text"));
+		}
+		record_turn(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Record_turn_icon(){
+			const obj = new this.$.$mol_icon_camera_flip();
+			return obj;
+		}
+		record_go(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Record_go_icon(){
+			const obj = new this.$.$mol_icon_record();
 			return obj;
 		}
 		record_send(next){
@@ -53822,9 +53938,13 @@ var $;
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
+		text_over_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_text_over_pattern"));
+		}
 		Send(){
 			const obj = new this.$.$mol_button_major();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Send_hint")));
+			(obj.enabled) = () => ((this.send_enabled()));
 			(obj.click) = (next) => ((this.message_send(next)));
 			(obj.sub) = () => ([(this.Send_icon())]);
 			return obj;
@@ -53875,6 +53995,25 @@ var $;
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Record_stop_hint")));
 			(obj.click) = (next) => ((this.record_stop(next)));
 			(obj.sub) = () => ([(this.Record_stop_icon())]);
+			return obj;
+		}
+		Record_aim(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.record_aim_text())]);
+			return obj;
+		}
+		Record_turn(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Record_turn_hint")));
+			(obj.click) = (next) => ((this.record_turn(next)));
+			(obj.sub) = () => ([(this.Record_turn_icon())]);
+			return obj;
+		}
+		Record_go(){
+			const obj = new this.$.$mol_button_major();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Record_go_hint")));
+			(obj.click) = (next) => ((this.record_go(next)));
+			(obj.sub) = () => ([(this.Record_go_icon())]);
 			return obj;
 		}
 		Record_send(){
@@ -54027,6 +54166,10 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_drop_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "record_stop"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_stop_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "record_turn"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_turn_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "record_go"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_go_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "record_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "draft_playing"));
@@ -54078,6 +54221,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_slide"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_drop"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_stop"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_aim"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_turn"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Record_go"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Record_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Draft"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Draft_sound"));
@@ -54368,6 +54514,7 @@ var $;
         const clock_tick = 200;
         const image_limit = 10;
         const tap_limit = 250;
+        const text_limit = 4096;
         const slide_cancel = 96;
         const slide_lock = 72;
         function $bog_gram_chat_record_shift(from, to) {
@@ -54527,7 +54674,8 @@ var $;
                 return index === undefined ? null : this.messages()[index];
             }
             message_dead(id) {
-                return Boolean(this.message_pawn(id)?.Deleted()?.val());
+                const pawn = this.message_pawn(id);
+                return !this.Talk().message_live(pawn);
             }
             message_alive(id) {
                 return Boolean(this.message_pawn(id)) && !this.message_dead(id);
@@ -54789,11 +54937,28 @@ var $;
                 }
                 return null;
             }
+            text_over() {
+                return Math.max(0, this.message_text().trim().length - text_limit);
+            }
+            send_enabled() {
+                return !this.text_over();
+            }
+            voice_note_text() {
+                const over = this.text_over();
+                if (over)
+                    return $bog_gram_text_fill(this.text_over_pattern(), { limit: text_limit, over });
+                return this.voice_hint();
+            }
+            caption() {
+                return this.text_over() ? '' : this.message_text().trim();
+            }
             message_send(next) {
                 this.Alerts().offer();
                 this.message_menu('');
                 const text = this.message_text().trim();
                 const editing = this.edit_id();
+                if (this.text_over())
+                    return null;
                 if (editing) {
                     if (!text)
                         return null;
@@ -54811,9 +54976,9 @@ var $;
                 if (!session)
                     return null;
                 const message = session.Messages('auto').make(null);
-                message.Text('auto')?.val(text);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
+                message.Text('auto')?.val(text);
                 const reply = this.reply_id();
                 if (reply)
                     message.Reply('auto')?.val(reply);
@@ -55014,8 +55179,10 @@ var $;
                 const frames = files.map(file => this.image_frame(file));
                 if (!frames.length)
                     return '';
-                const text = this.message_text().trim();
+                const text = this.caption();
                 const message = session.Messages('auto').make(null);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
                 const shots = message.Shots('auto');
                 for (const frame of frames) {
                     const shot = shots.make(null);
@@ -55028,9 +55195,8 @@ var $;
                 message.Image_height('auto')?.val(frames[0].height);
                 if (text)
                     message.Text('auto')?.val(text);
-                message.Author('auto')?.val(this.my_lord());
-                message.Moment('auto')?.val(Date.now());
-                this.message_text('');
+                if (text)
+                    this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
             }
@@ -55060,8 +55226,10 @@ var $;
                     return '';
                 }
                 const store = this.land_closed(clip.bytes, clip.type, passes);
-                const text = this.message_text().trim();
+                const text = this.caption();
                 const message = session.Messages('auto').make(null);
+                message.Author('auto')?.val(this.my_lord());
+                message.Moment('auto')?.val(Date.now());
                 message.Video('auto').remote(store);
                 if (clip.width && clip.height) {
                     message.Video_width('auto')?.val(clip.width);
@@ -55069,9 +55237,8 @@ var $;
                 }
                 if (text)
                     message.Text('auto')?.val(text);
-                message.Author('auto')?.val(this.my_lord());
-                message.Moment('auto')?.val(Date.now());
-                this.message_text('');
+                if (text)
+                    this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
             }
@@ -55112,6 +55279,42 @@ var $;
             record_phase(next) {
                 return next ?? '';
             }
+            record_facing(next) {
+                return this.$.$mol_state_local.value('bog_gram_round_facing', next) ?? 'user';
+            }
+            record_mirror() {
+                return this.record_facing() === 'user';
+            }
+            record_cameras() {
+                if (!this.record_stream())
+                    return 0;
+                return $bog_gram_soft(() => $mol_wire_sync(this.$.$bog_gram_voice).cameras(), 0);
+            }
+            Record_turn() {
+                return this.record_cameras() > 1 ? super.Record_turn() : null;
+            }
+            record_turn(next) {
+                const take = this.voice_live;
+                if (take)
+                    $mol_wire_async(this).record_turn_run(take);
+                return null;
+            }
+            record_turn_run(take) {
+                const turned = $mol_wire_sync(take).turn();
+                if (turned && this.voice_live === take)
+                    this.record_facing(take.face());
+                return turned;
+            }
+            record_go(next) {
+                const take = this.voice_live;
+                if (!take || this.record_phase() !== 'aim')
+                    return null;
+                if (!take.record())
+                    return null;
+                this.voice_start(Date.now());
+                this.record_phase('locked');
+                return null;
+            }
             voice_on() {
                 return Boolean(this.record_phase());
             }
@@ -55123,7 +55326,7 @@ var $;
                 return this.$.$bog_gram_voice.stamp((now - start) / 1000);
             }
             Voice_note() {
-                return this.voice_hint() ? super.Voice_note() : null;
+                return this.voice_note_text() ? super.Voice_note() : null;
             }
             Round_live() {
                 return this.record_stream() ? super.Round_live() : null;
@@ -55143,6 +55346,7 @@ var $;
             }
             send_tools() {
                 switch (this.record_phase()) {
+                    case 'aim': return [this.Record_drop(), this.Record_aim(), this.Record_turn(), this.Record_go()];
                     case 'hold': return [this.Record_state(), this.Record_slide(), this.Voice()];
                     case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_stop(), this.Record_send()];
                     case 'review': return [this.Record_drop(), this.Draft(), this.Record_send()];
@@ -55170,24 +55374,33 @@ var $;
             record_begin() {
                 this.tap_timer = null;
                 const kind = this.record_mode();
+                const facing = this.record_facing();
                 const take = this.$.$bog_gram_voice.make({
                     kind: () => kind,
+                    facing: () => facing,
                     filled: () => this.record_send(),
-                    opened: (stream) => {
+                    opened: (preview) => {
                         if (kind === 'round' && this.voice_live === take)
-                            this.record_stream(stream);
+                            this.record_stream(preview);
                     },
                 });
                 this.voice_live = take;
                 this.voice_hint('');
-                this.voice_start(Date.now());
-                this.record_phase('hold');
+                if (kind === 'round') {
+                    this.record_phase('aim');
+                }
+                else {
+                    this.voice_start(Date.now());
+                    this.record_phase('hold');
+                }
                 $mol_wire_async(this).voice_open(take);
                 return null;
             }
             voice_open(take) {
                 try {
-                    $mol_wire_sync(take).open();
+                    const opened = $mol_wire_sync(take).open();
+                    if (opened && take.kind() === 'voice')
+                        take.record();
                 }
                 catch (error) {
                     if ($mol_promise_like(error))
@@ -55640,6 +55853,12 @@ var $;
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "text_over", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "voice_note_text", null);
+        __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_send", null);
         __decorate([
@@ -55699,6 +55918,18 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "record_phase", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "record_facing", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "record_cameras", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "record_turn", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "record_go", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "voice_clock", null);
@@ -55803,7 +56034,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_line]:empty {\n\tpadding: 0;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
+    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_round_live][bog_gram_chat_mirror=\"true\"] {\n\ttransform: scaleX(-1);\n}\n\n[bog_gram_chat_line]:empty {\n\tpadding: 0;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -56184,6 +56415,28 @@ var $;
                     size: '0.8rem',
                 },
             },
+            Record_aim: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                color: $mol_theme.shade,
+                font: {
+                    size: '0.8rem',
+                },
+            },
+            Record_turn: round,
+            Record_go: {
+                ...round,
+                background: {
+                    color: $bog_gram_tone.alert,
+                },
+                color: '#ffffff',
+            },
             Record_drop: {
                 ...round,
                 color: $bog_gram_tone.alert,
@@ -56225,7 +56478,9 @@ var $;
                 aspectRatio: 1,
                 borderRadius: '50%',
                 objectFit: 'cover',
-                transform: 'scaleX(-1)',
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
                 margin: {
                     bottom: '0.5rem',
                 },
@@ -56256,6 +56511,8 @@ var $;
                     Attach: finger,
                     Voice: finger,
                     Record_drop: finger,
+                    Record_turn: finger,
+                    Record_go: finger,
                     Record_stop: finger,
                     Record_send: finger,
                 },
