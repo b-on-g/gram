@@ -84,6 +84,7 @@
 	"$bog_gram_chat_lost_pattern": "{what} не отправлено: не доехал ключ — {names}. Отправьте ещё раз чуть позже",
 	"$bog_gram_chat_read_pattern": "Прочитали {count} из {total}",
 	"$bog_gram_chat_record_aim_text": "Выберите камеру и начните запись",
+	"$bog_gram_chat_record_revived": "Запись оборвалась перезагрузкой — вот она, можно отправить",
 	"$bog_gram_chat_record_slide_text": "← влево — отмена · ↑ вверх — закрепить",
 	"$bog_gram_chat_reply_pattern": "Ответ {name}",
 	"$bog_gram_chat_round_mode_hint": "Удерживайте, чтобы открыть камеру для кружка, тап — переключить на голосовое",

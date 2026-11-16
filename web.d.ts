@@ -69113,7 +69113,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.178";
+    const $bog_gram_version = "1.0.180";
 }
 
 declare namespace $ {
@@ -83685,6 +83685,27 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $bog_gram_stage extends $mol_object {
+        static able(): boolean;
+        static crop(width: number, height: number): {
+            left: number;
+            top: number;
+            side: number;
+        };
+        side(): number;
+        fps(): number;
+        canvas: HTMLCanvasElement | null;
+        video: HTMLVideoElement | null;
+        output: MediaStream | null;
+        frame: number;
+        start(source: MediaStream): MediaStreamTrack[];
+        source(stream: MediaStream): void;
+        draw: () => void;
+        destructor(): void;
+    }
+}
+
+declare namespace $ {
     type $bog_gram_voice_kind = 'voice' | 'round';
     type $bog_gram_voice_facing = 'user' | 'environment';
     type $bog_gram_voice_take = {
@@ -83705,9 +83726,13 @@ declare namespace $ {
         static sight(facing: $bog_gram_voice_facing): MediaTrackConstraints;
         static constraints(kind: $bog_gram_voice_kind, facing?: $bog_gram_voice_facing): MediaStreamConstraints;
         static preview(stream: MediaStream): MediaStream;
+        static turn_live(): boolean;
+        static revive(dialog: string): Promise<$bog_gram_voice | null>;
         static cameras(): Promise<number>;
         kind(): $bog_gram_voice_kind;
         facing(): $bog_gram_voice_facing;
+        dialog(): string;
+        stage: $bog_gram_stage | null;
         face_now: $bog_gram_voice_facing | null;
         face(): $bog_gram_voice_facing;
         filled: () => void;
@@ -83723,8 +83748,10 @@ declare namespace $ {
         limit: ReturnType<typeof setTimeout> | null;
         open(): Promise<boolean>;
         open_run(): Promise<boolean>;
+        turnable(): boolean;
         turn(): Promise<boolean>;
         turn_run(): Promise<boolean>;
+        stage_make(stream: MediaStream): MediaStream;
         record(): boolean;
         pack(chunks: readonly Blob[], type: string, span: number): Promise<void>;
         hush(stream: MediaStream | null): void;
@@ -83732,6 +83759,47 @@ declare namespace $ {
         drop(): void;
         take(): Promise<$bog_gram_voice_take | null>;
     }
+}
+
+declare namespace $ {
+    export type $bog_gram_stash_part = {
+        dialog: string;
+        kind: $bog_gram_voice_kind;
+        type: string;
+        span: number;
+        data: Blob;
+    };
+    export type $bog_gram_stash_left = {
+        dialog: string;
+        kind: $bog_gram_voice_kind;
+        type: string;
+        span: number;
+        bytes: Uint8Array<ArrayBuffer>;
+    };
+    type $bog_gram_stash_schema = {
+        Parts: {
+            Key: number;
+            Doc: $bog_gram_stash_part;
+            Indexes: {};
+        };
+    };
+    export class $bog_gram_stash extends $mol_object {
+        static base: Promise<$mol_db_database<$bog_gram_stash_schema>> | null;
+        static db(): Promise<$mol_db_database<$bog_gram_stash_schema>>;
+        static queue: Promise<unknown>;
+        static task(work: () => Promise<unknown>): Promise<unknown>;
+        static put(part: $bog_gram_stash_part): Promise<unknown>;
+        static clear(): Promise<unknown>;
+        static join(parts: readonly $bog_gram_stash_part[]): {
+            dialog: string;
+            kind: $bog_gram_voice_kind;
+            type: string;
+            span: number;
+            blob: Blob;
+        } | null;
+        static left(): Promise<$bog_gram_stash_left | null>;
+    }
+    export {};
 }
 
 declare namespace $ {
@@ -86283,6 +86351,15 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $bog_gram_href extends $mol_object {
+        blob(): Blob | null;
+        made: string;
+        url(): string;
+        destructor(): void;
+    }
+}
+
+declare namespace $ {
     type $bog_gram_shrink_shot = {
         bytes: Uint8Array<ArrayBuffer>;
         type: string;
@@ -87240,6 +87317,7 @@ declare namespace $ {
 		kind_round( ): string
 		record_mode( next?: string ): string
 		record_stream( next?: any ): any
+		record_revived( ): string
 		reply_pattern( ): string
 		video_failed( ): string
 		images_capped_pattern( ): string
@@ -87410,6 +87488,7 @@ declare namespace $.$$ {
         shot_ratio(shot: string): number;
         message_shot_width(id: string): string;
         shots(): string[];
+        file_href(file: $giper_baza_file): $bog_gram_href | null;
         file_uri(file: $giper_baza_file | null | undefined): string;
         shot_uri(shot: string): string;
         shot_zoom(shot: string, next?: any): null;
@@ -87448,6 +87527,9 @@ declare namespace $.$$ {
         record_mirror(): boolean;
         record_cameras(): number;
         Record_turn(): $mol_button_minor;
+        revive_asked: boolean;
+        record_revive(): void;
+        record_restore(take: $bog_gram_voice): null;
         record_turn(next?: any): null;
         record_turn_run(take: $bog_gram_voice): boolean;
         record_go(next?: any): null;

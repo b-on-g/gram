@@ -64,6 +64,7 @@
 	"$bog_gram_chat_lost_pattern": "{what}未发送：密钥未送达 — {names}。请稍后重新发送",
 	"$bog_gram_chat_read_pattern": "{count}/{total} 人已读",
 	"$bog_gram_chat_record_aim_text": "选择摄像头后开始录制",
+	"$bog_gram_chat_record_revived": "录制因页面重新加载而中断，已恢复，可以发送",
 	"$bog_gram_chat_record_slide_text": "← 左滑取消 · ↑ 上滑锁定",
 	"$bog_gram_chat_reply_pattern": "回复 {name}",
 	"$bog_gram_chat_round_mode_hint": "按住打开摄像头录制视频消息，轻点切换为语音",

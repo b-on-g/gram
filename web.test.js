@@ -10638,6 +10638,19 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'Кадр камеры режется в квадрат по середине'() {
+            $mol_assert_equal($bog_gram_stage.crop(640, 480), { left: 80, top: 0, side: 480 });
+            $mol_assert_equal($bog_gram_stage.crop(480, 640), { left: 0, top: 80, side: 480 });
+            $mol_assert_equal($bog_gram_stage.crop(480, 480), { left: 0, top: 0, side: 480 });
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'Длительность показывается минутами и секундами, доли округляются'() {
             $mol_assert_equal($bog_gram_voice.stamp(0), '0:00');
             $mol_assert_equal($bog_gram_voice.stamp(7), '0:07');
@@ -11198,6 +11211,29 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        async 'Куски записи склеиваются по порядку, длина и диалог берутся с последнего'() {
+            const part = (text, span) => ({
+                dialog: 'DialogA',
+                kind: 'round',
+                type: 'video/mp4',
+                span,
+                data: new $mol_blob([text], { type: 'video/mp4' }),
+            });
+            const joined = $bog_gram_stash.join([part('раз', 1), part('два', 2), part('три', 3)]);
+            $mol_assert_equal(joined.dialog, 'DialogA');
+            $mol_assert_equal(joined.kind, 'round');
+            $mol_assert_equal(joined.span, 3);
+            $mol_assert_equal(await joined.blob.text(), 'раздватри');
+            $mol_assert_equal($bog_gram_stash.join([]), null);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     var $$;
     (function ($$) {
@@ -11375,6 +11411,22 @@ var $;
                 chat.voice_cancel();
                 chat.record_facing('user');
             },
+            async 'Запись, оборванная перезагрузкой, возвращается черновиком в свой чат'($) {
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogA', record_revived: () => 'restored' });
+                const take = $bog_gram_voice.make({ $, kind: () => 'round', dialog: () => 'DialogA' });
+                take.asked = true;
+                take.done({ bytes: new Uint8Array([1, 2, 3]), type: 'video/mp4', span: 18, wave: '' });
+                chat.record_restore(take);
+                $mol_assert_equal(chat.record_phase(), 'review');
+                $mol_assert_equal(chat.voice_hint(), 'restored');
+                await take.take();
+                await new Promise(done => setTimeout(done));
+                $mol_assert_equal(chat.record_draft()?.kind, 'round');
+                $mol_assert_equal(chat.draft_span(), 18);
+                const other = $bog_gram_voice.make({ $, kind: () => 'voice', dialog: () => 'DialogA' });
+                chat.record_restore(other);
+                $mol_assert_equal(chat.voice_live, take);
+            },
             'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
                 const picture = $giper_baza_land.make({ $ }).link();
@@ -11399,6 +11451,33 @@ var $;
                 $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
                 $mol_assert_equal(chat.shot_ratio(wide.link().str + '/0'), 4 / 3);
                 $mol_assert_equal(chat.message_shots(text.link().str), []);
+            },
+            'Адрес вложения не копится: докачка пересоздаёт его, а прежний отзывается'($) {
+                const made = [];
+                const revoked = [];
+                const context = $.$mol_ambient({
+                    $mol_dom_context: Object.assign(Object.create($.$mol_dom_context), {
+                        URL: {
+                            createObjectURL: () => { made.push('blob:' + made.length); return made[made.length - 1]; },
+                            revokeObjectURL: (url) => { revoked.push(url); },
+                        },
+                    }),
+                });
+                const file = $giper_baza_land.make({ $: context }).Data($giper_baza_file);
+                const chat = $bog_gram_chat.make({ $: context });
+                const watch = new $mol_wire_atom('watch', () => chat.file_uri(file));
+                try {
+                    $mol_assert_equal(watch.sync(), '');
+                    for (let chunks = 1; chunks <= 5; ++chunks) {
+                        file.buffer(new Uint8Array(chunks * 2 ** 15).fill(chunks));
+                        $mol_assert_equal(watch.sync(), made[made.length - 1]);
+                    }
+                    $mol_assert_equal(made.length, 5);
+                    $mol_assert_equal(revoked, made.slice(0, -1));
+                }
+                finally {
+                    watch.destructor();
+                }
             },
             async 'Несколько фото уходят одним сообщением-альбомом по порядку выбора, без ключа — ни одного'($) {
                 const later = {

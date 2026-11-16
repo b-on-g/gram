@@ -84,6 +84,7 @@
 	"$bog_gram_chat_lost_pattern": "{what} not sent: key not delivered — {names}. Send again a bit later",
 	"$bog_gram_chat_read_pattern": "Read by {count} of {total}",
 	"$bog_gram_chat_record_aim_text": "Pick a camera and start recording",
+	"$bog_gram_chat_record_revived": "The recording was cut off by a reload — here it is, you can send it",
 	"$bog_gram_chat_record_slide_text": "← slide to cancel · ↑ to lock",
 	"$bog_gram_chat_reply_pattern": "Reply to {name}",
 	"$bog_gram_chat_round_mode_hint": "Hold to open the camera for a video message, tap for a voice message",

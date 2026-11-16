@@ -42092,7 +42092,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.178';
+    $.$bog_gram_version = '1.0.180';
 })($ || ($ = {}));
 
 ;
@@ -49437,6 +49437,77 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $bog_gram_stage extends $mol_object {
+        static able() {
+            const document = $mol_dom_context.document;
+            if (!document)
+                return false;
+            return typeof document.createElement('canvas').captureStream === 'function';
+        }
+        static crop(width, height) {
+            const side = Math.min(width, height);
+            return { left: (width - side) / 2, top: (height - side) / 2, side };
+        }
+        side() {
+            return 480;
+        }
+        fps() {
+            return 30;
+        }
+        canvas = null;
+        video = null;
+        output = null;
+        frame = 0;
+        start(source) {
+            const document = $mol_dom_context.document;
+            const canvas = this.canvas = document.createElement('canvas');
+            canvas.width = canvas.height = this.side();
+            const video = this.video = document.createElement('video');
+            video.muted = true;
+            video.playsInline = true;
+            video.autoplay = true;
+            this.source(source);
+            this.draw();
+            this.output = canvas.captureStream(this.fps());
+            return this.output.getVideoTracks();
+        }
+        source(stream) {
+            const video = this.video;
+            if (!video)
+                return;
+            video.srcObject = stream;
+            video.play().catch(error => $mol_fail_log(error));
+        }
+        draw = () => {
+            const canvas = this.canvas;
+            const video = this.video;
+            if (!canvas || !video)
+                return;
+            if (video.videoWidth && video.videoHeight) {
+                const crop = $bog_gram_stage.crop(video.videoWidth, video.videoHeight);
+                canvas.getContext('2d')?.drawImage(video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height);
+            }
+            this.frame = $mol_dom_context.requestAnimationFrame(this.draw);
+        };
+        destructor() {
+            $mol_dom_context.cancelAnimationFrame?.(this.frame);
+            for (const track of this.output?.getTracks() ?? [])
+                track.stop();
+            if (this.video)
+                this.video.srcObject = null;
+            this.canvas = null;
+            this.video = null;
+            this.output = null;
+            super.destructor();
+        }
+    }
+    $.$bog_gram_stage = $bog_gram_stage;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     const kinds = {
         voice: {
             types: ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'],
@@ -49452,6 +49523,7 @@ var $;
         },
     };
     const span_min = 0.7;
+    const stash_slice = 1000;
     const wave_bars = 48;
     const wave_digits = '0123456789abcdefghijklmnopqrstuv';
     class $bog_gram_voice extends $mol_object {
@@ -49524,6 +49596,19 @@ var $;
         static preview(stream) {
             return new $mol_dom_context.MediaStream(stream.getVideoTracks());
         }
+        static turn_live() {
+            return $bog_gram_stage.able();
+        }
+        static async revive(dialog) {
+            const left = await $bog_gram_stash.left();
+            if (!left || left.dialog !== dialog || left.span < span_min)
+                return null;
+            const wave = left.kind === 'voice' ? await this.wave(left.bytes) : '';
+            const take = this.make({ kind: () => left.kind, dialog: () => left.dialog });
+            take.asked = true;
+            take.done({ bytes: left.bytes, type: left.type, span: left.span, wave });
+            return take;
+        }
         static async cameras() {
             const devices = await $mol_dom_context.navigator.mediaDevices.enumerateDevices().catch(() => []);
             return devices.filter(device => device.kind === 'videoinput').length;
@@ -49534,6 +49619,10 @@ var $;
         facing() {
             return 'user';
         }
+        dialog() {
+            return '';
+        }
+        stage = null;
         face_now = null;
         face() {
             return this.face_now ?? this.facing();
@@ -49567,8 +49656,13 @@ var $;
             this.opened($bog_gram_voice.preview(stream));
             return true;
         }
+        turnable() {
+            if (this.asked || !this.stream)
+                return false;
+            return !this.recorder || Boolean(this.stage);
+        }
         turn() {
-            if (this.recorder || this.asked || !this.stream)
+            if (!this.turnable())
                 return Promise.resolve(false);
             return this.turning ??= this.turn_run().finally(() => { this.turning = null; });
         }
@@ -49577,22 +49671,40 @@ var $;
             for (const track of this.stream?.getVideoTracks() ?? [])
                 track.stop();
             const sight = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ video: $bog_gram_voice.sight(face) });
-            if (this.asked || this.recorder || !this.stream) {
+            if (!this.turnable()) {
                 this.hush(sight);
                 return false;
             }
             this.face_now = face;
             this.stream = new $mol_dom_context.MediaStream([...this.stream.getAudioTracks(), ...sight.getVideoTracks()]);
+            this.stage?.source($bog_gram_voice.preview(this.stream));
             this.opened($bog_gram_voice.preview(this.stream));
             return true;
         }
+        stage_make(stream) {
+            if (this.kind() !== 'round' || !$bog_gram_voice.turn_live())
+                return stream;
+            try {
+                const stage = $bog_gram_stage.make({});
+                const sight = stage.start($bog_gram_voice.preview(stream));
+                this.stage = stage;
+                return new $mol_dom_context.MediaStream([...stream.getAudioTracks(), ...sight]);
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                this.stage?.destructor();
+                this.stage = null;
+                return stream;
+            }
+        }
         record() {
-            const stream = this.stream;
-            if (!stream || this.recorder || this.asked || this.turning)
+            if (!this.stream || this.recorder || this.asked || this.turning)
                 return false;
             const kind = this.kind();
             const setup = kinds[kind];
             const type = $bog_gram_voice.type(kind);
+            const dialog = this.dialog();
+            const stream = this.stage_make(this.stream);
             const chunks = [];
             const recorder = new $mol_dom_context.MediaRecorder(stream, {
                 mimeType: type,
@@ -49600,11 +49712,18 @@ var $;
                 ...setup.video ? { videoBitsPerSecond: setup.video } : {},
             });
             recorder.ondataavailable = event => {
-                if (event.data.size)
-                    chunks.push(event.data);
+                if (!event.data.size)
+                    return;
+                chunks.push(event.data);
+                const span = (Date.now() - this.moment) / 1000;
+                if (dialog)
+                    void $bog_gram_stash.put({ dialog, kind, type, span, data: event.data });
             };
             recorder.onstop = () => {
                 this.hush(stream);
+                this.hush(this.stream);
+                this.stage?.destructor();
+                this.stage = null;
                 const span = (Date.now() - this.moment) / 1000;
                 if (span < span_min || !chunks.length)
                     return this.done(null);
@@ -49612,7 +49731,9 @@ var $;
             };
             this.recorder = recorder;
             this.moment = Date.now();
-            recorder.start();
+            if (dialog)
+                void $bog_gram_stash.clear();
+            recorder.start(stash_slice);
             this.limit = $mol_dom_context.setTimeout(() => this.filled(), setup.limit * 1000);
             return true;
         }
@@ -49642,6 +49763,8 @@ var $;
             const recorder = this.recorder;
             if (!recorder || recorder.state === 'inactive') {
                 this.hush(this.stream);
+                this.stage?.destructor();
+                this.stage = null;
                 this.done(null);
             }
             else {
@@ -49651,6 +49774,8 @@ var $;
         drop() {
             this.stop();
             this.done(null);
+            if (this.dialog())
+                void $bog_gram_stash.clear();
         }
         take() {
             return this.result;
@@ -49660,6 +49785,349 @@ var $;
         $mol_mem
     ], $bog_gram_voice.prototype, "Text", null);
     $.$bog_gram_voice = $bog_gram_voice;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Converts IDBResult to Promise */
+    function $mol_db_response(request) {
+        return new Promise((done, fail) => {
+            request.onerror = () => fail(new Error(request.error.message));
+            request.onsuccess = () => done(request.result);
+        });
+    }
+    $.$mol_db_response = $mol_db_response;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Creates new or returns existen database with automatic schema migration.
+     * Schema version is based on migrations count.
+     * Migrations code mustn't be changed after deploy.
+     * Only adding migrations at the end is allowed.
+     * Only new migrations will be applyed to existen DB.
+     * Schema changes allowed only through migratios.
+     */
+    async function $mol_db(name, ...migrations) {
+        const request = this.$mol_dom_context.indexedDB.open(name, migrations.length ? migrations.length + 1 : undefined);
+        request.onupgradeneeded = event => {
+            migrations.splice(0, event.oldVersion - 1);
+            const transaction = new $mol_db_transaction(request.transaction);
+            for (const migrate of migrations)
+                migrate(transaction);
+        };
+        const db = await $mol_db_response(request);
+        return new $mol_db_database(db);
+    }
+    $.$mol_db = $mol_db;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** IndexedDB ObjectStore wrapper. */
+    class $mol_db_store {
+        native;
+        constructor(native) {
+            this.native = native;
+        }
+        get name() {
+            return this.native.name;
+        }
+        get path() {
+            return this.native.keyPath;
+        }
+        get incremental() {
+            return this.native.autoIncrement;
+        }
+        /** Returns dictionary of all existen Indexes. */
+        get indexes() {
+            return new Proxy({}, {
+                ownKeys: () => [...this.native.indexNames],
+                has: (_, name) => this.native.indexNames.contains(name),
+                get: (_, name) => new $mol_db_index(this.native.index(name))
+            });
+        }
+        /** Creates new Index */
+        index_make(name, path = [], unique = false, multiEntry = false) {
+            return this.native.createIndex(name, path, { multiEntry, unique });
+        }
+        /** Drops existen Index */
+        index_drop(name) {
+            this.native.deleteIndex(name);
+            return this;
+        }
+        get transaction() {
+            return new $mol_db_transaction(this.native.transaction);
+        }
+        get db() {
+            return this.transaction.db;
+        }
+        /** Deletes all stored Documents */
+        clear() {
+            return $mol_db_response(this.native.clear());
+        }
+        /** Counts Documents by primary key(s) */
+        count(keys) {
+            return $mol_db_response(this.native.count(keys));
+        }
+        /** Stores single Document by primary key. */
+        put(doc, key) {
+            return $mol_db_response(this.native.put(doc, key));
+        }
+        /** Returns Document by primary key. */
+        get(key) {
+            return $mol_db_response(this.native.get(key));
+        }
+        /** Selects Documents by primary keys. */
+        select(key, count) {
+            return $mol_db_response(this.native.getAll(key, count));
+        }
+        /** Deletes Documents by primary key(s). */
+        drop(keys) {
+            return $mol_db_response(this.native.delete(keys));
+        }
+    }
+    $.$mol_db_store = $mol_db_store;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** IndexedDB Index wrapper. */
+    class $mol_db_index {
+        native;
+        constructor(native) {
+            this.native = native;
+        }
+        get name() {
+            return this.native.name;
+        }
+        get paths() {
+            return this.native.keyPath;
+        }
+        get unique() {
+            return this.native.unique;
+        }
+        get multiple() {
+            return this.native.multiEntry;
+        }
+        get store() {
+            return new $mol_db_store(this.native.objectStore);
+        }
+        get transaction() {
+            return this.store.transaction;
+        }
+        get db() {
+            return this.store.db;
+        }
+        /** Counts Documents by key(s) */
+        count(keys) {
+            return $mol_db_response(this.native.count(keys));
+        }
+        /** Returns Document by primary key. */
+        get(key) {
+            return $mol_db_response(this.native.get(key));
+        }
+        /** Selects Documents by primary keys. */
+        select(key, count) {
+            return $mol_db_response(this.native.getAll(key, count));
+        }
+    }
+    $.$mol_db_index = $mol_db_index;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_dom_context.indexedDB = $node['fake-indexeddb'].indexedDB;
+    $mol_dom_context.IDBCursor = $node['fake-indexeddb'].IDBCursor;
+    $mol_dom_context.IDBCursorWithValue = $node['fake-indexeddb'].IDBCursorWithValue;
+    $mol_dom_context.IDBDatabase = $node['fake-indexeddb'].IDBDatabase;
+    $mol_dom_context.IDBFactory = $node['fake-indexeddb'].IDBFactory;
+    $mol_dom_context.IDBIndex = $node['fake-indexeddb'].IDBIndex;
+    $mol_dom_context.IDBKeyRange = $node['fake-indexeddb'].IDBKeyRange;
+    $mol_dom_context.IDBObjectStore = $node['fake-indexeddb'].IDBObjectStore;
+    $mol_dom_context.IDBOpenDBRequest = $node['fake-indexeddb'].IDBOpenDBRequest;
+    $mol_dom_context.IDBRequest = $node['fake-indexeddb'].IDBRequest;
+    $mol_dom_context.IDBTransaction = $node['fake-indexeddb'].IDBTransaction;
+    $mol_dom_context.IDBVersionChangeEvent = $node['fake-indexeddb'].IDBVersionChangeEvent;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** IndexedDB Transaction wrapper. */
+    class $mol_db_transaction {
+        native;
+        constructor(native) {
+            this.native = native;
+        }
+        /** Returns dictionary of all existen Stores. */
+        get stores() {
+            return new Proxy({}, {
+                ownKeys: () => [...this.native.objectStoreNames],
+                has: (_, name) => this.native.objectStoreNames.contains(name),
+                get: (_, name, proxy) => (name in proxy)
+                    ? new $mol_db_store(this.native.objectStore(name))
+                    : undefined,
+            });
+        }
+        /** Creates new Store */
+        store_make(name) {
+            return this.native.db.createObjectStore(name, { autoIncrement: true });
+        }
+        /** Drops existen Store */
+        store_drop(name) {
+            this.native.db.deleteObjectStore(name);
+            return this;
+        }
+        /** Instant abort transaction. Any errors aborts transactions automatically. */
+        abort() {
+            if (this.native.error)
+                return;
+            this.native.abort();
+        }
+        /** Instant commits transaction. Without errors commit proceed automatically later. */
+        commit() {
+            this.native.commit?.();
+            return new Promise((done, fail) => {
+                this.native.onerror = () => fail(new Error(this.native.error.message));
+                this.native.oncomplete = () => done();
+            });
+        }
+        get db() {
+            return new $mol_db_database(this.native.db);
+        }
+    }
+    $.$mol_db_transaction = $mol_db_transaction;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** IndexedDB instance wrapper. */
+    class $mol_db_database {
+        native;
+        constructor(native) {
+            this.native = native;
+        }
+        /** Returns database name. */
+        get name() {
+            return this.native.name;
+        }
+        /** Returns database schema version. */
+        get version() {
+            return this.native.version;
+        }
+        /** Returns all stores names. */
+        get stores() {
+            return [...this.native.objectStoreNames];
+        }
+        /** Create read-only transaction. */
+        read(...names) {
+            return new $mol_db_transaction(this.native.transaction(names, 'readonly', { durability: 'relaxed' })).stores;
+        }
+        /** Create read/write transaction. */
+        change(...names) {
+            return new $mol_db_transaction(this.native.transaction(names, 'readwrite', { durability: 'relaxed' }));
+        }
+        /**
+         * Deletes database.
+         * DB can be deleted only after end of all transactions.
+         */
+        kill() {
+            this.native.close();
+            const request = $mol_dom_context.indexedDB.deleteDatabase(this.name);
+            request.onblocked = console.warn;
+            return $mol_db_response(request);
+        }
+        /**
+         * Closes DB connection.
+         * Connection really be closed only after end of all transactions.
+         */
+        destructor() {
+            this.native.close();
+        }
+    }
+    $.$mol_db_database = $mol_db_database;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_stash extends $mol_object {
+        static base = null;
+        static db() {
+            return this.base ??= this.$.$mol_db('$bog_gram_stash', mig => mig.store_make('Parts'));
+        }
+        static queue = Promise.resolve();
+        static task(work) {
+            const next = this.queue.then(work).catch(error => $mol_fail_log(error));
+            this.queue = next;
+            return next;
+        }
+        static put(part) {
+            return this.task(async () => {
+                const db = await this.db();
+                await db.change('Parts').stores.Parts.put(part);
+            });
+        }
+        static clear() {
+            return this.task(async () => {
+                const db = await this.db();
+                await db.change('Parts').stores.Parts.clear();
+            });
+        }
+        static join(parts) {
+            if (!parts.length)
+                return null;
+            const last = parts[parts.length - 1];
+            return {
+                dialog: last.dialog,
+                kind: last.kind,
+                type: last.type,
+                span: last.span,
+                blob: new $mol_blob(parts.map(part => part.data), { type: last.type }),
+            };
+        }
+        static async left() {
+            await this.queue;
+            try {
+                const db = await this.db();
+                const joined = this.join(await db.read('Parts').Parts.select());
+                if (!joined)
+                    return null;
+                const bytes = new Uint8Array(await joined.blob.arrayBuffer());
+                return { ...joined, bytes };
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                return null;
+            }
+        }
+    }
+    $.$bog_gram_stash = $bog_gram_stash;
 })($ || ($ = {}));
 
 ;
@@ -53817,6 +54285,9 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		record_revived(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_record_revived"));
+		}
 		reply_pattern(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_reply_pattern"));
 		}
@@ -54232,6 +54703,31 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Bubble"));
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_href extends $mol_object {
+        blob() {
+            return null;
+        }
+        made = '';
+        url() {
+            const blob = this.blob();
+            if (!blob)
+                return '';
+            return this.made ||= this.$.$mol_dom_context.URL.createObjectURL(blob);
+        }
+        destructor() {
+            if (this.made)
+                this.$.$mol_dom_context.URL.revokeObjectURL(this.made);
+            this.made = '';
+            super.destructor();
+        }
+    }
+    $.$bog_gram_href = $bog_gram_href;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -55044,12 +55540,16 @@ var $;
                     return $bog_gram_soft(() => this.message_shots(id), []);
                 });
             }
+            file_href(file) {
+                const blob = file.blob();
+                if (!blob.size)
+                    return null;
+                return this.$.$bog_gram_href.make({ $: this.$, blob: () => blob });
+            }
             file_uri(file) {
                 if (!file)
                     return '';
-                if (!file.buffer().byteLength)
-                    return '';
-                return this.$.$mol_dom_context.URL.createObjectURL(file.blob());
+                return this.file_href(file)?.url() ?? '';
             }
             shot_uri(shot) {
                 return $bog_gram_soft(() => this.file_uri(this.shot_frame(shot)?.file()), '');
@@ -55291,7 +55791,31 @@ var $;
                 return $bog_gram_soft(() => $mol_wire_sync(this.$.$bog_gram_voice).cameras(), 0);
             }
             Record_turn() {
-                return this.record_cameras() > 1 ? super.Record_turn() : null;
+                if (this.record_cameras() < 2)
+                    return null;
+                if (this.record_phase() === 'locked' && !this.$.$bog_gram_voice.turn_live())
+                    return null;
+                return super.Record_turn();
+            }
+            revive_asked = false;
+            record_revive() {
+                const dialog = this.dialog();
+                if (this.revive_asked || !dialog)
+                    return;
+                this.revive_asked = true;
+                this.$.$bog_gram_voice.revive(dialog).then(take => {
+                    if (take)
+                        this.record_restore(take);
+                }).catch(error => $mol_fail_log(error));
+            }
+            record_restore(take) {
+                if (this.record_phase() || this.voice_live)
+                    return null;
+                this.voice_live = take;
+                this.record_phase('review');
+                this.voice_hint(this.record_revived());
+                $mol_wire_async(this).draft_load(take);
+                return null;
             }
             record_turn(next) {
                 const take = this.voice_live;
@@ -55348,7 +55872,7 @@ var $;
                 switch (this.record_phase()) {
                     case 'aim': return [this.Record_drop(), this.Record_aim(), this.Record_turn(), this.Record_go()];
                     case 'hold': return [this.Record_state(), this.Record_slide(), this.Voice()];
-                    case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_stop(), this.Record_send()];
+                    case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send()];
                     case 'review': return [this.Record_drop(), this.Draft(), this.Record_send()];
                 }
                 return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
@@ -55375,9 +55899,11 @@ var $;
                 this.tap_timer = null;
                 const kind = this.record_mode();
                 const facing = this.record_facing();
+                const dialog = this.dialog();
                 const take = this.$.$bog_gram_voice.make({
                     kind: () => kind,
                     facing: () => facing,
+                    dialog: () => dialog,
                     filled: () => this.record_send(),
                     opened: (preview) => {
                         if (kind === 'round' && this.voice_live === take)
@@ -55556,6 +56082,7 @@ var $;
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
                 this.voice_hint('');
+                void this.$.$bog_gram_stash.clear();
                 return message.link().str;
             }
             message_round(id) {
@@ -55742,6 +56269,7 @@ var $;
                 $bog_gram_soft(() => this.stick_hold(), 0);
                 $bog_gram_soft(() => this.stick_observer(), null);
                 $bog_gram_soft(() => this.follow(), undefined);
+                this.record_revive();
             }
         }
         __decorate([
@@ -55881,6 +56409,9 @@ var $;
         ], $bog_gram_chat.prototype, "shots", null);
         __decorate([
             $mol_mem_key
+        ], $bog_gram_chat.prototype, "file_href", null);
+        __decorate([
+            $mol_mem_key
         ], $bog_gram_chat.prototype, "shot_uri", null);
         __decorate([
             $mol_action
@@ -55924,6 +56455,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "record_cameras", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "record_restore", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "record_turn", null);
@@ -58644,291 +59178,6 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Pick_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Converts IDBResult to Promise */
-    function $mol_db_response(request) {
-        return new Promise((done, fail) => {
-            request.onerror = () => fail(new Error(request.error.message));
-            request.onsuccess = () => done(request.result);
-        });
-    }
-    $.$mol_db_response = $mol_db_response;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /**
-     * Creates new or returns existen database with automatic schema migration.
-     * Schema version is based on migrations count.
-     * Migrations code mustn't be changed after deploy.
-     * Only adding migrations at the end is allowed.
-     * Only new migrations will be applyed to existen DB.
-     * Schema changes allowed only through migratios.
-     */
-    async function $mol_db(name, ...migrations) {
-        const request = this.$mol_dom_context.indexedDB.open(name, migrations.length ? migrations.length + 1 : undefined);
-        request.onupgradeneeded = event => {
-            migrations.splice(0, event.oldVersion - 1);
-            const transaction = new $mol_db_transaction(request.transaction);
-            for (const migrate of migrations)
-                migrate(transaction);
-        };
-        const db = await $mol_db_response(request);
-        return new $mol_db_database(db);
-    }
-    $.$mol_db = $mol_db;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** IndexedDB ObjectStore wrapper. */
-    class $mol_db_store {
-        native;
-        constructor(native) {
-            this.native = native;
-        }
-        get name() {
-            return this.native.name;
-        }
-        get path() {
-            return this.native.keyPath;
-        }
-        get incremental() {
-            return this.native.autoIncrement;
-        }
-        /** Returns dictionary of all existen Indexes. */
-        get indexes() {
-            return new Proxy({}, {
-                ownKeys: () => [...this.native.indexNames],
-                has: (_, name) => this.native.indexNames.contains(name),
-                get: (_, name) => new $mol_db_index(this.native.index(name))
-            });
-        }
-        /** Creates new Index */
-        index_make(name, path = [], unique = false, multiEntry = false) {
-            return this.native.createIndex(name, path, { multiEntry, unique });
-        }
-        /** Drops existen Index */
-        index_drop(name) {
-            this.native.deleteIndex(name);
-            return this;
-        }
-        get transaction() {
-            return new $mol_db_transaction(this.native.transaction);
-        }
-        get db() {
-            return this.transaction.db;
-        }
-        /** Deletes all stored Documents */
-        clear() {
-            return $mol_db_response(this.native.clear());
-        }
-        /** Counts Documents by primary key(s) */
-        count(keys) {
-            return $mol_db_response(this.native.count(keys));
-        }
-        /** Stores single Document by primary key. */
-        put(doc, key) {
-            return $mol_db_response(this.native.put(doc, key));
-        }
-        /** Returns Document by primary key. */
-        get(key) {
-            return $mol_db_response(this.native.get(key));
-        }
-        /** Selects Documents by primary keys. */
-        select(key, count) {
-            return $mol_db_response(this.native.getAll(key, count));
-        }
-        /** Deletes Documents by primary key(s). */
-        drop(keys) {
-            return $mol_db_response(this.native.delete(keys));
-        }
-    }
-    $.$mol_db_store = $mol_db_store;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** IndexedDB Index wrapper. */
-    class $mol_db_index {
-        native;
-        constructor(native) {
-            this.native = native;
-        }
-        get name() {
-            return this.native.name;
-        }
-        get paths() {
-            return this.native.keyPath;
-        }
-        get unique() {
-            return this.native.unique;
-        }
-        get multiple() {
-            return this.native.multiEntry;
-        }
-        get store() {
-            return new $mol_db_store(this.native.objectStore);
-        }
-        get transaction() {
-            return this.store.transaction;
-        }
-        get db() {
-            return this.store.db;
-        }
-        /** Counts Documents by key(s) */
-        count(keys) {
-            return $mol_db_response(this.native.count(keys));
-        }
-        /** Returns Document by primary key. */
-        get(key) {
-            return $mol_db_response(this.native.get(key));
-        }
-        /** Selects Documents by primary keys. */
-        select(key, count) {
-            return $mol_db_response(this.native.getAll(key, count));
-        }
-    }
-    $.$mol_db_index = $mol_db_index;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_dom_context.indexedDB = $node['fake-indexeddb'].indexedDB;
-    $mol_dom_context.IDBCursor = $node['fake-indexeddb'].IDBCursor;
-    $mol_dom_context.IDBCursorWithValue = $node['fake-indexeddb'].IDBCursorWithValue;
-    $mol_dom_context.IDBDatabase = $node['fake-indexeddb'].IDBDatabase;
-    $mol_dom_context.IDBFactory = $node['fake-indexeddb'].IDBFactory;
-    $mol_dom_context.IDBIndex = $node['fake-indexeddb'].IDBIndex;
-    $mol_dom_context.IDBKeyRange = $node['fake-indexeddb'].IDBKeyRange;
-    $mol_dom_context.IDBObjectStore = $node['fake-indexeddb'].IDBObjectStore;
-    $mol_dom_context.IDBOpenDBRequest = $node['fake-indexeddb'].IDBOpenDBRequest;
-    $mol_dom_context.IDBRequest = $node['fake-indexeddb'].IDBRequest;
-    $mol_dom_context.IDBTransaction = $node['fake-indexeddb'].IDBTransaction;
-    $mol_dom_context.IDBVersionChangeEvent = $node['fake-indexeddb'].IDBVersionChangeEvent;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** IndexedDB Transaction wrapper. */
-    class $mol_db_transaction {
-        native;
-        constructor(native) {
-            this.native = native;
-        }
-        /** Returns dictionary of all existen Stores. */
-        get stores() {
-            return new Proxy({}, {
-                ownKeys: () => [...this.native.objectStoreNames],
-                has: (_, name) => this.native.objectStoreNames.contains(name),
-                get: (_, name, proxy) => (name in proxy)
-                    ? new $mol_db_store(this.native.objectStore(name))
-                    : undefined,
-            });
-        }
-        /** Creates new Store */
-        store_make(name) {
-            return this.native.db.createObjectStore(name, { autoIncrement: true });
-        }
-        /** Drops existen Store */
-        store_drop(name) {
-            this.native.db.deleteObjectStore(name);
-            return this;
-        }
-        /** Instant abort transaction. Any errors aborts transactions automatically. */
-        abort() {
-            if (this.native.error)
-                return;
-            this.native.abort();
-        }
-        /** Instant commits transaction. Without errors commit proceed automatically later. */
-        commit() {
-            this.native.commit?.();
-            return new Promise((done, fail) => {
-                this.native.onerror = () => fail(new Error(this.native.error.message));
-                this.native.oncomplete = () => done();
-            });
-        }
-        get db() {
-            return new $mol_db_database(this.native.db);
-        }
-    }
-    $.$mol_db_transaction = $mol_db_transaction;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** IndexedDB instance wrapper. */
-    class $mol_db_database {
-        native;
-        constructor(native) {
-            this.native = native;
-        }
-        /** Returns database name. */
-        get name() {
-            return this.native.name;
-        }
-        /** Returns database schema version. */
-        get version() {
-            return this.native.version;
-        }
-        /** Returns all stores names. */
-        get stores() {
-            return [...this.native.objectStoreNames];
-        }
-        /** Create read-only transaction. */
-        read(...names) {
-            return new $mol_db_transaction(this.native.transaction(names, 'readonly', { durability: 'relaxed' })).stores;
-        }
-        /** Create read/write transaction. */
-        change(...names) {
-            return new $mol_db_transaction(this.native.transaction(names, 'readwrite', { durability: 'relaxed' }));
-        }
-        /**
-         * Deletes database.
-         * DB can be deleted only after end of all transactions.
-         */
-        kill() {
-            this.native.close();
-            const request = $mol_dom_context.indexedDB.deleteDatabase(this.name);
-            request.onblocked = console.warn;
-            return $mol_db_response(request);
-        }
-        /**
-         * Closes DB connection.
-         * Connection really be closed only after end of all transactions.
-         */
-        destructor() {
-            this.native.close();
-        }
-    }
-    $.$mol_db_database = $mol_db_database;
-})($ || ($ = {}));
 
 ;
 "use strict";
