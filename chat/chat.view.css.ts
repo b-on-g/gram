@@ -415,6 +415,31 @@ namespace $.$$ {
 			},
 		},
 
+		Record_aim: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+			},
+			minWidth: 0,
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			whiteSpace: 'nowrap',
+			color: $mol_theme.shade,
+			font: {
+				size: '0.8rem',
+			},
+		},
+
+		Record_turn: round,
+
+		Record_go: {
+			... round,
+			background: {
+				color: $bog_gram_tone.alert,
+			},
+			color: '#ffffff',
+		},
+
 		Record_drop: {
 			... round,
 			color: $bog_gram_tone.alert,
@@ -462,7 +487,9 @@ namespace $.$$ {
 			aspectRatio: 1,
 			borderRadius: '50%',
 			objectFit: 'cover',
-			transform: 'scaleX(-1)',
+			background: {
+				color: $bog_gram_tone.veil,
+			},
 			margin: {
 				bottom: '0.5rem',
 			},
@@ -497,6 +524,8 @@ namespace $.$$ {
 				Attach: finger,
 				Voice: finger,
 				Record_drop: finger,
+				Record_turn: finger,
+				Record_go: finger,
 				Record_stop: finger,
 				Record_send: finger,
 			},

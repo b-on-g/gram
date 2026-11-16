@@ -226,15 +226,42 @@ namespace $ {
 			return this.land_of( id )?.Data( $bog_gram_session ) ?? null
 		}
 
+		message_live( message: $bog_gram_message | null ) {
+			if( !message ) return false
+			if( message.Deleted()?.val() ) return false
+			if( !message.Moment()?.val() ) return false
+			return this.message_filled( message )
+		}
+
+		message_filled( message: $bog_gram_message ) {
+			if( String( message.Text()?.val() ?? '' ).trim() ) return true
+			return Boolean(
+				message.Image()?.val()
+				|| message.Voice()?.val()
+				|| message.Video()?.val()
+				|| message.Round()?.val()
+				|| message.Call()?.val()
+				|| message.Contact()?.val()
+			)
+		}
+
+		bucket_end( bucket: readonly $bog_gram_message[] ) {
+			for( let i = bucket.length - 1; i >= 0; -- i ) {
+				const moment = Number( bucket[ i ].Moment()?.val() ?? 0 )
+				if( moment ) return moment
+			}
+			return 0
+		}
+
 		messages_merge( buckets: readonly ( readonly $bog_gram_message[] )[] ) {
 			return buckets
 				.filter( bucket => bucket.length )
 				.map( bucket => ({
 					bucket,
-					start: Number( bucket[0].Moment()?.val() ?? 0 ),
+					end: this.bucket_end( bucket ),
 					link: bucket[0].link().str,
 				}) )
-				.sort( ( a, b )=> ( a.start - b.start ) || ( a.link < b.link ? -1 : a.link > b.link ? 1 : 0 ) )
+				.sort( ( a, b )=> ( a.end - b.end ) || ( a.link < b.link ? -1 : a.link > b.link ? 1 : 0 ) )
 				.flatMap( item => item.bucket )
 		}
 
@@ -248,14 +275,14 @@ namespace $ {
 
 		@ $mol_mem_key
 		messages_alive_of( id: string ) {
-			return this.messages_of( id ).filter( message => !message.Deleted()?.val() )
+			return this.messages_of( id ).filter( message => this.message_live( message ) )
 		}
 
 		@ $mol_mem_key
 		last( id: string ) {
 			const all = this.messages_of( id )
 			for( let i = all.length - 1; i >= 0; -- i ) {
-				if( !all[ i ].Deleted()?.val() ) return all[ i ]
+				if( this.message_live( all[ i ] ) ) return all[ i ]
 			}
 			return null
 		}

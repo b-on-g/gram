@@ -135,11 +135,14 @@ $bog_gram_chat $bog_gram_page
 					sub /
 						<= Edit_cancel_icon $mol_icon_close
 		<= Voice_note $mol_paragraph
-			title <= voice_hint
+			title <= voice_note_text \
 		<= Round_live $mol_video_player
 			stream <= record_stream?
 			controls false
 			muted true
+			attr *
+				^
+				bog_gram_chat_mirror <= record_mirror true
 		<= Send_row $mol_view
 			sub <= send_tools /
 	Attach $bog_gram_attach
@@ -156,8 +159,10 @@ $bog_gram_chat $bog_gram_page
 				hint @ \Message…
 				value? <=> message_text?
 				send? <=> message_send? null
+	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
 		hint @ \Send
+		enabled <= send_enabled true
 		click? <=> message_send?
 		sub /
 			<= Send_icon $mol_icon_send
@@ -170,7 +175,7 @@ $bog_gram_chat $bog_gram_page
 		sub /
 			<= record_icon $mol_icon_microphone
 	voice_mode_hint @ \Hold to record a voice message, tap for a video message
-	round_mode_hint @ \Hold to record a video message, tap for a voice message
+	round_mode_hint @ \Hold to open the camera for a video message, tap for a voice message
 	Voice_icon $mol_icon_microphone
 	Round_icon $mol_icon_video
 	Record_state $mol_view
@@ -192,6 +197,19 @@ $bog_gram_chat $bog_gram_page
 		click? <=> record_stop? null
 		sub /
 			<= Record_stop_icon $mol_icon_stop
+	Record_aim $mol_view
+		sub /
+			<= record_aim_text @ \Pick a camera and start recording
+	Record_turn $mol_button_minor
+		hint @ \Switch camera
+		click? <=> record_turn? null
+		sub /
+			<= Record_turn_icon $mol_icon_camera_flip
+	Record_go $mol_button_major
+		hint @ \Start recording
+		click? <=> record_go? null
+		sub /
+			<= Record_go_icon $mol_icon_record
 	Record_send $mol_button_major
 		hint @ \Send recording
 		click? <=> record_send? null

@@ -22,6 +22,10 @@ namespace $.$$ {
 			return this.round() ? super.Round() : null!
 		}
 
+		override bare() {
+			return this.round() && !this.body() && !this.quote_shown()
+		}
+
 		override Clip() {
 			return this.video() ? super.Clip() : null!
 		}

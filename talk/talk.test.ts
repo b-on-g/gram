@@ -51,7 +51,44 @@ namespace $ {
 
 		},
 
-		'Бакеты идут друг за другом по первому сообщению, внутри порядок списка'( $ ) {
+		'Бакет, в который пишут сейчас, внизу, даже если начат раньше чужого'( $ ) {
+
+			const talk = $bog_gram_talk.make({ $ })
+
+			const current = $giper_baza_land.make({ $ })
+			const stray = $giper_baza_land.make({ $ })
+
+			write( current, 1000, 'старое' )
+			write( stray, 5000, 'призрак' )
+			write( current, 9000, 'новое' )
+
+			const text = ( list: readonly $bog_gram_message[] )=> list.map( item => item.Text()!.val() ).join( ' ' )
+
+			$mol_assert_equal( text( talk.messages_merge([ list_of( current ), list_of( stray ) ]) ), 'призрак старое новое' )
+			$mol_assert_equal( text( talk.messages_merge([ list_of( stray ), list_of( current ) ]) ), 'призрак старое новое' )
+
+		},
+
+		'Сообщение без времени или без содержимого недописано и не показывается, удалённое тоже'( $ ) {
+
+			const talk = $bog_gram_talk.make({ $ })
+			const land = $giper_baza_land.make({ $ })
+
+			const whole = write( land, 1000, 'целое' )
+			const broken = land.Data( $bog_gram_session ).Messages( 'auto' )!.make( null )
+			const hollow = write( land, 1500, '  ' )
+			const deleted = write( land, 2000, 'удалённое' )
+			deleted.Deleted( 'auto' )?.val( 3000 )
+
+			$mol_assert_equal( talk.message_live( whole ), true )
+			$mol_assert_equal( talk.message_live( broken ), false )
+			$mol_assert_equal( talk.message_live( hollow ), false )
+			$mol_assert_equal( talk.message_live( deleted ), false )
+			$mol_assert_equal( talk.message_live( null ), false )
+
+		},
+
+		'Бакеты идут друг за другом по последнему сообщению, внутри порядок списка'( $ ) {
 
 			const talk = $bog_gram_talk.make({ $ })
 

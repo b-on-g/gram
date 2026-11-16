@@ -180,6 +180,65 @@ namespace $.$$ {
 
 		},
 
+		'Текст длиннее лимита не уходит, черновик остаётся и под полем видно превышение'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const talk = $bog_gram_talk.make({ $, session: ()=> session, saved_is: ()=> false })
+			const alerts = $bog_gram_alerts.make({ $, offer: ()=> false })
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogLong', my_lord: ()=> 'LordMe', Talk: ()=> talk, Alerts: ()=> alerts, text_over_pattern: ()=> '{over}/{limit}' })
+
+			const long = 'я'.repeat( 4100 )
+			chat.message_text( long )
+
+			$mol_assert_equal( chat.send_enabled(), false )
+			$mol_assert_equal( chat.voice_note_text(), '4/4096' )
+
+			chat.message_send()
+			$mol_assert_equal( session.Messages()?.items().length ?? 0, 0 )
+			$mol_assert_equal( chat.message_text(), long )
+
+			chat.message_text( 'я'.repeat( 4096 ) )
+			$mol_assert_equal( chat.send_enabled(), true )
+			chat.message_send()
+
+			const sent = ( session.Messages()!.items() as readonly $giper_baza_link[] )
+				.map( link => session.land().Pawn( $bog_gram_message ).Head( link.head() ) )
+			$mol_assert_equal( sent.length, 1 )
+			$mol_assert_equal( sent[0].Text()?.val()?.length, 4096 )
+			$mol_assert_equal( sent[0].Author()?.val(), 'LordMe' )
+			$mol_assert_equal( chat.message_text(), '' )
+
+		},
+
+		'Удержание кружка открывает камеру без записи, запись начинается кнопкой'( $ ) {
+
+			const chat = $bog_gram_chat.make({ $ })
+			chat.record_mode = ()=> 'round'
+
+			const calls = [] as string[]
+			chat.$.$bog_gram_voice = class extends $bog_gram_voice {
+				override open() { calls.push( 'open:' + this.face() ); return Promise.resolve( true ) }
+				override record() { calls.push( 'record' ); return true }
+			} as any
+			chat.voice_open = ( take: $bog_gram_voice )=> { take.open(); return true }
+			chat.record_facing( 'environment' )
+
+			chat.record_begin()
+			$mol_assert_equal( chat.record_phase(), 'aim' )
+			$mol_assert_equal( calls, [ 'open:environment' ] )
+
+			chat.voice_release()
+			$mol_assert_equal( chat.record_phase(), 'aim' )
+
+			chat.record_go()
+			$mol_assert_equal( chat.record_phase(), 'locked' )
+			$mol_assert_equal( calls, [ 'open:environment', 'record' ] )
+
+			chat.voice_cancel()
+			chat.record_facing( 'user' )
+
+		},
+
 		'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )

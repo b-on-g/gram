@@ -2,6 +2,8 @@ namespace $ {
 
 	export type $bog_gram_voice_kind = 'voice' | 'round'
 
+	export type $bog_gram_voice_facing = 'user' | 'environment'
+
 	const kinds = {
 		voice: {
 			types: [ 'audio/webm;codecs=opus', 'audio/webm', 'audio/mp4' ],
@@ -96,21 +98,45 @@ namespace $ {
 			return Boolean( this.type( kind ) )
 		}
 
-		static constraints( kind: $bog_gram_voice_kind ): MediaStreamConstraints {
-			if( kind === 'voice' ) return { audio: true }
-			return {
-				audio: true,
-				video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } },
-			}
+		static hearing: MediaTrackConstraints = { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+
+		static sight( facing: $bog_gram_voice_facing ): MediaTrackConstraints {
+			return { facingMode: facing, width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } }
+		}
+
+		static constraints( kind: $bog_gram_voice_kind, facing: $bog_gram_voice_facing = 'user' ): MediaStreamConstraints {
+			if( kind === 'voice' ) return { audio: this.hearing }
+			return { audio: this.hearing, video: this.sight( facing ) }
+		}
+
+		static preview( stream: MediaStream ) {
+			return new $mol_dom_context.MediaStream( stream.getVideoTracks() )
+		}
+
+		static async cameras() {
+			const devices = await $mol_dom_context.navigator.mediaDevices.enumerateDevices().catch( ()=> [] as MediaDeviceInfo[] )
+			return devices.filter( device => device.kind === 'videoinput' ).length
 		}
 
 		kind(): $bog_gram_voice_kind {
 			return 'voice'
 		}
 
+		facing(): $bog_gram_voice_facing {
+			return 'user'
+		}
+
+		face_now = null as $bog_gram_voice_facing | null
+
+		face() {
+			return this.face_now ?? this.facing()
+		}
+
 		filled = ()=> {}
 
-		opened = ( stream: MediaStream )=> {}
+		opened = ( preview: MediaStream )=> {}
+
+		turning = null as Promise< boolean > | null
 
 		done = ( take: $bog_gram_voice_take | null )=> {}
 		result = new Promise< $bog_gram_voice_take | null >( done => { this.done = done } )
@@ -133,18 +159,57 @@ namespace $ {
 		async open_run() {
 
 			const kind = this.kind()
-			const setup = kinds[ kind ]
 
 			const type = $bog_gram_voice.type( kind )
 			if( !type ) throw new Error( this.Text().voice_unsupported() )
 
-			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia( $bog_gram_voice.constraints( kind ) )
+			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia( $bog_gram_voice.constraints( kind, this.face() ) )
 
 			if( this.asked ) {
 				this.hush( stream )
 				this.done( null )
 				return false
 			}
+
+			this.stream = stream
+			this.opened( $bog_gram_voice.preview( stream ) )
+
+			return true
+		}
+
+		turn() {
+			if( this.recorder || this.asked || !this.stream ) return Promise.resolve( false )
+			return this.turning ??= this.turn_run().finally( ()=> { this.turning = null } )
+		}
+
+		async turn_run() {
+
+			const face = this.face() === 'user' ? 'environment' : 'user'
+
+			for( const track of this.stream?.getVideoTracks() ?? [] ) track.stop()
+
+			const sight = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ video: $bog_gram_voice.sight( face ) })
+
+			if( this.asked || this.recorder || !this.stream ) {
+				this.hush( sight )
+				return false
+			}
+
+			this.face_now = face
+			this.stream = new $mol_dom_context.MediaStream([ ... this.stream.getAudioTracks(), ... sight.getVideoTracks() ])
+			this.opened( $bog_gram_voice.preview( this.stream ) )
+
+			return true
+		}
+
+		record() {
+
+			const stream = this.stream
+			if( !stream || this.recorder || this.asked || this.turning ) return false
+
+			const kind = this.kind()
+			const setup = kinds[ kind ]
+			const type = $bog_gram_voice.type( kind )
 
 			const chunks = [] as Blob[]
 
@@ -165,12 +230,10 @@ namespace $ {
 				void this.pack( chunks, type, span )
 			}
 
-			this.stream = stream
 			this.recorder = recorder
 			this.moment = Date.now()
 
 			recorder.start()
-			this.opened( stream )
 
 			this.limit = $mol_dom_context.setTimeout( ()=> this.filled(), setup.limit * 1000 )
 
@@ -202,9 +265,8 @@ namespace $ {
 			this.limit = null
 
 			const recorder = this.recorder
-			if( !recorder ) return
 
-			if( recorder.state === 'inactive' ) {
+			if( !recorder || recorder.state === 'inactive' ) {
 				this.hush( this.stream )
 				this.done( null )
 			} else {

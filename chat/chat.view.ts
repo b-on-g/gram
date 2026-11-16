@@ -14,6 +14,8 @@ namespace $.$$ {
 
 	const tap_limit = 250
 
+	const text_limit = 4096
+
 	const slide_cancel = 96
 
 	const slide_lock = 72
@@ -213,7 +215,8 @@ namespace $.$$ {
 		}
 
 		message_dead( id: string ) {
-			return Boolean( this.message_pawn( id )?.Deleted()?.val() )
+			const pawn = this.message_pawn( id )
+			return !this.Talk().message_live( pawn )
 		}
 
 		message_alive( id: string ) {
@@ -556,6 +559,26 @@ namespace $.$$ {
 			return null
 		}
 
+		@ $mol_mem
+		text_over() {
+			return Math.max( 0, this.message_text().trim().length - text_limit )
+		}
+
+		override send_enabled() {
+			return !this.text_over()
+		}
+
+		@ $mol_mem
+		override voice_note_text() {
+			const over = this.text_over()
+			if( over ) return $bog_gram_text_fill( this.text_over_pattern(), { limit: text_limit, over } )
+			return this.voice_hint()
+		}
+
+		caption() {
+			return this.text_over() ? '' : this.message_text().trim()
+		}
+
 		@ $mol_action
 		override message_send( next?: any ) {
 
@@ -564,6 +587,8 @@ namespace $.$$ {
 
 			const text = this.message_text().trim()
 			const editing = this.edit_id()
+
+			if( this.text_over() ) return null
 
 			if( editing ) {
 
@@ -586,9 +611,9 @@ namespace $.$$ {
 			if( !session ) return null
 
 			const message = session.Messages( 'auto' )!.make( null )
-			message.Text( 'auto' )?.val( text )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
+			message.Text( 'auto' )?.val( text )
 
 			const reply = this.reply_id()
 			if( reply ) message.Reply( 'auto' )?.val( reply )
@@ -836,8 +861,10 @@ namespace $.$$ {
 			const frames = files.map( file => this.image_frame( file ) )
 			if( !frames.length ) return ''
 
-			const text = this.message_text().trim()
+			const text = this.caption()
 			const message = session.Messages( 'auto' )!.make( null )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
 
 			const shots = message.Shots( 'auto' )!
 			for( const frame of frames ) {
@@ -851,10 +878,8 @@ namespace $.$$ {
 			message.Image_width( 'auto' )?.val( frames[0].width )
 			message.Image_height( 'auto' )?.val( frames[0].height )
 			if( text ) message.Text( 'auto' )?.val( text )
-			message.Author( 'auto' )?.val( this.my_lord() )
-			message.Moment( 'auto' )?.val( Date.now() )
 
-			this.message_text( '' )
+			if( text ) this.message_text( '' )
 			this.voice_hint( '' )
 
 			return message.link().str
@@ -895,8 +920,10 @@ namespace $.$$ {
 
 			const store = this.land_closed( clip.bytes, clip.type, passes )
 
-			const text = this.message_text().trim()
+			const text = this.caption()
 			const message = session.Messages( 'auto' )!.make( null )
+			message.Author( 'auto' )?.val( this.my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
 
 			message.Video( 'auto' )!.remote( store )
 			if( clip.width && clip.height ) {
@@ -904,10 +931,8 @@ namespace $.$$ {
 				message.Video_height( 'auto' )?.val( clip.height )
 			}
 			if( text ) message.Text( 'auto' )?.val( text )
-			message.Author( 'auto' )?.val( this.my_lord() )
-			message.Moment( 'auto' )?.val( Date.now() )
 
-			this.message_text( '' )
+			if( text ) this.message_text( '' )
 			this.voice_hint( '' )
 
 			return message.link().str
@@ -959,8 +984,53 @@ namespace $.$$ {
 		voice_live: $bog_gram_voice | null = null
 
 		@ $mol_mem
-		record_phase( next?: '' | 'hold' | 'locked' | 'review' ) {
+		record_phase( next?: '' | 'aim' | 'hold' | 'locked' | 'review' ) {
 			return next ?? ''
+		}
+
+		@ $mol_mem
+		record_facing( next?: $bog_gram_voice_facing ): $bog_gram_voice_facing {
+			return this.$.$mol_state_local.value< $bog_gram_voice_facing >( 'bog_gram_round_facing', next ) ?? 'user'
+		}
+
+		override record_mirror() {
+			return this.record_facing() === 'user'
+		}
+
+		@ $mol_mem
+		record_cameras() {
+			if( !this.record_stream() ) return 0
+			return $bog_gram_soft( ()=> $mol_wire_sync( this.$.$bog_gram_voice ).cameras(), 0 )
+		}
+
+		override Record_turn() {
+			return this.record_cameras() > 1 ? super.Record_turn() : null!
+		}
+
+		@ $mol_action
+		override record_turn( next?: any ) {
+			const take = this.voice_live
+			if( take ) $mol_wire_async( this ).record_turn_run( take )
+			return null
+		}
+
+		record_turn_run( take: $bog_gram_voice ) {
+			const turned = $mol_wire_sync( take ).turn()
+			if( turned && this.voice_live === take ) this.record_facing( take.face() )
+			return turned
+		}
+
+		@ $mol_action
+		override record_go( next?: any ) {
+
+			const take = this.voice_live
+			if( !take || this.record_phase() !== 'aim' ) return null
+			if( !take.record() ) return null
+
+			this.voice_start( Date.now() )
+			this.record_phase( 'locked' )
+
+			return null
 		}
 
 		override voice_on() {
@@ -976,7 +1046,7 @@ namespace $.$$ {
 		}
 
 		override Voice_note() {
-			return this.voice_hint() ? super.Voice_note() : null!
+			return this.voice_note_text() ? super.Voice_note() : null!
 		}
 
 		override Round_live() {
@@ -1000,6 +1070,7 @@ namespace $.$$ {
 		@ $mol_mem
 		override send_tools() {
 			switch( this.record_phase() ) {
+				case 'aim': return [ this.Record_drop(), this.Record_aim(), this.Record_turn(), this.Record_go() ]
 				case 'hold': return [ this.Record_state(), this.Record_slide(), this.Voice() ]
 				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_stop(), this.Record_send() ]
 				case 'review': return [ this.Record_drop(), this.Draft(), this.Record_send() ]
@@ -1038,18 +1109,25 @@ namespace $.$$ {
 			this.tap_timer = null
 
 			const kind = this.record_mode()
+			const facing = this.record_facing()
 			const take = this.$.$bog_gram_voice.make({
 				kind: ()=> kind,
+				facing: ()=> facing,
 				filled: ()=> this.record_send(),
-				opened: ( stream: MediaStream )=> {
-					if( kind === 'round' && this.voice_live === take ) this.record_stream( stream )
+				opened: ( preview: MediaStream )=> {
+					if( kind === 'round' && this.voice_live === take ) this.record_stream( preview )
 				},
 			})
 
 			this.voice_live = take
 			this.voice_hint( '' )
-			this.voice_start( Date.now() )
-			this.record_phase( 'hold' )
+
+			if( kind === 'round' ) {
+				this.record_phase( 'aim' )
+			} else {
+				this.voice_start( Date.now() )
+				this.record_phase( 'hold' )
+			}
 
 			$mol_wire_async( this ).voice_open( take )
 
@@ -1059,7 +1137,8 @@ namespace $.$$ {
 		voice_open( take: $bog_gram_voice ) {
 
 			try {
-				$mol_wire_sync( take ).open()
+				const opened = $mol_wire_sync( take ).open()
+				if( opened && take.kind() === 'voice' ) take.record()
 			} catch( error ) {
 
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
