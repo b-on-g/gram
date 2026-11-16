@@ -239,7 +239,7 @@ namespace $ {
 			if( this.kind() !== 'round' || !$bog_gram_voice.turn_live() ) return stream
 
 			try {
-				const stage = $bog_gram_stage.make({})
+				const stage = $bog_gram_stage.make({ mirror: ()=> this.face() === 'user' })
 				const sight = stage.start( $bog_gram_voice.preview( stream ) )
 				this.stage = stage
 				return new $mol_dom_context.MediaStream([ ... stream.getAudioTracks(), ... sight ])

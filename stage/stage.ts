@@ -13,8 +13,16 @@ namespace $ {
 			return { left: ( width - side ) / 2, top: ( height - side ) / 2, side }
 		}
 
+		static flip( mirror: boolean, side: number ) {
+			return mirror ? [ -1, 0, 0, 1, side, 0 ] as const : [ 1, 0, 0, 1, 0, 0 ] as const
+		}
+
 		side() {
 			return 480
+		}
+
+		mirror() {
+			return false
 		}
 
 		fps() {
@@ -60,7 +68,10 @@ namespace $ {
 
 			if( video.videoWidth && video.videoHeight ) {
 				const crop = $bog_gram_stage.crop( video.videoWidth, video.videoHeight )
-				canvas.getContext( '2d' )?.drawImage( video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height )
+				const context = canvas.getContext( '2d' )
+				const [ a, b, c, d, e, f ] = $bog_gram_stage.flip( this.mirror(), canvas.width )
+				context?.setTransform( a, b, c, d, e, f )
+				context?.drawImage( video, crop.left, crop.top, crop.side, crop.side, 0, 0, canvas.width, canvas.height )
 			}
 
 			this.frame = $mol_dom_context.requestAnimationFrame( this.draw )
