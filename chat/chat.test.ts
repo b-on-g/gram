@@ -252,7 +252,7 @@ namespace $.$$ {
 			$mol_assert_equal( chat.voice_hint(), 'restored' )
 
 			await take.take()
-			await $mol_wire_async( chat ).draft_load( take )
+			await new Promise( done => setTimeout( done ) )
 
 			$mol_assert_equal( chat.record_draft()?.kind, 'round' )
 			$mol_assert_equal( chat.draft_span(), 18 )
@@ -292,6 +292,42 @@ namespace $.$$ {
 			$mol_assert_equal( chat.message_shot_width( wide.link().str ), '15.00rem' )
 			$mol_assert_equal( chat.shot_ratio( wide.link().str + '/0' ), 4 / 3 )
 			$mol_assert_equal( chat.message_shots( text.link().str ), [] )
+
+		},
+
+		'Адрес вложения не копится: докачка пересоздаёт его, а прежний отзывается'( $ ) {
+
+			const made = [] as string[]
+			const revoked = [] as string[]
+
+			const context = $.$mol_ambient({
+				$mol_dom_context: Object.assign( Object.create( $.$mol_dom_context ), {
+					URL: {
+						createObjectURL: ()=> { made.push( 'blob:' + made.length ); return made[ made.length - 1 ] },
+						revokeObjectURL: ( url: string )=> { revoked.push( url ) },
+					},
+				} ),
+			})
+
+			const file = $giper_baza_land.make({ $: context }).Data( $giper_baza_file )
+			const chat = $bog_gram_chat.make({ $: context })
+			const watch = new $mol_wire_atom( 'watch', ()=> chat.file_uri( file ) )
+
+			try {
+
+				$mol_assert_equal( watch.sync(), '' )
+
+				for( let chunks = 1; chunks <= 5; ++ chunks ) {
+					file.buffer( new Uint8Array( chunks * 2 ** 15 ).fill( chunks ) )
+					$mol_assert_equal( watch.sync(), made[ made.length - 1 ] )
+				}
+
+				$mol_assert_equal( made.length, 5 )
+				$mol_assert_equal( revoked, made.slice( 0, -1 ) )
+
+			} finally {
+				watch.destructor()
+			}
 
 		},
 

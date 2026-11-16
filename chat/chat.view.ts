@@ -693,10 +693,16 @@ namespace $.$$ {
 			} )
 		}
 
+		@ $mol_mem_key
+		file_href( file: $giper_baza_file ) {
+			const blob = file.blob()
+			if( !blob.size ) return null
+			return this.$.$bog_gram_href.make({ $: this.$, blob: ()=> blob })
+		}
+
 		file_uri( file: $giper_baza_file | null | undefined ) {
 			if( !file ) return ''
-			if( !file.buffer().byteLength ) return ''
-			return this.$.$mol_dom_context.URL.createObjectURL( file.blob() )
+			return this.file_href( file )?.url() ?? ''
 		}
 
 		@ $mol_mem_key
