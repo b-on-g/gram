@@ -38,5 +38,6 @@
 	"$bog_gram_chat_record_aim_text": "选择摄像头后开始录制",
 	"$bog_gram_chat_Record_turn_hint": "切换摄像头",
 	"$bog_gram_chat_Record_go_hint": "开始录制",
+	"$bog_gram_chat_record_revived": "录制因页面重新加载而中断，已恢复，可以发送",
 	"$bog_gram_chat_text_over_pattern": "太长了：超出 {limit} 字符上限 {over} 个"
 }

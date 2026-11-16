@@ -1004,7 +1004,37 @@ namespace $.$$ {
 		}
 
 		override Record_turn() {
-			return this.record_cameras() > 1 ? super.Record_turn() : null!
+			if( this.record_cameras() < 2 ) return null!
+			if( this.record_phase() === 'locked' && !this.$.$bog_gram_voice.turn_live() ) return null!
+			return super.Record_turn()
+		}
+
+		revive_asked = false
+
+		record_revive() {
+
+			const dialog = this.dialog()
+			if( this.revive_asked || !dialog ) return
+			this.revive_asked = true
+
+			this.$.$bog_gram_voice.revive( dialog ).then( take => {
+				if( take ) this.record_restore( take )
+			} ).catch( error => $mol_fail_log( error ) )
+
+		}
+
+		@ $mol_action
+		record_restore( take: $bog_gram_voice ) {
+
+			if( this.record_phase() || this.voice_live ) return null
+
+			this.voice_live = take
+			this.record_phase( 'review' )
+			this.voice_hint( this.record_revived() )
+
+			$mol_wire_async( this ).draft_load( take )
+
+			return null
 		}
 
 		@ $mol_action
@@ -1072,7 +1102,7 @@ namespace $.$$ {
 			switch( this.record_phase() ) {
 				case 'aim': return [ this.Record_drop(), this.Record_aim(), this.Record_turn(), this.Record_go() ]
 				case 'hold': return [ this.Record_state(), this.Record_slide(), this.Voice() ]
-				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_stop(), this.Record_send() ]
+				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send() ]
 				case 'review': return [ this.Record_drop(), this.Draft(), this.Record_send() ]
 			}
 			return [ this.Attach(), this.Message_box(), this.Send(), this.Voice() ]
@@ -1110,9 +1140,11 @@ namespace $.$$ {
 
 			const kind = this.record_mode()
 			const facing = this.record_facing()
+			const dialog = this.dialog()
 			const take = this.$.$bog_gram_voice.make({
 				kind: ()=> kind,
 				facing: ()=> facing,
+				dialog: ()=> dialog,
 				filled: ()=> this.record_send(),
 				opened: ( preview: MediaStream )=> {
 					if( kind === 'round' && this.voice_live === take ) this.record_stream( preview )
@@ -1334,6 +1366,7 @@ namespace $.$$ {
 			message.Moment( 'auto' )?.val( Date.now() )
 
 			this.voice_hint( '' )
+			void this.$.$bog_gram_stash.clear()
 
 			return message.link().str
 		}
@@ -1565,6 +1598,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.stick_hold(), 0 )
 			$bog_gram_soft( ()=> this.stick_observer(), null )
 			$bog_gram_soft( ()=> this.follow(), undefined )
+			this.record_revive()
 		}
 
 	}

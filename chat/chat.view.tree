@@ -35,6 +35,7 @@ $bog_gram_chat $bog_gram_page
 	kind_round @ \Video message
 	record_mode? \voice
 	record_stream? null
+	record_revived @ \The recording was cut off by a reload — here it is, you can send it
 	reply_pattern @ \Reply to {name}
 	video_failed @ \Video was not sent
 	images_capped_pattern @ \Only the first {limit} photos were sent: at most {limit} at a time

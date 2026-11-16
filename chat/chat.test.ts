@@ -239,6 +239,30 @@ namespace $.$$ {
 
 		},
 
+		async 'Запись, оборванная перезагрузкой, возвращается черновиком в свой чат'( $ ) {
+
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogA', record_revived: ()=> 'restored' })
+
+			const take = $bog_gram_voice.make({ $, kind: ()=> 'round', dialog: ()=> 'DialogA' })
+			take.asked = true
+			take.done({ bytes: new Uint8Array([ 1, 2, 3 ]), type: 'video/mp4', span: 18, wave: '' })
+
+			chat.record_restore( take )
+			$mol_assert_equal( chat.record_phase(), 'review' )
+			$mol_assert_equal( chat.voice_hint(), 'restored' )
+
+			await take.take()
+			await $mol_wire_async( chat ).draft_load( take )
+
+			$mol_assert_equal( chat.record_draft()?.kind, 'round' )
+			$mol_assert_equal( chat.draft_span(), 18 )
+
+			const other = $bog_gram_voice.make({ $, kind: ()=> 'voice', dialog: ()=> 'DialogA' })
+			chat.record_restore( other )
+			$mol_assert_equal( chat.voice_live, take )
+
+		},
+
 		'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )

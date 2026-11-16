@@ -21,6 +21,8 @@ namespace $ {
 
 	const span_min = 0.7
 
+	const stash_slice = 1000
+
 	const wave_bars = 48
 
 	const wave_digits = '0123456789abcdefghijklmnopqrstuv'
@@ -113,6 +115,24 @@ namespace $ {
 			return new $mol_dom_context.MediaStream( stream.getVideoTracks() )
 		}
 
+		static turn_live() {
+			return $bog_gram_stage.able()
+		}
+
+		static async revive( dialog: string ) {
+
+			const left = await $bog_gram_stash.left()
+			if( !left || left.dialog !== dialog || left.span < span_min ) return null
+
+			const wave = left.kind === 'voice' ? await this.wave( left.bytes ) : ''
+
+			const take = this.make({ kind: ()=> left.kind, dialog: ()=> left.dialog })
+			take.asked = true
+			take.done({ bytes: left.bytes, type: left.type, span: left.span, wave })
+
+			return take
+		}
+
 		static async cameras() {
 			const devices = await $mol_dom_context.navigator.mediaDevices.enumerateDevices().catch( ()=> [] as MediaDeviceInfo[] )
 			return devices.filter( device => device.kind === 'videoinput' ).length
@@ -125,6 +145,12 @@ namespace $ {
 		facing(): $bog_gram_voice_facing {
 			return 'user'
 		}
+
+		dialog() {
+			return ''
+		}
+
+		stage = null as $bog_gram_stage | null
 
 		face_now = null as $bog_gram_voice_facing | null
 
@@ -177,8 +203,13 @@ namespace $ {
 			return true
 		}
 
+		turnable() {
+			if( this.asked || !this.stream ) return false
+			return !this.recorder || Boolean( this.stage )
+		}
+
 		turn() {
-			if( this.recorder || this.asked || !this.stream ) return Promise.resolve( false )
+			if( !this.turnable() ) return Promise.resolve( false )
 			return this.turning ??= this.turn_run().finally( ()=> { this.turning = null } )
 		}
 
@@ -190,27 +221,47 @@ namespace $ {
 
 			const sight = await $mol_dom_context.navigator.mediaDevices.getUserMedia({ video: $bog_gram_voice.sight( face ) })
 
-			if( this.asked || this.recorder || !this.stream ) {
+			if( !this.turnable() ) {
 				this.hush( sight )
 				return false
 			}
 
 			this.face_now = face
-			this.stream = new $mol_dom_context.MediaStream([ ... this.stream.getAudioTracks(), ... sight.getVideoTracks() ])
+			this.stream = new $mol_dom_context.MediaStream([ ... this.stream!.getAudioTracks(), ... sight.getVideoTracks() ])
+			this.stage?.source( $bog_gram_voice.preview( this.stream ) )
 			this.opened( $bog_gram_voice.preview( this.stream ) )
 
 			return true
 		}
 
+		stage_make( stream: MediaStream ) {
+
+			if( this.kind() !== 'round' || !$bog_gram_voice.turn_live() ) return stream
+
+			try {
+				const stage = $bog_gram_stage.make({})
+				const sight = stage.start( $bog_gram_voice.preview( stream ) )
+				this.stage = stage
+				return new $mol_dom_context.MediaStream([ ... stream.getAudioTracks(), ... sight ])
+			} catch( error ) {
+				$mol_fail_log( error )
+				this.stage?.destructor()
+				this.stage = null
+				return stream
+			}
+
+		}
+
 		record() {
 
-			const stream = this.stream
-			if( !stream || this.recorder || this.asked || this.turning ) return false
+			if( !this.stream || this.recorder || this.asked || this.turning ) return false
 
 			const kind = this.kind()
 			const setup = kinds[ kind ]
 			const type = $bog_gram_voice.type( kind )
+			const dialog = this.dialog()
 
+			const stream = this.stage_make( this.stream )
 			const chunks = [] as Blob[]
 
 			const recorder = new $mol_dom_context.MediaRecorder( stream, {
@@ -220,11 +271,17 @@ namespace $ {
 			} )
 
 			recorder.ondataavailable = event => {
-				if( event.data.size ) chunks.push( event.data )
+				if( !event.data.size ) return
+				chunks.push( event.data )
+				const span = ( Date.now() - this.moment ) / 1000
+				if( dialog ) void $bog_gram_stash.put({ dialog, kind, type, span, data: event.data })
 			}
 
 			recorder.onstop = ()=> {
 				this.hush( stream )
+				this.hush( this.stream )
+				this.stage?.destructor()
+				this.stage = null
 				const span = ( Date.now() - this.moment ) / 1000
 				if( span < span_min || !chunks.length ) return this.done( null )
 				void this.pack( chunks, type, span )
@@ -233,7 +290,8 @@ namespace $ {
 			this.recorder = recorder
 			this.moment = Date.now()
 
-			recorder.start()
+			if( dialog ) void $bog_gram_stash.clear()
+			recorder.start( stash_slice )
 
 			this.limit = $mol_dom_context.setTimeout( ()=> this.filled(), setup.limit * 1000 )
 
@@ -268,6 +326,8 @@ namespace $ {
 
 			if( !recorder || recorder.state === 'inactive' ) {
 				this.hush( this.stream )
+				this.stage?.destructor()
+				this.stage = null
 				this.done( null )
 			} else {
 				recorder.stop()
@@ -278,6 +338,7 @@ namespace $ {
 		drop() {
 			this.stop()
 			this.done( null )
+			if( this.dialog() ) void $bog_gram_stash.clear()
 		}
 
 		take() {
