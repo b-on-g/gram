@@ -2994,37 +2994,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-
-	export class $mol_follower extends $mol_ghost {
-		transform( ): string
-		Anchor( ): $mol_view
-		align( ): readonly(number)[]
-		offset( ): readonly(number)[]
-		style( ): ({ 
-			'transform': ReturnType< $mol_follower['transform'] >,
-		})  & ReturnType< $mol_ghost['style'] >
-	}
-	
-}
-
-//# sourceMappingURL=follower.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * Marker on top of another component with tracking of its position.
-     */
-    class $mol_follower extends $.$mol_follower {
-        pos(): {
-            left: number;
-            top: number;
-        } | null;
-        transform(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     class $mol_storage extends $mol_object2 {
         /** Is storage a long term. */
         static persisted(next?: boolean): boolean;
@@ -3279,6 +3248,38 @@ declare namespace $ {
         static text(key: string): string;
         static warn(key: string): null;
     }
+}
+
+declare namespace $ {
+
+	export class $mol_follower extends $mol_ghost {
+		transform( ): string
+		Anchor( ): $mol_view
+		align( ): readonly(number)[]
+		offset( ): readonly(number)[]
+		style( ): ({ 
+			'transform': ReturnType< $mol_follower['transform'] >,
+		})  & ReturnType< $mol_ghost['style'] >
+	}
+	
+}
+
+//# sourceMappingURL=follower.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Marker on top of another component with tracking of its position.
+     */
+    class $mol_follower extends $.$mol_follower {
+        pos(): {
+            left: number;
+            top: number;
+        } | null;
+        locale(): typeof $mol_locale;
+        transform(): string;
+    }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -64469,7 +64470,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.181";
+    const $bog_gram_version = "1.0.182";
 }
 
 declare namespace $ {
@@ -83731,6 +83732,10 @@ declare namespace $ {
          */
         static clean(db: $mol_db_database<$bog_gram_mine_schema>): Promise<number>;
     }
+}
+
+declare namespace $ {
+    function $bog_gram_hash(this: $giper_baza_unit_base): $giper_baza_link;
 }
 
 declare namespace $ {

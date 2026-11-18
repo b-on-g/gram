@@ -6837,170 +6837,6 @@ var $;
 
 ;
 "use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * Marker on top of another component with tracking of its position.
-         */
-        class $mol_follower extends $.$mol_follower {
-            pos() {
-                const self_rect = this.view_rect();
-                const prev = $mol_wire_probe(() => this.pos());
-                const anchor_rect = this.Anchor()?.view_rect();
-                if (!anchor_rect)
-                    return null;
-                const offset = this.offset();
-                const align = this.align();
-                const width = self_rect?.width ?? 0;
-                const height = self_rect?.height ?? 0;
-                let left = Math.floor((prev?.left ?? 0)
-                    - (self_rect?.left ?? 0)
-                    + width * align[0]
-                    + (anchor_rect?.left ?? 0)
-                    + offset[0] * (anchor_rect?.width ?? 0));
-                let top = Math.floor((prev?.top ?? 0)
-                    - (self_rect?.top ?? 0)
-                    + height * align[1]
-                    + (anchor_rect?.top ?? 0)
-                    + offset[1] * (anchor_rect?.height ?? 0));
-                const size = this.$.$mol_window.size();
-                left = Math.max(0, Math.min(left, size.width - width));
-                top = Math.max(0, Math.min(top, size.height - height));
-                return { left, top };
-            }
-            transform() {
-                const pos = this.pos();
-                if (!pos)
-                    return 'scale(0)';
-                const { left, top } = pos;
-                return `translate( ${left}px, ${top}px )`;
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_follower.prototype, "pos", null);
-        __decorate([
-            $mol_mem
-        ], $mol_follower.prototype, "transform", null);
-        $$.$mol_follower = $mol_follower;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/follower/follower.view.css", "[mol_follower] {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\ttransition: none;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$mol_pop) = class $mol_pop extends ($.$mol_view) {
-		align(){
-			return "bottom_center";
-		}
-		bubble(){
-			return null;
-		}
-		Anchor(){
-			return null;
-		}
-		bubble_offset(){
-			return [0, 1];
-		}
-		bubble_align(){
-			return [0, 0];
-		}
-		anchor_visible(){
-			return false;
-		}
-		bubble_content(){
-			return [];
-		}
-		height_max(){
-			return 9999;
-		}
-		Bubble(){
-			const obj = new this.$.$mol_pop_bubble();
-			(obj.visible) = () => ((this.anchor_visible()));
-			(obj.content) = () => ((this.bubble_content()));
-			(obj.height_max) = () => ((this.height_max()));
-			return obj;
-		}
-		Follower(){
-			const obj = new this.$.$mol_follower();
-			(obj.offset) = () => ((this.bubble_offset()));
-			(obj.align) = () => ((this.bubble_align()));
-			(obj.Anchor) = () => ((this.Anchor()));
-			(obj.Sub) = () => ((this.Bubble()));
-			return obj;
-		}
-		showed(next){
-			if(next !== undefined) return next;
-			return false;
-		}
-		align_vert(){
-			return "";
-		}
-		align_hor(){
-			return "";
-		}
-		direction(){
-			return "ltr";
-		}
-		align_enriched(){
-			return (this.align());
-		}
-		prefer(){
-			return "vert";
-		}
-		auto(){
-			return [(this.bubble())];
-		}
-		sub(){
-			return [(this.Anchor())];
-		}
-		sub_visible(){
-			return [(this.Anchor()), (this.Follower())];
-		}
-	};
-	($mol_mem(($.$mol_pop.prototype), "Bubble"));
-	($mol_mem(($.$mol_pop.prototype), "Follower"));
-	($mol_mem(($.$mol_pop.prototype), "showed"));
-	($.$mol_pop_bubble) = class $mol_pop_bubble extends ($.$mol_view) {
-		content(){
-			return [];
-		}
-		height_max(){
-			return 9999;
-		}
-		visible(){
-			return false;
-		}
-		sub(){
-			return (this.content());
-		}
-		style(){
-			return {...(super.style()), "maxHeight": (this.height_max())};
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"mol_pop_bubble_visible": (this.visible()), 
-				"tabindex": 0, 
-				"popover": "manual"
-			};
-		}
-	};
-
-
-;
-"use strict";
 var $;
 (function ($) {
     class $mol_storage extends $mol_object2 {
@@ -8117,6 +7953,169 @@ var $;
     ], $mol_locale, "warn", null);
     $.$mol_locale = $mol_locale;
 })($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Marker on top of another component with tracking of its position.
+         */
+        class $mol_follower extends $.$mol_follower {
+            pos() {
+                const self_rect = this.view_rect();
+                const prev = $mol_wire_probe(() => this.pos());
+                const anchor_rect = this.Anchor()?.view_rect();
+                if (!anchor_rect)
+                    return null;
+                const size = this.$.$mol_window.size();
+                const offset = this.offset();
+                const align = this.align();
+                const width = self_rect?.width ?? 0;
+                const height = self_rect?.height ?? 0;
+                let left = Math.floor(+width * align[0]
+                    + anchor_rect.left
+                    + offset[0] * anchor_rect.width);
+                const base_left = (prev?.left ?? 0) - (self_rect?.left ?? 0);
+                left = Math.max(0, Math.min(left, size.width - width)) + base_left;
+                let top = Math.floor(+height * align[1]
+                    + anchor_rect.top
+                    + offset[1] * anchor_rect.height);
+                const base_top = (prev?.top ?? 0) - (self_rect?.top ?? 0);
+                top = Math.max(0, Math.min(top, size.height - height)) + base_top;
+                return { left, top };
+            }
+            locale() { return this.$.$mol_locale; }
+            transform() {
+                const pos = this.pos();
+                if (!pos)
+                    return 'scale(0)';
+                const { left, top } = pos;
+                return `translate( ${left}px, ${top}px )`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_follower.prototype, "pos", null);
+        __decorate([
+            $mol_mem
+        ], $mol_follower.prototype, "transform", null);
+        $$.$mol_follower = $mol_follower;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/follower/follower.view.css", "[mol_follower] {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\ttransition: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_pop) = class $mol_pop extends ($.$mol_view) {
+		align(){
+			return "bottom_center";
+		}
+		bubble(){
+			return null;
+		}
+		Anchor(){
+			return null;
+		}
+		bubble_offset(){
+			return [0, 1];
+		}
+		bubble_align(){
+			return [0, 0];
+		}
+		anchor_visible(){
+			return false;
+		}
+		bubble_content(){
+			return [];
+		}
+		height_max(){
+			return 9999;
+		}
+		Bubble(){
+			const obj = new this.$.$mol_pop_bubble();
+			(obj.visible) = () => ((this.anchor_visible()));
+			(obj.content) = () => ((this.bubble_content()));
+			(obj.height_max) = () => ((this.height_max()));
+			return obj;
+		}
+		Follower(){
+			const obj = new this.$.$mol_follower();
+			(obj.offset) = () => ((this.bubble_offset()));
+			(obj.align) = () => ((this.bubble_align()));
+			(obj.Anchor) = () => ((this.Anchor()));
+			(obj.Sub) = () => ((this.Bubble()));
+			return obj;
+		}
+		showed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		align_vert(){
+			return "";
+		}
+		align_hor(){
+			return "";
+		}
+		direction(){
+			return "ltr";
+		}
+		align_enriched(){
+			return (this.align());
+		}
+		prefer(){
+			return "vert";
+		}
+		auto(){
+			return [(this.bubble())];
+		}
+		sub(){
+			return [(this.Anchor())];
+		}
+		sub_visible(){
+			return [(this.Anchor()), (this.Follower())];
+		}
+	};
+	($mol_mem(($.$mol_pop.prototype), "Bubble"));
+	($mol_mem(($.$mol_pop.prototype), "Follower"));
+	($mol_mem(($.$mol_pop.prototype), "showed"));
+	($.$mol_pop_bubble) = class $mol_pop_bubble extends ($.$mol_view) {
+		content(){
+			return [];
+		}
+		height_max(){
+			return 9999;
+		}
+		visible(){
+			return false;
+		}
+		sub(){
+			return (this.content());
+		}
+		style(){
+			return {...(super.style()), "maxHeight": (this.height_max())};
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"mol_pop_bubble_visible": (this.visible()), 
+				"tabindex": 0, 
+				"popover": "manual"
+			};
+		}
+	};
+
 
 ;
 "use strict";
@@ -42083,7 +42082,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.181';
+    $.$bog_gram_version = '1.0.182';
 })($ || ($ = {}));
 
 ;
@@ -59291,6 +59290,25 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    const hash_native = $giper_baza_unit_base.prototype.hash;
+    const cache = new WeakMap();
+    function $bog_gram_hash() {
+        const bin = this.asArray();
+        const prev = cache.get(this);
+        if (prev && $mol_compare_array(prev.bin, bin))
+            return prev.link;
+        const link = hash_native.call(this);
+        cache.set(this, { bin: bin.slice(), link });
+        return link;
+    }
+    $.$bog_gram_hash = $bog_gram_hash;
+    $giper_baza_unit_base.prototype.hash = $bog_gram_hash;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -71487,6 +71505,37 @@ var $;
             $mol_assert_equal($bog_gram_mine.key_ok(['land_a', 'sand:x']), true);
             $mol_assert_equal($bog_gram_mine.key_ok([1]), false);
             $mol_assert_equal($bog_gram_mine.key_ok(['land_a']), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Хеш юнита считается один раз и пересчитывается после правки байтов'() {
+            const unit = new $giper_baza_unit_seal(new ArrayBuffer(128));
+            unit.kind('seal');
+            let count = 0;
+            const hash_bin = $giper_baza_link.hash_bin;
+            $giper_baza_link.hash_bin = function (bin) {
+                ++count;
+                return hash_bin.call(this, bin);
+            };
+            try {
+                const before = unit.hash();
+                $mol_assert_equal(unit.hash(), before);
+                $mol_assert_equal(count, 1);
+                unit.time(1);
+                const after = unit.hash();
+                $mol_assert_equal(count, 2);
+                $mol_assert_unique(after.str, before.str);
+                $mol_assert_equal(after.str, hash_bin.call($giper_baza_link, unit.asArray()).str);
+            }
+            finally {
+                $giper_baza_link.hash_bin = hash_bin;
+            }
         },
     });
 })($ || ($ = {}));
