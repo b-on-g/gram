@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     environment:
       GRAM_PUSH_APP: https://b-on-g.github.io/gram/
+      GRAM_PUSH_MASTER: https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/
       # Узел приложения живёт на одном ядре, а каждый обход поднимает
       # свежего клиента и пересинхронизирует ленды подписчиков. Под нагрузкой
       # статьи десятисекундный шаг съедал его заметную часть.
