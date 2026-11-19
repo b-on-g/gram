@@ -1,5 +1,4 @@
 include \/bog/gram/mine
-include \/bog/gram/hash
 include \/bog/yard
 include \/bog/gram/auth
 include \/bog/gram/nozoom
