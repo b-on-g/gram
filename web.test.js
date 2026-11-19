@@ -2828,6 +2828,18 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        async 'storage level'() {
+            // prevent async in tests
+            await $mol_wire_async($mol_storage).level();
+        }
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'local get set delete'() {
             var key = '$mol_state_local_test:' + Math.random();
             $mol_assert_equal($mol_state_local.value(key), null);
@@ -11628,30 +11640,20 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
+(function ($_1) {
     $mol_test({
-        'Хеш юнита считается один раз и пересчитывается после правки байтов'() {
-            const unit = new $giper_baza_unit_seal(new ArrayBuffer(128));
-            unit.kind('seal');
-            let count = 0;
-            const hash_bin = $giper_baza_link.hash_bin;
-            $giper_baza_link.hash_bin = function (bin) {
-                ++count;
-                return hash_bin.call(this, bin);
-            };
-            try {
-                const before = unit.hash();
-                $mol_assert_equal(unit.hash(), before);
-                $mol_assert_equal(count, 1);
-                unit.time(1);
-                const after = unit.hash();
-                $mol_assert_equal(count, 2);
-                $mol_assert_unique(after.str, before.str);
-                $mol_assert_equal(after.str, hash_bin.call($giper_baza_link, unit.asArray()).str);
+        async 'Перенос старой базы после метки больше не трогает хранилище'($) {
+            let moved = 0;
+            class Mine extends $bog_gram_mine_web {
+                static $ = $;
+                static async move() {
+                    ++moved;
+                    return false;
+                }
             }
-            finally {
-                $giper_baza_link.hash_bin = hash_bin;
-            }
+            $.$mol_state_local.value(Mine.done_key, true);
+            $mol_assert_equal(await Mine.run(), false);
+            $mol_assert_equal(moved, 0);
         },
     });
 })($ || ($ = {}));

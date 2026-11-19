@@ -69114,7 +69114,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.182";
+    const $bog_gram_version = "1.0.184";
 }
 
 declare namespace $ {
@@ -88076,12 +88076,10 @@ declare namespace $ {
         static migrated: Promise<boolean> | null;
         /** Перенос запускается один раз на всю страницу. */
         static migrate(): Promise<boolean>;
+        static done_key: string;
         static run(): Promise<boolean>;
+        static move(next: $mol_db_database<$bog_gram_mine_schema>): Promise<boolean>;
     }
-}
-
-declare namespace $ {
-    function $bog_gram_hash(this: $giper_baza_unit_base): $giper_baza_link;
 }
 
 declare namespace $ {

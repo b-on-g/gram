@@ -6304,6 +6304,7 @@ var $;
             return next ?? $mol_wire_sync(native).persisted();
         }
         static estimate(next) {
+            $mol_mem_persist();
             const res = $mol_wire_sync(this.native() ?? {}).estimate();
             new this.$.$mol_after_timeout(1000, $mol_wire_async(() => this.estimate(null)));
             return res;
@@ -17026,7 +17027,7 @@ var $;
             return new Uint8Array(this.buffer, this.byteOffset + 2, 16); /* tick(2), time(4), lord(10) */
         }
         hash() {
-            return $giper_baza_link.hash_bin(this.asArray());
+            return $giper_baza_link.hash_bin(this);
         }
         tier_min() {
             return $giper_baza_rank_tier.rule;
@@ -60506,7 +60507,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.182';
+    $.$bog_gram_version = '1.0.184';
 })($ || ($ = {}));
 
 ;
@@ -77197,9 +77198,17 @@ var $;
                 return false;
             });
         }
+        static done_key = 'bog_gram_mine_migrated';
         static async run() {
+            if (this.$.$mol_state_local.value(this.done_key))
+                return false;
             const next = await this.$.$giper_baza_mine_idb.db();
             await $bog_gram_mine.clean(next);
+            const moved = await this.move(next);
+            this.$.$mol_state_local.value(this.done_key, true);
+            return moved;
+        }
+        static async move(next) {
             if (!await $bog_gram_mine.old_exists())
                 return false;
             const old = await this.$.$mol_db($bog_gram_mine.old_name);
@@ -77215,25 +77224,6 @@ var $;
     $.$giper_baza_mine_idb = $bog_gram_mine_web;
     $.$giper_baza_mine = $bog_gram_mine_web;
     $bog_gram_mine_web.migrate();
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const hash_native = $giper_baza_unit_base.prototype.hash;
-    const cache = new WeakMap();
-    function $bog_gram_hash() {
-        const bin = this.asArray();
-        const prev = cache.get(this);
-        if (prev && $mol_compare_array(prev.bin, bin))
-            return prev.link;
-        const link = hash_native.call(this);
-        cache.set(this, { bin: bin.slice(), link });
-        return link;
-    }
-    $.$bog_gram_hash = $bog_gram_hash;
-    $giper_baza_unit_base.prototype.hash = $bog_gram_hash;
 })($ || ($ = {}));
 
 ;

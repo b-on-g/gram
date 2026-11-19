@@ -3017,6 +3017,17 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    /**
+     * Disable reaping of current subscriber
+     */
+    function $mol_wire_solid(): void;
+}
+
+declare namespace $ {
+    let $mol_mem_persist: typeof $mol_wire_solid;
+}
+
+declare namespace $ {
     class $mol_storage_node extends $mol_storage {
         static persisted(): boolean;
         static stats(): import("node:fs").StatsFs;
@@ -3091,13 +3102,6 @@ declare namespace $ {
         close(): void;
         destructor(): void;
     }
-}
-
-declare namespace $ {
-    /**
-     * Disable reaping of current subscriber
-     */
-    function $mol_wire_solid(): void;
 }
 
 declare namespace $ {
@@ -64470,7 +64474,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.182";
+    const $bog_gram_version = "1.0.184";
 }
 
 declare namespace $ {
@@ -83732,10 +83736,6 @@ declare namespace $ {
          */
         static clean(db: $mol_db_database<$bog_gram_mine_schema>): Promise<number>;
     }
-}
-
-declare namespace $ {
-    function $bog_gram_hash(this: $giper_baza_unit_base): $giper_baza_link;
 }
 
 declare namespace $ {
