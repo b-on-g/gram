@@ -654,6 +654,7 @@
     "$bog_gram_clip",
     "$bog_gram_pick",
     "$bog_gram_mine",
+    "$bog_gram_hash",
     "$bog_gram_auth",
     "$bog_gram_nozoom"
   ],

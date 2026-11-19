@@ -42099,7 +42099,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.186';
+    $.$bog_gram_version = '1.0.187';
 })($ || ($ = {}));
 
 ;
@@ -59303,6 +59303,24 @@ var $;
         }
     }
     $.$bog_gram_mine = $bog_gram_mine;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const cache = new WeakMap();
+    function $bog_gram_hash() {
+        const bin = new Uint8Array(this.buffer, this.byteOffset, this.byteLength);
+        const prev = cache.get(this);
+        if (prev && $mol_compare_array(prev.bin, bin))
+            return prev.link;
+        const link = $giper_baza_link.hash_bin(bin);
+        cache.set(this, { bin: bin.slice(), link });
+        return link;
+    }
+    $.$bog_gram_hash = $bog_gram_hash;
+    $giper_baza_unit_base.prototype.hash = $bog_gram_hash;
 })($ || ($ = {}));
 
 ;

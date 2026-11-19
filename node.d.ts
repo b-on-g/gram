@@ -64474,7 +64474,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.186";
+    const $bog_gram_version = "1.0.187";
 }
 
 declare namespace $ {
@@ -83736,6 +83736,10 @@ declare namespace $ {
          */
         static clean(db: $mol_db_database<$bog_gram_mine_schema>): Promise<number>;
     }
+}
+
+declare namespace $ {
+    function $bog_gram_hash(this: $giper_baza_unit_base): $giper_baza_link;
 }
 
 declare namespace $ {

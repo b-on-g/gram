@@ -42090,7 +42090,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.186';
+    $.$bog_gram_version = '1.0.187';
 })($ || ($ = {}));
 
 ;
@@ -59298,6 +59298,24 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    const cache = new WeakMap();
+    function $bog_gram_hash() {
+        const bin = new Uint8Array(this.buffer, this.byteOffset, this.byteLength);
+        const prev = cache.get(this);
+        if (prev && $mol_compare_array(prev.bin, bin))
+            return prev.link;
+        const link = $giper_baza_link.hash_bin(bin);
+        cache.set(this, { bin: bin.slice(), link });
+        return link;
+    }
+    $.$bog_gram_hash = $bog_gram_hash;
+    $giper_baza_unit_base.prototype.hash = $bog_gram_hash;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 
 ;
@@ -71510,6 +71528,44 @@ var $;
             $mol_assert_equal($bog_gram_mine.key_ok(['land_a', 'sand:x']), true);
             $mol_assert_equal($bog_gram_mine.key_ok([1]), false);
             $mol_assert_equal($bog_gram_mine.key_ok(['land_a']), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Хеш юнита считается один раз и пересчитывается после правки байтов'() {
+            const unit = new $giper_baza_unit_seal(new ArrayBuffer(128));
+            unit.kind('seal');
+            let count = 0;
+            const hash_bin = $giper_baza_link.hash_bin;
+            $giper_baza_link.hash_bin = function (bin) {
+                ++count;
+                return hash_bin.call(this, bin);
+            };
+            try {
+                const before = unit.hash();
+                $mol_assert_equal(unit.hash(), before);
+                $mol_assert_equal(count, 1);
+                unit.time(1);
+                const after = unit.hash();
+                $mol_assert_equal(count, 2);
+                $mol_assert_unique(after.str, before.str);
+                $mol_assert_equal(after.str, hash_bin.call($giper_baza_link, new Uint8Array(unit.buffer.slice(0))).str);
+            }
+            finally {
+                $giper_baza_link.hash_bin = hash_bin;
+            }
+        },
+        'Подпись печати меняет её хеш, и требование работы пересчитывается'() {
+            const seal = new $giper_baza_unit_seal(new ArrayBuffer(128));
+            seal.kind('seal');
+            const before = seal.hash().str;
+            seal.sign(new Uint8Array(64).fill(7));
+            $mol_assert_unique(seal.hash().str, before);
         },
     });
 })($ || ($ = {}));
