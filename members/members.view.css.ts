@@ -41,6 +41,82 @@ namespace $.$$ {
 		borderRadius: '0.5rem',
 	} as const
 
+	const link_block = {
+		... plate,
+		alignSelf: 'stretch',
+		flex: {
+			direction: 'column',
+			shrink: 1,
+		},
+		align: {
+			items: 'stretch',
+		},
+		gap: '0.5rem',
+		minWidth: 0,
+		maxWidth: '100%',
+	} as const
+
+	const link_head = {
+		font: {
+			size: '0.875rem',
+			weight: 'bold',
+		},
+		color: $mol_theme.shade,
+	} as const
+
+	const link_text = {
+		alignSelf: 'stretch',
+		flex: {
+			shrink: 1,
+		},
+		width: '100%',
+		minWidth: 0,
+		maxWidth: '100%',
+		maxHeight: '6rem',
+		overflow: {
+			y: 'auto',
+		},
+		font: {
+			family: 'monospace',
+			size: '0.75rem',
+		},
+		whiteSpace: 'pre-wrap',
+		overflowWrap: 'anywhere',
+		userSelect: 'all',
+		background: {
+			color: $mol_theme.back,
+		},
+		padding: {
+			top: '0.5rem',
+			bottom: '0.5rem',
+			left: '0.625rem',
+			right: '0.625rem',
+		},
+		borderRadius: '0.5rem',
+	} as const
+
+	const qr_box = {
+		alignSelf: 'center',
+		maxWidth: '100%',
+		justify: {
+			content: 'center',
+		},
+		background: {
+			color: '#ffffff',
+		},
+		padding: '0.5rem',
+		borderRadius: '0.75rem',
+	} as const
+
+	const qr = {
+		flex: {
+			shrink: 0,
+		},
+		width: '12rem',
+		height: '12rem',
+		maxWidth: '100%',
+	} as const
+
 	$mol_style_define( $bog_gram_members, {
 
 		List: {
@@ -144,86 +220,41 @@ namespace $.$$ {
 
 		Admin_note: note,
 
-		Join: {
-			... plate,
-			alignSelf: 'stretch',
-			flex: {
-				direction: 'column',
-				shrink: 1,
-			},
-			align: {
-				items: 'stretch',
-			},
-			gap: '0.5rem',
-			minWidth: 0,
-			maxWidth: '100%',
-		},
+		Join: link_block,
 
-		Join_head: {
-			font: {
-				size: '0.875rem',
-				weight: 'bold',
-			},
-			color: $mol_theme.shade,
-		},
+		Join_head: link_head,
 
 		Join_hint: note,
 
-		Join_text: {
-			alignSelf: 'stretch',
-			flex: {
-				shrink: 1,
-			},
-			width: '100%',
-			minWidth: 0,
-			maxWidth: '100%',
-			maxHeight: '6rem',
-			overflow: {
-				y: 'auto',
-			},
-			font: {
-				family: 'monospace',
-				size: '0.75rem',
-			},
-			whiteSpace: 'pre-wrap',
-			overflowWrap: 'anywhere',
-			userSelect: 'all',
-			background: {
-				color: $mol_theme.back,
-			},
-			padding: {
-				top: '0.5rem',
-				bottom: '0.5rem',
-				left: '0.625rem',
-				right: '0.625rem',
-			},
-			borderRadius: '0.5rem',
-		},
+		Join_text: link_text,
 
 		Join_copy: {
 			alignSelf: 'flex-start',
 		},
 
-		Join_qr_box: {
-			alignSelf: 'center',
-			maxWidth: '100%',
-			justify: {
-				content: 'center',
-			},
-			background: {
-				color: '#ffffff',
-			},
-			padding: '0.5rem',
-			borderRadius: '0.75rem',
+		Join_qr_box: qr_box,
+
+		Join_qr: qr,
+
+		Meet: link_block,
+
+		Meet_head: link_head,
+
+		Meet_hint: note,
+
+		Meet_text: link_text,
+
+		Meet_copy: {
+			alignSelf: 'flex-start',
 		},
 
-		Join_qr: {
-			flex: {
-				shrink: 0,
-			},
-			width: '12rem',
-			height: '12rem',
-			maxWidth: '100%',
+		Meet_qr_box: qr_box,
+
+		Meet_qr: qr,
+
+		Meet_make: {
+			alignSelf: 'flex-start',
+			gap: '0.5rem',
 		},
 
 		Asks_head: {

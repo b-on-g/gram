@@ -9,6 +9,7 @@ namespace $ {
 		Title: $giper_baza_atom_text,
 		Admins: $giper_baza_list_str,
 		Names: $giper_baza_dict_to( $bog_gram_note ),
+		Meet: $giper_baza_atom_text,
 	}) {}
 
 }

@@ -15,7 +15,7 @@ namespace $ {
 
 		static alive_span = 35_000
 
-		static grab( passes: readonly $giper_baza_auth_pass[] | null ) {
+		static grab( passes: readonly $giper_baza_auth_pass[] | null, rulers: readonly $giper_baza_auth_pass[] = [] ) {
 
 			const glob = this.$.$giper_baza_glob
 
@@ -23,7 +23,9 @@ namespace $ {
 				? glob.land_grab([ [ null, $giper_baza_rank_deny ] ])
 				: glob.land_grab([ [ null, $giper_baza_rank_post( 'just' ) ] ])
 
-			for( const pass of passes ?? [] ) land.give( pass, $giper_baza_rank_post( 'just' ) )
+			for( const pass of passes ?? [] ) {
+				land.give( pass, rulers.includes( pass ) ? $giper_baza_rank_rule : $giper_baza_rank_post( 'just' ) )
+			}
 
 			land.Data( $bog_gram_call_land ).Created( 'auto' )!.val( Date.now() )
 			land.sync()

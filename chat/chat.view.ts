@@ -186,7 +186,8 @@ namespace $.$$ {
 				return ''
 			}
 
-			const land = this.$.$bog_gram_call_room.grab( passes )
+			const rulers = passes.filter( pass => this.Talk().admin_is( this.dialog(), pass.lord().str ) )
+			const land = this.$.$bog_gram_call_room.grab( passes, rulers )
 
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Call( 'auto' )!.val( land.link() )

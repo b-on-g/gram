@@ -505,8 +505,74 @@ namespace $.$$ {
 			return this.admin_is( this.dialog_active(), lord )
 		}
 
+		@ $mol_mem
 		override members_asks() {
-			return this.Lobby().asks_of( this.dialog_active() )
+
+			const id = this.dialog_active()
+			const lobby = this.Lobby()
+
+			const out = [] as string[]
+			const seen = new Set< string >()
+
+			for( const entry of [ ... lobby.asks_of( id ), ... this.Meet().knocks_of( id ) ] ) {
+				const lord = lobby.lord_of( entry )
+				if( !lord || seen.has( lord ) ) continue
+				seen.add( lord )
+				out.push( entry )
+			}
+
+			return out
+		}
+
+		asks_same( entry: string ) {
+			const lord = this.Lobby().lord_of( entry )
+			const id = this.dialog_active()
+			return [ ... this.Lobby().asks_of( id ), ... this.Meet().knocks_of( id ) ]
+				.filter( item => this.Lobby().lord_of( item ) === lord )
+		}
+
+		asks_forget( entries: readonly string[] ) {
+			for( const entry of entries ) {
+				this.Lobby().forget( entry )
+				this.Meet().forget( entry )
+			}
+		}
+
+		override meet_link() {
+			return this.Meet().uri( this.dialog_active() )
+		}
+
+		@ $mol_action
+		override meet_make( next?: any ) {
+			const id = this.dialog_active()
+			if( id ) $mol_wire_async( this.Meet() ).make( id )
+			return null
+		}
+
+		override meet_auto( next?: boolean ) {
+			const id = this.dialog_active()
+			if( next === undefined ) return this.Meet().mode( id ) === 'auto'
+			return this.Meet().mode( id, next ? 'auto' : 'ask' ) === 'auto'
+		}
+
+		@ $mol_mem
+		meet_handle() {
+
+			const link = this.Meet().hall_id()
+			if( !link ) return ''
+
+			const owner = this.Meet().hall_by()
+			const valid = $giper_baza_link.check( link ) && $giper_baza_link.check( owner )
+			if( valid && !this.Meet().group_of([ link, owner ]) ) return ''
+
+			$mol_wire_async( this ).meet_request( link, owner )
+			return link
+		}
+
+		meet_request( link: string, owner: string ) {
+			const { plan, group } = this.Meet().take( link, owner )
+			if( plan === 'open' ) this.dialog_select( group )
+			return plan
 		}
 
 		@ $mol_mem
@@ -558,9 +624,11 @@ namespace $.$$ {
 		@ $mol_action
 		ask_apply( entry: string ) {
 
+			const same = this.asks_same( entry )
 			const joined = this.Lobby().apply( entry, this.member_history() )
 
 			if( joined ) {
+				this.asks_forget( same )
 				$bog_music_log.act( 'заявка: принята' )
 				return joined
 			}
@@ -574,8 +642,15 @@ namespace $.$$ {
 		@ $mol_action
 		override ask_reject( entry: string, next?: any ) {
 			if( !entry ) return null
-			$mol_wire_async( this.Lobby() ).deny( entry )
+			$mol_wire_async( this ).ask_deny( entry )
 			return null
+		}
+
+		ask_deny( entry: string ) {
+			const same = this.asks_same( entry )
+			const group = this.Lobby().deny( entry )
+			this.asks_forget( same )
+			return group
 		}
 
 		@ $mol_action
@@ -671,6 +746,8 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.registry_keys_fill(), null )
 			$bog_gram_soft( ()=> this.invite_handle(), '' )
 			$bog_gram_soft( ()=> this.join_handle(), '' )
+			$bog_gram_soft( ()=> this.meet_handle(), '' )
+			$bog_gram_soft( ()=> this.Meet().auto(), 0 )
 			$bog_gram_soft( ()=> this.dialog_autocreate(), '' )
 			$bog_gram_soft( ()=> this.pending_timer(), null )
 			$bog_gram_soft( ()=> this.notify_auto(), null )

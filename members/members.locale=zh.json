@@ -28,5 +28,12 @@
 	"$bog_gram_members_leave_sure": "确定退出？",
 	"$bog_gram_members_leave_idle": "退出群组",
 	"$bog_gram_members_Add_title_title": "添加成员",
-	"$bog_gram_members_Admin_note_title": "管理员将获得对该领地的完全控制权：既能邀请他人，也能更改他人的权限。这两项能力无法拆分。"
+	"$bog_gram_members_Admin_note_title": "管理员将获得对该领地的完全控制权：既能邀请他人，也能更改他人的权限。这两项能力无法拆分。",
+	"$bog_gram_members_Meet_make_hint": "永久通话链接：别人敲门，你或管理员放行，通话的聊天就是这个群组",
+	"$bog_gram_members_Meet_make_label_title": "设为会议",
+	"$bog_gram_members_Meet_head_title": "永久会议链接",
+	"$bog_gram_members_Meet_hint_title": "打开链接的人会敲门。你或管理员放行后，他会进入群组和当前通话",
+	"$bog_gram_members_Meet_copy_title": "复制",
+	"$bog_gram_members_Meet_auto_title": "凭链接放行所有人",
+	"$bog_gram_members_Meet_auto_hint": "任何打开 Gram 的管理员都会自动放行敲门的人"
 }

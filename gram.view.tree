@@ -127,6 +127,11 @@ $bog_gram $mol_book2
 		asks_flush => asks_flush
 		plate => ask_plate_text
 		lord_of* => ask_lord*
+	Meet $bog_gram_meet
+		Account <= Account
+		Talk <= Talk
+		Roster <= Roster
+		Lobby <= Lobby
 	Invite $bog_gram_invite
 		Account <= Account
 		People <= People
@@ -267,6 +272,9 @@ $bog_gram $mol_book2
 			admin_is* <= member_admin* false
 			error? <=> member_error?
 			join_link <= join_link \
+			meet_link <= meet_link \
+			meet_make? <=> meet_make? null
+			meet_auto? <=> meet_auto? false
 			asks <= members_asks /string
 			ask_lord* <= ask_lord*
 			accept*? <=> ask_accept*? null

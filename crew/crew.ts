@@ -207,6 +207,8 @@ namespace $ {
 				return ''
 			}
 
+			const room = this.room_ruled( id )
+
 			const fresh = history ? null : this.grab()
 
 			const dialog_land = talk.land( id )
@@ -230,9 +232,28 @@ namespace $ {
 			}
 
 			this.invite( lord, id )
+			room?.give( pass, $giper_baza_rank_post( 'just' ) )
 			this.error( '' )
 
 			return lord
+		}
+
+		room_ruled( id: string ) {
+
+			const messages = this.Talk().messages_of( id )
+
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+
+				const link = messages[ i ].Call()?.val()
+				if( !link ) continue
+
+				const land = this.$.$giper_baza_glob.Land( link )
+				const my = new $giper_baza_link( this.Account().my_lord() )
+
+				return land.lord_rank( my ) === $giper_baza_rank_rule ? land : null
+			}
+
+			return null
 		}
 
 		part( id: string, lord: string ) {

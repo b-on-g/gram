@@ -153,11 +153,22 @@ namespace $.$$ {
 				this.History(),
 				... this.error() ? [ this.Error() ] : [],
 				this.Join(),
+				... this.meet_rows(),
 				... this.asks().length ? [ this.Asks_head(), this.Asks_list() ] : [],
 				this.Id_form(),
 				this.Pick_list(),
 				... this.owner() ? [ this.Admin_note() ] : [],
 			]
+		}
+
+		meet_rows() {
+			if( this.meet_link() ) return [ this.Meet() ]
+			if( this.owner() ) return [ this.Meet_make() ]
+			return []
+		}
+
+		override Meet_auto() {
+			return this.owner() ? super.Meet_auto() : null!
 		}
 
 		override leave_label() {

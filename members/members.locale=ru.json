@@ -28,5 +28,12 @@
 	"$bog_gram_members_leave_sure": "Точно выйти?",
 	"$bog_gram_members_leave_idle": "Выйти из группы",
 	"$bog_gram_members_Add_title_title": "Добавить участника",
-	"$bog_gram_members_Admin_note_title": "Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем."
+	"$bog_gram_members_Admin_note_title": "Админ получает полное управление лендом: он сможет и звать людей, и менять чужие права. Разделить эти способности нечем.",
+	"$bog_gram_members_Meet_make_hint": "Постоянная ссылка на звонок: люди стучатся, вы или админ впускаете, а чат звонка — эта группа",
+	"$bog_gram_members_Meet_make_label_title": "Сделать встречей",
+	"$bog_gram_members_Meet_head_title": "Постоянная ссылка на встречу",
+	"$bog_gram_members_Meet_hint_title": "Кто перейдёт по ней, постучится. Вы или админ впускаете, и человек попадает в группу и в текущий звонок",
+	"$bog_gram_members_Meet_copy_title": "Скопировать",
+	"$bog_gram_members_Meet_auto_title": "Впускать всех по ссылке",
+	"$bog_gram_members_Meet_auto_hint": "Любой админ с открытым Gram впускает постучавшихся сам, без нажатия"
 }

@@ -10,6 +10,9 @@ $bog_gram_members $bog_gram_page
 	admin_is* false
 	error? \
 	join_link \
+	meet_link \
+	meet_make? null
+	meet_auto? false
 	asks /string
 	ask_lord* \
 	accept*? null
@@ -114,6 +117,35 @@ $bog_gram_members $bog_gram_page
 						gradient_stops /
 							\#2f9e5f
 							\#8fd14f
+	Meet_make $mol_button_minor
+		hint @ \A permanent call link: people knock, you or an admin let them in, and the call chat is this group
+		click? <=> meet_make?
+		sub /
+			<= Meet_make_icon $mol_icon_video
+			<= Meet_make_label $mol_paragraph
+				title @ \Make a meeting
+	Meet $mol_view
+		sub /
+			<= Meet_head $mol_paragraph
+				title @ \Permanent meeting link
+			<= Meet_hint $mol_paragraph
+				title @ \Whoever follows it knocks. You or an admin let them in, and they join the group and the current call
+			<= Meet_text $mol_paragraph
+				title <= meet_link
+			<= Meet_copy $mol_button_copy
+				title @ \Copy
+				text <= meet_link
+			<= Meet_auto $mol_check_box
+				title @ \Let everyone in by the link
+				hint @ \Any admin with Gram open lets in whoever knocks, without a click
+				checked? <=> meet_auto?
+			<= Meet_qr_box $mol_view
+				sub /
+					<= Meet_qr $bog_qr
+						uri <= meet_link
+						gradient_stops /
+							\#2f6f9e
+							\#4fb3d1
 	Asks_head $mol_paragraph
 		title <= asks_head \
 	Asks_list $mol_list
