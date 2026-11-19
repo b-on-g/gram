@@ -3105,6 +3105,8 @@ $bog_gram_group $bog_gram_page
 				sub /
 					<= Chosen_drop_icon* $mol_icon_close
 
+$mol_icon_video $mol_icon path \M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z
+
 $mol_icon_shield $mol_icon path \M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z
 
 $mol_icon_shield_crown $mol_icon path \M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z
@@ -3125,6 +3127,9 @@ $bog_gram_members $bog_gram_page
 	admin_is* false
 	error? \
 	join_link \
+	meet_link \
+	meet_make? null
+	meet_auto? false
 	asks /string
 	ask_lord* \
 	accept*? null
@@ -3229,6 +3234,35 @@ $bog_gram_members $bog_gram_page
 						gradient_stops /
 							\#2f9e5f
 							\#8fd14f
+	Meet_make $mol_button_minor
+		hint @ \A permanent call link: people knock, you or an admin let them in, and the call chat is this group
+		click? <=> meet_make?
+		sub /
+			<= Meet_make_icon $mol_icon_video
+			<= Meet_make_label $mol_paragraph
+				title @ \Make a meeting
+	Meet $mol_view
+		sub /
+			<= Meet_head $mol_paragraph
+				title @ \Permanent meeting link
+			<= Meet_hint $mol_paragraph
+				title @ \Whoever follows it knocks. You or an admin let them in, and they join the group and the current call
+			<= Meet_text $mol_paragraph
+				title <= meet_link
+			<= Meet_copy $mol_button_copy
+				title @ \Copy
+				text <= meet_link
+			<= Meet_auto $mol_check_box
+				title @ \Let everyone in by the link
+				hint @ \Any admin with Gram open lets in whoever knocks, without a click
+				checked? <=> meet_auto?
+			<= Meet_qr_box $mol_view
+				sub /
+					<= Meet_qr $bog_qr
+						uri <= meet_link
+						gradient_stops /
+							\#2f6f9e
+							\#4fb3d1
 	Asks_head $mol_paragraph
 		title <= asks_head \
 	Asks_list $mol_list
@@ -3444,8 +3478,6 @@ $bog_gram_hold $mol_button_minor
 		pointerup? <=> release?
 		pointercancel? <=> abort?
 		contextmenu? <=> menu? null
-
-$mol_icon_video $mol_icon path \M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z
 
 $bog_gram_sound_node $mol_view
 	dom_name \audio
@@ -4395,6 +4427,11 @@ $bog_gram $mol_book2
 		asks_flush => asks_flush
 		plate => ask_plate_text
 		lord_of* => ask_lord*
+	Meet $bog_gram_meet
+		Account <= Account
+		Talk <= Talk
+		Roster <= Roster
+		Lobby <= Lobby
 	Invite $bog_gram_invite
 		Account <= Account
 		People <= People
@@ -4535,6 +4572,9 @@ $bog_gram $mol_book2
 			admin_is* <= member_admin* false
 			error? <=> member_error?
 			join_link <= join_link \
+			meet_link <= meet_link \
+			meet_make? <=> meet_make? null
+			meet_auto? <=> meet_auto? false
 			asks <= members_asks /string
 			ask_lord* <= ask_lord*
 			accept*? <=> ask_accept*? null

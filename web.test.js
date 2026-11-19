@@ -8362,11 +8362,23 @@ var $;
     /** Контекст с поддельным `WebSocket` и подменённым синхронизатором. */
     function $bog_yard_test_context(ambient, Yard) {
         const context = Object.create(ambient);
-        context.$mol_dom_context = Object.assign(Object.create(ambient.$mol_dom_context), {
-            WebSocket: $bog_yard_test_socket,
+        const win = new EventTarget;
+        const doc = Object.assign(new EventTarget, { visibilityState: 'visible' });
+        context.$mol_dom_context = Object.create(ambient.$mol_dom_context, {
+            WebSocket: { value: $bog_yard_test_socket },
+            document: { value: doc },
+            navigator: { value: {} },
+            addEventListener: { value: win.addEventListener.bind(win) },
+            removeEventListener: { value: win.removeEventListener.bind(win) },
+            dispatchEvent: { value: win.dispatchEvent.bind(win) },
         });
         context.$giper_baza_yard = Yard;
         return context;
+    }
+    function $bog_yard_test_visibility($, state) {
+        const doc = $.$mol_dom_context.document;
+        doc.visibilityState = state;
+        doc.dispatchEvent(new Event('visibilitychange'));
     }
     $mol_test({
         async 'Молчащий мастер в начале списка не задерживает подключение к живому'($) {
@@ -8405,6 +8417,49 @@ var $;
             port.socket.onclose?.();
             await new Promise(done => setTimeout(done, 20));
             $mol_assert_equal(yard.master_cursor(), 0);
+            port.destructor();
+        },
+        async 'Вернувшаяся сеть переподключает к тому же мастеру'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://alive.example/', 5);
+            class Yard extends $bog_yard {
+                static masters() {
+                    return ['https://alive.example/'];
+                }
+            }
+            const context = $bog_yard_test_context($, Yard);
+            const yard = Yard.make({ $: context });
+            await $mol_wire_async(yard).master();
+            context.$mol_dom_context.dispatchEvent(new Event('online'));
+            const port = await $mol_wire_async(yard).master();
+            $mol_assert_equal($bog_yard_test_socket.made.length, 2);
+            $mol_assert_equal($bog_yard_test_socket.made[0].closed, true);
+            $mol_assert_equal(port.socket, $bog_yard_test_socket.made[1]);
+            $mol_assert_equal(yard.master_cursor(), 0);
+            port.destructor();
+        },
+        async 'Короткий уход в фон связь не трогает, долгий переподключает'($) {
+            $bog_yard_test_socket.reset();
+            $bog_yard_test_socket.delays.set('wss://alive.example/', 5);
+            class Yard extends $bog_yard {
+                static wake_after = 30;
+                static masters() {
+                    return ['https://alive.example/'];
+                }
+            }
+            const context = $bog_yard_test_context($, Yard);
+            const yard = Yard.make({ $: context });
+            await $mol_wire_async(yard).master();
+            $bog_yard_test_visibility(context, 'hidden');
+            $bog_yard_test_visibility(context, 'visible');
+            await $mol_wire_async(yard).master();
+            $mol_assert_equal($bog_yard_test_socket.made.length, 1);
+            $bog_yard_test_visibility(context, 'hidden');
+            await new Promise(done => setTimeout(done, 40));
+            $bog_yard_test_visibility(context, 'visible');
+            const port = await $mol_wire_async(yard).master();
+            $mol_assert_equal($bog_yard_test_socket.made.length, 2);
+            $mol_assert_equal($bog_yard_test_socket.made[0].closed, true);
             port.destructor();
         },
         async 'Проверка выбирает мастера, который открывается быстрее'($) {
@@ -10319,6 +10374,42 @@ var $;
             $mol_assert_equal(filled.invites, 0);
             await $mol_wire_async(ops).drop();
             $mol_assert_equal((await $mol_wire_async(ops).read()).joins.length, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Стук в прихожую виден админу группы, а стук от чужого имени нет'($) {
+            const meet = $bog_gram_meet.make({ $ });
+            const group = 'group_link';
+            const ops = {
+                run() {
+                    const land = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+                    const hall = land.Data($bog_gram_meet_hall);
+                    const link = land.link().str;
+                    hall.Group('auto').val(group);
+                    meet.meet_of = (id) => id === group ? link : '';
+                    meet.Talk().lords = () => [];
+                    const pass = $.$giper_baza_auth.current().pass().toString();
+                    const own = meet.knock(link, group);
+                    hall.Knocks('auto').add(meet.Lobby().entry(group, 'someone_else', pass));
+                    const owner = meet.Account().my_lord();
+                    return {
+                        own,
+                        group: meet.group_of([link, owner]),
+                        stranger: meet.group_of([link, land.link().lord().str]),
+                        knocks: meet.knocks_of(group),
+                    };
+                },
+            };
+            const result = await $mol_wire_async(ops).run();
+            $mol_assert_equal(result.group, group);
+            $mol_assert_equal(result.stranger, '');
+            $mol_assert_equal(result.knocks, [result.own]);
         },
     });
 })($ || ($ = {}));
