@@ -60,7 +60,7 @@ namespace $ {
 
 	export class $bog_gram_notify extends $mol_object {
 
-		static base = 'https://push.91-188-212-151.ip.giper.dev'
+		static base = 'https://push.5-230-182-101.ip.giper.dev'
 
 		static api = api
 

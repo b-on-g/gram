@@ -2,8 +2,10 @@
 	"name": "bog-gram-push",
 	"private": true,
 	"dependencies": {
-		"web-push": "^3",
+		"fake-indexeddb": "^6.2.8",
 		"jsdom": "^26",
+		"jsqr": "^1.4.0",
+		"web-push": "^3",
 		"ws": "^8"
 	}
 }

@@ -21,8 +21,9 @@ services:
     mem_limit: 512m
     cpus: 0.5
     labels:
-      caddy: push.91-188-212-151.ip.giper.dev
+      caddy: push.5-230-182-101.ip.giper.dev
       caddy.reverse_proxy: "127.0.0.1:9099"
+      com.centurylinklabs.watchtower.enable: "false"
 
 volumes:
   gram_push_data:
