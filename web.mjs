@@ -60507,7 +60507,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.185';
+    $.$bog_gram_version = '1.0.186';
 })($ || ($ = {}));
 
 ;
@@ -65674,7 +65674,7 @@ var $;
         return view.every((byte, index) => byte === bytes[index]);
     }
     class $bog_gram_notify extends $mol_object {
-        static base = 'https://push.91-188-212-151.ip.giper.dev';
+        static base = 'https://push.5-230-182-101.ip.giper.dev';
         static api = api;
         static supported() {
             if (typeof window === 'undefined')
