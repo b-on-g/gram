@@ -42090,7 +42090,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.184';
+    $.$bog_gram_version = '1.0.185';
 })($ || ($ = {}));
 
 ;
@@ -59306,6 +59306,10 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+        $giper_baza_yard.masters = () => $giper_baza_yard.masters_override() ?? [
+            local ? 'http://localhost:9090/' : 'https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/',
+        ];
         class $bog_gram extends $.$bog_gram {
             saved_preview() {
                 const id = this.saved_id();
