@@ -35,6 +35,7 @@ class Socket extends require('ws') {
 $.$mol_dom_context.WebSocket = Socket
 
 const PORT = Number(process.env.GRAM_PUSH_PORT || 9099)
+const BIND = process.env.GRAM_PUSH_BIND || undefined
 const MASTERS = process.env.GRAM_PUSH_MASTER?.split(',').filter(Boolean)
 const DATA = process.env.GRAM_PUSH_DATA || '/data'
 const POLL = Number(process.env.GRAM_PUSH_POLL || 5000)
@@ -480,7 +481,7 @@ const server = http.createServer(async (req, res) => {
 
 async function main() {
 	subs_load()
-	server.listen(PORT, () => log('http up on', PORT))
+	server.listen(PORT, BIND, () => log('http up on', BIND ?? '*', PORT))
 
 	auth = await auth_load()
 	log('lord', auth.pass().lord().str.slice(0, 10), 'masters', MASTERS ?? 'seed')
