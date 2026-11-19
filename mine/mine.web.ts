@@ -29,10 +29,22 @@ namespace $ {
 			})
 		}
 
+		static done_key = 'bog_gram_mine_migrated'
+
 		static async run() {
+
+			if( this.$.$mol_state_local.value( this.done_key ) ) return false
 
 			const next = await this.$.$giper_baza_mine_idb.db()
 			await $bog_gram_mine.clean( next )
+
+			const moved = await this.move( next )
+			this.$.$mol_state_local.value( this.done_key, true )
+
+			return moved
+		}
+
+		static async move( next: $mol_db_database< $bog_gram_mine_schema > ) {
 
 			if( !await $bog_gram_mine.old_exists() ) return false
 
