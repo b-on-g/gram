@@ -5,3 +5,7 @@ push/node.js
 push/node_modules
 push/web.baza
 push/.baza
+compare/simplex.html
+Heap-20261118T212341.heapprofile
+Trace-20261118T211934.json.gz
+Trace-20261118T232350.json.gz
