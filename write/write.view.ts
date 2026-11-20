@@ -109,6 +109,20 @@ namespace $.$$ {
 
 		selection_load() {}
 
+		@ $mol_mem
+		override selected( next?: boolean ) {
+
+			$mol_wire_watch()
+
+			const root = this.Content().dom_node()
+			if( !root.isConnected ) return false
+
+			const selection = this.$.$mol_dom_context.document.getSelection()
+			if( !selection?.rangeCount ) return false
+
+			return root.contains( selection.anchorNode ) && root.contains( selection.focusNode )
+		}
+
 		html_last = ''
 
 		@ $mol_mem
