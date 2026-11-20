@@ -332,6 +332,70 @@ namespace $.$$ {
 				color: $mol_theme.control,
 			},
 			color: '#ffffff',
+			'@': {
+				disabled: {
+					true: {
+						background: {
+							color: $mol_theme.line,
+						},
+						color: $mol_theme.shade,
+					},
+				},
+			},
+		},
+
+		Pending: {
+			gap: '0.5rem',
+			overflow: {
+				x: 'auto',
+			},
+			padding: {
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+		},
+
+		Pending_item: {
+			position: 'relative',
+			flex: {
+				shrink: 0,
+			},
+		},
+
+		Pending_preview: {
+			width: '4rem',
+			height: '4rem',
+			border: {
+				radius: $mol_gap.round,
+			},
+			overflow: 'hidden',
+			justify: {
+				content: 'center',
+			},
+			align: {
+				items: 'center',
+			},
+			background: {
+				color: $bog_gram_tone.veil,
+			},
+		},
+
+		Pending_image: {
+			width: '100%',
+			height: '100%',
+			objectFit: 'cover',
+		},
+
+		Pending_drop: {
+			position: 'absolute',
+			top: 0,
+			right: 0,
+			padding: '0.125rem',
+			color: '#ffffff',
+			background: {
+				color: $bog_gram_tone.veil,
+			},
+			borderRadius: '50%',
 		},
 
 		Attach: {

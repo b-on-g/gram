@@ -145,8 +145,24 @@ $bog_gram_chat $bog_gram_page
 			attr *
 				^
 				bog_gram_chat_mirror <= record_mirror true
+		<= Pending $mol_view
+			sub <= pending_items /
 		<= Send_row $mol_view
 			sub <= send_tools /
+	pending? /
+	Pending_item* $mol_view
+		sub /
+			<= Pending_preview* $mol_view
+				sub <= pending_preview_sub* /
+			<= Pending_drop* $mol_button_minor
+				hint @ \Remove
+				click? <=> pending_drop*? null
+				sub /
+					<= Pending_drop_icon* $mol_icon_close
+	Pending_image* $mol_image
+		uri <= pending_uri* \
+		title \
+	Pending_video* $mol_icon_video
 	Attach $bog_gram_attach
 		hint @ \Send photo or video
 		accept \image/*,video/*
@@ -158,9 +174,11 @@ $bog_gram_chat $bog_gram_page
 			click? <=> box_click? null
 		sub /
 			<= Message_field $bog_gram_write
-				hint @ \Message…
+				hint <= message_hint @ \Message…
+				length_max <= text_limit 4096
 				value? <=> message_text?
 				send? <=> message_send? null
+	caption_hint @ \Add a caption…
 	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
 		hint @ \Send

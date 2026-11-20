@@ -14,8 +14,6 @@ namespace $.$$ {
 
 	const tap_limit = 250
 
-	const text_limit = 4096
-
 	const slide_cancel = 96
 
 	const slide_lock = 72
@@ -565,7 +563,7 @@ namespace $.$$ {
 
 		@ $mol_mem
 		text_over() {
-			return Math.max( 0, this.message_text().trim().length - text_limit )
+			return Math.max( 0, this.message_text().trim().length - this.text_limit() )
 		}
 
 		override send_enabled() {
@@ -575,7 +573,7 @@ namespace $.$$ {
 		@ $mol_mem
 		override voice_note_text() {
 			const over = this.text_over()
-			if( over ) return $bog_gram_text_fill( this.text_over_pattern(), { limit: text_limit, over } )
+			if( over ) return $bog_gram_text_fill( this.text_over_pattern(), { limit: this.text_limit(), over } )
 			return this.voice_hint()
 		}
 
@@ -589,10 +587,15 @@ namespace $.$$ {
 			this.Alerts().offer()
 			this.message_menu( '' )
 
+			if( this.text_over() ) return null
+
+			if( this.pending().length ) {
+				this.pending_send()
+				return null
+			}
+
 			const text = this.message_text().trim()
 			const editing = this.edit_id()
-
-			if( this.text_over() ) return null
 
 			if( editing ) {
 
@@ -735,8 +738,62 @@ namespace $.$$ {
 
 		@ $mol_action
 		override image_files( next?: readonly File[] ) {
-			this.images_start( next ?? [] )
+			this.pending_add( next ?? [] )
 			return next ?? null
+		}
+
+		@ $mol_mem
+		override pending( next?: readonly File[] ) {
+			return next ?? []
+		}
+
+		@ $mol_action
+		pending_add( files: readonly File[] ) {
+
+			const fit = files.filter( file => this.$.$bog_gram_clip.video_is( file ) || this.$.$bog_gram_shrink.image_is( file ) )
+			if( !fit.length ) return
+
+			if( this.edit_id() ) this.edit_stop()
+
+			this.pending([ ... this.pending(), ... fit ])
+
+		}
+
+		pending_send() {
+			const files = this.pending()
+			this.pending([])
+			return this.images_start( files )
+		}
+
+		override pending_items() {
+			return this.pending().map( ( _, index )=> this.Pending_item( index ) )
+		}
+
+		override pending_preview_sub( index: number ) {
+			const file = this.pending()[ index ]
+			if( this.$.$bog_gram_clip.video_is( file ) ) return [ this.Pending_video( index ) ]
+			return [ this.Pending_image( index ) ]
+		}
+
+		@ $mol_mem_key
+		pending_object( file: File ) {
+			const URL = this.$.$mol_dom_context.URL
+			const uri = URL.createObjectURL( file )
+			return { uri, destructor: ()=> URL.revokeObjectURL( uri ) }
+		}
+
+		override pending_uri( index: number ) {
+			return this.pending_object( this.pending()[ index ] ).uri
+		}
+
+		@ $mol_action
+		override pending_drop( index: number, next?: any ) {
+			this.pending( this.pending().filter( ( _, i )=> i !== index ) )
+			return null
+		}
+
+		override message_hint() {
+			return this.pending().length ? this.caption_hint() : super.message_hint()
 		}
 
 		@ $mol_action
@@ -755,7 +812,7 @@ namespace $.$$ {
 			if( !files.length ) return null
 
 			event?.preventDefault()
-			this.images_start( files )
+			this.pending_add( files )
 
 			return null
 		}
@@ -775,7 +832,7 @@ namespace $.$$ {
 			const files = event?.dataTransfer?.files
 			if( !files ) return null
 
-			this.images_start( Array.from( files ) )
+			this.pending_add( Array.from( files ) )
 
 			return null
 		}
@@ -1095,6 +1152,7 @@ namespace $.$$ {
 
 		send_is() {
 			if( this.edit_mode() ) return true
+			if( this.pending().length ) return true
 			if( !this.voice_ready() ) return true
 			return Boolean( this.message_text().trim() )
 		}
