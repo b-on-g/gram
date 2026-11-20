@@ -178,6 +178,15 @@ namespace $.$$ {
 			overflowWrap: 'anywhere',
 		},
 
+		Rich: {
+			minWidth: 0,
+			flex: {
+				shrink: 1,
+			},
+			whiteSpace: 'pre-wrap',
+			overflowWrap: 'anywhere',
+		},
+
 		Shot: {
 			alignSelf: 'flex-start',
 			maxWidth: '100%',

@@ -1,6 +1,159 @@
 namespace $.$$ {
 
+	type Caret = ReturnType< $giper_baza_rich_edit[ 'selection' ] >
+
+	const blocks = new Set([ 'P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' ])
+
+	const plain = new Set([ 'SECTION', 'P', 'DIV', 'BR' ])
+
+	const kept = new Set([ ... blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP' ])
+
+	function body_of( html: string ) {
+		return $mol_dom_parse( `<!doctype html><body>${ html }</body>`, 'text/html' ).body
+	}
+
+	function tidy( node: Element ) {
+		for( const kid of [ ... node.children ] ) {
+
+			tidy( kid )
+
+			if( !kept.has( kid.nodeName ) ) {
+				kid.replaceWith( ... kid.childNodes )
+				continue
+			}
+
+			for( const attr of [ ... kid.attributes ] ) {
+				if( kid.nodeName === 'A' && attr.name === 'href' ) continue
+				kid.removeAttribute( attr.name )
+			}
+
+		}
+	}
+
+	export function $bog_gram_write_clean( html: string ) {
+		const body = body_of( html )
+		tidy( body )
+		body.normalize()
+		return body.innerHTML
+	}
+
+	export function $bog_gram_write_text( html: string ) {
+
+		if( !html ) return ''
+
+		const lines = [] as string[]
+		let line = ''
+
+		const walk = ( node: Node )=> {
+
+			if( node.nodeType === node.TEXT_NODE ) {
+				line += node.nodeValue
+				return
+			}
+
+			if( node.nodeName === 'BR' ) {
+				lines.push( line )
+				line = ''
+				return
+			}
+
+			const block = blocks.has( node.nodeName )
+			if( block && line ) {
+				lines.push( line )
+				line = ''
+			}
+
+			for( const kid of node.childNodes ) walk( kid )
+
+			if( block && line ) {
+				lines.push( line )
+				line = ''
+			}
+
+		}
+
+		walk( body_of( html ) )
+		if( line ) lines.push( line )
+
+		return lines.join( '\n' )
+	}
+
+	export function $bog_gram_write_html( text: string ) {
+
+		if( !text ) return ''
+
+		const escape = ( line: string )=> line
+			.replaceAll( '&', '&amp;' )
+			.replaceAll( '<', '&lt;' )
+			.replaceAll( '>', '&gt;' )
+
+		return text.split( '\n' ).map( line => `<p>${ escape( line ) || '<br>' }</p>` ).join( '' )
+	}
+
+	export function $bog_gram_write_rich_is( html: string ) {
+		if( !html ) return false
+		return [ ... body_of( html ).querySelectorAll( '*' ) ].some( el => !plain.has( el.nodeName ) )
+	}
+
 	export class $bog_gram_write extends $.$bog_gram_write {
+
+		@ $mol_mem
+		land() {
+			return this.$.$giper_baza_land.make({ $: this.$ })
+		}
+
+		@ $mol_mem
+		override pawn( next?: $giper_baza_rich ) {
+			return this.land().Data( $giper_baza_rich )
+		}
+
+		@ $mol_mem
+		selection( next?: Caret ): Caret {
+			return next ?? [ [ '', 0, 0 ], [ '', 0, 0 ] ]
+		}
+
+		html_last = ''
+
+		@ $mol_mem
+		html_load() {
+
+			const html = this.html()
+			if( html === this.html_last ) return html
+
+			this.html_last = html
+			this.pawn().html( html )
+
+			return html
+		}
+
+		@ $mol_mem
+		override content() {
+			this.html_load()
+			return super.content()
+		}
+
+		override save( event?: Event ) {
+
+			super.save( event )
+
+			const html = $bog_gram_write_clean( this.pawn().html() )
+			this.html_last = html
+			this.html( html )
+
+		}
+
+		text() {
+			return $bog_gram_write_text( this.html() )
+		}
+
+		@ $mol_mem
+		override sub() {
+			return [
+				... this.text() ? [] : [ this.Hint() ],
+				this.Content(),
+				... this.rich() && this.enabled() ? [ this.Tools() ] : [],
+			]
+		}
 
 		/**
 		 * Enter отправляет только там, где есть физическая клавиатура.
@@ -11,56 +164,97 @@ namespace $.$$ {
 
 			const nav = this.$.$mol_dom_context.navigator
 
-			// Без тача клавиатура точно есть: ноутбук или десктоп.
 			if( !nav?.maxTouchPoints ) return true
 
-			// Тач есть, но есть и точный указатель — значит, это гибрид.
 			if( this.$.$mol_media.match( '(any-pointer: fine)' ) ) return true
 
-			// Мышь может не репортиться как fine, но наведение она даёт.
 			if( this.$.$mol_media.match( '(hover: hover)' ) ) return true
 
 			return false
 
 		}
 
-		/**
-		 * Enter обрабатывает `press`, а не хоткей: так путь отправки один.
-		 * Плагин `Submit` на том же поле иначе слал бы второе сообщение —
-		 * его `keydown` приходит до всплытия до `press`.
-		 */
-		override submit( event?: KeyboardEvent ) {
+		newline() {
+			this.$.$mol_dom_context.document.execCommand( 'insertLineBreak' )
+		}
+
+		override press( event?: KeyboardEvent ) {
+
+			if( !event ) return null
+			if( event.isComposing ) return null
+			if( event.keyCode !== $mol_keyboard_code.enter ) return null
+
+			if( event.ctrlKey || event.metaKey ) {
+				event.preventDefault()
+				this.newline()
+				return null
+			}
+
+			if( event.shiftKey || !this.enter_sends() ) return null
+
+			event.preventDefault()
+			this.send( event )
+
 			return null
 		}
 
-		newline() {
-			const text = this.value()
-			const [ from = text.length, to = from ] = this.selection()
-			this.value( text.slice( 0, from ) + '\n' + text.slice( to ) )
-			this.selection([ from + 1, from + 1 ])
+		chosen() {
+
+			const selection = this.$.$mol_dom_context.document.getSelection()
+			if( !selection?.rangeCount ) return 0
+			if( !this.Content().dom_node().contains( selection.anchorNode ) ) return 0
+
+			return selection.toString().length
 		}
 
-		override press( event: KeyboardEvent ) {
+		room() {
+			return Math.max( 0, this.length_max() - this.text().length + this.chosen() )
+		}
 
-			if( event.keyCode === $mol_keyboard_code.tab ) return
+		override before_input( event?: InputEvent ) {
 
-			if( event.keyCode === $mol_keyboard_code.enter ) {
+			if( !event?.inputType.startsWith( 'insert' ) ) return null
+			if( event.inputType === 'insertCompositionText' ) return null
 
-				if( event.ctrlKey || event.metaKey ) {
-					event.preventDefault()
-					this.newline()
-					return
-				}
+			const size = event.data?.length ?? 1
+			if( size > this.room() ) event.preventDefault()
 
-				if( event.shiftKey || !this.enter_sends() ) return
+			return null
+		}
 
-				event.preventDefault()
-				this.send( event )
-				return
-			}
+		override paste( event: ClipboardEvent ) {
 
-			super.press( event )
+			const transfer = event.clipboardData
+			if( !transfer ) return
+			if( transfer.files.length ) return
 
+			const room = this.room()
+			const text = transfer.getData( 'text/plain' )
+			if( this.rich() && text.length <= room ) return super.paste( event )
+
+			event.preventDefault()
+
+			const part = text.slice( 0, room )
+			if( !part ) return
+
+			this.$.$mol_dom_context.document.execCommand( 'insertText', false, part )
+
+		}
+
+		override block_wrap( type: string, event: KeyboardEvent ) {
+			if( this.rich() ) super.block_wrap( type, event )
+		}
+
+		override block_rewrap( event: KeyboardEvent ) {
+			if( this.rich() ) super.block_rewrap( event )
+		}
+
+		override block_unwrap( event: KeyboardEvent ) {
+			if( this.rich() ) super.block_unwrap( event )
+		}
+
+		override inline_toggle( type: string, event: KeyboardEvent ) {
+			if( this.rich() ) super.inline_toggle( type, event )
 		}
 
 	}

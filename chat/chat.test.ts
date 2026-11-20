@@ -10,7 +10,7 @@ namespace $.$$ {
 			const match = chat.$.$mol_media.match
 			chat.Message_field = ()=> ({
 				bring: ()=> ++ outer_focused,
-				Edit: ()=> ({ bring: ()=> ++ edit_focused }),
+				Content: ()=> ({ bring: ()=> ++ edit_focused }),
 			}) as any
 			chat.$.$mol_media.match = ()=> true
 
@@ -207,6 +207,38 @@ namespace $.$$ {
 			$mol_assert_equal( sent[0].Text()?.val()?.length, 4096 )
 			$mol_assert_equal( sent[0].Author()?.val(), 'LordMe' )
 			$mol_assert_equal( chat.message_text(), '' )
+
+		},
+
+		'Форматированное сообщение уходит с разметкой и текстом для старых клиентов, простое — только текстом'( $ ) {
+
+			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
+			const talk = $bog_gram_talk.make({ $, session: ()=> session, saved_is: ()=> false })
+			const alerts = $bog_gram_alerts.make({ $, offer: ()=> false })
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogRich', my_lord: ()=> 'LordMe', Talk: ()=> talk, Alerts: ()=> alerts })
+
+			const sent = ()=> ( session.Messages()!.items() as readonly $giper_baza_link[] )
+				.map( link => session.land().Pawn( $bog_gram_message ).Head( link.head() ) )
+				.map( message => [ message.Text()?.val() ?? '', message.Html()?.val() ?? '' ] )
+
+			chat.message_html( '<p>очень <strong>важно</strong></p><p>второе</p>' )
+			$mol_assert_equal( chat.message_text(), 'очень важно\nвторое' )
+			chat.message_send()
+
+			chat.message_text( 'просто' )
+			chat.message_send()
+
+			$mol_assert_equal( sent(), [
+				[ 'очень важно\nвторое', '<p>очень <strong>важно</strong></p><p>второе</p>' ],
+				[ 'просто', '' ],
+			] )
+			$mol_assert_equal( chat.message_html(), '' )
+
+			const link = ( session.Messages()!.items() as readonly $giper_baza_link[] )[0]
+			const pawn = session.land().Pawn( $bog_gram_message ).Head( link.head() )
+			chat.message_pawn = ()=> pawn
+			chat.message_edit( link.str )
+			$mol_assert_equal( chat.message_html(), '<p>очень <strong>важно</strong></p><p>второе</p>' )
 
 		},
 

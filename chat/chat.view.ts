@@ -428,7 +428,7 @@ namespace $.$$ {
 		@ $mol_mem
 		field_focus() {
 			if( !this.$.$mol_media.match( '(pointer: fine)' ) ) return false
-			this.Message_field().Edit().bring()
+			this.Message_field().Content().bring()
 			return true
 		}
 
@@ -442,7 +442,7 @@ namespace $.$$ {
 			}
 
 			this.reply_id( id )
-			this.Message_field().Edit().bring()
+			this.Message_field().Content().bring()
 
 			return null
 		}
@@ -515,7 +515,7 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.reply_id( '' )
 			this.edit_id( id )
-			this.message_text( this.message_body( id ) )
+			this.message_html( this.message_pawn( id )?.Html()?.val() || $bog_gram_write_html( this.message_body( id ) ) )
 			return null
 		}
 
@@ -526,22 +526,59 @@ namespace $.$$ {
 		}
 
 		edit_stop() {
-			this.edit_text( '' )
+			this.edit_html( '' )
 			this.edit_id( '' )
 		}
 
 		@ $mol_mem
-		edit_text( next?: string ) {
+		edit_html( next?: string ) {
 			return next ?? ''
 		}
 
 		draft( next?: string ) {
-			const key = `$bog_gram_chat.draft(${ this.my_lord() },${ this.dialog() })`
-			return this.$.$mol_state_local.value( key, next === undefined ? undefined : next || null ) ?? ''
+
+			const place = `(${ this.my_lord() },${ this.dialog() })`
+			const store = this.$.$mol_state_local
+
+			if( next !== undefined ) store.value( `$bog_gram_chat.draft${ place }`, null )
+
+			const html = store.value( `$bog_gram_chat.draft_html${ place }`, next === undefined ? undefined : next || null )
+			return html ?? $bog_gram_write_html( store.value< string >( `$bog_gram_chat.draft${ place }` ) ?? '' )
+		}
+
+		override message_html( next?: string ) {
+			return this.edit_id() ? this.edit_html( next ) : this.draft( next )
+		}
+
+		@ $mol_mem
+		message_plain() {
+			return $bog_gram_write_text( this.message_html() )
 		}
 
 		override message_text( next?: string ) {
-			return this.edit_id() ? this.edit_text( next ) : this.draft( next )
+			if( next === undefined ) return this.message_plain()
+			this.message_html( $bog_gram_write_html( next ) )
+			return next
+		}
+
+		rich_html() {
+			const html = this.message_html()
+			return $bog_gram_write_rich_is( html ) ? html : ''
+		}
+
+		rich_put( message: $bog_gram_message ) {
+			const html = this.rich_html()
+			if( html ) message.Html( 'auto' )?.val( html )
+		}
+
+		@ $mol_mem
+		override rich_mode( next?: boolean ) {
+			return this.$.$mol_state_local.value( '$bog_gram_chat.rich', next ) ?? false
+		}
+
+		@ $mol_mem_key
+		override message_rich( id: string ) {
+			return this.message_pawn( id )?.Html()?.val() ?? ''
 		}
 
 		@ $mol_action
@@ -604,6 +641,7 @@ namespace $.$$ {
 				const pawn = this.message_pawn( editing )
 				if( pawn ) {
 					pawn.Text( 'auto' )?.val( text )
+					pawn.Html( 'auto' )?.val( this.rich_html() )
 					pawn.Edited( 'auto' )?.val( Date.now() )
 				}
 
@@ -621,6 +659,7 @@ namespace $.$$ {
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
 			message.Text( 'auto' )?.val( text )
+			this.rich_put( message )
 
 			const reply = this.reply_id()
 			if( reply ) message.Reply( 'auto' )?.val( reply )
@@ -945,6 +984,7 @@ namespace $.$$ {
 			message.Image_width( 'auto' )?.val( frames[0].width )
 			message.Image_height( 'auto' )?.val( frames[0].height )
 			if( text ) message.Text( 'auto' )?.val( text )
+			if( text ) this.rich_put( message )
 
 			if( text ) this.message_text( '' )
 			this.voice_hint( '' )
@@ -998,6 +1038,7 @@ namespace $.$$ {
 				message.Video_height( 'auto' )?.val( clip.height )
 			}
 			if( text ) message.Text( 'auto' )?.val( text )
+			if( text ) this.rich_put( message )
 
 			if( text ) this.message_text( '' )
 			this.voice_hint( '' )
@@ -1173,7 +1214,7 @@ namespace $.$$ {
 				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send() ]
 				case 'review': return [ this.Record_drop(), this.Draft(), this.Record_send() ]
 			}
-			return [ this.Attach(), this.Message_box(), this.Send(), this.Voice() ]
+			return [ this.Attach(), this.Rich_toggle(), this.Message_box(), this.Send(), this.Voice() ]
 		}
 
 		press_at = { x: 0, y: 0 }
@@ -1604,8 +1645,8 @@ namespace $.$$ {
 
 		@ $mol_action
 		override box_click( next?: Event ) {
-			if( next?.target === this.Message_field().Edit().dom_node() ) return null
-			this.Message_field().Edit().bring()
+			if( this.Message_field().dom_node().contains( next?.target as Node ) ) return null
+			this.Message_field().Content().bring()
 			return null
 		}
 

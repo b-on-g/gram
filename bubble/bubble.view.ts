@@ -35,7 +35,11 @@ namespace $.$$ {
 		}
 
 		override Body() {
-			return this.body() ? super.Body() : null!
+			return this.body() && !this.html() ? super.Body() : null!
+		}
+
+		override Rich() {
+			return this.html() ? super.Rich() : null!
 		}
 
 		override Edited() {

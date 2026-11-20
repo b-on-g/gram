@@ -312,18 +312,11 @@ namespace $.$$ {
 				shrink: 1,
 			},
 			minWidth: 0,
-			Edit: {
-				background: {
-					color: 'transparent',
-				},
-				boxShadow: 'none',
-				':hover': {
-					boxShadow: 'none',
-				},
-				':focus': {
-					boxShadow: 'none',
-				},
-			},
+		},
+
+		Rich_toggle: {
+			... round,
+			color: $mol_theme.shade,
 		},
 
 		Send: {

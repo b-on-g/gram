@@ -2,6 +2,7 @@ namespace $ {
 
 	export class $bog_gram_message extends $giper_baza_dict.with({
 		Text: $giper_baza_atom_text,
+		Html: $giper_baza_atom_text,
 		Author: $giper_baza_atom_text,
 		Moment: $giper_baza_atom_real,
 		Edited: $giper_baza_atom_real,

@@ -1,4 +1,15 @@
-$bog_gram_write $mol_textarea
-	submit_with_ctrl false
-	spellcheck true
+$bog_gram_write $giper_baza_rich_edit
+	html? \
+	rich false
+	length_max +Infinity
 	send? null
+	attr *
+		^
+		bog_gram_write_rich <= rich
+	event *
+		^
+		keydown? <=> press? null
+		beforeinput? <=> before_input? null
+	Hint $mol_view
+		sub /
+			<= hint

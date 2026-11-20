@@ -176,8 +176,13 @@ $bog_gram_chat $bog_gram_page
 			<= Message_field $bog_gram_write
 				hint <= message_hint @ \Message…
 				length_max <= text_limit 4096
-				value? <=> message_text?
+				html? <=> message_html? \
+				rich <= rich_mode? false
 				send? <=> message_send? null
+	Rich_toggle $mol_check_icon
+		hint @ \Formatting
+		checked? <=> rich_mode?
+		Icon <= Rich_icon $mol_icon_format_text
 	caption_hint @ \Add a caption…
 	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
@@ -298,6 +303,7 @@ $bog_gram_chat $bog_gram_page
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
 		body <= message_body* \
+		html <= message_rich* \
 		time <= message_time* \
 		edited <= message_edited* false
 		checks <= message_checks* \
