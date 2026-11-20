@@ -121,7 +121,7 @@ namespace $.$$ {
 			if( html === this.html_last ) return html
 
 			this.html_last = html
-			this.pawn().html( html )
+			this.pawn().dom( [ ... body_of( html ).childNodes ] as Element[] )
 
 			return html
 		}

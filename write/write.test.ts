@@ -94,6 +94,17 @@ namespace $.$$ {
 
 		},
 
+		'Черновик с неразрывным пробелом и прочими сущностями HTML поле открывает, а не падает'( $ ) {
+
+			const { write } = make( $, true )
+
+			write.html( $bog_gram_write_clean( '<p>раз два&nbsp;&laquo;три&raquo; </p>' ) )
+			write.html_load()
+
+			$mol_assert_equal( write.pawn().dom().map( el => el.textContent ).join( '' ), 'раз два «три» ' )
+
+		},
+
 		'Ввод сверх лимита браузер не вставляет, удаление и набор в пределах лимита проходят'( $ ) {
 
 			const { write } = make( $, true )
