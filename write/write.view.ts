@@ -99,7 +99,13 @@ namespace $.$$ {
 
 		@ $mol_mem
 		land() {
-			return this.$.$giper_baza_land.make({ $: this.$ })
+			const lord = this.$.$giper_baza_auth.current().pass().lord()
+			const link = new $giper_baza_link( lord.str + '_' + $giper_baza_link.from_int( 0x5c4a7c ).str )
+			return this.$.$giper_baza_land.make({
+				$: this.$,
+				link: ()=> link,
+				persisted: ()=> false,
+			})
 		}
 
 		@ $mol_mem
