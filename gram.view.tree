@@ -319,3 +319,7 @@ $bog_gram $mol_book2
 		name <= user_name
 		note* <= people_note* \
 		close? <=> call_close? null
+		knocks <= call_knocks* /string
+		knock_name* <= ask_label* \
+		admit*? <=> ask_accept*? null
+		deny*? <=> ask_reject*? null

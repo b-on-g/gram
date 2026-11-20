@@ -1,6 +1,11 @@
 $bog_gram_call $mol_page
 	land null
 	name \
+	knocks /string
+	knock_name* \
+	admit*? null
+	deny*? null
+	knocks_pattern @ \Knocking: {count}
 	note* \
 	close? null
 	Room $bog_gram_call_room
@@ -18,6 +23,24 @@ $bog_gram_call $mol_page
 				<= Close_icon $mol_icon_close
 	body <= content /
 	foot <= controls /
+	Knocks $mol_list
+		rows <= knock_rows /
+	Knocks_head $mol_paragraph
+		title <= knocks_head \
+	Knock* $mol_view
+		sub /
+			<= Knock_name* $mol_paragraph
+				title <= knock_name*
+			<= Knock_admit* $mol_button_minor
+				hint @ \Let in
+				click? <=> admit*?
+				sub /
+					<= Knock_admit_icon* $mol_icon_check
+			<= Knock_deny* $mol_button_minor
+				hint @ \Decline
+				click? <=> deny*?
+				sub /
+					<= Knock_deny_icon* $mol_icon_close
 	Grid $mol_view
 		sub <= tiles /
 	Self $bog_gram_call_tile

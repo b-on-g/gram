@@ -45,6 +45,14 @@ namespace $ {
 		}
 
 		@ $mol_mem_key
+		group_of_uri( uri: string ) {
+			const hall = /(?:^|[!\/ ?&#])meet=([^\/ &#]+)/.exec( uri )?.[1]
+			const owner = /(?:^|[!\/ ?&#])by=([^\/ &#]+)/.exec( uri )?.[1]
+			if( !hall || !owner ) return ''
+			return this.group_of([ decodeURIComponent( hall ), decodeURIComponent( owner ) ])
+		}
+
+		@ $mol_mem_key
 		meet_of( id: string ) {
 			if( !id ) return ''
 			return $bog_gram_soft( ()=> String( this.Talk().store( id ).Meet()?.val() ?? '' ), '' )

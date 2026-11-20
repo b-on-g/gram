@@ -319,6 +319,25 @@ namespace $.$$ {
 			return this.$.$giper_baza_glob.Land( new $giper_baza_link( id ) )
 		}
 
+		@ $mol_mem_key
+		call_group( id: string ) {
+			if( !id ) return ''
+			const invite = $bog_gram_soft( ()=> String( this.call_land( id ).Data( $bog_gram_call_land ).Invite()?.val() ?? '' ), '' )
+			return invite ? this.Meet().group_of_uri( invite ) : ''
+		}
+
+		@ $mol_mem_key
+		override call_knocks( id: string ) {
+			const group = this.call_group( id )
+			if( !group ) return []
+			if( !$bog_gram_soft( ()=> this.Talk().admin_me( group ), false ) ) return []
+			return this.asks_for( group )
+		}
+
+		override ask_label( entry: string ) {
+			return this.peer_label( this.Lobby().lord_of( entry ) )
+		}
+
 		@ $mol_mem
 		forward_source( next?: { dialog: string, message: string } | null ) {
 			return next ?? null
@@ -505,16 +524,23 @@ namespace $.$$ {
 			return this.admin_is( this.dialog_active(), lord )
 		}
 
-		@ $mol_mem
 		override members_asks() {
+			return this.asks_for( this.dialog_active() )
+		}
 
-			const id = this.dialog_active()
+		asks_all( id: string ) {
+			return [ ... this.Lobby().asks_of( id ), ... this.Meet().knocks_of( id ) ]
+		}
+
+		@ $mol_mem_key
+		asks_for( id: string ) {
+
 			const lobby = this.Lobby()
 
 			const out = [] as string[]
 			const seen = new Set< string >()
 
-			for( const entry of [ ... lobby.asks_of( id ), ... this.Meet().knocks_of( id ) ] ) {
+			for( const entry of this.asks_all( id ) ) {
 				const lord = lobby.lord_of( entry )
 				if( !lord || seen.has( lord ) ) continue
 				seen.add( lord )
@@ -526,9 +552,8 @@ namespace $.$$ {
 
 		asks_same( entry: string ) {
 			const lord = this.Lobby().lord_of( entry )
-			const id = this.dialog_active()
-			return [ ... this.Lobby().asks_of( id ), ... this.Meet().knocks_of( id ) ]
-				.filter( item => this.Lobby().lord_of( item ) === lord )
+			const id = this.Lobby().parse( entry )?.group ?? ''
+			return this.asks_all( id ).filter( item => this.Lobby().lord_of( item ) === lord )
 		}
 
 		asks_forget( entries: readonly string[] ) {

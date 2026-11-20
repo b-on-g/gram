@@ -1,6 +1,9 @@
 {
 	"$bog_gram_call_Close_hint": "Выйти и закрыть",
 	"$bog_gram_call_Invite_hint": "Скопировать ссылку на встречу",
+	"$bog_gram_call_knocks_pattern": "Стучатся: {count}",
+	"$bog_gram_call_Knock_admit_hint": "Впустить",
+	"$bog_gram_call_Knock_deny_hint": "Отказать",
 	"$bog_gram_call_self_name": "Вы",
 	"$bog_gram_call_Join_title": "Войти в звонок",
 	"$bog_gram_call_title": "Звонок",

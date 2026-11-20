@@ -16,7 +16,19 @@ namespace $.$$ {
 		}
 
 		override content() {
-			return [ this.joined() ? this.Grid() : this.Lobby() ]
+			return [
+				... this.knocks().length ? [ this.Knocks() ] : [],
+				this.joined() ? this.Grid() : this.Lobby(),
+			]
+		}
+
+		override knocks_head() {
+			return $bog_gram_text_fill( this.knocks_pattern(), { count: this.knocks().length } )
+		}
+
+		@ $mol_mem
+		override knock_rows() {
+			return [ this.Knocks_head(), ... this.knocks().map( entry => this.Knock( entry ) ) ]
 		}
 
 		override controls() {
