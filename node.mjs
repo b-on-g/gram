@@ -41884,7 +41884,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.194';
+    $.$bog_gram_version = '1.0.195';
 })($ || ($ = {}));
 
 ;
@@ -47517,6 +47517,39 @@ var $;
 		controls(){
 			return [];
 		}
+		knock_rows(){
+			return [];
+		}
+		knocks_head(){
+			return "";
+		}
+		Knock_name(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.knock_name(id)));
+			return obj;
+		}
+		Knock_admit_icon(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		Knock_admit(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Knock_admit_hint")));
+			(obj.click) = (next) => ((this.admit(id, next)));
+			(obj.sub) = () => ([(this.Knock_admit_icon(id))]);
+			return obj;
+		}
+		Knock_deny_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Knock_deny(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Knock_deny_hint")));
+			(obj.click) = (next) => ((this.deny(id, next)));
+			(obj.sub) = () => ([(this.Knock_deny_icon(id))]);
+			return obj;
+		}
 		tiles(){
 			return [];
 		}
@@ -47625,6 +47658,23 @@ var $;
 		name(){
 			return "";
 		}
+		knocks(){
+			return [];
+		}
+		knock_name(id){
+			return "";
+		}
+		admit(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		deny(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		knocks_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_call_knocks_pattern"));
+		}
 		note(id){
 			return "";
 		}
@@ -47649,6 +47699,25 @@ var $;
 		}
 		foot(){
 			return (this.controls());
+		}
+		Knocks(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.knock_rows()));
+			return obj;
+		}
+		Knocks_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.knocks_head()));
+			return obj;
+		}
+		Knock(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Knock_name(id)), 
+				(this.Knock_admit(id)), 
+				(this.Knock_deny(id))
+			]);
+			return obj;
 		}
 		Grid(){
 			const obj = new this.$.$mol_view();
@@ -47736,6 +47805,11 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "close_click"));
 	($mol_mem(($.$bog_gram_call.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "Close"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock_name"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock_admit_icon"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock_admit"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock_deny_icon"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock_deny"));
 	($mol_mem(($.$bog_gram_call.prototype), "Lobby_text"));
 	($mol_mem(($.$bog_gram_call.prototype), "join"));
 	($mol_mem(($.$bog_gram_call.prototype), "Join"));
@@ -47751,8 +47825,13 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "Pip_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "leave"));
 	($mol_mem(($.$bog_gram_call.prototype), "Leave_icon"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "admit"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "deny"));
 	($mol_mem(($.$bog_gram_call.prototype), "close"));
 	($mol_mem(($.$bog_gram_call.prototype), "Room"));
+	($mol_mem(($.$bog_gram_call.prototype), "Knocks"));
+	($mol_mem(($.$bog_gram_call.prototype), "Knocks_head"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Knock"));
 	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
 	($mol_mem(($.$bog_gram_call.prototype), "Self"));
 	($mol_mem_key(($.$bog_gram_call.prototype), "Mate"));
@@ -47786,7 +47865,16 @@ var $;
                 return this.invite_link() ? super.Invite() : null;
             }
             content() {
-                return [this.joined() ? this.Grid() : this.Lobby()];
+                return [
+                    ...this.knocks().length ? [this.Knocks()] : [],
+                    this.joined() ? this.Grid() : this.Lobby(),
+                ];
+            }
+            knocks_head() {
+                return $bog_gram_text_fill(this.knocks_pattern(), { count: this.knocks().length });
+            }
+            knock_rows() {
+                return [this.Knocks_head(), ...this.knocks().map(entry => this.Knock(entry))];
             }
             controls() {
                 if (!this.joined())
@@ -47929,6 +48017,9 @@ var $;
         ], $bog_gram_call.prototype, "invite_link", null);
         __decorate([
             $mol_mem
+        ], $bog_gram_call.prototype, "knock_rows", null);
+        __decorate([
+            $mol_mem
         ], $bog_gram_call.prototype, "session", null);
         __decorate([
             $mol_mem
@@ -47944,6 +48035,26 @@ var $;
     var $$;
     (function ($$) {
         $mol_style_define($bog_gram_call, {
+            Knocks: {
+                padding: $mol_gap.block,
+                gap: $mol_gap.space,
+            },
+            Knocks_head: {
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Knock: {
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.space,
+            },
+            Knock_name: {
+                flex: {
+                    grow: 1,
+                },
+            },
             Grid: {
                 flex: {
                     wrap: 'wrap',
@@ -48853,6 +48964,13 @@ var $;
                 return '';
             return $bog_gram_soft(() => this.trusted(link, owner, 'Group'), '');
         }
+        group_of_uri(uri) {
+            const hall = /(?:^|[!\/ ?&#])meet=([^\/ &#]+)/.exec(uri)?.[1];
+            const owner = /(?:^|[!\/ ?&#])by=([^\/ &#]+)/.exec(uri)?.[1];
+            if (!hall || !owner)
+                return '';
+            return this.group_of([decodeURIComponent(hall), decodeURIComponent(owner)]);
+        }
         meet_of(id) {
             if (!id)
                 return '';
@@ -49000,6 +49118,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_meet.prototype, "group_of", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_meet.prototype, "group_of_uri", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_meet.prototype, "meet_of", null);
@@ -61613,6 +61734,12 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		call_knocks(id){
+			return [];
+		}
+		ask_label(id){
+			return "";
+		}
 		plugins(){
 			return [(this.Skin()), (this.Theme())];
 		}
@@ -61791,6 +61918,10 @@ var $;
 			(obj.name) = () => ((this.user_name()));
 			(obj.note) = (id) => ((this.people_note(id)));
 			(obj.close) = (next) => ((this.call_close(next)));
+			(obj.knocks) = () => ((this.call_knocks(id)));
+			(obj.knock_name) = (id) => ((this.ask_label(id)));
+			(obj.admit) = (id, next) => ((this.ask_accept(id, next)));
+			(obj.deny) = (id, next) => ((this.ask_reject(id, next)));
 			return obj;
 		}
 	};
@@ -62249,6 +62380,23 @@ var $;
             call_land(id) {
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
             }
+            call_group(id) {
+                if (!id)
+                    return '';
+                const invite = $bog_gram_soft(() => String(this.call_land(id).Data($bog_gram_call_land).Invite()?.val() ?? ''), '');
+                return invite ? this.Meet().group_of_uri(invite) : '';
+            }
+            call_knocks(id) {
+                const group = this.call_group(id);
+                if (!group)
+                    return [];
+                if (!$bog_gram_soft(() => this.Talk().admin_me(group), false))
+                    return [];
+                return this.asks_for(group);
+            }
+            ask_label(entry) {
+                return this.peer_label(this.Lobby().lord_of(entry));
+            }
             forward_source(next) {
                 return next ?? null;
             }
@@ -62400,11 +62548,16 @@ var $;
                 return this.admin_is(this.dialog_active(), lord);
             }
             members_asks() {
-                const id = this.dialog_active();
+                return this.asks_for(this.dialog_active());
+            }
+            asks_all(id) {
+                return [...this.Lobby().asks_of(id), ...this.Meet().knocks_of(id)];
+            }
+            asks_for(id) {
                 const lobby = this.Lobby();
                 const out = [];
                 const seen = new Set();
-                for (const entry of [...lobby.asks_of(id), ...this.Meet().knocks_of(id)]) {
+                for (const entry of this.asks_all(id)) {
                     const lord = lobby.lord_of(entry);
                     if (!lord || seen.has(lord))
                         continue;
@@ -62415,9 +62568,8 @@ var $;
             }
             asks_same(entry) {
                 const lord = this.Lobby().lord_of(entry);
-                const id = this.dialog_active();
-                return [...this.Lobby().asks_of(id), ...this.Meet().knocks_of(id)]
-                    .filter(item => this.Lobby().lord_of(item) === lord);
+                const id = this.Lobby().parse(entry)?.group ?? '';
+                return this.asks_all(id).filter(item => this.Lobby().lord_of(item) === lord);
             }
             asks_forget(entries) {
                 for (const entry of entries) {
@@ -62732,6 +62884,12 @@ var $;
             $mol_mem
         ], $bog_gram.prototype, "call_current", null);
         __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "call_group", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "call_knocks", null);
+        __decorate([
             $mol_mem
         ], $bog_gram.prototype, "forward_source", null);
         __decorate([
@@ -62774,8 +62932,8 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "member_status", null);
         __decorate([
-            $mol_mem
-        ], $bog_gram.prototype, "members_asks", null);
+            $mol_mem_key
+        ], $bog_gram.prototype, "asks_for", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "meet_start", null);

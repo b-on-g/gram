@@ -10522,6 +10522,7 @@ var $;
                         own,
                         group: meet.group_of([link, owner]),
                         stranger: meet.group_of([link, land.link().lord().str]),
+                        uri: meet.group_of_uri($.$mol_state_arg.make_link({ meet: link, by: owner })),
                         knocks: meet.knocks_of(group),
                     };
                 },
@@ -10529,6 +10530,7 @@ var $;
             const result = await $mol_wire_async(ops).run();
             $mol_assert_equal(result.group, group);
             $mol_assert_equal(result.stranger, '');
+            $mol_assert_equal(result.uri, group);
             $mol_assert_equal(result.knocks, [result.own]);
         },
     });

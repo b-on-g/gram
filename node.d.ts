@@ -6403,7 +6403,7 @@ declare namespace $ {
         hash(): $giper_baza_link;
         idea_seed(): number;
         dump(): {
-            kind: "sand" | "gift" | "seal";
+            kind: "seal" | "sand" | "gift";
             lord: $giper_baza_link;
             lead: $giper_baza_link;
             head: $giper_baza_link;
@@ -6436,7 +6436,7 @@ declare namespace $ {
         code(): Uint8Array<ArrayBuffer>;
         code_exists(): boolean;
         dump(): {
-            kind: "sand" | "gift" | "seal";
+            kind: "seal" | "sand" | "gift";
             lord: $giper_baza_link;
             mate: $giper_baza_link;
             tier: string;
@@ -64467,7 +64467,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.194";
+    const $bog_gram_version = "1.0.195";
 }
 
 declare namespace $ {
@@ -78664,162 +78664,162 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_paragraph__title_bog_gram_call_6 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['lobby_text'] >
+		ReturnType< $bog_gram_call['knock_name'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_major__title_bog_gram_call_7 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_major['title'] >
-	>
-	type $mol_button_major__click_bog_gram_call_8 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['join'] >
-		,
-		ReturnType< $mol_button_major['click'] >
-	>
-	type $bog_gram_call_room__land_bog_gram_call_9 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['land'] >
-		,
-		ReturnType< $bog_gram_call_room['land'] >
-	>
-	type $bog_gram_call_room__name_bog_gram_call_10 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['name'] >
-		,
-		ReturnType< $bog_gram_call_room['name'] >
-	>
-	type $mol_view__sub_bog_gram_call_11 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['tiles'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $bog_gram_call_tile__stream_bog_gram_call_12 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['self_stream'] >
-		,
-		ReturnType< $bog_gram_call_tile['stream'] >
-	>
-	type $bog_gram_call_tile__muted_bog_gram_call_13 = $mol_type_enforce<
-		boolean
-		,
-		ReturnType< $bog_gram_call_tile['muted'] >
-	>
-	type $bog_gram_call_tile__mirror_bog_gram_call_14 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['self_mirror'] >
-		,
-		ReturnType< $bog_gram_call_tile['mirror'] >
-	>
-	type $bog_gram_call_tile__awake_bog_gram_call_15 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['awake'] >
-		,
-		ReturnType< $bog_gram_call_tile['awake'] >
-	>
-	type $bog_gram_call_tile__cam_bog_gram_call_16 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['cam'] >
-		,
-		ReturnType< $bog_gram_call_tile['cam'] >
-	>
-	type $bog_gram_call_tile__mic_bog_gram_call_17 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mic'] >
-		,
-		ReturnType< $bog_gram_call_tile['mic'] >
-	>
-	type $bog_gram_call_tile__name_bog_gram_call_18 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['self_name'] >
-		,
-		ReturnType< $bog_gram_call_tile['name'] >
-	>
-	type $bog_gram_call_tile__stream_bog_gram_call_19 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_stream'] >
-		,
-		ReturnType< $bog_gram_call_tile['stream'] >
-	>
-	type $bog_gram_call_tile__awake_bog_gram_call_20 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['awake'] >
-		,
-		ReturnType< $bog_gram_call_tile['awake'] >
-	>
-	type $bog_gram_call_tile__cam_bog_gram_call_21 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_cam'] >
-		,
-		ReturnType< $bog_gram_call_tile['cam'] >
-	>
-	type $bog_gram_call_tile__mic_bog_gram_call_22 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_mic'] >
-		,
-		ReturnType< $bog_gram_call_tile['mic'] >
-	>
-	type $bog_gram_call_tile__name_bog_gram_call_23 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_name'] >
-		,
-		ReturnType< $bog_gram_call_tile['name'] >
-	>
-	type $bog_gram_call_tile__status_bog_gram_call_24 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_status'] >
-		,
-		ReturnType< $bog_gram_call_tile['status'] >
-	>
-	type $bog_gram_call_tile__stats_bog_gram_call_25 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mate_stats'] >
-		,
-		ReturnType< $bog_gram_call_tile['stats'] >
-	>
-	type $mol_list__rows_bog_gram_call_26 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_check_icon__Icon_bog_gram_call_27 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['Mic_icon'] >
-		,
-		ReturnType< $mol_check_icon['Icon'] >
-	>
-	type $mol_check_icon__hint_bog_gram_call_28 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_check_icon['hint'] >
-	>
-	type $mol_check_icon__checked_bog_gram_call_29 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['mic'] >
-		,
-		ReturnType< $mol_check_icon['checked'] >
-	>
-	type $mol_check_icon__Icon_bog_gram_call_30 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['Cam_icon'] >
-		,
-		ReturnType< $mol_check_icon['Icon'] >
-	>
-	type $mol_check_icon__hint_bog_gram_call_31 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_check_icon['hint'] >
-	>
-	type $mol_check_icon__checked_bog_gram_call_32 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['cam'] >
-		,
-		ReturnType< $mol_check_icon['checked'] >
-	>
-	type $mol_check_icon__enabled_bog_gram_call_33 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['cam_able'] >
-		,
-		ReturnType< $mol_check_icon['enabled'] >
-	>
-	type $mol_button_minor__hint_bog_gram_call_34 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_7 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_35 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['cam_switch'] >
+	type $mol_button_minor__click_bog_gram_call_8 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['admit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_36 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_9 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
+	type $mol_button_minor__hint_bog_gram_call_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_call_11 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['deny'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_call_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_paragraph__title_bog_gram_call_13 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['lobby_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_major__title_bog_gram_call_14 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_gram_call_15 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['join'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $bog_gram_call_room__land_bog_gram_call_16 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['land'] >
+		,
+		ReturnType< $bog_gram_call_room['land'] >
+	>
+	type $bog_gram_call_room__name_bog_gram_call_17 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['name'] >
+		,
+		ReturnType< $bog_gram_call_room['name'] >
+	>
+	type $mol_list__rows_bog_gram_call_18 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['knock_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_gram_call_19 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['knocks_head'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_call_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_call_21 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['tiles'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_call_tile__stream_bog_gram_call_22 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['self_stream'] >
+		,
+		ReturnType< $bog_gram_call_tile['stream'] >
+	>
+	type $bog_gram_call_tile__muted_bog_gram_call_23 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_gram_call_tile['muted'] >
+	>
+	type $bog_gram_call_tile__mirror_bog_gram_call_24 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['self_mirror'] >
+		,
+		ReturnType< $bog_gram_call_tile['mirror'] >
+	>
+	type $bog_gram_call_tile__awake_bog_gram_call_25 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['awake'] >
+		,
+		ReturnType< $bog_gram_call_tile['awake'] >
+	>
+	type $bog_gram_call_tile__cam_bog_gram_call_26 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam'] >
+		,
+		ReturnType< $bog_gram_call_tile['cam'] >
+	>
+	type $bog_gram_call_tile__mic_bog_gram_call_27 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mic'] >
+		,
+		ReturnType< $bog_gram_call_tile['mic'] >
+	>
+	type $bog_gram_call_tile__name_bog_gram_call_28 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['self_name'] >
+		,
+		ReturnType< $bog_gram_call_tile['name'] >
+	>
+	type $bog_gram_call_tile__stream_bog_gram_call_29 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_stream'] >
+		,
+		ReturnType< $bog_gram_call_tile['stream'] >
+	>
+	type $bog_gram_call_tile__awake_bog_gram_call_30 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['awake'] >
+		,
+		ReturnType< $bog_gram_call_tile['awake'] >
+	>
+	type $bog_gram_call_tile__cam_bog_gram_call_31 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_cam'] >
+		,
+		ReturnType< $bog_gram_call_tile['cam'] >
+	>
+	type $bog_gram_call_tile__mic_bog_gram_call_32 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_mic'] >
+		,
+		ReturnType< $bog_gram_call_tile['mic'] >
+	>
+	type $bog_gram_call_tile__name_bog_gram_call_33 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_name'] >
+		,
+		ReturnType< $bog_gram_call_tile['name'] >
+	>
+	type $bog_gram_call_tile__status_bog_gram_call_34 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_status'] >
+		,
+		ReturnType< $bog_gram_call_tile['status'] >
+	>
+	type $bog_gram_call_tile__stats_bog_gram_call_35 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['mate_stats'] >
+		,
+		ReturnType< $bog_gram_call_tile['stats'] >
+	>
+	type $mol_list__rows_bog_gram_call_36 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
 	type $mol_check_icon__Icon_bog_gram_call_37 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['Stats_icon'] >
+		ReturnType< $bog_gram_call['Mic_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
@@ -78829,36 +78829,86 @@ declare namespace $ {
 		ReturnType< $mol_check_icon['hint'] >
 	>
 	type $mol_check_icon__checked_bog_gram_call_39 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['stats_show'] >
+		ReturnType< $bog_gram_call['mic'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_40 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_40 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['Cam_icon'] >
+		,
+		ReturnType< $mol_check_icon['Icon'] >
+	>
+	type $mol_check_icon__hint_bog_gram_call_41 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_icon['hint'] >
+	>
+	type $mol_check_icon__checked_bog_gram_call_42 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam'] >
+		,
+		ReturnType< $mol_check_icon['checked'] >
+	>
+	type $mol_check_icon__enabled_bog_gram_call_43 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam_able'] >
+		,
+		ReturnType< $mol_check_icon['enabled'] >
+	>
+	type $mol_button_minor__hint_bog_gram_call_44 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_41 = $mol_type_enforce<
-		ReturnType< $bog_gram_call['pip'] >
+	type $mol_button_minor__click_bog_gram_call_45 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['cam_switch'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_42 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_46 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_43 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['Stats_icon'] >
+		,
+		ReturnType< $mol_check_icon['Icon'] >
+	>
+	type $mol_check_icon__hint_bog_gram_call_48 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_icon['hint'] >
+	>
+	type $mol_check_icon__checked_bog_gram_call_49 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['stats_show'] >
+		,
+		ReturnType< $mol_check_icon['checked'] >
+	>
+	type $mol_button_minor__hint_bog_gram_call_50 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_44 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_51 = $mol_type_enforce<
+		ReturnType< $bog_gram_call['pip'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_call_52 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_call_53 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_call_54 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['leave'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_45 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_55 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
@@ -78871,6 +78921,13 @@ declare namespace $ {
 		Close( ): $mol_button_minor
 		content( ): readonly(any)[]
 		controls( ): readonly(any)[]
+		knock_rows( ): readonly(any)[]
+		knocks_head( ): string
+		Knock_name( id: any): $mol_paragraph
+		Knock_admit_icon( id: any): $mol_icon_check
+		Knock_admit( id: any): $mol_button_minor
+		Knock_deny_icon( id: any): $mol_icon_close
+		Knock_deny( id: any): $mol_button_minor
 		tiles( ): readonly(any)[]
 		self_stream( ): any
 		self_mirror( ): boolean
@@ -78901,6 +78958,11 @@ declare namespace $ {
 		Leave_icon( ): $mol_icon_phone_hangup
 		land( ): any
 		name( ): string
+		knocks( ): readonly(string)[]
+		knock_name( id: any): string
+		admit( id: any, next?: any ): any
+		deny( id: any, next?: any ): any
+		knocks_pattern( ): string
 		note( id: any): string
 		close( next?: any ): any
 		Room( ): $bog_gram_call_room
@@ -78908,6 +78970,9 @@ declare namespace $ {
 		tools( ): readonly(any)[]
 		body( ): ReturnType< $bog_gram_call['content'] >
 		foot( ): ReturnType< $bog_gram_call['controls'] >
+		Knocks( ): $mol_list
+		Knocks_head( ): $mol_paragraph
+		Knock( id: any): $mol_view
 		Grid( ): $mol_view
 		Self( ): $bog_gram_call_tile
 		Mate( id: any): $bog_gram_call_tile
@@ -78931,6 +78996,8 @@ declare namespace $.$$ {
         invite_link(): string;
         Invite(): $.$mol_button_copy;
         content(): $mol_view[];
+        knocks_head(): string;
+        knock_rows(): ($mol_view | $.$mol_paragraph)[];
         controls(): $mol_button_minor[];
         tiles(): $.$bog_gram_call_tile[];
         lobby_text(): string;
@@ -80180,6 +80247,7 @@ declare namespace $ {
         hall(link: string): $bog_gram_meet_hall;
         trusted(link: string, owner: string, field: 'Group' | 'Title' | 'Mode'): string;
         group_of([link, owner]: readonly [string, string]): string;
+        group_of_uri(uri: string): string;
         meet_of(id: string): string;
         owner_me(id: string): boolean;
         make(id: string): string;
@@ -86101,6 +86169,26 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_call['close'] >
 	>
+	type $bog_gram_call__knocks_bog_gram_244 = $mol_type_enforce<
+		ReturnType< $bog_gram['call_knocks'] >
+		,
+		ReturnType< $bog_gram_call['knocks'] >
+	>
+	type $bog_gram_call__knock_name_bog_gram_245 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_label'] >
+		,
+		ReturnType< $bog_gram_call['knock_name'] >
+	>
+	type $bog_gram_call__admit_bog_gram_246 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_accept'] >
+		,
+		ReturnType< $bog_gram_call['admit'] >
+	>
+	type $bog_gram_call__deny_bog_gram_247 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_reject'] >
+		,
+		ReturnType< $bog_gram_call['deny'] >
+	>
 	export class $bog_gram extends $mol_book2 {
 		lights( ): string
 		Skin( ): $bog_builderui_skin
@@ -86285,6 +86373,8 @@ declare namespace $ {
 		call_land( id: any): any
 		people_note( id: any): string
 		call_close( next?: any ): any
+		call_knocks( id: any): readonly(string)[]
+		ask_label( id: any): string
 		plugins( ): readonly(any)[]
 		Account( ): $bog_gram_account
 		Registry( ): $bog_gram_registry
@@ -86372,6 +86462,9 @@ declare namespace $.$$ {
         pages(): $mol_view[] | ($.$bog_gram_menu | $.$bog_gram_music | $.$bog_gram_settings | $.$bog_gram_compose | $.$bog_gram_group | $.$bog_gram_members | $.$bog_gram_call | $.$bog_gram_chat | $.$bog_gram_pick | $bog_gram_logs)[];
         call_current(next?: string): string;
         call_land(id: string): $giper_baza_land;
+        call_group(id: string): string;
+        call_knocks(id: string): string[];
+        ask_label(entry: string): string;
         forward_source(next?: {
             dialog: string;
             message: string;
@@ -86405,6 +86498,8 @@ declare namespace $.$$ {
         members_owner(): boolean;
         member_admin(lord: string): boolean;
         members_asks(): string[];
+        asks_all(id: string): string[];
+        asks_for(id: string): string[];
         asks_same(entry: string): string[];
         asks_forget(entries: readonly string[]): void;
         meet_link(): string;
