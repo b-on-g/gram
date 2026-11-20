@@ -166,6 +166,24 @@ namespace $ {
 			} )
 		}
 
+		@ $mol_mem
+		Rescue() {
+			return this.$.$bog_gram_rescue.make({ $: this.$ })
+		}
+
+		@ $mol_mem
+		rescue() {
+
+			const found = this.Rescue().found()
+			if( !found.dialogs ) return false
+
+			const store = this.user_store()
+			store.Dialogs_land( 'auto' )?.val( found.dialogs )
+			if( found.watch && !String( store.Watch_land()?.val() ?? '' ) ) store.Watch_land( 'auto' )?.val( found.watch )
+
+			return true
+		}
+
 		pointer_wait() {
 
 			const born = this.born()
@@ -173,6 +191,7 @@ namespace $ {
 
 			if( born ) return
 			if( dialogs ) return
+			if( this.rescue() ) return
 			if( this.pointer_lost() ) $mol_fail( new Error( this.Text().account_lost() ) )
 			this.pointer_timer()
 			$mol_fail_hidden( new Promise( ()=> {} ) )
@@ -214,6 +233,8 @@ namespace $ {
 			const str = String( this.user_store().Dialogs_land()?.val() ?? '' )
 			if( str ) return this.land( str )
 			this.pointer_wait()
+			const saved = String( this.user_store().Dialogs_land()?.val() ?? '' )
+			if( saved ) return this.land( saved )
 			return this.dialogs_land_make()
 		}
 
@@ -228,6 +249,8 @@ namespace $ {
 			const str = String( this.user_store().Watch_land()?.val() ?? '' )
 			if( str ) return this.land( str )
 			this.pointer_wait()
+			const saved = String( this.user_store().Watch_land()?.val() ?? '' )
+			if( saved ) return this.land( saved )
 			return this.monitor_land_make()
 		}
 
