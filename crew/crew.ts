@@ -210,15 +210,16 @@ namespace $ {
 			const room = this.room_ruled( id )
 
 			const fresh = history ? null : this.grab()
+			const rank = $giper_baza_rank_post( 'fast' )
 
 			const dialog_land = talk.land( id )
-			dialog_land.give( pass, talk.member_rank( id, lord ) )
+			dialog_land.give( pass, rank )
 
 			if( fresh ) {
 				for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, talk.member_rank( id, mate ) )
-				fresh.give( pass, talk.member_rank( id, lord ) )
+				fresh.give( pass, rank )
 			} else {
-				for( const link of links ) talk.land( link ).give( pass, talk.member_rank( id, lord ) )
+				for( const link of links ) talk.land( link ).give( pass, rank )
 			}
 
 			const dialog = dialog_land.Data( $bog_gram_dialog )
@@ -270,42 +271,21 @@ namespace $ {
 				return ''
 			}
 
+			const dialog_land = talk.land( id )
+			const gone = dialog_land.lord_pass( new $giper_baza_link( lord ) )
+
 			const fresh = this.grab()
 			for( const [ mate, mate_pass ] of stay ) fresh.give( mate_pass, talk.member_rank( id, mate ) )
+
+			if( gone ) dialog_land.give( gone, $giper_baza_rank_read )
 
 			const dialog = talk.store( id )
 			dialog.Sessions( 'auto' )!.add( fresh.link().str )
 			dialog.Session_last( 'auto' )?.val( fresh.link().str )
 			dialog.Peers( 'auto' )!.cut( lord )
-			if( talk.admins( id ).includes( lord ) ) dialog.Admins( 'auto' )!.cut( lord )
 
 			fresh.Data( $bog_gram_session ).Dialog_land( 'auto' )?.val( id )
 			this.watch( fresh.link().str )
-			this.error( '' )
-
-			return lord
-		}
-
-		promote( id: string, lord: string ) {
-
-			const talk = this.Talk()
-
-			if( !id || !lord ) return ''
-			if( !talk.own( id ) ) return ''
-
-			const pass = this.People().pass_of( lord )
-			if( !pass ) {
-				this.error( this.Text().crew_no_key_grant() )
-				return ''
-			}
-
-			const links = talk.links_of( id )
-			const dialog_land = talk.land( id )
-
-			dialog_land.give( pass, $giper_baza_rank_rule )
-			for( const link of links ) talk.land( link ).give( pass, $giper_baza_rank_rule )
-
-			dialog_land.Data( $bog_gram_dialog ).Admins( 'auto' )!.add( lord )
 			this.error( '' )
 
 			return lord

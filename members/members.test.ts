@@ -2,25 +2,20 @@ namespace $ {
 
 	$mol_test({
 
-		'Звать людей может только админ, назначать админов только создатель'( $ ) {
+		'Звать и убирать людей может только админ, блок прав есть только при ленде'( $ ) {
 
 			const plain = $bog_gram_members.make({ $, me: ()=> 'Me', lords: ()=> [ 'Me', 'Ann' ] })
 			$mol_assert_equal( plain.add_rows(), [] )
-			$mol_assert_equal( plain.Rule( 'Ann' ), null )
 			$mol_assert_equal( plain.Drop( 'Ann' ), null )
 			$mol_assert_equal( plain.Drop_note(), null )
+			$mol_assert_equal( plain.Rights_block(), null )
+			$mol_assert_equal( plain.Admin_note(), null )
+			$mol_assert_equal( plain.member_title( 'Me' ), plain.self_name() )
 
 			const admin = $bog_gram_members.make({ $, me: ()=> 'Me', admin: ()=> true })
-			$mol_assert_equal( admin.add_rows().includes( admin.Admin_note() ), false )
-			$mol_assert_equal( admin.Rule( 'Ann' ), null )
 			$mol_assert_equal( admin.Drop( 'Me' ), null )
 			$mol_assert_equal( admin.Drop( 'Ann' ) === null, false )
-
-			const owner = $bog_gram_members.make({ $, me: ()=> 'Me', admin: ()=> true, owner: ()=> true, admin_is: ( lord: string )=> lord === 'Bob' })
-			$mol_assert_equal( owner.add_rows().includes( owner.Admin_note() ), true )
-			$mol_assert_equal( owner.Rule( 'Ann' ) === null, false )
-			$mol_assert_equal( owner.Rule( 'Bob' ), null )
-			$mol_assert_equal( owner.member_title( 'Me' ), owner.self_name() )
+			$mol_assert_equal( admin.Admin_note() === null, false )
 
 		},
 

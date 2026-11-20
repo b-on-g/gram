@@ -7,7 +7,8 @@ $bog_gram_members $bog_gram_page
 	status* \
 	admin false
 	owner false
-	admin_is* false
+	rights_land null
+	rights_lands /$giper_baza_land
 	error? \
 	join_link \
 	meet_link \
@@ -32,7 +33,6 @@ $bog_gram_members $bog_gram_page
 	leave_idle @ \Leave group
 	add*? null
 	part*? null
-	promote*? null
 	leave? null
 	tools /
 		<= Close $mol_button_minor
@@ -45,6 +45,17 @@ $bog_gram_members $bog_gram_page
 			rows <= member_rows /
 		<= Drop_note $mol_paragraph
 			title @ \"Remove" starts a new chat compartment without the person. Past messages stay with them: the key to them is already given and cannot be taken back. They will not see new ones.
+		<= Rights_block $mol_view
+			sub /
+				<= Rights_head $mol_paragraph
+					title @ \Access
+				<= Rights $bog_gram_rights
+					land <= rights_land
+					lands <= rights_lands
+					lords <= lords
+					label* <= label*
+				<= Admin_note $mol_paragraph
+					title @ \An admin gets full control of the land: they can both invite people and change other people's rights. These abilities cannot be split.
 		<= Add_block $mol_view
 			sub <= add_rows /
 		<= Leave_note $mol_paragraph
@@ -97,8 +108,6 @@ $bog_gram_members $bog_gram_page
 					<= id_add_label @ \Add
 	Pick_list $mol_list
 		rows <= pick_rows /
-	Admin_note $mol_paragraph
-		title @ \An admin gets full control of the land: they can both invite people and change other people's rights. These abilities cannot be split.
 	Join $mol_view
 		sub /
 			<= Join_head $mol_paragraph
@@ -173,11 +182,6 @@ $bog_gram_members $bog_gram_page
 		title <= member_title* \
 		note <= status*
 		tools /
-			<= Rule* $mol_button_minor
-				hint @ \Make admin
-				click? <=> rule_click*? null
-				sub /
-					<= Rule_icon* $mol_icon_shield_crown
 			<= Drop* $mol_button_minor
 				hint <= drop_hint* \
 				attr *

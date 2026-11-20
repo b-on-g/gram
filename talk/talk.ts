@@ -120,17 +120,12 @@ namespace $ {
 			return null
 		}
 
-		@ $mol_mem_key
-		admins( id: string ) {
-			if( !id ) return [] as string[]
-			return $bog_gram_soft( ()=> ( this.store( id ).Admins()?.items() ?? [] ).map( String ), [] as string[] )
-		}
-
 		admin_is( id: string, lord: string ) {
 			if( !id || !lord ) return false
-			if( this.owner( id ) === lord ) return true
-			if( lord === this.my() && this.own( id ) ) return true
-			return this.admins( id ).includes( lord )
+			return $bog_gram_soft( ()=> {
+				const rank = this.land( id ).lord_rank( new $giper_baza_link( lord ) )
+				return $giper_baza_rank_tier_of( rank ) === $giper_baza_rank_tier.rule
+			}, false )
 		}
 
 		admin_me( id: string ) {
@@ -138,7 +133,9 @@ namespace $ {
 		}
 
 		member_rank( id: string, lord: string ) {
-			return this.admin_is( id, lord ) ? $giper_baza_rank_rule : $giper_baza_rank_post( 'fast' )
+			const land = this.land( id )
+			const link = new $giper_baza_link( lord )
+			return land.lord_pass( link ) ? land.lord_rank( link ) : $giper_baza_rank_post( 'fast' )
 		}
 
 		owner( id: string ) {

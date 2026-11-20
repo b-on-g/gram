@@ -125,6 +125,30 @@ namespace $.$$ {
 
 		Drop_note: note,
 
+		Rights_block: {
+			flex: {
+				direction: 'column',
+			},
+			align: {
+				items: 'stretch',
+			},
+			gap: '0.5rem',
+			minWidth: 0,
+			padding: {
+				top: $mol_gap.block,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			},
+		},
+
+		Rights_head: {
+			font: {
+				weight: 'bold',
+			},
+			color: $mol_theme.shade,
+		},
+
 		Leave_note: {
 			... note,
 			padding: {

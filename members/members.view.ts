@@ -25,11 +25,12 @@ namespace $.$$ {
 			return this.admin() ? super.Drop_note() : null!
 		}
 
-		override Rule( lord: string ) {
-			if( !this.owner() ) return null!
-			if( lord === this.me() ) return null!
-			if( this.admin_is( lord ) ) return null!
-			return super.Rule( lord )
+		override Rights_block() {
+			return this.rights_land() ? super.Rights_block() : null!
+		}
+
+		override Admin_note() {
+			return this.admin() ? super.Admin_note() : null!
 		}
 
 		override Drop( lord: string ) {
@@ -58,13 +59,6 @@ namespace $.$$ {
 			}
 			this.armed( lord, false )
 			this.part( lord, null )
-			return null
-		}
-
-		@ $mol_action
-		override rule_click( lord: string, next?: any ) {
-			if( !lord ) return null
-			this.promote( lord, null )
 			return null
 		}
 
@@ -157,7 +151,6 @@ namespace $.$$ {
 				... this.asks().length ? [ this.Asks_head(), this.Asks_list() ] : [],
 				this.Id_form(),
 				this.Pick_list(),
-				... this.owner() ? [ this.Admin_note() ] : [],
 			]
 		}
 

@@ -520,8 +520,17 @@ namespace $.$$ {
 			return this.owner_me( this.dialog_active() )
 		}
 
-		override member_admin( lord: string ) {
-			return this.admin_is( this.dialog_active(), lord )
+		@ $mol_mem
+		override members_land() {
+			const id = this.dialog_active()
+			return id ? this.Talk().land( id ) : null
+		}
+
+		@ $mol_mem
+		override members_lands() {
+			const id = this.dialog_active()
+			if( !id ) return []
+			return $bog_gram_soft( ()=> this.session_lands_of( id ), [] as $giper_baza_land[] )
 		}
 
 		override members_asks() {
@@ -660,14 +669,6 @@ namespace $.$$ {
 			const id = this.dialog_active()
 			if( !id || !lord ) return null
 			$mol_wire_async( this.Crew() ).part( id, lord )
-			return null
-		}
-
-		@ $mol_action
-		override member_raise( lord: string, next?: any ) {
-			const id = this.dialog_active()
-			if( !id || !lord ) return null
-			$mol_wire_async( this.Crew() ).promote( id, lord )
 			return null
 		}
 

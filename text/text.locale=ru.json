@@ -22,7 +22,6 @@
 	"$bog_gram_text_crew_bad_id": "Это не похоже на идентификатор",
 	"$bog_gram_text_crew_no_key_read": "Не нашли ключ этого человека: без ключа он не прочитает переписку",
 	"$bog_gram_text_crew_no_keys": "Не нашли ключей всех участников: новый отсек переписки без них не завести",
-	"$bog_gram_text_crew_no_key_grant": "Не нашли ключ этого человека: права ему не выдать",
 	"$bog_gram_text_alerts_off_label": "Выключить",
 	"$bog_gram_text_alerts_on_label": "Включить уведомления",
 	"$bog_gram_text_alerts_unsupported": "Не поддерживается этим браузером",

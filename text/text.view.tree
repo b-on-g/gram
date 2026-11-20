@@ -24,7 +24,6 @@ $bog_gram_text $mol_object
 	crew_bad_id @ \This does not look like an ID
 	crew_no_key_read @ \Could not find this person's key: without it they cannot read the conversation
 	crew_no_keys @ \Could not find the keys of all members: a new part of the conversation cannot be started without them
-	crew_no_key_grant @ \Could not find this person's key: cannot grant them rights
 	alerts_off_label @ \Turn off
 	alerts_on_label @ \Turn on notifications
 	alerts_unsupported @ \Not supported by this browser

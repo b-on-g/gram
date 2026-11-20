@@ -62,7 +62,6 @@ $bog_gram $mol_book2
 		group_title* => group_title*
 		group_is* => group_is*
 		group_name_auto* => group_name_auto*
-		admins* => admin_lords*
 		admin_me* => admin_me*
 		owner* => dialog_owner*
 		own* => dialog_own*
@@ -270,7 +269,8 @@ $bog_gram $mol_book2
 			status* <= member_status* \
 			admin <= members_admin false
 			owner <= members_owner false
-			admin_is* <= member_admin* false
+			rights_land <= members_land null
+			rights_lands <= members_lands /$giper_baza_land
 			error? <=> member_error?
 			join_link <= join_link \
 			meet_link <= meet_link \
@@ -285,7 +285,6 @@ $bog_gram $mol_book2
 			history? <=> member_history?
 			add*? <=> member_add*? null
 			part*? <=> member_drop*? null
-			promote*? <=> member_raise*? null
 			leave? <=> group_leave? null
 	Chat_page* $bog_gram_chat
 		dialog <= chat_dialog* \
