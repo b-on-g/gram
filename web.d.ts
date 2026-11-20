@@ -69103,7 +69103,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.199";
+    const $bog_gram_version = "1.0.200";
 }
 
 declare namespace $ {
@@ -70829,13 +70829,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $bog_gram_pass extends $mol_object {
-        static parse(str: string): $giper_baza_auth_pass;
-        static verified(lord: string, str: string): $giper_baza_auth_pass | null;
-    }
-}
-
-declare namespace $ {
     const $bog_gram_note_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
@@ -71590,6 +71583,35 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $bog_gram_rescue_found = {
+        dialogs: string;
+        watch: string;
+    };
+    class $bog_gram_rescue extends $mol_object {
+        lord(): $giper_baza_link;
+        links(): readonly string[];
+        land(link: string): $giper_baza_land;
+        keys(link: string): string[];
+        size(link: string): number;
+        found(): $bog_gram_rescue_found;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_rescue_web extends $bog_gram_rescue {
+        links(): string[];
+        static stored(): Promise<string[]>;
+    }
+}
+
+declare namespace $ {
+    class $bog_gram_pass extends $mol_object {
+        static parse(str: string): $giper_baza_auth_pass;
+        static verified(lord: string, str: string): $giper_baza_auth_pass | null;
+    }
+}
+
+declare namespace $ {
     const $bog_gram_monitor_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Watch: (auto?: any) => $giper_baza_list_str | null;
@@ -72004,6 +72026,8 @@ declare namespace $ {
         pointer_limit(): number;
         pointer_lost(next?: boolean): boolean;
         pointer_timer(): $mol_after_timeout;
+        Rescue(): $bog_gram_rescue;
+        rescue(): boolean;
         pointer_wait(): void;
         pointer_state(): 'wait' | 'lost' | 'ready';
         pointer_retry(next?: any): null;

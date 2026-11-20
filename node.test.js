@@ -41872,7 +41872,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.199';
+    $.$bog_gram_version = '1.0.200';
 })($ || ($ = {}));
 
 ;
@@ -44586,41 +44586,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    const parsed = new Map();
-    class $bog_gram_pass extends $mol_object {
-        static parse(str) {
-            let pass = parsed.get(str);
-            if (pass)
-                return pass;
-            pass = $giper_baza_auth_pass.from(str);
-            parsed.set(str, pass);
-            return pass;
-        }
-        static verified(lord, str) {
-            if (!lord || !str)
-                return null;
-            try {
-                const pass = this.parse(str);
-                if (pass.lord().str === lord)
-                    return pass;
-                $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
-                return null;
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    $mol_fail_hidden(error);
-                $mol_fail_log(error);
-                return null;
-            }
-        }
-    }
-    $.$bog_gram_pass = $bog_gram_pass;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     class $bog_gram_note extends $giper_baza_dict.with({
         Title: $giper_baza_atom_text,
     }) {
@@ -44665,6 +44630,99 @@ var $;
     }) {
     }
     $.$bog_gram_dialogs = $bog_gram_dialogs;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_rescue extends $mol_object {
+        lord() {
+            return this.$.$giper_baza_auth.current().pass().lord();
+        }
+        links() {
+            return [];
+        }
+        land(link) {
+            return this.$.$giper_baza_glob.Land(new $giper_baza_link(link));
+        }
+        keys(link) {
+            const land = this.land(link);
+            try {
+                const keys = land.Data($giper_baza_dict).keys().map(String);
+                if (land.lord_rank(this.lord()) !== $giper_baza_rank_rule)
+                    return [];
+                return keys;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                return [];
+            }
+        }
+        size(link) {
+            return this.land(link).Data($bog_gram_dialogs).Dialogs()?.items().length ?? 0;
+        }
+        found() {
+            const home = this.lord().str;
+            const dialogs = [];
+            const watch = [];
+            for (const link of this.links()) {
+                if (link === home)
+                    continue;
+                if (link.split('_').length !== 2)
+                    continue;
+                const keys = this.keys(link);
+                if (keys.includes('Dialogs') || keys.includes('Saved_land'))
+                    dialogs.push(link);
+                else if (keys.length === 1 && keys[0] === 'Watch')
+                    watch.push(link);
+            }
+            return {
+                dialogs: dialogs.sort((left, right) => this.size(right) - this.size(left))[0] ?? '',
+                watch: watch[0] ?? '',
+            };
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_rescue.prototype, "found", null);
+    $.$bog_gram_rescue = $bog_gram_rescue;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const parsed = new Map();
+    class $bog_gram_pass extends $mol_object {
+        static parse(str) {
+            let pass = parsed.get(str);
+            if (pass)
+                return pass;
+            pass = $giper_baza_auth_pass.from(str);
+            parsed.set(str, pass);
+            return pass;
+        }
+        static verified(lord, str) {
+            if (!lord || !str)
+                return null;
+            try {
+                const pass = this.parse(str);
+                if (pass.lord().str === lord)
+                    return pass;
+                $mol_fail_log(new Error('Ключ не сходится со своим владельцем', { cause: lord }));
+                return null;
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                $mol_fail_log(error);
+                return null;
+            }
+        }
+    }
+    $.$bog_gram_pass = $bog_gram_pass;
 })($ || ($ = {}));
 
 ;
@@ -44832,12 +44890,27 @@ var $;
                 this.pointer_lost(true);
             });
         }
+        Rescue() {
+            return this.$.$bog_gram_rescue.make({ $: this.$ });
+        }
+        rescue() {
+            const found = this.Rescue().found();
+            if (!found.dialogs)
+                return false;
+            const store = this.user_store();
+            store.Dialogs_land('auto')?.val(found.dialogs);
+            if (found.watch && !String(store.Watch_land()?.val() ?? ''))
+                store.Watch_land('auto')?.val(found.watch);
+            return true;
+        }
         pointer_wait() {
             const born = this.born();
             const dialogs = String(this.user_store().Dialogs_land()?.val() ?? '');
             if (born)
                 return;
             if (dialogs)
+                return;
+            if (this.rescue())
                 return;
             if (this.pointer_lost())
                 $mol_fail(new Error(this.Text().account_lost()));
@@ -44876,6 +44949,9 @@ var $;
             if (str)
                 return this.land(str);
             this.pointer_wait();
+            const saved = String(this.user_store().Dialogs_land()?.val() ?? '');
+            if (saved)
+                return this.land(saved);
             return this.dialogs_land_make();
         }
         monitor_land_make() {
@@ -44888,6 +44964,9 @@ var $;
             if (str)
                 return this.land(str);
             this.pointer_wait();
+            const saved = String(this.user_store().Watch_land()?.val() ?? '');
+            if (saved)
+                return this.land(saved);
             return this.monitor_land_make();
         }
         monitor_grant(pass) {
@@ -45055,6 +45134,12 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_account.prototype, "pointer_timer", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "Rescue", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_account.prototype, "rescue", null);
     __decorate([
         $mol_mem
     ], $bog_gram_account.prototype, "pointer_state", null);
@@ -71949,37 +72034,6 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        async 'Ключ принимается только под своим лордом'($) {
-            const auth_a = await $.$giper_baza_auth._generate();
-            const auth_b = await $.$giper_baza_auth._generate();
-            const lord_a = auth_a.pass().lord().str;
-            const lord_b = auth_b.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
-        },
-        async 'Мусор вместо ключа не роняет разбор'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
-            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
-        },
-        async 'Одна строка ключа даёт один и тот же объект'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const str = auth.pass().toString();
-            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
     function message_of(land, link) {
         return land.Pawn($bog_gram_message).Head(link.head());
     }
@@ -72300,6 +72354,37 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test({
+        async 'Ключ принимается только под своим лордом'($) {
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
+        },
+        async 'Мусор вместо ключа не роняет разбор'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
+            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
+        },
+        async 'Одна строка ключа даёт один и тот же объект'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const str = auth.pass().toString();
+            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function strings(list) {
         return (list?.items() ?? []).map(String);
     }
@@ -72513,6 +72598,48 @@ var $;
             $mol_assert_equal(known.includes('OtherRegistry'), true);
             const lords = strings(registry_me.Data($bog_gram_users).Lords());
             $mol_assert_equal(lords.includes(my_lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Среди локальных лендов находятся свой список диалогов и свой монитор, чужие и прочие пропускаются'($) {
+            const me = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const make = (auth) => $giper_baza_land.make({ $, auth: () => auth });
+            const lands = {
+                'Dialogs1_Bigger11': make(me),
+                'Dialogs2_Smaller1': make(me),
+                'Monitor1_Watching': make(me),
+                'Groupppp_Peersss1': make(me),
+                'Foreignn_Dialogs1': make(other),
+                'Areaaaaa_Dialogs1_Subarea1': make(me),
+            };
+            const ops = {
+                fill() {
+                    lands['Dialogs1_Bigger11'].Data($bog_gram_dialogs).Dialogs('auto').add('one');
+                    lands['Dialogs1_Bigger11'].Data($bog_gram_dialogs).Dialogs('auto').add('two');
+                    lands['Dialogs2_Smaller1'].Data($bog_gram_dialogs).Saved_land('auto').val('saved');
+                    lands['Monitor1_Watching'].Data($bog_gram_monitor).Watch('auto').add('watch');
+                    lands['Groupppp_Peersss1'].Data($bog_gram_dialog).Peers('auto').add('peer');
+                    lands['Foreignn_Dialogs1'].Data($bog_gram_dialogs).Dialogs('auto').add('alien');
+                    lands['Areaaaaa_Dialogs1_Subarea1'].Data($bog_gram_dialogs).Dialogs('auto').add('area');
+                    return true;
+                },
+            };
+            await $mol_wire_async(ops).fill();
+            const rescue = $bog_gram_rescue.make({
+                $,
+                lord: () => me.pass().lord(),
+                links: () => Object.keys(lands),
+                land: (link) => lands[link],
+            });
+            const found = await $mol_wire_async(rescue).found();
+            $mol_assert_equal(found, { dialogs: 'Dialogs1_Bigger11', watch: 'Monitor1_Watching' });
         },
     });
 })($ || ($ = {}));

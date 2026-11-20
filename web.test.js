@@ -8638,37 +8638,6 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
-    $mol_test({
-        async 'Ключ принимается только под своим лордом'($) {
-            const auth_a = await $.$giper_baza_auth._generate();
-            const auth_b = await $.$giper_baza_auth._generate();
-            const lord_a = auth_a.pass().lord().str;
-            const lord_b = auth_b.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
-            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
-        },
-        async 'Мусор вместо ключа не роняет разбор'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const lord = auth.pass().lord().str;
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
-            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
-            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
-        },
-        async 'Одна строка ключа даёт один и тот же объект'($) {
-            const auth = await $.$giper_baza_auth._generate();
-            const str = auth.pass().toString();
-            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
-        },
-    });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
     function message_of(land, link) {
         return land.Pawn($bog_gram_message).Head(link.head());
     }
@@ -8989,6 +8958,37 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    $mol_test({
+        async 'Ключ принимается только под своим лордом'($) {
+            const auth_a = await $.$giper_baza_auth._generate();
+            const auth_b = await $.$giper_baza_auth._generate();
+            const lord_a = auth_a.pass().lord().str;
+            const lord_b = auth_b.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_a.pass().toString())?.lord().str, lord_a);
+            $mol_assert_equal($bog_gram_pass.verified(lord_a, auth_b.pass().toString()), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord_b, auth_a.pass().toString()), null);
+        },
+        async 'Мусор вместо ключа не роняет разбор'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const lord = auth.pass().lord().str;
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'не ключ'), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(43)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, 'a'.repeat(86)), null);
+            $mol_assert_equal($bog_gram_pass.verified(lord, ''), null);
+            $mol_assert_equal($bog_gram_pass.verified('', auth.pass().toString()), null);
+        },
+        async 'Одна строка ключа даёт один и тот же объект'($) {
+            const auth = await $.$giper_baza_auth._generate();
+            const str = auth.pass().toString();
+            $mol_assert_equal($bog_gram_pass.parse(str), $bog_gram_pass.parse(str));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function strings(list) {
         return (list?.items() ?? []).map(String);
     }
@@ -9202,6 +9202,48 @@ var $;
             $mol_assert_equal(known.includes('OtherRegistry'), true);
             const lords = strings(registry_me.Data($bog_gram_users).Lords());
             $mol_assert_equal(lords.includes(my_lord), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Среди локальных лендов находятся свой список диалогов и свой монитор, чужие и прочие пропускаются'($) {
+            const me = await $.$giper_baza_auth._generate();
+            const other = await $.$giper_baza_auth._generate();
+            const make = (auth) => $giper_baza_land.make({ $, auth: () => auth });
+            const lands = {
+                'Dialogs1_Bigger11': make(me),
+                'Dialogs2_Smaller1': make(me),
+                'Monitor1_Watching': make(me),
+                'Groupppp_Peersss1': make(me),
+                'Foreignn_Dialogs1': make(other),
+                'Areaaaaa_Dialogs1_Subarea1': make(me),
+            };
+            const ops = {
+                fill() {
+                    lands['Dialogs1_Bigger11'].Data($bog_gram_dialogs).Dialogs('auto').add('one');
+                    lands['Dialogs1_Bigger11'].Data($bog_gram_dialogs).Dialogs('auto').add('two');
+                    lands['Dialogs2_Smaller1'].Data($bog_gram_dialogs).Saved_land('auto').val('saved');
+                    lands['Monitor1_Watching'].Data($bog_gram_monitor).Watch('auto').add('watch');
+                    lands['Groupppp_Peersss1'].Data($bog_gram_dialog).Peers('auto').add('peer');
+                    lands['Foreignn_Dialogs1'].Data($bog_gram_dialogs).Dialogs('auto').add('alien');
+                    lands['Areaaaaa_Dialogs1_Subarea1'].Data($bog_gram_dialogs).Dialogs('auto').add('area');
+                    return true;
+                },
+            };
+            await $mol_wire_async(ops).fill();
+            const rescue = $bog_gram_rescue.make({
+                $,
+                lord: () => me.pass().lord(),
+                links: () => Object.keys(lands),
+                land: (link) => lands[link],
+            });
+            const found = await $mol_wire_async(rescue).found();
+            $mol_assert_equal(found, { dialogs: 'Dialogs1_Bigger11', watch: 'Monitor1_Watching' });
         },
     });
 })($ || ($ = {}));
