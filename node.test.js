@@ -41872,7 +41872,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.200';
+    $.$bog_gram_version = '1.0.201';
 })($ || ($ = {}));
 
 ;
@@ -44906,11 +44906,11 @@ var $;
         pointer_wait() {
             const born = this.born();
             const dialogs = String(this.user_store().Dialogs_land()?.val() ?? '');
-            if (born)
-                return;
             if (dialogs)
                 return;
             if (this.rescue())
+                return;
+            if (born)
                 return;
             if (this.pointer_lost())
                 $mol_fail(new Error(this.Text().account_lost()));
@@ -73165,6 +73165,16 @@ var $;
             const land = await $mol_wire_async(account).dialogs_land();
             $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), land.link().str);
             $mol_assert_equal(account.pointer_state(), 'ready');
+        },
+        async 'Ключ родился здесь, указатель затёрт, а свой список лежит локально: возвращается он, новый не заводится'($) {
+            const found = 'FoundDia_logsLand';
+            const profile = $giper_baza_land.make({ $ }).Data($bog_gram_user);
+            const rescue = $bog_gram_rescue.make({ $, found: () => ({ dialogs: found, watch: '' }) });
+            const account = $bog_gram_account.make({ $, my_lord: () => 'LordBornRescue', user_store: () => profile, Rescue: () => rescue });
+            $.$mol_state_local.value('bog_gram_born_LordBornRescue', true);
+            const land = await $mol_wire_async(account).dialogs_land();
+            $mol_assert_equal(land.link().str, found);
+            $mol_assert_equal(String(profile.Dialogs_land()?.val() ?? ''), found);
         },
         'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'($) {
             const dialogs = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);

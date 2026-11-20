@@ -60282,7 +60282,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.200';
+    $.$bog_gram_version = '1.0.201';
 })($ || ($ = {}));
 
 ;
@@ -62976,11 +62976,11 @@ var $;
         pointer_wait() {
             const born = this.born();
             const dialogs = String(this.user_store().Dialogs_land()?.val() ?? '');
-            if (born)
-                return;
             if (dialogs)
                 return;
             if (this.rescue())
+                return;
+            if (born)
                 return;
             if (this.pointer_lost())
                 $mol_fail(new Error(this.Text().account_lost()));
