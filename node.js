@@ -41881,7 +41881,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.201';
+    $.$bog_gram_version = '1.0.202';
 })($ || ($ = {}));
 
 ;
@@ -52807,6 +52807,16 @@ var $;
             }
             selection_save() { }
             selection_load() { }
+            selected(next) {
+                $mol_wire_watch();
+                const root = this.Content().dom_node();
+                if (!root.isConnected)
+                    return false;
+                const selection = this.$.$mol_dom_context.document.getSelection();
+                if (!selection?.rangeCount)
+                    return false;
+                return root.contains(selection.anchorNode) && root.contains(selection.focusNode);
+            }
             html_last = '';
             nodes(next) {
                 const html = this.html();
@@ -52949,6 +52959,9 @@ var $;
                     super.inline_toggle(type, event);
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "selected", null);
         __decorate([
             $mol_mem
         ], $bog_gram_write.prototype, "nodes", null);

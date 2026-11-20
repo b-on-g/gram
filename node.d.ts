@@ -64466,7 +64466,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.201";
+    const $bog_gram_version = "1.0.202";
 }
 
 declare namespace $ {
@@ -81799,6 +81799,7 @@ declare namespace $.$$ {
         selection(next?: Caret): Caret;
         selection_save(): void;
         selection_load(): void;
+        selected(next?: boolean): boolean;
         html_last: string;
         nodes(next?: readonly Node[]): readonly Node[];
         content(): $mol_view_content[];
