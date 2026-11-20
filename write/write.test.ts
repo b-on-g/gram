@@ -33,13 +33,40 @@ namespace $.$$ {
 
 	$mol_test({
 
-		'Черновик живёт в своём ленде: не в home-ленде и не сохраняется'( $ ) {
+		'Набор, правка и очистка поля не трогают Базу: ни home-ленд, ни какой другой'( $ ) {
 
-			const { write } = make( $, true )
-			const home = $.$giper_baza_auth.current().pass().lord().str
+			const touched = [] as string[]
+			const touch = ( what: string )=> { touched.push( what ); return $mol_fail( new Error( `Поле полезло в Базу: ${ what }` ) ) }
 
-			$mol_assert_unique( write.land().link().str, home )
-			$mol_assert_equal( write.land().persisted(), false )
+			const context = $.$mol_ambient({
+				$giper_baza_land: class extends $giper_baza_land {
+					static override make(): any { return touch( 'land' ) }
+				},
+				$giper_baza_glob: class extends $giper_baza_glob {
+					static override home(): any { return touch( 'home' ) }
+					static override Land(): any { return touch( 'Land' ) }
+					static override land_grab(): any { return touch( 'land_grab' ) }
+				},
+				$giper_baza_auth: class extends $giper_baza_auth {
+					static override current(): any { return touch( 'auth' ) }
+				},
+			})
+
+			const write = $bog_gram_write.make({ $: context, rich: ()=> true })
+			write.html( '<p>черновик</p>' )
+
+			const content = write.Content().dom_tree() as Element
+			$mol_assert_equal( content.textContent, 'черновик' )
+
+			content.querySelector( 'p' )!.textContent = 'черновик и ещё'
+			write.save()
+			$mol_assert_equal( write.html(), '<p>черновик и ещё</p>' )
+			$mol_assert_equal( content.querySelector( 'p' ), write.nodes()[0] )
+
+			write.html( '' )
+			$mol_assert_equal( ( write.Content().dom_tree() as Element ).textContent, '' )
+
+			$mol_assert_equal( touched, [] )
 
 		},
 
@@ -109,9 +136,8 @@ namespace $.$$ {
 			const { write } = make( $, true )
 
 			write.html( $bog_gram_write_clean( '<p>раз два&nbsp;&laquo;три&raquo; </p>' ) )
-			write.html_load()
 
-			$mol_assert_equal( write.pawn().dom().map( el => el.textContent ).join( '' ), 'раз два «три» ' )
+			$mol_assert_equal( write.nodes().map( node => node.textContent ).join( '' ), 'раз два «три» ' )
 
 		},
 

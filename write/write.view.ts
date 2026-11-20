@@ -97,54 +97,73 @@ namespace $.$$ {
 
 	export class $bog_gram_write extends $.$bog_gram_write {
 
-		@ $mol_mem
-		land() {
-			const lord = this.$.$giper_baza_auth.current().pass().lord()
-			const link = new $giper_baza_link( lord.str + '_' + $giper_baza_link.from_int( 0x5c4a7c ).str )
-			return this.$.$giper_baza_land.make({
-				$: this.$,
-				link: ()=> link,
-				persisted: ()=> false,
-			})
+		override pawn( next?: $giper_baza_rich ): $giper_baza_rich {
+			return $mol_fail( new Error( 'Поле сообщения не пишет в Базу' ) )
 		}
 
-		@ $mol_mem
-		override pawn( next?: $giper_baza_rich ) {
-			return this.land().Data( $giper_baza_rich )
-		}
-
-		@ $mol_mem
 		selection( next?: Caret ): Caret {
 			return next ?? [ [ '', 0, 0 ], [ '', 0, 0 ] ]
 		}
 
+		selection_save() {}
+
+		selection_load() {}
+
 		html_last = ''
 
 		@ $mol_mem
-		html_load() {
+		nodes( next?: readonly Node[] ): readonly Node[] {
 
 			const html = this.html()
-			if( html === this.html_last ) return html
+			if( next ) return next
+
+			const prev = $mol_mem_cached( ()=> this.nodes() )
+			if( prev && html === this.html_last ) return prev
 
 			this.html_last = html
-			this.pawn().dom( [ ... body_of( html ).childNodes ] as Element[] )
 
-			return html
+			const document = this.$.$mol_dom_context.document
+			return [ ... body_of( html ).childNodes ].map( node => document.importNode( node, true ) )
 		}
 
 		@ $mol_mem
 		override content() {
-			this.html_load()
-			return super.content()
+
+			const nodes = this.nodes()
+			if( nodes.length ) return nodes as $mol_view_content[]
+
+			const document = this.$.$mol_dom_context.document
+			const line = document.createElement( 'p' )
+			line.append( document.createElement( 'br' ) )
+
+			return [ line ]
 		}
 
 		override save( event?: Event ) {
 
-			super.save( event )
+			const root = this.Content().dom_node()
+			const html = $bog_gram_write_clean( root.innerHTML )
 
-			const html = $bog_gram_write_clean( this.pawn().html() )
 			this.html_last = html
+			this.nodes([ ... root.childNodes ])
 			this.html( html )
+
+		}
+
+		paste_rich( html: string ) {
+
+			const body = body_of( html )
+			tidy( body )
+
+			const range = $mol_dom_range.from_selection()
+			if( !range ) return
+
+			const document = this.$.$mol_dom_context.document
+			const part = document.createDocumentFragment()
+			for( const node of body.childNodes ) part.append( document.importNode( node, true ) )
+
+			range.paste( part )
+			this.save()
 
 		}
 
@@ -234,11 +253,13 @@ namespace $.$$ {
 			if( !transfer ) return
 			if( transfer.files.length ) return
 
+			event.preventDefault()
+
 			const room = this.room()
 			const text = transfer.getData( 'text/plain' )
-			if( this.rich() && text.length <= room ) return super.paste( event )
+			const html = transfer.getData( 'text/html' )
 
-			event.preventDefault()
+			if( this.rich() && html && text.length <= room ) return this.paste_rich( html )
 
 			const part = text.slice( 0, room )
 			if( !part ) return
