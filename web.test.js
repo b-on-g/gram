@@ -8497,22 +8497,71 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
-        'Звать людей может только админ, назначать админов только создатель'($) {
+        async 'Уровень с ленда группы доходит до бакетов, где человек уже есть, и не открывает остальные'($) {
+            const king_dialog = await $.$giper_baza_auth._generate();
+            const king_open = await $.$giper_baza_auth._generate();
+            const king_shut = await $.$giper_baza_auth._generate();
+            const mate = await $.$giper_baza_auth._generate();
+            const dialog = $giper_baza_land.make({ $, auth: () => king_dialog });
+            const open = $giper_baza_land.make({ $, auth: () => king_open });
+            const shut = $giper_baza_land.make({ $, auth: () => king_shut });
+            await $mol_wire_async(dialog).encrypted(true);
+            await $mol_wire_async(open).encrypted(true);
+            await $mol_wire_async(shut).encrypted(true);
+            const lord = mate.pass().lord();
+            const rights = $bog_gram_rights.make({
+                $,
+                land: () => dialog,
+                lands: () => [open, shut],
+                lords: () => [lord.str],
+            });
+            const ops = {
+                start() {
+                    dialog.give(mate.pass(), $giper_baza_rank_post('fast'));
+                    open.give(mate.pass(), $giper_baza_rank_post('fast'));
+                    return true;
+                },
+                raise() {
+                    rights.gift_tier(lord, 'rule');
+                    return true;
+                },
+                read() {
+                    return {
+                        dialog: dialog.lord_rank(lord),
+                        open: open.lord_rank(lord),
+                        shut: shut.lord_rank(lord),
+                        rows: rights.rows().length,
+                    };
+                },
+            };
+            await $mol_wire_async(ops).start();
+            await $mol_wire_async(ops).raise();
+            const state = await $mol_wire_async(ops).read();
+            $mol_assert_equal(state.dialog, $giper_baza_rank_rule);
+            $mol_assert_equal(state.open, $giper_baza_rank_rule);
+            $mol_assert_equal(state.shut, $giper_baza_rank_deny);
+            $mol_assert_equal(state.rows, 1);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Звать и убирать людей может только админ, блок прав есть только при ленде'($) {
             const plain = $bog_gram_members.make({ $, me: () => 'Me', lords: () => ['Me', 'Ann'] });
             $mol_assert_equal(plain.add_rows(), []);
-            $mol_assert_equal(plain.Rule('Ann'), null);
             $mol_assert_equal(plain.Drop('Ann'), null);
             $mol_assert_equal(plain.Drop_note(), null);
+            $mol_assert_equal(plain.Rights_block(), null);
+            $mol_assert_equal(plain.Admin_note(), null);
+            $mol_assert_equal(plain.member_title('Me'), plain.self_name());
             const admin = $bog_gram_members.make({ $, me: () => 'Me', admin: () => true });
-            $mol_assert_equal(admin.add_rows().includes(admin.Admin_note()), false);
-            $mol_assert_equal(admin.Rule('Ann'), null);
             $mol_assert_equal(admin.Drop('Me'), null);
             $mol_assert_equal(admin.Drop('Ann') === null, false);
-            const owner = $bog_gram_members.make({ $, me: () => 'Me', admin: () => true, owner: () => true, admin_is: (lord) => lord === 'Bob' });
-            $mol_assert_equal(owner.add_rows().includes(owner.Admin_note()), true);
-            $mol_assert_equal(owner.Rule('Ann') === null, false);
-            $mol_assert_equal(owner.Rule('Bob'), null);
-            $mol_assert_equal(owner.member_title('Me'), owner.self_name());
+            $mol_assert_equal(admin.Admin_note() === null, false);
         },
         'Убрать участника можно только вторым нажатием'($) {
             const parted = [];
@@ -11025,6 +11074,12 @@ var $;
                 $mol_assert_equal($bog_gram_write_rich_is('<section><p>просто<br></p></section>'), false);
                 $mol_assert_equal($bog_gram_write_rich_is('<p>очень <strong>важно</strong></p>'), true);
                 $mol_assert_equal($bog_gram_write_clean('<p id="x" xmlns="http://www.w3.org/1999/xhtml"><span id="y">раз</span><span id="z"> два</span><img src="https://evil/track.png"><a href="https://ya.ru" onclick="alert()">ссылка</a></p>'), '<p>раз два<a href="https://ya.ru">ссылка</a></p>');
+            },
+            'Черновик с неразрывным пробелом и прочими сущностями HTML поле открывает, а не падает'($) {
+                const { write } = make($, true);
+                write.html($bog_gram_write_clean('<p>раз два&nbsp;&laquo;три&raquo; </p>'));
+                write.html_load();
+                $mol_assert_equal(write.pawn().dom().map(el => el.textContent).join(''), 'раз два «три» ');
             },
             'Ввод сверх лимита браузер не вставляет, удаление и набор в пределах лимита проходят'($) {
                 const { write } = make($, true);

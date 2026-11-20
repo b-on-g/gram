@@ -23354,9 +23354,6 @@ var $;
 		crew_no_keys(){
 			return (this.$.$mol_locale.text("$bog_gram_text_crew_no_keys"));
 		}
-		crew_no_key_grant(){
-			return (this.$.$mol_locale.text("$bog_gram_text_crew_no_key_grant"));
-		}
 		alerts_off_label(){
 			return (this.$.$mol_locale.text("$bog_gram_text_alerts_off_label"));
 		}
@@ -41884,7 +41881,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.195';
+    $.$bog_gram_version = '1.0.196';
 })($ || ($ = {}));
 
 ;
@@ -42934,11 +42931,22 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_shield) = class $mol_icon_shield extends ($.$mol_icon) {
-		path(){
-			return "M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z";
+	($.$giper_baza_link_chip) = class $giper_baza_link_chip extends ($.$mol_link) {
+		icon(){
+			return "";
+		}
+		param(){
+			return "link";
+		}
+		link(){
+			const obj = new this.$.$giper_baza_link();
+			return obj;
+		}
+		sub(){
+			return [(this.icon()), (this.title())];
 		}
 	};
+	($mol_mem(($.$giper_baza_link_chip.prototype), "link"));
 
 
 ;
@@ -42946,16 +42954,478 @@ var $;
 
 
 ;
-	($.$mol_icon_shield_crown) = class $mol_icon_shield_crown extends ($.$mol_icon) {
-		path(){
-			return "M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z";
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $giper_baza_link_chip extends $.$giper_baza_link_chip {
+            subj() {
+                const link = this.link();
+                if (!link.str)
+                    return null;
+                return this.$.$giper_baza_glob.Pawn(link, $giper_baza_flex_subj);
+            }
+            meta() {
+                const link = this.subj()?.meta();
+                if (!link)
+                    return null;
+                return this.$.$giper_baza_glob.Pawn(link, $giper_baza_flex_meta);
+            }
+            icon() {
+                return (this.subj()?.icon() || '💠') + ' ';
+            }
+            title() {
+                const link = this.link();
+                if (!link.str)
+                    return '______every______';
+                return this.subj()?.name() || link.str;
+            }
+            hint() {
+                return this.subj()?.hint() ?? '';
+            }
+            arg() {
+                return { [this.param()]: this.link().str };
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $giper_baza_link_chip.prototype, "subj", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_link_chip.prototype, "meta", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_link_chip.prototype, "icon", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_link_chip.prototype, "title", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_link_chip.prototype, "arg", null);
+        $$.$giper_baza_link_chip = $giper_baza_link_chip;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($giper_baza_link_chip, {
+            font: {
+                family: 'monospace',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$giper_baza_land_rights) = class $giper_baza_land_rights extends ($.$mol_list) {
+		add_key(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		add_commit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		enabled(){
+			return false;
+		}
+		Add_key(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_land_rights_Add_key_hint")));
+			(obj.value) = (next) => ((this.add_key(next)));
+			(obj.submit) = (next) => ((this.add_commit(next)));
+			(obj.enabled) = () => ((this.enabled()));
+			return obj;
+		}
+		Add_commit_icon(){
+			const obj = new this.$.$mol_icon_plus();
+			return obj;
+		}
+		Add_commit(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.add_commit(next)));
+			(obj.enabled) = () => ((this.enabled()));
+			(obj.sub) = () => ([(this.Add_commit_icon())]);
+			return obj;
+		}
+		Add(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Add_key()), (this.Add_commit())]);
+			return obj;
+		}
+		gift_rate(id, next){
+			if(next !== undefined) return next;
+			return "0";
+		}
+		Gift_rate(id){
+			const obj = new this.$.$mol_select();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_land_rights_Gift_rate_hint")));
+			(obj.value) = (next) => ((this.gift_rate(id, next)));
+			(obj.enabled) = () => ((this.enabled()));
+			(obj.Filter) = () => (null);
+			(obj.dictionary) = () => ({
+				"0": "0 🦼 ~1W", 
+				"1": "1 🚲 ~3D", 
+				"2": "2 🛵 ~1D", 
+				"3": "3 🚜 ~D/2", 
+				"4": "4 🏇 ~8h", 
+				"5": "5 🚂 ~4h", 
+				"6": "6 🚛 ~2h", 
+				"7": "7 🚗 ~1h", 
+				"8": "8 🏍️ ~h/2", 
+				"9": "9 🏎️ ~5m", 
+				"A": "A 🚅 ~2m", 
+				"B": "B 🚁 ~m/2", 
+				"C": "C 🛩️ ~2s", 
+				"D": "D ✈️ ~s/2", 
+				"E": "E 🚀 ~50ms", 
+				"F": "F 🛸 ~1ms"
+			});
+			return obj;
+		}
+		gift_tier(id, next){
+			if(next !== undefined) return next;
+			return "deny";
+		}
+		tier_options(){
+			return {
+				"deny": (this.$.$mol_locale.text("$giper_baza_land_rights_tier_options_deny")), 
+				"read": (this.$.$mol_locale.text("$giper_baza_land_rights_tier_options_read")), 
+				"post": (this.$.$mol_locale.text("$giper_baza_land_rights_tier_options_post")), 
+				"pull": (this.$.$mol_locale.text("$giper_baza_land_rights_tier_options_pull")), 
+				"rule": (this.$.$mol_locale.text("$giper_baza_land_rights_tier_options_rule"))
+			};
+		}
+		Gift_tier(id){
+			const obj = new this.$.$mol_select();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_land_rights_Gift_tier_hint")));
+			(obj.value) = (next) => ((this.gift_tier(id, next)));
+			(obj.Filter) = () => (null);
+			(obj.dictionary) = () => ((this.tier_options()));
+			(obj.enabled) = () => ((this.enabled()));
+			return obj;
+		}
+		link_param(){
+			return "link";
+		}
+		peer_link(id){
+			const obj = new this.$.$giper_baza_link();
+			return obj;
+		}
+		peer_id(id){
+			return "";
+		}
+		Gift_avatar(id){
+			const obj = new this.$.$mol_avatar();
+			(obj.id) = () => ((this.peer_id(id)));
+			return obj;
+		}
+		Gift_name(id){
+			const obj = new this.$.$giper_baza_link_chip();
+			(obj.param) = () => ((this.link_param()));
+			(obj.link) = () => ((this.peer_link(id)));
+			(obj.sub) = () => ([...(this.$.$giper_baza_link_chip.prototype.sub.call(obj)), (this.Gift_avatar(id))]);
+			return obj;
+		}
+		Gift(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Gift_rate(id)), 
+				(this.Gift_tier(id)), 
+				(this.Gift_name(id))
+			]);
+			return obj;
+		}
+		gifts(){
+			return [(this.Gift("0"))];
+		}
+		land(){
+			const obj = new this.$.$giper_baza_land();
+			return obj;
+		}
+		rows(){
+			return [(this.Add()), ...(this.gifts())];
 		}
 	};
+	($mol_mem(($.$giper_baza_land_rights.prototype), "add_key"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "add_commit"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "Add_key"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "Add_commit_icon"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "Add_commit"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "Add"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "gift_rate"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "Gift_rate"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "gift_tier"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "Gift_tier"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "peer_link"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "Gift_avatar"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "Gift_name"));
+	($mol_mem_key(($.$giper_baza_land_rights.prototype), "Gift"));
+	($mol_mem(($.$giper_baza_land_rights.prototype), "land"));
 
 
 ;
 "use strict";
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $giper_baza_land_rights extends $.$giper_baza_land_rights {
+            rows() {
+                if (this.enabled())
+                    return super.rows();
+                else
+                    return this.gifts();
+            }
+            gifts() {
+                const land = this.land();
+                return [...land._gift.keys()]
+                    .filter(link => link !== land.link().lord().str)
+                    .reverse()
+                    .map(link => this.Gift(new $giper_baza_link(link)));
+            }
+            peer_link(lord) {
+                return lord;
+            }
+            peer_id(lord) {
+                return lord.str;
+            }
+            gift_tier(lord, next) {
+                const rank = this.land().lord_rank(lord, next && $giper_baza_rank_make(next, 'just'));
+                return $giper_baza_rank_tier[rank & 0b0_1111_0000];
+            }
+            gift_rate(lord, next) {
+                const arg = next ? $giper_baza_rank(this.land().lord_rank(lord) & 0b0_1111_0000 | parseInt(next, 16)) : undefined;
+                const rank = this.land().lord_rank(lord, arg);
+                return (rank & 0b1111).toString(16).toUpperCase();
+            }
+            add_commit() {
+                let key = this.add_key();
+                if (/^\w{8}_\w{8}$/.test(key)) {
+                    const link = new $giper_baza_link(key);
+                    const peer_land = this.$.$giper_baza_glob.Land(link);
+                    const pass = peer_land.lord_pass(link);
+                    if (!pass)
+                        return $mol_fail(new Error('No Pass for Lord'));
+                    this.land().give(pass, $giper_baza_rank_read);
+                }
+                else {
+                    const pass = $giper_baza_auth_pass.from(key);
+                    this.land().give(pass, $giper_baza_rank_read);
+                }
+                this.add_key('');
+            }
+            tier_options() {
+                if (this.land().encrypted())
+                    return super.tier_options();
+                const options = { ...super.tier_options() };
+                delete options.deny;
+                return options;
+            }
+            enabled() {
+                return this.land().lord_rank(this.land().auth().pass().lord()) >= $giper_baza_rank_rule;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $giper_baza_land_rights.prototype, "rows", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_land_rights.prototype, "gifts", null);
+        __decorate([
+            $mol_mem_key
+        ], $giper_baza_land_rights.prototype, "gift_tier", null);
+        __decorate([
+            $mol_mem_key
+        ], $giper_baza_land_rights.prototype, "gift_rate", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_land_rights.prototype, "tier_options", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_land_rights.prototype, "enabled", null);
+        $$.$giper_baza_land_rights = $giper_baza_land_rights;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($giper_baza_land_rights, {
+            gap: $mol_gap.block,
+            Gift: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                background: {
+                    color: $mol_theme.card,
+                },
+            },
+            Gift_name: {
+                flex: {
+                    grow: 1,
+                },
+            },
+            Gift_tier: {
+                flex: {
+                    grow: 0,
+                    basis: `7em`,
+                },
+                font: {
+                    family: 'monospace',
+                },
+            },
+            Gift_rate: {
+                flex: {
+                    grow: 0,
+                    basis: `8em`,
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_rights) = class $bog_gram_rights extends ($.$giper_baza_land_rights) {
+		peer_link(id){
+			const obj = new this.$.$giper_baza_link();
+			return obj;
+		}
+		peer_title(id){
+			return "";
+		}
+		peer_id(id){
+			return "";
+		}
+		Gift_avatar(id){
+			const obj = new this.$.$mol_avatar();
+			(obj.id) = () => ((this.peer_id(id)));
+			return obj;
+		}
+		lands(){
+			return [];
+		}
+		lords(){
+			return [];
+		}
+		label(id){
+			return "";
+		}
+		Gift_name(id){
+			const obj = new this.$.$giper_baza_link_chip();
+			(obj.link) = () => ((this.peer_link(id)));
+			(obj.icon) = () => ("");
+			(obj.title) = () => ((this.peer_title(id)));
+			(obj.arg) = () => ({});
+			(obj.sub) = () => ([(this.Gift_avatar(id)), (this.peer_title(id))]);
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$bog_gram_rights.prototype), "peer_link"));
+	($mol_mem_key(($.$bog_gram_rights.prototype), "Gift_avatar"));
+	($mol_mem_key(($.$bog_gram_rights.prototype), "Gift_name"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_rights extends $.$bog_gram_rights {
+            rows() {
+                return this.gifts();
+            }
+            gifts() {
+                const land = this.land();
+                const lords = new Set(this.lords());
+                return [...land._gift.keys()]
+                    .filter(link => lords.has(link))
+                    .reverse()
+                    .map(link => this.Gift(new $giper_baza_link(link)));
+            }
+            peer_title(lord) {
+                return this.label(lord.str);
+            }
+            tier_options() {
+                const options = { ...super.tier_options() };
+                delete options.deny;
+                return options;
+            }
+            gift_tier(lord, next) {
+                const tier = super.gift_tier(lord, next);
+                if (next !== undefined)
+                    this.spread(lord);
+                return tier;
+            }
+            gift_rate(lord, next) {
+                const rate = super.gift_rate(lord, next);
+                if (next !== undefined)
+                    this.spread(lord);
+                return rate;
+            }
+            spread(lord) {
+                const rank = this.land().lord_rank(lord);
+                for (const land of this.lands()) {
+                    const pass = land.lord_pass(lord);
+                    if (!pass)
+                        continue;
+                    if (land.lord_rank(lord) === rank)
+                        continue;
+                    land.give(pass, rank);
+                }
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_rights.prototype, "gifts", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_rights.prototype, "tier_options", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_rights.prototype, "spread", null);
+        $$.$bog_gram_rights = $bog_gram_rights;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_rights, {
+            Gift_name: {
+                gap: '0.5rem',
+                align: {
+                    items: 'center',
+                },
+            },
+            Gift_avatar: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
 
 ;
 	($.$mol_icon_account_remove) = class $mol_icon_account_remove extends ($.$mol_icon) {
@@ -43005,6 +43475,33 @@ var $;
 		Drop_note(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Drop_note_title")));
+			return obj;
+		}
+		Rights_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Rights_head_title")));
+			return obj;
+		}
+		Rights(){
+			const obj = new this.$.$bog_gram_rights();
+			(obj.land) = () => ((this.rights_land()));
+			(obj.lands) = () => ((this.rights_lands()));
+			(obj.lords) = () => ((this.lords()));
+			(obj.label) = (id) => ((this.label(id)));
+			return obj;
+		}
+		Admin_note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Admin_note_title")));
+			return obj;
+		}
+		Rights_block(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Rights_head()), 
+				(this.Rights()), 
+				(this.Admin_note())
+			]);
 			return obj;
 		}
 		add_rows(){
@@ -43246,21 +43743,6 @@ var $;
 		member_title(id){
 			return "";
 		}
-		rule_click(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Rule_icon(id){
-			const obj = new this.$.$mol_icon_shield_crown();
-			return obj;
-		}
-		Rule(id){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_members_Rule_hint")));
-			(obj.click) = (next) => ((this.rule_click(id, next)));
-			(obj.sub) = () => ([(this.Rule_icon(id))]);
-			return obj;
-		}
 		drop_hint(id){
 			return "";
 		}
@@ -43313,8 +43795,11 @@ var $;
 		owner(){
 			return false;
 		}
-		admin_is(id){
-			return false;
+		rights_land(){
+			return null;
+		}
+		rights_lands(){
+			return [];
 		}
 		error(next){
 			if(next !== undefined) return next;
@@ -43396,10 +43881,6 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		promote(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
 		leave(next){
 			if(next !== undefined) return next;
 			return null;
@@ -43411,6 +43892,7 @@ var $;
 			return [
 				(this.List()), 
 				(this.Drop_note()), 
+				(this.Rights_block()), 
 				(this.Add_block()), 
 				(this.Leave_note()), 
 				(this.Leave())
@@ -43443,11 +43925,6 @@ var $;
 		Pick_list(){
 			const obj = new this.$.$mol_list();
 			(obj.rows) = () => ((this.pick_rows()));
-			return obj;
-		}
-		Admin_note(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_members_Admin_note_title")));
 			return obj;
 		}
 		Join(){
@@ -43506,7 +43983,7 @@ var $;
 			(obj.tint) = () => ((this.tint(id)));
 			(obj.title) = () => ((this.member_title(id)));
 			(obj.note) = () => ((this.status(id)));
-			(obj.tools) = () => ([(this.Rule(id)), (this.Drop(id))]);
+			(obj.tools) = () => ([(this.Drop(id))]);
 			return obj;
 		}
 		Pick_row(id){
@@ -43524,6 +44001,10 @@ var $;
 	($mol_mem(($.$bog_gram_members.prototype), "Close"));
 	($mol_mem(($.$bog_gram_members.prototype), "List"));
 	($mol_mem(($.$bog_gram_members.prototype), "Drop_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "Rights_head"));
+	($mol_mem(($.$bog_gram_members.prototype), "Rights"));
+	($mol_mem(($.$bog_gram_members.prototype), "Admin_note"));
+	($mol_mem(($.$bog_gram_members.prototype), "Rights_block"));
 	($mol_mem(($.$bog_gram_members.prototype), "Add_block"));
 	($mol_mem(($.$bog_gram_members.prototype), "Leave_note"));
 	($mol_mem(($.$bog_gram_members.prototype), "leave_armed"));
@@ -43559,9 +44040,6 @@ var $;
 	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_accept"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_reject_icon"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "Ask_reject"));
-	($mol_mem_key(($.$bog_gram_members.prototype), "rule_click"));
-	($mol_mem_key(($.$bog_gram_members.prototype), "Rule_icon"));
-	($mol_mem_key(($.$bog_gram_members.prototype), "Rule"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "armed"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "drop_click"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "Drop_icon"));
@@ -43576,14 +44054,12 @@ var $;
 	($mol_mem(($.$bog_gram_members.prototype), "history"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "add"));
 	($mol_mem_key(($.$bog_gram_members.prototype), "part"));
-	($mol_mem_key(($.$bog_gram_members.prototype), "promote"));
 	($mol_mem(($.$bog_gram_members.prototype), "leave"));
 	($mol_mem(($.$bog_gram_members.prototype), "Add_title"));
 	($mol_mem(($.$bog_gram_members.prototype), "History"));
 	($mol_mem(($.$bog_gram_members.prototype), "Error"));
 	($mol_mem(($.$bog_gram_members.prototype), "Id_form"));
 	($mol_mem(($.$bog_gram_members.prototype), "Pick_list"));
-	($mol_mem(($.$bog_gram_members.prototype), "Admin_note"));
 	($mol_mem(($.$bog_gram_members.prototype), "Join"));
 	($mol_mem(($.$bog_gram_members.prototype), "Meet_make"));
 	($mol_mem(($.$bog_gram_members.prototype), "Meet"));
@@ -43622,14 +44098,11 @@ var $;
             Drop_note() {
                 return this.admin() ? super.Drop_note() : null;
             }
-            Rule(lord) {
-                if (!this.owner())
-                    return null;
-                if (lord === this.me())
-                    return null;
-                if (this.admin_is(lord))
-                    return null;
-                return super.Rule(lord);
+            Rights_block() {
+                return this.rights_land() ? super.Rights_block() : null;
+            }
+            Admin_note() {
+                return this.admin() ? super.Admin_note() : null;
             }
             Drop(lord) {
                 if (!this.admin())
@@ -43655,12 +44128,6 @@ var $;
                 }
                 this.armed(lord, false);
                 this.part(lord, null);
-                return null;
-            }
-            rule_click(lord, next) {
-                if (!lord)
-                    return null;
-                this.promote(lord, null);
                 return null;
             }
             history_shut() {
@@ -43729,7 +44196,6 @@ var $;
                     ...this.asks().length ? [this.Asks_head(), this.Asks_list()] : [],
                     this.Id_form(),
                     this.Pick_list(),
-                    ...this.owner() ? [this.Admin_note()] : [],
                 ];
             }
             meet_rows() {
@@ -43770,9 +44236,6 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_members.prototype, "drop_click", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram_members.prototype, "rule_click", null);
         __decorate([
             $mol_action
         ], $bog_gram_members.prototype, "history_all", null);
@@ -43924,6 +44387,28 @@ var $;
                 gap: '0.125rem',
             },
             Drop_note: note,
+            Rights_block: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                gap: '0.5rem',
+                minWidth: 0,
+                padding: {
+                    top: $mol_gap.block,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                },
+            },
+            Rights_head: {
+                font: {
+                    weight: 'bold',
+                },
+                color: $mol_theme.shade,
+            },
             Leave_note: {
                 ...note,
                 padding: {
@@ -44886,7 +45371,6 @@ var $;
         Session_last: $giper_baza_atom_text,
         Created: $giper_baza_atom_real,
         Title: $giper_baza_atom_text,
-        Admins: $giper_baza_list_str,
         Names: $giper_baza_dict_to($bog_gram_note),
         Meet: $giper_baza_atom_text,
     }) {
@@ -45136,25 +45620,21 @@ var $;
             this.store(id).Title('auto')?.val(next ?? '');
             return null;
         }
-        admins(id) {
-            if (!id)
-                return [];
-            return $bog_gram_soft(() => (this.store(id).Admins()?.items() ?? []).map(String), []);
-        }
         admin_is(id, lord) {
             if (!id || !lord)
                 return false;
-            if (this.owner(id) === lord)
-                return true;
-            if (lord === this.my() && this.own(id))
-                return true;
-            return this.admins(id).includes(lord);
+            return $bog_gram_soft(() => {
+                const rank = this.land(id).lord_rank(new $giper_baza_link(lord));
+                return $giper_baza_rank_tier_of(rank) === $giper_baza_rank_tier.rule;
+            }, false);
         }
         admin_me(id) {
             return this.admin_is(id, this.my());
         }
         member_rank(id, lord) {
-            return this.admin_is(id, lord) ? $giper_baza_rank_rule : $giper_baza_rank_post('fast');
+            const land = this.land(id);
+            const link = new $giper_baza_link(lord);
+            return land.lord_pass(link) ? land.lord_rank(link) : $giper_baza_rank_post('fast');
         }
         owner(id) {
             if (!id)
@@ -45406,9 +45886,6 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_talk.prototype, "group_title_set", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_talk.prototype, "admins", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "own", null);
@@ -46383,16 +46860,17 @@ var $;
             }
             const room = this.room_ruled(id);
             const fresh = history ? null : this.grab();
+            const rank = $giper_baza_rank_post('fast');
             const dialog_land = talk.land(id);
-            dialog_land.give(pass, talk.member_rank(id, lord));
+            dialog_land.give(pass, rank);
             if (fresh) {
                 for (const [mate, mate_pass] of stay)
                     fresh.give(mate_pass, talk.member_rank(id, mate));
-                fresh.give(pass, talk.member_rank(id, lord));
+                fresh.give(pass, rank);
             }
             else {
                 for (const link of links)
-                    talk.land(link).give(pass, talk.member_rank(id, lord));
+                    talk.land(link).give(pass, rank);
             }
             const dialog = dialog_land.Data($bog_gram_dialog);
             dialog.Peers('auto').add(lord);
@@ -46432,37 +46910,19 @@ var $;
                 this.error(this.Text().crew_no_keys());
                 return '';
             }
+            const dialog_land = talk.land(id);
+            const gone = dialog_land.lord_pass(new $giper_baza_link(lord));
             const fresh = this.grab();
             for (const [mate, mate_pass] of stay)
                 fresh.give(mate_pass, talk.member_rank(id, mate));
+            if (gone)
+                dialog_land.give(gone, $giper_baza_rank_read);
             const dialog = talk.store(id);
             dialog.Sessions('auto').add(fresh.link().str);
             dialog.Session_last('auto')?.val(fresh.link().str);
             dialog.Peers('auto').cut(lord);
-            if (talk.admins(id).includes(lord))
-                dialog.Admins('auto').cut(lord);
             fresh.Data($bog_gram_session).Dialog_land('auto')?.val(id);
             this.watch(fresh.link().str);
-            this.error('');
-            return lord;
-        }
-        promote(id, lord) {
-            const talk = this.Talk();
-            if (!id || !lord)
-                return '';
-            if (!talk.own(id))
-                return '';
-            const pass = this.People().pass_of(lord);
-            if (!pass) {
-                this.error(this.Text().crew_no_key_grant());
-                return '';
-            }
-            const links = talk.links_of(id);
-            const dialog_land = talk.land(id);
-            dialog_land.give(pass, $giper_baza_rank_rule);
-            for (const link of links)
-                talk.land(link).give(pass, $giper_baza_rank_rule);
-            dialog_land.Data($bog_gram_dialog).Admins('auto').add(lord);
             this.error('');
             return lord;
         }
@@ -52269,7 +52729,7 @@ var $;
                 if (html === this.html_last)
                     return html;
                 this.html_last = html;
-                this.pawn().html(html);
+                this.pawn().dom([...body_of(html).childNodes]);
                 return html;
             }
             content() {
@@ -61312,9 +61772,6 @@ var $;
 		group_name_auto(id){
 			return (this.Talk().group_name_auto(id));
 		}
-		admin_lords(id){
-			return (this.Talk().admins(id));
-		}
 		admin_me(id){
 			return (this.Talk().admin_me(id));
 		}
@@ -61737,8 +62194,11 @@ var $;
 		members_owner(){
 			return false;
 		}
-		member_admin(id){
-			return false;
+		members_land(){
+			return null;
+		}
+		members_lands(){
+			return [];
 		}
 		join_link(){
 			return "";
@@ -61776,10 +62236,6 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		member_raise(id, next){
-			if(next !== undefined) return next;
-			return null;
-		}
 		group_leave(next){
 			if(next !== undefined) return next;
 			return null;
@@ -61793,7 +62249,8 @@ var $;
 			(obj.status) = (id) => ((this.member_status(id)));
 			(obj.admin) = () => ((this.members_admin()));
 			(obj.owner) = () => ((this.members_owner()));
-			(obj.admin_is) = (id) => ((this.member_admin(id)));
+			(obj.rights_land) = () => ((this.members_land()));
+			(obj.rights_lands) = () => ((this.members_lands()));
 			(obj.error) = (next) => ((this.member_error(next)));
 			(obj.join_link) = () => ((this.join_link()));
 			(obj.meet_link) = () => ((this.meet_link()));
@@ -61808,7 +62265,6 @@ var $;
 			(obj.history) = (next) => ((this.member_history(next)));
 			(obj.add) = (id, next) => ((this.member_add(id, next)));
 			(obj.part) = (id, next) => ((this.member_drop(id, next)));
-			(obj.promote) = (id, next) => ((this.member_raise(id, next)));
 			(obj.leave) = (next) => ((this.group_leave(next)));
 			return obj;
 		}
@@ -62112,7 +62568,6 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "ask_reject"));
 	($mol_mem_key(($.$bog_gram.prototype), "member_add"));
 	($mol_mem_key(($.$bog_gram.prototype), "member_drop"));
-	($mol_mem_key(($.$bog_gram.prototype), "member_raise"));
 	($mol_mem(($.$bog_gram.prototype), "group_leave"));
 	($mol_mem(($.$bog_gram.prototype), "Members_page"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
@@ -62693,8 +63148,15 @@ var $;
             members_owner() {
                 return this.owner_me(this.dialog_active());
             }
-            member_admin(lord) {
-                return this.admin_is(this.dialog_active(), lord);
+            members_land() {
+                const id = this.dialog_active();
+                return id ? this.Talk().land(id) : null;
+            }
+            members_lands() {
+                const id = this.dialog_active();
+                if (!id)
+                    return [];
+                return $bog_gram_soft(() => this.session_lands_of(id), []);
             }
             members_asks() {
                 return this.asks_for(this.dialog_active());
@@ -62809,13 +63271,6 @@ var $;
                 if (!id || !lord)
                     return null;
                 $mol_wire_async(this.Crew()).part(id, lord);
-                return null;
-            }
-            member_raise(lord, next) {
-                const id = this.dialog_active();
-                if (!id || !lord)
-                    return null;
-                $mol_wire_async(this.Crew()).promote(id, lord);
                 return null;
             }
             ask_accept(entry, next) {
@@ -63098,6 +63553,12 @@ var $;
             $mol_mem_key
         ], $bog_gram.prototype, "member_status", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_land", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "members_lands", null);
+        __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "asks_for", null);
         __decorate([
@@ -63121,9 +63582,6 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "member_drop", null);
-        __decorate([
-            $mol_action
-        ], $bog_gram.prototype, "member_raise", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "ask_accept", null);

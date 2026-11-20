@@ -1071,7 +1071,6 @@ $bog_gram_text $mol_object
 	crew_bad_id @ \This does not look like an ID
 	crew_no_key_read @ \Could not find this person's key: without it they cannot read the conversation
 	crew_no_keys @ \Could not find the keys of all members: a new part of the conversation cannot be started without them
-	crew_no_key_grant @ \Could not find this person's key: cannot grant them rights
 	alerts_off_label @ \Turn off
 	alerts_on_label @ \Turn on notifications
 	alerts_unsupported @ \Not supported by this browser
@@ -3113,9 +3112,83 @@ $bog_gram_group $bog_gram_page
 				sub /
 					<= Chosen_drop_icon* $mol_icon_close
 
-$mol_icon_shield $mol_icon path \M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z
+$giper_baza_link_chip $mol_link
+	param \link
+	link $giper_baza_link
+	sub /
+		<= icon \
+		<= title
 
-$mol_icon_shield_crown $mol_icon path \M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z
+$giper_baza_land_rights $mol_list
+	land $giper_baza_land
+	rows /
+		<= Add $mol_view sub /
+			<= Add_key $mol_string
+				hint @ \Public key
+				value? <=> add_key? \
+				submit? <=> add_commit? null
+				enabled <= enabled false
+			<= Add_commit $mol_button_minor
+				click? <=> add_commit? null
+				enabled <= enabled false
+				sub /
+					<= Add_commit_icon $mol_icon_plus
+		^ gifts /
+			<= Gift*0 $mol_view sub /
+				<= Gift_rate* $mol_select
+					hint @ \Speed
+					value? <=> gift_rate*? \0
+					enabled <= enabled false
+					Filter null
+					dictionary *
+						0 \0 🦼 ~1W
+						1 \1 🚲 ~3D
+						2 \2 🛵 ~1D
+						3 \3 🚜 ~D/2
+						4 \4 🏇 ~8h
+						5 \5 🚂 ~4h
+						6 \6 🚛 ~2h
+						7 \7 🚗 ~1h
+						8 \8 🏍️ ~h/2
+						9 \9 🏎️ ~5m
+						A \A 🚅 ~2m
+						B \B 🚁 ~m/2
+						C \C 🛩️ ~2s
+						D \D ✈️ ~s/2
+						E \E 🚀 ~50ms
+						F \F 🛸 ~1ms
+				<= Gift_tier* $mol_select
+					hint @ \Level
+					value? <=> gift_tier*? \deny
+					Filter null
+					dictionary <= tier_options *
+						deny @ \🛑 Deny
+						read @ \👀 Read
+						post @ \✍ Post
+						pull @ \🥂 Pull
+						rule @ \👑 Rule
+					enabled <= enabled false
+				<= Gift_name* $giper_baza_link_chip
+					param <= link_param \link
+					link <= peer_link* $giper_baza_link
+					sub /
+						^
+						<= Gift_avatar* $mol_avatar
+							id <= peer_id* \
+
+$bog_gram_rights $giper_baza_land_rights
+	lands /$giper_baza_land
+	lords /string
+	label* \
+	Gift_name* $giper_baza_link_chip
+		link <= peer_link* $giper_baza_link
+		icon \
+		title <= peer_title* \
+		arg *
+		sub /
+			<= Gift_avatar* $mol_avatar
+				id <= peer_id* \
+			<= peer_title* \
 
 $mol_icon_account_remove $mol_icon path \M15,14C17.67,14 23,15.33 23,18V20H7V18C7,15.33 12.33,14 15,14M15,12A4,4 0 0,1 11,8A4,4 0 0,1 15,4A4,4 0 0,1 19,8A4,4 0 0,1 15,12M5,9.59L7.12,7.46L8.54,8.88L6.41,11L8.54,13.12L7.12,14.54L5,12.41L2.88,14.54L1.46,13.12L3.59,11L1.46,8.88L2.88,7.46L5,9.59Z
 
@@ -3130,7 +3203,8 @@ $bog_gram_members $bog_gram_page
 	status* \
 	admin false
 	owner false
-	admin_is* false
+	rights_land null
+	rights_lands /$giper_baza_land
 	error? \
 	join_link \
 	meet_link \
@@ -3155,7 +3229,6 @@ $bog_gram_members $bog_gram_page
 	leave_idle @ \Leave group
 	add*? null
 	part*? null
-	promote*? null
 	leave? null
 	tools /
 		<= Close $mol_button_minor
@@ -3168,6 +3241,17 @@ $bog_gram_members $bog_gram_page
 			rows <= member_rows /
 		<= Drop_note $mol_paragraph
 			title @ \"Remove" starts a new chat compartment without the person. Past messages stay with them: the key to them is already given and cannot be taken back. They will not see new ones.
+		<= Rights_block $mol_view
+			sub /
+				<= Rights_head $mol_paragraph
+					title @ \Access
+				<= Rights $bog_gram_rights
+					land <= rights_land
+					lands <= rights_lands
+					lords <= lords
+					label* <= label*
+				<= Admin_note $mol_paragraph
+					title @ \An admin gets full control of the land: they can both invite people and change other people's rights. These abilities cannot be split.
 		<= Add_block $mol_view
 			sub <= add_rows /
 		<= Leave_note $mol_paragraph
@@ -3220,8 +3304,6 @@ $bog_gram_members $bog_gram_page
 					<= id_add_label @ \Add
 	Pick_list $mol_list
 		rows <= pick_rows /
-	Admin_note $mol_paragraph
-		title @ \An admin gets full control of the land: they can both invite people and change other people's rights. These abilities cannot be split.
 	Join $mol_view
 		sub /
 			<= Join_head $mol_paragraph
@@ -3296,11 +3378,6 @@ $bog_gram_members $bog_gram_page
 		title <= member_title* \
 		note <= status*
 		tools /
-			<= Rule* $mol_button_minor
-				hint @ \Make admin
-				click? <=> rule_click*? null
-				sub /
-					<= Rule_icon* $mol_icon_shield_crown
 			<= Drop* $mol_button_minor
 				hint <= drop_hint* \
 				attr *
@@ -4664,7 +4741,6 @@ $bog_gram $mol_book2
 		group_title* => group_title*
 		group_is* => group_is*
 		group_name_auto* => group_name_auto*
-		admins* => admin_lords*
 		admin_me* => admin_me*
 		owner* => dialog_owner*
 		own* => dialog_own*
@@ -4872,7 +4948,8 @@ $bog_gram $mol_book2
 			status* <= member_status* \
 			admin <= members_admin false
 			owner <= members_owner false
-			admin_is* <= member_admin* false
+			rights_land <= members_land null
+			rights_lands <= members_lands /$giper_baza_land
 			error? <=> member_error?
 			join_link <= join_link \
 			meet_link <= meet_link \
@@ -4887,7 +4964,6 @@ $bog_gram $mol_book2
 			history? <=> member_history?
 			add*? <=> member_add*? null
 			part*? <=> member_drop*? null
-			promote*? <=> member_raise*? null
 			leave? <=> group_leave? null
 	Chat_page* $bog_gram_chat
 		dialog <= chat_dialog* \
