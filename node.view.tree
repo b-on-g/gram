@@ -3536,10 +3536,178 @@ $mol_icon_reply $mol_icon path \M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C
 
 $mol_icon_paperclip $mol_icon path \M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z
 
-$bog_gram_write $mol_textarea
-	submit_with_ctrl false
-	spellcheck true
+$mol_icon_arrow_collapse $mol_icon path \M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z
+
+$mol_icon_arrow_collapse_left $mol_icon path \M11.92,19.92L4,12L11.92,4.08L13.33,5.5L7.83,11H22V13H7.83L13.34,18.5L11.92,19.92M4,12V2H2V22H4V12Z
+
+$mol_icon_format_size $mol_icon path \M2 4V7H7V19H10V7H15V4H2M21 9H12V12H15V19H18V12H21V9Z
+
+$mol_icon_order_bool_ascending $mol_icon path \M6 3C3.79 3 2 4.79 2 7S3.79 11 6 11 10 9.21 10 7 8.21 3 6 3M6 9C4.9 9 4 8.1 4 7S4.9 5 6 5 8 5.9 8 7 7.1 9 6 9M6 13C3.79 13 2 14.79 2 17S3.79 21 6 21 10 19.21 10 17 8.21 13 6 13M12 5H22V7H12V5M12 19V17H22V19H12M12 11H22V13H12V11Z
+
+$mol_icon_order_numeric_ascending $mol_icon path \M7 21H3V19H7V18H5C3.9 18 3 17.11 3 16V15C3 13.9 3.9 13 5 13H7C8.11 13 9 13.9 9 15V19C9 20.11 8.11 21 7 21M7 15H5V16H7M5 3H7C8.11 3 9 3.9 9 5V9C9 10.11 8.11 11 7 11H5C3.9 11 3 10.11 3 9V5C3 3.9 3.9 3 5 3M5 9H7V5H5M12 5H22V7H12M12 19V17H22V19M12 11H22V13H12Z
+
+$mol_icon_comment $mol_icon path \M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z
+
+$mol_icon_comment_quote $mol_icon path \M20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H8V21C8 21.6 8.4 22 9 22H9.5C9.7 22 10 21.9 10.2 21.7L13.9 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M11 13H7V8.8L8.3 6H10.3L8.9 9H11V13M17 13H13V8.8L14.3 6H16.3L14.9 9H17V13Z
+
+$mol_icon_comment_quote_outline $mol_icon path \M9 22C8.4 22 8 21.6 8 21V18H4C2.9 18 2 17.1 2 16V4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4V16C22 17.1 21.1 18 20 18H13.9L10.2 21.7C10 21.9 9.8 22 9.5 22H9M10 16V19.1L13.1 16H20V4H4V16H10M16.3 6L14.9 9H17V13H13V8.8L14.3 6H16.3M10.3 6L8.9 9H11V13H7V8.8L8.3 6H10.3Z
+
+$mol_icon_xml $mol_icon path \M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z
+
+$mol_icon_marker $mol_icon path \M18.5,1.15C17.97,1.15 17.46,1.34 17.07,1.73L11.26,7.55L16.91,13.2L22.73,7.39C23.5,6.61 23.5,5.35 22.73,4.56L19.89,1.73C19.5,1.34 19,1.15 18.5,1.15M10.3,8.5L4.34,14.46C3.56,15.24 3.56,16.5 4.36,17.31C3.14,18.54 1.9,19.77 0.67,21H6.33L7.19,20.14C7.97,20.9 9.22,20.89 10,20.12L15.95,14.16
+
+$mol_bar $mol_view
+
+$giper_baza_rich_edit $mol_view
+	pawn? $giper_baza_rich
+	attr *
+		^
+		giper_baza_rich_edit_enabled <= enabled true
+	hint \
+	auto /
+		<= selection_load null
+		<= selection_sync null
+	plugins /
+		<= Hotkey $mol_hotkey2 action *
+			alt_S? <=> inline_toggle*strong? null
+			alt_E? <=> inline_toggle*em? null
+			alt_I? <=> inline_toggle*ins? null
+			alt_R? <=> inline_toggle*del? null
+			alt_C? <=> inline_toggle*code? null
+			-
+			alt_T? <=> block_wrap*section? null
+			alt_Q? <=> block_wrap*blockquote? null
+			alt_U? <=> block_wrap*ul? null
+			alt_O? <=> block_wrap*ol? null
+			alt_P? <=> block_wrap*pre? null
+			-
+			tab? <=> block_rewrap? null
+			shift_tab? <=> block_unwrap? null
+			-
+			ctrl_Z? <=> undo? null
+			ctrl_shift_Z? <=> redo? null
+	sub /
+		<= Tools $mol_float sub <= tools /
+			<= Main $mol_bar sub /
+				- <= Undo_button $mol_button_minor
+					hint @ \Undo (Ctrl+Z)
+					enabled? <=> selected? false
+					click? <=> undo?
+					sub /
+						<= Undo_icon $mol_icon_undo
+				- <= Redo_button $mol_button_minor
+					hint @ \Redo (Ctrl+Shift+Z)
+					enabled? <=> selected? false
+					click? <=> redo?
+					sub /
+						<= Redo_icon $mol_icon_redo
+				<= Unwrap_button $mol_button_minor
+					hint @ \Unwrap Block (Shift+Tab)
+					enabled? <=> selected? false
+					click? <=> block_unwrap?
+					sub /
+						<= Unwrap_icon $mol_icon_arrow_collapse_left
+				<= Section_button $mol_button_minor
+					hint @ \Titled Section (Alt+T)
+					enabled? <=> selected? false
+					click? <=> block_wrap*section?
+					sub /
+						<= Section_icon $mol_icon_format_size
+				<= List_bullet_button $mol_button_minor
+					hint @ \Unordered List (Alt+U)
+					enabled? <=> selected? false
+					click? <=> block_wrap*ul?
+					sub /
+						<= List_bullet_icon $mol_icon_order_bool_ascending
+				<= List_number_button $mol_button_minor
+					hint @ \Ordered List (Alt+O)
+					enabled? <=> selected? false
+					click? <=> block_wrap*ol?
+					sub /
+						<= List_number_icon $mol_icon_order_numeric_ascending
+				<= Quote_button $mol_button_minor
+					hint @ \Quotation (Alt+Q)
+					enabled? <=> selected? false
+					click? <=> block_wrap*blockquote?
+					sub /
+						<= Quote_icon $mol_icon_comment_quote_outline
+				<= Preformat_button $mol_button_minor
+					hint @ \Preformatted Code (Alt+P)
+					enabled? <=> selected? false
+					click? <=> block_wrap*pre?
+					sub /
+						<= Preformat_icon $mol_icon_xml
+				<= Inline_format_menu $mol_pick
+					hint @ \Inline Formating
+					trigger_enabled? <=> selected? false
+					trigger_content /
+						<= Inline_format_menu_icon $mol_icon_marker
+					bubble_content /
+						<= Strong_button $mol_button_minor
+							title @ \Strong
+							hint \Alt+S
+							enabled? <=> selected? false
+							click? <=> inline_toggle*strong?
+						<= Em_button $mol_button_minor
+							title @ \Emphasis
+							hint \Alt+E
+							enabled? <=> selected? false
+							click? <=> inline_toggle*em?
+						<= Ins_button $mol_button_minor
+							title @ \Insertion
+							hint \Alt+I
+							enabled? <=> selected? false
+							click? <=> inline_toggle*ins?
+						<= Del_button $mol_button_minor
+							title @ \Deletion
+							hint \Alt+R
+							enabled? <=> selected? false
+							click? <=> inline_toggle*del?
+						<= Code_button $mol_button_minor
+							title @ \Code
+							hint \Alt+C
+							enabled? <=> selected? false
+							click? <=> inline_toggle*code?
+				<= Attach $mol_button_open
+					hint @ \Attach file
+					enabled? <=> selected? false
+					files? <=> attach_files? /
+				- <= Search_toggle $mol_check_icon
+					hint @ \Search / Replace
+					checked? <=> search_active? false
+					sub /
+						<= Search_icon $mol_icon_magnify
+			<= Search_panel $mol_bar sub /
+				<= Search_query $mol_string
+					hint @ \Search...
+				<= Search_replace $mol_string
+					hint @ \Replace...
+		<= Content $mol_view
+			attr *
+				contenteditable <= editable? \true
+			event *
+				input? <=> save? null
+				paste? <=> paste? null
+				pointermove? <=> hover? null
+			sub <= content /
+
+$bog_gram_write $giper_baza_rich_edit
+	html? \
+	rich false
+	length_max +Infinity
 	send? null
+	attr *
+		^
+		bog_gram_write_rich <= rich
+	event *
+		^
+		keydown? <=> press? null
+		beforeinput? <=> before_input? null
+	Hint $mol_view
+		sub /
+			<= hint
+
+$mol_icon_format_text $mol_icon path \M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z
 
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
 
@@ -3771,6 +3939,51 @@ $bog_gram_body $mol_view
 		hint <= link_uri*
 		sub / <= link_text*
 
+$mol_html_view $mol_list
+	html \
+	dom null
+	safe_link* \
+	views* /
+	xss_uri \https://en.wikipedia.org/wiki/XSS#
+	Heading* $mol_html_view_heading
+		level <= heading_level* 1
+		sub <= content* /
+	Paragraph* $mol_paragraph
+		sub <= content* /
+	List* $mol_list
+		rows <= content* /
+	Quote* $mol_list
+		rows <= content* /
+	Strong* $mol_paragraph
+		sub <= content* /
+	Emphasis* $mol_paragraph
+		sub <= content* /
+	Deleted* $mol_paragraph
+		sub <= content* /
+	Inserted* $mol_paragraph
+		sub <= content* /
+	Subscript* $mol_view
+		sub <= content*
+	Superscript* $mol_view
+		sub <= content*
+	Code* $mol_paragraph
+		sub <= content* /
+	Link* $mol_link_iconed
+		uri <= link_uri* \
+		content <= content* /
+	Image* $mol_image
+		uri <= image_uri* \
+	Break* $mol_paragraph
+		sub /
+	Text* $mol_dimmer
+		needle <= highlight \
+		haystack <= text* \
+
+$mol_html_view_heading $mol_paragraph
+	attr *
+		^
+		mol_html_view_heading <= level 1
+
 $bog_gram_bubble $mol_view
 	out false
 	menu false
@@ -3811,6 +4024,7 @@ $bog_gram_bubble $mol_view
 	forwardable true
 	forward? null
 	body \
+	html \
 	time \
 	edited false
 	checks \
@@ -3893,6 +4107,8 @@ $bog_gram_bubble $mol_view
 			sub /
 				<= Body $bog_gram_body
 					text <= body
+				<= Rich $mol_html_view
+					html <= html
 				<= Meta $mol_view
 					sub /
 						<= Time $mol_view
@@ -4108,8 +4324,13 @@ $bog_gram_chat $bog_gram_page
 			<= Message_field $bog_gram_write
 				hint <= message_hint @ \Message…
 				length_max <= text_limit 4096
-				value? <=> message_text?
+				html? <=> message_html? \
+				rich <= rich_mode? false
 				send? <=> message_send? null
+	Rich_toggle $mol_check_icon
+		hint @ \Formatting
+		checked? <=> rich_mode?
+		Icon <= Rich_icon $mol_icon_format_text
 	caption_hint @ \Add a caption…
 	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
@@ -4230,6 +4451,7 @@ $bog_gram_chat $bog_gram_page
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
 		body <= message_body* \
+		html <= message_rich* \
 		time <= message_time* \
 		edited <= message_edited* false
 		checks <= message_checks* \

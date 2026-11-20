@@ -73,6 +73,7 @@
 	"$bog_gram_chat_Record_stop_hint": "Остановить и прослушать",
 	"$bog_gram_chat_Record_turn_hint": "Сменить камеру",
 	"$bog_gram_chat_Reply_cancel_hint": "Отменить ответ",
+	"$bog_gram_chat_Rich_toggle_hint": "Форматирование",
 	"$bog_gram_chat_Send_hint": "Отправить",
 	"$bog_gram_chat_Share_hint": "Поделиться этим контактом",
 	"$bog_gram_chat_call_lost_pattern": "Звонок не начат: не доехал ключ — {names}. Позвоните ещё раз чуть позже",

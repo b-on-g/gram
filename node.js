@@ -41884,7 +41884,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.193';
+    $.$bog_gram_version = '1.0.194';
 })($ || ($ = {}));
 
 ;
@@ -44944,6 +44944,7 @@ var $;
 (function ($) {
     class $bog_gram_message extends $giper_baza_dict.with({
         Text: $giper_baza_atom_text,
+        Html: $giper_baza_atom_text,
         Author: $giper_baza_atom_text,
         Moment: $giper_baza_atom_real,
         Edited: $giper_baza_atom_real,
@@ -50403,19 +50404,1647 @@ var $;
 
 
 ;
-	($.$bog_gram_write) = class $bog_gram_write extends ($.$mol_textarea) {
-		submit_with_ctrl(){
+"use strict";
+var $;
+(function ($) {
+    const { unicode_only, line_end, tab, repeat_greedy, optional, forbid_after, force_after, char_only, char_except } = $mol_regexp;
+    $.$giper_baza_text_tokens = $mol_regexp.from({
+        token: {
+            'line-break': line_end,
+            'indents': repeat_greedy(tab, 1),
+            'emoji': [
+                unicode_only('Extended_Pictographic'),
+                optional(unicode_only('Emoji_Modifier')),
+                repeat_greedy([
+                    unicode_only('Emoji_Component'),
+                    unicode_only('Extended_Pictographic'),
+                    optional(unicode_only('Emoji_Modifier')),
+                ]),
+            ],
+            'link': /\b(https?:\/\/[^\s,.;:!?")]+(?:[,.;:!?")][^\s,.;:!?")]+)+)/,
+            'Word': [
+                [char_only(' ', 0xA0)],
+                repeat_greedy(char_only([
+                    unicode_only('General_Category', 'Uppercase_Letter'),
+                    unicode_only('Diacritic'),
+                    unicode_only('General_Category', 'Number'),
+                ]), 1),
+                repeat_greedy(char_only([
+                    unicode_only('General_Category', 'Lowercase_Letter'),
+                    unicode_only('Diacritic'),
+                    unicode_only('General_Category', 'Number'),
+                ])),
+            ],
+            'word': [
+                [char_only(' ', 0xA0)],
+                repeat_greedy(char_only([
+                    unicode_only('General_Category', 'Lowercase_Letter'),
+                    unicode_only('Diacritic'),
+                    unicode_only('General_Category', 'Number'),
+                ]), 1),
+            ],
+            'spaces': [
+                forbid_after(line_end),
+                repeat_greedy(unicode_only('White_Space'), 1),
+                force_after(unicode_only('White_Space')),
+            ],
+            'space': [
+                forbid_after(line_end),
+                unicode_only('White_Space'),
+                forbid_after([
+                    unicode_only('White_Space'),
+                    unicode_only('General_Category', 'Uppercase_Letter'),
+                    unicode_only('General_Category', 'Lowercase_Letter'),
+                    unicode_only('Diacritic'),
+                    unicode_only('General_Category', 'Number'),
+                ]),
+            ],
+            'others': [
+                [char_only(' ', 0xA0)],
+                repeat_greedy(char_except([
+                    unicode_only('General_Category', 'Uppercase_Letter'),
+                    unicode_only('General_Category', 'Lowercase_Letter'),
+                    unicode_only('Diacritic'),
+                    unicode_only('General_Category', 'Number'),
+                    unicode_only('White_Space'),
+                ]), 1),
+            ],
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Mergeable text Pawn */
+    class $giper_baza_text extends $giper_baza_pawn {
+        static tag = $giper_baza_unit_sand_tag[$giper_baza_unit_sand_tag.vals];
+        value(next) {
+            return this.text(next);
+        }
+        /** Text representation. Based on list of rows. */
+        text(next) {
+            if (next !== undefined) {
+                const land = this.land();
+                const prev = this.units();
+                const lines = next.match(/.*\n|.+$/g) ?? [];
+                $mol_reconcile({
+                    prev,
+                    from: 0,
+                    to: prev.length,
+                    next: lines,
+                    equal: (next, prev) => {
+                        //if( typeof prev.data === 'string' ) return false // ???
+                        return land.Pawn($giper_baza_text).Head(prev.self()).str() === next;
+                    },
+                    drop: (prev, lead) => this.land().post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), null),
+                    insert: (next, lead) => {
+                        const sand = this.land().post(lead?.self() ?? $giper_baza_link.hole, this.head(), land.self_make(), 'p', 'vals');
+                        land.Pawn($giper_baza_text).Head(sand.self()).str(next);
+                        return sand;
+                    },
+                    replace: (next, prev, lead) => {
+                        land.Pawn($giper_baza_text).Head(prev.self()).str(next);
+                        return prev;
+                    },
+                });
+            }
+            return this.str();
+        }
+        /** Text representation. Based on list of tokens. */
+        str(next) {
+            if (next === undefined) {
+                let str = '';
+                const land = this.land();
+                for (const unit of this.units()) {
+                    if (unit.tag() === 'term')
+                        str += $mol_schema_string.cast(land.sand_decode(unit));
+                    else
+                        str += land.Pawn($giper_baza_text).Head(unit.self()).str();
+                }
+                return str;
+            }
+            else {
+                this.write(next, 0, -1);
+                return this.str();
+            }
+        }
+        write(next, str_from = -1, str_to = str_from) {
+            const land = this.land();
+            const list = this.units();
+            let from = str_from < 0 ? list.length : 0;
+            let word = '';
+            while (from < list.length) {
+                word = $mol_schema_string.cast(land.sand_decode(list[from]));
+                if (str_from <= word.length) {
+                    next = word.slice(0, str_from) + next;
+                    break;
+                }
+                str_from -= word.length;
+                if (str_to > 0)
+                    str_to -= word.length;
+                from++;
+            }
+            let to = str_to < 0 ? list.length : from;
+            while (to < list.length) {
+                word = $mol_schema_string.cast(land.sand_decode(list[to]));
+                to++;
+                if (str_to < word.length) {
+                    next = next + word.slice(str_to);
+                    break;
+                }
+                str_to -= word.length;
+            }
+            if (from && from === list.length) {
+                --from;
+                next = $mol_schema_string.cast(land.sand_decode(list[from])) + next;
+            }
+            const words = next.match($giper_baza_text_tokens) ?? [];
+            this.cast($giper_baza_list).splice(words, from, to);
+            return this;
+        }
+        point_by_offset(offset) {
+            const land = this.land();
+            let off = offset;
+            for (const unit of this.units()) {
+                if (unit.tag() === 'term') {
+                    const len = $mol_schema_string.cast(land.sand_decode(unit)).length;
+                    if (off <= len)
+                        return [unit.self().str, off, 0];
+                    else
+                        off -= len;
+                }
+                else {
+                    const found = land.Pawn($giper_baza_text).Head(unit.self()).point_by_offset(off);
+                    if (found[0])
+                        return found;
+                    off = found[1];
+                }
+            }
+            return ['', off, 0];
+        }
+        offset_by_point([self, offset]) {
+            const land = this.land();
+            for (const unit of this.units()) {
+                if (unit.self().str === self)
+                    return [self, offset];
+                if (unit.tag() === 'term') {
+                    offset += $mol_schema_string.cast(land.sand_decode(unit)).length;
+                }
+                else {
+                    const found = land.Pawn($giper_baza_text).Head(unit.self()).offset_by_point([self, offset, 0]);
+                    if (found[0])
+                        return [self, found[1]];
+                    offset = found[1];
+                }
+            }
+            return ['', offset];
+        }
+        selection(lord, next) {
+            const user = this.$.$giper_baza_glob.Land(lord).Data($giper_baza_flex_user);
+            if (next) {
+                user.caret(next.map(offset => this.point_by_offset(offset)));
+                return next;
+            }
+            else {
+                this.text(); // track text to recalc selection on its change
+                return user.caret()?.map(point => this.offset_by_point(point)[1]) ?? [0, 0];
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $giper_baza_text.prototype, "text", null);
+    __decorate([
+        $mol_mem
+    ], $giper_baza_text.prototype, "str", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_text.prototype, "write", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_text.prototype, "point_by_offset", null);
+    __decorate([
+        $mol_action
+    ], $giper_baza_text.prototype, "offset_by_point", null);
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_text.prototype, "selection", null);
+    $.$giper_baza_text = $giper_baza_text;
+})($ || ($ = {}));
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
+var $;
+(function ($) {
+    class $giper_baza_rich extends $giper_baza_pawn {
+        dom(next) {
+            const land = this.land();
+            const doms = land.Pawn($giper_baza_rich);
+            const regs = land.Pawn($giper_baza_atom_text);
+            const used_ids = new Set;
+            const link_of = (el) => {
+                if (!(el instanceof this.$.$mol_dom_context.Element))
+                    return null;
+                if (!el.id)
+                    return null;
+                const link = $giper_baza_link.check(el.id);
+                if (link && !used_ids.has(link.str)) {
+                    used_ids.add(link.str);
+                    return link;
+                }
+                el.id = '';
+                return null;
+            };
+            if (next) {
+                const sample = [];
+                let texts = '';
+                function flush() {
+                    if (!texts.length)
+                        return;
+                    for (const token of texts.matchAll($giper_baza_text_tokens)) {
+                        sample.push(token[0]);
+                    }
+                    texts = '';
+                }
+                function collect(node) {
+                    switch (node.nodeType) {
+                        case (node.ELEMENT_NODE): {
+                            if (node.localName === 'span') {
+                                link_of(node);
+                                for (const kid of [...node.childNodes]) {
+                                    collect(kid);
+                                }
+                            }
+                            else {
+                                flush();
+                                sample.push(node);
+                            }
+                            return;
+                        }
+                        case (node.ATTRIBUTE_NODE): {
+                            if (node.nodeName === 'id')
+                                return;
+                            if (node.nodeName === 'xmlns')
+                                return;
+                            sample.push(node);
+                            return;
+                        }
+                        case (node.TEXT_NODE): {
+                            texts += node.nodeValue;
+                            return;
+                        }
+                    }
+                }
+                for (const node of next)
+                    collect(node);
+                flush();
+                function attr(el) {
+                    let res = {};
+                    for (const a of el.attributes) {
+                        if (a.name === 'id')
+                            continue;
+                        res[a.name] = a.value;
+                    }
+                    return res;
+                }
+                function val(el) {
+                    return typeof el === 'string'
+                        ? el
+                        : el.localName === 'span'
+                            ? el.textContent
+                            : el.localName;
+                }
+                function tag(el) {
+                    return typeof el === 'string'
+                        ? 'term'
+                        : el.nodeType === el.ATTRIBUTE_NODE
+                            ? 'solo'
+                            : el.localName === 'span'
+                                ? 'term'
+                                : 'vals';
+                }
+                let units = this.units();
+                $mol_reconcile({
+                    prev: units,
+                    from: 0,
+                    to: units.length,
+                    next: sample,
+                    equal: (next, prev) => {
+                        if (typeof next === 'string') {
+                            const p = $mol_schema_string.cast(land.sand_decode(prev));
+                            if (!p)
+                                return false;
+                            return p.startsWith(next) || next.startsWith(p);
+                        }
+                        else if (next.nodeType === next.ATTRIBUTE_NODE) {
+                            return land.sand_decode(prev) === next.nodeName;
+                        }
+                        else {
+                            return prev.self().str === link_of(next)?.str;
+                        }
+                    },
+                    drop: (prev, lead) => land.sand_wipe(prev),
+                    insert: (next, lead) => {
+                        const sand = land.post(lead?.self() ?? $giper_baza_link.hole, this.head(), link_of(next), val(next), tag(next));
+                        if (typeof next !== 'string' && next.nodeType === next.ELEMENT_NODE) {
+                            ;
+                            next.id = sand.self().str;
+                        }
+                        return sand;
+                    },
+                    update: (next, prev, lead) => (typeof next !== 'string' || next === land.sand_decode(prev))
+                        ? prev
+                        : land.post(lead?.self() ?? $giper_baza_link.hole, prev.head(), prev.self(), val(next), tag(next)),
+                    // replace: ( next, prev, lead )=> {
+                    // 	land.sand_wipe( prev )
+                    // 	return land.post(
+                    // 		lead?.self() ?? $giper_baza_link.hole,
+                    // 		prev.head(),
+                    // 		link_of( next ),
+                    // 		val( next ),
+                    // 		tag( next ),
+                    // 	)
+                    // },
+                });
+                units = this.units();
+                for (let i = 0; i < units.length; ++i) {
+                    const sam = sample[i];
+                    if (typeof sam === 'string')
+                        continue;
+                    if (sam.nodeType === sam.ATTRIBUTE_NODE) {
+                        regs.Head(units[i].self()).val(sam.nodeValue);
+                    }
+                    else if (sam.nodeName !== 'span') {
+                        doms.Head(units[i].self()).dom([
+                            ...sam.attributes,
+                            ...[...sam.childNodes],
+                        ]);
+                    }
+                }
+                return next;
+            }
+            else {
+                return this.units().flatMap(unit => {
+                    if (unit.tag() === 'solo')
+                        return [];
+                    const Tag = unit.tag() === 'term'
+                        ? 'span'
+                        : land.sand_decode(unit) ?? 'p';
+                    const attrs = unit.tag() === 'vals'
+                        ? Object.fromEntries(regs.Head(unit.self()).units()
+                            .filter(sand => sand.tag() === 'solo')
+                            .map(sand => [land.sand_decode(sand), regs.Head(sand.self()).val()]))
+                        : {};
+                    const content = unit.tag() === 'term'
+                        ? $mol_schema_string.cast(land.sand_decode(unit))
+                        : doms.Head(unit.self()).dom();
+                    return $mol_jsx(Tag, { ...attrs, id: unit.self().str }, content);
+                });
+            }
+        }
+        html(next) {
+            if (next === undefined) {
+                return $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, this.dom()));
+            }
+            else {
+                this.dom([...$mol_dom_parse(`<body>${next}</body>`).documentElement.childNodes]);
+                return next;
+            }
+        }
+        selection(lord, next) {
+            const base = this.$.$giper_baza_glob.Land(lord).Data($giper_baza_flex_user);
+            if (next) {
+                base.caret(next);
+                return next;
+            }
+            else {
+                return base.caret() ?? [[this.head().str, 0, 0], [this.head().str, 0, 0]];
+            }
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $giper_baza_rich.prototype, "selection", null);
+    $.$giper_baza_rich = $giper_baza_rich;
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_arrow_collapse) = class $mol_icon_arrow_collapse extends ($.$mol_icon) {
+		path(){
+			return "M19.5,3.09L15,7.59V4H13V11H20V9H16.41L20.91,4.5L19.5,3.09M4,13V15H7.59L3.09,19.5L4.5,20.91L9,16.41V20H11V13H4Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_arrow_collapse_left) = class $mol_icon_arrow_collapse_left extends ($.$mol_icon) {
+		path(){
+			return "M11.92,19.92L4,12L11.92,4.08L13.33,5.5L7.83,11H22V13H7.83L13.34,18.5L11.92,19.92M4,12V2H2V22H4V12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_size) = class $mol_icon_format_size extends ($.$mol_icon) {
+		path(){
+			return "M2 4V7H7V19H10V7H15V4H2M21 9H12V12H15V19H18V12H21V9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_order_bool_ascending) = class $mol_icon_order_bool_ascending extends ($.$mol_icon) {
+		path(){
+			return "M6 3C3.79 3 2 4.79 2 7S3.79 11 6 11 10 9.21 10 7 8.21 3 6 3M6 9C4.9 9 4 8.1 4 7S4.9 5 6 5 8 5.9 8 7 7.1 9 6 9M6 13C3.79 13 2 14.79 2 17S3.79 21 6 21 10 19.21 10 17 8.21 13 6 13M12 5H22V7H12V5M12 19V17H22V19H12M12 11H22V13H12V11Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_order_numeric_ascending) = class $mol_icon_order_numeric_ascending extends ($.$mol_icon) {
+		path(){
+			return "M7 21H3V19H7V18H5C3.9 18 3 17.11 3 16V15C3 13.9 3.9 13 5 13H7C8.11 13 9 13.9 9 15V19C9 20.11 8.11 21 7 21M7 15H5V16H7M5 3H7C8.11 3 9 3.9 9 5V9C9 10.11 8.11 11 7 11H5C3.9 11 3 10.11 3 9V5C3 3.9 3.9 3 5 3M5 9H7V5H5M12 5H22V7H12M12 19V17H22V19M12 11H22V13H12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_comment) = class $mol_icon_comment extends ($.$mol_icon) {
+		path(){
+			return "M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_comment_quote) = class $mol_icon_comment_quote extends ($.$mol_icon) {
+		path(){
+			return "M20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H8V21C8 21.6 8.4 22 9 22H9.5C9.7 22 10 21.9 10.2 21.7L13.9 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M11 13H7V8.8L8.3 6H10.3L8.9 9H11V13M17 13H13V8.8L14.3 6H16.3L14.9 9H17V13Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_comment_quote_outline) = class $mol_icon_comment_quote_outline extends ($.$mol_icon) {
+		path(){
+			return "M9 22C8.4 22 8 21.6 8 21V18H4C2.9 18 2 17.1 2 16V4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4V16C22 17.1 21.1 18 20 18H13.9L10.2 21.7C10 21.9 9.8 22 9.5 22H9M10 16V19.1L13.1 16H20V4H4V16H10M16.3 6L14.9 9H17V13H13V8.8L14.3 6H16.3M10.3 6L8.9 9H11V13H7V8.8L8.3 6H10.3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_xml) = class $mol_icon_xml extends ($.$mol_icon) {
+		path(){
+			return "M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_marker) = class $mol_icon_marker extends ($.$mol_icon) {
+		path(){
+			return "M18.5,1.15C17.97,1.15 17.46,1.34 17.07,1.73L11.26,7.55L16.91,13.2L22.73,7.39C23.5,6.61 23.5,5.35 22.73,4.56L19.89,1.73C19.5,1.34 19,1.15 18.5,1.15M10.3,8.5L4.34,14.46C3.56,15.24 3.56,16.5 4.36,17.31C3.14,18.54 1.9,19.77 0.67,21H6.33L7.19,20.14C7.97,20.9 9.22,20.89 10,20.12L15.95,14.16";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_bar) = class $mol_bar extends ($.$mol_view) {};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/bar/bar.view.css", "[mol_bar] {\n\tdisplay: flex;\n\t/* box-shadow: inset 0 0 0 1px var(--mol_theme_line); */\n\tborder-radius: var(--mol_gap_round);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$giper_baza_rich_edit) = class $giper_baza_rich_edit extends ($.$mol_view) {
+		enabled(){
+			return true;
+		}
+		selection_load(){
+			return null;
+		}
+		selection_sync(){
+			return null;
+		}
+		inline_toggle(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		block_wrap(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		block_rewrap(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		block_unwrap(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		undo(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		redo(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Hotkey(){
+			const obj = new this.$.$mol_hotkey2();
+			(obj.action) = () => ({
+				"alt_S": (next) => (this.inline_toggle("strong", next)), 
+				"alt_E": (next) => (this.inline_toggle("em", next)), 
+				"alt_I": (next) => (this.inline_toggle("ins", next)), 
+				"alt_R": (next) => (this.inline_toggle("del", next)), 
+				"alt_C": (next) => (this.inline_toggle("code", next)), 
+				"alt_T": (next) => (this.block_wrap("section", next)), 
+				"alt_Q": (next) => (this.block_wrap("blockquote", next)), 
+				"alt_U": (next) => (this.block_wrap("ul", next)), 
+				"alt_O": (next) => (this.block_wrap("ol", next)), 
+				"alt_P": (next) => (this.block_wrap("pre", next)), 
+				"tab": (next) => (this.block_rewrap(next)), 
+				"shift_tab": (next) => (this.block_unwrap(next)), 
+				"ctrl_Z": (next) => (this.undo(next)), 
+				"ctrl_shift_Z": (next) => (this.redo(next))
+			});
+			return obj;
+		}
+		selected(next){
+			if(next !== undefined) return next;
 			return false;
 		}
-		spellcheck(){
-			return true;
+		Unwrap_icon(){
+			const obj = new this.$.$mol_icon_arrow_collapse_left();
+			return obj;
+		}
+		Unwrap_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Unwrap_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_unwrap(next)));
+			(obj.sub) = () => ([(this.Unwrap_icon())]);
+			return obj;
+		}
+		Section_icon(){
+			const obj = new this.$.$mol_icon_format_size();
+			return obj;
+		}
+		Section_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Section_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_wrap("section", next)));
+			(obj.sub) = () => ([(this.Section_icon())]);
+			return obj;
+		}
+		List_bullet_icon(){
+			const obj = new this.$.$mol_icon_order_bool_ascending();
+			return obj;
+		}
+		List_bullet_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_List_bullet_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_wrap("ul", next)));
+			(obj.sub) = () => ([(this.List_bullet_icon())]);
+			return obj;
+		}
+		List_number_icon(){
+			const obj = new this.$.$mol_icon_order_numeric_ascending();
+			return obj;
+		}
+		List_number_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_List_number_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_wrap("ol", next)));
+			(obj.sub) = () => ([(this.List_number_icon())]);
+			return obj;
+		}
+		Quote_icon(){
+			const obj = new this.$.$mol_icon_comment_quote_outline();
+			return obj;
+		}
+		Quote_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Quote_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_wrap("blockquote", next)));
+			(obj.sub) = () => ([(this.Quote_icon())]);
+			return obj;
+		}
+		Preformat_icon(){
+			const obj = new this.$.$mol_icon_xml();
+			return obj;
+		}
+		Preformat_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Preformat_button_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.block_wrap("pre", next)));
+			(obj.sub) = () => ([(this.Preformat_icon())]);
+			return obj;
+		}
+		Inline_format_menu_icon(){
+			const obj = new this.$.$mol_icon_marker();
+			return obj;
+		}
+		Strong_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Strong_button_title")));
+			(obj.hint) = () => ("Alt+S");
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.inline_toggle("strong", next)));
+			return obj;
+		}
+		Em_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Em_button_title")));
+			(obj.hint) = () => ("Alt+E");
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.inline_toggle("em", next)));
+			return obj;
+		}
+		Ins_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Ins_button_title")));
+			(obj.hint) = () => ("Alt+I");
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.inline_toggle("ins", next)));
+			return obj;
+		}
+		Del_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Del_button_title")));
+			(obj.hint) = () => ("Alt+R");
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.inline_toggle("del", next)));
+			return obj;
+		}
+		Code_button(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Code_button_title")));
+			(obj.hint) = () => ("Alt+C");
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.click) = (next) => ((this.inline_toggle("code", next)));
+			return obj;
+		}
+		Inline_format_menu(){
+			const obj = new this.$.$mol_pick();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Inline_format_menu_hint")));
+			(obj.trigger_enabled) = (next) => ((this.selected(next)));
+			(obj.trigger_content) = () => ([(this.Inline_format_menu_icon())]);
+			(obj.bubble_content) = () => ([
+				(this.Strong_button()), 
+				(this.Em_button()), 
+				(this.Ins_button()), 
+				(this.Del_button()), 
+				(this.Code_button())
+			]);
+			return obj;
+		}
+		attach_files(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		Attach(){
+			const obj = new this.$.$mol_button_open();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Attach_hint")));
+			(obj.enabled) = (next) => ((this.selected(next)));
+			(obj.files) = (next) => ((this.attach_files(next)));
+			return obj;
+		}
+		Main(){
+			const obj = new this.$.$mol_bar();
+			(obj.sub) = () => ([
+				(this.Unwrap_button()), 
+				(this.Section_button()), 
+				(this.List_bullet_button()), 
+				(this.List_number_button()), 
+				(this.Quote_button()), 
+				(this.Preformat_button()), 
+				(this.Inline_format_menu()), 
+				(this.Attach())
+			]);
+			return obj;
+		}
+		Search_query(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Search_query_hint")));
+			return obj;
+		}
+		Search_replace(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$giper_baza_rich_edit_Search_replace_hint")));
+			return obj;
+		}
+		Search_panel(){
+			const obj = new this.$.$mol_bar();
+			(obj.sub) = () => ([(this.Search_query()), (this.Search_replace())]);
+			return obj;
+		}
+		tools(){
+			return [(this.Main()), (this.Search_panel())];
+		}
+		Tools(){
+			const obj = new this.$.$mol_float();
+			(obj.sub) = () => ((this.tools()));
+			return obj;
+		}
+		editable(next){
+			if(next !== undefined) return next;
+			return "true";
+		}
+		save(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		paste(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		hover(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({"contenteditable": (this.editable())});
+			(obj.event) = () => ({
+				"input": (next) => (this.save(next)), 
+				"paste": (next) => (this.paste(next)), 
+				"pointermove": (next) => (this.hover(next))
+			});
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		pawn(next){
+			if(next !== undefined) return next;
+			const obj = new this.$.$giper_baza_rich();
+			return obj;
+		}
+		attr(){
+			return {...(super.attr()), "giper_baza_rich_edit_enabled": (this.enabled())};
+		}
+		hint(){
+			return "";
+		}
+		auto(){
+			return [(this.selection_load()), (this.selection_sync())];
+		}
+		plugins(){
+			return [(this.Hotkey())];
+		}
+		sub(){
+			return [(this.Tools()), (this.Content())];
+		}
+	};
+	($mol_mem_key(($.$giper_baza_rich_edit.prototype), "inline_toggle"));
+	($mol_mem_key(($.$giper_baza_rich_edit.prototype), "block_wrap"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "block_rewrap"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "block_unwrap"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "undo"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "redo"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Hotkey"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "selected"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Unwrap_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Unwrap_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Section_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Section_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "List_bullet_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "List_bullet_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "List_number_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "List_number_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Quote_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Quote_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Preformat_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Preformat_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Inline_format_menu_icon"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Strong_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Em_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Ins_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Del_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Code_button"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Inline_format_menu"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "attach_files"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Attach"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Main"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Search_query"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Search_replace"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Search_panel"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Tools"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "editable"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "save"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "paste"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "hover"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "Content"));
+	($mol_mem(($.$giper_baza_rich_edit.prototype), "pawn"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_jsx_attach(next, action) {
+        const prev = $mol_jsx_document;
+        try {
+            $mol_jsx_document = next;
+            return action();
+        }
+        finally {
+            $mol_jsx_document = prev;
+        }
+    }
+    $.$mol_jsx_attach = $mol_jsx_attach;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_dom_point extends Object {
+        node;
+        pos;
+        constructor(node, pos) {
+            super();
+            this.node = node;
+            this.pos = pos;
+            if (pos <= 0)
+                return;
+            if (node.nodeValue)
+                return;
+            this.node = this.node.childNodes[pos - 1];
+            if (!this.node)
+                $mol_fail(new Error('node is undefined'));
+            this.pos = -1;
+        }
+        /** Iterator for deep comparison. */
+        [Symbol.iterator]() {
+            return [this.node, this.pos].values();
+        }
+        /** Point before the node. */
+        static nose(node) {
+            return node.previousSibling
+                ? new this(node.previousSibling, -1)
+                : new this(node.parentNode, 0);
+        }
+        /** Point after start of the node. */
+        static head(node) {
+            return new this(node, 0);
+        }
+        /** Point before end of the node. */
+        static foot(node) {
+            const length = node.nodeValue?.length ?? node.childNodes.length;
+            return new this(node, length);
+        }
+        /** Point after the node. */
+        static tail(node) {
+            return new this(node, -1);
+        }
+        /** Is point after start of the node. */
+        is_head() {
+            return this.pos === 0;
+        }
+        /** Is point before end of the node. */
+        is_foot() {
+            if (this.is_tail())
+                return !this.node.nextSibling;
+            else
+                return this.pos === (this.node.nodeValue?.length ?? this.node.childNodes.length);
+        }
+        /** Is point after end of the node. */
+        is_tail() {
+            return this.pos === -1;
+        }
+        /** Point after start of the node. */
+        head() {
+            return $mol_dom_point.head(this.node);
+        }
+        /** Point before end of the node. */
+        foot() {
+            if (this.is_tail())
+                return $mol_dom_point.foot(this.node.parentNode);
+            else
+                return $mol_dom_point.foot(this.node);
+        }
+        /** Point after end of the node. */
+        tail() {
+            return $mol_dom_point.tail(this.node);
+        }
+        native() {
+            if (!this.is_tail())
+                return [this.node, this.pos];
+            return [
+                this.node.parentNode,
+                [...this.node.parentNode.childNodes].indexOf(this.node) + 1,
+            ];
+        }
+        /** Finds child of container which contains this point. */
+        lifted_to(container) {
+            if (this.node === container)
+                return container;
+            if (this.node.parentNode === container)
+                return this.node;
+            return $mol_dom_point.head(this.node.parentNode).lifted_to(container);
+        }
+        /** Point near the node. -1: before, +1: after. */
+        static near(node, axis) {
+            const parent = node.parentElement;
+            if (!parent)
+                return null;
+            if (axis < 0)
+                return node.previousSibling
+                    ? $mol_dom_point.tail(node.previousSibling)
+                    : $mol_dom_point.head(parent);
+            return $mol_dom_point.tail(node);
+        }
+        /** Point near the node. -1: before, +1: after. */
+        jump(axis) {
+            if (this.is_tail()) {
+                return $mol_dom_point.near(this.node.parentNode, axis);
+            }
+            else {
+                return $mol_dom_point.near(this.node, axis);
+            }
+        }
+        /** Point at one step in some direction. */
+        move_step(axis) {
+            if (axis > 0) {
+                if (this.is_tail()) {
+                    const next = this.node.nextSibling;
+                    if (next)
+                        return $mol_dom_point.head(next);
+                    else
+                        return this.jump(+1);
+                }
+                else if (this.is_foot()) {
+                    return this.jump(+1);
+                }
+                else {
+                    const next = this.node.firstChild;
+                    if (next)
+                        return $mol_dom_point.head(next);
+                    return new $mol_dom_point(this.node, this.pos + 1);
+                }
+            }
+            else {
+                if (this.is_tail()) {
+                    const next = this.node.lastChild;
+                    if (next)
+                        return $mol_dom_point.tail(next);
+                    else
+                        return $mol_dom_point.head(this.node);
+                }
+                else if (this.is_head()) {
+                    return this.jump(-1);
+                }
+                else {
+                    return new $mol_dom_point(this.node, this.pos + 1);
+                }
+            }
+        }
+        move_chars(root, offset) {
+            if (offset === 0)
+                return this;
+            if (this.node === root && this.is_tail())
+                return $mol_dom_point.foot(root);
+            const axis = Math.sign(offset);
+            if (axis < 0)
+                $mol_fail(new Error('Unsupported yet'));
+            if (this.node.nodeValue && this.pos >= 0) {
+                const pos = this.pos + offset;
+                const len = this.node.nodeValue.length;
+                if (pos <= len)
+                    return new $mol_dom_point(this.node, pos);
+                else
+                    return $mol_dom_point.tail(this.node).move_chars(root, pos - len);
+            }
+            else {
+                return this.move_step(axis || 1)?.move_chars(root, offset)
+                    ?? $mol_dom_point.foot(root);
+            }
+        }
+    }
+    $.$mol_dom_point = $mol_dom_point;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_dom_range extends Object {
+        anchor;
+        extend;
+        constructor(anchor, extend = anchor) {
+            super();
+            this.anchor = anchor;
+            this.extend = extend;
+        }
+        /** Iterator for deep comparison. */
+        [Symbol.iterator]() {
+            return [this.anchor, this.extend].values();
+        }
+        /** Makes range from selection with direction storing. */
+        static from_selection(sel = $mol_dom_context.getSelection()) {
+            if (sel.type === 'None')
+                return null;
+            const anchor = new $mol_dom_point(sel.anchorNode, sel.anchorOffset);
+            const extend = new $mol_dom_point(sel.focusNode, sel.focusOffset);
+            return new this(anchor, extend);
+        }
+        /** Converts from native Range. */
+        static from_native(range) {
+            return new this(new $mol_dom_point(range.startContainer, range.startOffset), new $mol_dom_point(range.endContainer, range.endOffset));
+        }
+        /** Surrounds whole node content. */
+        static inside(node) {
+            return new this($mol_dom_point.head(node), $mol_dom_point.foot(node));
+        }
+        /** Around node itself. */
+        static around(node) {
+            return $mol_dom_range.inside(node).expand();
+        }
+        /** Deeper Element which contain whole selection. */
+        container() {
+            return this.native().commonAncestorContainer;
+        }
+        /** Returns range with points ordered in document order. */
+        ordered() {
+            const anchor = new $mol_dom_range(this.anchor);
+            return anchor.point_compare(this.extend) >= 0 ? this : this.swap();
+        }
+        /** Raises range boundaries to a common parent. */
+        lifted() {
+            const ordered = this.ordered();
+            const container = ordered.container();
+            return new $mol_dom_range($mol_dom_point.nose(ordered.anchor.lifted_to(container)), $mol_dom_point.tail(ordered.extend.lifted_to(container)));
+        }
+        /** Has now content. */
+        is_empty() {
+            return this.anchor.node === this.extend.node && this.anchor.pos === this.extend.pos;
+        }
+        /** Swap start and end points. */
+        swap() {
+            return new $mol_dom_range(this.extend, this.anchor);
+        }
+        /** Returns new range expanded outside by one point steps. */
+        expand() {
+            return new $mol_dom_range(this.anchor.jump(-1), this.extend.jump(+1));
+        }
+        /** Returns fragment of cloned content. */
+        copy() {
+            return this.native().cloneContents();
+        }
+        /** Removes all content and returns new collapsed range. */
+        clear() {
+            const range = this.native();
+            range.deleteContents();
+            return $mol_dom_range.from_native(range);
+        }
+        /** Removes all content and inserts given instead. */
+        paste(node) {
+            const range = this.clear().native();
+            range.insertNode(node);
+            return $mol_dom_range.from_native(range);
+        }
+        /** Wraps content by given element. */
+        surround(el) {
+            el.appendChild(this.copy());
+            return this.paste(el);
+        }
+        /**
+         * Returns position of point relate to this range.
+         * Before: -1
+         * Inside: 0
+         * After: +1
+         */
+        point_compare(point) {
+            return this.native().comparePoint(...point.native());
+        }
+        /** Is given range inside this. */
+        range_contains(range) {
+            return (this.point_compare(range.anchor) === 0) && (this.point_compare(range.extend) === 0);
+        }
+        /**
+         * Returns point which bounded by this range.
+         * Actualy returns middle of three points: anchor, given point, extend.
+         */
+        point_bound(point) {
+            const zone = this.point_compare(point);
+            return zone < 0 ? this.anchor : zone > 0 ? this.extend : point;
+        }
+        /** Returns new range which bounded by giiven. */
+        range_bounds(range) {
+            return new $mol_dom_range(this.point_bound(range.anchor), this.point_bound(range.extend));
+        }
+        /** Aim selection to this range. */
+        select() {
+            const [anchorNode, anchorOffset] = this.anchor.native();
+            const [focusNode, focusOffset] = this.extend.native();
+            const sel = $mol_dom_context.document.getSelection();
+            sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+            return this;
+        }
+        /**
+         * Returns native DOM Range object.
+         * It's always forward direction.
+         */
+        native() {
+            const range = $mol_dom_context.document.createRange();
+            if (this.anchor.is_tail())
+                range.setStartAfter(this.anchor.node);
+            else
+                range.setStart(this.anchor.node, this.anchor.pos);
+            if (this.extend.is_tail())
+                range.setEndAfter(this.extend.node);
+            else
+                range.setEnd(this.extend.node, this.extend.pos);
+            if (range.collapsed && !this.is_empty()) {
+                if (this.anchor.is_tail())
+                    range.setEndAfter(this.anchor.node);
+                else
+                    range.setEnd(this.anchor.node, this.anchor.pos);
+            }
+            return range;
+        }
+    }
+    $.$mol_dom_range = $mol_dom_range;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Image processing. */
+    class $mol_picture extends $mol_object2 {
+        canvas;
+        constructor(canvas) {
+            super();
+            this.canvas = canvas;
+        }
+        get context() {
+            return this.canvas.getContext('2d');
+        }
+        get bitmap() {
+            return this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        }
+        static fit(image, width = Number.POSITIVE_INFINITY, height = width) {
+            if (image instanceof Blob)
+                image = $mol_wire_sync(URL).createObjectURL(image);
+            if (typeof image === 'string')
+                image = $mol_wire_sync(this).load(image);
+            let [w, h] = this.sizes(image);
+            if (w > width) {
+                h *= width / w;
+                w = width;
+            }
+            if (h > height) {
+                w *= height / h;
+                h = height;
+            }
+            return this.make(image, w, h);
+        }
+        static make(image, width, height = width) {
+            const canvas = $mol_dom_context.document.createElement('canvas');
+            Object.assign(canvas, { width, height });
+            const context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0, width, height);
+            return new this(canvas);
+        }
+        static sizes(image) {
+            if (image instanceof HTMLVideoElement)
+                return [
+                    image.videoWidth,
+                    image.videoHeight,
+                ];
+            if (image instanceof SVGImageElement)
+                return [
+                    image.width.baseVal.value,
+                    image.height.baseVal.value,
+                ];
+            return [
+                image.width,
+                image.height,
+            ];
+        }
+        static async load(uri) {
+            const image = new Image;
+            image.src = uri;
+            await new Promise((onload, onerror) => Object.assign(image, { onload, onerror }));
+            return image;
+        }
+        format(type, quality = .9) {
+            return new Promise(done => this.canvas.toBlob(done, type, quality));
+        }
+        url(type = 'image/webp', quality = .9) {
+            return this.canvas.toDataURL(type, quality);
+        }
+    }
+    __decorate([
+        $mol_action
+    ], $mol_picture.prototype, "format", null);
+    __decorate([
+        $mol_action
+    ], $mol_picture.prototype, "url", null);
+    __decorate([
+        $mol_action
+    ], $mol_picture, "fit", null);
+    $.$mol_picture = $mol_picture;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("giper/baza/rich/edit/edit.view.css", "[giper_baza_rich_edit] {\n\tmin-width: 0;\n\tflex-direction: column;\n\tflex: 1;\n\tborder-radius: var(--mol_gap_round);\n\tbackground-color: var(--mol_theme_field);\n}\n\n[giper_baza_rich_edit_enabled] {\n\toutline: 1px solid var(--mol_theme_line);\n}\n\n[giper_baza_rich_edit]:focus-within {\n\tz-index: var(--mol_layer_focus);\n\toutline: 1px solid var(--mol_theme_focus);\n}\n\n[giper_baza_rich_edit_tools] {\n\tborder-radius: var(--mol_gap_round);\n\tbottom: 0;\n}\n\n/* [giper_baza_rich_edit]:not(:focus-within) [giper_baza_rich_edit_tools] {\n\tdisplay: none;\n} */\n\n[giper_baza_rich_edit_content] {\n\tflex-direction: column;\n\tflex: 1;\n\twhite-space: pre-wrap;\n\toutline: none;\n\tpadding: var(--mol_gap_block);\n}\n\n[giper_baza_rich_edit_content] a {\n\tcolor: var(--mol_theme_control);\n\ttext-decoration: none;\n\tborder-radius: var(--mol_gap_round);\n}\n\n[giper_baza_rich_edit_content] a:hover {\n\tbackground: var(--mol_theme_card);\n\tbox-shadow: 0 0 0 .25rem var(--mol_theme_card);\n}\n\n[giper_baza_rich_edit_content] p {\n\tmargin: 0;\n\tpadding: var(--mol_gap_text);\n}\n\n[giper_baza_rich_edit_content] ul {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n}\n\n/* [giper_baza_rich_edit_content] ul > p:before {\n\tcontent: '• ';\n    color: var(--mol_theme_shade);\n\twidth: 0;\n    display: inline-flex;\n    white-space: pre;\n    flex-direction: row-reverse;\n} */\n\n[giper_baza_rich_edit_content] ol {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n\tcounter-reset: giper_baza_rich_edit_content_ol 0;\n}\n\n[giper_baza_rich_edit_content] ol > p:before {\n\tcounter-increment: giper_baza_rich_edit_content_ol 1;\n\tcontent: counters(giper_baza_rich_edit_content_ol, \".\") \". \";\n\tcolor: var(--mol_theme_shade);\n\twidth: 0;\n    display: inline-flex;\n    white-space: pre;\n    flex-direction: row-reverse;\n}\n\n[giper_baza_rich_edit_content] blockquote {\n\tmargin: var(--mol_gap_block);\n\tpadding: var(--mol_gap_block);\n\tbackground: var(--mol_theme_card);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[giper_baza_rich_edit_content] pre {\n\tmargin: 0 var(--mol_gap_block);\n\tpadding: 0 var(--mol_gap_block);\n\tborder-radius: var(--mol_gap_round);\n\toverflow-x: auto;\n\tbox-shadow: inset 1px 0 var(--mol_theme_line);\n}\n\n[giper_baza_rich_edit_content] img {\n\tmax-width: 100%;\n\theight: auto;\n}\n\n[giper_baza_rich_edit_content] strong {\n\ttext-shadow: 0 0;\n\tfont-weight: normal;\n}\n\n[giper_baza_rich_edit_content] em {\n\tfont-style: italic;\n}\n\n[giper_baza_rich_edit_content] ins {\n\ttext-decoration: none;\n\tcolor: var(--mol_theme_special);\n}\n\n[giper_baza_rich_edit_content] del {\n\ttext-decoration: none;\n\tcolor: var(--mol_theme_shade);\n}\n\n[giper_baza_rich_edit_content] code {\n\tfont-family: monospace;\n}\n\n[giper_baza_rich_edit_content] hr {\n\tmargin: var(--mol_gap_block);\n\tborder: none;\n\tbox-shadow: 0 -1px 0 0px var(--mol_theme_line);\n    height: 1px;\n}\n\n[giper_baza_rich_edit_content] section {\n\tpadding: 0;\n\tmargin: 0;\n}\n\n[giper_baza_rich_edit_content] section > p:first-child {\n\tfont-size: 2rem;\n\tline-height: 3rem;\n\tfont-weight: normal;\n\tletter-spacing: 2px;\n}\n\n[giper_baza_rich_edit_content] section section > p:first-child {\n\tfont-size: 1.75rem;\n\tline-height: 3rem;\n}\n\n[giper_baza_rich_edit_content] section section section > p:first-child {\n\tfont-size: 1.5rem;\n\tline-height: 3rem;\n}\n\n[giper_baza_rich_edit_content] section section section section > p:first-child {\n\tfont-size: 1.25rem;\n\tline-height: 3rem;\n}\n\n[giper_baza_rich_edit_content] section section section section section > p:first-child {\n\tfont-size: 1.25rem;\n\tline-height: 3rem;\n\tfont-style: italic;\n}\n\n[giper_baza_rich_edit_content] section:not(:last-child) {\n\tbox-shadow: 0 1px 0 0 var(--mol_theme_line);\n}\n\n[giper_baza_rich_edit_content] section:not(:last-child) {\n\tpadding-bottom: var(--mol_gap_block);\n\tmargin-bottom: var(--mol_gap_block);\n\tbox-shadow: 0 1px 0 0 var(--mol_theme_line);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $giper_baza_rich_edit extends $.$giper_baza_rich_edit {
+            // dom_id() {
+            // 	return this.pawn()?.head().str ?? ''
+            // }
+            editable(next) {
+                return next ?? (this.enabled() ? 'true' : 'false');
+            }
+            sub() {
+                return [
+                    this.Content(),
+                    ...this.enabled() ? [this.Tools()] : [],
+                ];
+            }
+            tools() {
+                return [
+                    // ... this.search_active() ? [ this.Search_panel() ] : [],
+                    this.Main(),
+                ];
+            }
+            content() {
+                // console.log('render')
+                let nodes = $mol_jsx_attach($mol_dom_context.document, () => this.pawn()?.dom() ?? []);
+                nodes = this.$.$mol_dom_safe(nodes);
+                this.selection_load();
+                return nodes.length ? nodes : [$mol_jsx("section", null,
+                        $mol_jsx("p", null,
+                            $mol_jsx("br", null)))];
+            }
+            selection(next) {
+                return this.pawn()?.selection(this.$.$giper_baza_auth.current().pass().lord(), next) ?? [['', 0, 0], ['', 0, 0]];
+            }
+            save(event) {
+                const sel = $mol_dom_range.from_selection();
+                if (!sel)
+                    return;
+                const root = this.Content().dom_node();
+                if (!$mol_dom_range.inside(root).range_contains(sel))
+                    return;
+                let container = root; // sel.container() as Element
+                // while( container.parentNode && container !== root ) {
+                //     const element = container as Element
+                //     if( element.id ) break
+                //     container = container.parentNode as Element
+                // }
+                let dom = this.pawn(null);
+                // if( container.id ) dom = dom.land().Pawn( $giper_baza_rich ).Head( new $giper_baza_link( container.id ) )
+                let nodes = [...container.childNodes];
+                nodes = this.$.$mol_dom_safe(nodes);
+                // console.log( event, container, dom, nodes )
+                dom.dom(nodes);
+                this.selection_save();
+            }
+            selection_sync() {
+                return new this.$.$mol_dom_listener($mol_dom_context.document, 'selectionchange', event => this.selection_save());
+            }
+            selected() {
+                $mol_wire_watch();
+                const sel = $mol_dom_range.from_selection();
+                if (!sel)
+                    return false;
+                const root = this.Content().dom_node();
+                if (!$mol_dom_range.inside(root).range_contains(sel))
+                    return false;
+                return true;
+            }
+            selection_save() {
+                const sel = $mol_dom_range.from_selection();
+                if (!sel)
+                    return;
+                const root = this.Content().dom_node();
+                if (!$mol_dom_range.inside(root).range_contains(sel))
+                    return;
+                const point_by = (point) => {
+                    let base = (point.node.nodeType === point.node.ELEMENT_NODE ? point.node : point.node.parentNode);
+                    let link = null;
+                    while (true) {
+                        link = $giper_baza_link.check(base.id);
+                        if (link)
+                            break;
+                        base = base.parentElement;
+                    }
+                    const range = new $mol_dom_range($mol_dom_point.head(base), point);
+                    const len = range.native().toString().length;
+                    // console.log( range.native().toString() )
+                    return [link.str, len, 0];
+                };
+                const anchor = point_by(sel.anchor);
+                const extend = point_by(sel.extend);
+                // console.log( 'save', anchor, extend )
+                this.selection([anchor, extend]);
+            }
+            // @ $mol_mem
+            selection_load() {
+                if (!this.focused())
+                    return;
+                const [anchor, focus] = this.selection();
+                // console.log( 'load', anchor, focus )
+                const anchorNode = $mol_dom_context.document.getElementById(anchor[0]);
+                const extendNode = $mol_dom_context.document.getElementById(focus[0]);
+                if (!anchorNode)
+                    return;
+                if (!extendNode)
+                    return;
+                const root = this.Content().dom_node();
+                const range = new $mol_dom_range($mol_dom_point.head(anchorNode).move_chars(root, anchor[1]), $mol_dom_point.head(extendNode).move_chars(root, focus[1]));
+                // console.log(anchorNode,range)
+                range.select();
+            }
+            // @ $mol_mem
+            // saving() {
+            // 	const obs = new MutationObserver( $mol_wire_async( ()=> {
+            // 		console.log(1)
+            // 		this.pawn().dom( this.Body() )
+            // 	} ) )
+            // 	obs.observe( this.Body(), { attributes: true, childList: true, subtree: true, characterData: true } )
+            // }
+            blocks_selected() {
+                const sel = $mol_dom_range.from_selection();
+                const node = sel.container();
+                const box = node.nodeType === node.ELEMENT_NODE ? node : node.parentElement;
+                const paragraph = box.closest('p');
+                return paragraph ? $mol_dom_range.around(paragraph) : sel.lifted();
+            }
+            block_wrap(Type, event) {
+                this.blocks_selected().surround($mol_jsx(Type, null));
+                this.selection_load();
+                this.save();
+                event.preventDefault();
+            }
+            block_rewrap(event) {
+                const range = this.blocks_selected();
+                const box = range.container();
+                const root = this.Content().dom_node();
+                const fractal = ['ol', 'pre'];
+                const type = box.localName;
+                this.block_wrap(fractal.includes(type) ? type : 'ul', event);
+            }
+            block_unwrap(event) {
+                event.preventDefault();
+                const range = this.blocks_selected();
+                const root = this.Content().dom_node();
+                const container = range.container();
+                if (container === root)
+                    return;
+                if (range.anchor.pos !== 0) {
+                    const prev = container.cloneNode();
+                    while (range.anchor.node.previousSibling) {
+                        prev.insertBefore(range.anchor.node.previousSibling, prev.firstChild);
+                    }
+                    prev.insertBefore(range.anchor.node, null);
+                    container.before(prev);
+                }
+                if (range.extend.node.nextSibling) {
+                    const next = container.cloneNode();
+                    while (range.extend.node.nextSibling)
+                        next.appendChild(range.extend.node.nextSibling);
+                    container.after(next);
+                }
+                while (container.firstChild)
+                    container.before(container.firstChild);
+                container.remove();
+                this.selection_load();
+                this.save();
+            }
+            /** Wraps selecion to given element type. */
+            inline_toggle(Type, event) {
+                const sel = $mol_dom_range.from_selection();
+                if (sel.is_empty()) {
+                    let box = sel.container();
+                    if (box.nodeType !== box.ELEMENT_NODE)
+                        box = box.parentNode;
+                    while (box) {
+                        if (box === this.Content().dom_node()) {
+                            sel.expand().surround($mol_jsx(Type, null));
+                            break;
+                        }
+                        if (box.localName === Type) {
+                            while (box.firstChild)
+                                box.parentNode.insertBefore(box.firstChild, box);
+                            box.remove();
+                            break;
+                        }
+                        box = box.parentNode;
+                    }
+                }
+                else {
+                    sel.surround($mol_jsx(Type, null));
+                }
+                this.selection_load();
+                this.save();
+                event.preventDefault();
+            }
+            attach_files(files) {
+                const blob = files[0];
+                const area = this.pawn().land().area_make();
+                const file = area.Data($giper_baza_file);
+                if (blob.size > 1024 ** 2)
+                    return []; // 1MB limit
+                if (blob.type.startsWith('image/')) {
+                    file.type(blob.type);
+                    file.name(blob.name);
+                    file.buffer($mol_wire_sync(blob).bytes());
+                    file.land().units_saving();
+                    const img = $mol_wire_sync($mol_picture).load(file.uri());
+                    const [width, height] = $mol_picture.sizes(img);
+                    const sel = $mol_dom_range.from_selection();
+                    sel.paste($mol_jsx("img", { src: file.uri(), width: width, height: height }));
+                }
+                this.selection_load();
+                this.save();
+                return [];
+            }
+            paste(event) {
+                event.preventDefault();
+                const trans = $mol_dom_event.wrap(event).transfer();
+                if (trans.files().length) {
+                    this.attach_files([trans.files().item(0)]);
+                    return;
+                }
+                const sel = $mol_dom_range.from_selection();
+                const html = trans.get('text/html');
+                const text = trans.get('text/plain');
+                let url = true;
+                try {
+                    new URL(text);
+                }
+                catch {
+                    url = false;
+                }
+                if (url) {
+                    if (sel.is_empty()) {
+                        sel.paste($mol_jsx("a", { href: text }, text));
+                    }
+                    else {
+                        sel.surround($mol_jsx("a", { href: text }));
+                    }
+                }
+                else {
+                    const data = html ? $mol_dom_range.inside($mol_dom_parse(html).documentElement).copy() : new Text(text);
+                    sel.paste(data);
+                }
+                this.selection_load();
+                this.save();
+            }
+            hover(event) {
+                this.editable(event.ctrlKey ? 'false' : null);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "editable", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "sub", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "tools", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "content", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "selection", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "selection_sync", null);
+        __decorate([
+            $mol_mem
+        ], $giper_baza_rich_edit.prototype, "selected", null);
+        $$.$giper_baza_rich_edit = $giper_baza_rich_edit;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_write) = class $bog_gram_write extends ($.$giper_baza_rich_edit) {
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		before_input(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		html(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rich(){
+			return false;
+		}
+		length_max(){
+			return +Infinity;
 		}
 		send(next){
 			if(next !== undefined) return next;
 			return null;
 		}
+		attr(){
+			return {...(super.attr()), "bog_gram_write_rich": (this.rich())};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"keydown": (next) => (this.press(next)), 
+				"beforeinput": (next) => (this.before_input(next))
+			};
+		}
+		Hint(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.hint())]);
+			return obj;
+		}
 	};
+	($mol_mem(($.$bog_gram_write.prototype), "press"));
+	($mol_mem(($.$bog_gram_write.prototype), "before_input"));
+	($mol_mem(($.$bog_gram_write.prototype), "html"));
 	($mol_mem(($.$bog_gram_write.prototype), "send"));
+	($mol_mem(($.$bog_gram_write.prototype), "Hint"));
 
 
 ;
@@ -50428,7 +52057,121 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const blocks = new Set(['P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
+        const plain = new Set(['SECTION', 'P', 'DIV', 'BR']);
+        const kept = new Set([...blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP']);
+        function body_of(html) {
+            return $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
+        }
+        function tidy(node) {
+            for (const kid of [...node.children]) {
+                tidy(kid);
+                if (!kept.has(kid.nodeName)) {
+                    kid.replaceWith(...kid.childNodes);
+                    continue;
+                }
+                for (const attr of [...kid.attributes]) {
+                    if (kid.nodeName === 'A' && attr.name === 'href')
+                        continue;
+                    kid.removeAttribute(attr.name);
+                }
+            }
+        }
+        function $bog_gram_write_clean(html) {
+            const body = body_of(html);
+            tidy(body);
+            body.normalize();
+            return body.innerHTML;
+        }
+        $$.$bog_gram_write_clean = $bog_gram_write_clean;
+        function $bog_gram_write_text(html) {
+            if (!html)
+                return '';
+            const lines = [];
+            let line = '';
+            const walk = (node) => {
+                if (node.nodeType === node.TEXT_NODE) {
+                    line += node.nodeValue;
+                    return;
+                }
+                if (node.nodeName === 'BR') {
+                    lines.push(line);
+                    line = '';
+                    return;
+                }
+                const block = blocks.has(node.nodeName);
+                if (block && line) {
+                    lines.push(line);
+                    line = '';
+                }
+                for (const kid of node.childNodes)
+                    walk(kid);
+                if (block && line) {
+                    lines.push(line);
+                    line = '';
+                }
+            };
+            walk(body_of(html));
+            if (line)
+                lines.push(line);
+            return lines.join('\n');
+        }
+        $$.$bog_gram_write_text = $bog_gram_write_text;
+        function $bog_gram_write_html(text) {
+            if (!text)
+                return '';
+            const escape = (line) => line
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+            return text.split('\n').map(line => `<p>${escape(line) || '<br>'}</p>`).join('');
+        }
+        $$.$bog_gram_write_html = $bog_gram_write_html;
+        function $bog_gram_write_rich_is(html) {
+            if (!html)
+                return false;
+            return [...body_of(html).querySelectorAll('*')].some(el => !plain.has(el.nodeName));
+        }
+        $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
         class $bog_gram_write extends $.$bog_gram_write {
+            land() {
+                return this.$.$giper_baza_land.make({ $: this.$ });
+            }
+            pawn(next) {
+                return this.land().Data($giper_baza_rich);
+            }
+            selection(next) {
+                return next ?? [['', 0, 0], ['', 0, 0]];
+            }
+            html_last = '';
+            html_load() {
+                const html = this.html();
+                if (html === this.html_last)
+                    return html;
+                this.html_last = html;
+                this.pawn().html(html);
+                return html;
+            }
+            content() {
+                this.html_load();
+                return super.content();
+            }
+            save(event) {
+                super.save(event);
+                const html = $bog_gram_write_clean(this.pawn().html());
+                this.html_last = html;
+                this.html(html);
+            }
+            text() {
+                return $bog_gram_write_text(this.html());
+            }
+            sub() {
+                return [
+                    ...this.text() ? [] : [this.Hint()],
+                    this.Content(),
+                    ...this.rich() && this.enabled() ? [this.Tools()] : [],
+                ];
+            }
             /**
              * Enter отправляет только там, где есть физическая клавиатура.
              * Тач без мыши и трекпада — это телефон: там Enter переносит строку,
@@ -50436,49 +52179,107 @@ var $;
              */
             enter_sends() {
                 const nav = this.$.$mol_dom_context.navigator;
-                // Без тача клавиатура точно есть: ноутбук или десктоп.
                 if (!nav?.maxTouchPoints)
                     return true;
-                // Тач есть, но есть и точный указатель — значит, это гибрид.
                 if (this.$.$mol_media.match('(any-pointer: fine)'))
                     return true;
-                // Мышь может не репортиться как fine, но наведение она даёт.
                 if (this.$.$mol_media.match('(hover: hover)'))
                     return true;
                 return false;
             }
-            /**
-             * Enter обрабатывает `press`, а не хоткей: так путь отправки один.
-             * Плагин `Submit` на том же поле иначе слал бы второе сообщение —
-             * его `keydown` приходит до всплытия до `press`.
-             */
-            submit(event) {
-                return null;
-            }
             newline() {
-                const text = this.value();
-                const [from = text.length, to = from] = this.selection();
-                this.value(text.slice(0, from) + '\n' + text.slice(to));
-                this.selection([from + 1, from + 1]);
+                this.$.$mol_dom_context.document.execCommand('insertLineBreak');
             }
             press(event) {
-                if (event.keyCode === $mol_keyboard_code.tab)
-                    return;
-                if (event.keyCode === $mol_keyboard_code.enter) {
-                    if (event.ctrlKey || event.metaKey) {
-                        event.preventDefault();
-                        this.newline();
-                        return;
-                    }
-                    if (event.shiftKey || !this.enter_sends())
-                        return;
+                if (!event)
+                    return null;
+                if (event.isComposing)
+                    return null;
+                if (event.keyCode !== $mol_keyboard_code.enter)
+                    return null;
+                if (event.ctrlKey || event.metaKey) {
                     event.preventDefault();
-                    this.send(event);
-                    return;
+                    this.newline();
+                    return null;
                 }
-                super.press(event);
+                if (event.shiftKey || !this.enter_sends())
+                    return null;
+                event.preventDefault();
+                this.send(event);
+                return null;
+            }
+            chosen() {
+                const selection = this.$.$mol_dom_context.document.getSelection();
+                if (!selection?.rangeCount)
+                    return 0;
+                if (!this.Content().dom_node().contains(selection.anchorNode))
+                    return 0;
+                return selection.toString().length;
+            }
+            room() {
+                return Math.max(0, this.length_max() - this.text().length + this.chosen());
+            }
+            before_input(event) {
+                if (!event?.inputType.startsWith('insert'))
+                    return null;
+                if (event.inputType === 'insertCompositionText')
+                    return null;
+                const size = event.data?.length ?? 1;
+                if (size > this.room())
+                    event.preventDefault();
+                return null;
+            }
+            paste(event) {
+                const transfer = event.clipboardData;
+                if (!transfer)
+                    return;
+                if (transfer.files.length)
+                    return;
+                const room = this.room();
+                const text = transfer.getData('text/plain');
+                if (this.rich() && text.length <= room)
+                    return super.paste(event);
+                event.preventDefault();
+                const part = text.slice(0, room);
+                if (!part)
+                    return;
+                this.$.$mol_dom_context.document.execCommand('insertText', false, part);
+            }
+            block_wrap(type, event) {
+                if (this.rich())
+                    super.block_wrap(type, event);
+            }
+            block_rewrap(event) {
+                if (this.rich())
+                    super.block_rewrap(event);
+            }
+            block_unwrap(event) {
+                if (this.rich())
+                    super.block_unwrap(event);
+            }
+            inline_toggle(type, event) {
+                if (this.rich())
+                    super.inline_toggle(type, event);
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "land", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "pawn", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "selection", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "html_load", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "content", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "sub", null);
         $$.$bog_gram_write = $bog_gram_write;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -50487,15 +52288,20 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        $mol_style_define($bog_gram_write, {
-            font: {
-                family: 'inherit',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
+    $mol_style_attach("bog/gram/write/write.view.css", "[bog_gram_write] {\n\tposition: relative;\n\tbackground: none;\n\toutline: none;\n\tfont: inherit;\n}\n\n[bog_gram_write]:focus-within {\n\toutline: none;\n}\n\n[bog_gram_write_content] {\n\tpadding: var(--mol_gap_text);\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n}\n\n[bog_gram_write_content] p {\n\tpadding: 0;\n}\n\n[bog_gram_write_content] section > p:first-child {\n\tfont-size: inherit;\n\tline-height: inherit;\n\tletter-spacing: normal;\n}\n\n[bog_gram_write_rich] [bog_gram_write_content] section > p:first-child {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_write_hint] {\n\tposition: absolute;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_write_attach] {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
+
+;
+	($.$mol_icon_format_text) = class $mol_icon_format_text extends ($.$mol_icon) {
+		path(){
+			return "M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
 
 ;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
@@ -52998,6 +54804,407 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_html_view) = class $mol_html_view extends ($.$mol_list) {
+		heading_level(id){
+			return 1;
+		}
+		content(id){
+			return [];
+		}
+		link_uri(id){
+			return "";
+		}
+		image_uri(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		text(id){
+			return "";
+		}
+		html(){
+			return "";
+		}
+		dom(){
+			return null;
+		}
+		safe_link(id){
+			return "";
+		}
+		views(id){
+			return [];
+		}
+		xss_uri(){
+			return "https://en.wikipedia.org/wiki/XSS#";
+		}
+		Heading(id){
+			const obj = new this.$.$mol_html_view_heading();
+			(obj.level) = () => ((this.heading_level(id)));
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		List(id){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content(id)));
+			return obj;
+		}
+		Quote(id){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content(id)));
+			return obj;
+		}
+		Strong(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Emphasis(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Deleted(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Inserted(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Subscript(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Superscript(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Code(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Link(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ((this.content(id)));
+			return obj;
+		}
+		Image(id){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.image_uri(id)));
+			return obj;
+		}
+		Break(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ([]);
+			return obj;
+		}
+		Text(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.needle) = () => ((this.highlight()));
+			(obj.haystack) = () => ((this.text(id)));
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_html_view.prototype), "Heading"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Paragraph"));
+	($mol_mem_key(($.$mol_html_view.prototype), "List"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Quote"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Strong"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Emphasis"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Deleted"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Inserted"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Subscript"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Superscript"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Code"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Link"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Image"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Break"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Text"));
+	($.$mol_html_view_heading) = class $mol_html_view_heading extends ($.$mol_paragraph) {
+		level(){
+			return 1;
+		}
+		attr(){
+			return {...(super.attr()), "mol_html_view_heading": (this.level())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const { rem } = $mol_style_unit;
+    $mol_style_define($mol_html_view, {
+        Heading: {
+            padding: $mol_gap.text,
+            textShadow: '0 0',
+            '@': {
+                'mol_html_view_heading': {
+                    '1': {
+                        font: {
+                            size: rem(1.5),
+                        },
+                    },
+                    '2': {
+                        font: {
+                            size: rem(1.5),
+                            style: 'italic',
+                        },
+                    },
+                    '3': {
+                        font: {
+                            size: rem(1.25),
+                        },
+                    },
+                    '4': {
+                        font: {
+                            size: rem(1.25),
+                            style: 'italic',
+                        },
+                    },
+                    '5': {
+                        font: {
+                            size: rem(1),
+                        },
+                    },
+                    '6': {
+                        font: {
+                            size: rem(1),
+                            style: 'italic',
+                        },
+                    },
+                },
+            },
+        },
+        Paragraph: {
+            display: 'block',
+            flex: {
+                wrap: 'wrap',
+            },
+            padding: $mol_gap.text,
+        },
+        List: {
+            display: 'block',
+            flex: {
+                wrap: 'wrap',
+            },
+            padding: $mol_gap.block,
+        },
+        Quote: {
+            display: 'block',
+            flex: {
+                'wrap': 'wrap',
+            },
+            padding: $mol_gap.block,
+            margin: {
+                inlineStart: '.75rem',
+            },
+            box: {
+                shadow: [{
+                        inset: true,
+                        x: rem(.25),
+                        y: 0,
+                        blur: 0,
+                        spread: 0,
+                        color: $mol_theme.line,
+                    }],
+            },
+        },
+        Strong: {
+            display: 'inline',
+            textShadow: '0 0',
+        },
+        Emphasis: {
+            display: 'inline',
+            font: {
+                style: 'italic',
+            },
+        },
+        Deleted: {
+            display: 'inline',
+            color: $mol_theme.shade,
+        },
+        Inserted: {
+            display: 'inline',
+            color: $mol_theme.special,
+        },
+        Subscript: {
+            display: 'inline',
+            font: {
+                size: '.75em',
+            },
+            position: 'relative',
+            bottom: '-0.5em',
+        },
+        Superscript: {
+            display: 'inline',
+            font: {
+                size: '.75em',
+            },
+            position: 'relative',
+            top: '-0.25em',
+        },
+        Link: {
+            margin: rem(-.5),
+        },
+        Code: {
+            display: 'inline',
+            font: {
+                family: 'monospace',
+            },
+            whiteSpace: 'pre-wrap',
+        },
+        Image: {
+            display: 'inline-block',
+        },
+        Break: {
+            display: 'block',
+            height: $mol_gap.block,
+        },
+        Text: {
+            display: 'inline',
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const warned = new Set();
+        /**
+         * Safe virtualized view of raw HTML.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_html_view_demo
+         */
+        class $mol_html_view extends $.$mol_html_view {
+            dom() {
+                return this.$.$mol_dom_parse(this.html(), 'text/html').body;
+            }
+            sub() {
+                return this.content(this.dom());
+            }
+            content(node) {
+                const res = [];
+                for (const child of node.childNodes) {
+                    res.push(...this.views(child));
+                }
+                return res;
+            }
+            views(node) {
+                switch (node.nodeName) {
+                    case '#comment':
+                        return [];
+                    case '#text':
+                    case '#cdata-section':
+                        if (!node.textContent.trim())
+                            return [];
+                        return [this.Text(node)];
+                    case 'H1':
+                    case 'H2':
+                    case 'H3':
+                    case 'H4':
+                    case 'H5':
+                    case 'H6':
+                        return [this.Heading(node)];
+                    case 'P':
+                    case 'LI':
+                    case 'PRE':
+                    case 'DIV':
+                        return [this.Paragraph(node)];
+                    case 'UL':
+                    case 'OL':
+                        return [this.List(node)];
+                    case 'BLOCKQUOTE':
+                        return [this.Quote(node)];
+                    case 'STRONG':
+                    case 'B':
+                        return [this.Strong(node)];
+                    case 'EM':
+                    case 'I':
+                        return [this.Emphasis(node)];
+                    case 'DEL':
+                    case 'S':
+                        return [this.Deleted(node)];
+                    case 'INS':
+                    case 'U':
+                        return [this.Inserted(node)];
+                    case 'SUB':
+                        return [this.Subscript(node)];
+                    case 'SUP':
+                        return [this.Superscript(node)];
+                    case 'A':
+                        return [this.Link(node)];
+                    case 'PRE':
+                    case 'CODE':
+                        return [this.Code(node)];
+                    case 'IMG':
+                        return [this.Image(node)];
+                    case 'BR':
+                        return [this.Break(node)];
+                    default:
+                        if (!warned.has(node.nodeName)) {
+                            this.$.$mol_log3_warn({
+                                place: `${this}.views()`,
+                                message: 'Unsupported tag',
+                                tag: node.nodeName,
+                                hint: 'Add support to $mol_html_view',
+                            });
+                            warned.add(node.nodeName);
+                        }
+                        return this.content(node);
+                }
+            }
+            text(node) {
+                return node.textContent ?? '???';
+            }
+            safe_link(uri) {
+                const base = $mol_dom_context.location.href;
+                const url = new $mol_dom_context.URL(uri, base);
+                if (/^\w*script:/i.test(url.protocol)) {
+                    return this.xss_uri() + uri;
+                }
+                return uri;
+            }
+            link_uri(node) {
+                return this.safe_link(node.href);
+            }
+            image_uri(node) {
+                return this.safe_link(node.src);
+            }
+            heading_level(node) {
+                return Number(node.nodeName.substring(1));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_html_view.prototype, "dom", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_html_view.prototype, "content", null);
+        $$.$mol_html_view = $mol_html_view;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		bare(){
 			return false;
@@ -53111,6 +55318,11 @@ var $;
 			(obj.text) = () => ((this.body()));
 			return obj;
 		}
+		Rich(){
+			const obj = new this.$.$mol_html_view();
+			(obj.html) = () => ((this.html()));
+			return obj;
+		}
 		Time(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.time())]);
@@ -53140,7 +55352,11 @@ var $;
 		}
 		Line(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Body()), (this.Meta())]);
+			(obj.sub) = () => ([
+				(this.Body()), 
+				(this.Rich()), 
+				(this.Meta())
+			]);
 			return obj;
 		}
 		actions_touch(next){
@@ -53328,6 +55544,9 @@ var $;
 		body(){
 			return "";
 		}
+		html(){
+			return "";
+		}
 		time(){
 			return "";
 		}
@@ -53408,6 +55627,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Rich"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
@@ -53474,7 +55694,10 @@ var $;
                 return this.call() ? super.Call() : null;
             }
             Body() {
-                return this.body() ? super.Body() : null;
+                return this.body() && !this.html() ? super.Body() : null;
+            }
+            Rich() {
+                return this.html() ? super.Rich() : null;
             }
             Edited() {
                 return this.edited() ? super.Edited() : null;
@@ -53699,6 +55922,14 @@ var $;
                 minWidth: 0,
             },
             Body: {
+                minWidth: 0,
+                flex: {
+                    shrink: 1,
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+            },
+            Rich: {
                 minWidth: 0,
                 flex: {
                     shrink: 1,
@@ -54086,6 +56317,14 @@ var $;
 		text_limit(){
 			return 4096;
 		}
+		message_html(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rich_mode(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		message_send(next){
 			if(next !== undefined) return next;
 			return null;
@@ -54094,8 +56333,13 @@ var $;
 			const obj = new this.$.$bog_gram_write();
 			(obj.hint) = () => ((this.message_hint()));
 			(obj.length_max) = () => ((this.text_limit()));
-			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.html) = (next) => ((this.message_html(next)));
+			(obj.rich) = () => ((this.rich_mode()));
 			(obj.send) = (next) => ((this.message_send(next)));
+			return obj;
+		}
+		Rich_icon(){
+			const obj = new this.$.$mol_icon_format_text();
 			return obj;
 		}
 		send_enabled(){
@@ -54334,6 +56578,9 @@ var $;
 			return null;
 		}
 		message_body(id){
+			return "";
+		}
+		message_rich(id){
 			return "";
 		}
 		message_time(id){
@@ -54634,6 +56881,13 @@ var $;
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
+		Rich_toggle(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Rich_toggle_hint")));
+			(obj.checked) = (next) => ((this.rich_mode(next)));
+			(obj.Icon) = () => ((this.Rich_icon()));
+			return obj;
+		}
 		caption_hint(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_caption_hint"));
 		}
@@ -54798,6 +57052,7 @@ var $;
 			(obj.forwardable) = () => ((this.message_forwardable(id)));
 			(obj.forward) = (next) => ((this.message_forward(id, next)));
 			(obj.body) = () => ((this.message_body(id)));
+			(obj.html) = () => ((this.message_rich(id)));
 			(obj.time) = () => ((this.message_time(id)));
 			(obj.edited) = () => ((this.message_edited(id)));
 			(obj.checks) = () => ((this.message_checks(id)));
@@ -54856,8 +57111,11 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_html"));
+	($mol_mem(($.$bog_gram_chat.prototype), "rich_mode"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Rich_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_move"));
@@ -54921,6 +57179,7 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_video"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Rich_toggle"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
@@ -55567,7 +57826,7 @@ var $;
             field_focus() {
                 if (!this.$.$mol_media.match('(pointer: fine)'))
                     return false;
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return true;
             }
             message_reply(id) {
@@ -55576,7 +57835,7 @@ var $;
                     this.edit_stop();
                 }
                 this.reply_id(id);
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return null;
             }
             reply_cancel(next) {
@@ -55641,7 +57900,7 @@ var $;
                 this.message_menu('');
                 this.reply_id('');
                 this.edit_id(id);
-                this.message_text(this.message_body(id));
+                this.message_html(this.message_pawn(id)?.Html()?.val() || $bog_gram_write_html(this.message_body(id)));
                 return null;
             }
             edit_cancel(next) {
@@ -55649,18 +57908,46 @@ var $;
                 return null;
             }
             edit_stop() {
-                this.edit_text('');
+                this.edit_html('');
                 this.edit_id('');
             }
-            edit_text(next) {
+            edit_html(next) {
                 return next ?? '';
             }
             draft(next) {
-                const key = `$bog_gram_chat.draft(${this.my_lord()},${this.dialog()})`;
-                return this.$.$mol_state_local.value(key, next === undefined ? undefined : next || null) ?? '';
+                const place = `(${this.my_lord()},${this.dialog()})`;
+                const store = this.$.$mol_state_local;
+                if (next !== undefined)
+                    store.value(`$bog_gram_chat.draft${place}`, null);
+                const html = store.value(`$bog_gram_chat.draft_html${place}`, next === undefined ? undefined : next || null);
+                return html ?? $bog_gram_write_html(store.value(`$bog_gram_chat.draft${place}`) ?? '');
+            }
+            message_html(next) {
+                return this.edit_id() ? this.edit_html(next) : this.draft(next);
+            }
+            message_plain() {
+                return $bog_gram_write_text(this.message_html());
             }
             message_text(next) {
-                return this.edit_id() ? this.edit_text(next) : this.draft(next);
+                if (next === undefined)
+                    return this.message_plain();
+                this.message_html($bog_gram_write_html(next));
+                return next;
+            }
+            rich_html() {
+                const html = this.message_html();
+                return $bog_gram_write_rich_is(html) ? html : '';
+            }
+            rich_put(message) {
+                const html = this.rich_html();
+                if (html)
+                    message.Html('auto')?.val(html);
+            }
+            rich_mode(next) {
+                return this.$.$mol_state_local.value('$bog_gram_chat.rich', next) ?? false;
+            }
+            message_rich(id) {
+                return this.message_pawn(id)?.Html()?.val() ?? '';
             }
             message_delete(id, next) {
                 this.message_menu('');
@@ -55705,6 +57992,7 @@ var $;
                     const pawn = this.message_pawn(editing);
                     if (pawn) {
                         pawn.Text('auto')?.val(text);
+                        pawn.Html('auto')?.val(this.rich_html());
                         pawn.Edited('auto')?.val(Date.now());
                     }
                     this.edit_stop();
@@ -55719,6 +58007,7 @@ var $;
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
                 message.Text('auto')?.val(text);
+                this.rich_put(message);
                 const reply = this.reply_id();
                 if (reply)
                     message.Reply('auto')?.val(reply);
@@ -55980,6 +58269,8 @@ var $;
                 if (text)
                     message.Text('auto')?.val(text);
                 if (text)
+                    this.rich_put(message);
+                if (text)
                     this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
@@ -56021,6 +58312,8 @@ var $;
                 }
                 if (text)
                     message.Text('auto')?.val(text);
+                if (text)
+                    this.rich_put(message);
                 if (text)
                     this.message_text('');
                 this.voice_hint('');
@@ -56161,7 +58454,7 @@ var $;
                     case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send()];
                     case 'review': return [this.Record_drop(), this.Draft(), this.Record_send()];
                 }
-                return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
+                return [this.Attach(), this.Rich_toggle(), this.Message_box(), this.Send(), this.Voice()];
             }
             press_at = { x: 0, y: 0 };
             tap_timer = null;
@@ -56500,9 +58793,9 @@ var $;
                 return null;
             }
             box_click(next) {
-                if (next?.target === this.Message_field().Edit().dom_node())
+                if (this.Message_field().dom_node().contains(next?.target))
                     return null;
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return null;
             }
             stick_observer() {
@@ -56662,7 +58955,16 @@ var $;
         ], $bog_gram_chat.prototype, "edit_cancel", null);
         __decorate([
             $mol_mem
-        ], $bog_gram_chat.prototype, "edit_text", null);
+        ], $bog_gram_chat.prototype, "edit_html", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "message_plain", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "rich_mode", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_rich", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);
@@ -57155,18 +59457,10 @@ var $;
                     shrink: 1,
                 },
                 minWidth: 0,
-                Edit: {
-                    background: {
-                        color: 'transparent',
-                    },
-                    boxShadow: 'none',
-                    ':hover': {
-                        boxShadow: 'none',
-                    },
-                    ':focus': {
-                        boxShadow: 'none',
-                    },
-                },
+            },
+            Rich_toggle: {
+                ...round,
+                color: $mol_theme.shade,
             },
             Send: {
                 ...round,

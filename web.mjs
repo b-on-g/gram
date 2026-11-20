@@ -60285,7 +60285,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.193';
+    $.$bog_gram_version = '1.0.194';
 })($ || ($ = {}));
 
 ;
@@ -63345,6 +63345,7 @@ var $;
 (function ($) {
     class $bog_gram_message extends $giper_baza_dict.with({
         Text: $giper_baza_atom_text,
+        Html: $giper_baza_atom_text,
         Author: $giper_baza_atom_text,
         Moment: $giper_baza_atom_real,
         Edited: $giper_baza_atom_real,
@@ -68556,19 +68557,50 @@ var $;
 
 
 ;
-	($.$bog_gram_write) = class $bog_gram_write extends ($.$mol_textarea) {
-		submit_with_ctrl(){
+	($.$bog_gram_write) = class $bog_gram_write extends ($.$giper_baza_rich_edit) {
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		before_input(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		html(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rich(){
 			return false;
 		}
-		spellcheck(){
-			return true;
+		length_max(){
+			return +Infinity;
 		}
 		send(next){
 			if(next !== undefined) return next;
 			return null;
 		}
+		attr(){
+			return {...(super.attr()), "bog_gram_write_rich": (this.rich())};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"keydown": (next) => (this.press(next)), 
+				"beforeinput": (next) => (this.before_input(next))
+			};
+		}
+		Hint(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.hint())]);
+			return obj;
+		}
 	};
+	($mol_mem(($.$bog_gram_write.prototype), "press"));
+	($mol_mem(($.$bog_gram_write.prototype), "before_input"));
+	($mol_mem(($.$bog_gram_write.prototype), "html"));
 	($mol_mem(($.$bog_gram_write.prototype), "send"));
+	($mol_mem(($.$bog_gram_write.prototype), "Hint"));
 
 
 ;
@@ -68581,7 +68613,121 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const blocks = new Set(['P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
+        const plain = new Set(['SECTION', 'P', 'DIV', 'BR']);
+        const kept = new Set([...blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP']);
+        function body_of(html) {
+            return $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
+        }
+        function tidy(node) {
+            for (const kid of [...node.children]) {
+                tidy(kid);
+                if (!kept.has(kid.nodeName)) {
+                    kid.replaceWith(...kid.childNodes);
+                    continue;
+                }
+                for (const attr of [...kid.attributes]) {
+                    if (kid.nodeName === 'A' && attr.name === 'href')
+                        continue;
+                    kid.removeAttribute(attr.name);
+                }
+            }
+        }
+        function $bog_gram_write_clean(html) {
+            const body = body_of(html);
+            tidy(body);
+            body.normalize();
+            return body.innerHTML;
+        }
+        $$.$bog_gram_write_clean = $bog_gram_write_clean;
+        function $bog_gram_write_text(html) {
+            if (!html)
+                return '';
+            const lines = [];
+            let line = '';
+            const walk = (node) => {
+                if (node.nodeType === node.TEXT_NODE) {
+                    line += node.nodeValue;
+                    return;
+                }
+                if (node.nodeName === 'BR') {
+                    lines.push(line);
+                    line = '';
+                    return;
+                }
+                const block = blocks.has(node.nodeName);
+                if (block && line) {
+                    lines.push(line);
+                    line = '';
+                }
+                for (const kid of node.childNodes)
+                    walk(kid);
+                if (block && line) {
+                    lines.push(line);
+                    line = '';
+                }
+            };
+            walk(body_of(html));
+            if (line)
+                lines.push(line);
+            return lines.join('\n');
+        }
+        $$.$bog_gram_write_text = $bog_gram_write_text;
+        function $bog_gram_write_html(text) {
+            if (!text)
+                return '';
+            const escape = (line) => line
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+            return text.split('\n').map(line => `<p>${escape(line) || '<br>'}</p>`).join('');
+        }
+        $$.$bog_gram_write_html = $bog_gram_write_html;
+        function $bog_gram_write_rich_is(html) {
+            if (!html)
+                return false;
+            return [...body_of(html).querySelectorAll('*')].some(el => !plain.has(el.nodeName));
+        }
+        $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
         class $bog_gram_write extends $.$bog_gram_write {
+            land() {
+                return this.$.$giper_baza_land.make({ $: this.$ });
+            }
+            pawn(next) {
+                return this.land().Data($giper_baza_rich);
+            }
+            selection(next) {
+                return next ?? [['', 0, 0], ['', 0, 0]];
+            }
+            html_last = '';
+            html_load() {
+                const html = this.html();
+                if (html === this.html_last)
+                    return html;
+                this.html_last = html;
+                this.pawn().html(html);
+                return html;
+            }
+            content() {
+                this.html_load();
+                return super.content();
+            }
+            save(event) {
+                super.save(event);
+                const html = $bog_gram_write_clean(this.pawn().html());
+                this.html_last = html;
+                this.html(html);
+            }
+            text() {
+                return $bog_gram_write_text(this.html());
+            }
+            sub() {
+                return [
+                    ...this.text() ? [] : [this.Hint()],
+                    this.Content(),
+                    ...this.rich() && this.enabled() ? [this.Tools()] : [],
+                ];
+            }
             /**
              * Enter отправляет только там, где есть физическая клавиатура.
              * Тач без мыши и трекпада — это телефон: там Enter переносит строку,
@@ -68589,49 +68735,107 @@ var $;
              */
             enter_sends() {
                 const nav = this.$.$mol_dom_context.navigator;
-                // Без тача клавиатура точно есть: ноутбук или десктоп.
                 if (!nav?.maxTouchPoints)
                     return true;
-                // Тач есть, но есть и точный указатель — значит, это гибрид.
                 if (this.$.$mol_media.match('(any-pointer: fine)'))
                     return true;
-                // Мышь может не репортиться как fine, но наведение она даёт.
                 if (this.$.$mol_media.match('(hover: hover)'))
                     return true;
                 return false;
             }
-            /**
-             * Enter обрабатывает `press`, а не хоткей: так путь отправки один.
-             * Плагин `Submit` на том же поле иначе слал бы второе сообщение —
-             * его `keydown` приходит до всплытия до `press`.
-             */
-            submit(event) {
-                return null;
-            }
             newline() {
-                const text = this.value();
-                const [from = text.length, to = from] = this.selection();
-                this.value(text.slice(0, from) + '\n' + text.slice(to));
-                this.selection([from + 1, from + 1]);
+                this.$.$mol_dom_context.document.execCommand('insertLineBreak');
             }
             press(event) {
-                if (event.keyCode === $mol_keyboard_code.tab)
-                    return;
-                if (event.keyCode === $mol_keyboard_code.enter) {
-                    if (event.ctrlKey || event.metaKey) {
-                        event.preventDefault();
-                        this.newline();
-                        return;
-                    }
-                    if (event.shiftKey || !this.enter_sends())
-                        return;
+                if (!event)
+                    return null;
+                if (event.isComposing)
+                    return null;
+                if (event.keyCode !== $mol_keyboard_code.enter)
+                    return null;
+                if (event.ctrlKey || event.metaKey) {
                     event.preventDefault();
-                    this.send(event);
-                    return;
+                    this.newline();
+                    return null;
                 }
-                super.press(event);
+                if (event.shiftKey || !this.enter_sends())
+                    return null;
+                event.preventDefault();
+                this.send(event);
+                return null;
+            }
+            chosen() {
+                const selection = this.$.$mol_dom_context.document.getSelection();
+                if (!selection?.rangeCount)
+                    return 0;
+                if (!this.Content().dom_node().contains(selection.anchorNode))
+                    return 0;
+                return selection.toString().length;
+            }
+            room() {
+                return Math.max(0, this.length_max() - this.text().length + this.chosen());
+            }
+            before_input(event) {
+                if (!event?.inputType.startsWith('insert'))
+                    return null;
+                if (event.inputType === 'insertCompositionText')
+                    return null;
+                const size = event.data?.length ?? 1;
+                if (size > this.room())
+                    event.preventDefault();
+                return null;
+            }
+            paste(event) {
+                const transfer = event.clipboardData;
+                if (!transfer)
+                    return;
+                if (transfer.files.length)
+                    return;
+                const room = this.room();
+                const text = transfer.getData('text/plain');
+                if (this.rich() && text.length <= room)
+                    return super.paste(event);
+                event.preventDefault();
+                const part = text.slice(0, room);
+                if (!part)
+                    return;
+                this.$.$mol_dom_context.document.execCommand('insertText', false, part);
+            }
+            block_wrap(type, event) {
+                if (this.rich())
+                    super.block_wrap(type, event);
+            }
+            block_rewrap(event) {
+                if (this.rich())
+                    super.block_rewrap(event);
+            }
+            block_unwrap(event) {
+                if (this.rich())
+                    super.block_unwrap(event);
+            }
+            inline_toggle(type, event) {
+                if (this.rich())
+                    super.inline_toggle(type, event);
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "land", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "pawn", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "selection", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "html_load", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "content", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_write.prototype, "sub", null);
         $$.$bog_gram_write = $bog_gram_write;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -68640,15 +68844,20 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    var $$;
-    (function ($$) {
-        $mol_style_define($bog_gram_write, {
-            font: {
-                family: 'inherit',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
+    $mol_style_attach("bog/gram/write/write.view.css", "[bog_gram_write] {\n\tposition: relative;\n\tbackground: none;\n\toutline: none;\n\tfont: inherit;\n}\n\n[bog_gram_write]:focus-within {\n\toutline: none;\n}\n\n[bog_gram_write_content] {\n\tpadding: var(--mol_gap_text);\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n}\n\n[bog_gram_write_content] p {\n\tpadding: 0;\n}\n\n[bog_gram_write_content] section > p:first-child {\n\tfont-size: inherit;\n\tline-height: inherit;\n\tletter-spacing: normal;\n}\n\n[bog_gram_write_rich] [bog_gram_write_content] section > p:first-child {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_write_hint] {\n\tposition: absolute;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_write_attach] {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
+
+;
+	($.$mol_icon_format_text) = class $mol_icon_format_text extends ($.$mol_icon) {
+		path(){
+			return "M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
 
 ;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
@@ -70854,6 +71063,407 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_html_view) = class $mol_html_view extends ($.$mol_list) {
+		heading_level(id){
+			return 1;
+		}
+		content(id){
+			return [];
+		}
+		link_uri(id){
+			return "";
+		}
+		image_uri(id){
+			return "";
+		}
+		highlight(){
+			return "";
+		}
+		text(id){
+			return "";
+		}
+		html(){
+			return "";
+		}
+		dom(){
+			return null;
+		}
+		safe_link(id){
+			return "";
+		}
+		views(id){
+			return [];
+		}
+		xss_uri(){
+			return "https://en.wikipedia.org/wiki/XSS#";
+		}
+		Heading(id){
+			const obj = new this.$.$mol_html_view_heading();
+			(obj.level) = () => ((this.heading_level(id)));
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Paragraph(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		List(id){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content(id)));
+			return obj;
+		}
+		Quote(id){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.content(id)));
+			return obj;
+		}
+		Strong(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Emphasis(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Deleted(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Inserted(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Subscript(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Superscript(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Code(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ((this.content(id)));
+			return obj;
+		}
+		Link(id){
+			const obj = new this.$.$mol_link_iconed();
+			(obj.uri) = () => ((this.link_uri(id)));
+			(obj.content) = () => ((this.content(id)));
+			return obj;
+		}
+		Image(id){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.image_uri(id)));
+			return obj;
+		}
+		Break(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.sub) = () => ([]);
+			return obj;
+		}
+		Text(id){
+			const obj = new this.$.$mol_dimmer();
+			(obj.needle) = () => ((this.highlight()));
+			(obj.haystack) = () => ((this.text(id)));
+			return obj;
+		}
+	};
+	($mol_mem_key(($.$mol_html_view.prototype), "Heading"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Paragraph"));
+	($mol_mem_key(($.$mol_html_view.prototype), "List"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Quote"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Strong"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Emphasis"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Deleted"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Inserted"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Subscript"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Superscript"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Code"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Link"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Image"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Break"));
+	($mol_mem_key(($.$mol_html_view.prototype), "Text"));
+	($.$mol_html_view_heading) = class $mol_html_view_heading extends ($.$mol_paragraph) {
+		level(){
+			return 1;
+		}
+		attr(){
+			return {...(super.attr()), "mol_html_view_heading": (this.level())};
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const { rem } = $mol_style_unit;
+    $mol_style_define($mol_html_view, {
+        Heading: {
+            padding: $mol_gap.text,
+            textShadow: '0 0',
+            '@': {
+                'mol_html_view_heading': {
+                    '1': {
+                        font: {
+                            size: rem(1.5),
+                        },
+                    },
+                    '2': {
+                        font: {
+                            size: rem(1.5),
+                            style: 'italic',
+                        },
+                    },
+                    '3': {
+                        font: {
+                            size: rem(1.25),
+                        },
+                    },
+                    '4': {
+                        font: {
+                            size: rem(1.25),
+                            style: 'italic',
+                        },
+                    },
+                    '5': {
+                        font: {
+                            size: rem(1),
+                        },
+                    },
+                    '6': {
+                        font: {
+                            size: rem(1),
+                            style: 'italic',
+                        },
+                    },
+                },
+            },
+        },
+        Paragraph: {
+            display: 'block',
+            flex: {
+                wrap: 'wrap',
+            },
+            padding: $mol_gap.text,
+        },
+        List: {
+            display: 'block',
+            flex: {
+                wrap: 'wrap',
+            },
+            padding: $mol_gap.block,
+        },
+        Quote: {
+            display: 'block',
+            flex: {
+                'wrap': 'wrap',
+            },
+            padding: $mol_gap.block,
+            margin: {
+                inlineStart: '.75rem',
+            },
+            box: {
+                shadow: [{
+                        inset: true,
+                        x: rem(.25),
+                        y: 0,
+                        blur: 0,
+                        spread: 0,
+                        color: $mol_theme.line,
+                    }],
+            },
+        },
+        Strong: {
+            display: 'inline',
+            textShadow: '0 0',
+        },
+        Emphasis: {
+            display: 'inline',
+            font: {
+                style: 'italic',
+            },
+        },
+        Deleted: {
+            display: 'inline',
+            color: $mol_theme.shade,
+        },
+        Inserted: {
+            display: 'inline',
+            color: $mol_theme.special,
+        },
+        Subscript: {
+            display: 'inline',
+            font: {
+                size: '.75em',
+            },
+            position: 'relative',
+            bottom: '-0.5em',
+        },
+        Superscript: {
+            display: 'inline',
+            font: {
+                size: '.75em',
+            },
+            position: 'relative',
+            top: '-0.25em',
+        },
+        Link: {
+            margin: rem(-.5),
+        },
+        Code: {
+            display: 'inline',
+            font: {
+                family: 'monospace',
+            },
+            whiteSpace: 'pre-wrap',
+        },
+        Image: {
+            display: 'inline-block',
+        },
+        Break: {
+            display: 'block',
+            height: $mol_gap.block,
+        },
+        Text: {
+            display: 'inline',
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const warned = new Set();
+        /**
+         * Safe virtualized view of raw HTML.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_html_view_demo
+         */
+        class $mol_html_view extends $.$mol_html_view {
+            dom() {
+                return this.$.$mol_dom_parse(this.html(), 'text/html').body;
+            }
+            sub() {
+                return this.content(this.dom());
+            }
+            content(node) {
+                const res = [];
+                for (const child of node.childNodes) {
+                    res.push(...this.views(child));
+                }
+                return res;
+            }
+            views(node) {
+                switch (node.nodeName) {
+                    case '#comment':
+                        return [];
+                    case '#text':
+                    case '#cdata-section':
+                        if (!node.textContent.trim())
+                            return [];
+                        return [this.Text(node)];
+                    case 'H1':
+                    case 'H2':
+                    case 'H3':
+                    case 'H4':
+                    case 'H5':
+                    case 'H6':
+                        return [this.Heading(node)];
+                    case 'P':
+                    case 'LI':
+                    case 'PRE':
+                    case 'DIV':
+                        return [this.Paragraph(node)];
+                    case 'UL':
+                    case 'OL':
+                        return [this.List(node)];
+                    case 'BLOCKQUOTE':
+                        return [this.Quote(node)];
+                    case 'STRONG':
+                    case 'B':
+                        return [this.Strong(node)];
+                    case 'EM':
+                    case 'I':
+                        return [this.Emphasis(node)];
+                    case 'DEL':
+                    case 'S':
+                        return [this.Deleted(node)];
+                    case 'INS':
+                    case 'U':
+                        return [this.Inserted(node)];
+                    case 'SUB':
+                        return [this.Subscript(node)];
+                    case 'SUP':
+                        return [this.Superscript(node)];
+                    case 'A':
+                        return [this.Link(node)];
+                    case 'PRE':
+                    case 'CODE':
+                        return [this.Code(node)];
+                    case 'IMG':
+                        return [this.Image(node)];
+                    case 'BR':
+                        return [this.Break(node)];
+                    default:
+                        if (!warned.has(node.nodeName)) {
+                            this.$.$mol_log3_warn({
+                                place: `${this}.views()`,
+                                message: 'Unsupported tag',
+                                tag: node.nodeName,
+                                hint: 'Add support to $mol_html_view',
+                            });
+                            warned.add(node.nodeName);
+                        }
+                        return this.content(node);
+                }
+            }
+            text(node) {
+                return node.textContent ?? '???';
+            }
+            safe_link(uri) {
+                const base = $mol_dom_context.location.href;
+                const url = new $mol_dom_context.URL(uri, base);
+                if (/^\w*script:/i.test(url.protocol)) {
+                    return this.xss_uri() + uri;
+                }
+                return uri;
+            }
+            link_uri(node) {
+                return this.safe_link(node.href);
+            }
+            image_uri(node) {
+                return this.safe_link(node.src);
+            }
+            heading_level(node) {
+                return Number(node.nodeName.substring(1));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_html_view.prototype, "dom", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_html_view.prototype, "content", null);
+        $$.$mol_html_view = $mol_html_view;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		bare(){
 			return false;
@@ -70967,6 +71577,11 @@ var $;
 			(obj.text) = () => ((this.body()));
 			return obj;
 		}
+		Rich(){
+			const obj = new this.$.$mol_html_view();
+			(obj.html) = () => ((this.html()));
+			return obj;
+		}
 		Time(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.time())]);
@@ -70996,7 +71611,11 @@ var $;
 		}
 		Line(){
 			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.Body()), (this.Meta())]);
+			(obj.sub) = () => ([
+				(this.Body()), 
+				(this.Rich()), 
+				(this.Meta())
+			]);
 			return obj;
 		}
 		actions_touch(next){
@@ -71184,6 +71803,9 @@ var $;
 		body(){
 			return "";
 		}
+		html(){
+			return "";
+		}
 		time(){
 			return "";
 		}
@@ -71264,6 +71886,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Rich"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
@@ -71330,7 +71953,10 @@ var $;
                 return this.call() ? super.Call() : null;
             }
             Body() {
-                return this.body() ? super.Body() : null;
+                return this.body() && !this.html() ? super.Body() : null;
+            }
+            Rich() {
+                return this.html() ? super.Rich() : null;
             }
             Edited() {
                 return this.edited() ? super.Edited() : null;
@@ -71555,6 +72181,14 @@ var $;
                 minWidth: 0,
             },
             Body: {
+                minWidth: 0,
+                flex: {
+                    shrink: 1,
+                },
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+            },
+            Rich: {
                 minWidth: 0,
                 flex: {
                     shrink: 1,
@@ -71942,6 +72576,14 @@ var $;
 		text_limit(){
 			return 4096;
 		}
+		message_html(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rich_mode(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		message_send(next){
 			if(next !== undefined) return next;
 			return null;
@@ -71950,8 +72592,13 @@ var $;
 			const obj = new this.$.$bog_gram_write();
 			(obj.hint) = () => ((this.message_hint()));
 			(obj.length_max) = () => ((this.text_limit()));
-			(obj.value) = (next) => ((this.message_text(next)));
+			(obj.html) = (next) => ((this.message_html(next)));
+			(obj.rich) = () => ((this.rich_mode()));
 			(obj.send) = (next) => ((this.message_send(next)));
+			return obj;
+		}
+		Rich_icon(){
+			const obj = new this.$.$mol_icon_format_text();
 			return obj;
 		}
 		send_enabled(){
@@ -72190,6 +72837,9 @@ var $;
 			return null;
 		}
 		message_body(id){
+			return "";
+		}
+		message_rich(id){
 			return "";
 		}
 		message_time(id){
@@ -72490,6 +73140,13 @@ var $;
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
+		Rich_toggle(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Rich_toggle_hint")));
+			(obj.checked) = (next) => ((this.rich_mode(next)));
+			(obj.Icon) = () => ((this.Rich_icon()));
+			return obj;
+		}
 		caption_hint(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_caption_hint"));
 		}
@@ -72654,6 +73311,7 @@ var $;
 			(obj.forwardable) = () => ((this.message_forwardable(id)));
 			(obj.forward) = (next) => ((this.message_forward(id, next)));
 			(obj.body) = () => ((this.message_body(id)));
+			(obj.html) = () => ((this.message_rich(id)));
 			(obj.time) = () => ((this.message_time(id)));
 			(obj.edited) = () => ((this.message_edited(id)));
 			(obj.checks) = () => ((this.message_checks(id)));
@@ -72712,8 +73370,11 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_html"));
+	($mol_mem(($.$bog_gram_chat.prototype), "rich_mode"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Rich_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_move"));
@@ -72777,6 +73438,7 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_video"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Rich_toggle"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
@@ -73423,7 +74085,7 @@ var $;
             field_focus() {
                 if (!this.$.$mol_media.match('(pointer: fine)'))
                     return false;
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return true;
             }
             message_reply(id) {
@@ -73432,7 +74094,7 @@ var $;
                     this.edit_stop();
                 }
                 this.reply_id(id);
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return null;
             }
             reply_cancel(next) {
@@ -73497,7 +74159,7 @@ var $;
                 this.message_menu('');
                 this.reply_id('');
                 this.edit_id(id);
-                this.message_text(this.message_body(id));
+                this.message_html(this.message_pawn(id)?.Html()?.val() || $bog_gram_write_html(this.message_body(id)));
                 return null;
             }
             edit_cancel(next) {
@@ -73505,18 +74167,46 @@ var $;
                 return null;
             }
             edit_stop() {
-                this.edit_text('');
+                this.edit_html('');
                 this.edit_id('');
             }
-            edit_text(next) {
+            edit_html(next) {
                 return next ?? '';
             }
             draft(next) {
-                const key = `$bog_gram_chat.draft(${this.my_lord()},${this.dialog()})`;
-                return this.$.$mol_state_local.value(key, next === undefined ? undefined : next || null) ?? '';
+                const place = `(${this.my_lord()},${this.dialog()})`;
+                const store = this.$.$mol_state_local;
+                if (next !== undefined)
+                    store.value(`$bog_gram_chat.draft${place}`, null);
+                const html = store.value(`$bog_gram_chat.draft_html${place}`, next === undefined ? undefined : next || null);
+                return html ?? $bog_gram_write_html(store.value(`$bog_gram_chat.draft${place}`) ?? '');
+            }
+            message_html(next) {
+                return this.edit_id() ? this.edit_html(next) : this.draft(next);
+            }
+            message_plain() {
+                return $bog_gram_write_text(this.message_html());
             }
             message_text(next) {
-                return this.edit_id() ? this.edit_text(next) : this.draft(next);
+                if (next === undefined)
+                    return this.message_plain();
+                this.message_html($bog_gram_write_html(next));
+                return next;
+            }
+            rich_html() {
+                const html = this.message_html();
+                return $bog_gram_write_rich_is(html) ? html : '';
+            }
+            rich_put(message) {
+                const html = this.rich_html();
+                if (html)
+                    message.Html('auto')?.val(html);
+            }
+            rich_mode(next) {
+                return this.$.$mol_state_local.value('$bog_gram_chat.rich', next) ?? false;
+            }
+            message_rich(id) {
+                return this.message_pawn(id)?.Html()?.val() ?? '';
             }
             message_delete(id, next) {
                 this.message_menu('');
@@ -73561,6 +74251,7 @@ var $;
                     const pawn = this.message_pawn(editing);
                     if (pawn) {
                         pawn.Text('auto')?.val(text);
+                        pawn.Html('auto')?.val(this.rich_html());
                         pawn.Edited('auto')?.val(Date.now());
                     }
                     this.edit_stop();
@@ -73575,6 +74266,7 @@ var $;
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
                 message.Text('auto')?.val(text);
+                this.rich_put(message);
                 const reply = this.reply_id();
                 if (reply)
                     message.Reply('auto')?.val(reply);
@@ -73836,6 +74528,8 @@ var $;
                 if (text)
                     message.Text('auto')?.val(text);
                 if (text)
+                    this.rich_put(message);
+                if (text)
                     this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
@@ -73877,6 +74571,8 @@ var $;
                 }
                 if (text)
                     message.Text('auto')?.val(text);
+                if (text)
+                    this.rich_put(message);
                 if (text)
                     this.message_text('');
                 this.voice_hint('');
@@ -74017,7 +74713,7 @@ var $;
                     case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send()];
                     case 'review': return [this.Record_drop(), this.Draft(), this.Record_send()];
                 }
-                return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
+                return [this.Attach(), this.Rich_toggle(), this.Message_box(), this.Send(), this.Voice()];
             }
             press_at = { x: 0, y: 0 };
             tap_timer = null;
@@ -74356,9 +75052,9 @@ var $;
                 return null;
             }
             box_click(next) {
-                if (next?.target === this.Message_field().Edit().dom_node())
+                if (this.Message_field().dom_node().contains(next?.target))
                     return null;
-                this.Message_field().Edit().bring();
+                this.Message_field().Content().bring();
                 return null;
             }
             stick_observer() {
@@ -74518,7 +75214,16 @@ var $;
         ], $bog_gram_chat.prototype, "edit_cancel", null);
         __decorate([
             $mol_mem
-        ], $bog_gram_chat.prototype, "edit_text", null);
+        ], $bog_gram_chat.prototype, "edit_html", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "message_plain", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "rich_mode", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_rich", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);
@@ -75011,18 +75716,10 @@ var $;
                     shrink: 1,
                 },
                 minWidth: 0,
-                Edit: {
-                    background: {
-                        color: 'transparent',
-                    },
-                    boxShadow: 'none',
-                    ':hover': {
-                        boxShadow: 'none',
-                    },
-                    ':focus': {
-                        boxShadow: 'none',
-                    },
-                },
+            },
+            Rich_toggle: {
+                ...round,
+                color: $mol_theme.shade,
             },
             Send: {
                 ...round,

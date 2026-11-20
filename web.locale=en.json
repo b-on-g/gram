@@ -73,6 +73,7 @@
 	"$bog_gram_chat_Record_stop_hint": "Stop and listen",
 	"$bog_gram_chat_Record_turn_hint": "Switch camera",
 	"$bog_gram_chat_Reply_cancel_hint": "Cancel reply",
+	"$bog_gram_chat_Rich_toggle_hint": "Formatting",
 	"$bog_gram_chat_Send_hint": "Send",
 	"$bog_gram_chat_Share_hint": "Share this contact",
 	"$bog_gram_chat_call_lost_pattern": "Call not started: key not delivered — {names}. Call again a bit later",
