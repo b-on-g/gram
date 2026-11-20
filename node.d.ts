@@ -78399,7 +78399,7 @@ declare namespace $ {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Group: (auto?: any) => $giper_baza_atom_text | null;
             readonly Title: (auto?: any) => $giper_baza_atom_text | null;
-            readonly Mode: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Confirm: (auto?: any) => $giper_baza_atom_text | null;
             readonly Knocks: (auto?: any) => $giper_baza_list_str | null;
         }>;
         path: string;
@@ -78409,7 +78409,7 @@ declare namespace $ {
         } & {
             readonly Group: typeof $giper_baza_atom_text;
             readonly Title: typeof $giper_baza_atom_text;
-            readonly Mode: typeof $giper_baza_atom_text;
+            readonly Confirm: typeof $giper_baza_atom_text;
             readonly Knocks: typeof $giper_baza_list_str;
         };
     };
@@ -80245,7 +80245,7 @@ declare namespace $ {
         Lobby(): $bog_gram_lobby;
         land(link: string): $giper_baza_land;
         hall(link: string): $bog_gram_meet_hall;
-        trusted(link: string, owner: string, field: 'Group' | 'Title' | 'Mode'): string;
+        trusted(link: string, owner: string, field: 'Group' | 'Title' | 'Confirm'): string;
         group_of([link, owner]: readonly [string, string]): string;
         group_of_uri(uri: string): string;
         meet_of(id: string): string;
@@ -83295,29 +83295,29 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_list__rows_bog_gram_chat_20 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['meet_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_list__rows_bog_gram_chat_21 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_21 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_22 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_22 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_23 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['down_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_23 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_24 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_chat_25 = $mol_type_enforce<
 		readonly(any)[]
@@ -83329,684 +83329,749 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_27 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_27 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_28 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_28 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_29 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['reply_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_29 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_30 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_30 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_31 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_31 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_32 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_32 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_33 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_33 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_34 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['edit_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_34 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_35 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_35 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_36 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_36 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_37 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_note_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_video_player__stream_bog_gram_chat_37 = $mol_type_enforce<
+	type $mol_video_player__stream_bog_gram_chat_38 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_stream'] >
 		,
 		ReturnType< $mol_video_player['stream'] >
 	>
-	type $mol_video_player__controls_bog_gram_chat_38 = $mol_type_enforce<
+	type $mol_video_player__controls_bog_gram_chat_39 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $mol_video_player['controls'] >
 	>
-	type $mol_video_player__muted_bog_gram_chat_39 = $mol_type_enforce<
+	type $mol_video_player__muted_bog_gram_chat_40 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $mol_video_player['muted'] >
 	>
-	type $mol_video_player__attr_bog_gram_chat_40 = $mol_type_enforce<
+	type $mol_video_player__attr_bog_gram_chat_41 = $mol_type_enforce<
 		({ 
 			'bog_gram_chat_mirror': ReturnType< $bog_gram_chat['record_mirror'] >,
 		})  & ReturnType< $mol_video_player['attr'] >
 		,
 		ReturnType< $mol_video_player['attr'] >
 	>
-	type $mol_view__sub_bog_gram_chat_41 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_42 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['pending_items'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_42 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_43 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['send_tools'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_43 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_44 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['pending_preview_sub'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_44 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_45 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_45 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_46 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['pending_drop'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_46 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_47 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $bog_gram_write__hint_bog_gram_chat_47 = $mol_type_enforce<
+	type $bog_gram_write__hint_bog_gram_chat_48 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_hint'] >
 		,
 		ReturnType< $bog_gram_write['hint'] >
 	>
-	type $bog_gram_write__length_max_bog_gram_chat_48 = $mol_type_enforce<
+	type $bog_gram_write__length_max_bog_gram_chat_49 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['text_limit'] >
 		,
 		ReturnType< $bog_gram_write['length_max'] >
 	>
-	type $bog_gram_write__html_bog_gram_chat_49 = $mol_type_enforce<
+	type $bog_gram_write__html_bog_gram_chat_50 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_html'] >
 		,
 		ReturnType< $bog_gram_write['html'] >
 	>
-	type $bog_gram_write__rich_bog_gram_chat_50 = $mol_type_enforce<
+	type $bog_gram_write__rich_bog_gram_chat_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rich_mode'] >
 		,
 		ReturnType< $bog_gram_write['rich'] >
 	>
-	type $bog_gram_write__send_bog_gram_chat_51 = $mol_type_enforce<
+	type $bog_gram_write__send_bog_gram_chat_52 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $bog_gram_write['send'] >
-	>
-	type $mol_view__sub_bog_gram_chat_52 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_chat_53 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_gallery__ids_bog_gram_chat_54 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['shots'] >
-		,
-		ReturnType< $bog_gram_gallery['ids'] >
-	>
-	type $bog_gram_gallery__current_bog_gram_chat_55 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['zoom_id'] >
-		,
-		ReturnType< $bog_gram_gallery['current'] >
-	>
-	type $bog_gram_gallery__uri_bog_gram_chat_56 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['shot_uri'] >
-		,
-		ReturnType< $bog_gram_gallery['uri'] >
-	>
-	type $bog_gram_gallery__close_bog_gram_chat_57 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['zoom_close'] >
-		,
-		ReturnType< $bog_gram_gallery['close'] >
-	>
-	type $mol_view__sub_bog_gram_chat_58 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_54 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_image__uri_bog_gram_chat_59 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_55 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['knock_name'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_56 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_57 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['admit'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_58 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_59 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_60 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['deny'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_61 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $bog_gram_gallery__ids_bog_gram_chat_62 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['shots'] >
+		,
+		ReturnType< $bog_gram_gallery['ids'] >
+	>
+	type $bog_gram_gallery__current_bog_gram_chat_63 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['zoom_id'] >
+		,
+		ReturnType< $bog_gram_gallery['current'] >
+	>
+	type $bog_gram_gallery__uri_bog_gram_chat_64 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['shot_uri'] >
+		,
+		ReturnType< $bog_gram_gallery['uri'] >
+	>
+	type $bog_gram_gallery__close_bog_gram_chat_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['zoom_close'] >
+		,
+		ReturnType< $bog_gram_gallery['close'] >
+	>
+	type $mol_view__sub_bog_gram_chat_66 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_image__uri_bog_gram_chat_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['pending_uri'] >
 		,
 		ReturnType< $mol_image['uri'] >
 	>
-	type $mol_image__title_bog_gram_chat_60 = $mol_type_enforce<
+	type $mol_image__title_bog_gram_chat_68 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_image['title'] >
 	>
-	type $bog_gram_attach__hint_bog_gram_chat_61 = $mol_type_enforce<
+	type $bog_gram_attach__hint_bog_gram_chat_69 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_attach['hint'] >
 	>
-	type $bog_gram_attach__accept_bog_gram_chat_62 = $mol_type_enforce<
+	type $bog_gram_attach__accept_bog_gram_chat_70 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_attach['accept'] >
 	>
-	type $bog_gram_attach__multiple_bog_gram_chat_63 = $mol_type_enforce<
+	type $bog_gram_attach__multiple_bog_gram_chat_71 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_attach['multiple'] >
 	>
-	type $bog_gram_attach__files_bog_gram_chat_64 = $mol_type_enforce<
+	type $bog_gram_attach__files_bog_gram_chat_72 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['image_files'] >
 		,
 		ReturnType< $bog_gram_attach['files'] >
 	>
-	type $bog_gram_attach__Icon_bog_gram_chat_65 = $mol_type_enforce<
+	type $bog_gram_attach__Icon_bog_gram_chat_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['Attach_icon'] >
 		,
 		ReturnType< $bog_gram_attach['Icon'] >
 	>
-	type $mol_view__event_bog_gram_chat_66 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_chat_74 = $mol_type_enforce<
 		({ 
 			click( next?: ReturnType< $bog_gram_chat['box_click'] > ): ReturnType< $bog_gram_chat['box_click'] >,
 		}) 
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_chat_67 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_75 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_check_icon__hint_bog_gram_chat_68 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_chat_76 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_chat_69 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_chat_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rich_mode'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_chat_70 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_chat_78 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['Rich_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_71 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_79 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__enabled_bog_gram_chat_72 = $mol_type_enforce<
+	type $mol_button_major__enabled_bog_gram_chat_80 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['send_enabled'] >
 		,
 		ReturnType< $mol_button_major['enabled'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_73 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_81 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_74 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_82 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $bog_gram_hold__hint_bog_gram_chat_75 = $mol_type_enforce<
+	type $bog_gram_hold__hint_bog_gram_chat_83 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_hint_text'] >
 		,
 		ReturnType< $bog_gram_hold['hint'] >
 	>
-	type $bog_gram_hold__press_bog_gram_chat_76 = $mol_type_enforce<
+	type $bog_gram_hold__press_bog_gram_chat_84 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_press'] >
 		,
 		ReturnType< $bog_gram_hold['press'] >
 	>
-	type $bog_gram_hold__move_bog_gram_chat_77 = $mol_type_enforce<
+	type $bog_gram_hold__move_bog_gram_chat_85 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_move'] >
 		,
 		ReturnType< $bog_gram_hold['move'] >
 	>
-	type $bog_gram_hold__release_bog_gram_chat_78 = $mol_type_enforce<
+	type $bog_gram_hold__release_bog_gram_chat_86 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_release'] >
 		,
 		ReturnType< $bog_gram_hold['release'] >
 	>
-	type $bog_gram_hold__abort_bog_gram_chat_79 = $mol_type_enforce<
+	type $bog_gram_hold__abort_bog_gram_chat_87 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_abort'] >
 		,
 		ReturnType< $bog_gram_hold['abort'] >
 	>
-	type $bog_gram_hold__sub_bog_gram_chat_80 = $mol_type_enforce<
+	type $bog_gram_hold__sub_bog_gram_chat_88 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_hold['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_81 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_82 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_83 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_84 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['voice_cancel'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_85 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_86 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_87 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['record_stop'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_88 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
 	>
 	type $mol_view__sub_bog_gram_chat_89 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_90 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_90 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_91 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_91 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['record_turn'] >
+	type $mol_button_minor__click_bog_gram_chat_92 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['voice_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_92 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_93 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_93 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_94 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_95 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['record_stop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_96 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_97 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_98 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_99 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['record_turn'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_100 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_major__hint_bog_gram_chat_101 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_94 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_102 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_go'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_95 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_103 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_96 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_104 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_97 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_105 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_98 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_106 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_99 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_107 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_sub'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_sound__uri_bog_gram_chat_100 = $mol_type_enforce<
+	type $bog_gram_sound__uri_bog_gram_chat_108 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_sound['uri'] >
 	>
-	type $bog_gram_sound__span_bog_gram_chat_101 = $mol_type_enforce<
+	type $bog_gram_sound__span_bog_gram_chat_109 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_sound['span'] >
 	>
-	type $bog_gram_sound__wave_bog_gram_chat_102 = $mol_type_enforce<
+	type $bog_gram_sound__wave_bog_gram_chat_110 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_wave'] >
 		,
 		ReturnType< $bog_gram_sound['wave'] >
 	>
-	type $bog_gram_sound__playing_bog_gram_chat_103 = $mol_type_enforce<
+	type $bog_gram_sound__playing_bog_gram_chat_111 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_sound['playing'] >
 	>
-	type $bog_gram_sound__toggle_bog_gram_chat_104 = $mol_type_enforce<
+	type $bog_gram_sound__toggle_bog_gram_chat_112 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_sound['toggle'] >
 	>
-	type $bog_gram_sound__ended_bog_gram_chat_105 = $mol_type_enforce<
+	type $bog_gram_sound__ended_bog_gram_chat_113 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_sound['ended'] >
 	>
-	type $bog_gram_round__uri_bog_gram_chat_106 = $mol_type_enforce<
+	type $bog_gram_round__uri_bog_gram_chat_114 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_round['uri'] >
 	>
-	type $bog_gram_round__span_bog_gram_chat_107 = $mol_type_enforce<
+	type $bog_gram_round__span_bog_gram_chat_115 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_round['span'] >
 	>
-	type $bog_gram_round__playing_bog_gram_chat_108 = $mol_type_enforce<
+	type $bog_gram_round__playing_bog_gram_chat_116 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_round['playing'] >
 	>
-	type $bog_gram_round__toggle_bog_gram_chat_109 = $mol_type_enforce<
+	type $bog_gram_round__toggle_bog_gram_chat_117 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_round['toggle'] >
 	>
-	type $bog_gram_round__ended_bog_gram_chat_110 = $mol_type_enforce<
+	type $bog_gram_round__ended_bog_gram_chat_118 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_round['ended'] >
 	>
-	type $mol_view__minimal_height_bog_gram_chat_111 = $mol_type_enforce<
+	type $mol_view__minimal_height_bog_gram_chat_119 = $mol_type_enforce<
 		number
 		,
 		ReturnType< $mol_view['minimal_height'] >
 	>
-	type $mol_view__sub_bog_gram_chat_112 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_120 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['line_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_113 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_121 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_bubble__out_bog_gram_chat_114 = $mol_type_enforce<
+	type $bog_gram_bubble__out_bog_gram_chat_122 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_out'] >
 		,
 		ReturnType< $bog_gram_bubble['out'] >
 	>
-	type $bog_gram_bubble__menu_bog_gram_chat_115 = $mol_type_enforce<
+	type $bog_gram_bubble__menu_bog_gram_chat_123 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_menu_is'] >
 		,
 		ReturnType< $bog_gram_bubble['menu'] >
 	>
-	type $bog_gram_bubble__author_bog_gram_chat_116 = $mol_type_enforce<
+	type $bog_gram_bubble__author_bog_gram_chat_124 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author'] >
 		,
 		ReturnType< $bog_gram_bubble['author'] >
 	>
-	type $bog_gram_bubble__author_tint_bog_gram_chat_117 = $mol_type_enforce<
+	type $bog_gram_bubble__author_tint_bog_gram_chat_125 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author_tint'] >
 		,
 		ReturnType< $bog_gram_bubble['author_tint'] >
 	>
-	type $bog_gram_bubble__quote_shown_bog_gram_chat_118 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_126 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_shown'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_shown'] >
 	>
-	type $bog_gram_bubble__quote_author_bog_gram_chat_119 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_author_bog_gram_chat_127 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_author'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_author'] >
 	>
-	type $bog_gram_bubble__quote_text_bog_gram_chat_120 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_text_bog_gram_chat_128 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_text'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_text'] >
 	>
-	type $bog_gram_bubble__quote_jump_bog_gram_chat_121 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_129 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_jump'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_jump'] >
 	>
-	type $bog_gram_bubble__shot_bog_gram_chat_122 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_bog_gram_chat_130 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot'] >
 		,
 		ReturnType< $bog_gram_bubble['shot'] >
 	>
-	type $bog_gram_bubble__shots_bog_gram_chat_123 = $mol_type_enforce<
+	type $bog_gram_bubble__shots_bog_gram_chat_131 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shots'] >
 		,
 		ReturnType< $bog_gram_bubble['shots'] >
 	>
-	type $bog_gram_bubble__shot_uri_bog_gram_chat_124 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_132 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_uri'] >
 	>
-	type $bog_gram_bubble__shot_ratio_bog_gram_chat_125 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_133 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_ratio'] >
 	>
-	type $bog_gram_bubble__shot_width_bog_gram_chat_126 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_width_bog_gram_chat_134 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_width'] >
 	>
-	type $bog_gram_bubble__shot_open_bog_gram_chat_127 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_open_bog_gram_chat_135 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_zoom'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_open'] >
 	>
-	type $bog_gram_bubble__sound_bog_gram_chat_128 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_bog_gram_chat_136 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound'] >
 		,
 		ReturnType< $bog_gram_bubble['sound'] >
 	>
-	type $bog_gram_bubble__sound_uri_bog_gram_chat_129 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_137 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_uri'] >
 	>
-	type $bog_gram_bubble__sound_span_bog_gram_chat_130 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_span_bog_gram_chat_138 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_span'] >
 	>
-	type $bog_gram_bubble__sound_wave_bog_gram_chat_131 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_wave_bog_gram_chat_139 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_wave'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_wave'] >
 	>
-	type $bog_gram_bubble__sound_playing_bog_gram_chat_132 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_140 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_playing'] >
 	>
-	type $bog_gram_bubble__sound_toggle_bog_gram_chat_133 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_141 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_toggle'] >
 	>
-	type $bog_gram_bubble__sound_ended_bog_gram_chat_134 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_142 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_ended'] >
 	>
-	type $bog_gram_bubble__round_bog_gram_chat_135 = $mol_type_enforce<
+	type $bog_gram_bubble__round_bog_gram_chat_143 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round'] >
 		,
 		ReturnType< $bog_gram_bubble['round'] >
 	>
-	type $bog_gram_bubble__round_uri_bog_gram_chat_136 = $mol_type_enforce<
+	type $bog_gram_bubble__round_uri_bog_gram_chat_144 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['round_uri'] >
 	>
-	type $bog_gram_bubble__round_span_bog_gram_chat_137 = $mol_type_enforce<
+	type $bog_gram_bubble__round_span_bog_gram_chat_145 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_span'] >
 		,
 		ReturnType< $bog_gram_bubble['round_span'] >
 	>
-	type $bog_gram_bubble__round_toggle_bog_gram_chat_138 = $mol_type_enforce<
+	type $bog_gram_bubble__round_toggle_bog_gram_chat_146 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['round_toggle'] >
 	>
-	type $bog_gram_bubble__round_ended_bog_gram_chat_139 = $mol_type_enforce<
+	type $bog_gram_bubble__round_ended_bog_gram_chat_147 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['round_ended'] >
 	>
-	type $bog_gram_bubble__video_bog_gram_chat_140 = $mol_type_enforce<
+	type $bog_gram_bubble__video_bog_gram_chat_148 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video'] >
 		,
 		ReturnType< $bog_gram_bubble['video'] >
 	>
-	type $bog_gram_bubble__video_uri_bog_gram_chat_141 = $mol_type_enforce<
+	type $bog_gram_bubble__video_uri_bog_gram_chat_149 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['video_uri'] >
 	>
-	type $bog_gram_bubble__video_ratio_bog_gram_chat_142 = $mol_type_enforce<
+	type $bog_gram_bubble__video_ratio_bog_gram_chat_150 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['video_ratio'] >
 	>
-	type $bog_gram_bubble__call_bog_gram_chat_143 = $mol_type_enforce<
+	type $bog_gram_bubble__call_bog_gram_chat_151 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call'] >
 		,
 		ReturnType< $bog_gram_bubble['call'] >
 	>
-	type $bog_gram_bubble__call_land_bog_gram_chat_144 = $mol_type_enforce<
+	type $bog_gram_bubble__call_land_bog_gram_chat_152 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_land'] >
 		,
 		ReturnType< $bog_gram_bubble['call_land'] >
 	>
-	type $bog_gram_bubble__call_open_bog_gram_chat_145 = $mol_type_enforce<
+	type $bog_gram_bubble__call_open_bog_gram_chat_153 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_open'] >
 		,
 		ReturnType< $bog_gram_bubble['call_open'] >
 	>
-	type $bog_gram_bubble__forwarded_bog_gram_chat_146 = $mol_type_enforce<
+	type $bog_gram_bubble__forwarded_bog_gram_chat_154 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwarded'] >
 		,
 		ReturnType< $bog_gram_bubble['forwarded'] >
 	>
-	type $bog_gram_bubble__contact_bog_gram_chat_147 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_bog_gram_chat_155 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact'] >
 		,
 		ReturnType< $bog_gram_bubble['contact'] >
 	>
-	type $bog_gram_bubble__contact_name_bog_gram_chat_148 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_name_bog_gram_chat_156 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_name'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_name'] >
 	>
-	type $bog_gram_bubble__contact_open_bog_gram_chat_149 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_open_bog_gram_chat_157 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_open'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_open'] >
 	>
-	type $bog_gram_bubble__forwardable_bog_gram_chat_150 = $mol_type_enforce<
+	type $bog_gram_bubble__forwardable_bog_gram_chat_158 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwardable'] >
 		,
 		ReturnType< $bog_gram_bubble['forwardable'] >
 	>
-	type $bog_gram_bubble__forward_bog_gram_chat_151 = $mol_type_enforce<
+	type $bog_gram_bubble__forward_bog_gram_chat_159 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forward'] >
 		,
 		ReturnType< $bog_gram_bubble['forward'] >
 	>
-	type $bog_gram_bubble__body_bog_gram_chat_152 = $mol_type_enforce<
+	type $bog_gram_bubble__body_bog_gram_chat_160 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_body'] >
 		,
 		ReturnType< $bog_gram_bubble['body'] >
 	>
-	type $bog_gram_bubble__html_bog_gram_chat_153 = $mol_type_enforce<
+	type $bog_gram_bubble__html_bog_gram_chat_161 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_rich'] >
 		,
 		ReturnType< $bog_gram_bubble['html'] >
 	>
-	type $bog_gram_bubble__time_bog_gram_chat_154 = $mol_type_enforce<
+	type $bog_gram_bubble__time_bog_gram_chat_162 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_time'] >
 		,
 		ReturnType< $bog_gram_bubble['time'] >
 	>
-	type $bog_gram_bubble__edited_bog_gram_chat_155 = $mol_type_enforce<
+	type $bog_gram_bubble__edited_bog_gram_chat_163 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edited'] >
 		,
 		ReturnType< $bog_gram_bubble['edited'] >
 	>
-	type $bog_gram_bubble__checks_bog_gram_chat_156 = $mol_type_enforce<
+	type $bog_gram_bubble__checks_bog_gram_chat_164 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_checks'] >
 		,
 		ReturnType< $bog_gram_bubble['checks'] >
 	>
-	type $bog_gram_bubble__edit_bog_gram_chat_157 = $mol_type_enforce<
+	type $bog_gram_bubble__edit_bog_gram_chat_165 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edit'] >
 		,
 		ReturnType< $bog_gram_bubble['edit'] >
 	>
-	type $bog_gram_bubble__delete_bog_gram_chat_158 = $mol_type_enforce<
+	type $bog_gram_bubble__delete_bog_gram_chat_166 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_delete'] >
 		,
 		ReturnType< $bog_gram_bubble['delete'] >
 	>
-	type $bog_gram_bubble__press_bog_gram_chat_159 = $mol_type_enforce<
+	type $bog_gram_bubble__press_bog_gram_chat_167 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_press'] >
 		,
 		ReturnType< $bog_gram_bubble['press'] >
 	>
-	type $bog_gram_bubble__release_bog_gram_chat_160 = $mol_type_enforce<
+	type $bog_gram_bubble__release_bog_gram_chat_168 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_release'] >
 		,
 		ReturnType< $bog_gram_bubble['release'] >
 	>
-	type $bog_gram_bubble__context_bog_gram_chat_161 = $mol_type_enforce<
+	type $bog_gram_bubble__context_bog_gram_chat_169 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_context'] >
 		,
 		ReturnType< $bog_gram_bubble['context'] >
+	>
+	type $mol_check_box__title_bog_gram_chat_170 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_box['title'] >
+	>
+	type $mol_check_box__hint_bog_gram_chat_171 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_box['hint'] >
+	>
+	type $mol_check_box__checked_bog_gram_chat_172 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['meet_confirm'] >
+		,
+		ReturnType< $mol_check_box['checked'] >
+	>
+	type $mol_paragraph__title_bog_gram_chat_173 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['knocks_head'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_chat_174 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
 	>
 	export class $bog_gram_chat extends $bog_gram_page {
 		image_paste( next?: any ): any
@@ -84029,6 +84094,8 @@ declare namespace $ {
 		Members( ): $mol_button_minor
 		Close_icon( ): $mol_icon_close
 		Close( ): $mol_button_minor
+		meet_rows( ): readonly(any)[]
+		Meet_bar( ): $mol_list
 		rows( ): readonly($mol_view)[]
 		Messages( ): $mol_list
 		down_click( next?: any ): any
@@ -84149,6 +84216,12 @@ declare namespace $ {
 		message_press( id: any, next?: any ): any
 		message_release( id: any, next?: any ): any
 		message_context( id: any, next?: any ): any
+		knocks_head( ): string
+		Knock_name( id: any): $mol_paragraph
+		Knock_admit_icon( id: any): $mol_icon_check
+		Knock_admit( id: any): $mol_button_minor
+		Knock_deny_icon( id: any): $mol_icon_close
+		Knock_deny( id: any): $mol_button_minor
 		dialog( ): string
 		my_lord( ): string
 		Talk( ): $bog_gram_talk
@@ -84158,6 +84231,13 @@ declare namespace $ {
 		members( next?: any ): any
 		call_open( next?: any ): any
 		call_invite( id: any): string
+		meet_owner( ): boolean
+		meet_confirm( next?: boolean ): boolean
+		knocks( ): readonly(string)[]
+		knock_name( id: any): string
+		admit( id: any, next?: any ): any
+		deny( id: any, next?: any ): any
+		knocks_pattern( ): string
 		forward_open( next?: any ): any
 		contact_share( next?: any ): any
 		contact_open( next?: any ): any
@@ -84244,6 +84324,9 @@ declare namespace $ {
 		Line( id: any): $mol_view
 		Day_row( id: any): $mol_view
 		Bubble( id: any): $bog_gram_bubble
+		Meet_confirm( ): $mol_check_box
+		Knocks_head( ): $mol_paragraph
+		Knock( id: any): $mol_view
 	}
 	
 }
@@ -84269,6 +84352,9 @@ declare namespace $.$$ {
         Title_text(): $mol_view;
         members_shown(): boolean;
         Members(): $mol_button_minor;
+        meet_rows(): ($mol_view | $.$mol_paragraph)[];
+        Meet_bar(): $.$mol_list;
+        knocks_head(): string;
         Call(): $mol_button_minor;
         Share(): $mol_button_minor;
         share(next?: any): null;
@@ -86084,107 +86170,137 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_chat['call_invite'] >
 	>
-	type $bog_gram_chat__forward_open_bog_gram_227 = $mol_type_enforce<
+	type $bog_gram_chat__meet_owner_bog_gram_227 = $mol_type_enforce<
+		ReturnType< $bog_gram['meet_owner_is'] >
+		,
+		ReturnType< $bog_gram_chat['meet_owner'] >
+	>
+	type $bog_gram_chat__meet_confirm_bog_gram_228 = $mol_type_enforce<
+		ReturnType< $bog_gram['meet_confirm'] >
+		,
+		ReturnType< $bog_gram_chat['meet_confirm'] >
+	>
+	type $bog_gram_chat__knocks_bog_gram_229 = $mol_type_enforce<
+		ReturnType< $bog_gram['dialog_knocks'] >
+		,
+		ReturnType< $bog_gram_chat['knocks'] >
+	>
+	type $bog_gram_chat__knock_name_bog_gram_230 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_label'] >
+		,
+		ReturnType< $bog_gram_chat['knock_name'] >
+	>
+	type $bog_gram_chat__admit_bog_gram_231 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_accept'] >
+		,
+		ReturnType< $bog_gram_chat['admit'] >
+	>
+	type $bog_gram_chat__deny_bog_gram_232 = $mol_type_enforce<
+		ReturnType< $bog_gram['ask_reject'] >
+		,
+		ReturnType< $bog_gram_chat['deny'] >
+	>
+	type $bog_gram_chat__forward_open_bog_gram_233 = $mol_type_enforce<
 		ReturnType< $bog_gram['forward_open'] >
 		,
 		ReturnType< $bog_gram_chat['forward_open'] >
 	>
-	type $bog_gram_chat__contact_share_bog_gram_228 = $mol_type_enforce<
+	type $bog_gram_chat__contact_share_bog_gram_234 = $mol_type_enforce<
 		ReturnType< $bog_gram['contact_share'] >
 		,
 		ReturnType< $bog_gram_chat['contact_share'] >
 	>
-	type $bog_gram_chat__contact_open_bog_gram_229 = $mol_type_enforce<
+	type $bog_gram_chat__contact_open_bog_gram_235 = $mol_type_enforce<
 		ReturnType< $bog_gram['contact_open'] >
 		,
 		ReturnType< $bog_gram_chat['contact_open'] >
 	>
-	type $bog_gram_pick__title_bog_gram_230 = $mol_type_enforce<
+	type $bog_gram_pick__title_bog_gram_236 = $mol_type_enforce<
 		ReturnType< $bog_gram['pick_title'] >
 		,
 		ReturnType< $bog_gram_pick['title'] >
 	>
-	type $bog_gram_pick__close_bog_gram_231 = $mol_type_enforce<
+	type $bog_gram_pick__close_bog_gram_237 = $mol_type_enforce<
 		ReturnType< $bog_gram['pick_close'] >
 		,
 		ReturnType< $bog_gram_pick['close'] >
 	>
-	type $bog_gram_pick__saved_bog_gram_232 = $mol_type_enforce<
+	type $bog_gram_pick__saved_bog_gram_238 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_id'] >
 		,
 		ReturnType< $bog_gram_pick['saved'] >
 	>
-	type $bog_gram_pick__saved_title_bog_gram_233 = $mol_type_enforce<
+	type $bog_gram_pick__saved_title_bog_gram_239 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_title'] >
 		,
 		ReturnType< $bog_gram_pick['saved_title'] >
 	>
-	type $bog_gram_pick__ids_bog_gram_234 = $mol_type_enforce<
+	type $bog_gram_pick__ids_bog_gram_240 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_visible'] >
 		,
 		ReturnType< $bog_gram_pick['ids'] >
 	>
-	type $bog_gram_pick__error_bog_gram_235 = $mol_type_enforce<
+	type $bog_gram_pick__error_bog_gram_241 = $mol_type_enforce<
 		ReturnType< $bog_gram['pick_error'] >
 		,
 		ReturnType< $bog_gram_pick['error'] >
 	>
-	type $bog_gram_pick__pick_bog_gram_236 = $mol_type_enforce<
+	type $bog_gram_pick__pick_bog_gram_242 = $mol_type_enforce<
 		ReturnType< $bog_gram['pick_done'] >
 		,
 		ReturnType< $bog_gram_pick['pick'] >
 	>
-	type $bog_gram_pick__dialog_title_bog_gram_237 = $mol_type_enforce<
+	type $bog_gram_pick__dialog_title_bog_gram_243 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_title'] >
 		,
 		ReturnType< $bog_gram_pick['dialog_title'] >
 	>
-	type $bog_gram_pick__dialog_avatar_id_bog_gram_238 = $mol_type_enforce<
+	type $bog_gram_pick__dialog_avatar_id_bog_gram_244 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_avatar_id'] >
 		,
 		ReturnType< $bog_gram_pick['dialog_avatar_id'] >
 	>
-	type $bog_gram_pick__dialog_tint_bog_gram_239 = $mol_type_enforce<
+	type $bog_gram_pick__dialog_tint_bog_gram_245 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_tint'] >
 		,
 		ReturnType< $bog_gram_pick['dialog_tint'] >
 	>
-	type $bog_gram_call__land_bog_gram_240 = $mol_type_enforce<
+	type $bog_gram_call__land_bog_gram_246 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_land'] >
 		,
 		ReturnType< $bog_gram_call['land'] >
 	>
-	type $bog_gram_call__name_bog_gram_241 = $mol_type_enforce<
+	type $bog_gram_call__name_bog_gram_247 = $mol_type_enforce<
 		ReturnType< $bog_gram['user_name'] >
 		,
 		ReturnType< $bog_gram_call['name'] >
 	>
-	type $bog_gram_call__note_bog_gram_242 = $mol_type_enforce<
+	type $bog_gram_call__note_bog_gram_248 = $mol_type_enforce<
 		ReturnType< $bog_gram['people_note'] >
 		,
 		ReturnType< $bog_gram_call['note'] >
 	>
-	type $bog_gram_call__close_bog_gram_243 = $mol_type_enforce<
+	type $bog_gram_call__close_bog_gram_249 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_close'] >
 		,
 		ReturnType< $bog_gram_call['close'] >
 	>
-	type $bog_gram_call__knocks_bog_gram_244 = $mol_type_enforce<
+	type $bog_gram_call__knocks_bog_gram_250 = $mol_type_enforce<
 		ReturnType< $bog_gram['call_knocks'] >
 		,
 		ReturnType< $bog_gram_call['knocks'] >
 	>
-	type $bog_gram_call__knock_name_bog_gram_245 = $mol_type_enforce<
+	type $bog_gram_call__knock_name_bog_gram_251 = $mol_type_enforce<
 		ReturnType< $bog_gram['ask_label'] >
 		,
 		ReturnType< $bog_gram_call['knock_name'] >
 	>
-	type $bog_gram_call__admit_bog_gram_246 = $mol_type_enforce<
+	type $bog_gram_call__admit_bog_gram_252 = $mol_type_enforce<
 		ReturnType< $bog_gram['ask_accept'] >
 		,
 		ReturnType< $bog_gram_call['admit'] >
 	>
-	type $bog_gram_call__deny_bog_gram_247 = $mol_type_enforce<
+	type $bog_gram_call__deny_bog_gram_253 = $mol_type_enforce<
 		ReturnType< $bog_gram['ask_reject'] >
 		,
 		ReturnType< $bog_gram_call['deny'] >
@@ -86363,6 +86479,10 @@ declare namespace $ {
 		members_open( next?: any ): any
 		call_open( next?: any ): any
 		meet_uri( id: any): string
+		meet_owner_is( id: any): boolean
+		meet_confirm( id: any, next?: boolean ): boolean
+		dialog_knocks( id: any): readonly(string)[]
+		ask_label( id: any): string
 		forward_open( next?: any ): any
 		contact_share( next?: any ): any
 		contact_open( next?: any ): any
@@ -86374,7 +86494,6 @@ declare namespace $ {
 		people_note( id: any): string
 		call_close( next?: any ): any
 		call_knocks( id: any): readonly(string)[]
-		ask_label( id: any): string
 		plugins( ): readonly(any)[]
 		Account( ): $bog_gram_account
 		Registry( ): $bog_gram_registry
@@ -86504,6 +86623,9 @@ declare namespace $.$$ {
         asks_forget(entries: readonly string[]): void;
         meet_link(): string;
         meet_uri(id: string): string;
+        meet_owner_is(id: string): boolean;
+        meet_confirm(id: string, next?: boolean): boolean;
+        dialog_knocks(id: string): string[];
         meet_start(next?: any): null;
         meet_begin(): Promise<string>;
         meet_make(next?: any): null;

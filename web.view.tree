@@ -5176,6 +5176,13 @@ $bog_gram_chat $bog_gram_page
 	members? null
 	call_open? null
 	call_invite* \
+	meet_owner false
+	meet_confirm? false
+	knocks /string
+	knock_name* \
+	admit*? null
+	deny*? null
+	knocks_pattern @ \Knocking: {count}
 	forward_open? null
 	contact_share? null
 	contact_open? null
@@ -5271,6 +5278,8 @@ $bog_gram_chat $bog_gram_page
 			sub /
 				<= Close_icon $mol_icon_close
 	body /
+		<= Meet_bar $mol_list
+			rows <= meet_rows /
 		<= Messages $mol_list
 			rows <= rows /$mol_view
 	foot /
@@ -5480,6 +5489,26 @@ $bog_gram_chat $bog_gram_page
 		press? <=> message_press*? null
 		release? <=> message_release*? null
 		context? <=> message_context*? null
+	Meet_confirm $mol_check_box
+		title @ \Let in by confirmation
+		hint @ \Off: any admin with Gram open lets in whoever follows the meeting link. On: you or an admin let each one in by hand
+		checked? <=> meet_confirm?
+	Knocks_head $mol_paragraph
+		title <= knocks_head \
+	Knock* $mol_view
+		sub /
+			<= Knock_name* $mol_paragraph
+				title <= knock_name*
+			<= Knock_admit* $mol_button_minor
+				hint @ \Let in
+				click? <=> admit*?
+				sub /
+					<= Knock_admit_icon* $mol_icon_check
+			<= Knock_deny* $mol_button_minor
+				hint @ \Decline
+				click? <=> deny*?
+				sub /
+					<= Knock_deny_icon* $mol_icon_close
 
 $bog_gram_pick $bog_gram_page
 	title \
@@ -5867,6 +5896,12 @@ $bog_gram $mol_book2
 		members? <=> members_open? null
 		call_open? <=> call_open? null
 		call_invite* <= meet_uri* \
+		meet_owner <= meet_owner_is* false
+		meet_confirm? <=> meet_confirm*? false
+		knocks <= dialog_knocks* /string
+		knock_name* <= ask_label* \
+		admit*? <=> ask_accept*? null
+		deny*? <=> ask_reject*? null
 		forward_open? <=> forward_open? null
 		contact_share? <=> contact_share? null
 		contact_open? <=> contact_open? null

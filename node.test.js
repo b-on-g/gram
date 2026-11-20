@@ -46995,7 +46995,7 @@ var $;
     class $bog_gram_meet_hall extends $giper_baza_dict.with({
         Group: $giper_baza_atom_text,
         Title: $giper_baza_atom_text,
-        Mode: $giper_baza_atom_text,
+        Confirm: $giper_baza_atom_text,
         Knocks: $giper_baza_list_str,
     }) {
     }
@@ -48983,7 +48983,6 @@ var $;
             const link = land.link().str;
             hall.Group('auto').val(id);
             hall.Title('auto').val(this.Talk().group_title(id));
-            hall.Mode('auto').val('ask');
             land.sync();
             this.Talk().store(id).Meet('auto').val(link);
             return link;
@@ -49011,8 +49010,8 @@ var $;
             if (!link || !owner)
                 return 'ask';
             if (next !== undefined && this.owner_me(id))
-                this.hall(link).Mode('auto').val(next);
-            return $bog_gram_soft(() => this.trusted(link, owner, 'Mode'), '') === 'auto' ? 'auto' : 'ask';
+                this.hall(link).Confirm('auto').val(next === 'ask' ? 'on' : '');
+            return $bog_gram_soft(() => this.trusted(link, owner, 'Confirm'), '') === 'on' ? 'ask' : 'auto';
         }
         hall_id() {
             return this.$.$mol_state_arg.value('meet') ?? '';
@@ -56259,6 +56258,14 @@ var $;
 			(obj.sub) = () => ([(this.Close_icon())]);
 			return obj;
 		}
+		meet_rows(){
+			return [];
+		}
+		Meet_bar(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.meet_rows()));
+			return obj;
+		}
 		rows(){
 			return [];
 		}
@@ -56724,6 +56731,36 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		knocks_head(){
+			return "";
+		}
+		Knock_name(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.knock_name(id)));
+			return obj;
+		}
+		Knock_admit_icon(id){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
+		Knock_admit(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Knock_admit_hint")));
+			(obj.click) = (next) => ((this.admit(id, next)));
+			(obj.sub) = () => ([(this.Knock_admit_icon(id))]);
+			return obj;
+		}
+		Knock_deny_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Knock_deny(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Knock_deny_hint")));
+			(obj.click) = (next) => ((this.deny(id, next)));
+			(obj.sub) = () => ([(this.Knock_deny_icon(id))]);
+			return obj;
+		}
 		dialog(){
 			return "";
 		}
@@ -56756,6 +56793,30 @@ var $;
 		}
 		call_invite(id){
 			return "";
+		}
+		meet_owner(){
+			return false;
+		}
+		meet_confirm(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		knocks(){
+			return [];
+		}
+		knock_name(id){
+			return "";
+		}
+		admit(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		deny(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		knocks_pattern(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_knocks_pattern"));
 		}
 		forward_open(next){
 			if(next !== undefined) return next;
@@ -56946,7 +57007,7 @@ var $;
 			];
 		}
 		body(){
-			return [(this.Messages())];
+			return [(this.Meet_bar()), (this.Messages())];
 		}
 		foot(){
 			return [
@@ -57175,6 +57236,27 @@ var $;
 			(obj.context) = (next) => ((this.message_context(id, next)));
 			return obj;
 		}
+		Meet_confirm(){
+			const obj = new this.$.$mol_check_box();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Meet_confirm_title")));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Meet_confirm_hint")));
+			(obj.checked) = (next) => ((this.meet_confirm(next)));
+			return obj;
+		}
+		Knocks_head(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.knocks_head()));
+			return obj;
+		}
+		Knock(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Knock_name(id)), 
+				(this.Knock_admit(id)), 
+				(this.Knock_deny(id))
+			]);
+			return obj;
+		}
 	};
 	($mol_mem(($.$bog_gram_chat.prototype), "image_paste"));
 	($mol_mem(($.$bog_gram_chat.prototype), "image_over"));
@@ -57195,6 +57277,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Meet_bar"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Messages"));
 	($mol_mem(($.$bog_gram_chat.prototype), "down_click"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Down_icon"));
@@ -57262,12 +57345,20 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_press"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_release"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_context"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock_name"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock_admit_icon"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock_admit"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock_deny_icon"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock_deny"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Talk"));
 	($mol_mem(($.$bog_gram_chat.prototype), "People"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Alerts"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "members"));
 	($mol_mem(($.$bog_gram_chat.prototype), "call_open"));
+	($mol_mem(($.$bog_gram_chat.prototype), "meet_confirm"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "admit"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "deny"));
 	($mol_mem(($.$bog_gram_chat.prototype), "forward_open"));
 	($mol_mem(($.$bog_gram_chat.prototype), "contact_share"));
 	($mol_mem(($.$bog_gram_chat.prototype), "contact_open"));
@@ -57310,6 +57401,9 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Line"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Day_row"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Bubble"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Meet_confirm"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Knocks_head"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock"));
 
 
 ;
@@ -57685,6 +57779,19 @@ var $;
             }
             Members() {
                 return this.members_shown() ? super.Members() : null;
+            }
+            meet_rows() {
+                const knocks = this.knocks();
+                return [
+                    ...this.meet_owner() ? [this.Meet_confirm()] : [],
+                    ...knocks.length ? [this.Knocks_head(), ...knocks.map(entry => this.Knock(entry))] : [],
+                ];
+            }
+            Meet_bar() {
+                return this.meet_rows().length ? super.Meet_bar() : null;
+            }
+            knocks_head() {
+                return $bog_gram_text_fill(this.knocks_pattern(), { count: this.knocks().length });
             }
             Call() {
                 return this.saved() ? null : super.Call();
@@ -58970,6 +59077,9 @@ var $;
             $mol_mem
         ], $bog_gram_chat.prototype, "note", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "meet_rows", null);
+        __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "share", null);
         __decorate([
@@ -59413,6 +59523,28 @@ var $;
                     bottom: '0.5rem',
                     left: '0.75rem',
                     right: '0.75rem',
+                },
+            },
+            Meet_bar: {
+                gap: '0.25rem',
+                padding: {
+                    bottom: '0.5rem',
+                },
+            },
+            Knocks_head: {
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Knock: {
+                align: {
+                    items: 'center',
+                },
+                gap: '0.25rem',
+            },
+            Knock_name: {
+                flex: {
+                    grow: 1,
                 },
             },
             Messages: {
@@ -61689,6 +61821,19 @@ var $;
 		meet_uri(id){
 			return "";
 		}
+		meet_owner_is(id){
+			return false;
+		}
+		meet_confirm(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		dialog_knocks(id){
+			return [];
+		}
+		ask_label(id){
+			return "";
+		}
 		forward_open(next){
 			if(next !== undefined) return next;
 			return null;
@@ -61727,9 +61872,6 @@ var $;
 		}
 		call_knocks(id){
 			return [];
-		}
-		ask_label(id){
-			return "";
 		}
 		plugins(){
 			return [(this.Skin()), (this.Theme())];
@@ -61875,6 +62017,12 @@ var $;
 			(obj.members) = (next) => ((this.members_open(next)));
 			(obj.call_open) = (next) => ((this.call_open(next)));
 			(obj.call_invite) = (id) => ((this.meet_uri(id)));
+			(obj.meet_owner) = () => ((this.meet_owner_is(id)));
+			(obj.meet_confirm) = (next) => ((this.meet_confirm(id, next)));
+			(obj.knocks) = () => ((this.dialog_knocks(id)));
+			(obj.knock_name) = (id) => ((this.ask_label(id)));
+			(obj.admit) = (id, next) => ((this.ask_accept(id, next)));
+			(obj.deny) = (id, next) => ((this.ask_reject(id, next)));
 			(obj.forward_open) = (next) => ((this.forward_open(next)));
 			(obj.contact_share) = (next) => ((this.contact_share(next)));
 			(obj.contact_open) = (next) => ((this.contact_open(next)));
@@ -61961,6 +62109,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
 	($mol_mem(($.$bog_gram.prototype), "members_open"));
 	($mol_mem(($.$bog_gram.prototype), "call_open"));
+	($mol_mem_key(($.$bog_gram.prototype), "meet_confirm"));
 	($mol_mem(($.$bog_gram.prototype), "forward_open"));
 	($mol_mem(($.$bog_gram.prototype), "contact_share"));
 	($mol_mem(($.$bog_gram.prototype), "contact_open"));
@@ -62574,6 +62723,23 @@ var $;
             meet_uri(id) {
                 return this.Meet().uri(id);
             }
+            meet_owner_is(id) {
+                if (!this.Meet().meet_of(id))
+                    return false;
+                return this.Meet().owner_me(id);
+            }
+            meet_confirm(id, next) {
+                if (next === undefined)
+                    return this.Meet().mode(id) === 'ask';
+                return this.Meet().mode(id, next ? 'ask' : 'auto') === 'ask';
+            }
+            dialog_knocks(id) {
+                if (!id)
+                    return [];
+                if (!$bog_gram_soft(() => this.Talk().admin_me(id), false))
+                    return [];
+                return this.asks_for(id);
+            }
             meet_start(next) {
                 this.meet_begin().catch((error) => $mol_fail_log(error));
                 return null;
@@ -62925,6 +63091,9 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram.prototype, "asks_for", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram.prototype, "dialog_knocks", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "meet_start", null);
