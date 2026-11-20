@@ -16525,6 +16525,7 @@ var $;
                         const sens = seal.shot().mix(this.link());
                         const sign = await auth.signer().sign(sens);
                         seal.sign(sign);
+                        seal.hash(null);
                     } while (seal.rate_min() > rate);
                     return seal;
                 });
@@ -17026,8 +17027,11 @@ var $;
         salt() {
             return new Uint8Array(this.buffer, this.byteOffset + 2, 16); /* tick(2), time(4), lord(10) */
         }
-        hash() {
-            return $giper_baza_link.hash_bin(this.asArray());
+        _hash = null;
+        hash(refresh) {
+            if (this._hash && !refresh)
+                return this._hash;
+            return this._hash = $giper_baza_link.hash_bin(this.asArray());
         }
         tier_min() {
             return $giper_baza_rank_tier.rule;
@@ -20020,6 +20024,18 @@ var $;
 	($.$mol_icon_account_multiple_plus) = class $mol_icon_account_multiple_plus extends ($.$mol_icon) {
 		path(){
 			return "M19 17V19H7V17S7 13 13 13 19 17 19 17M16 8A3 3 0 1 0 13 11A3 3 0 0 0 16 8M19.2 13.06A5.6 5.6 0 0 1 21 17V19H24V17S24 13.55 19.2 13.06M18 5A2.91 2.91 0 0 0 17.11 5.14A5 5 0 0 1 17.11 10.86A2.91 2.91 0 0 0 18 11A3 3 0 0 0 18 5M8 10H5V7H3V10H0V12H3V15H5V12H8Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_video) = class $mol_icon_video extends ($.$mol_icon) {
+		path(){
+			return "M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z";
 		}
 	};
 
@@ -32984,6 +33000,17 @@ var $;
 			(obj.sub) = () => ([(this.Group_open_icon())]);
 			return obj;
 		}
+		Meet_start_icon(){
+			const obj = new this.$.$mol_icon_video();
+			return obj;
+		}
+		Meet_start(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Meet_start_hint")));
+			(obj.click) = (next) => ((this.meet(next)));
+			(obj.sub) = () => ([(this.Meet_start_icon())]);
+			return obj;
+		}
 		Music_open_icon(){
 			const obj = new this.$.$mol_icon_music();
 			return obj;
@@ -33170,6 +33197,10 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		meet(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		music(next){
 			if(next !== undefined) return next;
 			return null;
@@ -33277,6 +33308,7 @@ var $;
 				(this.Status()), 
 				(this.Compose_open()), 
 				(this.Group_open()), 
+				(this.Meet_start()), 
 				(this.Music_open()), 
 				(this.Settings_open()), 
 				(this.Lights())
@@ -33372,6 +33404,8 @@ var $;
 	($mol_mem(($.$bog_gram_menu.prototype), "Compose_open"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Group_open_icon"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Group_open"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Meet_start_icon"));
+	($mol_mem(($.$bog_gram_menu.prototype), "Meet_start"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Music_open_icon"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Music_open"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Settings_open_icon"));
@@ -33406,6 +33440,7 @@ var $;
 	($mol_mem(($.$bog_gram_menu.prototype), "Theme"));
 	($mol_mem(($.$bog_gram_menu.prototype), "compose"));
 	($mol_mem(($.$bog_gram_menu.prototype), "group"));
+	($mol_mem(($.$bog_gram_menu.prototype), "meet"));
 	($mol_mem(($.$bog_gram_menu.prototype), "music"));
 	($mol_mem(($.$bog_gram_menu.prototype), "settings"));
 	($mol_mem(($.$bog_gram_menu.prototype), "invite_drop"));
@@ -60250,7 +60285,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.191';
+    $.$bog_gram_version = '1.0.192';
 })($ || ($ = {}));
 
 ;
@@ -61298,18 +61333,6 @@ var $;
         });
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-
-;
-	($.$mol_icon_video) = class $mol_icon_video extends ($.$mol_icon) {
-		path(){
-			return "M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z";
-		}
-	};
-
-
-;
-"use strict";
-
 
 ;
 	($.$mol_icon_shield) = class $mol_icon_shield extends ($.$mol_icon) {
@@ -64693,7 +64716,7 @@ var $;
             }
             return stay.length < mates.length ? null : stay;
         }
-        group_make(title, lords, forced) {
+        group_make(title, lords, forced, alone = false) {
             const my = this.Account().my_lord();
             const known = [];
             const passes = [];
@@ -64712,7 +64735,7 @@ var $;
             }
             if (lost.length && !forced)
                 return { id: '', lost };
-            if (!known.length)
+            if (!known.length && !alone)
                 return { id: '', lost: [] };
             const dialog_land = this.grab();
             const session_land = this.grab();
@@ -65389,6 +65412,1814 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_microphone) = class $mol_icon_microphone extends ($.$mol_icon) {
+		path(){
+			return "M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
+		path(){
+			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_camera_flip) = class $mol_icon_camera_flip extends ($.$mol_icon) {
+		path(){
+			return "M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_signal) = class $mol_icon_signal extends ($.$mol_icon) {
+		path(){
+			return "M3,21H6V18H3M8,21H11V14H8M13,21H16V9H13M18,21H21V3H18V21Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_picture_in_picture_bottom_right) = class $mol_icon_picture_in_picture_bottom_right extends ($.$mol_icon) {
+		path(){
+			return "M19,11H11V17H19V11M23,19V5C23,3.88 22.1,3 21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19M21,19H3V4.97H21V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_phone) = class $mol_icon_phone extends ($.$mol_icon) {
+		path(){
+			return "M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_phone_hangup) = class $mol_icon_phone_hangup extends ($.$mol_icon) {
+		path(){
+			return "M12,9C10.4,9 8.85,9.25 7.4,9.72V12.82C7.4,13.22 7.17,13.56 6.84,13.72C5.86,14.21 4.97,14.84 4.17,15.57C4,15.75 3.75,15.86 3.5,15.86C3.2,15.86 2.95,15.74 2.77,15.56L0.29,13.08C0.11,12.9 0,12.65 0,12.38C0,12.1 0.11,11.85 0.29,11.67C3.34,8.77 7.46,7 12,7C16.54,7 20.66,8.77 23.71,11.67C23.89,11.85 24,12.1 24,12.38C24,12.65 23.89,12.9 23.71,13.08L21.23,15.56C21.05,15.74 20.8,15.86 20.5,15.86C20.25,15.86 20,15.75 19.82,15.57C19.03,14.84 18.14,14.21 17.16,13.72C16.83,13.56 16.6,13.22 16.6,12.82V9.72C15.15,9.25 13.6,9 12,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_microphone_off) = class $mol_icon_microphone_off extends ($.$mol_icon) {
+		path(){
+			return "M19,11C19,12.19 18.66,13.3 18.1,14.28L16.87,13.05C17.14,12.43 17.3,11.74 17.3,11H19M15,11.16L9,5.18V5A3,3 0 0,1 12,2A3,3 0 0,1 15,5V11L15,11.16M4.27,3L21,19.73L19.73,21L15.54,16.81C14.77,17.27 13.91,17.58 13,17.72V21H11V17.72C7.72,17.23 5,14.41 5,11H6.7C6.7,14 9.24,16.1 12,16.1C12.81,16.1 13.6,15.91 14.31,15.58L12.65,13.92L12,14A3,3 0 0,1 9,11V10.28L3,4.27L4.27,3Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_gram_call_tile) = class $bog_gram_call_tile extends ($.$mol_view) {
+		stat_bad(id){
+			return false;
+		}
+		stat_text(id){
+			return "";
+		}
+		picture(){
+			return null;
+		}
+		Video(){
+			const obj = new this.$.$mol_video_player();
+			(obj.stream) = () => ((this.picture()));
+			(obj.controls) = () => (false);
+			(obj.muted) = () => (true);
+			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "autopictureinpicture": true});
+			return obj;
+		}
+		sound(){
+			return null;
+		}
+		Sound(){
+			const obj = new this.$.$mol_video_player();
+			(obj.dom_name) = () => ("audio");
+			(obj.stream) = () => ((this.sound()));
+			(obj.controls) = () => (false);
+			(obj.muted) = () => ((this.muted()));
+			return obj;
+		}
+		letter(){
+			return "";
+		}
+		Face(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.letter())]);
+			return obj;
+		}
+		stat_parts(){
+			return [];
+		}
+		Stats(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.stat_parts()));
+			return obj;
+		}
+		Name(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.name())]);
+			return obj;
+		}
+		Mic_off(){
+			const obj = new this.$.$mol_icon_microphone_off();
+			return obj;
+		}
+		status_text(){
+			return "";
+		}
+		Status(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.status_text())]);
+			return obj;
+		}
+		label(){
+			return [
+				(this.Name()), 
+				(this.Mic_off()), 
+				(this.Status())
+			];
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.label()));
+			return obj;
+		}
+		stream(){
+			return null;
+		}
+		muted(){
+			return false;
+		}
+		mirror(){
+			return false;
+		}
+		cam(){
+			return true;
+		}
+		mic(){
+			return true;
+		}
+		awake(){
+			return true;
+		}
+		name(){
+			return "";
+		}
+		status(){
+			return "";
+		}
+		stats(){
+			return null;
+		}
+		stat_fps(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_fps"));
+		}
+		stat_size(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_size"));
+		}
+		stat_kbps(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_kbps"));
+		}
+		stat_loss(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_loss"));
+		}
+		stat_rtt(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_rtt"));
+		}
+		Stat(id){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({"bog_gram_call_tile_stat_bad": (this.stat_bad(id))});
+			(obj.sub) = () => ([(this.stat_text(id))]);
+			return obj;
+		}
+		failed_text(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_failed_text"));
+		}
+		connecting_text(){
+			return (this.$.$mol_locale.text("$bog_gram_call_tile_connecting_text"));
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"bog_gram_call_tile_cam": (this.cam()), 
+				"bog_gram_call_tile_mirror": (this.mirror())
+			};
+		}
+		sub(){
+			return [
+				(this.Video()), 
+				(this.Sound()), 
+				(this.Face()), 
+				(this.Stats()), 
+				(this.Label())
+			];
+		}
+	};
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Video"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Sound"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Face"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Stats"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Name"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Mic_off"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Status"));
+	($mol_mem(($.$bog_gram_call_tile.prototype), "Label"));
+	($mol_mem_key(($.$bog_gram_call_tile.prototype), "Stat"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_call_tile extends $.$bog_gram_call_tile {
+            letter() {
+                return this.name().slice(0, 1).toUpperCase();
+            }
+            status_text() {
+                const status = this.status();
+                if (!status || status === 'connected')
+                    return '';
+                if (status === 'failed')
+                    return this.failed_text();
+                return this.connecting_text();
+            }
+            label() {
+                return [
+                    this.Name(),
+                    ...this.mic() ? [] : [this.Mic_off()],
+                    ...this.status_text() ? [this.Status()] : [],
+                ];
+            }
+            Stats() {
+                return this.stats() ? super.Stats() : null;
+            }
+            stat_parts() {
+                return ['fps', 'size', 'kbps', 'loss', 'rtt'].map(id => this.Stat(id));
+            }
+            stat_text(id) {
+                const stats = this.stats();
+                if (!stats)
+                    return '';
+                switch (id) {
+                    case 'fps': return $bog_gram_text_fill(this.stat_fps(), { n: stats.fps });
+                    case 'size': return $bog_gram_text_fill(this.stat_size(), { n: `${stats.width}×${stats.height}` });
+                    case 'kbps': return $bog_gram_text_fill(this.stat_kbps(), { n: stats.kbps });
+                    case 'loss': return $bog_gram_text_fill(this.stat_loss(), { n: stats.loss });
+                    case 'rtt': return $bog_gram_text_fill(this.stat_rtt(), { n: stats.rtt });
+                }
+                return '';
+            }
+            stat_bad(id) {
+                const stats = this.stats();
+                if (!stats)
+                    return false;
+                return $bog_gram_call_peer.stats_bad(stats)[id] ?? false;
+            }
+            part(kind) {
+                const stream = this.stream();
+                if (!stream)
+                    return null;
+                const tracks = stream.getTracks().filter(track => track.kind === kind);
+                if (!tracks.length)
+                    return null;
+                return new MediaStream(tracks);
+            }
+            picture() {
+                return this.part('video');
+            }
+            sound() {
+                return this.part('audio');
+            }
+            video() {
+                return this.Video().dom_node();
+            }
+            audio() {
+                return this.Sound().dom_node();
+            }
+            auto() {
+                const video = this.video();
+                video.muted = true;
+                const audio = this.audio();
+                audio.muted = this.muted();
+                this.Video().pause_event();
+                this.Sound().pause_event();
+                if (!this.awake())
+                    return;
+                if (this.picture() && video.paused)
+                    video.play().catch(() => { });
+                if (this.sound() && audio.paused)
+                    audio.play().catch(() => { });
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call_tile.prototype, "picture", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call_tile.prototype, "sound", null);
+        $$.$bog_gram_call_tile = $bog_gram_call_tile;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_call_tile, {
+            position: 'relative',
+            flex: {
+                grow: 1,
+                shrink: 1,
+                basis: '18rem',
+            },
+            aspectRatio: '4 / 3',
+            maxHeight: '100%',
+            overflow: 'hidden',
+            border: {
+                radius: $mol_gap.round,
+            },
+            background: {
+                color: $mol_theme.card,
+            },
+            Video: {
+                position: 'absolute',
+                inset: '0',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+            },
+            Face: {
+                position: 'absolute',
+                inset: '0',
+                display: 'none',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                font: {
+                    size: '3rem',
+                },
+                color: $mol_theme.shade,
+            },
+            Stats: {
+                position: 'absolute',
+                left: $mol_gap.block,
+                top: $mol_gap.block,
+                padding: {
+                    left: $mol_gap.text,
+                    right: $mol_gap.text,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                background: {
+                    color: $mol_theme.back,
+                },
+                gap: '.75ch',
+                flex: {
+                    wrap: 'wrap',
+                },
+                font: {
+                    size: '.75rem',
+                },
+                opacity: .8,
+            },
+            Stat: {
+                '@': {
+                    bog_gram_call_tile_stat_bad: {
+                        true: {
+                            color: 'hsl( 0, 85%, 62% )',
+                            font: {
+                                weight: 'bold',
+                            },
+                        },
+                    },
+                },
+            },
+            Label: {
+                position: 'absolute',
+                left: $mol_gap.block,
+                bottom: $mol_gap.block,
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.text,
+                padding: {
+                    left: $mol_gap.text,
+                    right: $mol_gap.text,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+                background: {
+                    color: $mol_theme.back,
+                },
+            },
+            '@': {
+                bog_gram_call_tile_cam: {
+                    false: {
+                        Video: {
+                            opacity: 0,
+                        },
+                        Face: {
+                            display: 'flex',
+                        },
+                    },
+                },
+                bog_gram_call_tile_mirror: {
+                    true: {
+                        Video: {
+                            transform: 'scaleX(-1)',
+                        },
+                    },
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_gram_call) = class $bog_gram_call extends ($.$mol_page) {
+		invite_link(){
+			return "";
+		}
+		Invite(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Invite_hint")));
+			(obj.text) = () => ((this.invite_link()));
+			return obj;
+		}
+		close_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Close_hint")));
+			(obj.click) = (next) => ((this.close_click(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		controls(){
+			return [];
+		}
+		tiles(){
+			return [];
+		}
+		self_stream(){
+			return null;
+		}
+		self_mirror(){
+			return true;
+		}
+		awake(){
+			return true;
+		}
+		self_name(){
+			return (this.$.$mol_locale.text("$bog_gram_call_self_name"));
+		}
+		mate_stream(id){
+			return null;
+		}
+		mate_cam(id){
+			return true;
+		}
+		mate_mic(id){
+			return true;
+		}
+		mate_name(id){
+			return "";
+		}
+		mate_status(id){
+			return "";
+		}
+		mate_stats(id){
+			return null;
+		}
+		lobby_text(){
+			return "";
+		}
+		Lobby_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.lobby_text()));
+			return obj;
+		}
+		join(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Join(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_call_Join_title")));
+			(obj.click) = (next) => ((this.join(next)));
+			return obj;
+		}
+		Mic_icon(){
+			const obj = new this.$.$mol_icon_microphone();
+			return obj;
+		}
+		mic(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		Cam_icon(){
+			const obj = new this.$.$mol_icon_video();
+			return obj;
+		}
+		cam(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		cam_able(){
+			return true;
+		}
+		cam_switch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Flip_icon(){
+			const obj = new this.$.$mol_icon_camera_flip();
+			return obj;
+		}
+		Stats_icon(){
+			const obj = new this.$.$mol_icon_signal();
+			return obj;
+		}
+		stats_show(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		pip(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Pip_icon(){
+			const obj = new this.$.$mol_icon_picture_in_picture_bottom_right();
+			return obj;
+		}
+		leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Leave_icon(){
+			const obj = new this.$.$mol_icon_phone_hangup();
+			return obj;
+		}
+		land(){
+			return null;
+		}
+		name(){
+			return "";
+		}
+		note(id){
+			return "";
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Room(){
+			const obj = new this.$.$bog_gram_call_room();
+			(obj.land) = () => ((this.land()));
+			(obj.name) = () => ((this.name()));
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_call_title"));
+		}
+		tools(){
+			return [(this.Invite()), (this.Close())];
+		}
+		body(){
+			return (this.content());
+		}
+		foot(){
+			return (this.controls());
+		}
+		Grid(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.tiles()));
+			return obj;
+		}
+		Self(){
+			const obj = new this.$.$bog_gram_call_tile();
+			(obj.stream) = () => ((this.self_stream()));
+			(obj.muted) = () => (true);
+			(obj.mirror) = () => ((this.self_mirror()));
+			(obj.awake) = () => ((this.awake()));
+			(obj.cam) = () => ((this.cam()));
+			(obj.mic) = () => ((this.mic()));
+			(obj.name) = () => ((this.self_name()));
+			return obj;
+		}
+		Mate(id){
+			const obj = new this.$.$bog_gram_call_tile();
+			(obj.stream) = () => ((this.mate_stream(id)));
+			(obj.awake) = () => ((this.awake()));
+			(obj.cam) = () => ((this.mate_cam(id)));
+			(obj.mic) = () => ((this.mate_mic(id)));
+			(obj.name) = () => ((this.mate_name(id)));
+			(obj.status) = () => ((this.mate_status(id)));
+			(obj.stats) = () => ((this.mate_stats(id)));
+			return obj;
+		}
+		Lobby(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([(this.Lobby_text()), (this.Join())]);
+			return obj;
+		}
+		Mic(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Mic_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Mic_hint")));
+			(obj.checked) = (next) => ((this.mic(next)));
+			return obj;
+		}
+		Cam(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Cam_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Cam_hint")));
+			(obj.checked) = (next) => ((this.cam(next)));
+			(obj.enabled) = () => ((this.cam_able()));
+			return obj;
+		}
+		Flip(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Flip_hint")));
+			(obj.click) = (next) => ((this.cam_switch(next)));
+			(obj.sub) = () => ([(this.Flip_icon())]);
+			return obj;
+		}
+		Stats_show(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.Icon) = () => ((this.Stats_icon()));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Stats_show_hint")));
+			(obj.checked) = (next) => ((this.stats_show(next)));
+			return obj;
+		}
+		Pip(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Pip_hint")));
+			(obj.click) = (next) => ((this.pip(next)));
+			(obj.sub) = () => ([(this.Pip_icon())]);
+			return obj;
+		}
+		Leave(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Leave_hint")));
+			(obj.click) = (next) => ((this.leave(next)));
+			(obj.sub) = () => ([(this.Leave_icon())]);
+			return obj;
+		}
+		lobby_empty(){
+			return (this.$.$mol_locale.text("$bog_gram_call_lobby_empty"));
+		}
+		lobby_some(){
+			return (this.$.$mol_locale.text("$bog_gram_call_lobby_some"));
+		}
+	};
+	($mol_mem(($.$bog_gram_call.prototype), "Invite"));
+	($mol_mem(($.$bog_gram_call.prototype), "close_click"));
+	($mol_mem(($.$bog_gram_call.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "Close"));
+	($mol_mem(($.$bog_gram_call.prototype), "Lobby_text"));
+	($mol_mem(($.$bog_gram_call.prototype), "join"));
+	($mol_mem(($.$bog_gram_call.prototype), "Join"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "mic"));
+	($mol_mem(($.$bog_gram_call.prototype), "Cam_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "cam_switch"));
+	($mol_mem(($.$bog_gram_call.prototype), "Flip_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "Stats_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "stats_show"));
+	($mol_mem(($.$bog_gram_call.prototype), "pip"));
+	($mol_mem(($.$bog_gram_call.prototype), "Pip_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "leave"));
+	($mol_mem(($.$bog_gram_call.prototype), "Leave_icon"));
+	($mol_mem(($.$bog_gram_call.prototype), "close"));
+	($mol_mem(($.$bog_gram_call.prototype), "Room"));
+	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
+	($mol_mem(($.$bog_gram_call.prototype), "Self"));
+	($mol_mem_key(($.$bog_gram_call.prototype), "Mate"));
+	($mol_mem(($.$bog_gram_call.prototype), "Lobby"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic"));
+	($mol_mem(($.$bog_gram_call.prototype), "Cam"));
+	($mol_mem(($.$bog_gram_call.prototype), "Flip"));
+	($mol_mem(($.$bog_gram_call.prototype), "Stats_show"));
+	($mol_mem(($.$bog_gram_call.prototype), "Pip"));
+	($mol_mem(($.$bog_gram_call.prototype), "Leave"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_call extends $.$bog_gram_call {
+            joined() {
+                return this.Room().joined();
+            }
+            invite_link() {
+                return $bog_gram_soft(() => String(this.Room().data().Invite()?.val() ?? ''), '');
+            }
+            Invite() {
+                return this.invite_link() ? super.Invite() : null;
+            }
+            content() {
+                return [this.joined() ? this.Grid() : this.Lobby()];
+            }
+            controls() {
+                if (!this.joined())
+                    return [];
+                return [
+                    this.Mic(),
+                    this.Cam(),
+                    ...this.Room().cam_switch_able() ? [this.Flip()] : [],
+                    this.Stats_show(),
+                    ...this.pip_able() ? [this.Pip()] : [],
+                    this.Leave(),
+                ];
+            }
+            tiles() {
+                return [
+                    this.Self(),
+                    ...this.Room().mates().map(mate => this.Mate(mate)),
+                ];
+            }
+            lobby_text() {
+                const names = this.Room().seats_alive().map(seat => this.Room().seat_name(seat));
+                if (!names.length)
+                    return this.lobby_empty();
+                return $bog_gram_text_fill(this.lobby_some(), { names: names.join(', ') });
+            }
+            join() {
+                this.Room().join();
+            }
+            leave() {
+                this.Room().leave();
+            }
+            close_click(next) {
+                this.leave();
+                this.close(next);
+                return null;
+            }
+            mic(next) {
+                return this.Room().mic(next);
+            }
+            cam(next) {
+                return this.Room().cam(next);
+            }
+            cam_able() {
+                return this.Room().cam_able();
+            }
+            cam_switch() {
+                this.Room().cam_switch();
+            }
+            self_mirror() {
+                return this.Room().facing() === 'user';
+            }
+            awake() {
+                return this.Room().visible();
+            }
+            self_stream() {
+                return this.Room().self_stream();
+            }
+            mate_stream(mate) {
+                return this.Room().peer(mate).remote();
+            }
+            mate_status(mate) {
+                return this.Room().peer(mate).status();
+            }
+            mate_stats(mate) {
+                if (!this.stats_show())
+                    return null;
+                return this.Room().peer(mate).stats();
+            }
+            mate_name(mate) {
+                const lord = this.Room().seat_pawn(mate)?.Lord()?.val() ?? '';
+                return (lord && this.note(lord)) || this.Room().seat_name(mate);
+            }
+            mate_mic(mate) {
+                return this.Room().seat_mic(mate);
+            }
+            mate_cam(mate) {
+                return this.Room().seat_cam(mate);
+            }
+            pip_able() {
+                return Boolean($mol_dom_context.document.pictureInPictureEnabled);
+            }
+            pip_video() {
+                const videos = [...this.Room().mates().map(mate => this.Mate(mate)), this.Self()].map(tile => tile.Video().dom_node());
+                return videos.find(video => video.readyState >= 1) ?? null;
+            }
+            pip() {
+                const doc = $mol_dom_context.document;
+                if (doc.pictureInPictureElement) {
+                    doc.exitPictureInPicture().catch($mol_fail_log);
+                    return null;
+                }
+                this.pip_video()?.requestPictureInPicture().catch($mol_fail_log);
+                return null;
+            }
+            session() {
+                const session = $mol_dom_context.navigator.mediaSession;
+                if (!session)
+                    return null;
+                const handlers = {
+                    enterpictureinpicture: () => this.pip(),
+                    hangup: () => this.leave(),
+                    togglemicrophone: () => this.mic(!this.mic()),
+                    togglecamera: () => this.cam(!this.cam()),
+                };
+                const put = (action, handler) => {
+                    try {
+                        session.setActionHandler(action, handler);
+                    }
+                    catch { }
+                };
+                session.playbackState = 'playing';
+                for (const action in handlers)
+                    put(action, handlers[action]);
+                return {
+                    destructor: () => {
+                        session.playbackState = 'none';
+                        for (const action in handlers)
+                            put(action, null);
+                    }
+                };
+            }
+            session_state() {
+                const session = $mol_dom_context.navigator.mediaSession;
+                if (!session)
+                    return null;
+                session.setMicrophoneActive?.(this.mic())?.catch?.(() => { });
+                session.setCameraActive?.(this.cam())?.catch?.(() => { });
+                return null;
+            }
+            auto() {
+                this.Room().run();
+                if (!this.joined())
+                    return;
+                this.session();
+                this.session_state();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call.prototype, "invite_link", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call.prototype, "session", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_call.prototype, "session_state", null);
+        $$.$bog_gram_call = $bog_gram_call;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_call, {
+            Grid: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                align: {
+                    content: 'center',
+                },
+                justify: {
+                    content: 'center',
+                },
+                gap: $mol_gap.block,
+                padding: $mol_gap.block,
+                minHeight: '100%',
+            },
+            Lobby: {
+                align: {
+                    items: 'center',
+                },
+                gap: $mol_gap.block,
+                padding: $mol_gap.block,
+            },
+            Foot: {
+                justify: {
+                    content: 'center',
+                },
+                gap: $mol_gap.block,
+            },
+            Leave: {
+                color: 'white',
+                background: {
+                    color: '#E53935',
+                },
+                borderRadius: '50%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_seat extends $giper_baza_dict.with({
+        Lord: $giper_baza_atom_text,
+        Name: $giper_baza_atom_text,
+        Joined: $giper_baza_atom_real,
+        Beat: $giper_baza_atom_real,
+        Left: $giper_baza_atom_real,
+        Mic: $giper_baza_atom_bool,
+        Cam: $giper_baza_atom_bool,
+    }) {
+    }
+    $.$bog_gram_call_seat = $bog_gram_call_seat;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_land extends $giper_baza_dict.with({
+        Created: $giper_baza_atom_real,
+        Invite: $giper_baza_atom_text,
+        Seats: $giper_baza_dict_to($bog_gram_call_seat),
+        Offers: $giper_baza_dict_to($giper_baza_atom_text),
+        Answers: $giper_baza_dict_to($giper_baza_atom_text),
+    }) {
+    }
+    $.$bog_gram_call_land = $bog_gram_call_land;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_room extends $mol_object {
+        static beat_every = 10_000;
+        static alive_span = 35_000;
+        static grab(passes, rulers = []) {
+            const glob = this.$.$giper_baza_glob;
+            const land = passes
+                ? glob.land_grab([[null, $giper_baza_rank_deny]])
+                : glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+            for (const pass of passes ?? []) {
+                land.give(pass, rulers.includes(pass) ? $giper_baza_rank_rule : $giper_baza_rank_post('just'));
+            }
+            land.Data($bog_gram_call_land).Created('auto').val(Date.now());
+            land.sync();
+            return land;
+        }
+        static offerer(me, mate) {
+            return me < mate;
+        }
+        static pair(me, mate) {
+            return this.offerer(me, mate) ? `${me}>${mate}` : `${mate}>${me}`;
+        }
+        static seat_short(id) {
+            return id.slice(0, 4);
+        }
+        static signal_parse(text) {
+            try {
+                const data = JSON.parse(text);
+                if (typeof data?.id !== 'string' || typeof data?.sdp !== 'string')
+                    return null;
+                return { id: data.id, sdp: data.sdp };
+            }
+            catch {
+                return null;
+            }
+        }
+        static video_constraints(facing) {
+            return { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facing };
+        }
+        land() {
+            return null;
+        }
+        data() {
+            return this.land().Data($bog_gram_call_land);
+        }
+        lord() {
+            return this.$.$giper_baza_auth.current().pass().lord().str;
+        }
+        name() {
+            return '';
+        }
+        now(precision) {
+            return this.$.$mol_state_time.now(precision);
+        }
+        seat(next) {
+            return next ?? $mol_guid();
+        }
+        entered(next) {
+            return next ?? false;
+        }
+        joined() {
+            if (!this.entered())
+                return false;
+            const me = this.seat();
+            if (this.seat_pawn(me)?.Left()?.val())
+                return false;
+            const top = this.lords_seats().get(this.lord());
+            return !top || top === me;
+        }
+        mic(next) {
+            return next ?? true;
+        }
+        cam(next) {
+            return next ?? true;
+        }
+        join() {
+            const me = $mol_guid();
+            const lord = this.lord();
+            const seats = this.data().Seats('auto');
+            for (const id of seats.keys()) {
+                const seat = seats.key(id);
+                if (seat.Lord()?.val() !== lord)
+                    continue;
+                if (seat.Left()?.val())
+                    continue;
+                seat.Left('auto').val(Date.now());
+            }
+            const seat = seats.key(me, 'auto');
+            seat.Lord('auto').val(lord);
+            seat.Joined('auto').val(Date.now());
+            this.seat(me);
+            this.entered(true);
+            this.mates_logged = [];
+            this.log(`вошёл, место ${$bog_gram_call_room.seat_short(me)}`);
+        }
+        leave() {
+            if (!this.entered())
+                return;
+            this.data().Seats('auto')?.key(this.seat(), 'auto')?.Left('auto')?.val(Date.now());
+            this.entered(false);
+            this.log('вышел');
+        }
+        log(text) {
+            $bog_music_log.act(`звонок: ${text}`);
+        }
+        beat() {
+            if (!this.joined())
+                return null;
+            const moment = this.now($bog_gram_call_room.beat_every);
+            const seat = this.data().Seats('auto').key(this.seat(), 'auto');
+            seat.Lord('auto').val(this.lord());
+            seat.Name('auto').val(this.name());
+            seat.Mic('auto').val(this.mic());
+            seat.Cam('auto').val(this.cam() && this.cam_able());
+            seat.Beat('auto').val(moment);
+            return null;
+        }
+        seat_pawn(id) {
+            return this.data().Seats()?.key(id) ?? null;
+        }
+        seat_newer(left, right) {
+            const left_time = this.seat_pawn(left)?.Joined()?.val() ?? 0;
+            const right_time = this.seat_pawn(right)?.Joined()?.val() ?? 0;
+            if (left_time !== right_time)
+                return left_time > right_time;
+            return left > right;
+        }
+        lords_seats() {
+            const now = this.now(5_000);
+            const seats = this.data().Seats();
+            const lords = new Map();
+            if (!seats)
+                return lords;
+            for (const id of seats.keys()) {
+                const seat = seats.key(id);
+                if (seat.Left()?.val())
+                    continue;
+                if (now - (seat.Beat()?.val() ?? 0) >= $bog_gram_call_room.alive_span)
+                    continue;
+                const lord = seat.Lord()?.val() || id;
+                const prev = lords.get(lord);
+                if (!prev || this.seat_newer(id, prev))
+                    lords.set(lord, id);
+            }
+            return lords;
+        }
+        seats_alive() {
+            return [...this.lords_seats().values()].sort();
+        }
+        mates() {
+            const me = this.seat();
+            const lord = this.lord();
+            return this.seats_alive().filter(id => id !== me && this.seat_pawn(id)?.Lord()?.val() !== lord);
+        }
+        seat_name(id) {
+            const seat = this.seat_pawn(id);
+            return seat?.Name()?.val() || seat?.Lord()?.val()?.slice(0, 8) || id;
+        }
+        seat_mic(id) {
+            return this.seat_pawn(id)?.Mic()?.val() ?? true;
+        }
+        seat_cam(id) {
+            return this.seat_pawn(id)?.Cam()?.val() ?? true;
+        }
+        signal(box, key) {
+            return this.data()[box]()?.key(key)?.val() ?? '';
+        }
+        offer_text(key) {
+            return this.signal('Offers', key);
+        }
+        answer_text(key) {
+            return this.signal('Answers', key);
+        }
+        signal_put(box, key, text) {
+            const atom = this.data()[box]('auto').key(key, 'auto');
+            if (atom.val() !== text)
+                atom.val(text);
+        }
+        media() {
+            const devices = $mol_wire_sync(navigator.mediaDevices);
+            let stream;
+            try {
+                stream = devices.getUserMedia({
+                    audio: true,
+                    video: $bog_gram_call_room.video_constraints('user'),
+                });
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    $mol_fail_hidden(error);
+                this.log(`камера не открылась: ${error.name || error}`);
+                stream = devices.getUserMedia({ audio: true });
+            }
+            return Object.assign(stream, {
+                destructor: () => stream.getTracks().forEach(track => track.stop())
+            });
+        }
+        video_changed(next) {
+            return next ?? 0;
+        }
+        facing(next) {
+            return next ?? 'user';
+        }
+        cam_able() {
+            return this.media().getVideoTracks().length > 0;
+        }
+        cameras() {
+            this.media();
+            const devices = $mol_wire_sync(navigator.mediaDevices).enumerateDevices();
+            return devices.filter(device => device.kind === 'videoinput').length;
+        }
+        cam_switch_able() {
+            return this.cameras() > 1;
+        }
+        self_stream() {
+            this.video_changed();
+            return new MediaStream(this.media().getTracks());
+        }
+        video_close() {
+            const stream = this.media();
+            for (const old of stream.getVideoTracks()) {
+                old.stop();
+                stream.removeTrack(old);
+            }
+        }
+        video_open(facing) {
+            this.video_close();
+            const fresh = $mol_wire_sync(navigator.mediaDevices).getUserMedia({
+                video: $bog_gram_call_room.video_constraints(facing),
+            });
+            const track = fresh.getVideoTracks()[0];
+            this.facing(facing);
+            if (this.cam()) {
+                this.video_close();
+                this.media().addTrack(track);
+                for (const peer of this.peers())
+                    peer.video_replace(track);
+            }
+            else {
+                track.stop();
+            }
+            this.video_changed(this.video_changed() + 1);
+        }
+        video_off() {
+            this.video_close();
+            for (const peer of this.peers())
+                peer.video_replace(null);
+            this.video_changed(this.video_changed() + 1);
+        }
+        video_sync() {
+            this.video_changed();
+            if (!this.cam_able())
+                return null;
+            const open = this.media().getVideoTracks().length > 0;
+            if (open === this.cam())
+                return null;
+            if (open)
+                this.video_off();
+            else
+                $mol_wire_async(this).video_open(this.facing()).catch($mol_fail_log);
+            return null;
+        }
+        cam_switch() {
+            const facing = this.facing() === 'user' ? 'environment' : 'user';
+            if (this.cam())
+                this.video_open(facing);
+            else
+                this.facing(facing);
+        }
+        video_restore() {
+            this.video_open(this.facing());
+        }
+        video_broken() {
+            const track = this.media().getVideoTracks()[0];
+            if (!track)
+                return false;
+            return track.readyState === 'ended' || track.muted;
+        }
+        video_lost() {
+            if (!this.visible())
+                return;
+            this.video_restore();
+        }
+        video_watch() {
+            this.video_changed();
+            const track = this.media().getVideoTracks()[0];
+            if (!track)
+                return null;
+            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_lost());
+        }
+        visible(next) {
+            return next ?? $mol_dom_context.document.visibilityState !== 'hidden';
+        }
+        visible_watch() {
+            const doc = $mol_dom_context.document;
+            return new $mol_dom_listener(doc, 'visibilitychange', () => this.visible(doc.visibilityState !== 'hidden'));
+        }
+        video_check() {
+            if (!this.visible())
+                return null;
+            if (this.video_broken())
+                $mol_wire_async(this).video_restore();
+            return null;
+        }
+        unload_watch() {
+            return new $mol_dom_listener($mol_dom_context, 'pagehide', (event) => this.page_hide(event));
+        }
+        page_hide(event) {
+            if (event.persisted)
+                return;
+            this.leave();
+        }
+        audio_session() {
+            const session = this.$.$mol_dom_context.navigator?.audioSession;
+            if (!session)
+                return null;
+            session.type = 'play-and-record';
+            return {
+                destructor: () => { session.type = 'auto'; },
+            };
+        }
+        media_apply() {
+            this.video_changed();
+            const stream = this.media();
+            for (const track of stream.getAudioTracks())
+                track.enabled = this.mic();
+            for (const track of stream.getVideoTracks())
+                track.enabled = this.cam();
+            return stream;
+        }
+        peer(mate) {
+            return $bog_gram_call_peer.make({
+                room: $mol_const(this),
+                mate: $mol_const(mate),
+            });
+        }
+        mates_logged = [];
+        mates_log(mates) {
+            const prev = this.mates_logged;
+            this.mates_logged = mates;
+            const label = (id) => `${this.seat_name(id)} ${$bog_gram_call_room.seat_short(id)}`;
+            for (const id of mates)
+                if (!prev.includes(id))
+                    this.log(`пришёл ${label(id)}`);
+            for (const id of prev)
+                if (!mates.includes(id))
+                    this.log(`ушёл ${label(id)}`);
+        }
+        peers() {
+            if (!this.joined())
+                return [];
+            const mates = this.mates();
+            this.mates_log(mates);
+            return mates.map(mate => this.peer(mate));
+        }
+        run() {
+            if (!this.joined())
+                return null;
+            this.unload_watch();
+            this.audio_session();
+            this.visible_watch();
+            this.media_apply();
+            this.video_sync();
+            this.video_watch();
+            this.video_check();
+            this.beat();
+            for (const peer of this.peers())
+                peer.status();
+            return null;
+        }
+        destructor() {
+            if (!$mol_wire_probe(() => this.entered()))
+                return;
+            try {
+                this.data().Seats()?.key(this.seat())?.Left('auto')?.val(Date.now());
+            }
+            catch (error) {
+                $mol_fail_log(error);
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "seat", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "entered", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "joined", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "mic", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cam", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "join", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "leave", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "beat", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "lords_seats", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "seats_alive", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "mates", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "offer_text", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "answer_text", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "media", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_changed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "facing", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cam_able", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "cameras", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "self_stream", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "video_open", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_call_room.prototype, "video_off", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_sync", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "visible", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "visible_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "video_check", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "unload_watch", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "audio_session", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "media_apply", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_call_room.prototype, "peer", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "peers", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "run", null);
+    $.$bog_gram_call_room = $bog_gram_call_room;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_call_peer extends $mol_object {
+        static ice = [
+            { urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] },
+        ];
+        static gather_limit = 3_000;
+        static connect_limit = 20_000;
+        static restart_after = 5_000;
+        static async gather(rtc) {
+            if (rtc.iceGatheringState !== 'complete') {
+                await new Promise(done => {
+                    const timer = setTimeout(done, this.gather_limit);
+                    rtc.addEventListener('icegatheringstatechange', () => {
+                        if (rtc.iceGatheringState !== 'complete')
+                            return;
+                        clearTimeout(timer);
+                        done();
+                    });
+                });
+            }
+            return rtc.localDescription.sdp;
+        }
+        static async offer_make(rtc, stream) {
+            for (const kind of ['audio', 'video']) {
+                const track = stream.getTracks().find(track => track.kind === kind);
+                rtc.addTransceiver(track ?? kind, { direction: 'sendrecv', streams: [stream] });
+            }
+            await rtc.setLocalDescription(await rtc.createOffer());
+            return this.gather(rtc);
+        }
+        static async answer_make(rtc, offer, stream) {
+            await rtc.setRemoteDescription({ type: 'offer', sdp: offer });
+            for (const transceiver of rtc.getTransceivers()) {
+                const kind = transceiver.receiver.track.kind;
+                const track = stream.getTracks().find(track => track.kind === kind) ?? null;
+                transceiver.direction = 'sendrecv';
+                await transceiver.sender.replaceTrack(track);
+                transceiver.sender.setStreams?.(stream);
+            }
+            await rtc.setLocalDescription(await rtc.createAnswer());
+            return this.gather(rtc);
+        }
+        static async answer_apply(rtc, answer) {
+            if (rtc.signalingState !== 'have-local-offer')
+                return;
+            await rtc.setRemoteDescription({ type: 'answer', sdp: answer });
+        }
+        room() {
+            return null;
+        }
+        mate() {
+            return '';
+        }
+        offerer() {
+            return $bog_gram_call_room.offerer(this.room().seat(), this.mate());
+        }
+        key() {
+            return $bog_gram_call_room.pair(this.room().seat(), this.mate());
+        }
+        attempt(next) {
+            return next ?? 0;
+        }
+        changed(next) {
+            return next ?? 0;
+        }
+        tracked(next) {
+            return next ?? 0;
+        }
+        state() {
+            this.changed();
+            return this.rtc()?.connectionState ?? 'new';
+        }
+        remote() {
+            this.tracked();
+            const rtc = this.rtc();
+            if (!rtc)
+                return null;
+            const tracks = rtc.getReceivers().map(receiver => receiver.track);
+            if (!tracks.length)
+                return null;
+            return new MediaStream(tracks);
+        }
+        log(text) {
+            this.room().log(`${$bog_gram_call_room.seat_short(this.mate())}: ${text}`);
+        }
+        offer_their() {
+            if (this.offerer())
+                return null;
+            return $bog_gram_call_room.signal_parse(this.room().offer_text(this.key()));
+        }
+        offer_id() {
+            return this.offer_their()?.id ?? '';
+        }
+        rtc() {
+            const round = this.offerer() ? String(this.attempt()) : this.offer_id();
+            if (!round)
+                return null;
+            const rtc = new RTCPeerConnection({ iceServers: $bog_gram_call_peer.ice });
+            const born = Date.now();
+            this.log(`соединение ${round} создано, я ${this.offerer() ? 'предлагаю' : 'отвечаю'}`);
+            rtc.addEventListener('connectionstatechange', () => this.state_change(rtc, round, born));
+            rtc.addEventListener('track', () => this.tracked(this.tracked() + 1));
+            return Object.assign(rtc, {
+                destructor: () => {
+                    this.log(`соединение ${round} закрыто`);
+                    rtc.close();
+                }
+            });
+        }
+        state_change(rtc, round, born) {
+            const state = rtc.connectionState;
+            if (state === 'closed')
+                return;
+            this.log(state === 'connected'
+                ? `соединение ${round}: connected через ${Date.now() - born} мс`
+                : `соединение ${round}: ${state}`);
+            this.changed(this.changed() + 1);
+            if (!this.offerer())
+                return;
+            if (state === 'failed')
+                this.restart(rtc, 'failed');
+            if (state === 'disconnected')
+                setTimeout(() => {
+                    if (rtc.connectionState === 'disconnected')
+                        this.restart(rtc, `disconnected дольше ${$bog_gram_call_peer.restart_after} мс`);
+                }, $bog_gram_call_peer.restart_after);
+        }
+        restart(rtc, reason) {
+            if (rtc.connectionState === 'closed')
+                return;
+            if (rtc.connectionState === 'connected')
+                return;
+            this.log(`перезапуск после попытки ${this.attempt()}: ${reason}`);
+            this.attempt(this.attempt() + 1);
+        }
+        offer_build() {
+            return $mol_wire_sync($bog_gram_call_peer).offer_make(this.rtc(), this.room().media());
+        }
+        answer_build(offer) {
+            return $mol_wire_sync($bog_gram_call_peer).answer_make(this.rtc(), offer, this.room().media());
+        }
+        answer_use(answer) {
+            $mol_wire_sync($bog_gram_call_peer).answer_apply(this.rtc(), answer);
+        }
+        offer_mine() {
+            if (!this.offerer())
+                return null;
+            const rtc = this.rtc();
+            const sdp = this.offer_build();
+            new this.$.$mol_after_timeout($bog_gram_call_peer.connect_limit, () => this.restart(rtc, `нет связи за ${$bog_gram_call_peer.connect_limit} мс`));
+            return { id: `${this.attempt()}.${$mol_guid()}`, sdp };
+        }
+        offered = '';
+        offer_post() {
+            const offer = this.offer_mine();
+            if (!offer)
+                return '';
+            if (this.offered === offer.id)
+                return offer.id;
+            this.room().signal_put('Offers', this.key(), JSON.stringify(offer));
+            this.offered = offer.id;
+            this.log(`предложение ${offer.id} записано`);
+            return offer.id;
+        }
+        applied = '';
+        answer_take() {
+            const id = this.offer_post();
+            if (!id)
+                return false;
+            const answer = $bog_gram_call_room.signal_parse(this.room().answer_text(this.key()));
+            if (answer?.id !== id)
+                return false;
+            if (this.applied === id)
+                return true;
+            this.answer_use(answer.sdp);
+            this.applied = id;
+            this.log(`ответ на ${id} принят`);
+            return true;
+        }
+        answered = '';
+        answer_post() {
+            const offer = this.offer_their();
+            if (!offer)
+                return false;
+            if (this.answered === offer.id)
+                return true;
+            const sdp = this.answer_build(offer.sdp);
+            this.room().signal_put('Answers', this.key(), JSON.stringify({ id: offer.id, sdp }));
+            this.answered = offer.id;
+            this.log(`ответ на ${offer.id} записан`);
+            return true;
+        }
+        sync() {
+            return this.offerer() ? this.answer_take() : this.answer_post();
+        }
+        video_replace(track) {
+            const rtc = this.rtc();
+            if (!rtc)
+                return;
+            for (const transceiver of rtc.getTransceivers()) {
+                if (transceiver.receiver.track.kind !== 'video')
+                    continue;
+                transceiver.sender.replaceTrack(track).catch($mol_fail_log);
+            }
+        }
+        stats_last = null;
+        stats() {
+            this.room().now(2_000);
+            const rtc = this.rtc();
+            if (!rtc || this.state() !== 'connected')
+                return null;
+            const report = $mol_wire_sync(rtc).getStats();
+            const next = $bog_gram_call_peer.stats_sum([...report.values()], this.stats_last);
+            this.stats_last = next;
+            return next;
+        }
+        static stats_limit = { fps: 15, loss: 2, rtt: 300 };
+        static stats_bad(stats) {
+            const limit = this.stats_limit;
+            return {
+                fps: stats.fps < limit.fps,
+                loss: stats.loss > limit.loss,
+                rtt: stats.rtt > limit.rtt,
+            };
+        }
+        static stats_sum(entries, last) {
+            const sum = {
+                time: 0, bytes: 0, fps: 0, width: 0, height: 0, kbps: 0, lost: 0, packets: 0, loss: 0, rtt: 0,
+            };
+            let pair = '';
+            for (const entry of entries) {
+                if (entry.type === 'transport' && entry.selectedCandidatePairId)
+                    pair = entry.selectedCandidatePairId;
+            }
+            for (const entry of entries) {
+                if (entry.type === 'inbound-rtp') {
+                    sum.time = Math.max(sum.time, entry.timestamp ?? 0);
+                    sum.bytes += entry.bytesReceived ?? 0;
+                    sum.lost += Math.max(0, entry.packetsLost ?? 0);
+                    sum.packets += entry.packetsReceived ?? 0;
+                    if (entry.kind === 'video') {
+                        sum.fps = Math.round(entry.framesPerSecond ?? 0);
+                        sum.width = entry.frameWidth ?? 0;
+                        sum.height = entry.frameHeight ?? 0;
+                    }
+                }
+                if (entry.type === 'candidate-pair' && (pair ? entry.id === pair : entry.nominated && entry.state === 'succeeded')) {
+                    sum.rtt = Math.round((entry.currentRoundTripTime ?? 0) * 1000);
+                }
+            }
+            const total = sum.lost + sum.packets;
+            sum.loss = total ? Math.round(sum.lost / total * 1000) / 10 : 0;
+            if (last && sum.time > last.time) {
+                sum.kbps = Math.round(Math.max(0, sum.bytes - last.bytes) * 8 / (sum.time - last.time));
+            }
+            return sum;
+        }
+        status() {
+            try {
+                if (!this.sync())
+                    return 'waiting';
+            }
+            catch (error) {
+                if ($mol_promise_like(error))
+                    return 'connecting';
+                $mol_fail_log(error);
+                return 'failed';
+            }
+            return this.state();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "attempt", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "changed", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "tracked", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "state", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "remote", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_their", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_id", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "rtc", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_mine", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "offer_post", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "answer_take", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "answer_post", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "sync", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "stats", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_peer.prototype, "status", null);
+    $.$bog_gram_call_peer = $bog_gram_call_peer;
+})($ || ($ = {}));
+
+;
 "use strict";
 var $;
 (function ($) {
@@ -65447,6 +67278,18 @@ var $;
             land.sync();
             this.Talk().store(id).Meet('auto').val(link);
             return link;
+        }
+        call(id) {
+            const session = this.Talk().session(id);
+            if (!session)
+                return '';
+            const land = this.$.$bog_gram_call_room.grab([]);
+            land.Data($bog_gram_call_land).Invite('auto').val(this.uri(id));
+            const message = session.Messages('auto').make(null);
+            message.Call('auto').val(land.link());
+            message.Author('auto')?.val(this.Account().my_lord());
+            message.Moment('auto')?.val(Date.now());
+            return land.link().str;
         }
         uri(id) {
             const link = this.meet_of(id);
@@ -65563,6 +67406,9 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_meet.prototype, "make", null);
+    __decorate([
+        $mol_action
+    ], $bog_gram_meet.prototype, "call", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_meet.prototype, "mode", null);
@@ -66686,18 +68532,6 @@ var $;
 
 
 ;
-	($.$mol_icon_phone) = class $mol_icon_phone extends ($.$mol_icon) {
-		path(){
-			return "M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$mol_icon_reply) = class $mol_icon_reply extends ($.$mol_icon) {
 		path(){
 			return "M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z";
@@ -66829,45 +68663,9 @@ var $;
 
 
 ;
-	($.$mol_icon_microphone) = class $mol_icon_microphone extends ($.$mol_icon) {
-		path(){
-			return "M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
 	($.$mol_icon_stop) = class $mol_icon_stop extends ($.$mol_icon) {
 		path(){
 			return "M18,18H6V6H18V18Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
-		path(){
-			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_camera_flip) = class $mol_icon_camera_flip extends ($.$mol_icon) {
-		path(){
-			return "M20 5H17L15 3H9L7 5H4C2.9 5 2 5.9 2 7V19C2 20.11 2.9 21 4 21H20C21.11 21 22 20.11 22 19V7C22 5.9 21.11 5 20 5M5 12H7.1C7.65 9.29 10.29 7.55 13 8.1C13.76 8.25 14.43 8.59 15 9L13.56 10.45C13.11 10.17 12.58 10 12 10C10.74 10 9.6 10.8 9.18 12H11L8 15L5 12M16.91 14C16.36 16.71 13.72 18.45 11 17.9C10.25 17.74 9.58 17.41 9 17L10.44 15.55C10.9 15.83 11.43 16 12 16C13.27 16 14.41 15.2 14.83 14H13L16 11L19 14H16.91Z";
 		}
 	};
 
@@ -68845,1746 +70643,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_signal) = class $mol_icon_signal extends ($.$mol_icon) {
-		path(){
-			return "M3,21H6V18H3M8,21H11V14H8M13,21H16V9H13M18,21H21V3H18V21Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_picture_in_picture_bottom_right) = class $mol_icon_picture_in_picture_bottom_right extends ($.$mol_icon) {
-		path(){
-			return "M19,11H11V17H19V11M23,19V5C23,3.88 22.1,3 21,3H3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19M21,19H3V4.97H21V19Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_phone_hangup) = class $mol_icon_phone_hangup extends ($.$mol_icon) {
-		path(){
-			return "M12,9C10.4,9 8.85,9.25 7.4,9.72V12.82C7.4,13.22 7.17,13.56 6.84,13.72C5.86,14.21 4.97,14.84 4.17,15.57C4,15.75 3.75,15.86 3.5,15.86C3.2,15.86 2.95,15.74 2.77,15.56L0.29,13.08C0.11,12.9 0,12.65 0,12.38C0,12.1 0.11,11.85 0.29,11.67C3.34,8.77 7.46,7 12,7C16.54,7 20.66,8.77 23.71,11.67C23.89,11.85 24,12.1 24,12.38C24,12.65 23.89,12.9 23.71,13.08L21.23,15.56C21.05,15.74 20.8,15.86 20.5,15.86C20.25,15.86 20,15.75 19.82,15.57C19.03,14.84 18.14,14.21 17.16,13.72C16.83,13.56 16.6,13.22 16.6,12.82V9.72C15.15,9.25 13.6,9 12,9Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$mol_icon_microphone_off) = class $mol_icon_microphone_off extends ($.$mol_icon) {
-		path(){
-			return "M19,11C19,12.19 18.66,13.3 18.1,14.28L16.87,13.05C17.14,12.43 17.3,11.74 17.3,11H19M15,11.16L9,5.18V5A3,3 0 0,1 12,2A3,3 0 0,1 15,5V11L15,11.16M4.27,3L21,19.73L19.73,21L15.54,16.81C14.77,17.27 13.91,17.58 13,17.72V21H11V17.72C7.72,17.23 5,14.41 5,11H6.7C6.7,14 9.24,16.1 12,16.1C12.81,16.1 13.6,15.91 14.31,15.58L12.65,13.92L12,14A3,3 0 0,1 9,11V10.28L3,4.27L4.27,3Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$bog_gram_call_tile) = class $bog_gram_call_tile extends ($.$mol_view) {
-		stat_bad(id){
-			return false;
-		}
-		stat_text(id){
-			return "";
-		}
-		picture(){
-			return null;
-		}
-		Video(){
-			const obj = new this.$.$mol_video_player();
-			(obj.stream) = () => ((this.picture()));
-			(obj.controls) = () => (false);
-			(obj.muted) = () => (true);
-			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "autopictureinpicture": true});
-			return obj;
-		}
-		sound(){
-			return null;
-		}
-		Sound(){
-			const obj = new this.$.$mol_video_player();
-			(obj.dom_name) = () => ("audio");
-			(obj.stream) = () => ((this.sound()));
-			(obj.controls) = () => (false);
-			(obj.muted) = () => ((this.muted()));
-			return obj;
-		}
-		letter(){
-			return "";
-		}
-		Face(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.letter())]);
-			return obj;
-		}
-		stat_parts(){
-			return [];
-		}
-		Stats(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.stat_parts()));
-			return obj;
-		}
-		Name(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.name())]);
-			return obj;
-		}
-		Mic_off(){
-			const obj = new this.$.$mol_icon_microphone_off();
-			return obj;
-		}
-		status_text(){
-			return "";
-		}
-		Status(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.status_text())]);
-			return obj;
-		}
-		label(){
-			return [
-				(this.Name()), 
-				(this.Mic_off()), 
-				(this.Status())
-			];
-		}
-		Label(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.label()));
-			return obj;
-		}
-		stream(){
-			return null;
-		}
-		muted(){
-			return false;
-		}
-		mirror(){
-			return false;
-		}
-		cam(){
-			return true;
-		}
-		mic(){
-			return true;
-		}
-		awake(){
-			return true;
-		}
-		name(){
-			return "";
-		}
-		status(){
-			return "";
-		}
-		stats(){
-			return null;
-		}
-		stat_fps(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_fps"));
-		}
-		stat_size(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_size"));
-		}
-		stat_kbps(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_kbps"));
-		}
-		stat_loss(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_loss"));
-		}
-		stat_rtt(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_stat_rtt"));
-		}
-		Stat(id){
-			const obj = new this.$.$mol_view();
-			(obj.attr) = () => ({"bog_gram_call_tile_stat_bad": (this.stat_bad(id))});
-			(obj.sub) = () => ([(this.stat_text(id))]);
-			return obj;
-		}
-		failed_text(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_failed_text"));
-		}
-		connecting_text(){
-			return (this.$.$mol_locale.text("$bog_gram_call_tile_connecting_text"));
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"bog_gram_call_tile_cam": (this.cam()), 
-				"bog_gram_call_tile_mirror": (this.mirror())
-			};
-		}
-		sub(){
-			return [
-				(this.Video()), 
-				(this.Sound()), 
-				(this.Face()), 
-				(this.Stats()), 
-				(this.Label())
-			];
-		}
-	};
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Video"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Sound"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Face"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Stats"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Name"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Mic_off"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Status"));
-	($mol_mem(($.$bog_gram_call_tile.prototype), "Label"));
-	($mol_mem_key(($.$bog_gram_call_tile.prototype), "Stat"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $bog_gram_call_tile extends $.$bog_gram_call_tile {
-            letter() {
-                return this.name().slice(0, 1).toUpperCase();
-            }
-            status_text() {
-                const status = this.status();
-                if (!status || status === 'connected')
-                    return '';
-                if (status === 'failed')
-                    return this.failed_text();
-                return this.connecting_text();
-            }
-            label() {
-                return [
-                    this.Name(),
-                    ...this.mic() ? [] : [this.Mic_off()],
-                    ...this.status_text() ? [this.Status()] : [],
-                ];
-            }
-            Stats() {
-                return this.stats() ? super.Stats() : null;
-            }
-            stat_parts() {
-                return ['fps', 'size', 'kbps', 'loss', 'rtt'].map(id => this.Stat(id));
-            }
-            stat_text(id) {
-                const stats = this.stats();
-                if (!stats)
-                    return '';
-                switch (id) {
-                    case 'fps': return $bog_gram_text_fill(this.stat_fps(), { n: stats.fps });
-                    case 'size': return $bog_gram_text_fill(this.stat_size(), { n: `${stats.width}×${stats.height}` });
-                    case 'kbps': return $bog_gram_text_fill(this.stat_kbps(), { n: stats.kbps });
-                    case 'loss': return $bog_gram_text_fill(this.stat_loss(), { n: stats.loss });
-                    case 'rtt': return $bog_gram_text_fill(this.stat_rtt(), { n: stats.rtt });
-                }
-                return '';
-            }
-            stat_bad(id) {
-                const stats = this.stats();
-                if (!stats)
-                    return false;
-                return $bog_gram_call_peer.stats_bad(stats)[id] ?? false;
-            }
-            part(kind) {
-                const stream = this.stream();
-                if (!stream)
-                    return null;
-                const tracks = stream.getTracks().filter(track => track.kind === kind);
-                if (!tracks.length)
-                    return null;
-                return new MediaStream(tracks);
-            }
-            picture() {
-                return this.part('video');
-            }
-            sound() {
-                return this.part('audio');
-            }
-            video() {
-                return this.Video().dom_node();
-            }
-            audio() {
-                return this.Sound().dom_node();
-            }
-            auto() {
-                const video = this.video();
-                video.muted = true;
-                const audio = this.audio();
-                audio.muted = this.muted();
-                this.Video().pause_event();
-                this.Sound().pause_event();
-                if (!this.awake())
-                    return;
-                if (this.picture() && video.paused)
-                    video.play().catch(() => { });
-                if (this.sound() && audio.paused)
-                    audio.play().catch(() => { });
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_call_tile.prototype, "picture", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_call_tile.prototype, "sound", null);
-        $$.$bog_gram_call_tile = $bog_gram_call_tile;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        $mol_style_define($bog_gram_call_tile, {
-            position: 'relative',
-            flex: {
-                grow: 1,
-                shrink: 1,
-                basis: '18rem',
-            },
-            aspectRatio: '4 / 3',
-            maxHeight: '100%',
-            overflow: 'hidden',
-            border: {
-                radius: $mol_gap.round,
-            },
-            background: {
-                color: $mol_theme.card,
-            },
-            Video: {
-                position: 'absolute',
-                inset: '0',
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-            },
-            Face: {
-                position: 'absolute',
-                inset: '0',
-                display: 'none',
-                justify: {
-                    content: 'center',
-                },
-                align: {
-                    items: 'center',
-                },
-                font: {
-                    size: '3rem',
-                },
-                color: $mol_theme.shade,
-            },
-            Stats: {
-                position: 'absolute',
-                left: $mol_gap.block,
-                top: $mol_gap.block,
-                padding: {
-                    left: $mol_gap.text,
-                    right: $mol_gap.text,
-                },
-                border: {
-                    radius: $mol_gap.round,
-                },
-                background: {
-                    color: $mol_theme.back,
-                },
-                gap: '.75ch',
-                flex: {
-                    wrap: 'wrap',
-                },
-                font: {
-                    size: '.75rem',
-                },
-                opacity: .8,
-            },
-            Stat: {
-                '@': {
-                    bog_gram_call_tile_stat_bad: {
-                        true: {
-                            color: 'hsl( 0, 85%, 62% )',
-                            font: {
-                                weight: 'bold',
-                            },
-                        },
-                    },
-                },
-            },
-            Label: {
-                position: 'absolute',
-                left: $mol_gap.block,
-                bottom: $mol_gap.block,
-                align: {
-                    items: 'center',
-                },
-                gap: $mol_gap.text,
-                padding: {
-                    left: $mol_gap.text,
-                    right: $mol_gap.text,
-                },
-                border: {
-                    radius: $mol_gap.round,
-                },
-                background: {
-                    color: $mol_theme.back,
-                },
-            },
-            '@': {
-                bog_gram_call_tile_cam: {
-                    false: {
-                        Video: {
-                            opacity: 0,
-                        },
-                        Face: {
-                            display: 'flex',
-                        },
-                    },
-                },
-                bog_gram_call_tile_mirror: {
-                    true: {
-                        Video: {
-                            transform: 'scaleX(-1)',
-                        },
-                    },
-                },
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-	($.$bog_gram_call) = class $bog_gram_call extends ($.$mol_page) {
-		close_click(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Close_icon(){
-			const obj = new this.$.$mol_icon_close();
-			return obj;
-		}
-		Close(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Close_hint")));
-			(obj.click) = (next) => ((this.close_click(next)));
-			(obj.sub) = () => ([(this.Close_icon())]);
-			return obj;
-		}
-		content(){
-			return [];
-		}
-		controls(){
-			return [];
-		}
-		tiles(){
-			return [];
-		}
-		self_stream(){
-			return null;
-		}
-		self_mirror(){
-			return true;
-		}
-		awake(){
-			return true;
-		}
-		self_name(){
-			return (this.$.$mol_locale.text("$bog_gram_call_self_name"));
-		}
-		mate_stream(id){
-			return null;
-		}
-		mate_cam(id){
-			return true;
-		}
-		mate_mic(id){
-			return true;
-		}
-		mate_name(id){
-			return "";
-		}
-		mate_status(id){
-			return "";
-		}
-		mate_stats(id){
-			return null;
-		}
-		lobby_text(){
-			return "";
-		}
-		Lobby_text(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.lobby_text()));
-			return obj;
-		}
-		join(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Join(){
-			const obj = new this.$.$mol_button_major();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_call_Join_title")));
-			(obj.click) = (next) => ((this.join(next)));
-			return obj;
-		}
-		Mic_icon(){
-			const obj = new this.$.$mol_icon_microphone();
-			return obj;
-		}
-		mic(next){
-			if(next !== undefined) return next;
-			return true;
-		}
-		Cam_icon(){
-			const obj = new this.$.$mol_icon_video();
-			return obj;
-		}
-		cam(next){
-			if(next !== undefined) return next;
-			return true;
-		}
-		cam_able(){
-			return true;
-		}
-		cam_switch(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Flip_icon(){
-			const obj = new this.$.$mol_icon_camera_flip();
-			return obj;
-		}
-		Stats_icon(){
-			const obj = new this.$.$mol_icon_signal();
-			return obj;
-		}
-		stats_show(next){
-			if(next !== undefined) return next;
-			return true;
-		}
-		pip(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Pip_icon(){
-			const obj = new this.$.$mol_icon_picture_in_picture_bottom_right();
-			return obj;
-		}
-		leave(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Leave_icon(){
-			const obj = new this.$.$mol_icon_phone_hangup();
-			return obj;
-		}
-		land(){
-			return null;
-		}
-		name(){
-			return "";
-		}
-		note(id){
-			return "";
-		}
-		close(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Room(){
-			const obj = new this.$.$bog_gram_call_room();
-			(obj.land) = () => ((this.land()));
-			(obj.name) = () => ((this.name()));
-			return obj;
-		}
-		title(){
-			return (this.$.$mol_locale.text("$bog_gram_call_title"));
-		}
-		tools(){
-			return [(this.Close())];
-		}
-		body(){
-			return (this.content());
-		}
-		foot(){
-			return (this.controls());
-		}
-		Grid(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.tiles()));
-			return obj;
-		}
-		Self(){
-			const obj = new this.$.$bog_gram_call_tile();
-			(obj.stream) = () => ((this.self_stream()));
-			(obj.muted) = () => (true);
-			(obj.mirror) = () => ((this.self_mirror()));
-			(obj.awake) = () => ((this.awake()));
-			(obj.cam) = () => ((this.cam()));
-			(obj.mic) = () => ((this.mic()));
-			(obj.name) = () => ((this.self_name()));
-			return obj;
-		}
-		Mate(id){
-			const obj = new this.$.$bog_gram_call_tile();
-			(obj.stream) = () => ((this.mate_stream(id)));
-			(obj.awake) = () => ((this.awake()));
-			(obj.cam) = () => ((this.mate_cam(id)));
-			(obj.mic) = () => ((this.mate_mic(id)));
-			(obj.name) = () => ((this.mate_name(id)));
-			(obj.status) = () => ((this.mate_status(id)));
-			(obj.stats) = () => ((this.mate_stats(id)));
-			return obj;
-		}
-		Lobby(){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ([(this.Lobby_text()), (this.Join())]);
-			return obj;
-		}
-		Mic(){
-			const obj = new this.$.$mol_check_icon();
-			(obj.Icon) = () => ((this.Mic_icon()));
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Mic_hint")));
-			(obj.checked) = (next) => ((this.mic(next)));
-			return obj;
-		}
-		Cam(){
-			const obj = new this.$.$mol_check_icon();
-			(obj.Icon) = () => ((this.Cam_icon()));
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Cam_hint")));
-			(obj.checked) = (next) => ((this.cam(next)));
-			(obj.enabled) = () => ((this.cam_able()));
-			return obj;
-		}
-		Flip(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Flip_hint")));
-			(obj.click) = (next) => ((this.cam_switch(next)));
-			(obj.sub) = () => ([(this.Flip_icon())]);
-			return obj;
-		}
-		Stats_show(){
-			const obj = new this.$.$mol_check_icon();
-			(obj.Icon) = () => ((this.Stats_icon()));
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Stats_show_hint")));
-			(obj.checked) = (next) => ((this.stats_show(next)));
-			return obj;
-		}
-		Pip(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Pip_hint")));
-			(obj.click) = (next) => ((this.pip(next)));
-			(obj.sub) = () => ([(this.Pip_icon())]);
-			return obj;
-		}
-		Leave(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Leave_hint")));
-			(obj.click) = (next) => ((this.leave(next)));
-			(obj.sub) = () => ([(this.Leave_icon())]);
-			return obj;
-		}
-		lobby_empty(){
-			return (this.$.$mol_locale.text("$bog_gram_call_lobby_empty"));
-		}
-		lobby_some(){
-			return (this.$.$mol_locale.text("$bog_gram_call_lobby_some"));
-		}
-	};
-	($mol_mem(($.$bog_gram_call.prototype), "close_click"));
-	($mol_mem(($.$bog_gram_call.prototype), "Close_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "Close"));
-	($mol_mem(($.$bog_gram_call.prototype), "Lobby_text"));
-	($mol_mem(($.$bog_gram_call.prototype), "join"));
-	($mol_mem(($.$bog_gram_call.prototype), "Join"));
-	($mol_mem(($.$bog_gram_call.prototype), "Mic_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "mic"));
-	($mol_mem(($.$bog_gram_call.prototype), "Cam_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "cam"));
-	($mol_mem(($.$bog_gram_call.prototype), "cam_switch"));
-	($mol_mem(($.$bog_gram_call.prototype), "Flip_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "Stats_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "stats_show"));
-	($mol_mem(($.$bog_gram_call.prototype), "pip"));
-	($mol_mem(($.$bog_gram_call.prototype), "Pip_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "leave"));
-	($mol_mem(($.$bog_gram_call.prototype), "Leave_icon"));
-	($mol_mem(($.$bog_gram_call.prototype), "close"));
-	($mol_mem(($.$bog_gram_call.prototype), "Room"));
-	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
-	($mol_mem(($.$bog_gram_call.prototype), "Self"));
-	($mol_mem_key(($.$bog_gram_call.prototype), "Mate"));
-	($mol_mem(($.$bog_gram_call.prototype), "Lobby"));
-	($mol_mem(($.$bog_gram_call.prototype), "Mic"));
-	($mol_mem(($.$bog_gram_call.prototype), "Cam"));
-	($mol_mem(($.$bog_gram_call.prototype), "Flip"));
-	($mol_mem(($.$bog_gram_call.prototype), "Stats_show"));
-	($mol_mem(($.$bog_gram_call.prototype), "Pip"));
-	($mol_mem(($.$bog_gram_call.prototype), "Leave"));
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $bog_gram_call extends $.$bog_gram_call {
-            joined() {
-                return this.Room().joined();
-            }
-            content() {
-                return [this.joined() ? this.Grid() : this.Lobby()];
-            }
-            controls() {
-                if (!this.joined())
-                    return [];
-                return [
-                    this.Mic(),
-                    this.Cam(),
-                    ...this.Room().cam_switch_able() ? [this.Flip()] : [],
-                    this.Stats_show(),
-                    ...this.pip_able() ? [this.Pip()] : [],
-                    this.Leave(),
-                ];
-            }
-            tiles() {
-                return [
-                    this.Self(),
-                    ...this.Room().mates().map(mate => this.Mate(mate)),
-                ];
-            }
-            lobby_text() {
-                const names = this.Room().seats_alive().map(seat => this.Room().seat_name(seat));
-                if (!names.length)
-                    return this.lobby_empty();
-                return $bog_gram_text_fill(this.lobby_some(), { names: names.join(', ') });
-            }
-            join() {
-                this.Room().join();
-            }
-            leave() {
-                this.Room().leave();
-            }
-            close_click(next) {
-                this.leave();
-                this.close(next);
-                return null;
-            }
-            mic(next) {
-                return this.Room().mic(next);
-            }
-            cam(next) {
-                return this.Room().cam(next);
-            }
-            cam_able() {
-                return this.Room().cam_able();
-            }
-            cam_switch() {
-                this.Room().cam_switch();
-            }
-            self_mirror() {
-                return this.Room().facing() === 'user';
-            }
-            awake() {
-                return this.Room().visible();
-            }
-            self_stream() {
-                return this.Room().self_stream();
-            }
-            mate_stream(mate) {
-                return this.Room().peer(mate).remote();
-            }
-            mate_status(mate) {
-                return this.Room().peer(mate).status();
-            }
-            mate_stats(mate) {
-                if (!this.stats_show())
-                    return null;
-                return this.Room().peer(mate).stats();
-            }
-            mate_name(mate) {
-                const lord = this.Room().seat_pawn(mate)?.Lord()?.val() ?? '';
-                return (lord && this.note(lord)) || this.Room().seat_name(mate);
-            }
-            mate_mic(mate) {
-                return this.Room().seat_mic(mate);
-            }
-            mate_cam(mate) {
-                return this.Room().seat_cam(mate);
-            }
-            pip_able() {
-                return Boolean($mol_dom_context.document.pictureInPictureEnabled);
-            }
-            pip_video() {
-                const videos = [...this.Room().mates().map(mate => this.Mate(mate)), this.Self()].map(tile => tile.Video().dom_node());
-                return videos.find(video => video.readyState >= 1) ?? null;
-            }
-            pip() {
-                const doc = $mol_dom_context.document;
-                if (doc.pictureInPictureElement) {
-                    doc.exitPictureInPicture().catch($mol_fail_log);
-                    return null;
-                }
-                this.pip_video()?.requestPictureInPicture().catch($mol_fail_log);
-                return null;
-            }
-            session() {
-                const session = $mol_dom_context.navigator.mediaSession;
-                if (!session)
-                    return null;
-                const handlers = {
-                    enterpictureinpicture: () => this.pip(),
-                    hangup: () => this.leave(),
-                    togglemicrophone: () => this.mic(!this.mic()),
-                    togglecamera: () => this.cam(!this.cam()),
-                };
-                const put = (action, handler) => {
-                    try {
-                        session.setActionHandler(action, handler);
-                    }
-                    catch { }
-                };
-                session.playbackState = 'playing';
-                for (const action in handlers)
-                    put(action, handlers[action]);
-                return {
-                    destructor: () => {
-                        session.playbackState = 'none';
-                        for (const action in handlers)
-                            put(action, null);
-                    }
-                };
-            }
-            session_state() {
-                const session = $mol_dom_context.navigator.mediaSession;
-                if (!session)
-                    return null;
-                session.setMicrophoneActive?.(this.mic())?.catch?.(() => { });
-                session.setCameraActive?.(this.cam())?.catch?.(() => { });
-                return null;
-            }
-            auto() {
-                this.Room().run();
-                if (!this.joined())
-                    return;
-                this.session();
-                this.session_state();
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_call.prototype, "session", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_call.prototype, "session_state", null);
-        $$.$bog_gram_call = $bog_gram_call;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        $mol_style_define($bog_gram_call, {
-            Grid: {
-                flex: {
-                    wrap: 'wrap',
-                },
-                align: {
-                    content: 'center',
-                },
-                justify: {
-                    content: 'center',
-                },
-                gap: $mol_gap.block,
-                padding: $mol_gap.block,
-                minHeight: '100%',
-            },
-            Lobby: {
-                align: {
-                    items: 'center',
-                },
-                gap: $mol_gap.block,
-                padding: $mol_gap.block,
-            },
-            Foot: {
-                justify: {
-                    content: 'center',
-                },
-                gap: $mol_gap.block,
-            },
-            Leave: {
-                color: 'white',
-                background: {
-                    color: '#E53935',
-                },
-                borderRadius: '50%',
-            },
-        });
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_gram_call_seat extends $giper_baza_dict.with({
-        Lord: $giper_baza_atom_text,
-        Name: $giper_baza_atom_text,
-        Joined: $giper_baza_atom_real,
-        Beat: $giper_baza_atom_real,
-        Left: $giper_baza_atom_real,
-        Mic: $giper_baza_atom_bool,
-        Cam: $giper_baza_atom_bool,
-    }) {
-    }
-    $.$bog_gram_call_seat = $bog_gram_call_seat;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_gram_call_land extends $giper_baza_dict.with({
-        Created: $giper_baza_atom_real,
-        Seats: $giper_baza_dict_to($bog_gram_call_seat),
-        Offers: $giper_baza_dict_to($giper_baza_atom_text),
-        Answers: $giper_baza_dict_to($giper_baza_atom_text),
-    }) {
-    }
-    $.$bog_gram_call_land = $bog_gram_call_land;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_gram_call_room extends $mol_object {
-        static beat_every = 10_000;
-        static alive_span = 35_000;
-        static grab(passes, rulers = []) {
-            const glob = this.$.$giper_baza_glob;
-            const land = passes
-                ? glob.land_grab([[null, $giper_baza_rank_deny]])
-                : glob.land_grab([[null, $giper_baza_rank_post('just')]]);
-            for (const pass of passes ?? []) {
-                land.give(pass, rulers.includes(pass) ? $giper_baza_rank_rule : $giper_baza_rank_post('just'));
-            }
-            land.Data($bog_gram_call_land).Created('auto').val(Date.now());
-            land.sync();
-            return land;
-        }
-        static offerer(me, mate) {
-            return me < mate;
-        }
-        static pair(me, mate) {
-            return this.offerer(me, mate) ? `${me}>${mate}` : `${mate}>${me}`;
-        }
-        static seat_short(id) {
-            return id.slice(0, 4);
-        }
-        static signal_parse(text) {
-            try {
-                const data = JSON.parse(text);
-                if (typeof data?.id !== 'string' || typeof data?.sdp !== 'string')
-                    return null;
-                return { id: data.id, sdp: data.sdp };
-            }
-            catch {
-                return null;
-            }
-        }
-        static video_constraints(facing) {
-            return { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facing };
-        }
-        land() {
-            return null;
-        }
-        data() {
-            return this.land().Data($bog_gram_call_land);
-        }
-        lord() {
-            return this.$.$giper_baza_auth.current().pass().lord().str;
-        }
-        name() {
-            return '';
-        }
-        now(precision) {
-            return this.$.$mol_state_time.now(precision);
-        }
-        seat(next) {
-            return next ?? $mol_guid();
-        }
-        entered(next) {
-            return next ?? false;
-        }
-        joined() {
-            if (!this.entered())
-                return false;
-            const me = this.seat();
-            if (this.seat_pawn(me)?.Left()?.val())
-                return false;
-            const top = this.lords_seats().get(this.lord());
-            return !top || top === me;
-        }
-        mic(next) {
-            return next ?? true;
-        }
-        cam(next) {
-            return next ?? true;
-        }
-        join() {
-            const me = $mol_guid();
-            const lord = this.lord();
-            const seats = this.data().Seats('auto');
-            for (const id of seats.keys()) {
-                const seat = seats.key(id);
-                if (seat.Lord()?.val() !== lord)
-                    continue;
-                if (seat.Left()?.val())
-                    continue;
-                seat.Left('auto').val(Date.now());
-            }
-            const seat = seats.key(me, 'auto');
-            seat.Lord('auto').val(lord);
-            seat.Joined('auto').val(Date.now());
-            this.seat(me);
-            this.entered(true);
-            this.mates_logged = [];
-            this.log(`вошёл, место ${$bog_gram_call_room.seat_short(me)}`);
-        }
-        leave() {
-            if (!this.entered())
-                return;
-            this.data().Seats('auto')?.key(this.seat(), 'auto')?.Left('auto')?.val(Date.now());
-            this.entered(false);
-            this.log('вышел');
-        }
-        log(text) {
-            $bog_music_log.act(`звонок: ${text}`);
-        }
-        beat() {
-            if (!this.joined())
-                return null;
-            const moment = this.now($bog_gram_call_room.beat_every);
-            const seat = this.data().Seats('auto').key(this.seat(), 'auto');
-            seat.Lord('auto').val(this.lord());
-            seat.Name('auto').val(this.name());
-            seat.Mic('auto').val(this.mic());
-            seat.Cam('auto').val(this.cam() && this.cam_able());
-            seat.Beat('auto').val(moment);
-            return null;
-        }
-        seat_pawn(id) {
-            return this.data().Seats()?.key(id) ?? null;
-        }
-        seat_newer(left, right) {
-            const left_time = this.seat_pawn(left)?.Joined()?.val() ?? 0;
-            const right_time = this.seat_pawn(right)?.Joined()?.val() ?? 0;
-            if (left_time !== right_time)
-                return left_time > right_time;
-            return left > right;
-        }
-        lords_seats() {
-            const now = this.now(5_000);
-            const seats = this.data().Seats();
-            const lords = new Map();
-            if (!seats)
-                return lords;
-            for (const id of seats.keys()) {
-                const seat = seats.key(id);
-                if (seat.Left()?.val())
-                    continue;
-                if (now - (seat.Beat()?.val() ?? 0) >= $bog_gram_call_room.alive_span)
-                    continue;
-                const lord = seat.Lord()?.val() || id;
-                const prev = lords.get(lord);
-                if (!prev || this.seat_newer(id, prev))
-                    lords.set(lord, id);
-            }
-            return lords;
-        }
-        seats_alive() {
-            return [...this.lords_seats().values()].sort();
-        }
-        mates() {
-            const me = this.seat();
-            const lord = this.lord();
-            return this.seats_alive().filter(id => id !== me && this.seat_pawn(id)?.Lord()?.val() !== lord);
-        }
-        seat_name(id) {
-            const seat = this.seat_pawn(id);
-            return seat?.Name()?.val() || seat?.Lord()?.val()?.slice(0, 8) || id;
-        }
-        seat_mic(id) {
-            return this.seat_pawn(id)?.Mic()?.val() ?? true;
-        }
-        seat_cam(id) {
-            return this.seat_pawn(id)?.Cam()?.val() ?? true;
-        }
-        signal(box, key) {
-            return this.data()[box]()?.key(key)?.val() ?? '';
-        }
-        offer_text(key) {
-            return this.signal('Offers', key);
-        }
-        answer_text(key) {
-            return this.signal('Answers', key);
-        }
-        signal_put(box, key, text) {
-            const atom = this.data()[box]('auto').key(key, 'auto');
-            if (atom.val() !== text)
-                atom.val(text);
-        }
-        media() {
-            const devices = $mol_wire_sync(navigator.mediaDevices);
-            let stream;
-            try {
-                stream = devices.getUserMedia({
-                    audio: true,
-                    video: $bog_gram_call_room.video_constraints('user'),
-                });
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    $mol_fail_hidden(error);
-                this.log(`камера не открылась: ${error.name || error}`);
-                stream = devices.getUserMedia({ audio: true });
-            }
-            return Object.assign(stream, {
-                destructor: () => stream.getTracks().forEach(track => track.stop())
-            });
-        }
-        video_changed(next) {
-            return next ?? 0;
-        }
-        facing(next) {
-            return next ?? 'user';
-        }
-        cam_able() {
-            return this.media().getVideoTracks().length > 0;
-        }
-        cameras() {
-            this.media();
-            const devices = $mol_wire_sync(navigator.mediaDevices).enumerateDevices();
-            return devices.filter(device => device.kind === 'videoinput').length;
-        }
-        cam_switch_able() {
-            return this.cameras() > 1;
-        }
-        self_stream() {
-            this.video_changed();
-            return new MediaStream(this.media().getTracks());
-        }
-        video_close() {
-            const stream = this.media();
-            for (const old of stream.getVideoTracks()) {
-                old.stop();
-                stream.removeTrack(old);
-            }
-        }
-        video_open(facing) {
-            this.video_close();
-            const fresh = $mol_wire_sync(navigator.mediaDevices).getUserMedia({
-                video: $bog_gram_call_room.video_constraints(facing),
-            });
-            const track = fresh.getVideoTracks()[0];
-            this.facing(facing);
-            if (this.cam()) {
-                this.video_close();
-                this.media().addTrack(track);
-                for (const peer of this.peers())
-                    peer.video_replace(track);
-            }
-            else {
-                track.stop();
-            }
-            this.video_changed(this.video_changed() + 1);
-        }
-        video_off() {
-            this.video_close();
-            for (const peer of this.peers())
-                peer.video_replace(null);
-            this.video_changed(this.video_changed() + 1);
-        }
-        video_sync() {
-            this.video_changed();
-            if (!this.cam_able())
-                return null;
-            const open = this.media().getVideoTracks().length > 0;
-            if (open === this.cam())
-                return null;
-            if (open)
-                this.video_off();
-            else
-                $mol_wire_async(this).video_open(this.facing()).catch($mol_fail_log);
-            return null;
-        }
-        cam_switch() {
-            const facing = this.facing() === 'user' ? 'environment' : 'user';
-            if (this.cam())
-                this.video_open(facing);
-            else
-                this.facing(facing);
-        }
-        video_restore() {
-            this.video_open(this.facing());
-        }
-        video_broken() {
-            const track = this.media().getVideoTracks()[0];
-            if (!track)
-                return false;
-            return track.readyState === 'ended' || track.muted;
-        }
-        video_lost() {
-            if (!this.visible())
-                return;
-            this.video_restore();
-        }
-        video_watch() {
-            this.video_changed();
-            const track = this.media().getVideoTracks()[0];
-            if (!track)
-                return null;
-            return new $mol_dom_listener(track, 'ended', () => $mol_wire_async(this).video_lost());
-        }
-        visible(next) {
-            return next ?? $mol_dom_context.document.visibilityState !== 'hidden';
-        }
-        visible_watch() {
-            const doc = $mol_dom_context.document;
-            return new $mol_dom_listener(doc, 'visibilitychange', () => this.visible(doc.visibilityState !== 'hidden'));
-        }
-        video_check() {
-            if (!this.visible())
-                return null;
-            if (this.video_broken())
-                $mol_wire_async(this).video_restore();
-            return null;
-        }
-        unload_watch() {
-            return new $mol_dom_listener($mol_dom_context, 'pagehide', (event) => this.page_hide(event));
-        }
-        page_hide(event) {
-            if (event.persisted)
-                return;
-            this.leave();
-        }
-        audio_session() {
-            const session = this.$.$mol_dom_context.navigator?.audioSession;
-            if (!session)
-                return null;
-            session.type = 'play-and-record';
-            return {
-                destructor: () => { session.type = 'auto'; },
-            };
-        }
-        media_apply() {
-            this.video_changed();
-            const stream = this.media();
-            for (const track of stream.getAudioTracks())
-                track.enabled = this.mic();
-            for (const track of stream.getVideoTracks())
-                track.enabled = this.cam();
-            return stream;
-        }
-        peer(mate) {
-            return $bog_gram_call_peer.make({
-                room: $mol_const(this),
-                mate: $mol_const(mate),
-            });
-        }
-        mates_logged = [];
-        mates_log(mates) {
-            const prev = this.mates_logged;
-            this.mates_logged = mates;
-            const label = (id) => `${this.seat_name(id)} ${$bog_gram_call_room.seat_short(id)}`;
-            for (const id of mates)
-                if (!prev.includes(id))
-                    this.log(`пришёл ${label(id)}`);
-            for (const id of prev)
-                if (!mates.includes(id))
-                    this.log(`ушёл ${label(id)}`);
-        }
-        peers() {
-            if (!this.joined())
-                return [];
-            const mates = this.mates();
-            this.mates_log(mates);
-            return mates.map(mate => this.peer(mate));
-        }
-        run() {
-            if (!this.joined())
-                return null;
-            this.unload_watch();
-            this.audio_session();
-            this.visible_watch();
-            this.media_apply();
-            this.video_sync();
-            this.video_watch();
-            this.video_check();
-            this.beat();
-            for (const peer of this.peers())
-                peer.status();
-            return null;
-        }
-        destructor() {
-            if (!$mol_wire_probe(() => this.entered()))
-                return;
-            try {
-                this.data().Seats()?.key(this.seat())?.Left('auto')?.val(Date.now());
-            }
-            catch (error) {
-                $mol_fail_log(error);
-            }
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "seat", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "entered", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "joined", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "mic", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "cam", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_call_room.prototype, "join", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_call_room.prototype, "leave", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "beat", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "lords_seats", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "seats_alive", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "mates", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_call_room.prototype, "offer_text", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_call_room.prototype, "answer_text", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "media", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "video_changed", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "facing", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "cam_able", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "cameras", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "self_stream", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_call_room.prototype, "video_open", null);
-    __decorate([
-        $mol_action
-    ], $bog_gram_call_room.prototype, "video_off", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "video_sync", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "video_watch", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "visible", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "visible_watch", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "video_check", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "unload_watch", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "audio_session", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "media_apply", null);
-    __decorate([
-        $mol_mem_key
-    ], $bog_gram_call_room.prototype, "peer", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "peers", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_room.prototype, "run", null);
-    $.$bog_gram_call_room = $bog_gram_call_room;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_gram_call_peer extends $mol_object {
-        static ice = [
-            { urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] },
-        ];
-        static gather_limit = 3_000;
-        static connect_limit = 20_000;
-        static restart_after = 5_000;
-        static async gather(rtc) {
-            if (rtc.iceGatheringState !== 'complete') {
-                await new Promise(done => {
-                    const timer = setTimeout(done, this.gather_limit);
-                    rtc.addEventListener('icegatheringstatechange', () => {
-                        if (rtc.iceGatheringState !== 'complete')
-                            return;
-                        clearTimeout(timer);
-                        done();
-                    });
-                });
-            }
-            return rtc.localDescription.sdp;
-        }
-        static async offer_make(rtc, stream) {
-            for (const kind of ['audio', 'video']) {
-                const track = stream.getTracks().find(track => track.kind === kind);
-                rtc.addTransceiver(track ?? kind, { direction: 'sendrecv', streams: [stream] });
-            }
-            await rtc.setLocalDescription(await rtc.createOffer());
-            return this.gather(rtc);
-        }
-        static async answer_make(rtc, offer, stream) {
-            await rtc.setRemoteDescription({ type: 'offer', sdp: offer });
-            for (const transceiver of rtc.getTransceivers()) {
-                const kind = transceiver.receiver.track.kind;
-                const track = stream.getTracks().find(track => track.kind === kind) ?? null;
-                transceiver.direction = 'sendrecv';
-                await transceiver.sender.replaceTrack(track);
-                transceiver.sender.setStreams?.(stream);
-            }
-            await rtc.setLocalDescription(await rtc.createAnswer());
-            return this.gather(rtc);
-        }
-        static async answer_apply(rtc, answer) {
-            if (rtc.signalingState !== 'have-local-offer')
-                return;
-            await rtc.setRemoteDescription({ type: 'answer', sdp: answer });
-        }
-        room() {
-            return null;
-        }
-        mate() {
-            return '';
-        }
-        offerer() {
-            return $bog_gram_call_room.offerer(this.room().seat(), this.mate());
-        }
-        key() {
-            return $bog_gram_call_room.pair(this.room().seat(), this.mate());
-        }
-        attempt(next) {
-            return next ?? 0;
-        }
-        changed(next) {
-            return next ?? 0;
-        }
-        tracked(next) {
-            return next ?? 0;
-        }
-        state() {
-            this.changed();
-            return this.rtc()?.connectionState ?? 'new';
-        }
-        remote() {
-            this.tracked();
-            const rtc = this.rtc();
-            if (!rtc)
-                return null;
-            const tracks = rtc.getReceivers().map(receiver => receiver.track);
-            if (!tracks.length)
-                return null;
-            return new MediaStream(tracks);
-        }
-        log(text) {
-            this.room().log(`${$bog_gram_call_room.seat_short(this.mate())}: ${text}`);
-        }
-        offer_their() {
-            if (this.offerer())
-                return null;
-            return $bog_gram_call_room.signal_parse(this.room().offer_text(this.key()));
-        }
-        offer_id() {
-            return this.offer_their()?.id ?? '';
-        }
-        rtc() {
-            const round = this.offerer() ? String(this.attempt()) : this.offer_id();
-            if (!round)
-                return null;
-            const rtc = new RTCPeerConnection({ iceServers: $bog_gram_call_peer.ice });
-            const born = Date.now();
-            this.log(`соединение ${round} создано, я ${this.offerer() ? 'предлагаю' : 'отвечаю'}`);
-            rtc.addEventListener('connectionstatechange', () => this.state_change(rtc, round, born));
-            rtc.addEventListener('track', () => this.tracked(this.tracked() + 1));
-            return Object.assign(rtc, {
-                destructor: () => {
-                    this.log(`соединение ${round} закрыто`);
-                    rtc.close();
-                }
-            });
-        }
-        state_change(rtc, round, born) {
-            const state = rtc.connectionState;
-            if (state === 'closed')
-                return;
-            this.log(state === 'connected'
-                ? `соединение ${round}: connected через ${Date.now() - born} мс`
-                : `соединение ${round}: ${state}`);
-            this.changed(this.changed() + 1);
-            if (!this.offerer())
-                return;
-            if (state === 'failed')
-                this.restart(rtc, 'failed');
-            if (state === 'disconnected')
-                setTimeout(() => {
-                    if (rtc.connectionState === 'disconnected')
-                        this.restart(rtc, `disconnected дольше ${$bog_gram_call_peer.restart_after} мс`);
-                }, $bog_gram_call_peer.restart_after);
-        }
-        restart(rtc, reason) {
-            if (rtc.connectionState === 'closed')
-                return;
-            if (rtc.connectionState === 'connected')
-                return;
-            this.log(`перезапуск после попытки ${this.attempt()}: ${reason}`);
-            this.attempt(this.attempt() + 1);
-        }
-        offer_build() {
-            return $mol_wire_sync($bog_gram_call_peer).offer_make(this.rtc(), this.room().media());
-        }
-        answer_build(offer) {
-            return $mol_wire_sync($bog_gram_call_peer).answer_make(this.rtc(), offer, this.room().media());
-        }
-        answer_use(answer) {
-            $mol_wire_sync($bog_gram_call_peer).answer_apply(this.rtc(), answer);
-        }
-        offer_mine() {
-            if (!this.offerer())
-                return null;
-            const rtc = this.rtc();
-            const sdp = this.offer_build();
-            new this.$.$mol_after_timeout($bog_gram_call_peer.connect_limit, () => this.restart(rtc, `нет связи за ${$bog_gram_call_peer.connect_limit} мс`));
-            return { id: `${this.attempt()}.${$mol_guid()}`, sdp };
-        }
-        offered = '';
-        offer_post() {
-            const offer = this.offer_mine();
-            if (!offer)
-                return '';
-            if (this.offered === offer.id)
-                return offer.id;
-            this.room().signal_put('Offers', this.key(), JSON.stringify(offer));
-            this.offered = offer.id;
-            this.log(`предложение ${offer.id} записано`);
-            return offer.id;
-        }
-        applied = '';
-        answer_take() {
-            const id = this.offer_post();
-            if (!id)
-                return false;
-            const answer = $bog_gram_call_room.signal_parse(this.room().answer_text(this.key()));
-            if (answer?.id !== id)
-                return false;
-            if (this.applied === id)
-                return true;
-            this.answer_use(answer.sdp);
-            this.applied = id;
-            this.log(`ответ на ${id} принят`);
-            return true;
-        }
-        answered = '';
-        answer_post() {
-            const offer = this.offer_their();
-            if (!offer)
-                return false;
-            if (this.answered === offer.id)
-                return true;
-            const sdp = this.answer_build(offer.sdp);
-            this.room().signal_put('Answers', this.key(), JSON.stringify({ id: offer.id, sdp }));
-            this.answered = offer.id;
-            this.log(`ответ на ${offer.id} записан`);
-            return true;
-        }
-        sync() {
-            return this.offerer() ? this.answer_take() : this.answer_post();
-        }
-        video_replace(track) {
-            const rtc = this.rtc();
-            if (!rtc)
-                return;
-            for (const transceiver of rtc.getTransceivers()) {
-                if (transceiver.receiver.track.kind !== 'video')
-                    continue;
-                transceiver.sender.replaceTrack(track).catch($mol_fail_log);
-            }
-        }
-        stats_last = null;
-        stats() {
-            this.room().now(2_000);
-            const rtc = this.rtc();
-            if (!rtc || this.state() !== 'connected')
-                return null;
-            const report = $mol_wire_sync(rtc).getStats();
-            const next = $bog_gram_call_peer.stats_sum([...report.values()], this.stats_last);
-            this.stats_last = next;
-            return next;
-        }
-        static stats_limit = { fps: 15, loss: 2, rtt: 300 };
-        static stats_bad(stats) {
-            const limit = this.stats_limit;
-            return {
-                fps: stats.fps < limit.fps,
-                loss: stats.loss > limit.loss,
-                rtt: stats.rtt > limit.rtt,
-            };
-        }
-        static stats_sum(entries, last) {
-            const sum = {
-                time: 0, bytes: 0, fps: 0, width: 0, height: 0, kbps: 0, lost: 0, packets: 0, loss: 0, rtt: 0,
-            };
-            let pair = '';
-            for (const entry of entries) {
-                if (entry.type === 'transport' && entry.selectedCandidatePairId)
-                    pair = entry.selectedCandidatePairId;
-            }
-            for (const entry of entries) {
-                if (entry.type === 'inbound-rtp') {
-                    sum.time = Math.max(sum.time, entry.timestamp ?? 0);
-                    sum.bytes += entry.bytesReceived ?? 0;
-                    sum.lost += Math.max(0, entry.packetsLost ?? 0);
-                    sum.packets += entry.packetsReceived ?? 0;
-                    if (entry.kind === 'video') {
-                        sum.fps = Math.round(entry.framesPerSecond ?? 0);
-                        sum.width = entry.frameWidth ?? 0;
-                        sum.height = entry.frameHeight ?? 0;
-                    }
-                }
-                if (entry.type === 'candidate-pair' && (pair ? entry.id === pair : entry.nominated && entry.state === 'succeeded')) {
-                    sum.rtt = Math.round((entry.currentRoundTripTime ?? 0) * 1000);
-                }
-            }
-            const total = sum.lost + sum.packets;
-            sum.loss = total ? Math.round(sum.lost / total * 1000) / 10 : 0;
-            if (last && sum.time > last.time) {
-                sum.kbps = Math.round(Math.max(0, sum.bytes - last.bytes) * 8 / (sum.time - last.time));
-            }
-            return sum;
-        }
-        status() {
-            try {
-                if (!this.sync())
-                    return 'waiting';
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    return 'connecting';
-                $mol_fail_log(error);
-                return 'failed';
-            }
-            return this.state();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "attempt", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "changed", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "tracked", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "state", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "remote", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "offer_their", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "offer_id", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "rtc", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "offer_mine", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "offer_post", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "answer_take", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "answer_post", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "sync", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "stats", null);
-    __decorate([
-        $mol_mem
-    ], $bog_gram_call_peer.prototype, "status", null);
-    $.$bog_gram_call_peer = $bog_gram_call_peer;
-})($ || ($ = {}));
-
-;
 	($.$bog_gram_call_card) = class $bog_gram_call_card extends ($.$mol_button_minor) {
 		Icon(){
 			const obj = new this.$.$mol_icon_phone();
@@ -72152,6 +72210,9 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		call_invite(id){
+			return "";
+		}
 		forward_open(next){
 			if(next !== undefined) return next;
 			return null;
@@ -73110,7 +73171,10 @@ var $;
                     return '';
                 }
                 const rulers = passes.filter(pass => this.Talk().admin_is(this.dialog(), pass.lord().str));
+                const invite = this.call_invite(this.dialog());
                 const land = this.$.$bog_gram_call_room.grab(passes, rulers);
+                if (invite)
+                    land.Data($bog_gram_call_land).Invite('auto').val(invite);
                 const message = session.Messages('auto').make(null);
                 message.Call('auto').val(land.link());
                 message.Author('auto')?.val(this.my_lord());
@@ -76584,6 +76648,10 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		meet_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		music_open(next){
 			if(next !== undefined) return next;
 			return null;
@@ -76642,6 +76710,7 @@ var $;
 			(obj.Theme) = () => ((this.Theme()));
 			(obj.compose) = (next) => ((this.compose_open(next)));
 			(obj.group) = (next) => ((this.group_open(next)));
+			(obj.meet) = (next) => ((this.meet_start(next)));
 			(obj.music) = (next) => ((this.music_open(next)));
 			(obj.settings) = (next) => ((this.settings_open(next)));
 			(obj.invite_plate_text) = () => ((this.invite_plate_text()));
@@ -76878,6 +76947,9 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		meet_uri(id){
+			return "";
+		}
 		forward_open(next){
 			if(next !== undefined) return next;
 			return null;
@@ -77057,6 +77129,7 @@ var $;
 			(obj.close) = (next) => ((this.dialog_close(next)));
 			(obj.members) = (next) => ((this.members_open(next)));
 			(obj.call_open) = (next) => ((this.call_open(next)));
+			(obj.call_invite) = (id) => ((this.meet_uri(id)));
 			(obj.forward_open) = (next) => ((this.forward_open(next)));
 			(obj.contact_share) = (next) => ((this.contact_share(next)));
 			(obj.contact_open) = (next) => ((this.contact_open(next)));
@@ -77075,6 +77148,9 @@ var $;
 			(obj.dialog_avatar_id) = (id) => ((this.dialog_avatar_id(id)));
 			(obj.dialog_tint) = (id) => ((this.dialog_tint(id)));
 			return obj;
+		}
+		meet_title(){
+			return (this.$.$mol_locale.text("$bog_gram_meet_title"));
 		}
 		forward_title(){
 			return (this.$.$mol_locale.text("$bog_gram_forward_title"));
@@ -77100,6 +77176,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Intro"));
 	($mol_mem(($.$bog_gram.prototype), "compose_open"));
 	($mol_mem(($.$bog_gram.prototype), "group_open"));
+	($mol_mem(($.$bog_gram.prototype), "meet_start"));
 	($mol_mem(($.$bog_gram.prototype), "music_open"));
 	($mol_mem(($.$bog_gram.prototype), "settings_open"));
 	($mol_mem_key(($.$bog_gram.prototype), "dialog_select"));
@@ -77903,6 +77980,24 @@ var $;
             meet_link() {
                 return this.Meet().uri(this.dialog_active());
             }
+            meet_uri(id) {
+                return this.Meet().uri(id);
+            }
+            meet_start(next) {
+                this.meet_begin().catch((error) => $mol_fail_log(error));
+                return null;
+            }
+            async meet_begin() {
+                const { id } = await $mol_wire_async(this.Crew()).group_make(this.meet_title(), [], true, true);
+                if (!id)
+                    return '';
+                await $mol_wire_async(this.Meet()).make(id);
+                const room = await $mol_wire_async(this.Meet()).call(id);
+                this.dialog_select(id);
+                if (room)
+                    this.call_open(room);
+                return id;
+            }
             meet_make(next) {
                 const id = this.dialog_active();
                 if (id)
@@ -78233,6 +78328,9 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "members_asks", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "meet_start", null);
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "meet_make", null);
