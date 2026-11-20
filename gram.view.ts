@@ -651,6 +651,32 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem
+		meet_enter() {
+
+			const group = this.Meet().entered()
+			if( group ) $mol_wire_async( this ).meet_go( group )
+
+			const room = this.Meet().room_ready()
+			if( room ) $mol_wire_async( this ).meet_join( room )
+
+			return group || room
+		}
+
+		@ $mol_action
+		meet_go( group: string ) {
+			const room = this.Meet().room( group )
+			this.Meet().wait( '' )
+			this.Meet().room_wait( room )
+			this.dialog_select( group )
+		}
+
+		@ $mol_action
+		meet_join( room: string ) {
+			this.Meet().room_wait( '' )
+			this.call_open( room )
+		}
+
+		@ $mol_mem
 		override member_candidates() {
 			const inside = new Set( this.member_lords() )
 			return this.contact_lords().filter( lord => !inside.has( lord ) )
@@ -814,6 +840,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.invite_handle(), '' )
 			$bog_gram_soft( ()=> this.join_handle(), '' )
 			$bog_gram_soft( ()=> this.meet_handle(), '' )
+			$bog_gram_soft( ()=> this.meet_enter(), '' )
 			$bog_gram_soft( ()=> this.Meet().auto(), 0 )
 			$bog_gram_soft( ()=> this.dialog_autocreate(), '' )
 			$bog_gram_soft( ()=> this.pending_timer(), null )

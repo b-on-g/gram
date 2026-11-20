@@ -216,7 +216,9 @@ namespace $ {
 
 		join_take( id: string, by: string ) {
 
-			const plan = this.join_plan( id, this.Account().my_lord(), this.Roster().ids().includes( id ) )
+			const my = this.Account().my_lord()
+			const member = id !== my && Boolean( $giper_baza_link.check( id ) ) && this.Talk().inside( id ) && this.taken( id )
+			const plan = this.join_plan( id, my, member )
 
 			if( plan === 'ask' ) {
 				const owner = by || this.join_owner_of( id )
@@ -413,8 +415,7 @@ namespace $ {
 
 		taken( id: string ) {
 
-			const inside = $bog_gram_soft( ()=> this.Talk().lords( id ).includes( this.Account().my_lord() ), false )
-			if( !inside ) return false
+			if( !$bog_gram_soft( ()=> this.Talk().inside( id ), false ) ) return false
 
 			const roster = this.Roster()
 			if( !roster.ids().includes( id ) && !roster.hidden().includes( id ) ) this.store().Dialogs( 'auto' )!.add( id )

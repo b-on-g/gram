@@ -134,12 +134,52 @@ namespace $ {
 			this.$.$mol_state_arg.value( 'by', null )
 
 			if( !group ) return { plan: 'skip', group }
-			if( this.Roster().ids().includes( group ) ) return { plan: 'open', group }
+			if( this.Talk().inside( group ) && this.Lobby().taken( group ) ) return { plan: 'open', group }
 
 			this.Lobby().send( group, owner )
 			this.knock( link, group )
+			this.wait( group )
 
 			return { plan: 'ask', group }
+		}
+
+		@ $mol_mem
+		wait( next?: string ) {
+			return next ?? ''
+		}
+
+		@ $mol_mem
+		entered() {
+			const group = this.wait()
+			if( !group ) return ''
+			return this.Lobby().taken( group ) ? group : ''
+		}
+
+		room( id: string ) {
+			const messages = this.Talk().messages_of( id )
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+				const link = messages[ i ].Call()?.val()
+				if( link ) return link.str
+			}
+			return ''
+		}
+
+		@ $mol_mem
+		room_wait( next?: string ) {
+			return next ?? ''
+		}
+
+		@ $mol_mem
+		room_ready() {
+
+			const link = this.room_wait()
+			if( !link ) return ''
+
+			const land = this.land( link ).sync()
+			if( !land.encrypted() ) return ''
+
+			const my = new $giper_baza_link( this.Account().my_lord() )
+			return land.lord_tier( my ) >= $giper_baza_rank_tier.read ? link : ''
 		}
 
 		knock( link: string, group: string ) {
@@ -154,14 +194,13 @@ namespace $ {
 		}
 
 		@ $mol_mem_key
-		knocks_of( id: string ) {
+		knocks_all( id: string ) {
 
 			const link = this.meet_of( id )
 			if( !link ) return [] as string[]
 
 			const land = this.land( link )
 			const units = $bog_gram_soft( ()=> land.Data( $bog_gram_meet_hall ).Knocks()?.units() ?? [], [] as readonly $giper_baza_unit_sand[] )
-			const inside = new Set( $bog_gram_soft( ()=> this.Talk().lords( id ), [] as string[] ) )
 
 			const out = [] as string[]
 
@@ -172,13 +211,17 @@ namespace $ {
 
 				if( !ask || ask.group !== id ) continue
 				if( ask.lord !== unit.lord().str ) continue
-				if( inside.has( ask.lord ) ) continue
 				if( out.includes( entry ) ) continue
 
 				out.push( entry )
 			}
 
 			return out
+		}
+
+		@ $mol_mem_key
+		knocks_of( id: string ) {
+			return this.knocks_all( id ).filter( entry => !this.Talk().member_is( id, this.Lobby().parse( entry )!.lord ) )
 		}
 
 		forget( entry: string ) {
@@ -204,12 +247,18 @@ namespace $ {
 
 				if( !this.meet_of( id ) ) continue
 				if( !$bog_gram_soft( ()=> this.Talk().admin_me( id ), false ) ) continue
-				if( this.mode( id ) !== 'auto' ) continue
 
-				for( const entry of this.knocks_of( id ) ) {
-					if( !$bog_gram_soft( ()=> this.Lobby().apply( entry, true ), '' ) ) continue
+				const auto = this.mode( id ) === 'auto'
+
+				for( const entry of this.knocks_all( id ) ) {
+
+					if( !this.Talk().member_is( id, this.Lobby().parse( entry )!.lord ) ) {
+						if( !auto ) continue
+						if( !$bog_gram_soft( ()=> this.Lobby().apply( entry, true ), '' ) ) continue
+						++ count
+					}
+
 					this.forget( entry )
-					++ count
 				}
 
 			}

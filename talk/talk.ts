@@ -132,6 +132,28 @@ namespace $ {
 			return this.admin_is( id, this.my() )
 		}
 
+		member_is( id: string, lord: string ) {
+			if( !id || !lord ) return false
+			return $bog_gram_soft( ()=> {
+				const rank = this.land( id ).lord_rank( new $giper_baza_link( lord ) )
+				return $giper_baza_rank_tier_of( rank ) >= $giper_baza_rank_tier.post
+			}, false )
+		}
+
+		@ $mol_mem_key
+		inside( id: string ) {
+
+			if( !id || !$giper_baza_link.check( id ) ) return false
+
+			this.land( id ).sync()
+			if( !this.member_is( id, this.my() ) ) return false
+
+			const session = this.land_of( id )?.sync()
+			if( !session?.encrypted() ) return false
+
+			return session.lord_tier( new $giper_baza_link( this.my() ) ) >= $giper_baza_rank_tier.read
+		}
+
 		member_rank( id: string, lord: string ) {
 			const land = this.land( id )
 			const link = new $giper_baza_link( lord )
