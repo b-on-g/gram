@@ -32,7 +32,7 @@ namespace $ {
 			return this.land( link ).Data( $bog_gram_meet_hall )
 		}
 
-		trusted( link: string, owner: string, field: 'Group' | 'Title' | 'Mode' ) {
+		trusted( link: string, owner: string, field: 'Group' | 'Title' | 'Confirm' ) {
 			const value = this.hall( link )[ field ]()?.vary_of( new $giper_baza_link( owner ) )
 			return String( value ?? '' )
 		}
@@ -77,7 +77,6 @@ namespace $ {
 
 			hall.Group( 'auto' )!.val( id )
 			hall.Title( 'auto' )!.val( this.Talk().group_title( id ) )
-			hall.Mode( 'auto' )!.val( 'ask' )
 			land.sync()
 
 			this.Talk().store( id ).Meet( 'auto' )!.val( link )
@@ -115,9 +114,9 @@ namespace $ {
 			const owner = this.Lobby().join_owner_of( id )
 			if( !link || !owner ) return 'ask'
 
-			if( next !== undefined && this.owner_me( id ) ) this.hall( link ).Mode( 'auto' )!.val( next )
+			if( next !== undefined && this.owner_me( id ) ) this.hall( link ).Confirm( 'auto' )!.val( next === 'ask' ? 'on' : '' )
 
-			return $bog_gram_soft( ()=> this.trusted( link, owner, 'Mode' ), '' ) === 'auto' ? 'auto' : 'ask'
+			return $bog_gram_soft( ()=> this.trusted( link, owner, 'Confirm' ), '' ) === 'on' ? 'ask' : 'auto'
 		}
 
 		hall_id() {

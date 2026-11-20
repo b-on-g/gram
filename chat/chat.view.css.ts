@@ -143,6 +143,32 @@ namespace $.$$ {
 			},
 		},
 
+		Meet_bar: {
+			gap: '0.25rem',
+			padding: {
+				bottom: '0.5rem',
+			},
+		},
+
+		Knocks_head: {
+			font: {
+				weight: 'bold',
+			},
+		},
+
+		Knock: {
+			align: {
+				items: 'center',
+			},
+			gap: '0.25rem',
+		},
+
+		Knock_name: {
+			flex: {
+				grow: 1,
+			},
+		},
+
 		Messages: {
 			flex: {
 				direction: 'column',

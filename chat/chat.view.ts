@@ -92,6 +92,23 @@ namespace $.$$ {
 			return this.members_shown() ? super.Members() : null!
 		}
 
+		@ $mol_mem
+		override meet_rows() {
+			const knocks = this.knocks()
+			return [
+				... this.meet_owner() ? [ this.Meet_confirm() ] : [],
+				... knocks.length ? [ this.Knocks_head(), ... knocks.map( entry => this.Knock( entry ) ) ] : [],
+			]
+		}
+
+		override Meet_bar() {
+			return this.meet_rows().length ? super.Meet_bar() : null!
+		}
+
+		override knocks_head() {
+			return $bog_gram_text_fill( this.knocks_pattern(), { count: this.knocks().length } )
+		}
+
 		override Call() {
 			return this.saved() ? null! : super.Call()
 		}

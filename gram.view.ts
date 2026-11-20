@@ -571,6 +571,23 @@ namespace $.$$ {
 			return this.Meet().uri( id )
 		}
 
+		override meet_owner_is( id: string ) {
+			if( !this.Meet().meet_of( id ) ) return false
+			return this.Meet().owner_me( id )
+		}
+
+		override meet_confirm( id: string, next?: boolean ) {
+			if( next === undefined ) return this.Meet().mode( id ) === 'ask'
+			return this.Meet().mode( id, next ? 'ask' : 'auto' ) === 'ask'
+		}
+
+		@ $mol_mem_key
+		override dialog_knocks( id: string ) {
+			if( !id ) return []
+			if( !$bog_gram_soft( ()=> this.Talk().admin_me( id ), false ) ) return []
+			return this.asks_for( id )
+		}
+
 		@ $mol_action
 		override meet_start( next?: any ) {
 			this.meet_begin().catch( ( error: unknown )=> $mol_fail_log( error ) )

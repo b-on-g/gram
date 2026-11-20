@@ -297,6 +297,12 @@ $bog_gram $mol_book2
 		members? <=> members_open? null
 		call_open? <=> call_open? null
 		call_invite* <= meet_uri* \
+		meet_owner <= meet_owner_is* false
+		meet_confirm? <=> meet_confirm*? false
+		knocks <= dialog_knocks* /string
+		knock_name* <= ask_label* \
+		admit*? <=> ask_accept*? null
+		deny*? <=> ask_reject*? null
 		forward_open? <=> forward_open? null
 		contact_share? <=> contact_share? null
 		contact_open? <=> contact_open? null
