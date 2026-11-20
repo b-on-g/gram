@@ -60282,7 +60282,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.202';
+    $.$bog_gram_version = '1.0.203';
 })($ || ($ = {}));
 
 ;
@@ -63777,6 +63777,25 @@ var $;
         admin_me(id) {
             return this.admin_is(id, this.my());
         }
+        member_is(id, lord) {
+            if (!id || !lord)
+                return false;
+            return $bog_gram_soft(() => {
+                const rank = this.land(id).lord_rank(new $giper_baza_link(lord));
+                return $giper_baza_rank_tier_of(rank) >= $giper_baza_rank_tier.post;
+            }, false);
+        }
+        inside(id) {
+            if (!id || !$giper_baza_link.check(id))
+                return false;
+            this.land(id).sync();
+            if (!this.member_is(id, this.my()))
+                return false;
+            const session = this.land_of(id)?.sync();
+            if (!session?.encrypted())
+                return false;
+            return session.lord_tier(new $giper_baza_link(this.my())) >= $giper_baza_rank_tier.read;
+        }
         member_rank(id, lord) {
             const land = this.land(id);
             const link = new $giper_baza_link(lord);
@@ -64032,6 +64051,9 @@ var $;
     __decorate([
         $mol_action
     ], $bog_gram_talk.prototype, "group_title_set", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_talk.prototype, "inside", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_talk.prototype, "own", null);
@@ -65303,7 +65325,9 @@ var $;
             return member ? 'open' : 'ask';
         }
         join_take(id, by) {
-            const plan = this.join_plan(id, this.Account().my_lord(), this.Roster().ids().includes(id));
+            const my = this.Account().my_lord();
+            const member = id !== my && Boolean($giper_baza_link.check(id)) && this.Talk().inside(id) && this.taken(id);
+            const plan = this.join_plan(id, my, member);
             if (plan === 'ask') {
                 const owner = by || this.join_owner_of(id);
                 this.lost(owner ? '' : id);
@@ -65469,8 +65493,7 @@ var $;
             return '';
         }
         taken(id) {
-            const inside = $bog_gram_soft(() => this.Talk().lords(id).includes(this.Account().my_lord()), false);
-            if (!inside)
+            if (!$bog_gram_soft(() => this.Talk().inside(id), false))
                 return false;
             const roster = this.Roster();
             if (!roster.ids().includes(id) && !roster.hidden().includes(id))
@@ -67640,11 +67663,43 @@ var $;
             this.$.$mol_state_arg.value('by', null);
             if (!group)
                 return { plan: 'skip', group };
-            if (this.Roster().ids().includes(group))
+            if (this.Talk().inside(group) && this.Lobby().taken(group))
                 return { plan: 'open', group };
             this.Lobby().send(group, owner);
             this.knock(link, group);
+            this.wait(group);
             return { plan: 'ask', group };
+        }
+        wait(next) {
+            return next ?? '';
+        }
+        entered() {
+            const group = this.wait();
+            if (!group)
+                return '';
+            return this.Lobby().taken(group) ? group : '';
+        }
+        room(id) {
+            const messages = this.Talk().messages_of(id);
+            for (let i = messages.length - 1; i >= 0; --i) {
+                const link = messages[i].Call()?.val();
+                if (link)
+                    return link.str;
+            }
+            return '';
+        }
+        room_wait(next) {
+            return next ?? '';
+        }
+        room_ready() {
+            const link = this.room_wait();
+            if (!link)
+                return '';
+            const land = this.land(link).sync();
+            if (!land.encrypted())
+                return '';
+            const my = new $giper_baza_link(this.Account().my_lord());
+            return land.lord_tier(my) >= $giper_baza_rank_tier.read ? link : '';
         }
         knock(link, group) {
             const pass = this.$.$giper_baza_auth.current().pass().toString();
@@ -67654,13 +67709,12 @@ var $;
                 knocks.add(entry);
             return entry;
         }
-        knocks_of(id) {
+        knocks_all(id) {
             const link = this.meet_of(id);
             if (!link)
                 return [];
             const land = this.land(link);
             const units = $bog_gram_soft(() => land.Data($bog_gram_meet_hall).Knocks()?.units() ?? [], []);
-            const inside = new Set($bog_gram_soft(() => this.Talk().lords(id), []));
             const out = [];
             for (const unit of units) {
                 const entry = String(land.sand_decode(unit) ?? '');
@@ -67669,13 +67723,14 @@ var $;
                     continue;
                 if (ask.lord !== unit.lord().str)
                     continue;
-                if (inside.has(ask.lord))
-                    continue;
                 if (out.includes(entry))
                     continue;
                 out.push(entry);
             }
             return out;
+        }
+        knocks_of(id) {
+            return this.knocks_all(id).filter(entry => !this.Talk().member_is(id, this.Lobby().parse(entry).lord));
         }
         forget(entry) {
             const ask = this.Lobby().parse(entry);
@@ -67696,13 +67751,16 @@ var $;
                     continue;
                 if (!$bog_gram_soft(() => this.Talk().admin_me(id), false))
                     continue;
-                if (this.mode(id) !== 'auto')
-                    continue;
-                for (const entry of this.knocks_of(id)) {
-                    if (!$bog_gram_soft(() => this.Lobby().apply(entry, true), ''))
-                        continue;
+                const auto = this.mode(id) === 'auto';
+                for (const entry of this.knocks_all(id)) {
+                    if (!this.Talk().member_is(id, this.Lobby().parse(entry).lord)) {
+                        if (!auto)
+                            continue;
+                        if (!$bog_gram_soft(() => this.Lobby().apply(entry, true), ''))
+                            continue;
+                        ++count;
+                    }
                     this.forget(entry);
-                    ++count;
                 }
             }
             return count;
@@ -67738,6 +67796,21 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_meet.prototype, "mode", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_meet.prototype, "wait", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_meet.prototype, "entered", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_meet.prototype, "room_wait", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_meet.prototype, "room_ready", null);
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_meet.prototype, "knocks_all", null);
     __decorate([
         $mol_mem_key
     ], $bog_gram_meet.prototype, "knocks_of", null);
@@ -79464,6 +79537,25 @@ var $;
                     this.dialog_select(group);
                 return plan;
             }
+            meet_enter() {
+                const group = this.Meet().entered();
+                if (group)
+                    $mol_wire_async(this).meet_go(group);
+                const room = this.Meet().room_ready();
+                if (room)
+                    $mol_wire_async(this).meet_join(room);
+                return group || room;
+            }
+            meet_go(group) {
+                const room = this.Meet().room(group);
+                this.Meet().wait('');
+                this.Meet().room_wait(room);
+                this.dialog_select(group);
+            }
+            meet_join(room) {
+                this.Meet().room_wait('');
+                this.call_open(room);
+            }
             member_candidates() {
                 const inside = new Set(this.member_lords());
                 return this.contact_lords().filter(lord => !inside.has(lord));
@@ -79601,6 +79693,7 @@ var $;
                 $bog_gram_soft(() => this.invite_handle(), '');
                 $bog_gram_soft(() => this.join_handle(), '');
                 $bog_gram_soft(() => this.meet_handle(), '');
+                $bog_gram_soft(() => this.meet_enter(), '');
                 $bog_gram_soft(() => this.Meet().auto(), 0);
                 $bog_gram_soft(() => this.dialog_autocreate(), '');
                 $bog_gram_soft(() => this.pending_timer(), null);
@@ -79782,6 +79875,15 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "meet_handle", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "meet_enter", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "meet_go", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "meet_join", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "member_candidates", null);

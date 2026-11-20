@@ -64466,7 +64466,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.202";
+    const $bog_gram_version = "1.0.203";
 }
 
 declare namespace $ {
@@ -78449,6 +78449,8 @@ declare namespace $ {
         group_title_set(id: string, next?: string): null;
         admin_is(id: string, lord: string): boolean;
         admin_me(id: string): boolean;
+        member_is(id: string, lord: string): boolean;
+        inside(id: string): boolean;
         member_rank(id: string, lord: string): number & {
             $giper_baza_rank: number;
         };
@@ -80554,7 +80556,13 @@ declare namespace $ {
             plan: 'skip' | 'open' | 'ask';
             group: string;
         };
+        wait(next?: string): string;
+        entered(): string;
+        room(id: string): string;
+        room_wait(next?: string): string;
+        room_ready(): string;
         knock(link: string, group: string): string;
+        knocks_all(id: string): string[];
         knocks_of(id: string): string[];
         forget(entry: string): void;
         auto(): number;
@@ -86924,6 +86932,9 @@ declare namespace $.$$ {
         meet_auto(next?: boolean): boolean;
         meet_handle(): string;
         meet_request(link: string, owner: string): "skip" | "ask" | "open";
+        meet_enter(): string;
+        meet_go(group: string): void;
+        meet_join(room: string): void;
         member_candidates(): string[];
         member_add(lord: string, next?: any): null;
         member_drop(lord: string, next?: any): null;
