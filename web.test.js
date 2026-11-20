@@ -11038,11 +11038,33 @@ var $;
             return { write, sent: () => sent };
         }
         $mol_test({
-            'Черновик живёт в своём ленде: не в home-ленде и не сохраняется'($) {
-                const { write } = make($, true);
-                const home = $.$giper_baza_auth.current().pass().lord().str;
-                $mol_assert_unique(write.land().link().str, home);
-                $mol_assert_equal(write.land().persisted(), false);
+            'Набор, правка и очистка поля не трогают Базу: ни home-ленд, ни какой другой'($) {
+                const touched = [];
+                const touch = (what) => { touched.push(what); return $mol_fail(new Error(`Поле полезло в Базу: ${what}`)); };
+                const context = $.$mol_ambient({
+                    $giper_baza_land: class extends $giper_baza_land {
+                        static make() { return touch('land'); }
+                    },
+                    $giper_baza_glob: class extends $giper_baza_glob {
+                        static home() { return touch('home'); }
+                        static Land() { return touch('Land'); }
+                        static land_grab() { return touch('land_grab'); }
+                    },
+                    $giper_baza_auth: class extends $giper_baza_auth {
+                        static current() { return touch('auth'); }
+                    },
+                });
+                const write = $bog_gram_write.make({ $: context, rich: () => true });
+                write.html('<p>черновик</p>');
+                const content = write.Content().dom_tree();
+                $mol_assert_equal(content.textContent, 'черновик');
+                content.querySelector('p').textContent = 'черновик и ещё';
+                write.save();
+                $mol_assert_equal(write.html(), '<p>черновик и ещё</p>');
+                $mol_assert_equal(content.querySelector('p'), write.nodes()[0]);
+                write.html('');
+                $mol_assert_equal(write.Content().dom_tree().textContent, '');
+                $mol_assert_equal(touched, []);
             },
             'Enter отправляет, Shift+Enter переносит строку'($) {
                 const { write, sent } = make($, true);
@@ -11084,8 +11106,7 @@ var $;
             'Черновик с неразрывным пробелом и прочими сущностями HTML поле открывает, а не падает'($) {
                 const { write } = make($, true);
                 write.html($bog_gram_write_clean('<p>раз два&nbsp;&laquo;три&raquo; </p>'));
-                write.html_load();
-                $mol_assert_equal(write.pawn().dom().map(el => el.textContent).join(''), 'раз два «три» ');
+                $mol_assert_equal(write.nodes().map(node => node.textContent).join(''), 'раз два «три» ');
             },
             'Ввод сверх лимита браузер не вставляет, удаление и набор в пределах лимита проходят'($) {
                 const { write } = make($, true);

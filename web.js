@@ -60282,7 +60282,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.197';
+    $.$bog_gram_version = '1.0.199';
 })($ || ($ = {}));
 
 ;
@@ -68903,39 +68903,54 @@ var $;
         }
         $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
         class $bog_gram_write extends $.$bog_gram_write {
-            land() {
-                const lord = this.$.$giper_baza_auth.current().pass().lord();
-                const link = new $giper_baza_link(lord.str + '_' + $giper_baza_link.from_int(0x5c4a7c).str);
-                return this.$.$giper_baza_land.make({
-                    $: this.$,
-                    link: () => link,
-                    persisted: () => false,
-                });
-            }
             pawn(next) {
-                return this.land().Data($giper_baza_rich);
+                return $mol_fail(new Error('Поле сообщения не пишет в Базу'));
             }
             selection(next) {
                 return next ?? [['', 0, 0], ['', 0, 0]];
             }
+            selection_save() { }
+            selection_load() { }
             html_last = '';
-            html_load() {
+            nodes(next) {
                 const html = this.html();
-                if (html === this.html_last)
-                    return html;
+                if (next)
+                    return next;
+                const prev = $mol_mem_cached(() => this.nodes());
+                if (prev && html === this.html_last)
+                    return prev;
                 this.html_last = html;
-                this.pawn().dom([...body_of(html).childNodes]);
-                return html;
+                const document = this.$.$mol_dom_context.document;
+                return [...body_of(html).childNodes].map(node => document.importNode(node, true));
             }
             content() {
-                this.html_load();
-                return super.content();
+                const nodes = this.nodes();
+                if (nodes.length)
+                    return nodes;
+                const document = this.$.$mol_dom_context.document;
+                const line = document.createElement('p');
+                line.append(document.createElement('br'));
+                return [line];
             }
             save(event) {
-                super.save(event);
-                const html = $bog_gram_write_clean(this.pawn().html());
+                const root = this.Content().dom_node();
+                const html = $bog_gram_write_clean(root.innerHTML);
                 this.html_last = html;
+                this.nodes([...root.childNodes]);
                 this.html(html);
+            }
+            paste_rich(html) {
+                const body = body_of(html);
+                tidy(body);
+                const range = $mol_dom_range.from_selection();
+                if (!range)
+                    return;
+                const document = this.$.$mol_dom_context.document;
+                const part = document.createDocumentFragment();
+                for (const node of body.childNodes)
+                    part.append(document.importNode(node, true));
+                range.paste(part);
+                this.save();
             }
             text() {
                 return $bog_gram_write_text(this.html());
@@ -69010,11 +69025,12 @@ var $;
                     return;
                 if (transfer.files.length)
                     return;
+                event.preventDefault();
                 const room = this.room();
                 const text = transfer.getData('text/plain');
-                if (this.rich() && text.length <= room)
-                    return super.paste(event);
-                event.preventDefault();
+                const html = transfer.getData('text/html');
+                if (this.rich() && html && text.length <= room)
+                    return this.paste_rich(html);
                 const part = text.slice(0, room);
                 if (!part)
                     return;
@@ -69039,16 +69055,7 @@ var $;
         }
         __decorate([
             $mol_mem
-        ], $bog_gram_write.prototype, "land", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "pawn", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "selection", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "html_load", null);
+        ], $bog_gram_write.prototype, "nodes", null);
         __decorate([
             $mol_mem
         ], $bog_gram_write.prototype, "content", null);

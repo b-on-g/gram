@@ -69103,7 +69103,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.197";
+    const $bog_gram_version = "1.0.199";
 }
 
 declare namespace $ {
@@ -85354,13 +85354,15 @@ declare namespace $.$$ {
     export function $bog_gram_write_html(text: string): string;
     export function $bog_gram_write_rich_is(html: string): boolean;
     export class $bog_gram_write extends $.$bog_gram_write {
-        land(): $giper_baza_land;
         pawn(next?: $giper_baza_rich): $giper_baza_rich;
         selection(next?: Caret): Caret;
+        selection_save(): void;
+        selection_load(): void;
         html_last: string;
-        html_load(): string;
-        content(): readonly any[];
+        nodes(next?: readonly Node[]): readonly Node[];
+        content(): $mol_view_content[];
         save(event?: Event): void;
+        paste_rich(html: string): void;
         text(): string;
         sub(): $mol_view[];
         /**
@@ -85374,7 +85376,7 @@ declare namespace $.$$ {
         chosen(): number;
         room(): number;
         before_input(event?: InputEvent): null;
-        paste(event: ClipboardEvent): any;
+        paste(event: ClipboardEvent): void;
         block_wrap(type: string, event: KeyboardEvent): void;
         block_rewrap(event: KeyboardEvent): void;
         block_unwrap(event: KeyboardEvent): void;

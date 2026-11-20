@@ -41872,7 +41872,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.197';
+    $.$bog_gram_version = '1.0.199';
 })($ || ($ = {}));
 
 ;
@@ -52705,39 +52705,54 @@ var $;
         }
         $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
         class $bog_gram_write extends $.$bog_gram_write {
-            land() {
-                const lord = this.$.$giper_baza_auth.current().pass().lord();
-                const link = new $giper_baza_link(lord.str + '_' + $giper_baza_link.from_int(0x5c4a7c).str);
-                return this.$.$giper_baza_land.make({
-                    $: this.$,
-                    link: () => link,
-                    persisted: () => false,
-                });
-            }
             pawn(next) {
-                return this.land().Data($giper_baza_rich);
+                return $mol_fail(new Error('Поле сообщения не пишет в Базу'));
             }
             selection(next) {
                 return next ?? [['', 0, 0], ['', 0, 0]];
             }
+            selection_save() { }
+            selection_load() { }
             html_last = '';
-            html_load() {
+            nodes(next) {
                 const html = this.html();
-                if (html === this.html_last)
-                    return html;
+                if (next)
+                    return next;
+                const prev = $mol_mem_cached(() => this.nodes());
+                if (prev && html === this.html_last)
+                    return prev;
                 this.html_last = html;
-                this.pawn().dom([...body_of(html).childNodes]);
-                return html;
+                const document = this.$.$mol_dom_context.document;
+                return [...body_of(html).childNodes].map(node => document.importNode(node, true));
             }
             content() {
-                this.html_load();
-                return super.content();
+                const nodes = this.nodes();
+                if (nodes.length)
+                    return nodes;
+                const document = this.$.$mol_dom_context.document;
+                const line = document.createElement('p');
+                line.append(document.createElement('br'));
+                return [line];
             }
             save(event) {
-                super.save(event);
-                const html = $bog_gram_write_clean(this.pawn().html());
+                const root = this.Content().dom_node();
+                const html = $bog_gram_write_clean(root.innerHTML);
                 this.html_last = html;
+                this.nodes([...root.childNodes]);
                 this.html(html);
+            }
+            paste_rich(html) {
+                const body = body_of(html);
+                tidy(body);
+                const range = $mol_dom_range.from_selection();
+                if (!range)
+                    return;
+                const document = this.$.$mol_dom_context.document;
+                const part = document.createDocumentFragment();
+                for (const node of body.childNodes)
+                    part.append(document.importNode(node, true));
+                range.paste(part);
+                this.save();
             }
             text() {
                 return $bog_gram_write_text(this.html());
@@ -52812,11 +52827,12 @@ var $;
                     return;
                 if (transfer.files.length)
                     return;
+                event.preventDefault();
                 const room = this.room();
                 const text = transfer.getData('text/plain');
-                if (this.rich() && text.length <= room)
-                    return super.paste(event);
-                event.preventDefault();
+                const html = transfer.getData('text/html');
+                if (this.rich() && html && text.length <= room)
+                    return this.paste_rich(html);
                 const part = text.slice(0, room);
                 if (!part)
                     return;
@@ -52841,16 +52857,7 @@ var $;
         }
         __decorate([
             $mol_mem
-        ], $bog_gram_write.prototype, "land", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "pawn", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "selection", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "html_load", null);
+        ], $bog_gram_write.prototype, "nodes", null);
         __decorate([
             $mol_mem
         ], $bog_gram_write.prototype, "content", null);
@@ -74694,11 +74701,33 @@ var $;
             return { write, sent: () => sent };
         }
         $mol_test({
-            'Черновик живёт в своём ленде: не в home-ленде и не сохраняется'($) {
-                const { write } = make($, true);
-                const home = $.$giper_baza_auth.current().pass().lord().str;
-                $mol_assert_unique(write.land().link().str, home);
-                $mol_assert_equal(write.land().persisted(), false);
+            'Набор, правка и очистка поля не трогают Базу: ни home-ленд, ни какой другой'($) {
+                const touched = [];
+                const touch = (what) => { touched.push(what); return $mol_fail(new Error(`Поле полезло в Базу: ${what}`)); };
+                const context = $.$mol_ambient({
+                    $giper_baza_land: class extends $giper_baza_land {
+                        static make() { return touch('land'); }
+                    },
+                    $giper_baza_glob: class extends $giper_baza_glob {
+                        static home() { return touch('home'); }
+                        static Land() { return touch('Land'); }
+                        static land_grab() { return touch('land_grab'); }
+                    },
+                    $giper_baza_auth: class extends $giper_baza_auth {
+                        static current() { return touch('auth'); }
+                    },
+                });
+                const write = $bog_gram_write.make({ $: context, rich: () => true });
+                write.html('<p>черновик</p>');
+                const content = write.Content().dom_tree();
+                $mol_assert_equal(content.textContent, 'черновик');
+                content.querySelector('p').textContent = 'черновик и ещё';
+                write.save();
+                $mol_assert_equal(write.html(), '<p>черновик и ещё</p>');
+                $mol_assert_equal(content.querySelector('p'), write.nodes()[0]);
+                write.html('');
+                $mol_assert_equal(write.Content().dom_tree().textContent, '');
+                $mol_assert_equal(touched, []);
             },
             'Enter отправляет, Shift+Enter переносит строку'($) {
                 const { write, sent } = make($, true);
@@ -74740,8 +74769,7 @@ var $;
             'Черновик с неразрывным пробелом и прочими сущностями HTML поле открывает, а не падает'($) {
                 const { write } = make($, true);
                 write.html($bog_gram_write_clean('<p>раз два&nbsp;&laquo;три&raquo; </p>'));
-                write.html_load();
-                $mol_assert_equal(write.pawn().dom().map(el => el.textContent).join(''), 'раз два «три» ');
+                $mol_assert_equal(write.nodes().map(node => node.textContent).join(''), 'раз два «три» ');
             },
             'Ввод сверх лимита браузер не вставляет, удаление и набор в пределах лимита проходят'($) {
                 const { write } = make($, true);
