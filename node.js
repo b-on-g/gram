@@ -41884,7 +41884,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.192';
+    $.$bog_gram_version = '1.0.193';
 })($ || ($ = {}));
 
 ;
@@ -54026,6 +54026,14 @@ var $;
 			(obj.attr) = () => ({...(this.$.$mol_video_player.prototype.attr.call(obj)), "bog_gram_chat_mirror": (this.record_mirror())});
 			return obj;
 		}
+		pending_items(){
+			return [];
+		}
+		Pending(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.pending_items()));
+			return obj;
+		}
 		send_tools(){
 			return [];
 		}
@@ -54033,6 +54041,32 @@ var $;
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ((this.send_tools()));
 			return obj;
+		}
+		pending_preview_sub(id){
+			return [];
+		}
+		Pending_preview(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.pending_preview_sub(id)));
+			return obj;
+		}
+		pending_drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Pending_drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Pending_drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Pending_drop_hint")));
+			(obj.click) = (next) => ((this.pending_drop(id, next)));
+			(obj.sub) = () => ([(this.Pending_drop_icon(id))]);
+			return obj;
+		}
+		pending_uri(id){
+			return "";
 		}
 		image_files(next){
 			if(next !== undefined) return next;
@@ -54046,13 +54080,20 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_hint(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_message_hint"));
+		}
+		text_limit(){
+			return 4096;
+		}
 		message_send(next){
 			if(next !== undefined) return next;
 			return null;
 		}
 		Message_field(){
 			const obj = new this.$.$bog_gram_write();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Message_field_hint")));
+			(obj.hint) = () => ((this.message_hint()));
+			(obj.length_max) = () => ((this.text_limit()));
 			(obj.value) = (next) => ((this.message_text(next)));
 			(obj.send) = (next) => ((this.message_send(next)));
 			return obj;
@@ -54555,8 +54596,28 @@ var $;
 				(this.Edit_banner()), 
 				(this.Voice_note()), 
 				(this.Round_live()), 
+				(this.Pending()), 
 				(this.Send_row())
 			];
+		}
+		pending(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		Pending_item(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Pending_preview(id)), (this.Pending_drop(id))]);
+			return obj;
+		}
+		Pending_image(id){
+			const obj = new this.$.$mol_image();
+			(obj.uri) = () => ((this.pending_uri(id)));
+			(obj.title) = () => ("");
+			return obj;
+		}
+		Pending_video(id){
+			const obj = new this.$.$mol_icon_video();
+			return obj;
 		}
 		Attach(){
 			const obj = new this.$.$bog_gram_attach();
@@ -54572,6 +54633,9 @@ var $;
 			(obj.event) = () => ({"click": (next) => (this.box_click(next))});
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
+		}
+		caption_hint(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_caption_hint"));
 		}
 		text_over_pattern(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_text_over_pattern"));
@@ -54783,7 +54847,12 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Edit_banner"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_note"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Round_live"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Pending"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_row"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_preview"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "pending_drop"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_drop_icon"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_drop"));
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
@@ -54846,6 +54915,10 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "stick_end"));
 	($mol_mem(($.$bog_gram_chat.prototype), "rows_seen"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Gallery"));
+	($mol_mem(($.$bog_gram_chat.prototype), "pending"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_item"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_image"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_video"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
@@ -54891,6 +54964,98 @@ var $;
         }
     }
     $.$bog_gram_href = $bog_gram_href;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_clip extends $mol_object {
+        static lib = 'https://cdn.jsdelivr.net/npm/mediabunny@1.66.0/+esm';
+        static limit = 20 * 2 ** 20;
+        static source_limit = 500 * 2 ** 20;
+        static side = 720;
+        static video_rate = 1_500_000;
+        static audio_rate = 64_000;
+        static video_is(file) {
+            if (file.type.startsWith('video/'))
+                return true;
+            return /\.(mp4|m4v|mov|webm|mkv|3gp)$/i.test(file.name);
+        }
+        static type_of(file) {
+            if (file.type)
+                return file.type;
+            if (/\.webm$/i.test(file.name))
+                return 'video/webm';
+            if (/\.mov$/i.test(file.name))
+                return 'video/quicktime';
+            return 'video/mp4';
+        }
+        static fit(width, height) {
+            const short = Math.min(width, height);
+            const scale = short > this.side ? this.side / short : 1;
+            const even = (side) => Math.max(2, Math.round(side * scale / 2) * 2);
+            return { width: even(width), height: even(height) };
+        }
+        static input(lib, file) {
+            return new lib.Input({ source: new lib.BlobSource(file), formats: lib.ALL_FORMATS });
+        }
+        static async size(file) {
+            try {
+                const lib = await this.$.$mol_import.module_async(this.lib);
+                const track = await this.input(lib, file).getPrimaryVideoTrack();
+                if (!track)
+                    return { width: 0, height: 0 };
+                return { width: await track.getDisplayWidth(), height: await track.getDisplayHeight() };
+            }
+            catch (error) {
+                $mol_fail_log(error);
+                return { width: 0, height: 0 };
+            }
+        }
+        static async squeeze(file, progress) {
+            if (typeof VideoEncoder === 'undefined')
+                return null;
+            const lib = await this.$.$mol_import.module_async(this.lib);
+            const input = this.input(lib, file);
+            const target = new lib.BufferTarget();
+            const output = new lib.Output({ format: new lib.Mp4OutputFormat({ fastStart: 'in-memory' }), target });
+            const conversion = await lib.Conversion.init({
+                input,
+                output,
+                video: async (track) => ({
+                    ...this.fit(await track.getDisplayWidth(), await track.getDisplayHeight()),
+                    fit: 'fill',
+                    codec: 'avc',
+                    bitrate: this.video_rate,
+                    forceTranscode: true,
+                }),
+                audio: {
+                    bitrate: this.audio_rate,
+                },
+            });
+            const broken = ['unknown_source_codec', 'undecodable_source_codec', 'no_encodable_target_codec'];
+            const lost = conversion.discardedTracks.filter(one => broken.includes(one.reason));
+            if (!conversion.isValid || lost.length)
+                return null;
+            if (progress)
+                conversion.onProgress = progress;
+            await conversion.execute();
+            const buffer = target.buffer;
+            return buffer ? new Blob([buffer], { type: 'video/mp4' }) : null;
+        }
+        static async read(file, progress) {
+            const squeezed = await this.squeeze(file, progress).catch(error => {
+                $mol_fail_log(error);
+                return null;
+            });
+            const blob = squeezed && squeezed.size < file.size ? squeezed : file;
+            const type = blob === file ? this.type_of(file) : 'video/mp4';
+            const [buffer, size] = await Promise.all([blob.arrayBuffer(), this.size(blob)]);
+            return { bytes: new Uint8Array(buffer), type, ...size };
+        }
+    }
+    $.$bog_gram_clip = $bog_gram_clip;
 })($ || ($ = {}));
 
 ;
@@ -55067,98 +55232,6 @@ var $;
 
 ;
 "use strict";
-var $;
-(function ($) {
-    class $bog_gram_clip extends $mol_object {
-        static lib = 'https://cdn.jsdelivr.net/npm/mediabunny@1.66.0/+esm';
-        static limit = 20 * 2 ** 20;
-        static source_limit = 500 * 2 ** 20;
-        static side = 720;
-        static video_rate = 1_500_000;
-        static audio_rate = 64_000;
-        static video_is(file) {
-            if (file.type.startsWith('video/'))
-                return true;
-            return /\.(mp4|m4v|mov|webm|mkv|3gp)$/i.test(file.name);
-        }
-        static type_of(file) {
-            if (file.type)
-                return file.type;
-            if (/\.webm$/i.test(file.name))
-                return 'video/webm';
-            if (/\.mov$/i.test(file.name))
-                return 'video/quicktime';
-            return 'video/mp4';
-        }
-        static fit(width, height) {
-            const short = Math.min(width, height);
-            const scale = short > this.side ? this.side / short : 1;
-            const even = (side) => Math.max(2, Math.round(side * scale / 2) * 2);
-            return { width: even(width), height: even(height) };
-        }
-        static input(lib, file) {
-            return new lib.Input({ source: new lib.BlobSource(file), formats: lib.ALL_FORMATS });
-        }
-        static async size(file) {
-            try {
-                const lib = await this.$.$mol_import.module_async(this.lib);
-                const track = await this.input(lib, file).getPrimaryVideoTrack();
-                if (!track)
-                    return { width: 0, height: 0 };
-                return { width: await track.getDisplayWidth(), height: await track.getDisplayHeight() };
-            }
-            catch (error) {
-                $mol_fail_log(error);
-                return { width: 0, height: 0 };
-            }
-        }
-        static async squeeze(file, progress) {
-            if (typeof VideoEncoder === 'undefined')
-                return null;
-            const lib = await this.$.$mol_import.module_async(this.lib);
-            const input = this.input(lib, file);
-            const target = new lib.BufferTarget();
-            const output = new lib.Output({ format: new lib.Mp4OutputFormat({ fastStart: 'in-memory' }), target });
-            const conversion = await lib.Conversion.init({
-                input,
-                output,
-                video: async (track) => ({
-                    ...this.fit(await track.getDisplayWidth(), await track.getDisplayHeight()),
-                    fit: 'fill',
-                    codec: 'avc',
-                    bitrate: this.video_rate,
-                    forceTranscode: true,
-                }),
-                audio: {
-                    bitrate: this.audio_rate,
-                },
-            });
-            const broken = ['unknown_source_codec', 'undecodable_source_codec', 'no_encodable_target_codec'];
-            const lost = conversion.discardedTracks.filter(one => broken.includes(one.reason));
-            if (!conversion.isValid || lost.length)
-                return null;
-            if (progress)
-                conversion.onProgress = progress;
-            await conversion.execute();
-            const buffer = target.buffer;
-            return buffer ? new Blob([buffer], { type: 'video/mp4' }) : null;
-        }
-        static async read(file, progress) {
-            const squeezed = await this.squeeze(file, progress).catch(error => {
-                $mol_fail_log(error);
-                return null;
-            });
-            const blob = squeezed && squeezed.size < file.size ? squeezed : file;
-            const type = blob === file ? this.type_of(file) : 'video/mp4';
-            const [buffer, size] = await Promise.all([blob.arrayBuffer(), this.size(blob)]);
-            return { bytes: new Uint8Array(buffer), type, ...size };
-        }
-    }
-    $.$bog_gram_clip = $bog_gram_clip;
-})($ || ($ = {}));
-
-;
-"use strict";
 
 
 ;
@@ -55174,7 +55247,6 @@ var $;
         const clock_tick = 200;
         const image_limit = 10;
         const tap_limit = 250;
-        const text_limit = 4096;
         const slide_cancel = 96;
         const slide_lock = 72;
         function $bog_gram_chat_record_shift(from, to) {
@@ -55602,7 +55674,7 @@ var $;
                 return null;
             }
             text_over() {
-                return Math.max(0, this.message_text().trim().length - text_limit);
+                return Math.max(0, this.message_text().trim().length - this.text_limit());
             }
             send_enabled() {
                 return !this.text_over();
@@ -55610,7 +55682,7 @@ var $;
             voice_note_text() {
                 const over = this.text_over();
                 if (over)
-                    return $bog_gram_text_fill(this.text_over_pattern(), { limit: text_limit, over });
+                    return $bog_gram_text_fill(this.text_over_pattern(), { limit: this.text_limit(), over });
                 return this.voice_hint();
             }
             caption() {
@@ -55619,10 +55691,14 @@ var $;
             message_send(next) {
                 this.Alerts().offer();
                 this.message_menu('');
-                const text = this.message_text().trim();
-                const editing = this.edit_id();
                 if (this.text_over())
                     return null;
+                if (this.pending().length) {
+                    this.pending_send();
+                    return null;
+                }
+                const text = this.message_text().trim();
+                const editing = this.edit_id();
                 if (editing) {
                     if (!text)
                         return null;
@@ -55740,8 +55816,48 @@ var $;
                 return [...super.sub(), this.Gallery()];
             }
             image_files(next) {
-                this.images_start(next ?? []);
+                this.pending_add(next ?? []);
                 return next ?? null;
+            }
+            pending(next) {
+                return next ?? [];
+            }
+            pending_add(files) {
+                const fit = files.filter(file => this.$.$bog_gram_clip.video_is(file) || this.$.$bog_gram_shrink.image_is(file));
+                if (!fit.length)
+                    return;
+                if (this.edit_id())
+                    this.edit_stop();
+                this.pending([...this.pending(), ...fit]);
+            }
+            pending_send() {
+                const files = this.pending();
+                this.pending([]);
+                return this.images_start(files);
+            }
+            pending_items() {
+                return this.pending().map((_, index) => this.Pending_item(index));
+            }
+            pending_preview_sub(index) {
+                const file = this.pending()[index];
+                if (this.$.$bog_gram_clip.video_is(file))
+                    return [this.Pending_video(index)];
+                return [this.Pending_image(index)];
+            }
+            pending_object(file) {
+                const URL = this.$.$mol_dom_context.URL;
+                const uri = URL.createObjectURL(file);
+                return { uri, destructor: () => URL.revokeObjectURL(uri) };
+            }
+            pending_uri(index) {
+                return this.pending_object(this.pending()[index]).uri;
+            }
+            pending_drop(index, next) {
+                this.pending(this.pending().filter((_, i) => i !== index));
+                return null;
+            }
+            message_hint() {
+                return this.pending().length ? this.caption_hint() : super.message_hint();
             }
             image_paste(next) {
                 const event = next;
@@ -55757,7 +55873,7 @@ var $;
                 if (!files.length)
                     return null;
                 event?.preventDefault();
-                this.images_start(files);
+                this.pending_add(files);
                 return null;
             }
             image_over(next) {
@@ -55770,7 +55886,7 @@ var $;
                 const files = event?.dataTransfer?.files;
                 if (!files)
                     return null;
-                this.images_start(Array.from(files));
+                this.pending_add(Array.from(files));
                 return null;
             }
             async images_start(files) {
@@ -56025,6 +56141,8 @@ var $;
             }
             send_is() {
                 if (this.edit_mode())
+                    return true;
+                if (this.pending().length)
                     return true;
                 if (!this.voice_ready())
                     return true;
@@ -56591,6 +56709,18 @@ var $;
             $mol_action
         ], $bog_gram_chat.prototype, "image_files", null);
         __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "pending", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "pending_add", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "pending_object", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "pending_drop", null);
+        __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "image_paste", null);
         __decorate([
@@ -57044,6 +57174,65 @@ var $;
                     color: $mol_theme.control,
                 },
                 color: '#ffffff',
+                '@': {
+                    disabled: {
+                        true: {
+                            background: {
+                                color: $mol_theme.line,
+                            },
+                            color: $mol_theme.shade,
+                        },
+                    },
+                },
+            },
+            Pending: {
+                gap: '0.5rem',
+                overflow: {
+                    x: 'auto',
+                },
+                padding: {
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+            },
+            Pending_item: {
+                position: 'relative',
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Pending_preview: {
+                width: '4rem',
+                height: '4rem',
+                border: {
+                    radius: $mol_gap.round,
+                },
+                overflow: 'hidden',
+                justify: {
+                    content: 'center',
+                },
+                align: {
+                    items: 'center',
+                },
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+            },
+            Pending_image: {
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+            },
+            Pending_drop: {
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                padding: '0.125rem',
+                color: '#ffffff',
+                background: {
+                    color: $bog_gram_tone.veil,
+                },
+                borderRadius: '50%',
             },
             Attach: {
                 ...round,

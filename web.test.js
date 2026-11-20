@@ -11449,6 +11449,31 @@ var $;
                 $mol_assert_equal(hints, 1);
                 $mol_assert_equal(lost.chat.voice_hint(), 'Photo: no key for Борис');
             },
+            async 'Вложенный скриншот ждёт подписи и уходит с ней по кнопке отправки'($) {
+                const context = $.$mol_ambient({
+                    $bog_gram_shrink: class extends $bog_gram_shrink {
+                        static shrink(file) {
+                            return { bytes: new Uint8Array([1]), type: 'image/png', width: 2, height: 1 };
+                        }
+                    },
+                });
+                const session = (await $mol_wire_async($.$giper_baza_glob).land_grab()).Data($bog_gram_session);
+                const talk = $bog_gram_talk.make({ $: context, session: () => session, mates: () => [], saved_is: () => true });
+                const people = $bog_gram_people.make({ $: context });
+                const alerts = $bog_gram_alerts.make({ $: context, offer: () => false });
+                const chat = $bog_gram_chat.make({ $: context, dialog: () => 'DialogShot', my_lord: () => 'LordMe', Talk: () => talk, People: () => people, Alerts: () => alerts });
+                chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
+                const messages = () => session.Messages()?.remote_list() ?? [];
+                chat.image_files([new File([], 'shot.png', { type: 'image/png' }), new File([], 'notes.txt', { type: 'text/plain' })]);
+                $mol_assert_equal(chat.pending().length, 1);
+                $mol_assert_equal(messages().length, 0);
+                $mol_assert_equal(chat.send_enabled(), true);
+                chat.message_text('вот баг');
+                await chat.pending_send();
+                $mol_assert_equal(chat.pending().length, 0);
+                $mol_assert_equal(messages().map(message => [message.Text()?.val(), message.Image_width()?.val()]), [['вот баг', 2]]);
+                $mol_assert_equal(chat.message_text(), '');
+            },
             'Без ключа участника фото и голосовое не уходят молча, а называют, чей ключ не доехал'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
                 const talk = $bog_gram_talk.make({ $, session: () => session, mates: () => ['LordKnown', 'LordLost'], saved_is: () => false });
