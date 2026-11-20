@@ -6,6 +6,15 @@ namespace $.$$ {
 			return this.Room().joined()
 		}
 
+		@ $mol_mem
+		override invite_link() {
+			return $bog_gram_soft( ()=> String( this.Room().data().Invite()?.val() ?? '' ), '' )
+		}
+
+		override Invite() {
+			return this.invite_link() ? super.Invite() : null!
+		}
+
 		override content() {
 			return [ this.joined() ? this.Grid() : this.Lobby() ]
 		}

@@ -134,7 +134,7 @@ namespace $ {
 			return stay.length < mates.length ? null : stay
 		}
 
-		group_make( title: string, lords: readonly string[], forced: boolean ) {
+		group_make( title: string, lords: readonly string[], forced: boolean, alone = false ) {
 
 			const my = this.Account().my_lord()
 
@@ -154,7 +154,7 @@ namespace $ {
 			}
 
 			if( lost.length && !forced ) return { id: '', lost }
-			if( !known.length ) return { id: '', lost: [] as string[] }
+			if( !known.length && !alone ) return { id: '', lost: [] as string[] }
 
 			const dialog_land = this.grab()
 			const session_land = this.grab()

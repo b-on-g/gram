@@ -3,6 +3,7 @@ $bog_gram_menu $bog_gram_page
 	Theme $bog_theme_auto
 	compose? null
 	group? null
+	meet? null
 	music? null
 	settings? null
 	invite_plate_text \
@@ -46,6 +47,11 @@ $bog_gram_menu $bog_gram_page
 			click? <=> group?
 			sub /
 				<= Group_open_icon $mol_icon_account_multiple_plus
+		<= Meet_start $mol_button_minor
+			hint @ \New meeting: a call with a permanent link
+			click? <=> meet?
+			sub /
+				<= Meet_start_icon $mol_icon_video
 		<= Music_open $mol_button_minor
 			hint @ \Music
 			click? <=> music?

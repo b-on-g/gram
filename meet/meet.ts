@@ -77,6 +77,23 @@ namespace $ {
 			return link
 		}
 
+		@ $mol_action
+		call( id: string ) {
+
+			const session = this.Talk().session( id )
+			if( !session ) return ''
+
+			const land = this.$.$bog_gram_call_room.grab( [] )
+			land.Data( $bog_gram_call_land ).Invite( 'auto' )!.val( this.uri( id ) )
+
+			const message = session.Messages( 'auto' )!.make( null )
+			message.Call( 'auto' )!.val( land.link() )
+			message.Author( 'auto' )?.val( this.Account().my_lord() )
+			message.Moment( 'auto' )?.val( Date.now() )
+
+			return land.link().str
+		}
+
 		uri( id: string ) {
 			const link = this.meet_of( id )
 			const owner = this.Lobby().join_owner_of( id )

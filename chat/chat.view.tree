@@ -7,6 +7,7 @@ $bog_gram_chat $bog_gram_page
 	close? null
 	members? null
 	call_open? null
+	call_invite* \
 	forward_open? null
 	contact_share? null
 	contact_open? null

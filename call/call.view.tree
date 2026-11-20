@@ -8,6 +8,9 @@ $bog_gram_call $mol_page
 		name <= name
 	title @ \Call
 	tools /
+		<= Invite $mol_button_copy
+			hint @ \Copy the meeting link
+			text <= invite_link \
 		<= Close $mol_button_minor
 			hint @ \Exit and close
 			click? <=> close_click? null

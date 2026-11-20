@@ -183,6 +183,7 @@ $bog_gram $mol_book2
 			Theme <= Theme
 			compose? <=> compose_open? null
 			group? <=> group_open? null
+			meet? <=> meet_start? null
 			music? <=> music_open? null
 			settings? <=> settings_open? null
 			invite_plate_text <= invite_plate_text
@@ -295,6 +296,7 @@ $bog_gram $mol_book2
 		close? <=> dialog_close? null
 		members? <=> members_open? null
 		call_open? <=> call_open? null
+		call_invite* <= meet_uri* \
 		forward_open? <=> forward_open? null
 		contact_share? <=> contact_share? null
 		contact_open? <=> contact_open? null
@@ -309,6 +311,7 @@ $bog_gram $mol_book2
 		dialog_title* <= dialog_title*
 		dialog_avatar_id* <= dialog_avatar_id*
 		dialog_tint* <= dialog_tint*
+	meet_title @ \Meeting
 	forward_title @ \Forward to…
 	share_title @ \Share contact with…
 	Call_page* $bog_gram_call

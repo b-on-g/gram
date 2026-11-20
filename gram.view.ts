@@ -542,6 +542,30 @@ namespace $.$$ {
 			return this.Meet().uri( this.dialog_active() )
 		}
 
+		override meet_uri( id: string ) {
+			return this.Meet().uri( id )
+		}
+
+		@ $mol_action
+		override meet_start( next?: any ) {
+			this.meet_begin().catch( ( error: unknown )=> $mol_fail_log( error ) )
+			return null
+		}
+
+		async meet_begin() {
+
+			const { id } = await $mol_wire_async( this.Crew() ).group_make( this.meet_title(), [], true, true )
+			if( !id ) return ''
+
+			await $mol_wire_async( this.Meet() ).make( id )
+			const room = await $mol_wire_async( this.Meet() ).call( id )
+
+			this.dialog_select( id )
+			if( room ) this.call_open( room )
+
+			return id
+		}
+
 		@ $mol_action
 		override meet_make( next?: any ) {
 			const id = this.dialog_active()
