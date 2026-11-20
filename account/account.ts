@@ -189,9 +189,9 @@ namespace $ {
 			const born = this.born()
 			const dialogs = String( this.user_store().Dialogs_land()?.val() ?? '' )
 
-			if( born ) return
 			if( dialogs ) return
 			if( this.rescue() ) return
+			if( born ) return
 			if( this.pointer_lost() ) $mol_fail( new Error( this.Text().account_lost() ) )
 			this.pointer_timer()
 			$mol_fail_hidden( new Promise( ()=> {} ) )

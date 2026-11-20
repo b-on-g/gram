@@ -96,6 +96,21 @@ namespace $ {
 
 		},
 
+		async 'Ключ родился здесь, указатель затёрт, а свой список лежит локально: возвращается он, новый не заводится'( $ ) {
+
+			const found = 'FoundDia_logsLand'
+			const profile = $giper_baza_land.make({ $ }).Data( $bog_gram_user )
+			const rescue = $bog_gram_rescue.make({ $, found: ()=> ({ dialogs: found, watch: '' }) })
+			const account = $bog_gram_account.make({ $, my_lord: ()=> 'LordBornRescue', user_store: ()=> profile, Rescue: ()=> rescue })
+			$.$mol_state_local.value( 'bog_gram_born_LordBornRescue', true )
+
+			const land = await $mol_wire_async( account ).dialogs_land()
+
+			$mol_assert_equal( land.link().str, found )
+			$mol_assert_equal( String( profile.Dialogs_land()?.val() ?? '' ), found )
+
+		},
+
 		'Своё имя хранится в приватном списке, открытое из профиля переезжает туда и стирается'( $ ) {
 
 			const dialogs = $giper_baza_land.make({ $ }).Data( $bog_gram_dialogs )
