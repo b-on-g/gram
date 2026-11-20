@@ -41872,7 +41872,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.196';
+    $.$bog_gram_version = '1.0.197';
 })($ || ($ = {}));
 
 ;
@@ -52706,7 +52706,13 @@ var $;
         $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
         class $bog_gram_write extends $.$bog_gram_write {
             land() {
-                return this.$.$giper_baza_land.make({ $: this.$ });
+                const lord = this.$.$giper_baza_auth.current().pass().lord();
+                const link = new $giper_baza_link(lord.str + '_' + $giper_baza_link.from_int(0x5c4a7c).str);
+                return this.$.$giper_baza_land.make({
+                    $: this.$,
+                    link: () => link,
+                    persisted: () => false,
+                });
             }
             pawn(next) {
                 return this.land().Data($giper_baza_rich);
@@ -74688,6 +74694,12 @@ var $;
             return { write, sent: () => sent };
         }
         $mol_test({
+            'Черновик живёт в своём ленде: не в home-ленде и не сохраняется'($) {
+                const { write } = make($, true);
+                const home = $.$giper_baza_auth.current().pass().lord().str;
+                $mol_assert_unique(write.land().link().str, home);
+                $mol_assert_equal(write.land().persisted(), false);
+            },
             'Enter отправляет, Shift+Enter переносит строку'($) {
                 const { write, sent } = make($, true);
                 const shift = key({ shiftKey: true });

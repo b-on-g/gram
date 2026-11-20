@@ -11038,6 +11038,12 @@ var $;
             return { write, sent: () => sent };
         }
         $mol_test({
+            'Черновик живёт в своём ленде: не в home-ленде и не сохраняется'($) {
+                const { write } = make($, true);
+                const home = $.$giper_baza_auth.current().pass().lord().str;
+                $mol_assert_unique(write.land().link().str, home);
+                $mol_assert_equal(write.land().persisted(), false);
+            },
             'Enter отправляет, Shift+Enter переносит строку'($) {
                 const { write, sent } = make($, true);
                 const shift = key({ shiftKey: true });
