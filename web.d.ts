@@ -69154,7 +69154,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.209";
+    const $bog_gram_version = "1.0.210";
 }
 
 declare namespace $ {
@@ -85080,7 +85080,12 @@ declare namespace $ {
         audio_close(): void;
         audio_open(): void;
         audio_lost(): void;
-        audio_watch(): $mol_dom_listener | null;
+        audio_watch(): {
+            destructor: () => void;
+        } | null;
+        audio_check(): null;
+        audio_muted_since: number;
+        audio_restore_at: number;
         video_changed(next?: number): number;
         facing(next?: $bog_gram_call_facing): $bog_gram_call_facing;
         cam_able(): boolean;
