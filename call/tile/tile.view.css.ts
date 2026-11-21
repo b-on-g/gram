@@ -35,7 +35,7 @@ namespace $.$$ {
 				radius: $mol_gap.round,
 			},
 			background: {
-				color: 'hsl( 140, 70%, 50% )',
+				color: '#26d962',
 			},
 			transition: 'height .1s',
 		},
@@ -84,7 +84,7 @@ namespace $.$$ {
 			'@': {
 				bog_gram_call_tile_stat_bad: {
 					true: {
-						color: 'hsl( 0, 85%, 62% )',
+						color: '#f04c4c',
 						font: {
 							weight: 'bold',
 						},
