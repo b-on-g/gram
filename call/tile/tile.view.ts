@@ -129,10 +129,11 @@ namespace $.$$ {
 
 			this.Video().pause_event()
 			this.Sound().pause_event()
-			if( !this.awake() ) return
 
-			if( this.picture() && video.paused ) video.play().catch( ()=> {} )
 			if( this.sound() && audio.paused ) audio.play().catch( ()=> {} )
+
+			if( !this.awake() ) return
+			if( this.picture() && video.paused ) video.play().catch( ()=> {} )
 
 		}
 

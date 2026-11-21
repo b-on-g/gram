@@ -436,8 +436,65 @@ namespace $ {
 			const track = this.media().getAudioTracks()[ 0 ]
 			if( !track ) return null
 
-			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).audio_lost() )
+			const touch = ()=> this.track_touched( this.track_touched() + 1 )
+			const lost = ()=> $mol_wire_async( this ).audio_lost()
+
+			track.addEventListener( 'ended', lost )
+			track.addEventListener( 'mute', touch )
+			track.addEventListener( 'unmute', touch )
+
+			return {
+				destructor: ()=> {
+					track.removeEventListener( 'ended', lost )
+					track.removeEventListener( 'mute', touch )
+					track.removeEventListener( 'unmute', touch )
+				},
+			}
 		}
+
+		@ $mol_mem
+		audio_check() {
+
+			this.track_touched()
+			this.audio_changed()
+
+			const track = this.media().getAudioTracks()[ 0 ]
+
+			if( !this.visible() || !track ) {
+				this.audio_muted_since = 0
+				return null
+			}
+
+			const now = this.now( 1_000 )
+
+			if( track.readyState === 'ended' ) {
+				this.audio_muted_since = 0
+				if( now - this.audio_restore_at >= $bog_gram_call_room.restore_gap ) {
+					this.audio_restore_at = now
+					$mol_wire_async( this ).audio_open().catch( $mol_fail_log )
+				}
+				return null
+			}
+
+			if( !track.muted ) {
+				this.audio_muted_since = 0
+				return null
+			}
+
+			if( !this.audio_muted_since ) this.audio_muted_since = now
+
+			if( $bog_gram_call_room.muted_due( now - this.audio_muted_since, now - this.audio_restore_at ) ) {
+				this.audio_restore_at = now
+				this.audio_muted_since = 0
+				$mol_wire_async( this ).audio_open().catch( $mol_fail_log )
+			}
+
+			return null
+		}
+
+		audio_muted_since = 0
+
+		audio_restore_at = Number.NEGATIVE_INFINITY
 
 		@ $mol_mem
 		video_changed( next?: number ) {
@@ -781,6 +838,7 @@ namespace $ {
 			this.video_check()
 			this.devices_watch()
 			this.audio_watch()
+			this.audio_check()
 			this.beat()
 
 			for( const peer of this.peers() ) peer.status()
