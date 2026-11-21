@@ -48,6 +48,13 @@ namespace $ {
 			return this.room_of( this.meet_of( id ), this.Lobby().join_owner_of( id ) )
 		}
 
+		room_stored( id: string ) {
+			const link = this.meet_of( id )
+			const owner = this.Lobby().join_owner_of( id )
+			if( !link || !owner ) return 'none'
+			return $bog_gram_soft( ()=> this.trusted( link, owner, 'Room' ), 'wait' )
+		}
+
 		@ $mol_mem_key
 		group_of( [ link, owner ]: readonly [ string, string ] ) {
 			if( !link || !$giper_baza_link.check( link ) ) return ''
@@ -102,16 +109,7 @@ namespace $ {
 			if( !session ) return ''
 
 			const known = this.room_known( id )
-
-			const land = known
-				? this.land( known )
-				: this.$.$bog_gram_call_room.grab( null )
-
-			if( !known ) {
-				land.Data( $bog_gram_call_land ).Invite( 'auto' )!.val( this.uri( id ) )
-				const link = this.meet_of( id )
-				if( link && this.owner_me( id ) ) this.hall( link ).Room( 'auto' )!.val( land.link().str )
-			}
+			const land = known ? this.land( known ) : this.room_make( id )
 
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Call( 'auto' )!.val( land.link() )
@@ -119,6 +117,18 @@ namespace $ {
 			message.Moment( 'auto' )?.val( Date.now() )
 
 			return land.link().str
+		}
+
+		@ $mol_action
+		room_make( id: string ) {
+
+			const land = this.$.$bog_gram_call_room.grab( null )
+			land.Data( $bog_gram_call_land ).Invite( 'auto' )!.val( this.uri( id ) )
+
+			const link = this.meet_of( id )
+			if( link && this.owner_me( id ) ) this.hall( link ).Room( 'auto' )!.val( land.link().str )
+
+			return land
 		}
 
 		uri( id: string ) {
@@ -160,7 +170,7 @@ namespace $ {
 				return { plan: room ? 'call' : 'open', group, room }
 			}
 
-			this.Lobby().send( group, owner )
+			if( !room ) this.Lobby().send( group, owner )
 			this.knock( link, group )
 			this.wait( group )
 
@@ -271,6 +281,8 @@ namespace $ {
 
 				if( !this.meet_of( id ) ) continue
 				if( !$bog_gram_soft( ()=> this.Talk().admin_me( id ), false ) ) continue
+
+				if( this.owner_me( id ) && !this.room_stored( id ) ) this.room_make( id )
 
 				const auto = this.mode( id ) === 'auto'
 
