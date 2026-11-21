@@ -23,6 +23,9 @@ $bog_gram_settings $bog_gram_page
 	registry_forget*? null
 	close? null
 	logs? null
+	Theme $bog_theme_auto
+	Lights $bog_theme_toggle
+		theme_auto <= Theme
 	Lang $mol_locale_select
 		hint @ \Language
 		dictionary *

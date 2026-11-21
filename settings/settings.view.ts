@@ -35,7 +35,7 @@ namespace $.$$ {
 		}
 
 		override install_content() {
-			return [ this.Install().Install_button(), this.Lang() ]
+			return [ this.Install().Install_button(), this.Lights(), this.Lang() ]
 		}
 
 		override Notify_toggle() {

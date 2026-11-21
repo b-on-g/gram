@@ -1,6 +1,5 @@
 $bog_gram_menu $bog_gram_page
 	title \Gram
-	Theme $bog_theme_auto
 	compose? null
 	group? null
 	meet? null
@@ -71,8 +70,6 @@ $bog_gram_menu $bog_gram_page
 			click? <=> settings?
 			sub /
 				<= Settings_open_icon $mol_icon_cog
-		<= Lights $bog_theme_toggle
-			theme_auto <= Theme
 	body /
 		<= Invite_plate $mol_view
 			sub /

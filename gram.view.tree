@@ -179,7 +179,6 @@ $bog_gram $mol_book2
 						title @ \Or start a new one: the button in the list header
 	pages /
 		<= Menu $bog_gram_menu
-			Theme <= Theme
 			compose? <=> compose_open? null
 			group? <=> group_open? null
 			meet? <=> meet_start? null
@@ -215,6 +214,7 @@ $bog_gram $mol_book2
 			hidden <= music_hidden false
 			close? <=> music_close? null
 		<= Settings_page $bog_gram_settings
+			Theme <= Theme
 			close? <=> settings_close? null
 			logs? <=> logs_open? null
 			user_name? <=> user_name?
