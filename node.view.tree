@@ -798,6 +798,7 @@ $mol_video_camera $mol_video_player
 
 $bog_gram_scan $mol_view
 	scanning? false
+	toggle_show true
 	prefix \
 	found? \
 	sub /
@@ -949,10 +950,13 @@ $bog_gram_menu $bog_gram_page
 				<= Meet_start_icon $mol_icon_video
 		<= Scan_pick $mol_pick
 			hint @ \Scan QR
+			showed? <=> scan_showed? false
 			trigger_content /
 				<= Scan_pick_icon $mol_icon_qrcode_scan
 			bubble_content /
 				<= Scan $bog_gram_scan
+					toggle_show false
+					scanning? <=> scan_showed?
 					prefix \#!
 					found? <=> scan_follow?
 		<= Music_open $mol_button_minor

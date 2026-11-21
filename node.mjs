@@ -21768,6 +21768,9 @@ var $;
 			if(next !== undefined) return next;
 			return false;
 		}
+		toggle_show(){
+			return true;
+		}
 		prefix(){
 			return "";
 		}
@@ -21799,7 +21802,8 @@ var $;
         const qr_read = qr_module.default ?? qr_module;
         class $bog_gram_scan extends $.$bog_gram_scan {
             sub() {
-                return this.scanning() ? [this.Toggle(), this.Camera()] : [this.Toggle()];
+                const toggle = this.toggle_show() ? [this.Toggle()] : [];
+                return this.scanning() ? [...toggle, this.Camera()] : toggle;
             }
             canvas() {
                 return $mol_dom_context.document.createElement('canvas');
@@ -22661,12 +22665,18 @@ var $;
 			(obj.sub) = () => ([(this.Meet_start_icon())]);
 			return obj;
 		}
+		scan_showed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		Scan_pick_icon(){
 			const obj = new this.$.$mol_icon_qrcode_scan();
 			return obj;
 		}
 		Scan(){
 			const obj = new this.$.$bog_gram_scan();
+			(obj.toggle_show) = () => (false);
+			(obj.scanning) = (next) => ((this.scan_showed(next)));
 			(obj.prefix) = () => ("#!");
 			(obj.found) = (next) => ((this.scan_follow(next)));
 			return obj;
@@ -22674,6 +22684,7 @@ var $;
 		Scan_pick(){
 			const obj = new this.$.$mol_pick();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_menu_Scan_pick_hint")));
+			(obj.showed) = (next) => ((this.scan_showed(next)));
 			(obj.trigger_content) = () => ([(this.Scan_pick_icon())]);
 			(obj.bubble_content) = () => ([(this.Scan())]);
 			return obj;
@@ -23068,6 +23079,7 @@ var $;
 	($mol_mem(($.$bog_gram_menu.prototype), "Group_open"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Meet_start_icon"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Meet_start"));
+	($mol_mem(($.$bog_gram_menu.prototype), "scan_showed"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Scan_pick_icon"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Scan"));
 	($mol_mem(($.$bog_gram_menu.prototype), "Scan_pick"));
@@ -41974,7 +41986,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.211';
+    $.$bog_gram_version = '1.0.212';
 })($ || ($ = {}));
 
 ;
