@@ -17,6 +17,11 @@ namespace $ {
 			)
 
 			$mol_assert_equal(
+				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!meet=' + lord + '/by=CCCCCCCC_DDDDDDDD' ),
+				{ meet: lord, by: 'CCCCCCCC_DDDDDDDD' },
+			)
+
+			$mol_assert_equal(
 				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil' ),
 				{ users: lord },
 			)

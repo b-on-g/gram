@@ -599,6 +599,12 @@ namespace $.$$ {
 		}
 
 		@ $mol_action
+		override scan_follow( next?: string ) {
+			if( next ) this.$.$bog_gram_follow.go( next )
+			return ''
+		}
+
+		@ $mol_action
 		override meet_start( next?: any ) {
 			this.meet_begin().catch( ( error: unknown )=> $mol_fail_log( error ) )
 			return null

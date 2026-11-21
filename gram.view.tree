@@ -183,6 +183,7 @@ $bog_gram $mol_book2
 			compose? <=> compose_open? null
 			group? <=> group_open? null
 			meet? <=> meet_start? null
+			scan_follow? <=> scan_follow? \
 			music? <=> music_open? null
 			settings? <=> settings_open? null
 			invite_plate_text <= invite_plate_text

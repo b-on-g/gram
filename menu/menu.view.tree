@@ -4,6 +4,7 @@ $bog_gram_menu $bog_gram_page
 	compose? null
 	group? null
 	meet? null
+	scan_follow? \
 	music? null
 	settings? null
 	invite_plate_text \
@@ -52,6 +53,14 @@ $bog_gram_menu $bog_gram_page
 			click? <=> meet?
 			sub /
 				<= Meet_start_icon $mol_icon_video
+		<= Scan_pick $mol_pick
+			hint @ \Scan QR
+			trigger_content /
+				<= Scan_pick_icon $mol_icon_qrcode_scan
+			bubble_content /
+				<= Scan $bog_gram_scan
+					prefix \#!
+					found? <=> scan_follow?
 		<= Music_open $mol_button_minor
 			hint @ \Music
 			click? <=> music?
