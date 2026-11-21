@@ -2152,6 +2152,7 @@ var $;
             const lord = 'AAAAAAAA_BBBBBBBB';
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!meet=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { meet: lord, by: 'CCCCCCCC_DDDDDDDD' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
         },
         'Чужой QR и мусор ничего не открывают'() {
@@ -10531,15 +10532,60 @@ var $;
             const next = $bog_gram_call_peer.stats_sum(entries(3_000, 250_000), first);
             $mol_assert_equal([next.fps, next.width, next.height, next.kbps, next.loss, next.rtt], [30, 640, 480, 1000, 0.5, 42]);
         },
-        'Камера, потерянная в фоне, не запрашивается, пока страница скрыта'($) {
+        'Мобильный браузер определяется по агенту и касаниям'() {
+            $mol_assert_equal($bog_gram_call_room.cam_keep_by('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)', 5), true);
+            $mol_assert_equal($bog_gram_call_room.cam_keep_by('Mozilla/5.0 (Linux; Android 14) Mobile', 5), true);
+            $mol_assert_equal($bog_gram_call_room.cam_keep_by('Mozilla/5.0 (Macintosh; Intel Mac OS X)', 5), true);
+            $mol_assert_equal($bog_gram_call_room.cam_keep_by('Mozilla/5.0 (Macintosh; Intel Mac OS X)', 0), false);
+            $mol_assert_equal($bog_gram_call_room.cam_keep_by('Mozilla/5.0 (Windows NT 10.0)', 0), false);
+        },
+        'Заглушенная дорожка перезапрашивается только после выдержки и не чаще паузы'() {
+            const gap = $bog_gram_call_room.restore_gap;
+            $mol_assert_equal($bog_gram_call_room.muted_due(0, gap), false);
+            $mol_assert_equal($bog_gram_call_room.muted_due(2_999, gap), false);
+            $mol_assert_equal($bog_gram_call_room.muted_due(3_000, gap), true);
+            $mol_assert_equal($bog_gram_call_room.muted_due(60_000, gap - 1), false);
+        },
+        'Закончившаяся дорожка открывается заново только на видимой странице'($) {
             let opened = 0;
-            const room = $bog_gram_call_room.make({ $, video_restore: () => { ++opened; } });
+            const tracks = [{ kind: 'video', readyState: 'ended', stop: () => { } }];
+            const stream = { getVideoTracks: () => tracks, getTracks: () => tracks };
+            const room = $bog_gram_call_room.make({
+                $,
+                media: () => stream,
+                cam_able: () => true,
+                peers: () => [],
+                video_open: () => { ++opened; },
+            });
             room.visible(false);
-            room.video_lost();
+            room.video_sync();
             $mol_assert_equal(opened, 0);
             room.visible(true);
-            room.video_lost();
+            room.video_sync();
             $mol_assert_equal(opened, 1);
+        },
+        'На мобильном выключенная камера остаётся открытой, на десктопе останавливается'($) {
+            const make = (keep, tracks) => $bog_gram_call_room.make({
+                $,
+                media: () => ({ getVideoTracks: () => tracks, getTracks: () => tracks, removeTrack: () => { } }),
+                cam_able: () => true,
+                peers: () => [],
+                cam_keep: () => keep,
+                video_open: () => { throw new Error('getUserMedia'); },
+            });
+            let stopped = 0;
+            const track = { kind: 'video', readyState: 'live', stop: () => { ++stopped; } };
+            const mobile = make(true, [track]);
+            mobile.cam(false);
+            mobile.video_sync();
+            $mol_assert_equal(stopped, 0);
+            mobile.cam(true);
+            mobile.video_sync();
+            $mol_assert_equal(stopped, 0);
+            const desktop = make(false, [track]);
+            desktop.cam(false);
+            desktop.video_sync();
+            $mol_assert_equal(stopped, 1);
         },
         'Выключенная камера останавливается, включённая открывается заново'($) {
             let stopped = 0;
@@ -10581,6 +10627,18 @@ var $;
             $mol_assert_equal(session.type, 'play-and-record');
             hold.destructor();
             $mol_assert_equal(session.type, 'auto');
+        },
+        'Выбранный микрофон остаётся, пропавший заменяется системным'() {
+            $mol_assert_equal($bog_gram_call_room.audio_pick(['a', 'b'], 'b'), 'b');
+            $mol_assert_equal($bog_gram_call_room.audio_pick(['a', 'b'], 'c'), '');
+            $mol_assert_equal($bog_gram_call_room.audio_pick([], ''), '');
+            $mol_assert_equal($bog_gram_call_room.audio_constraints(''), true);
+            $mol_assert_equal($bog_gram_call_room.audio_constraints('a').deviceId.ideal, 'a');
+        },
+        'Уровень звука: тишина ноль, громкий сигнал единица'() {
+            $mol_assert_equal($bog_gram_call_room.level_of(new Uint8Array(64).fill(128)), 0);
+            $mol_assert_equal($bog_gram_call_room.level_of(Uint8Array.from({ length: 64 }, (_, i) => i % 2 ? 255 : 0)), 1);
+            $mol_assert_equal($bog_gram_call_room.level_of([]), 0);
         },
         'Испорченный сигнал не ломает разбор'() {
             $mol_assert_equal($bog_gram_call_room.signal_parse(''), null);
@@ -10708,6 +10766,42 @@ var $;
             const left = await $mol_wire_async(ops).admit($.$giper_baza_auth.current().pass().lord().str);
             $mol_assert_equal(waiting, [own]);
             $mol_assert_equal(left, []);
+        },
+        async 'Переход по ссылке с открытой комнатой сразу ведёт в звонок, без комнаты остаётся заявка'($) {
+            const group = 'group_link';
+            const ops = {
+                run() {
+                    const owner = $.$giper_baza_auth.current().pass().lord().str;
+                    const make = (room) => {
+                        const land = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]);
+                        const hall = land.Data($bog_gram_meet_hall);
+                        hall.Group('auto').val(group);
+                        if (room)
+                            hall.Room('auto').val(room);
+                        return land.link().str;
+                    };
+                    const room = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]).link().str;
+                    const open = make(room);
+                    const old = make('');
+                    const meet = $bog_gram_meet.make({ $ });
+                    meet.Talk().inside = () => false;
+                    meet.Lobby().send = () => { };
+                    meet.knock = () => '';
+                    return {
+                        room,
+                        owner,
+                        open: meet.take(open, owner),
+                        old: meet.take(old, owner),
+                        stranger: meet.room_of(open, 'not_a_link'),
+                    };
+                },
+            };
+            const result = await $mol_wire_async(ops).run();
+            $mol_assert_equal(result.open.plan, 'call');
+            $mol_assert_equal(result.open.room, result.room);
+            $mol_assert_equal(result.old.plan, 'ask');
+            $mol_assert_equal(result.old.room, '');
+            $mol_assert_equal(result.stranger, '');
         },
         async 'Приглашение без ключа не открывает чат встречи, ключ к группе и сессии открывает'($) {
             const owner = await $.$giper_baza_auth._generate();
