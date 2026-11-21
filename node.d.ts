@@ -40035,243 +40035,6 @@ declare namespace $ {
 //# sourceMappingURL=cog.view.tree.d.ts.map
 declare namespace $ {
 
-	export class $bog_theme_picker_row extends $mol_button_minor {
-		focused_str( ): string
-		hover( next?: any ): any
-		theme_name( ): string
-		title( ): ReturnType< $bog_theme_picker_row['theme_name'] >
-		attr( ): ({ 
-			'bog_theme_picker_row_focused': ReturnType< $bog_theme_picker_row['focused_str'] >,
-		})  & ReturnType< $mol_button_minor['attr'] >
-		event( ): ({ 
-			pointerenter( next?: ReturnType< $bog_theme_picker_row['hover'] > ): ReturnType< $bog_theme_picker_row['hover'] >,
-		})  & ReturnType< $mol_button_minor['event'] >
-	}
-	
-}
-
-//# sourceMappingURL=row.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_theme_picker_row extends $.$bog_theme_picker_row {
-        focused_str(): "" | "true";
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-
-	type $mol_string__value_bog_theme_picker_1 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['query'] >
-		,
-		ReturnType< $mol_string['value'] >
-	>
-	type $mol_string__hint_bog_theme_picker_2 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_list__rows_bog_theme_picker_3 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['theme_rows'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_list__rows_bog_theme_picker_4 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $bog_theme_picker_row__theme_name_bog_theme_picker_5 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['theme_name'] >
-		,
-		ReturnType< $bog_theme_picker_row['theme_name'] >
-	>
-	type $bog_theme_picker_row__focused_bog_theme_picker_6 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['theme_focused'] >
-		,
-		ReturnType< $bog_theme_picker_row['focused'] >
-	>
-	type $bog_theme_picker_row__click_bog_theme_picker_7 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['theme_select'] >
-		,
-		ReturnType< $bog_theme_picker_row['click'] >
-	>
-	type $bog_theme_picker_row__hover_bog_theme_picker_8 = $mol_type_enforce<
-		ReturnType< $bog_theme_picker['theme_hover'] >
-		,
-		ReturnType< $bog_theme_picker_row['hover'] >
-	>
-	export class $bog_theme_picker extends $mol_scroll {
-		theme_name( id: any): string
-		theme_focused( id: any): boolean
-		theme_select( id: any, next?: any ): any
-		theme_hover( id: any, next?: any ): any
-		Search( ): $mol_string
-		theme_rows( ): readonly(any)[]
-		Theme_list( ): $mol_list
-		Content( ): $mol_list
-		key_down( next?: any ): any
-		theme_auto( ): $bog_theme_auto
-		close( next?: any ): any
-		query( next?: string ): string
-		focused_index( next?: number ): number
-		Theme_row( id: any): $bog_theme_picker_row
-		sub( ): readonly(any)[]
-		event( ): ({ 
-			keydown( next?: ReturnType< $bog_theme_picker['key_down'] > ): ReturnType< $bog_theme_picker['key_down'] >,
-		})  & ReturnType< $mol_scroll['event'] >
-	}
-	
-}
-
-//# sourceMappingURL=picker.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * Theme picker popup with search and list
-     */
-    class $bog_theme_picker extends $.$bog_theme_picker {
-        theme_rows(): $.$bog_theme_picker_row[];
-        filtered_themes(): ("$mol_theme_giper_smash_dark" | "$mol_theme_giper_smash_light" | "$mol_theme_light" | "$mol_theme_dark" | "$mol_theme_monefro_light" | "$mol_theme_monefro_dark" | "$mol_theme_homerent_light" | "$mol_theme_homerent_dark" | "$mol_theme_upwork" | "$mol_theme_ainews_light" | "$mol_theme_ainews_dark" | "$mol_theme_calm_dark" | "$mol_theme_calm_light")[];
-        theme_name(index: number): "$mol_theme_giper_smash_dark" | "$mol_theme_giper_smash_light" | "$mol_theme_light" | "$mol_theme_dark" | "$mol_theme_monefro_light" | "$mol_theme_monefro_dark" | "$mol_theme_homerent_light" | "$mol_theme_homerent_dark" | "$mol_theme_upwork" | "$mol_theme_ainews_light" | "$mol_theme_ainews_dark" | "$mol_theme_calm_dark" | "$mol_theme_calm_light";
-        theme_focused(index: number): boolean;
-        theme_select(index: number, event?: MouseEvent): null;
-        theme_hover(index: number, event?: PointerEvent): null;
-        key_down(event?: KeyboardEvent): null;
-        private select_theme;
-        private preview_theme;
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-
-	export class $mol_icon_white_balance_sunny extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=sunny.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_weather_night extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=night.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_monitor extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=monitor.view.tree.d.ts.map
-declare namespace $ {
-
-	type $mol_view__event_bog_theme_toggle_1 = $mol_type_enforce<
-		({ 
-			click( next?: ReturnType< $bog_theme_toggle['backdrop_click'] > ): ReturnType< $bog_theme_toggle['backdrop_click'] >,
-		}) 
-		,
-		ReturnType< $mol_view['event'] >
-	>
-	type $bog_theme_picker__theme_auto_bog_theme_toggle_2 = $mol_type_enforce<
-		ReturnType< $bog_theme_toggle['theme_auto'] >
-		,
-		ReturnType< $bog_theme_picker['theme_auto'] >
-	>
-	type $bog_theme_picker__close_bog_theme_toggle_3 = $mol_type_enforce<
-		ReturnType< $bog_theme_toggle['picker_close'] >
-		,
-		ReturnType< $bog_theme_picker['close'] >
-	>
-	type $mol_button_minor__sub_bog_theme_toggle_4 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_bog_theme_toggle_5 = $mol_type_enforce<
-		ReturnType< $bog_theme_toggle['anchor_hint'] >
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_theme_toggle_6 = $mol_type_enforce<
-		ReturnType< $bog_theme_toggle['clicked'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__event_bog_theme_toggle_7 = $mol_type_enforce<
-		({ 
-			pointerdown( next?: ReturnType< $bog_theme_toggle['press_start'] > ): ReturnType< $bog_theme_toggle['press_start'] >,
-			pointermove( next?: ReturnType< $bog_theme_toggle['press_move'] > ): ReturnType< $bog_theme_toggle['press_move'] >,
-			pointerup( next?: ReturnType< $bog_theme_toggle['press_end'] > ): ReturnType< $bog_theme_toggle['press_end'] >,
-			pointercancel( next?: ReturnType< $bog_theme_toggle['press_cancel'] > ): ReturnType< $bog_theme_toggle['press_cancel'] >,
-			lostpointercapture( next?: ReturnType< $bog_theme_toggle['press_lost'] > ): ReturnType< $bog_theme_toggle['press_lost'] >,
-		})  & ReturnType< $mol_button_minor['event'] >
-		,
-		ReturnType< $mol_button_minor['event'] >
-	>
-	export class $bog_theme_toggle extends $mol_pop {
-		Icon( ): $mol_view
-		anchor_hint( ): string
-		clicked( next?: any ): any
-		press_start( next?: any ): any
-		press_move( next?: any ): any
-		press_end( next?: any ): any
-		press_cancel( next?: any ): any
-		press_lost( next?: any ): any
-		backdrop_click( next?: any ): any
-		Backdrop( ): $mol_view
-		picker_close( next?: any ): any
-		Picker( ): $bog_theme_picker
-		theme_auto( ): $bog_theme_auto
-		showed( next?: boolean ): boolean
-		align( ): string
-		Anchor( ): $mol_button_minor
-		Icon_light( ): $mol_icon_white_balance_sunny
-		Icon_dark( ): $mol_icon_weather_night
-		Icon_system( ): $mol_icon_monitor
-		bubble_content( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=toggle.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_theme_toggle extends $.$bog_theme_toggle {
-        long_press_delay: number;
-        move_threshold: number;
-        private press_timer;
-        private press_start_x;
-        private press_start_y;
-        private is_long_press;
-        Icon(): $mol_icon_white_balance_sunny | $mol_icon_weather_night | $mol_icon_monitor;
-        anchor_hint(): "Светлая тема" | "Тёмная тема" | "Пользовательская тема" | "Как в системе";
-        clicked(event?: MouseEvent): null;
-        press_start(event?: PointerEvent): null;
-        press_move(event?: PointerEvent): null;
-        press_end(event?: PointerEvent): null;
-        press_cancel(event?: PointerEvent): null;
-        press_lost(event?: Event): null;
-        private clear_press_timer;
-        private on_long_press;
-        picker_close(): void;
-        backdrop_click(event?: MouseEvent): null;
-    }
-}
-
-declare namespace $.$$ {
-}
-
-declare namespace $ {
-
 	export class $mol_icon_delete extends $mol_icon {
 		path( ): string
 	}
@@ -40725,294 +40488,289 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $bog_theme_toggle__theme_auto_bog_gram_menu_21 = $mol_type_enforce<
-		ReturnType< $bog_gram_menu['Theme'] >
-		,
-		ReturnType< $bog_theme_toggle['theme_auto'] >
-	>
-	type $mol_paragraph__title_bog_gram_menu_22 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_menu_21 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['invite_plate_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_menu_23 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_menu_22 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_menu_24 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_menu_23 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['invite_drop'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_menu_25 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_menu_24 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_menu_26 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_menu_25 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_paragraph__title_bog_gram_menu_27 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_menu_26 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['ask_plate_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_menu_28 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_menu_27 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_list__rows_bog_gram_menu_29 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_menu_28 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_menu_30 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_menu_29 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_button_minor__hint_bog_gram_menu_31 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_menu_30 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_hint'] >
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_menu_32 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_menu_31 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_menu_33 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_menu_32 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_icons'] >
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_menu_34 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_menu_33 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['delete_hint'] >
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__attr_bog_gram_menu_35 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_menu_34 = $mol_type_enforce<
 		({ 
 			'bog_gram_armed': ReturnType< $bog_gram_menu['delete_armed'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__click_bog_gram_menu_36 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_menu_35 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['delete_click'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_menu_37 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_menu_36 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_menu_38 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_menu_37 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_row__size_bog_gram_menu_39 = $mol_type_enforce<
+	type $bog_gram_row__size_bog_gram_menu_38 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['size'] >
 	>
-	type $bog_gram_row__swipe_bog_gram_menu_40 = $mol_type_enforce<
+	type $bog_gram_row__swipe_bog_gram_menu_39 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_row['swipe'] >
 	>
-	type $bog_gram_row__swipe_open_bog_gram_menu_41 = $mol_type_enforce<
+	type $bog_gram_row__swipe_open_bog_gram_menu_40 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['swiped_is'] >
 		,
 		ReturnType< $bog_gram_row['swipe_open'] >
 	>
-	type $bog_gram_row__click_bog_gram_menu_42 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_menu_41 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['pick'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__current_bog_gram_menu_43 = $mol_type_enforce<
+	type $bog_gram_row__current_bog_gram_menu_42 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['current_is'] >
 		,
 		ReturnType< $bog_gram_row['current'] >
 	>
-	type $bog_gram_row__avatar_id_bog_gram_menu_44 = $mol_type_enforce<
+	type $bog_gram_row__avatar_id_bog_gram_menu_43 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
 		,
 		ReturnType< $bog_gram_row['avatar_id'] >
 	>
-	type $bog_gram_row__tint_bog_gram_menu_45 = $mol_type_enforce<
+	type $bog_gram_row__tint_bog_gram_menu_44 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_tint'] >
 		,
 		ReturnType< $bog_gram_row['tint'] >
 	>
-	type $bog_gram_row__title_bog_gram_menu_46 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_menu_45 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_title'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__time_bog_gram_menu_47 = $mol_type_enforce<
+	type $bog_gram_row__time_bog_gram_menu_46 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_time'] >
 		,
 		ReturnType< $bog_gram_row['time'] >
 	>
-	type $bog_gram_row__note_bog_gram_menu_48 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_menu_47 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['dialog_preview'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__badge_bog_gram_menu_49 = $mol_type_enforce<
+	type $bog_gram_row__badge_bog_gram_menu_48 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['unread_label'] >
 		,
 		ReturnType< $bog_gram_row['badge'] >
 	>
-	type $bog_gram_row__tools_bog_gram_menu_50 = $mol_type_enforce<
+	type $bog_gram_row__tools_bog_gram_menu_49 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_row['tools'] >
 	>
-	type $mol_button_minor__hint_bog_gram_menu_51 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_menu_50 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_menu_52 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_menu_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['request_accept'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_menu_53 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_menu_52 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_menu_54 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_menu_53 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_menu_55 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_menu_54 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['request_reject'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_menu_56 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_menu_55 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $bog_gram_row__size_bog_gram_menu_57 = $mol_type_enforce<
+	type $bog_gram_row__size_bog_gram_menu_56 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['size'] >
 	>
-	type $bog_gram_row__hint_bog_gram_menu_58 = $mol_type_enforce<
+	type $bog_gram_row__hint_bog_gram_menu_57 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['hint'] >
 	>
-	type $bog_gram_row__click_bog_gram_menu_59 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_menu_58 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['saved_pick'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__current_bog_gram_menu_60 = $mol_type_enforce<
+	type $bog_gram_row__current_bog_gram_menu_59 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['saved_current'] >
 		,
 		ReturnType< $bog_gram_row['current'] >
 	>
-	type $bog_gram_row__Icon_bog_gram_menu_61 = $mol_type_enforce<
+	type $bog_gram_row__Icon_bog_gram_menu_60 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['Saved_icon'] >
 		,
 		ReturnType< $bog_gram_row['Icon'] >
 	>
-	type $bog_gram_row__title_bog_gram_menu_62 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_menu_61 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['saved_title'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__time_bog_gram_menu_63 = $mol_type_enforce<
+	type $bog_gram_row__time_bog_gram_menu_62 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['saved_time'] >
 		,
 		ReturnType< $bog_gram_row['time'] >
 	>
-	type $bog_gram_row__note_bog_gram_menu_64 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_menu_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['saved_preview'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__size_bog_gram_menu_65 = $mol_type_enforce<
+	type $bog_gram_row__size_bog_gram_menu_64 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['size'] >
 	>
-	type $bog_gram_row__hint_bog_gram_menu_66 = $mol_type_enforce<
+	type $bog_gram_row__hint_bog_gram_menu_65 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['hint'] >
 	>
-	type $bog_gram_row__click_bog_gram_menu_67 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_menu_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_toggle'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__Icon_bog_gram_menu_68 = $mol_type_enforce<
+	type $bog_gram_row__Icon_bog_gram_menu_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['Archive_icon'] >
 		,
 		ReturnType< $bog_gram_row['Icon'] >
 	>
-	type $bog_gram_row__title_bog_gram_menu_69 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_menu_68 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_menu_70 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_menu_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_note'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__badge_bog_gram_menu_71 = $mol_type_enforce<
+	type $bog_gram_row__badge_bog_gram_menu_70 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['archive_unread_label'] >
 		,
 		ReturnType< $bog_gram_row['badge'] >
 	>
-	type $bog_gram_row__size_bog_gram_menu_72 = $mol_type_enforce<
+	type $bog_gram_row__size_bog_gram_menu_71 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['size'] >
 	>
-	type $bog_gram_row__hint_bog_gram_menu_73 = $mol_type_enforce<
+	type $bog_gram_row__hint_bog_gram_menu_72 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['hint'] >
 	>
-	type $bog_gram_row__click_bog_gram_menu_74 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_menu_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['requests_toggle'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__Icon_bog_gram_menu_75 = $mol_type_enforce<
+	type $bog_gram_row__Icon_bog_gram_menu_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['Requests_icon'] >
 		,
 		ReturnType< $bog_gram_row['Icon'] >
 	>
-	type $bog_gram_row__title_bog_gram_menu_76 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_menu_75 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_menu_77 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_menu_76 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__badge_bog_gram_menu_78 = $mol_type_enforce<
+	type $bog_gram_row__badge_bog_gram_menu_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_menu['requests_count_label'] >
 		,
 		ReturnType< $bog_gram_row['badge'] >
@@ -41032,7 +40790,6 @@ declare namespace $ {
 		Music_open( ): $mol_button_minor
 		Settings_open_icon( ): $mol_icon_cog
 		Settings_open( ): $mol_button_minor
-		Lights( ): $bog_theme_toggle
 		Invite_plate_text( ): $mol_paragraph
 		Invite_drop_icon( ): $mol_icon_close
 		Invite_drop( ): $mol_button_minor
@@ -41068,7 +40825,6 @@ declare namespace $ {
 		Requests_icon( ): $mol_icon_account_question
 		requests_count_label( ): string
 		title( ): string
-		Theme( ): $bog_theme_auto
 		compose( next?: any ): any
 		group( next?: any ): any
 		meet( next?: any ): any
@@ -41339,6 +41095,243 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $bog_theme_picker_row extends $mol_button_minor {
+		focused_str( ): string
+		hover( next?: any ): any
+		theme_name( ): string
+		title( ): ReturnType< $bog_theme_picker_row['theme_name'] >
+		attr( ): ({ 
+			'bog_theme_picker_row_focused': ReturnType< $bog_theme_picker_row['focused_str'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		event( ): ({ 
+			pointerenter( next?: ReturnType< $bog_theme_picker_row['hover'] > ): ReturnType< $bog_theme_picker_row['hover'] >,
+		})  & ReturnType< $mol_button_minor['event'] >
+	}
+	
+}
+
+//# sourceMappingURL=row.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_theme_picker_row extends $.$bog_theme_picker_row {
+        focused_str(): "" | "true";
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_string__value_bog_theme_picker_1 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['query'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__hint_bog_theme_picker_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_list__rows_bog_theme_picker_3 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['theme_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_list__rows_bog_theme_picker_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $bog_theme_picker_row__theme_name_bog_theme_picker_5 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['theme_name'] >
+		,
+		ReturnType< $bog_theme_picker_row['theme_name'] >
+	>
+	type $bog_theme_picker_row__focused_bog_theme_picker_6 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['theme_focused'] >
+		,
+		ReturnType< $bog_theme_picker_row['focused'] >
+	>
+	type $bog_theme_picker_row__click_bog_theme_picker_7 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['theme_select'] >
+		,
+		ReturnType< $bog_theme_picker_row['click'] >
+	>
+	type $bog_theme_picker_row__hover_bog_theme_picker_8 = $mol_type_enforce<
+		ReturnType< $bog_theme_picker['theme_hover'] >
+		,
+		ReturnType< $bog_theme_picker_row['hover'] >
+	>
+	export class $bog_theme_picker extends $mol_scroll {
+		theme_name( id: any): string
+		theme_focused( id: any): boolean
+		theme_select( id: any, next?: any ): any
+		theme_hover( id: any, next?: any ): any
+		Search( ): $mol_string
+		theme_rows( ): readonly(any)[]
+		Theme_list( ): $mol_list
+		Content( ): $mol_list
+		key_down( next?: any ): any
+		theme_auto( ): $bog_theme_auto
+		close( next?: any ): any
+		query( next?: string ): string
+		focused_index( next?: number ): number
+		Theme_row( id: any): $bog_theme_picker_row
+		sub( ): readonly(any)[]
+		event( ): ({ 
+			keydown( next?: ReturnType< $bog_theme_picker['key_down'] > ): ReturnType< $bog_theme_picker['key_down'] >,
+		})  & ReturnType< $mol_scroll['event'] >
+	}
+	
+}
+
+//# sourceMappingURL=picker.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Theme picker popup with search and list
+     */
+    class $bog_theme_picker extends $.$bog_theme_picker {
+        theme_rows(): $.$bog_theme_picker_row[];
+        filtered_themes(): ("$mol_theme_giper_smash_dark" | "$mol_theme_giper_smash_light" | "$mol_theme_light" | "$mol_theme_dark" | "$mol_theme_monefro_light" | "$mol_theme_monefro_dark" | "$mol_theme_homerent_light" | "$mol_theme_homerent_dark" | "$mol_theme_upwork" | "$mol_theme_ainews_light" | "$mol_theme_ainews_dark" | "$mol_theme_calm_dark" | "$mol_theme_calm_light")[];
+        theme_name(index: number): "$mol_theme_giper_smash_dark" | "$mol_theme_giper_smash_light" | "$mol_theme_light" | "$mol_theme_dark" | "$mol_theme_monefro_light" | "$mol_theme_monefro_dark" | "$mol_theme_homerent_light" | "$mol_theme_homerent_dark" | "$mol_theme_upwork" | "$mol_theme_ainews_light" | "$mol_theme_ainews_dark" | "$mol_theme_calm_dark" | "$mol_theme_calm_light";
+        theme_focused(index: number): boolean;
+        theme_select(index: number, event?: MouseEvent): null;
+        theme_hover(index: number, event?: PointerEvent): null;
+        key_down(event?: KeyboardEvent): null;
+        private select_theme;
+        private preview_theme;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_white_balance_sunny extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=sunny.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_weather_night extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=night.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_monitor extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=monitor.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_view__event_bog_theme_toggle_1 = $mol_type_enforce<
+		({ 
+			click( next?: ReturnType< $bog_theme_toggle['backdrop_click'] > ): ReturnType< $bog_theme_toggle['backdrop_click'] >,
+		}) 
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $bog_theme_picker__theme_auto_bog_theme_toggle_2 = $mol_type_enforce<
+		ReturnType< $bog_theme_toggle['theme_auto'] >
+		,
+		ReturnType< $bog_theme_picker['theme_auto'] >
+	>
+	type $bog_theme_picker__close_bog_theme_toggle_3 = $mol_type_enforce<
+		ReturnType< $bog_theme_toggle['picker_close'] >
+		,
+		ReturnType< $bog_theme_picker['close'] >
+	>
+	type $mol_button_minor__sub_bog_theme_toggle_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_theme_toggle_5 = $mol_type_enforce<
+		ReturnType< $bog_theme_toggle['anchor_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_theme_toggle_6 = $mol_type_enforce<
+		ReturnType< $bog_theme_toggle['clicked'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__event_bog_theme_toggle_7 = $mol_type_enforce<
+		({ 
+			pointerdown( next?: ReturnType< $bog_theme_toggle['press_start'] > ): ReturnType< $bog_theme_toggle['press_start'] >,
+			pointermove( next?: ReturnType< $bog_theme_toggle['press_move'] > ): ReturnType< $bog_theme_toggle['press_move'] >,
+			pointerup( next?: ReturnType< $bog_theme_toggle['press_end'] > ): ReturnType< $bog_theme_toggle['press_end'] >,
+			pointercancel( next?: ReturnType< $bog_theme_toggle['press_cancel'] > ): ReturnType< $bog_theme_toggle['press_cancel'] >,
+			lostpointercapture( next?: ReturnType< $bog_theme_toggle['press_lost'] > ): ReturnType< $bog_theme_toggle['press_lost'] >,
+		})  & ReturnType< $mol_button_minor['event'] >
+		,
+		ReturnType< $mol_button_minor['event'] >
+	>
+	export class $bog_theme_toggle extends $mol_pop {
+		Icon( ): $mol_view
+		anchor_hint( ): string
+		clicked( next?: any ): any
+		press_start( next?: any ): any
+		press_move( next?: any ): any
+		press_end( next?: any ): any
+		press_cancel( next?: any ): any
+		press_lost( next?: any ): any
+		backdrop_click( next?: any ): any
+		Backdrop( ): $mol_view
+		picker_close( next?: any ): any
+		Picker( ): $bog_theme_picker
+		theme_auto( ): $bog_theme_auto
+		showed( next?: boolean ): boolean
+		align( ): string
+		Anchor( ): $mol_button_minor
+		Icon_light( ): $mol_icon_white_balance_sunny
+		Icon_dark( ): $mol_icon_weather_night
+		Icon_system( ): $mol_icon_monitor
+		bubble_content( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=toggle.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_theme_toggle extends $.$bog_theme_toggle {
+        long_press_delay: number;
+        move_threshold: number;
+        private press_timer;
+        private press_start_x;
+        private press_start_y;
+        private is_long_press;
+        Icon(): $mol_icon_white_balance_sunny | $mol_icon_weather_night | $mol_icon_monitor;
+        anchor_hint(): "Светлая тема" | "Тёмная тема" | "Пользовательская тема" | "Как в системе";
+        clicked(event?: MouseEvent): null;
+        press_start(event?: PointerEvent): null;
+        press_move(event?: PointerEvent): null;
+        press_end(event?: PointerEvent): null;
+        press_cancel(event?: PointerEvent): null;
+        press_lost(event?: Event): null;
+        private clear_press_timer;
+        private on_long_press;
+        picker_close(): void;
+        backdrop_click(event?: MouseEvent): null;
+    }
+}
+
+declare namespace $.$$ {
 }
 
 declare namespace $ {
@@ -64517,7 +64510,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.210";
+    const $bog_gram_version = "1.0.211";
 }
 
 declare namespace $ {
@@ -64842,12 +64835,17 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_locale_select__hint_bog_gram_settings_65 = $mol_type_enforce<
+	type $bog_theme_toggle__theme_auto_bog_gram_settings_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_settings['Theme'] >
+		,
+		ReturnType< $bog_theme_toggle['theme_auto'] >
+	>
+	type $mol_locale_select__hint_bog_gram_settings_66 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_locale_select['hint'] >
 	>
-	type $mol_locale_select__dictionary_bog_gram_settings_66 = $mol_type_enforce<
+	type $mol_locale_select__dictionary_bog_gram_settings_67 = $mol_type_enforce<
 		({ 
 			'en': string,
 			'ru': string,
@@ -64856,57 +64854,57 @@ declare namespace $ {
 		,
 		ReturnType< $mol_locale_select['dictionary'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_67 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_68 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_list__rows_bog_gram_settings_68 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_settings_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_paragraph__title_bog_gram_settings_69 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_settings_70 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_gram_settings_70 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_settings_71 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_row__faced_bog_gram_settings_72 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_settings_72 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_gram_row__faced_bog_gram_settings_73 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_row['faced'] >
 	>
-	type $bog_gram_row__click_bog_gram_settings_73 = $mol_type_enforce<
+	type $bog_gram_row__click_bog_gram_settings_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_open'] >
 		,
 		ReturnType< $bog_gram_row['click'] >
 	>
-	type $bog_gram_row__current_bog_gram_settings_74 = $mol_type_enforce<
+	type $bog_gram_row__current_bog_gram_settings_75 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_active_is'] >
 		,
 		ReturnType< $bog_gram_row['current'] >
 	>
-	type $bog_gram_row__title_bog_gram_settings_75 = $mol_type_enforce<
+	type $bog_gram_row__title_bog_gram_settings_76 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_title'] >
 		,
 		ReturnType< $bog_gram_row['title'] >
 	>
-	type $bog_gram_row__note_bog_gram_settings_76 = $mol_type_enforce<
+	type $bog_gram_row__note_bog_gram_settings_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_settings['registry_status'] >
 		,
 		ReturnType< $bog_gram_row['note'] >
 	>
-	type $bog_gram_row__tools_bog_gram_settings_77 = $mol_type_enforce<
+	type $bog_gram_row__tools_bog_gram_settings_78 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_row['tools'] >
@@ -64985,6 +64983,8 @@ declare namespace $ {
 		registry_join( id: any, next?: any ): any
 		registry_forget( id: any, next?: any ): any
 		close( next?: any ): any
+		Theme( ): $bog_theme_auto
+		Lights( ): $bog_theme_toggle
 		Lang( ): $mol_locale_select
 		tools( ): readonly(any)[]
 		body( ): readonly(any)[]
@@ -65006,7 +65006,7 @@ declare namespace $.$$ {
         paste_uri(next?: string): string;
         Paste_error(): $.$mol_paragraph;
         version(): string;
-        install_content(): ($mol_button_major | $.$mol_locale_select)[];
+        install_content(): ($.$bog_theme_toggle | $mol_button_major | $.$mol_locale_select)[];
         Notify_toggle(): $mol_button_major;
         Registry_join(id: string): $mol_button_minor;
         registry_rows(): $.$bog_gram_row[];
@@ -85980,175 +85980,175 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_menu__Theme_bog_gram_78 = $mol_type_enforce<
-		ReturnType< $bog_gram['Theme'] >
-		,
-		ReturnType< $bog_gram_menu['Theme'] >
-	>
-	type $bog_gram_menu__compose_bog_gram_79 = $mol_type_enforce<
+	type $bog_gram_menu__compose_bog_gram_78 = $mol_type_enforce<
 		ReturnType< $bog_gram['compose_open'] >
 		,
 		ReturnType< $bog_gram_menu['compose'] >
 	>
-	type $bog_gram_menu__group_bog_gram_80 = $mol_type_enforce<
+	type $bog_gram_menu__group_bog_gram_79 = $mol_type_enforce<
 		ReturnType< $bog_gram['group_open'] >
 		,
 		ReturnType< $bog_gram_menu['group'] >
 	>
-	type $bog_gram_menu__meet_bog_gram_81 = $mol_type_enforce<
+	type $bog_gram_menu__meet_bog_gram_80 = $mol_type_enforce<
 		ReturnType< $bog_gram['meet_start'] >
 		,
 		ReturnType< $bog_gram_menu['meet'] >
 	>
-	type $bog_gram_menu__scan_follow_bog_gram_82 = $mol_type_enforce<
+	type $bog_gram_menu__scan_follow_bog_gram_81 = $mol_type_enforce<
 		ReturnType< $bog_gram['scan_follow'] >
 		,
 		ReturnType< $bog_gram_menu['scan_follow'] >
 	>
-	type $bog_gram_menu__music_bog_gram_83 = $mol_type_enforce<
+	type $bog_gram_menu__music_bog_gram_82 = $mol_type_enforce<
 		ReturnType< $bog_gram['music_open'] >
 		,
 		ReturnType< $bog_gram_menu['music'] >
 	>
-	type $bog_gram_menu__settings_bog_gram_84 = $mol_type_enforce<
+	type $bog_gram_menu__settings_bog_gram_83 = $mol_type_enforce<
 		ReturnType< $bog_gram['settings_open'] >
 		,
 		ReturnType< $bog_gram_menu['settings'] >
 	>
-	type $bog_gram_menu__invite_plate_text_bog_gram_85 = $mol_type_enforce<
+	type $bog_gram_menu__invite_plate_text_bog_gram_84 = $mol_type_enforce<
 		ReturnType< $bog_gram['invite_plate_text'] >
 		,
 		ReturnType< $bog_gram_menu['invite_plate_text'] >
 	>
-	type $bog_gram_menu__invite_drop_bog_gram_86 = $mol_type_enforce<
+	type $bog_gram_menu__invite_drop_bog_gram_85 = $mol_type_enforce<
 		ReturnType< $bog_gram['invite_drop'] >
 		,
 		ReturnType< $bog_gram_menu['invite_drop'] >
 	>
-	type $bog_gram_menu__ask_plate_text_bog_gram_87 = $mol_type_enforce<
+	type $bog_gram_menu__ask_plate_text_bog_gram_86 = $mol_type_enforce<
 		ReturnType< $bog_gram['ask_plate_text'] >
 		,
 		ReturnType< $bog_gram_menu['ask_plate_text'] >
 	>
-	type $bog_gram_menu__visible_bog_gram_88 = $mol_type_enforce<
+	type $bog_gram_menu__visible_bog_gram_87 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_visible'] >
 		,
 		ReturnType< $bog_gram_menu['visible'] >
 	>
-	type $bog_gram_menu__archived_bog_gram_89 = $mol_type_enforce<
+	type $bog_gram_menu__archived_bog_gram_88 = $mol_type_enforce<
 		ReturnType< $bog_gram['archive_fresh'] >
 		,
 		ReturnType< $bog_gram_menu['archived'] >
 	>
-	type $bog_gram_menu__requests_bog_gram_90 = $mol_type_enforce<
+	type $bog_gram_menu__requests_bog_gram_89 = $mol_type_enforce<
 		ReturnType< $bog_gram['request_ids'] >
 		,
 		ReturnType< $bog_gram_menu['requests'] >
 	>
-	type $bog_gram_menu__dialog_title_bog_gram_91 = $mol_type_enforce<
+	type $bog_gram_menu__dialog_title_bog_gram_90 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_title'] >
 		,
 		ReturnType< $bog_gram_menu['dialog_title'] >
 	>
-	type $bog_gram_menu__dialog_time_bog_gram_92 = $mol_type_enforce<
+	type $bog_gram_menu__dialog_time_bog_gram_91 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_time'] >
 		,
 		ReturnType< $bog_gram_menu['dialog_time'] >
 	>
-	type $bog_gram_menu__dialog_preview_bog_gram_93 = $mol_type_enforce<
+	type $bog_gram_menu__dialog_preview_bog_gram_92 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_preview'] >
 		,
 		ReturnType< $bog_gram_menu['dialog_preview'] >
 	>
-	type $bog_gram_menu__dialog_avatar_id_bog_gram_94 = $mol_type_enforce<
+	type $bog_gram_menu__dialog_avatar_id_bog_gram_93 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_avatar_id'] >
 		,
 		ReturnType< $bog_gram_menu['dialog_avatar_id'] >
 	>
-	type $bog_gram_menu__dialog_tint_bog_gram_95 = $mol_type_enforce<
+	type $bog_gram_menu__dialog_tint_bog_gram_94 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_tint'] >
 		,
 		ReturnType< $bog_gram_menu['dialog_tint'] >
 	>
-	type $bog_gram_menu__unread_bog_gram_96 = $mol_type_enforce<
+	type $bog_gram_menu__unread_bog_gram_95 = $mol_type_enforce<
 		ReturnType< $bog_gram['unread_count'] >
 		,
 		ReturnType< $bog_gram_menu['unread'] >
 	>
-	type $bog_gram_menu__current_is_bog_gram_97 = $mol_type_enforce<
+	type $bog_gram_menu__current_is_bog_gram_96 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_current_is'] >
 		,
 		ReturnType< $bog_gram_menu['current_is'] >
 	>
-	type $bog_gram_menu__request_is_bog_gram_98 = $mol_type_enforce<
+	type $bog_gram_menu__request_is_bog_gram_97 = $mol_type_enforce<
 		ReturnType< $bog_gram['request_is'] >
 		,
 		ReturnType< $bog_gram_menu['request_is'] >
 	>
-	type $bog_gram_menu__archive_is_bog_gram_99 = $mol_type_enforce<
+	type $bog_gram_menu__archive_is_bog_gram_98 = $mol_type_enforce<
 		ReturnType< $bog_gram['archive_is'] >
 		,
 		ReturnType< $bog_gram_menu['archive_is'] >
 	>
-	type $bog_gram_menu__select_bog_gram_100 = $mol_type_enforce<
+	type $bog_gram_menu__select_bog_gram_99 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_select'] >
 		,
 		ReturnType< $bog_gram_menu['select'] >
 	>
-	type $bog_gram_menu__archive_bog_gram_101 = $mol_type_enforce<
+	type $bog_gram_menu__archive_bog_gram_100 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_archive'] >
 		,
 		ReturnType< $bog_gram_menu['archive'] >
 	>
-	type $bog_gram_menu__unarchive_bog_gram_102 = $mol_type_enforce<
+	type $bog_gram_menu__unarchive_bog_gram_101 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_unarchive'] >
 		,
 		ReturnType< $bog_gram_menu['unarchive'] >
 	>
-	type $bog_gram_menu__drop_bog_gram_103 = $mol_type_enforce<
+	type $bog_gram_menu__drop_bog_gram_102 = $mol_type_enforce<
 		ReturnType< $bog_gram['dialog_delete'] >
 		,
 		ReturnType< $bog_gram_menu['drop'] >
 	>
-	type $bog_gram_menu__accept_bog_gram_104 = $mol_type_enforce<
+	type $bog_gram_menu__accept_bog_gram_103 = $mol_type_enforce<
 		ReturnType< $bog_gram['request_accept'] >
 		,
 		ReturnType< $bog_gram_menu['accept'] >
 	>
-	type $bog_gram_menu__saved_title_bog_gram_105 = $mol_type_enforce<
+	type $bog_gram_menu__saved_title_bog_gram_104 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_title'] >
 		,
 		ReturnType< $bog_gram_menu['saved_title'] >
 	>
-	type $bog_gram_menu__saved_time_bog_gram_106 = $mol_type_enforce<
+	type $bog_gram_menu__saved_time_bog_gram_105 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_time'] >
 		,
 		ReturnType< $bog_gram_menu['saved_time'] >
 	>
-	type $bog_gram_menu__saved_preview_bog_gram_107 = $mol_type_enforce<
+	type $bog_gram_menu__saved_preview_bog_gram_106 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_preview'] >
 		,
 		ReturnType< $bog_gram_menu['saved_preview'] >
 	>
-	type $bog_gram_menu__saved_current_bog_gram_108 = $mol_type_enforce<
+	type $bog_gram_menu__saved_current_bog_gram_107 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_current_is'] >
 		,
 		ReturnType< $bog_gram_menu['saved_current'] >
 	>
-	type $bog_gram_menu__saved_open_bog_gram_109 = $mol_type_enforce<
+	type $bog_gram_menu__saved_open_bog_gram_108 = $mol_type_enforce<
 		ReturnType< $bog_gram['saved_open'] >
 		,
 		ReturnType< $bog_gram_menu['saved_open'] >
 	>
-	type $bog_gram_music__hidden_bog_gram_110 = $mol_type_enforce<
+	type $bog_gram_music__hidden_bog_gram_109 = $mol_type_enforce<
 		ReturnType< $bog_gram['music_hidden'] >
 		,
 		ReturnType< $bog_gram_music['hidden'] >
 	>
-	type $bog_gram_music__close_bog_gram_111 = $mol_type_enforce<
+	type $bog_gram_music__close_bog_gram_110 = $mol_type_enforce<
 		ReturnType< $bog_gram['music_close'] >
 		,
 		ReturnType< $bog_gram_music['close'] >
+	>
+	type $bog_gram_settings__Theme_bog_gram_111 = $mol_type_enforce<
+		ReturnType< $bog_gram['Theme'] >
+		,
+		ReturnType< $bog_gram_settings['Theme'] >
 	>
 	type $bog_gram_settings__close_bog_gram_112 = $mol_type_enforce<
 		ReturnType< $bog_gram['settings_close'] >
