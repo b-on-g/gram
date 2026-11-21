@@ -26,6 +26,20 @@ namespace $.$$ {
 			objectFit: 'cover',
 		},
 
+		Level: {
+			position: 'absolute',
+			right: $mol_gap.block,
+			bottom: $mol_gap.block,
+			width: '.375rem',
+			border: {
+				radius: $mol_gap.round,
+			},
+			background: {
+				color: 'hsl( 140, 70%, 50% )',
+			},
+			transition: 'height .1s',
+		},
+
 		Face: {
 			position: 'absolute',
 			inset: '0',
@@ -107,6 +121,13 @@ namespace $.$$ {
 					},
 					Face: {
 						display: 'flex',
+					},
+				},
+			},
+			bog_gram_call_tile_screen: {
+				true: {
+					Video: {
+						objectFit: 'contain',
 					},
 				},
 			},

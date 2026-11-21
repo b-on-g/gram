@@ -2,9 +2,11 @@ $bog_gram_call_tile $mol_view
 	stream null
 	muted false
 	mirror false
+	screen false
 	cam true
 	mic true
 	awake true
+	speaker \
 	name \
 	status \
 	stats null
@@ -20,9 +22,11 @@ $bog_gram_call_tile $mol_view
 			<= stat_text* \
 	failed_text @ \No connection
 	connecting_text @ \Connecting…
+	paused_text @ \Camera paused by the system
 	attr *
 		^
 		bog_gram_call_tile_cam <= cam
+		bog_gram_call_tile_screen <= screen
 		bog_gram_call_tile_mirror <= mirror
 	sub /
 		<= Video $mol_video_player
@@ -37,6 +41,9 @@ $bog_gram_call_tile $mol_view
 			stream <= sound null
 			controls false
 			muted <= muted
+		<= Level $mol_view
+			style *
+				height <= level_size \0%
 		<= Face $mol_view
 			sub /
 				<= letter \

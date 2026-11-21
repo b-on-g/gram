@@ -8,6 +8,7 @@ namespace $ {
 		Left: $giper_baza_atom_real,
 		Mic: $giper_baza_atom_bool,
 		Cam: $giper_baza_atom_bool,
+		Screen: $giper_baza_atom_bool,
 	}) {}
 
 }

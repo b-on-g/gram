@@ -1,5 +1,6 @@
 {
 	"$bog_gram_call_Close_hint": "Выйти и закрыть",
+	"$bog_gram_call_Invite_qr_pick_hint": "Показать QR встречи",
 	"$bog_gram_call_Invite_hint": "Скопировать ссылку на встречу",
 	"$bog_gram_call_knocks_pattern": "Стучатся: {count}",
 	"$bog_gram_call_Knock_admit_hint": "Впустить",
@@ -9,10 +10,14 @@
 	"$bog_gram_call_title": "Звонок",
 	"$bog_gram_call_Mic_hint": "Микрофон",
 	"$bog_gram_call_Cam_hint": "Камера",
+	"$bog_gram_call_Screen_hint": "Показать экран",
 	"$bog_gram_call_Flip_hint": "Сменить камеру",
 	"$bog_gram_call_Stats_show_hint": "Показать FPS и сеть",
 	"$bog_gram_call_Pip_hint": "Картинка в картинке",
 	"$bog_gram_call_Leave_hint": "Выйти из звонка",
 	"$bog_gram_call_lobby_empty": "В звонке пока никого",
-	"$bog_gram_call_lobby_some": "В звонке: {names}"
+	"$bog_gram_call_lobby_some": "В звонке: {names}",
+	"$bog_gram_call_Mic_source_hint": "Источник звука",
+	"$bog_gram_call_Speaker_hint": "Вывод звука",
+	"$bog_gram_call_source_default": "Системный"
 }

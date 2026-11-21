@@ -199,18 +199,73 @@ namespace $ {
 
 		},
 
-		'Камера, потерянная в фоне, не запрашивается, пока страница скрыта'( $ ) {
+		'Мобильный браузер определяется по агенту и касаниям'() {
+			$mol_assert_equal( $bog_gram_call_room.cam_keep_by( 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)', 5 ), true )
+			$mol_assert_equal( $bog_gram_call_room.cam_keep_by( 'Mozilla/5.0 (Linux; Android 14) Mobile', 5 ), true )
+			$mol_assert_equal( $bog_gram_call_room.cam_keep_by( 'Mozilla/5.0 (Macintosh; Intel Mac OS X)', 5 ), true )
+			$mol_assert_equal( $bog_gram_call_room.cam_keep_by( 'Mozilla/5.0 (Macintosh; Intel Mac OS X)', 0 ), false )
+			$mol_assert_equal( $bog_gram_call_room.cam_keep_by( 'Mozilla/5.0 (Windows NT 10.0)', 0 ), false )
+		},
+
+		'Заглушенная дорожка перезапрашивается только после выдержки и не чаще паузы'() {
+			const gap = $bog_gram_call_room.restore_gap
+			$mol_assert_equal( $bog_gram_call_room.muted_due( 0, gap ), false )
+			$mol_assert_equal( $bog_gram_call_room.muted_due( 2_999, gap ), false )
+			$mol_assert_equal( $bog_gram_call_room.muted_due( 3_000, gap ), true )
+			$mol_assert_equal( $bog_gram_call_room.muted_due( 60_000, gap - 1 ), false )
+		},
+
+		'Закончившаяся дорожка открывается заново только на видимой странице'( $ ) {
 
 			let opened = 0
-			const room = $bog_gram_call_room.make({ $, video_restore: ()=> { ++ opened } })
+			const tracks = [ { kind: 'video', readyState: 'ended', stop: ()=> {} } ]
+			const stream = { getVideoTracks: ()=> tracks, getTracks: ()=> tracks }
+
+			const room = $bog_gram_call_room.make({
+				$,
+				media: ()=> stream as any,
+				cam_able: ()=> true,
+				peers: ()=> [],
+				video_open: ()=> { ++ opened },
+			})
 
 			room.visible( false )
-			room.video_lost()
+			room.video_sync()
 			$mol_assert_equal( opened, 0 )
 
 			room.visible( true )
-			room.video_lost()
+			room.video_sync()
 			$mol_assert_equal( opened, 1 )
+
+		},
+
+		'На мобильном выключенная камера остаётся открытой, на десктопе останавливается'( $ ) {
+
+			const make = ( keep: boolean, tracks: any[] )=> $bog_gram_call_room.make({
+				$,
+				media: ()=> ({ getVideoTracks: ()=> tracks, getTracks: ()=> tracks, removeTrack: ()=> {} }) as any,
+				cam_able: ()=> true,
+				peers: ()=> [],
+				cam_keep: ()=> keep,
+				video_open: ()=> { throw new Error( 'getUserMedia' ) },
+			})
+
+			let stopped = 0
+			const track = { kind: 'video', readyState: 'live', stop: ()=> { ++ stopped } }
+
+			const mobile = make( true, [ track ] )
+			mobile.cam( false )
+			mobile.video_sync()
+			$mol_assert_equal( stopped, 0 )
+
+			mobile.cam( true )
+			mobile.video_sync()
+			$mol_assert_equal( stopped, 0 )
+
+			const desktop = make( false, [ track ] )
+			desktop.cam( false )
+			desktop.video_sync()
+			$mol_assert_equal( stopped, 1 )
 
 		},
 
@@ -270,6 +325,20 @@ namespace $ {
 			hold.destructor()
 			$mol_assert_equal( session.type, 'auto' )
 
+		},
+
+		'Выбранный микрофон остаётся, пропавший заменяется системным'() {
+			$mol_assert_equal( $bog_gram_call_room.audio_pick( [ 'a', 'b' ], 'b' ), 'b' )
+			$mol_assert_equal( $bog_gram_call_room.audio_pick( [ 'a', 'b' ], 'c' ), '' )
+			$mol_assert_equal( $bog_gram_call_room.audio_pick( [], '' ), '' )
+			$mol_assert_equal( $bog_gram_call_room.audio_constraints( '' ), true )
+			$mol_assert_equal( ( $bog_gram_call_room.audio_constraints( 'a' ) as any ).deviceId.ideal, 'a' )
+		},
+
+		'Уровень звука: тишина ноль, громкий сигнал единица'() {
+			$mol_assert_equal( $bog_gram_call_room.level_of( new Uint8Array( 64 ).fill( 128 ) ), 0 )
+			$mol_assert_equal( $bog_gram_call_room.level_of( Uint8Array.from({ length: 64 }, ( _, i )=> i % 2 ? 255 : 0 ) ), 1 )
+			$mol_assert_equal( $bog_gram_call_room.level_of( [] ), 0 )
 		},
 
 		'Испорченный сигнал не ломает разбор'() {

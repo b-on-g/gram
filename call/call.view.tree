@@ -16,6 +16,18 @@ $bog_gram_call $mol_page
 		<= Invite $mol_button_copy
 			hint @ \Copy the meeting link
 			text <= invite_link \
+		<= Invite_qr_pick $mol_pick
+			hint @ \Show the meeting QR
+			trigger_content /
+				<= Invite_qr_icon $mol_icon_qrcode
+			bubble_content /
+				<= Invite_qr_box $mol_view
+					sub /
+						<= Invite_qr $bog_qr
+							uri <= invite_link
+							gradient_stops /
+								\#2f6f9e
+								\#4fb3d1
 		<= Close $mol_button_minor
 			hint @ \Exit and close
 			click? <=> close_click? null
@@ -47,15 +59,20 @@ $bog_gram_call $mol_page
 		stream <= self_stream null
 		muted true
 		mirror <= self_mirror true
+		screen <= self_screen false
+		status <= self_status \
 		awake <= awake true
-		cam <= cam
+		cam <= self_cam true
 		mic <= mic
+		speaker <= speaker_source
 		name <= self_name @ \You
 	Mate* $bog_gram_call_tile
 		stream <= mate_stream* null
 		awake <= awake
 		cam <= mate_cam* true
+		screen <= mate_screen* false
 		mic <= mate_mic* true
+		speaker <= speaker_source
 		name <= mate_name* \
 		status <= mate_status* \
 		stats <= mate_stats* null
@@ -70,11 +87,24 @@ $bog_gram_call $mol_page
 		Icon <= Mic_icon $mol_icon_microphone
 		hint @ \Microphone
 		checked? <=> mic? true
+	Mic_source $mol_select
+		hint @ \Microphone source
+		dictionary <= mic_dictionary *
+		value? <=> mic_source? \
+	Speaker $mol_select
+		hint @ \Sound output
+		dictionary <= speaker_dictionary *
+		value? <=> speaker_source? \
+	source_default @ \System default
 	Cam $mol_check_icon
 		Icon <= Cam_icon $mol_icon_video
 		hint @ \Camera
 		checked? <=> cam? true
 		enabled <= cam_able true
+	Screen $mol_check_icon
+		Icon <= Screen_icon $mol_icon_monitor
+		hint @ \Share screen
+		checked? <=> screen? false
 	Flip $mol_button_minor
 		hint @ \Flip camera
 		click? <=> cam_switch? null

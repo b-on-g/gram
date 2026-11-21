@@ -11,6 +11,10 @@ namespace $.$$ {
 			return $bog_gram_soft( ()=> String( this.Room().data().Invite()?.val() ?? '' ), '' )
 		}
 
+		override Invite_qr_pick() {
+			return this.invite_link() ? super.Invite_qr_pick() : null!
+		}
+
 		override Invite() {
 			return this.invite_link() ? super.Invite() : null!
 		}
@@ -35,7 +39,10 @@ namespace $.$$ {
 			if( !this.joined() ) return []
 			return [
 				this.Mic(),
+				this.Mic_source(),
+				... this.speaker_able() ? [ this.Speaker() ] : [],
 				this.Cam(),
+				... this.Room().screen_able() ? [ this.Screen() ] : [],
 				... this.Room().cam_switch_able() ? [ this.Flip() ] : [],
 				this.Stats_show(),
 				... this.pip_able() ? [ this.Pip() ] : [],
@@ -74,6 +81,35 @@ namespace $.$$ {
 			return this.Room().mic( next )
 		}
 
+		device_dictionary( kind: MediaDeviceKind ) {
+			const dict = { '': this.source_default() } as Record< string, string >
+			for( const device of this.Room().devices( kind ) ) dict[ device.deviceId ] = device.label || device.deviceId.slice( 0, 8 )
+			return dict
+		}
+
+		override mic_dictionary() {
+			return this.device_dictionary( 'audioinput' )
+		}
+
+		override speaker_dictionary() {
+			return this.device_dictionary( 'audiooutput' )
+		}
+
+		speaker_able() {
+			return 'setSinkId' in HTMLMediaElement.prototype
+		}
+
+		override mic_source( next?: string ) {
+			if( next === undefined ) return this.Room().mic_device()
+			this.Room().mic_device( next )
+			this.Room().audio_open()
+			return next
+		}
+
+		override speaker_source( next?: string ) {
+			return this.Room().speaker_device( next )
+		}
+
 		override cam( next?: boolean ) {
 			return this.Room().cam( next )
 		}
@@ -87,7 +123,27 @@ namespace $.$$ {
 		}
 
 		override self_mirror() {
-			return this.Room().facing() === 'user'
+			return this.Room().facing() === 'user' && !this.Room().screen()
+		}
+
+		override screen( next?: boolean ) {
+			return this.Room().screen( next )
+		}
+
+		override self_cam() {
+			return this.Room().cam() || this.Room().screen()
+		}
+
+		override self_screen() {
+			return this.Room().screen()
+		}
+
+		override self_status() {
+			return this.Room().video_paused() ? 'paused' : ''
+		}
+
+		override mate_screen( mate: string ) {
+			return this.Room().seat_screen( mate )
 		}
 
 		override awake() {

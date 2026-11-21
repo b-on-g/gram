@@ -59,6 +59,39 @@ namespace $ {
 			return { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: facing }
 		}
 
+		static muted_grace = 3_000
+
+		static restore_gap = 30_000
+
+		static cam_keep_by( agent: string, touch: number ) {
+			return /Android|iPhone|iPad|iPod|Mobile/i.test( agent ) || ( /Macintosh/.test( agent ) && touch > 1 )
+		}
+
+		static muted_due( muted_ms: number, since_restore: number ) {
+			return muted_ms >= this.muted_grace && since_restore >= this.restore_gap
+		}
+
+		static audio_pick( ids: readonly string[], wanted: string ) {
+			return wanted && ids.includes( wanted ) ? wanted : ''
+		}
+
+		static audio_constraints( id: string ): MediaTrackConstraints | boolean {
+			return id ? { deviceId: { ideal: id } } : true
+		}
+
+		static level_of( bytes: ArrayLike< number > ) {
+
+			if( !bytes.length ) return 0
+
+			let sum = 0
+			for( let i = 0; i < bytes.length; ++i ) {
+				const val = ( bytes[ i ] - 128 ) / 128
+				sum += val * val
+			}
+
+			return Math.min( 1, Math.sqrt( sum / bytes.length ) * 4 )
+		}
+
 		land(): $giper_baza_land {
 			return null!
 		}
@@ -111,6 +144,20 @@ namespace $ {
 			return next ?? true
 		}
 
+		@ $mol_mem
+		screen( next?: boolean ) {
+			return next ?? false
+		}
+
+		screen_able() {
+			return Boolean( this.$.$mol_dom_context.navigator?.mediaDevices?.getDisplayMedia )
+		}
+
+		cam_keep() {
+			const nav = this.$.$mol_dom_context.navigator
+			return $bog_gram_call_room.cam_keep_by( nav?.userAgent ?? '', nav?.maxTouchPoints ?? 0 )
+		}
+
 		@ $mol_action
 		join() {
 
@@ -138,6 +185,7 @@ namespace $ {
 		@ $mol_action
 		leave() {
 			if( !this.entered() ) return
+			this.screen( false )
 			this.data().Seats( 'auto' )?.key( this.seat(), 'auto' )?.Left( 'auto' )?.val( Date.now() )
 			this.entered( false )
 			this.log( 'вышел' )
@@ -158,7 +206,8 @@ namespace $ {
 			seat.Lord( 'auto' )!.val( this.lord() )
 			seat.Name( 'auto' )!.val( this.name() )
 			seat.Mic( 'auto' )!.val( this.mic() )
-			seat.Cam( 'auto' )!.val( this.cam() && this.cam_able() )
+			seat.Cam( 'auto' )!.val( ( this.cam() && this.cam_able() ) || this.screen() )
+			seat.Screen( 'auto' )!.val( this.screen() )
 			seat.Beat( 'auto' )!.val( moment )
 
 			return null
@@ -223,7 +272,11 @@ namespace $ {
 			return this.seat_pawn( id )?.Cam()?.val() ?? true
 		}
 
-		signal( box: $bog_gram_call_box, key: string ) {
+		seat_screen( id: string ) {
+			return this.seat_pawn( id )?.Screen()?.val() ?? false
+		}
+
+		signal( box:$bog_gram_call_box, key: string ) {
 			return this.data()[ box ]()?.key( key )?.val() ?? ''
 		}
 
@@ -246,23 +299,144 @@ namespace $ {
 		media() {
 
 			const devices = $mol_wire_sync( navigator.mediaDevices )
+			const audio = this.audio_initial()
 
 			let stream: MediaStream
 
 			try {
 				stream = devices.getUserMedia({
-					audio: true,
+					audio,
 					video: $bog_gram_call_room.video_constraints( 'user' ),
 				})
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				this.log( `камера не открылась: ${ ( error as Error ).name || error }` )
-				stream = devices.getUserMedia({ audio: true })
+				stream = devices.getUserMedia({ audio })
 			}
 
 			return Object.assign( stream, {
 				destructor: ()=> stream.getTracks().forEach( track => track.stop() )
 			} )
+		}
+
+		@ $mol_mem
+		mic_device( next?: string ) {
+			return this.$.$mol_state_local.value( '$bog_gram_call.mic_device', next ) ?? ''
+		}
+
+		@ $mol_mem
+		speaker_device( next?: string ) {
+			return this.$.$mol_state_local.value( '$bog_gram_call.speaker_device', next ) ?? ''
+		}
+
+		audio_constraints() {
+			return $bog_gram_call_room.audio_constraints( this.mic_device() )
+		}
+
+		audio_initial() {
+
+			const sub = $mol_wire_auto()
+			$mol_wire_auto( null )
+
+			try {
+				return this.audio_constraints()
+			} finally {
+				$mol_wire_auto( sub )
+			}
+
+		}
+
+		@ $mol_mem
+		devices_changed( next?: number ) {
+			return next ?? 0
+		}
+
+		@ $mol_mem
+		devices_watch() {
+			const devices = this.$.$mol_dom_context.navigator?.mediaDevices
+			if( !devices ) return null
+			return new $mol_dom_listener( devices, 'devicechange', ()=> {
+				this.devices_changed( this.devices_changed() + 1 )
+				$mol_wire_async( this ).audio_lost()
+			} )
+		}
+
+		@ $mol_mem_key
+		devices( kind: MediaDeviceKind ) {
+			this.media()
+			this.devices_changed()
+			const list = $mol_wire_sync( navigator.mediaDevices ).enumerateDevices()
+			return list.filter( device => device.kind === kind && device.deviceId )
+		}
+
+		mic_sources() {
+			return this.devices( 'audioinput' )
+		}
+
+		@ $mol_mem
+		audio_changed( next?: number ) {
+			return next ?? 0
+		}
+
+		audio_close() {
+
+			const stream = this.media()
+
+			for( const old of stream.getAudioTracks() ) {
+				old.stop()
+				stream.removeTrack( old )
+			}
+
+		}
+
+		@ $mol_action
+		audio_open() {
+
+			const ids = this.mic_sources().map( device => device.deviceId )
+			const wanted = this.mic_device()
+			const id = $bog_gram_call_room.audio_pick( ids, wanted )
+			if( id !== wanted ) this.mic_device( id )
+
+			let fresh: MediaStream
+			try {
+				fresh = $mol_wire_sync( navigator.mediaDevices ).getUserMedia({ audio: $bog_gram_call_room.audio_constraints( id ) })
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				this.log( `микрофон не открылся: ${ ( error as Error ).name || error }` )
+				return
+			}
+
+			const track = fresh.getAudioTracks()[ 0 ]
+			track.enabled = this.mic()
+
+			this.audio_close()
+			this.media().addTrack( track )
+			for( const peer of this.peers() ) peer.audio_replace( track )
+
+			this.audio_changed( this.audio_changed() + 1 )
+			this.log( `микрофон: ${ track.label }` )
+		}
+
+		audio_lost() {
+
+			if( !this.visible() ) return
+
+			const track = this.media().getAudioTracks()[ 0 ]
+			const ids = this.mic_sources().map( device => device.deviceId )
+			if( track && track.readyState === 'live' && ids.includes( track.getSettings().deviceId ?? '' ) ) return
+
+			this.audio_open()
+		}
+
+		@ $mol_mem
+		audio_watch() {
+
+			this.audio_changed()
+
+			const track = this.media().getAudioTracks()[ 0 ]
+			if( !track ) return null
+
+			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).audio_lost() )
 		}
 
 		@ $mol_mem
@@ -294,6 +468,7 @@ namespace $ {
 		@ $mol_mem
 		self_stream() {
 			this.video_changed()
+			this.audio_changed()
 			return new MediaStream( this.media().getTracks() )
 		}
 
@@ -311,6 +486,11 @@ namespace $ {
 		@ $mol_action
 		video_open( facing: $bog_gram_call_facing ) {
 
+			if( !this.cam() || this.screen_track ) {
+				this.facing( facing )
+				return
+			}
+
 			this.video_close()
 
 			const fresh = $mol_wire_sync( navigator.mediaDevices ).getUserMedia({
@@ -321,15 +501,77 @@ namespace $ {
 
 			this.facing( facing )
 
-			if( this.cam() ) {
-				this.video_close()
-				this.media().addTrack( track )
-				for( const peer of this.peers() ) peer.video_replace( track )
-			} else {
-				track.stop()
-			}
+			this.media().addTrack( track )
+			for( const peer of this.peers() ) peer.video_replace( track )
 
 			this.video_changed( this.video_changed() + 1 )
+		}
+
+		screen_track = null as MediaStreamTrack | null
+
+		screen_pending = false
+
+		@ $mol_action
+		screen_start() {
+
+			let track: MediaStreamTrack
+
+			try {
+				const stream = $mol_wire_sync( navigator.mediaDevices ).getDisplayMedia({ video: true })
+				track = stream.getVideoTracks()[ 0 ]
+			} catch( error ) {
+				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
+				this.screen_pending = false
+				this.screen( false )
+				this.log( `экран не открылся: ${ ( error as Error ).name || error }` )
+				return
+			}
+
+			this.video_close()
+			this.screen_pending = false
+			this.screen_track = track
+			this.media().addTrack( track )
+
+			track.addEventListener( 'ended', ()=> this.screen( false ) )
+
+			for( const peer of this.peers() ) peer.video_replace( track )
+
+			this.video_changed( this.video_changed() + 1 )
+			this.log( 'показ экрана' )
+		}
+
+		@ $mol_action
+		screen_stop() {
+
+			const track = this.screen_track
+			if( !track ) return
+
+			this.screen_track = null
+			track.stop()
+			this.media().removeTrack( track )
+
+			for( const peer of this.peers() ) peer.video_replace( null )
+
+			this.video_changed( this.video_changed() + 1 )
+			this.log( 'показ экрана окончен' )
+		}
+
+		@ $mol_mem
+		screen_sync() {
+
+			this.video_changed()
+
+			const want = this.screen()
+			const track = this.screen_track
+
+			if( want && !track && !this.screen_pending ) {
+				this.screen_pending = true
+				$mol_wire_async( this ).screen_start().catch( $mol_fail_log )
+			}
+
+			if( !want && track ) $mol_wire_async( this ).screen_stop().catch( $mol_fail_log )
+
+			return null
 		}
 
 		@ $mol_action
@@ -346,15 +588,42 @@ namespace $ {
 		video_sync() {
 
 			this.video_changed()
+			this.track_touched()
 			if( !this.cam_able() ) return null
+			if( this.screen_track ) return null
 
-			const open = this.media().getVideoTracks().length > 0
+			const open = this.video_live()
 			if( open === this.cam() ) return null
 
-			if( open ) this.video_off()
-			else $mol_wire_async( this ).video_open( this.facing() ).catch( $mol_fail_log )
+			if( open ) {
+				if( !this.cam_keep() ) this.video_off()
+			} else if( this.visible() ) {
+				$mol_wire_async( this ).video_open( this.facing() ).catch( $mol_fail_log )
+			}
 
 			return null
+		}
+
+		video_live() {
+			return this.media().getVideoTracks().some( track => track.readyState !== 'ended' )
+		}
+
+		@ $mol_mem
+		track_touched( next?: number ) {
+			return next ?? 0
+		}
+
+		video_paused() {
+
+			this.track_touched()
+			this.video_changed()
+
+			if( !this.cam() || this.screen_track ) return false
+
+			const track = this.media().getVideoTracks()[ 0 ]
+			if( !track ) return false
+
+			return track.readyState === 'ended' || track.muted
 		}
 
 		cam_switch() {
@@ -367,17 +636,6 @@ namespace $ {
 			this.video_open( this.facing() )
 		}
 
-		video_broken() {
-			const track = this.media().getVideoTracks()[ 0 ]
-			if( !track ) return false
-			return track.readyState === 'ended' || track.muted
-		}
-
-		video_lost() {
-			if( !this.visible() ) return
-			this.video_restore()
-		}
-
 		@ $mol_mem
 		video_watch() {
 
@@ -386,7 +644,16 @@ namespace $ {
 			const track = this.media().getVideoTracks()[ 0 ]
 			if( !track ) return null
 
-			return new $mol_dom_listener( track, 'ended', ()=> $mol_wire_async( this ).video_lost() )
+			const touch = ()=> this.track_touched( this.track_touched() + 1 )
+			const kinds = [ 'ended', 'mute', 'unmute' ]
+
+			for( const kind of kinds ) track.addEventListener( kind, touch )
+
+			return {
+				destructor: ()=> {
+					for( const kind of kinds ) track.removeEventListener( kind, touch )
+				},
+			}
 		}
 
 		@ $mol_mem
@@ -402,10 +669,32 @@ namespace $ {
 
 		@ $mol_mem
 		video_check() {
-			if( !this.visible() ) return null
-			if( this.video_broken() ) $mol_wire_async( this ).video_restore()
+
+			this.track_touched()
+			this.video_changed()
+
+			const track = this.media().getVideoTracks()[ 0 ]
+
+			if( !this.visible() || !this.cam() || this.screen_track || !track || track.readyState === 'ended' || !track.muted ) {
+				this.muted_since = 0
+				return null
+			}
+
+			const now = this.now( 1_000 )
+			if( !this.muted_since ) this.muted_since = now
+
+			if( $bog_gram_call_room.muted_due( now - this.muted_since, now - this.restore_at ) ) {
+				this.restore_at = now
+				this.muted_since = 0
+				$mol_wire_async( this ).video_restore().catch( $mol_fail_log )
+			}
+
 			return null
 		}
+
+		muted_since = 0
+
+		restore_at = Number.NEGATIVE_INFINITY
 
 		@ $mol_mem
 		unload_watch() {
@@ -434,11 +723,12 @@ namespace $ {
 		media_apply() {
 
 			this.video_changed()
+			this.audio_changed()
 
 			const stream = this.media()
 
 			for( const track of stream.getAudioTracks() ) track.enabled = this.mic()
-			for( const track of stream.getVideoTracks() ) track.enabled = this.cam()
+			for( const track of stream.getVideoTracks() ) track.enabled = this.cam() || this.screen()
 
 			return stream
 		}
@@ -485,9 +775,12 @@ namespace $ {
 			this.audio_session()
 			this.visible_watch()
 			this.media_apply()
+			this.screen_sync()
 			this.video_sync()
 			this.video_watch()
 			this.video_check()
+			this.devices_watch()
+			this.audio_watch()
 			this.beat()
 
 			for( const peer of this.peers() ) peer.status()

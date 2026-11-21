@@ -2,6 +2,20 @@ namespace $.$$ {
 
 	$mol_style_define( $bog_gram_call, {
 
+		Invite_qr_box: {
+			background: {
+				color: '#ffffff',
+			},
+			padding: '0.75rem',
+			borderRadius: '0.75rem',
+		},
+
+		Invite_qr: {
+			width: '16rem',
+			height: '16rem',
+			maxWidth: '100%',
+		},
+
 		Knocks: {
 			padding: $mol_gap.block,
 			gap: $mol_gap.space,

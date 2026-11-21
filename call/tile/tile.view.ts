@@ -9,6 +9,7 @@ namespace $.$$ {
 		override status_text() {
 			const status = this.status()
 			if( !status || status === 'connected' ) return ''
+			if( status === 'paused' ) return this.paused_text()
 			if( status === 'failed' ) return this.failed_text()
 			return this.connecting_text()
 		}
@@ -72,6 +73,41 @@ namespace $.$$ {
 			return this.part( 'audio' )
 		}
 
+		@ $mol_mem
+		meter() {
+
+			const sound = this.sound() as MediaStream | null
+			const Context = this.$.$mol_dom_context.AudioContext
+			if( !sound || !Context ) return null
+
+			const context = new Context()
+			const analyser = context.createAnalyser()
+			analyser.fftSize = 256
+			context.createMediaStreamSource( sound ).connect( analyser )
+
+			return Object.assign( analyser, {
+				bytes: new Uint8Array( analyser.fftSize ),
+				destructor: ()=> { context.close().catch( ()=> {} ) },
+			} )
+		}
+
+		@ $mol_mem
+		level() {
+
+			this.$.$mol_state_time.now( 100 )
+
+			const meter = this.meter()
+			if( !meter ) return 0
+
+			meter.getByteTimeDomainData( meter.bytes )
+
+			return $bog_gram_call_room.level_of( meter.bytes )
+		}
+
+		override level_size() {
+			return `${ Math.round( this.level() * 100 ) }%`
+		}
+
 		video() {
 			return this.Video().dom_node() as HTMLVideoElement
 		}
@@ -87,6 +123,9 @@ namespace $.$$ {
 
 			const audio = this.audio()
 			audio.muted = this.muted()
+
+			const speaker = this.speaker()
+			if( audio.setSinkId && audio.sinkId !== speaker ) audio.setSinkId( speaker ).catch( ()=> {} )
 
 			this.Video().pause_event()
 			this.Sound().pause_event()

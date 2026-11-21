@@ -274,12 +274,20 @@ namespace $ {
 		}
 
 		video_replace( track: MediaStreamTrack | null ) {
+			this.track_replace( 'video', track )
+		}
+
+		audio_replace( track: MediaStreamTrack | null ) {
+			this.track_replace( 'audio', track )
+		}
+
+		track_replace( kind: 'audio' | 'video', track: MediaStreamTrack | null ) {
 
 			const rtc = this.rtc()
 			if( !rtc ) return
 
 			for( const transceiver of rtc.getTransceivers() ) {
-				if( transceiver.receiver.track.kind !== 'video' ) continue
+				if( transceiver.receiver.track.kind !== kind ) continue
 				transceiver.sender.replaceTrack( track ).catch( $mol_fail_log )
 			}
 
