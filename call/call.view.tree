@@ -89,10 +89,12 @@ $bog_gram_call $mol_page
 		checked? <=> mic? true
 	Mic_source $mol_select
 		hint @ \Microphone source
+		trigger_content / <= Mic_source_icon $mol_icon_microphone_settings
 		dictionary <= mic_dictionary *
 		value? <=> mic_source? \
 	Speaker $mol_select
 		hint @ \Sound output
+		trigger_content / <= Speaker_icon $mol_icon_volume_high
 		dictionary <= speaker_dictionary *
 		value? <=> speaker_source? \
 	source_default @ \System default
