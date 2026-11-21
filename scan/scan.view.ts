@@ -9,7 +9,8 @@ namespace $.$$ {
 	export class $bog_gram_scan extends $.$bog_gram_scan {
 
 		sub() {
-			return this.scanning() ? [ this.Toggle(), this.Camera() ] : [ this.Toggle() ]
+			const toggle = this.toggle_show() ? [ this.Toggle() ] : []
+			return this.scanning() ? [ ...toggle, this.Camera() ] : toggle
 		}
 
 		@ $mol_mem
