@@ -54590,6 +54590,10 @@ declare namespace $ {
         holder_cut(key: string): void;
         import_audio(key: string, meta: $bog_music_track_baza_info, bytes: Uint8Array, playlist?: string): Promise<void>;
         save_local_track(file: File, order?: number): Promise<void>;
+        static name_norm(artist: string, title: string): string;
+        twin(artist: string, title: string): string;
+        twins(): string[][];
+        twins_merge(): Promise<void>;
         order_set(key: string, order: number): void;
         place(key: string): $bog_music_account_place;
         holders_other(key: string): string[];
@@ -63572,6 +63576,9 @@ declare namespace $.$$ {
         tracks_rescue(): boolean;
         private _lists_migrated;
         lists_migrate(): void;
+        private _twins_merged;
+        twins_merge(): Promise<void>;
+        twins_merge_once(): void;
         archive_mode(): boolean;
         visible_keys(): readonly string[];
         my_title(): string;
@@ -78795,6 +78802,15 @@ declare namespace $ {
 //# sourceMappingURL=microphone.view.tree.d.ts.map
 declare namespace $ {
 
+	export class $mol_icon_microphone_settings extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=settings.view.tree.d.ts.map
+declare namespace $ {
+
 	export class $mol_icon_camera extends $mol_icon {
 		path( ): string
 	}
@@ -79278,122 +79294,132 @@ declare namespace $ {
 		,
 		ReturnType< $mol_select['hint'] >
 	>
-	type $mol_select__dictionary_bog_gram_call_52 = $mol_type_enforce<
+	type $mol_select__trigger_content_bog_gram_call_52 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_select['trigger_content'] >
+	>
+	type $mol_select__dictionary_bog_gram_call_53 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic_dictionary'] >
 		,
 		ReturnType< $mol_select['dictionary'] >
 	>
-	type $mol_select__value_bog_gram_call_53 = $mol_type_enforce<
+	type $mol_select__value_bog_gram_call_54 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic_source'] >
 		,
 		ReturnType< $mol_select['value'] >
 	>
-	type $mol_select__hint_bog_gram_call_54 = $mol_type_enforce<
+	type $mol_select__hint_bog_gram_call_55 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_select['hint'] >
 	>
-	type $mol_select__dictionary_bog_gram_call_55 = $mol_type_enforce<
+	type $mol_select__trigger_content_bog_gram_call_56 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_select['trigger_content'] >
+	>
+	type $mol_select__dictionary_bog_gram_call_57 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_dictionary'] >
 		,
 		ReturnType< $mol_select['dictionary'] >
 	>
-	type $mol_select__value_bog_gram_call_56 = $mol_type_enforce<
+	type $mol_select__value_bog_gram_call_58 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_source'] >
 		,
 		ReturnType< $mol_select['value'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_57 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_59 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Cam_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_58 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_60 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_59 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_61 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__enabled_bog_gram_call_60 = $mol_type_enforce<
+	type $mol_check_icon__enabled_bog_gram_call_62 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam_able'] >
 		,
 		ReturnType< $mol_check_icon['enabled'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_61 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Screen_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_62 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_64 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_63 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_65 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['screen'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_64 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_66 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_65 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_67 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam_switch'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_66 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_68 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_67 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_69 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Stats_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_68 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_70 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_69 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_71 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['stats_show'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_70 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_72 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_71 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_73 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['pip'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_72 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_74 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_73 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_75 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_74 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_76 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['leave'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_75 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_77 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
@@ -79438,8 +79464,10 @@ declare namespace $ {
 		Join( ): $mol_button_major
 		Mic_icon( ): $mol_icon_microphone
 		mic( next?: boolean ): boolean
+		Mic_source_icon( ): $mol_icon_microphone_settings
 		mic_dictionary( ): Record<string, any>
 		mic_source( next?: string ): string
+		Speaker_icon( ): $mol_icon_volume_high
 		speaker_dictionary( ): Record<string, any>
 		speaker_source( next?: string ): string
 		Cam_icon( ): $mol_icon_video
@@ -80832,6 +80860,8 @@ declare namespace $ {
         knocks_all(id: string): string[];
         knocks_of(id: string): string[];
         forget(entry: string): void;
+        admitting: Set<string>;
+        admit(entry: string): boolean;
         auto(): number;
     }
 }

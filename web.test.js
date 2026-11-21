@@ -8092,6 +8092,31 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        async 'Файл из выгрузки находит исходный трек, дубль ранжируется после трека с обложкой'($) {
+            const land = $giper_baza_land.make({ $ });
+            const account = land.Data($bog_music_account_baza);
+            const ops = {
+                fill() {
+                    account.save_track('0_1', { artist: 'PedrinhoWG', title: `JoJo's Bizarre Adventure: Stone Ocean - OP || Opening 1 v2 [HD]`, duration: 90, cover: 'https://i.ytimg.com/vi/x/hqdefault.jpg' });
+                    account.save_track('0_2', { artist: '007', title: `003 - Eve - 風のアンセム (Wind's Anthem)`, duration: 0, cover: '' });
+                    return true;
+                },
+                find() {
+                    const jojo = $bog_music_account_baza.parse_filename(`001 - PedrinhoWG - JoJo's Bizarre Adventure_ Stone Ocean - OP __ Opening 1 v2 [HD].m4a`);
+                    const eve = $bog_music_account_baza.parse_filename(`012 - 007 - 003 - Eve - 風のアンセム (Wind's Anthem).mp3`);
+                    return { jojo: account.twin(jojo.artist, jojo.title), eve: account.twin(eve.artist, eve.title), order: eve.order };
+                },
+                twins() {
+                    account.save_track('0_3', { artist: 'PedrinhoWG', title: `JoJo's Bizarre Adventure_ Stone Ocean - OP __ Opening 1 v2 [HD]`, duration: 0, cover: '' });
+                    return account.twins();
+                },
+            };
+            await $mol_wire_async(ops).fill();
+            const found = await $mol_wire_async(ops).find();
+            const twins = await $mol_wire_async(ops).twins();
+            $mol_assert_equal(found, { jojo: '0_1', eve: '0_2', order: 12 });
+            $mol_assert_equal(twins, [['0_1', '0_3']]);
+        },
         async 'Треки под убитым ключом корня возвращаются на место пустого Tracks'($) {
             const land = $giper_baza_land.make({ $ });
             const account = land.Data($bog_music_account_baza);
@@ -10766,6 +10791,32 @@ var $;
             const left = await $mol_wire_async(ops).admit($.$giper_baza_auth.current().pass().lord().str);
             $mol_assert_equal(waiting, [own]);
             $mol_assert_equal(left, []);
+        },
+        async 'При auto впуск доводится до конца даже для стучащегося, у которого уже есть ранг, стук стирается только после впуска'($) {
+            const group = 'group_link';
+            let hall = '';
+            let calls = 0;
+            const lobby = $bog_gram_lobby.make({ $, apply: () => { ++calls; return 'lord'; } });
+            const meet = $bog_gram_meet.make({ $, Lobby: () => lobby, meet_of: (id) => id === group ? hall : '', mode: () => 'auto' });
+            meet.Roster().ids = () => [group];
+            meet.Talk().admin_me = () => true;
+            meet.Talk().member_is = () => true;
+            const ops = {
+                knock() {
+                    hall = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_post('just')]]).link().str;
+                    return meet.knock(hall, group);
+                },
+                auto() {
+                    return [meet.auto(), meet.knocks_all(group).length];
+                },
+            };
+            await $mol_wire_async(ops).knock();
+            const first = await $mol_wire_async(ops).auto();
+            await new Promise(done => setTimeout(done, 200));
+            const last = await $mol_wire_async(ops).auto();
+            $mol_assert_equal(first[1], 1);
+            $mol_assert_equal(calls, 1);
+            $mol_assert_equal(last[1], 0);
         },
         async 'Переход по ссылке с открытой комнатой сразу ведёт в звонок, без комнаты остаётся заявка'($) {
             const group = 'group_link';

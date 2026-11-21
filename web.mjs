@@ -47296,13 +47296,85 @@ var $;
         }
         async save_local_track(file, order) {
             const { artist, title, order: parsed_order } = $bog_music_account_baza.parse_filename(file.name);
+            const self = $mol_wire_async(this);
+            const twin = await self.twin(artist, title);
+            if (twin) {
+                if (await $bog_music_disk.probe(twin)) {
+                    $bog_music_log.act(`файл с устройства: ${file.name} уже есть как ${twin}, пропущен`, this.land_id());
+                    return;
+                }
+                $bog_music_log.act(`файл с устройства: ${file.name} → к треку ${twin}`, this.land_id());
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                await $bog_music_disk.put(twin, bytes);
+                await self.holder_add(twin);
+                if (this.track(twin)?.Lufs()?.val() == null)
+                    this.lufs_measure(twin, bytes);
+                return;
+            }
             const key = $bog_music_account_baza.key_make(`${file.name}|${file.size}|${file.lastModified}`);
             $bog_music_log.act(`файл с устройства: ${file.name}, ${file.size} байт → ${artist} — ${title}`, this.land_id());
             const bytes = new Uint8Array(await file.arrayBuffer());
             await this.import_audio(key, { artist, title, duration: 0, cover: '' }, bytes);
             const want = parsed_order ?? order;
             if (want != null)
-                await $mol_wire_async(this).order_set(key, want);
+                await self.order_set(key, want);
+        }
+        static name_norm(artist, title) {
+            const safe = (s) => (s || '').replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').trim().slice(0, 80);
+            const full = artist ? `${safe(artist)} - ${safe(title)}` : safe(title);
+            return full
+                .replace(/[–—]/g, '-')
+                .replace(/^(?:\d{1,4}(?:\s*-\s*|\.\s+))+/, '')
+                .replace(/[_\s]+/g, ' ')
+                .trim()
+                .toLowerCase();
+        }
+        twin(artist, title) {
+            const norm = $bog_music_account_baza.name_norm(artist, title);
+            const dict = this.tracks();
+            for (const key of (dict.keys() ?? [])) {
+                const info = dict.key(key)?.info();
+                if (!info)
+                    continue;
+                if ($bog_music_account_baza.name_norm(info.artist, info.title) === norm)
+                    return key;
+            }
+            return '';
+        }
+        twins() {
+            const dict = this.tracks();
+            const groups = new Map();
+            for (const key of (dict.keys() ?? [])) {
+                const info = dict.key(key)?.info();
+                if (!info)
+                    continue;
+                const norm = $bog_music_account_baza.name_norm(info.artist, info.title);
+                groups.set(norm, [...groups.get(norm) ?? [], key]);
+            }
+            const rank = (key) => [this.track(key).cover() ? 0 : 1, this.track(key).added()];
+            return [...groups.values()]
+                .filter(keys => keys.length > 1)
+                .map(keys => keys.sort((a, b) => {
+                const [ca, aa] = rank(a);
+                const [cb, ab] = rank(b);
+                return ca !== cb ? ca - cb : aa - ab;
+            }));
+        }
+        async twins_merge() {
+            const self = $mol_wire_async(this);
+            for (const [keeper, ...rest] of await self.twins()) {
+                for (const key of rest) {
+                    const file = await $bog_music_disk.file(key);
+                    if (file && !await $bog_music_disk.probe(keeper)) {
+                        await $bog_music_disk.put(keeper, new Uint8Array(await file.arrayBuffer()));
+                        await self.holder_add(keeper);
+                    }
+                    if (await self.place(keeper) === 'lost')
+                        continue;
+                    $bog_music_log.act(`дубль ${key} слит в ${keeper}`, this.land_id());
+                    await this.delete_track(key);
+                }
+            }
         }
         order_set(key, order) {
             this.track(key)?.order_set(order);
@@ -47485,9 +47557,9 @@ var $;
         static parse_filename(name) {
             let base = name.replace(/\.[^.]+$/, '').trim();
             let order = null;
-            const numbered = base.match(/^(\d{1,4})\s*[-–—]\s*(.+)$/);
-            if (numbered) {
-                order = Number(numbered[1]);
+            let numbered;
+            while (numbered = base.match(/^(\d{1,4})(?:\s*[-–—]\s*|\.\s+)(.+)$/)) {
+                order ??= Number(numbered[1]);
                 base = numbered[2].trim();
             }
             const m = base.match(/^(.+?)\s*[-–—]\s*(.+)$/);
@@ -57183,7 +57255,7 @@ var $;
 var $;
 (function ($) {
     // Инкрементится автоматически git-хуком hooks/pre-push при каждом push.
-    $.$bog_music_version = 'v1.103';
+    $.$bog_music_version = 'v1.104';
 })($ || ($ = {}));
 
 ;
@@ -57253,6 +57325,18 @@ var $;
                     return;
                 this._lists_migrated = true;
                 $mol_wire_async(this.account()).migrate_lists();
+            }
+            _twins_merged = false;
+            async twins_merge() {
+                await this.account().twins_merge().catch((error) => {
+                    $bog_music_log.err(`дубли не слиты: ${error?.message ?? error}`);
+                });
+            }
+            twins_merge_once() {
+                if (this._twins_merged)
+                    return;
+                this._twins_merged = true;
+                void this.twins_merge();
             }
             archive_mode() {
                 return this.page() === 'archive';
@@ -57411,6 +57495,7 @@ var $;
                                 $bog_music_log.err(`файл не загружен: ${file.name}: ${error?.message ?? error}`);
                             });
                         }
+                        await this.twins_merge();
                     })();
                 }
                 return next ?? [];
@@ -57834,6 +57919,7 @@ var $;
                 $mol_wire_async(this).fm_refresh();
                 this.lists_migrate();
                 this.tracks_rescue();
+                this.twins_merge_once();
                 return super.auto();
             }
         }
@@ -65759,6 +65845,18 @@ var $;
 
 
 ;
+	($.$mol_icon_microphone_settings) = class $mol_icon_microphone_settings extends ($.$mol_icon) {
+		path(){
+			return "M19,10H17.3C17.3,13 14.76,15.1 12,15.1C9.24,15.1 6.7,13 6.7,10H5C5,13.41 7.72,16.23 11,16.72V20H13V16.72C16.28,16.23 19,13.41 19,10M15,24H17V22H15M11,24H13V22H11M12,13A3,3 0 0,0 15,10V4A3,3 0 0,0 12,1A3,3 0 0,0 9,4V10A3,3 0 0,0 12,13M7,24H9V22H7V24Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_camera) = class $mol_icon_camera extends ($.$mol_icon) {
 		path(){
 			return "M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z";
@@ -66454,12 +66552,20 @@ var $;
 			if(next !== undefined) return next;
 			return true;
 		}
+		Mic_source_icon(){
+			const obj = new this.$.$mol_icon_microphone_settings();
+			return obj;
+		}
 		mic_dictionary(){
 			return {};
 		}
 		mic_source(next){
 			if(next !== undefined) return next;
 			return "";
+		}
+		Speaker_icon(){
+			const obj = new this.$.$mol_icon_volume_high();
+			return obj;
 		}
 		speaker_dictionary(){
 			return {};
@@ -66637,6 +66743,7 @@ var $;
 		Mic_source(){
 			const obj = new this.$.$mol_select();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Mic_source_hint")));
+			(obj.trigger_content) = () => ([(this.Mic_source_icon())]);
 			(obj.dictionary) = () => ((this.mic_dictionary()));
 			(obj.value) = (next) => ((this.mic_source(next)));
 			return obj;
@@ -66644,6 +66751,7 @@ var $;
 		Speaker(){
 			const obj = new this.$.$mol_select();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_call_Speaker_hint")));
+			(obj.trigger_content) = () => ([(this.Speaker_icon())]);
 			(obj.dictionary) = () => ((this.speaker_dictionary()));
 			(obj.value) = (next) => ((this.speaker_source(next)));
 			return obj;
@@ -66719,7 +66827,9 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "Join"));
 	($mol_mem(($.$bog_gram_call.prototype), "Mic_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "mic"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic_source_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "mic_source"));
+	($mol_mem(($.$bog_gram_call.prototype), "Speaker_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "speaker_source"));
 	($mol_mem(($.$bog_gram_call.prototype), "Cam_icon"));
 	($mol_mem(($.$bog_gram_call.prototype), "cam"));
@@ -68423,6 +68533,22 @@ var $;
                 return;
             hall.Knocks('auto').cut(entry);
         }
+        admitting = new Set();
+        admit(entry) {
+            if (this.admitting.has(entry))
+                return false;
+            this.admitting.add(entry);
+            const done = () => { this.admitting.delete(entry); };
+            $mol_wire_async(this.Lobby()).apply(entry, true).then(joined => {
+                if (!joined)
+                    return done();
+                $mol_wire_async(this).forget(entry).then(done, done);
+            }, error => {
+                done();
+                $mol_fail_log(error);
+            });
+            return true;
+        }
         auto() {
             let count = 0;
             for (const id of $bog_gram_soft(() => this.Roster().ids(), [])) {
@@ -68434,14 +68560,13 @@ var $;
                     this.room_make(id);
                 const auto = this.mode(id) === 'auto';
                 for (const entry of this.knocks_all(id)) {
-                    if (!this.Talk().member_is(id, this.Lobby().parse(entry).lord)) {
-                        if (!auto)
-                            continue;
-                        if (!$bog_gram_soft(() => this.Lobby().apply(entry, true), ''))
-                            continue;
-                        ++count;
+                    if (auto) {
+                        if (this.admit(entry))
+                            ++count;
+                        continue;
                     }
-                    this.forget(entry);
+                    if (this.Talk().member_is(id, this.Lobby().parse(entry).lord))
+                        this.forget(entry);
                 }
             }
             return count;
