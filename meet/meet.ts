@@ -272,6 +272,29 @@ namespace $ {
 			hall.Knocks( 'auto' )!.cut( entry )
 		}
 
+		admitting = new Set< string >()
+
+		admit( entry: string ) {
+
+			if( this.admitting.has( entry ) ) return false
+			this.admitting.add( entry )
+
+			const done = ()=> { this.admitting.delete( entry ) }
+
+			$mol_wire_async( this.Lobby() ).apply( entry, true ).then(
+				joined => {
+					if( !joined ) return done()
+					$mol_wire_async( this ).forget( entry ).then( done, done )
+				},
+				error => {
+					done()
+					$mol_fail_log( error )
+				},
+			)
+
+			return true
+		}
+
 		@ $mol_mem
 		auto() {
 
@@ -288,13 +311,12 @@ namespace $ {
 
 				for( const entry of this.knocks_all( id ) ) {
 
-					if( !this.Talk().member_is( id, this.Lobby().parse( entry )!.lord ) ) {
-						if( !auto ) continue
-						if( !$bog_gram_soft( ()=> this.Lobby().apply( entry, true ), '' ) ) continue
-						++ count
+					if( auto ) {
+						if( this.admit( entry ) ) ++ count
+						continue
 					}
 
-					this.forget( entry )
+					if( this.Talk().member_is( id, this.Lobby().parse( entry )!.lord ) ) this.forget( entry )
 				}
 
 			}

@@ -78,6 +78,40 @@ namespace $ {
 
 		},
 
+		async 'При auto впуск доводится до конца даже для стучащегося, у которого уже есть ранг, стук стирается только после впуска'( $ ) {
+
+			const group = 'group_link'
+			let hall = ''
+			let calls = 0
+
+			const lobby = $bog_gram_lobby.make({ $, apply: ()=> { ++ calls; return 'lord' } })
+			const meet = $bog_gram_meet.make({ $, Lobby: ()=> lobby, meet_of: ( id: string )=> id === group ? hall : '', mode: ()=> 'auto' as const })
+			meet.Roster().ids = ()=> [ group ]
+			meet.Talk().admin_me = ()=> true
+			meet.Talk().member_is = ()=> true
+
+			const ops = {
+				knock() {
+					hall = $.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_post( 'just' ) ] ]).link().str
+					return meet.knock( hall, group )
+				},
+				auto() {
+					return [ meet.auto(), meet.knocks_all( group ).length ]
+				},
+			}
+
+			await $mol_wire_async( ops ).knock()
+
+			const first = await $mol_wire_async( ops ).auto()
+			await new Promise( done => setTimeout( done, 200 ) )
+			const last = await $mol_wire_async( ops ).auto()
+
+			$mol_assert_equal( first[ 1 ], 1 )
+			$mol_assert_equal( calls, 1 )
+			$mol_assert_equal( last[ 1 ], 0 )
+
+		},
+
 		async 'Переход по ссылке с открытой комнатой сразу ведёт в звонок, без комнаты остаётся заявка'( $ ) {
 
 			const group = 'group_link'
