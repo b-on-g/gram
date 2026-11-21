@@ -331,6 +331,7 @@ namespace $.$$ {
 			const group = this.call_group( id )
 			if( !group ) return []
 			if( !$bog_gram_soft( ()=> this.Talk().admin_me( group ), false ) ) return []
+			if( this.Meet().meet_of( group ) && this.Meet().mode( group ) === 'auto' ) return []
 			return this.asks_for( group )
 		}
 
@@ -645,8 +646,12 @@ namespace $.$$ {
 		}
 
 		meet_request( link: string, owner: string ) {
-			const { plan, group } = this.Meet().take( link, owner )
+			const { plan, group, room } = this.Meet().take( link, owner )
 			if( plan === 'open' ) this.dialog_select( group )
+			if( plan === 'call' ) {
+				if( this.Talk().inside( group ) ) this.dialog_select( group )
+				this.call_open( room )
+			}
 			return plan
 		}
 
@@ -664,7 +669,7 @@ namespace $.$$ {
 
 		@ $mol_action
 		meet_go( group: string ) {
-			const room = this.Meet().room( group )
+			const room = this.Meet().room_known( group ) ? '' : this.Meet().room( group )
 			this.Meet().wait( '' )
 			this.Meet().room_wait( room )
 			this.dialog_select( group )

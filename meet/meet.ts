@@ -32,9 +32,20 @@ namespace $ {
 			return this.land( link ).Data( $bog_gram_meet_hall )
 		}
 
-		trusted( link: string, owner: string, field: 'Group' | 'Title' | 'Confirm' ) {
+		trusted( link: string, owner: string, field: 'Group' | 'Title' | 'Confirm' | 'Room' ) {
 			const value = this.hall( link )[ field ]()?.vary_of( new $giper_baza_link( owner ) )
 			return String( value ?? '' )
+		}
+
+		room_of( link: string, owner: string ) {
+			if( !link || !owner ) return ''
+			if( !$giper_baza_link.check( link ) || !$giper_baza_link.check( owner ) ) return ''
+			const room = $bog_gram_soft( ()=> this.trusted( link, owner, 'Room' ), '' )
+			return room && $giper_baza_link.check( room ) ? room : ''
+		}
+
+		room_known( id: string ) {
+			return this.room_of( this.meet_of( id ), this.Lobby().join_owner_of( id ) )
 		}
 
 		@ $mol_mem_key
@@ -90,8 +101,17 @@ namespace $ {
 			const session = this.Talk().session( id )
 			if( !session ) return ''
 
-			const land = this.$.$bog_gram_call_room.grab( [] )
-			land.Data( $bog_gram_call_land ).Invite( 'auto' )!.val( this.uri( id ) )
+			const known = this.room_known( id )
+
+			const land = known
+				? this.land( known )
+				: this.$.$bog_gram_call_room.grab( null )
+
+			if( !known ) {
+				land.Data( $bog_gram_call_land ).Invite( 'auto' )!.val( this.uri( id ) )
+				const link = this.meet_of( id )
+				if( link && this.owner_me( id ) ) this.hall( link ).Room( 'auto' )!.val( land.link().str )
+			}
 
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Call( 'auto' )!.val( land.link() )
@@ -127,20 +147,24 @@ namespace $ {
 			return this.$.$mol_state_arg.value( 'by' ) ?? ''
 		}
 
-		take( link: string, owner: string ): { plan: 'skip' | 'open' | 'ask', group: string } {
+		take( link: string, owner: string ): { plan: 'skip' | 'open' | 'ask' | 'call', group: string, room: string } {
 
 			const group = this.group_of([ link, owner ])
+			const room = group ? this.room_of( link, owner ) : ''
 			this.$.$mol_state_arg.value( 'meet', null )
 			this.$.$mol_state_arg.value( 'by', null )
 
-			if( !group ) return { plan: 'skip', group }
-			if( this.Talk().inside( group ) && this.Lobby().taken( group ) ) return { plan: 'open', group }
+			if( !group ) return { plan: 'skip', group, room }
+
+			if( this.Talk().inside( group ) && this.Lobby().taken( group ) ) {
+				return { plan: room ? 'call' : 'open', group, room }
+			}
 
 			this.Lobby().send( group, owner )
 			this.knock( link, group )
 			this.wait( group )
 
-			return { plan: 'ask', group }
+			return { plan: room ? 'call' : 'ask', group, room }
 		}
 
 		@ $mol_mem

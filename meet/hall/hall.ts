@@ -4,6 +4,7 @@ namespace $ {
 		Group: $giper_baza_atom_text,
 		Title: $giper_baza_atom_text,
 		Confirm: $giper_baza_atom_text,
+		Room: $giper_baza_atom_text,
 		Knocks: $giper_baza_list_str,
 	}) {}
 

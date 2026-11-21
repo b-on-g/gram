@@ -78,6 +78,52 @@ namespace $ {
 
 		},
 
+		async 'Переход по ссылке с открытой комнатой сразу ведёт в звонок, без комнаты остаётся заявка'( $ ) {
+
+			const group = 'group_link'
+
+			const ops = {
+				run() {
+
+					const owner = $.$giper_baza_auth.current().pass().lord().str
+
+					const make = ( room: string )=> {
+						const land = $.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_post( 'just' ) ] ])
+						const hall = land.Data( $bog_gram_meet_hall )
+						hall.Group( 'auto' )!.val( group )
+						if( room ) hall.Room( 'auto' )!.val( room )
+						return land.link().str
+					}
+
+					const room = $.$giper_baza_glob.land_grab([ [ null, $giper_baza_rank_post( 'just' ) ] ]).link().str
+					const open = make( room )
+					const old = make( '' )
+
+					const meet = $bog_gram_meet.make({ $ })
+					meet.Talk().inside = ()=> false
+					meet.Lobby().send = ()=> {}
+					meet.knock = ()=> ''
+
+					return {
+						room,
+						owner,
+						open: meet.take( open, owner ),
+						old: meet.take( old, owner ),
+						stranger: meet.room_of( open, 'not_a_link' ),
+					}
+				},
+			}
+
+			const result = await $mol_wire_async( ops ).run()
+
+			$mol_assert_equal( result.open.plan, 'call' )
+			$mol_assert_equal( result.open.room, result.room )
+			$mol_assert_equal( result.old.plan, 'ask' )
+			$mol_assert_equal( result.old.room, '' )
+			$mol_assert_equal( result.stranger, '' )
+
+		},
+
 		async 'Приглашение без ключа не открывает чат встречи, ключ к группе и сессии открывает'( $ ) {
 
 			const owner = await $.$giper_baza_auth._generate()
