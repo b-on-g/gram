@@ -27,6 +27,7 @@ $bog_gram_settings $bog_gram_page
 	Lights $bog_theme_toggle
 		theme_auto <= Theme
 	Lang $mol_locale_select
+		Trigger_icon null
 		hint @ \Language
 		dictionary *
 			en \English
@@ -60,9 +61,6 @@ $bog_gram_settings $bog_gram_page
 			content /
 				<= My_id_text $mol_paragraph
 					title <= my_lord
-				<= My_id_copy $mol_button_copy
-					title @ \Copy
-					text <= my_lord
 		<= Invite $mol_labeler
 			title @ \Link to me
 			content /
