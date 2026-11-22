@@ -60007,16 +60007,10 @@ var $;
 			(obj.title) = () => ((this.my_lord()));
 			return obj;
 		}
-		My_id_copy(){
-			const obj = new this.$.$mol_button_copy();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_My_id_copy_title")));
-			(obj.text) = () => ((this.my_lord()));
-			return obj;
-		}
 		My_id(){
 			const obj = new this.$.$mol_labeler();
 			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_settings_My_id_title")));
-			(obj.content) = () => ([(this.My_id_text()), (this.My_id_copy())]);
+			(obj.content) = () => ([(this.My_id_text())]);
 			return obj;
 		}
 		Invite_hint(){
@@ -60302,6 +60296,7 @@ var $;
 		}
 		Lang(){
 			const obj = new this.$.$mol_locale_select();
+			(obj.Trigger_icon) = () => (null);
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_settings_Lang_hint")));
 			(obj.dictionary) = () => ({
 				"en": "English", 
@@ -60372,7 +60367,6 @@ var $;
 	($mol_mem(($.$bog_gram_settings.prototype), "Logs"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Name_field"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id_text"));
-	($mol_mem(($.$bog_gram_settings.prototype), "My_id_copy"));
 	($mol_mem(($.$bog_gram_settings.prototype), "My_id"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_hint"));
 	($mol_mem(($.$bog_gram_settings.prototype), "Invite_text"));
@@ -60473,7 +60467,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.212';
+    $.$bog_gram_version = '1.0.213';
 })($ || ($ = {}));
 
 ;
