@@ -198,6 +198,9 @@ $bog_gram_chat $bog_gram_page
 				send? <=> message_send? null
 	Rich_toggle $mol_check_icon
 		hint @ \Formatting
+		event *
+			^
+			mousedown? <=> rich_hold? null
 		checked? <=> rich_mode?
 		Icon <= Rich_icon $mol_icon_format_text
 	caption_hint @ \Add a caption…

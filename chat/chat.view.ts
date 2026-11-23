@@ -662,6 +662,11 @@ namespace $.$$ {
 			return this.$.$mol_state_local.value( '$bog_gram_chat.rich', next ) ?? false
 		}
 
+		override rich_hold( next?: Event ) {
+			next?.preventDefault()
+			return null
+		}
+
 		@ $mol_mem_key
 		override message_rich( id: string ) {
 			return this.message_pawn( id )?.Html()?.val() ?? ''

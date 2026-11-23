@@ -8,6 +8,8 @@ namespace $.$$ {
 
 	const kept = new Set([ ... blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP' ])
 
+	const blank = String.fromCharCode( 0x200b )
+
 	function body_of( html: string ) {
 		return $mol_dom_parse( `<!doctype html><body>${ html }</body>`, 'text/html' ).body
 	}
@@ -34,7 +36,53 @@ namespace $.$$ {
 		const body = body_of( html )
 		tidy( body )
 		body.normalize()
-		return body.innerHTML
+		return body.innerHTML.replaceAll( blank, '' )
+	}
+
+	function leaves( root: Node ): Node[] {
+		if( root.nodeType === root.TEXT_NODE || root.nodeName === 'BR' ) return [ root ]
+		return [ ... root.childNodes ].flatMap( leaves )
+	}
+
+	function leaf_size( leaf: Node ) {
+		return leaf.nodeName === 'BR' ? 1 : leaf.nodeValue!.length
+	}
+
+	export function $bog_gram_write_spot( root: Node, node: Node, offset: number ) {
+
+		const range = root.ownerDocument!.createRange()
+		range.setStart( root, 0 )
+		range.setEnd( node, offset )
+
+		const at = leaves( range.cloneContents() ).reduce( ( sum, leaf )=> sum + leaf_size( leaf ), 0 )
+		if( node.nodeType === node.TEXT_NODE ) return { at, tail: offset > 0 }
+
+		const prev = node.childNodes[ offset - 1 ]
+		const next = node.childNodes[ offset ]
+		const tail = Boolean( prev ) && prev.nodeName !== 'BR' && ( !next || !blocks.has( prev.nodeName ) )
+
+		return { at, tail }
+	}
+
+	export function $bog_gram_write_point( root: Node, spot: { at: number, tail: boolean } ): [ Node, number ] {
+
+		let rest = spot.at
+
+		for( const leaf of leaves( root ) ) {
+
+			const size = leaf_size( leaf )
+
+			if( leaf.nodeName === 'BR' ) {
+				if( rest === 0 ) return [ leaf.parentNode!, [ ... leaf.parentNode!.childNodes ].indexOf( leaf as ChildNode ) ]
+			} else {
+				if( spot.tail && rest > 0 ? rest <= size : rest < size ) return [ leaf, rest ]
+			}
+
+			rest -= size
+
+		}
+
+		return [ root, root.childNodes.length ]
 	}
 
 	export function $bog_gram_write_text( html: string ) {
@@ -326,53 +374,6 @@ namespace $.$$ {
 			return true
 		}
 
-		caret_keep( task: ()=> void ) {
-
-			if( !this.aim() ) return
-
-			const root = this.Content().dom_node()
-			const document = this.$.$mol_dom_context.document
-			const selection = document.getSelection()!
-			const mark = 'bog_gram_write_caret'
-
-			const node = selection.focusNode!
-			const line = ( node.nodeType === node.ELEMENT_NODE ? node as Element : node.parentElement! ).closest( 'p' )
-
-			let rest = 0
-			if( line && root.contains( line ) ) {
-				const before = document.createRange()
-				before.setStart( line, 0 )
-				before.setEnd( node, selection.focusOffset )
-				rest = before.toString().length
-				line.setAttribute( mark, '' )
-			}
-
-			try {
-				task()
-			} finally {
-
-				const marked = [ ... root.querySelectorAll( `[${ mark }]` ) ]
-				for( const el of marked ) el.removeAttribute( mark )
-
-				const place = ( node: Node ): boolean => {
-					if( node.nodeType === node.TEXT_NODE ) {
-						const length = node.nodeValue!.length
-						if( rest <= length ) {
-							selection.collapse( node, rest )
-							return true
-						}
-						rest -= length
-						return false
-					}
-					return [ ... node.childNodes ].some( place )
-				}
-
-				if( marked[0] && !place( marked[0] ) ) selection.collapse( marked[0], 0 )
-
-			}
-
-		}
-
 		override block_wrap( type: string, event: KeyboardEvent ) {
 			if( this.rich() ) this.caret_keep( ()=> super.block_wrap( type, event ) )
 		}
@@ -388,7 +389,92 @@ namespace $.$$ {
 		}
 
 		override inline_toggle( type: string, event: KeyboardEvent ) {
-			if( this.rich() ) this.caret_keep( ()=> super.inline_toggle( type, event ) )
+
+			if( !this.rich() ) return
+
+			this.menu_hide()
+			if( !this.aim() ) return
+
+			if( this.inline_start( type ) ) event.preventDefault()
+			else this.caret_keep( ()=> super.inline_toggle( type, event ) )
+
+		}
+
+		caret() {
+
+			const selection = this.$.$mol_dom_context.document.getSelection()
+			if( !selection?.rangeCount ) return null
+
+			const root = this.Content().dom_node()
+			if( !root.contains( selection.anchorNode ) || !root.contains( selection.focusNode ) ) return null
+
+			return selection
+		}
+
+		caret_keep( change: ()=> void ) {
+
+			if( !this.aim() ) return
+
+			const selection = this.caret()
+			if( !selection ) return
+
+			const root = this.Content().dom_node() as HTMLElement
+			const anchor = $bog_gram_write_spot( root, selection.anchorNode!, selection.anchorOffset )
+			const focus = $bog_gram_write_spot( root, selection.focusNode!, selection.focusOffset )
+
+			change()
+
+			root.focus({ preventScroll: true })
+			selection.setBaseAndExtent(
+				... $bog_gram_write_point( root, anchor ),
+				... $bog_gram_write_point( root, focus ),
+			)
+
+		}
+
+		inline_start( type: string ) {
+
+			const selection = this.caret()
+			if( !selection?.isCollapsed ) return false
+
+			const root = this.Content().dom_node() as HTMLElement
+			const node = selection.anchorNode!
+			const box = node.nodeType === node.ELEMENT_NODE ? node as Element : node.parentElement!
+
+			const outer = box.closest( type )
+			if( outer && outer !== root && root.contains( outer ) ) return false
+
+			const document = this.$.$mol_dom_context.document
+			const text = document.createTextNode( blank )
+			const inline = document.createElement( type )
+			inline.append( text )
+
+			selection.getRangeAt( 0 ).insertNode( inline )
+			this.save()
+
+			root.focus({ preventScroll: true })
+			selection.collapse( text, text.length )
+
+			return true
+		}
+
+		menu_hide() {
+			this.Inline_format_menu().showed( false )
+		}
+
+		override tools_hold( event?: Event ) {
+
+			const target = event?.target as Node
+
+			if( this.Tools().dom_node().contains( target ) ) event!.preventDefault()
+			else this.menu_hide()
+
+			return null
+		}
+
+		override tools_leave( event?: FocusEvent ) {
+			if( !this.dom_node().contains( event?.relatedTarget as Node ) ) this.menu_hide()
+			return null
 		}
 
 	}

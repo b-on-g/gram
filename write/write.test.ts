@@ -212,6 +212,49 @@ namespace $.$$ {
 
 		},
 
+		'Нажатие на панель не уводит фокус из поля, нажатие на текст остаётся браузеру'( $ ) {
+
+			const write = $bog_gram_write.make({ $, rich: ()=> true })
+			const down = ( target: Node )=> {
+				let prevented = false
+				write.tools_hold({ target, preventDefault: ()=> { prevented = true } } as unknown as Event )
+				return prevented
+			}
+
+			$mol_assert_equal( down( write.Tools().dom_node() ), true )
+			$mol_assert_equal( down( write.Content().dom_node() ), false )
+
+		},
+
+		'Каретка остаётся на своём месте, когда абзацы оборачиваются заново'( $ ) {
+
+			const document = $.$mol_dom_context.document
+			const root = document.createElement( 'div' )
+			root.innerHTML = '<p>раз</p><p><br></p><p>два</p>'
+
+			const end = $bog_gram_write_spot( root, root.childNodes[0].firstChild!, 3 )
+			const empty = $bog_gram_write_spot( root, root.childNodes[1], 0 )
+			const start = $bog_gram_write_spot( root, root.childNodes[2].firstChild!, 0 )
+
+			root.innerHTML = '<ul><p><strong>ра</strong>з</p></ul><blockquote><p><br></p></blockquote><p>два</p>'
+			const [ list, quote, last ] = [ ... root.childNodes ]
+
+			const same = ( point: [ Node, number ], node: Node, offset: number )=> {
+				$mol_assert_equal( point[0] === node, true )
+				$mol_assert_equal( point[1], offset )
+			}
+
+			same( $bog_gram_write_point( root, end ), list.firstChild!.lastChild!, 1 )
+			same( $bog_gram_write_point( root, empty ), quote.firstChild!, 0 )
+			same( $bog_gram_write_point( root, start ), last.firstChild!, 0 )
+
+		},
+
+		'Невидимая заготовка под каретку в сообщение не попадает'( $ ) {
+			const blank = String.fromCharCode( 0x200b )
+			$mol_assert_equal( $bog_gram_write_clean( `<p><strong>${ blank }раз</strong></p>` ), '<p><strong>раз</strong></p>' )
+		},
+
 	})
 
 }
