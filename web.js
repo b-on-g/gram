@@ -31183,7 +31183,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\tposition: relative;\n\toverflow: hidden;\n\ttouch-action: pan-y pan-right;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\ttouch-action: pan-y;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\ttransition: transform .2s ease-out;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\ttransition: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\tposition: absolute;\n\ttop: 0;\n\tbottom: 0;\n\tleft: 0;\n\tpadding: 0 0.5rem;\n\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n}\n\n");
+    $mol_style_attach("bog/gram/row/row.view.css", "[bog_gram_row][mol_button_typed][disabled] {\n\tpointer-events: auto;\n\tcursor: default;\n}\n\n[bog_gram_row][disabled]:hover {\n\tbox-shadow: none;\n}\n\n[bog_gram_row_current=\"true\"] {\n\tbackground-color: var(--mol_theme_control);\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_current=\"true\"] :where([mol_view]) {\n\tcolor: #ffffff;\n}\n\n[bog_gram_row_size=\"large\"] > [bog_gram_row_avatar],\n[bog_gram_row_size=\"large\"] > [bog_gram_row_sign] {\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_title] {\n\tfont-weight: bold;\n}\n\n[bog_gram_row_size=\"large\"] [bog_gram_row_note] {\n\tfont-size: 0.875rem;\n}\n\n[bog_gram_row][bog_gram_row_size=\"tiny\"] {\n\tpadding: 0.375rem 0.5rem;\n\tbackground-color: #8888881a;\n}\n\n[bog_gram_row_size=\"tiny\"] > [bog_gram_row_avatar] {\n\twidth: 2rem;\n\theight: 2rem;\n}\n\n[bog_gram_row_sign] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] {\n\tflex-shrink: 0;\n\tjustify-content: center;\n\talign-items: center;\n\tmin-width: 1.75rem;\n\tmin-height: 1.75rem;\n\tpadding: 0.25rem;\n\tborder-radius: 0.5rem;\n}\n\n[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 1rem;\n\theight: 1rem;\n}\n\n[bog_gram_row] > [mol_icon] {\n\tflex-shrink: 0;\n\twidth: 3rem;\n\theight: 3rem;\n}\n\n@media ( max-width: 30rem ) {\n\n\t[bog_gram_row_tools] > [mol_button] {\n\t\tmin-width: 2.75rem;\n\t\tmin-height: 2.75rem;\n\t}\n\n\t[bog_gram_row_tools] > [mol_button] > [mol_icon] {\n\t\twidth: 1.125rem;\n\t\theight: 1.125rem;\n\t}\n\n}\n\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] {\n\tposition: relative;\n\toverflow: hidden;\n\ttouch-action: pan-y pan-right;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_open=\"true\"] {\n\ttouch-action: pan-y;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > * {\n\ttransform: translateX( var( --bog_gram_row_shift, 0px ) );\n\ttransition: transform .2s ease-out;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"][bog_gram_row_drag=\"true\"] > * {\n\ttransition: none;\n}\n\n[bog_gram_row][bog_gram_row_swipe=\"true\"] > [bog_gram_row_tools] {\n\tposition: absolute;\n\ttop: 0;\n\tbottom: 0;\n\tleft: 0;\n\tpadding: 0 0.5rem;\n\ttransform: translateX( calc( var( --bog_gram_row_shift, 0px ) - 100% ) );\n}\n\n");
 })($ || ($ = {}));
 
 ;
@@ -31214,14 +31214,6 @@ var $;
             borderRadius: '0.75rem',
             color: $mol_theme.text,
             minWidth: 0,
-            '@': {
-                disabled: {
-                    true: {
-                        pointerEvents: 'auto',
-                        cursor: 'default',
-                    },
-                },
-            },
             Avatar: {
                 width: '2.5rem',
                 height: '2.5rem',
@@ -60467,7 +60459,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.222';
+    $.$bog_gram_version = '1.0.223';
 })($ || ($ = {}));
 
 ;
