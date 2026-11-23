@@ -26,15 +26,6 @@ namespace $.$$ {
 		color: $mol_theme.text,
 		minWidth: 0,
 
-		'@': {
-			disabled: {
-				true: {
-					pointerEvents: 'auto',
-					cursor: 'default',
-				},
-			},
-		},
-
 		Avatar: {
 			width: '2.5rem',
 			height: '2.5rem',
