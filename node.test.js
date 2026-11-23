@@ -42014,7 +42014,7 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_follow extends $mol_object {
-        static keys = ['invite', 'key', 'join', 'meet', 'by', 'users', 'settings', 'music'];
+        static keys = ['invite', 'key', 'join', 'meet', 'by', 'via', 'users', 'settings', 'music'];
         static params(uri) {
             const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
             const out = {};
@@ -42057,7 +42057,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.217';
+    $.$bog_gram_version = '1.0.222';
 })($ || ($ = {}));
 
 ;
@@ -44785,6 +44785,8 @@ var $;
     class $bog_gram_join extends $giper_baza_dict.with({
         Owner: $giper_baza_atom_text,
         State: $giper_baza_atom_text,
+        Admin: $giper_baza_atom_text,
+        Admin_state: $giper_baza_atom_text,
     }) {
     }
     $.$bog_gram_join = $bog_gram_join;
@@ -47365,6 +47367,20 @@ var $;
                 return !inside.has(ask.lord);
             });
         }
+        asks_sweep() {
+            const groups = new Set($bog_gram_soft(() => this.Roster().ids(), []));
+            let count = 0;
+            for (const entry of this.asks_all()) {
+                const ask = $bog_gram_soft(() => this.parse(entry), null);
+                if (!ask || !groups.has(ask.group))
+                    continue;
+                if (!$bog_gram_soft(() => this.Talk().lords(ask.group).includes(ask.lord), false))
+                    continue;
+                this.forget(entry);
+                ++count;
+            }
+            return count;
+        }
         lord_of(entry) {
             return this.parse(entry)?.lord ?? '';
         }
@@ -47423,13 +47439,22 @@ var $;
             if (!id)
                 return '';
             const owner = this.join_owner_of(id);
-            return this.$.$mol_state_arg.make_link(owner ? { join: id, by: owner } : { join: id });
+            if (!owner)
+                return this.$.$mol_state_arg.make_link({ join: id });
+            const via = this.join_via_of(id);
+            return this.$.$mol_state_arg.make_link(via && via !== owner ? { join: id, by: owner, via } : { join: id, by: owner });
+        }
+        join_via_of(id) {
+            return this.Talk().admin_me(id) ? this.Account().my_lord() : '';
         }
         join_id() {
             return this.$.$mol_state_arg.value('join') ?? '';
         }
         join_by() {
             return this.$.$mol_state_arg.value('by') ?? '';
+        }
+        join_via() {
+            return this.$.$mol_state_arg.value('via') ?? '';
         }
         lost(next) {
             return next ?? '';
@@ -47443,7 +47468,7 @@ var $;
                 return 'skip';
             return member ? 'open' : 'ask';
         }
-        join_take(id, by) {
+        join_take(id, by, via = '') {
             const my = this.Account().my_lord();
             const member = id !== my && Boolean($giper_baza_link.check(id)) && this.Talk().inside(id) && this.taken(id);
             const plan = this.join_plan(id, my, member);
@@ -47451,10 +47476,11 @@ var $;
                 const owner = by || this.join_owner_of(id);
                 this.lost(owner ? '' : id);
                 if (owner)
-                    this.send(id, owner);
+                    this.send(id, owner, via);
             }
             this.$.$mol_state_arg.value('join', null);
             this.$.$mol_state_arg.value('by', null);
+            this.$.$mol_state_arg.value('via', null);
             return plan;
         }
         task(group, owner) {
@@ -47541,6 +47567,18 @@ var $;
                 join?.Owner('auto')?.val(owner);
             join?.State('auto')?.val(state);
         }
+        admin_of(group) {
+            const join = $bog_gram_soft(() => this.store().Joining()?.key(group) ?? null, null);
+            return {
+                lord: $bog_gram_soft(() => String(join?.Admin()?.val() ?? ''), ''),
+                state: $bog_gram_soft(() => String(join?.Admin_state()?.val() ?? ''), ''),
+            };
+        }
+        admin_put(group, admin, state) {
+            const join = this.store().Joining('auto')?.key(group, 'auto');
+            join?.Admin('auto')?.val(admin);
+            join?.Admin_state('auto')?.val(state);
+        }
         join_drop(group) {
             const joining = this.store().Joining();
             if ((joining?.keys() ?? []).map(String).includes(group))
@@ -47564,18 +47602,24 @@ var $;
                     this.Account().denies_cut(entry);
             }
         }
-        send(id, owner) {
+        send(id, owner, via = '') {
             if (!id || !owner)
                 return;
             const store = this.store();
+            const admin = via !== owner && $bog_gram_lord.check(via) ? via : '';
             if (this.Roster().hidden().includes(id))
                 this.Account().undecide('hidden', id);
             const was_denied = this.denied().includes(id);
             if (was_denied)
                 this.denial_drop(id);
-            if (this.groups().includes(id) && !was_denied)
+            if (this.groups().includes(id) && !was_denied) {
+                if (admin && this.admin_of(id).lord !== admin)
+                    this.admin_put(id, admin, 'queued');
                 return;
+            }
             this.join_put(id, owner, 'queued');
+            if (admin || this.admin_of(id).lord)
+                this.admin_put(id, admin, 'queued');
             this.old_drop(id);
             store.Asks('auto').add(this.task(id, owner));
         }
@@ -47640,6 +47684,11 @@ var $;
             for (const id of groups) {
                 if (this.taken(id))
                     continue;
+                const admin = this.admin_of(id);
+                if (admin.lord && admin.state === 'queued') {
+                    if ($bog_gram_soft(() => this.deliver(id, admin.lord), false))
+                        this.admin_put(id, admin.lord, 'sent');
+                }
                 if (asks[id].state !== 'queued')
                     continue;
                 const owner = asks[id].owner || $bog_gram_soft(() => this.Talk().owner(id), null);
@@ -47694,6 +47743,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_lobby.prototype, "asks_of", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "asks_sweep", null);
     __decorate([
         $mol_action
     ], $bog_gram_lobby.prototype, "forget", null);
@@ -65066,7 +65118,7 @@ var $;
                 const id = this.Lobby().join_id();
                 if (!id)
                     return '';
-                $mol_wire_async(this).join_request(id, this.Lobby().join_by());
+                $mol_wire_async(this).join_request(id, this.Lobby().join_by(), this.Lobby().join_via());
                 return id;
             }
             placeholders() {
@@ -65100,8 +65152,8 @@ var $;
                 });
                 return this.page_at(frames, (own?.left ?? 0) + (own?.width ?? 0) / 2);
             }
-            join_request(id, by) {
-                const plan = this.Lobby().join_take(id, by);
+            join_request(id, by, via) {
+                const plan = this.Lobby().join_take(id, by, via);
                 if (plan === 'open')
                     this.dialog_select(id);
                 return plan;
@@ -65124,6 +65176,7 @@ var $;
                 $bog_gram_soft(() => this.notify_auto(), null);
                 $bog_gram_soft(() => this.outbox_flush(), null);
                 $bog_gram_soft(() => this.asks_flush(), null);
+                $bog_gram_soft(() => this.Lobby().asks_sweep(), 0);
                 $bog_gram_soft(() => this.monitor_fill(), null);
                 $bog_gram_soft(() => this.names_fill(), 0);
             }
@@ -67644,6 +67697,7 @@ var $;
             const lord = 'AAAAAAAA_BBBBBBBB';
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD/via=EEEEEEEE_FFFFFFFF'), { join: lord, by: 'CCCCCCCC_DDDDDDDD', via: 'EEEEEEEE_FFFFFFFF' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!meet=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { meet: lord, by: 'CCCCCCCC_DDDDDDDD' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
         },
@@ -75238,7 +75292,7 @@ var $;
             const owner_lord = owner.pass().lord().str;
             const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
             const my = 'LordMine';
-            const lobby = $bog_gram_lobby.make({ $, join_owner_of: () => owner_lord });
+            const lobby = $bog_gram_lobby.make({ $, join_owner_of: () => owner_lord, join_via_of: () => '' });
             const uri = lobby.join_uri(group);
             $mol_assert_equal(uri, $.$mol_state_arg.make_link({ join: group, by: owner_lord }));
             $mol_assert_equal(lobby.join_uri(''), '');
@@ -75362,6 +75416,93 @@ var $;
             $mol_assert_equal(lobby.asks()[group], { owner, state: 'sent' });
             $mol_assert_equal(store.Asks().items().length, 0);
             $mol_assert_equal(store.Asked().items().map(String), [task]);
+        },
+        'Ссылку админа подписывают создатель и админ, создателю и участнику второй адресат не нужен'($) {
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const me = 'EEEEEEEE_FFFFFFFF';
+            const uri = (my, admin) => $bog_gram_lobby.make({ $,
+                join_owner_of: () => owner,
+                Talk: () => $bog_gram_talk.make({ $, admin_me: () => admin }),
+                Account: () => $bog_gram_account.make({ $, my_lord: () => my }),
+            }).join_uri(group);
+            const plain = $.$mol_state_arg.make_link({ join: group, by: owner });
+            $mol_assert_equal(uri(me, true), $.$mol_state_arg.make_link({ join: group, by: owner, via: me }));
+            $mol_assert_equal(uri(me, false), plain);
+            $mol_assert_equal(uri(owner, true), plain);
+        },
+        'Заявка идёт в оба ящика, и недоступный не держит другой'($) {
+            class Boxes extends $mol_object {
+                static open(lord, next) {
+                    return next ?? false;
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], Boxes, "open", null);
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const got = [];
+            const lobby = lobby_with($, inbox, store, {
+                deliver: (id, lord) => {
+                    if (!Boxes.open(lord))
+                        return false;
+                    got.push(lord);
+                    return true;
+                },
+            });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const admin = 'EEEEEEEE_FFFFFFFF';
+            Boxes.open(admin, true);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin]);
+            $mol_assert_equal(lobby.admin_of(group), { lord: admin, state: 'sent' });
+            $mol_assert_equal(lobby.queued(), [group]);
+            Boxes.open(owner, true);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin, owner]);
+            $mol_assert_equal(lobby.sent(), [group]);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin, owner]);
+        },
+        'Ссылка другого админа досылает заявку ему, мусор и сам создатель второго адресата не заводят'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const got = [];
+            const lobby = lobby_with($, inbox, store, { deliver: (id, lord) => { got.push(lord); return true; } });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const admin = 'EEEEEEEE_FFFFFFFF';
+            lobby.send(group, owner, 'мусор');
+            lobby.send(group, owner, owner);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [owner]);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [owner, admin]);
+        },
+        'Заявка того, кто уже в группе, вычищается из ящика, остальные остаются'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const inside = 'CCCCCCCC_DDDDDDDD';
+            const outside = 'EEEEEEEE_FFFFFFFF';
+            const foreign = 'GGGGGGGG_HHHHHHHH';
+            const account = $bog_gram_account.make({ $, inbox_store: () => inbox, inbox_stores: () => [inbox], dialogs_store: () => store });
+            const lobby = $bog_gram_lobby.make({ $,
+                Account: () => account,
+                Roster: () => $bog_gram_roster.make({ $, ids: () => [group] }),
+                Talk: () => $bog_gram_talk.make({ $, lords: () => [inside] }),
+            });
+            const stay = [lobby.entry(group, outside, 'key'), lobby.entry(foreign, inside, 'key')];
+            for (const entry of [lobby.entry(group, inside, 'key'), ...stay])
+                inbox.Joins('auto').add(entry);
+            $mol_assert_equal(lobby.asks_sweep(), 1);
+            const left = inbox.Joins().items().map(String);
+            $mol_assert_equal(left.sort(), stay.sort());
         },
         async 'Заявка собирается и разбирается, мусор и подложенный ключ отсекаются'($) {
             const lobby = $bog_gram_lobby.make({ $ });

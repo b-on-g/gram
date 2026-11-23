@@ -2152,6 +2152,7 @@ var $;
             const lord = 'AAAAAAAA_BBBBBBBB';
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!invite=' + lord + '/key=abc%2Fdef'), { invite: lord, key: 'abc/def' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { join: lord, by: 'CCCCCCCC_DDDDDDDD' });
+            $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD/via=EEEEEEEE_FFFFFFFF'), { join: lord, by: 'CCCCCCCC_DDDDDDDD', via: 'EEEEEEEE_FFFFFFFF' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!meet=' + lord + '/by=CCCCCCCC_DDDDDDDD'), { meet: lord, by: 'CCCCCCCC_DDDDDDDD' });
             $mol_assert_equal($bog_gram_follow.params('https://b-on-g.github.io/gram/#!users=' + lord + '/giper_baza_yard_masters=https%3A%2F%2Fevil'), { users: lord });
         },
@@ -10181,7 +10182,7 @@ var $;
             const owner_lord = owner.pass().lord().str;
             const group = new $giper_baza_link(owner_lord + '_KJhgFdSa').str;
             const my = 'LordMine';
-            const lobby = $bog_gram_lobby.make({ $, join_owner_of: () => owner_lord });
+            const lobby = $bog_gram_lobby.make({ $, join_owner_of: () => owner_lord, join_via_of: () => '' });
             const uri = lobby.join_uri(group);
             $mol_assert_equal(uri, $.$mol_state_arg.make_link({ join: group, by: owner_lord }));
             $mol_assert_equal(lobby.join_uri(''), '');
@@ -10305,6 +10306,93 @@ var $;
             $mol_assert_equal(lobby.asks()[group], { owner, state: 'sent' });
             $mol_assert_equal(store.Asks().items().length, 0);
             $mol_assert_equal(store.Asked().items().map(String), [task]);
+        },
+        'Ссылку админа подписывают создатель и админ, создателю и участнику второй адресат не нужен'($) {
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const me = 'EEEEEEEE_FFFFFFFF';
+            const uri = (my, admin) => $bog_gram_lobby.make({ $,
+                join_owner_of: () => owner,
+                Talk: () => $bog_gram_talk.make({ $, admin_me: () => admin }),
+                Account: () => $bog_gram_account.make({ $, my_lord: () => my }),
+            }).join_uri(group);
+            const plain = $.$mol_state_arg.make_link({ join: group, by: owner });
+            $mol_assert_equal(uri(me, true), $.$mol_state_arg.make_link({ join: group, by: owner, via: me }));
+            $mol_assert_equal(uri(me, false), plain);
+            $mol_assert_equal(uri(owner, true), plain);
+        },
+        'Заявка идёт в оба ящика, и недоступный не держит другой'($) {
+            class Boxes extends $mol_object {
+                static open(lord, next) {
+                    return next ?? false;
+                }
+            }
+            __decorate([
+                $mol_mem_key
+            ], Boxes, "open", null);
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const got = [];
+            const lobby = lobby_with($, inbox, store, {
+                deliver: (id, lord) => {
+                    if (!Boxes.open(lord))
+                        return false;
+                    got.push(lord);
+                    return true;
+                },
+            });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const admin = 'EEEEEEEE_FFFFFFFF';
+            Boxes.open(admin, true);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin]);
+            $mol_assert_equal(lobby.admin_of(group), { lord: admin, state: 'sent' });
+            $mol_assert_equal(lobby.queued(), [group]);
+            Boxes.open(owner, true);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin, owner]);
+            $mol_assert_equal(lobby.sent(), [group]);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [admin, owner]);
+        },
+        'Ссылка другого админа досылает заявку ему, мусор и сам создатель второго адресата не заводят'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const got = [];
+            const lobby = lobby_with($, inbox, store, { deliver: (id, lord) => { got.push(lord); return true; } });
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const owner = 'CCCCCCCC_DDDDDDDD';
+            const admin = 'EEEEEEEE_FFFFFFFF';
+            lobby.send(group, owner, 'мусор');
+            lobby.send(group, owner, owner);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [owner]);
+            lobby.send(group, owner, admin);
+            lobby.asks_flush();
+            $mol_assert_equal(got, [owner, admin]);
+        },
+        'Заявка того, кто уже в группе, вычищается из ящика, остальные остаются'($) {
+            const inbox = $giper_baza_land.make({ $ }).Data($bog_gram_inbox);
+            const store = $giper_baza_land.make({ $ }).Data($bog_gram_dialogs);
+            const group = 'AAAAAAAA_BBBBBBBB';
+            const inside = 'CCCCCCCC_DDDDDDDD';
+            const outside = 'EEEEEEEE_FFFFFFFF';
+            const foreign = 'GGGGGGGG_HHHHHHHH';
+            const account = $bog_gram_account.make({ $, inbox_store: () => inbox, inbox_stores: () => [inbox], dialogs_store: () => store });
+            const lobby = $bog_gram_lobby.make({ $,
+                Account: () => account,
+                Roster: () => $bog_gram_roster.make({ $, ids: () => [group] }),
+                Talk: () => $bog_gram_talk.make({ $, lords: () => [inside] }),
+            });
+            const stay = [lobby.entry(group, outside, 'key'), lobby.entry(foreign, inside, 'key')];
+            for (const entry of [lobby.entry(group, inside, 'key'), ...stay])
+                inbox.Joins('auto').add(entry);
+            $mol_assert_equal(lobby.asks_sweep(), 1);
+            const left = inbox.Joins().items().map(String);
+            $mol_assert_equal(left.sort(), stay.sort());
         },
         async 'Заявка собирается и разбирается, мусор и подложенный ключ отсекаются'($) {
             const lobby = $bog_gram_lobby.make({ $ });

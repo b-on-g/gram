@@ -42023,7 +42023,7 @@ var $;
 var $;
 (function ($) {
     class $bog_gram_follow extends $mol_object {
-        static keys = ['invite', 'key', 'join', 'meet', 'by', 'users', 'settings', 'music'];
+        static keys = ['invite', 'key', 'join', 'meet', 'by', 'via', 'users', 'settings', 'music'];
         static params(uri) {
             const hash = String(uri ?? '').split(/#!?/)[1] ?? '';
             const out = {};
@@ -42066,7 +42066,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.217';
+    $.$bog_gram_version = '1.0.222';
 })($ || ($ = {}));
 
 ;
@@ -44794,6 +44794,8 @@ var $;
     class $bog_gram_join extends $giper_baza_dict.with({
         Owner: $giper_baza_atom_text,
         State: $giper_baza_atom_text,
+        Admin: $giper_baza_atom_text,
+        Admin_state: $giper_baza_atom_text,
     }) {
     }
     $.$bog_gram_join = $bog_gram_join;
@@ -47374,6 +47376,20 @@ var $;
                 return !inside.has(ask.lord);
             });
         }
+        asks_sweep() {
+            const groups = new Set($bog_gram_soft(() => this.Roster().ids(), []));
+            let count = 0;
+            for (const entry of this.asks_all()) {
+                const ask = $bog_gram_soft(() => this.parse(entry), null);
+                if (!ask || !groups.has(ask.group))
+                    continue;
+                if (!$bog_gram_soft(() => this.Talk().lords(ask.group).includes(ask.lord), false))
+                    continue;
+                this.forget(entry);
+                ++count;
+            }
+            return count;
+        }
         lord_of(entry) {
             return this.parse(entry)?.lord ?? '';
         }
@@ -47432,13 +47448,22 @@ var $;
             if (!id)
                 return '';
             const owner = this.join_owner_of(id);
-            return this.$.$mol_state_arg.make_link(owner ? { join: id, by: owner } : { join: id });
+            if (!owner)
+                return this.$.$mol_state_arg.make_link({ join: id });
+            const via = this.join_via_of(id);
+            return this.$.$mol_state_arg.make_link(via && via !== owner ? { join: id, by: owner, via } : { join: id, by: owner });
+        }
+        join_via_of(id) {
+            return this.Talk().admin_me(id) ? this.Account().my_lord() : '';
         }
         join_id() {
             return this.$.$mol_state_arg.value('join') ?? '';
         }
         join_by() {
             return this.$.$mol_state_arg.value('by') ?? '';
+        }
+        join_via() {
+            return this.$.$mol_state_arg.value('via') ?? '';
         }
         lost(next) {
             return next ?? '';
@@ -47452,7 +47477,7 @@ var $;
                 return 'skip';
             return member ? 'open' : 'ask';
         }
-        join_take(id, by) {
+        join_take(id, by, via = '') {
             const my = this.Account().my_lord();
             const member = id !== my && Boolean($giper_baza_link.check(id)) && this.Talk().inside(id) && this.taken(id);
             const plan = this.join_plan(id, my, member);
@@ -47460,10 +47485,11 @@ var $;
                 const owner = by || this.join_owner_of(id);
                 this.lost(owner ? '' : id);
                 if (owner)
-                    this.send(id, owner);
+                    this.send(id, owner, via);
             }
             this.$.$mol_state_arg.value('join', null);
             this.$.$mol_state_arg.value('by', null);
+            this.$.$mol_state_arg.value('via', null);
             return plan;
         }
         task(group, owner) {
@@ -47550,6 +47576,18 @@ var $;
                 join?.Owner('auto')?.val(owner);
             join?.State('auto')?.val(state);
         }
+        admin_of(group) {
+            const join = $bog_gram_soft(() => this.store().Joining()?.key(group) ?? null, null);
+            return {
+                lord: $bog_gram_soft(() => String(join?.Admin()?.val() ?? ''), ''),
+                state: $bog_gram_soft(() => String(join?.Admin_state()?.val() ?? ''), ''),
+            };
+        }
+        admin_put(group, admin, state) {
+            const join = this.store().Joining('auto')?.key(group, 'auto');
+            join?.Admin('auto')?.val(admin);
+            join?.Admin_state('auto')?.val(state);
+        }
         join_drop(group) {
             const joining = this.store().Joining();
             if ((joining?.keys() ?? []).map(String).includes(group))
@@ -47573,18 +47611,24 @@ var $;
                     this.Account().denies_cut(entry);
             }
         }
-        send(id, owner) {
+        send(id, owner, via = '') {
             if (!id || !owner)
                 return;
             const store = this.store();
+            const admin = via !== owner && $bog_gram_lord.check(via) ? via : '';
             if (this.Roster().hidden().includes(id))
                 this.Account().undecide('hidden', id);
             const was_denied = this.denied().includes(id);
             if (was_denied)
                 this.denial_drop(id);
-            if (this.groups().includes(id) && !was_denied)
+            if (this.groups().includes(id) && !was_denied) {
+                if (admin && this.admin_of(id).lord !== admin)
+                    this.admin_put(id, admin, 'queued');
                 return;
+            }
             this.join_put(id, owner, 'queued');
+            if (admin || this.admin_of(id).lord)
+                this.admin_put(id, admin, 'queued');
             this.old_drop(id);
             store.Asks('auto').add(this.task(id, owner));
         }
@@ -47649,6 +47693,11 @@ var $;
             for (const id of groups) {
                 if (this.taken(id))
                     continue;
+                const admin = this.admin_of(id);
+                if (admin.lord && admin.state === 'queued') {
+                    if ($bog_gram_soft(() => this.deliver(id, admin.lord), false))
+                        this.admin_put(id, admin.lord, 'sent');
+                }
                 if (asks[id].state !== 'queued')
                     continue;
                 const owner = asks[id].owner || $bog_gram_soft(() => this.Talk().owner(id), null);
@@ -47703,6 +47752,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $bog_gram_lobby.prototype, "asks_of", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_lobby.prototype, "asks_sweep", null);
     __decorate([
         $mol_action
     ], $bog_gram_lobby.prototype, "forget", null);
@@ -65075,7 +65127,7 @@ var $;
                 const id = this.Lobby().join_id();
                 if (!id)
                     return '';
-                $mol_wire_async(this).join_request(id, this.Lobby().join_by());
+                $mol_wire_async(this).join_request(id, this.Lobby().join_by(), this.Lobby().join_via());
                 return id;
             }
             placeholders() {
@@ -65109,8 +65161,8 @@ var $;
                 });
                 return this.page_at(frames, (own?.left ?? 0) + (own?.width ?? 0) / 2);
             }
-            join_request(id, by) {
-                const plan = this.Lobby().join_take(id, by);
+            join_request(id, by, via) {
+                const plan = this.Lobby().join_take(id, by, via);
                 if (plan === 'open')
                     this.dialog_select(id);
                 return plan;
@@ -65133,6 +65185,7 @@ var $;
                 $bog_gram_soft(() => this.notify_auto(), null);
                 $bog_gram_soft(() => this.outbox_flush(), null);
                 $bog_gram_soft(() => this.asks_flush(), null);
+                $bog_gram_soft(() => this.Lobby().asks_sweep(), 0);
                 $bog_gram_soft(() => this.monitor_fill(), null);
                 $bog_gram_soft(() => this.names_fill(), 0);
             }

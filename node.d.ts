@@ -64526,7 +64526,7 @@ declare namespace $.$$ {
 
 declare namespace $ {
     class $bog_gram_follow extends $mol_object {
-        static keys: readonly ["invite", "key", "join", "meet", "by", "users", "settings", "music"];
+        static keys: readonly ["invite", "key", "join", "meet", "by", "via", "users", "settings", "music"];
         static params(uri: string): Record<string, string>;
         static decode(str: string): string;
         static go(uri: string): boolean;
@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.217";
+    const $bog_gram_version = "1.0.222";
 }
 
 declare namespace $ {
@@ -66501,6 +66501,8 @@ declare namespace $ {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Owner: (auto?: any) => $giper_baza_atom_text | null;
             readonly State: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Admin: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Admin_state: (auto?: any) => $giper_baza_atom_text | null;
         }>;
         path: string;
     } & {
@@ -66509,6 +66511,8 @@ declare namespace $ {
         } & {
             readonly Owner: typeof $giper_baza_atom_text;
             readonly State: typeof $giper_baza_atom_text;
+            readonly Admin: typeof $giper_baza_atom_text;
+            readonly Admin_state: typeof $giper_baza_atom_text;
         };
     };
     export class $bog_gram_join extends $bog_gram_join_base {
@@ -78721,17 +78725,20 @@ declare namespace $ {
         } | null;
         asks_all(): string[];
         asks_of(id: string): string[];
+        asks_sweep(): number;
         lord_of(entry: string): string;
         forget(entry: string): void;
         deny(entry: string): string;
         apply(entry: string, history: boolean): string;
         join_owner_of(id: string): string;
         join_uri(id: string): string;
+        join_via_of(id: string): string;
         join_id(): string;
         join_by(): string;
+        join_via(): string;
         lost(next?: string): string;
         join_plan(id: string, my: string, member: boolean): 'skip' | 'open' | 'ask';
-        join_take(id: string, by: string): "open" | "skip" | "ask";
+        join_take(id: string, by: string, via?: string): "open" | "skip" | "ask";
         task(group: string, owner: string): string;
         task_group(entry: string): string;
         task_owner(entry: string): string;
@@ -78749,10 +78756,15 @@ declare namespace $ {
         queued(): string[];
         sent(): string[];
         join_put(group: string, owner: string, state: 'queued' | 'sent'): void;
+        admin_of(group: string): {
+            lord: string;
+            state: string;
+        };
+        admin_put(group: string, admin: string, state: 'queued' | 'sent'): void;
         join_drop(group: string): void;
         old_drop(group: string): void;
         denial_drop(group: string): void;
-        send(id: string, owner: string): void;
+        send(id: string, owner: string, via?: string): void;
         waiting(entries: readonly string[]): string[];
         pending_queued(): string[];
         pending_sent(): string[];
@@ -87590,7 +87602,7 @@ declare namespace $.$$ {
         pager_count(): number;
         page_at(frames: readonly (readonly [number, number])[], middle: number): number;
         page_current(): number;
-        join_request(id: string, by: string): "open" | "skip" | "ask";
+        join_request(id: string, by: string, via: string): "open" | "skip" | "ask";
         auto(): void;
     }
 }
