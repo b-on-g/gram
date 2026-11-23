@@ -1,0 +1,3 @@
+$bog_gram_rich $mol_view
+	html \
+	sub <= nodes /$mol_view_content

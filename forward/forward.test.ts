@@ -52,11 +52,13 @@ namespace $ {
 
 			const source = write()
 			source.Text( 'auto' )?.val( 'привет' )
+			source.Html( 'auto' )?.val( '<p><strong>привет</strong></p>' )
 			source.Reply( 'auto' )?.val( 'Somewhere' )
 
 			$mol_assert_equal( Boolean( await $mol_wire_async( forward ).copy( source, 'Target' ) ), true )
 
 			const [ copy ] = sent()
+			$mol_assert_equal( copy.Html()?.val(), '<p><strong>привет</strong></p>' )
 			$mol_assert_equal( sent().length, 1 )
 			$mol_assert_equal( copy.Text()?.val(), 'привет' )
 			$mol_assert_equal( copy.Forwarded()?.val(), true )

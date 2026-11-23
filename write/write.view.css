@@ -39,6 +39,15 @@
 	-webkit-user-select: none;
 }
 
+[bog_gram_write_tools] {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+[bog_gram_write_main] > * {
+	flex-shrink: 0;
+}
+
 [bog_gram_write_attach] {
 	display: none;
 }

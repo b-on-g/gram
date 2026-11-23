@@ -1247,7 +1247,7 @@ namespace $.$$ {
 			if( this.edit_mode() ) return true
 			if( this.pending().length ) return true
 			if( !this.voice_ready() ) return true
-			return Boolean( this.message_text().trim() )
+			return Boolean( this.message_text().trim() || this.rich_html() )
 		}
 
 		override Send() {

@@ -121,7 +121,8 @@ namespace $.$$ {
 
 		'Форматирование отличается от простых абзацев, чистка убирает ссылки на ленд и картинки'( $ ) {
 
-			$mol_assert_equal( $bog_gram_write_rich_is( '<section><p>просто<br></p></section>' ), false )
+			$mol_assert_equal( $bog_gram_write_rich_is( '<p>просто<br></p>' ), false )
+			$mol_assert_equal( $bog_gram_write_rich_is( '<section><p>заголовок</p></section>' ), true )
 			$mol_assert_equal( $bog_gram_write_rich_is( '<p>очень <strong>важно</strong></p>' ), true )
 
 			$mol_assert_equal(
@@ -168,6 +169,31 @@ namespace $.$$ {
 			const erase = input( null, 'deleteContentBackward' )
 			write.before_input( erase )
 			$mol_assert_equal( erase.defaultPrevented, false )
+
+		},
+
+		'Каретка в корне поля уходит внутрь абзаца, чтобы форматирование не задело само поле'( $ ) {
+
+			const write = $bog_gram_write.make({ $, rich: ()=> true })
+			write.html( '<p>раз</p><p>два</p>' )
+
+			const document = $.$mol_dom_context.document
+			const root = write.Content().dom_tree() as Element
+			document.body.append( root )
+
+			try {
+
+				const selection = document.getSelection()!
+				selection.setBaseAndExtent( root, 0, root, 2 )
+				write.aim()
+
+				$mol_assert_equal( selection.anchorNode!.nodeValue, 'раз' )
+				$mol_assert_equal( selection.focusNode!.nodeValue, 'два' )
+				$mol_assert_equal( selection.focusOffset, 3 )
+
+			} finally {
+				root.remove()
+			}
 
 		},
 

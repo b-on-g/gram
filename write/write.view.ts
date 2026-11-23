@@ -4,7 +4,7 @@ namespace $.$$ {
 
 	const blocks = new Set([ 'P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' ])
 
-	const plain = new Set([ 'SECTION', 'P', 'DIV', 'BR' ])
+	const plain = new Set([ 'P', 'DIV', 'BR' ])
 
 	const kept = new Set([ ... blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP' ])
 
@@ -282,20 +282,113 @@ namespace $.$$ {
 
 		}
 
+		aim() {
+
+			const root = this.Content().dom_node()
+			const document = this.$.$mol_dom_context.document
+			const selection = document.getSelection()
+			if( !selection ) return false
+
+			const line = ()=> document.createElement( 'p' )
+
+			if( !root.textContent && !root.querySelector( 'p' ) ) {
+				const empty = line()
+				empty.append( document.createElement( 'br' ) )
+				root.replaceChildren( empty )
+			}
+
+			for( const kid of [ ... root.childNodes ] ) {
+				if( kid.nodeName !== 'BR' ) continue
+				const wrap = line()
+				kid.before( wrap )
+				wrap.append( kid )
+			}
+
+			const inner = ( node: Node | null, pos: number ): readonly[ Node, number ]=> {
+
+				if( node && node !== root && root.contains( node ) ) return [ node, pos ]
+
+				const kid = node === root ? root.childNodes[ pos ] : null
+				let leaf: Node = kid ?? root.lastChild!
+				while( true ) {
+					const next: Node | null = kid ? leaf.firstChild : leaf.lastChild
+					if( !next || next.nodeName === 'BR' ) break
+					leaf = next
+				}
+
+				return [ leaf, kid ? 0 : leaf.nodeValue?.length ?? 0 ]
+			}
+
+			const from = inner( selection.anchorNode, selection.anchorOffset )
+			const to = inner( selection.focusNode, selection.focusOffset )
+			selection.setBaseAndExtent( from[0], from[1], to[0], to[1] )
+
+			return true
+		}
+
+		caret_keep( task: ()=> void ) {
+
+			if( !this.aim() ) return
+
+			const root = this.Content().dom_node()
+			const document = this.$.$mol_dom_context.document
+			const selection = document.getSelection()!
+			const mark = 'bog_gram_write_caret'
+
+			const node = selection.focusNode!
+			const line = ( node.nodeType === node.ELEMENT_NODE ? node as Element : node.parentElement! ).closest( 'p' )
+
+			let rest = 0
+			if( line && root.contains( line ) ) {
+				const before = document.createRange()
+				before.setStart( line, 0 )
+				before.setEnd( node, selection.focusOffset )
+				rest = before.toString().length
+				line.setAttribute( mark, '' )
+			}
+
+			try {
+				task()
+			} finally {
+
+				const marked = [ ... root.querySelectorAll( `[${ mark }]` ) ]
+				for( const el of marked ) el.removeAttribute( mark )
+
+				const place = ( node: Node ): boolean => {
+					if( node.nodeType === node.TEXT_NODE ) {
+						const length = node.nodeValue!.length
+						if( rest <= length ) {
+							selection.collapse( node, rest )
+							return true
+						}
+						rest -= length
+						return false
+					}
+					return [ ... node.childNodes ].some( place )
+				}
+
+				if( marked[0] && !place( marked[0] ) ) selection.collapse( marked[0], 0 )
+
+			}
+
+		}
+
 		override block_wrap( type: string, event: KeyboardEvent ) {
-			if( this.rich() ) super.block_wrap( type, event )
+			if( this.rich() ) this.caret_keep( ()=> super.block_wrap( type, event ) )
 		}
 
 		override block_rewrap( event: KeyboardEvent ) {
-			if( this.rich() ) super.block_rewrap( event )
+			if( !this.rich() ) return
+			this.aim()
+			super.block_rewrap( event )
 		}
 
 		override block_unwrap( event: KeyboardEvent ) {
-			if( this.rich() ) super.block_unwrap( event )
+			if( this.rich() ) this.caret_keep( ()=> super.block_unwrap( event ) )
 		}
 
 		override inline_toggle( type: string, event: KeyboardEvent ) {
-			if( this.rich() ) super.inline_toggle( type, event )
+			if( this.rich() ) this.caret_keep( ()=> super.inline_toggle( type, event ) )
 		}
 
 	}

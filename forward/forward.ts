@@ -131,6 +131,8 @@ namespace $ {
 
 			const text = String( source.Text()?.val() ?? '' )
 			if( text ) message.Text( 'auto' )?.val( text )
+			const html = String( source.Html()?.val() ?? '' )
+			if( html ) message.Html( 'auto' )?.val( html )
 			if( source.Task()?.val() ) message.Task( 'auto' )?.val( true )
 
 			if( frames.length ) {
