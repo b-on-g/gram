@@ -583,9 +583,47 @@ namespace $.$$ {
 			return $bog_gram_write_rich_is( html ) ? html : ''
 		}
 
-		rich_put( message: $bog_gram_message ) {
+		text_put( message: $bog_gram_message, text: string ) {
+
+			const task = $bog_gram_tasks_is( text )
+			message.Text( 'auto' )?.val( task ? $bog_gram_tasks_text( text ) : text )
+			if( task ) message.Task( 'auto' )?.val( true )
+
 			const html = this.rich_html()
-			if( html ) message.Html( 'auto' )?.val( html )
+			if( html ) message.Html( 'auto' )?.val( task ? $bog_gram_tasks_html( html ) : html )
+		}
+
+		@ $mol_mem_key
+		override message_task( id: string, next?: boolean ) {
+
+			const pawn = this.message_pawn( id )
+
+			if( next !== undefined && pawn ) {
+				this.message_menu( '' )
+				pawn.Task( 'auto' )?.val( next )
+				if( pawn.Task_done()?.val() ) pawn.Task_done( 'auto' )?.val( 0 )
+			}
+
+			return Boolean( pawn?.Task()?.val() )
+		}
+
+		@ $mol_mem_key
+		override message_task_done( id: string, next?: boolean ) {
+			const pawn = this.message_pawn( id )
+			if( next !== undefined ) pawn?.Task_done( 'auto' )?.val( next ? Date.now() : 0 )
+			return Boolean( pawn?.Task_done()?.val() )
+		}
+
+		@ $mol_mem
+		task_ids() {
+			return this.messages()
+				.filter( message => message.Task()?.val() && this.Talk().message_live( message ) )
+				.map( message => message.link().str )
+		}
+
+		@ $mol_action
+		message_show( id: string ) {
+			if( this.message_alive( id ) ) this.reveal( this.Line( id ), 'center' )
 		}
 
 		@ $mol_mem
@@ -675,8 +713,7 @@ namespace $.$$ {
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
-			message.Text( 'auto' )?.val( text )
-			this.rich_put( message )
+			this.text_put( message, text )
 
 			const reply = this.reply_id()
 			if( reply ) message.Reply( 'auto' )?.val( reply )
@@ -1000,8 +1037,7 @@ namespace $.$$ {
 			message.Image( 'auto' )!.remote( frames[0].store )
 			message.Image_width( 'auto' )?.val( frames[0].width )
 			message.Image_height( 'auto' )?.val( frames[0].height )
-			if( text ) message.Text( 'auto' )?.val( text )
-			if( text ) this.rich_put( message )
+			if( text ) this.text_put( message, text )
 
 			if( text ) this.message_text( '' )
 			this.voice_hint( '' )
@@ -1054,8 +1090,7 @@ namespace $.$$ {
 				message.Video_width( 'auto' )?.val( clip.width )
 				message.Video_height( 'auto' )?.val( clip.height )
 			}
-			if( text ) message.Text( 'auto' )?.val( text )
-			if( text ) this.rich_put( message )
+			if( text ) this.text_put( message, text )
 
 			if( text ) this.message_text( '' )
 			this.voice_hint( '' )

@@ -23,7 +23,19 @@ namespace $.$$ {
 		}
 
 		override bare() {
-			return this.round() && !this.body() && !this.quote_shown()
+			return this.round() && !this.body() && !this.quote_shown() && !this.task()
+		}
+
+		override done() {
+			return this.task() && this.task_done()
+		}
+
+		override Task() {
+			return this.task() ? super.Task() : null!
+		}
+
+		override Task_mark() {
+			return this.forwardable() ? super.Task_mark() : null!
 		}
 
 		override Clip() {

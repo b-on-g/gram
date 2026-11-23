@@ -35,6 +35,8 @@ $bog_gram_bubble $mol_view
 	contact false
 	contact_name \
 	contact_open? null
+	task? false
+	task_done? false
 	forwardable true
 	forward? null
 	body \
@@ -52,6 +54,7 @@ $bog_gram_bubble $mol_view
 		bog_gram_bubble_out <= out
 		bog_gram_bubble_menu <= menu
 		bog_gram_bubble_bare <= bare false
+		bog_gram_bubble_done <= done false
 	event *
 		^
 		pointerdown? <=> press?
@@ -70,6 +73,13 @@ $bog_gram_bubble $mol_view
 			sub /
 				<= Forwarded_icon $mol_icon_share
 				<= forwarded_label @ \Forwarded
+		<= Task $mol_check_box
+			title @ \Task
+			checked? <=> task_done?
+			event *
+				^
+				pointerdown? <=> actions_touch? null
+				pointerup? <=> actions_touch?
 		<= Quote $mol_button_minor
 			hint @ \Go to message
 			click? <=> quote_jump?
@@ -144,6 +154,10 @@ $bog_gram_bubble $mol_view
 					hint @ \Copy text
 					text <= body
 					title \
+				<= Task_mark $mol_check_icon
+					hint @ \Task
+					checked? <=> task?
+					Icon <= Task_mark_icon $mol_icon_format_list_checks
 				<= Forward $mol_button_minor
 					hint @ \Forward
 					click? <=> forward?

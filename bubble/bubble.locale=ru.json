@@ -6,5 +6,7 @@
 	"$bog_gram_bubble_forwarded_label": "Переслано",
 	"$bog_gram_bubble_Contact_open_title": "Написать",
 	"$bog_gram_bubble_Copy_hint": "Копировать текст",
+	"$bog_gram_bubble_Task_title": "Задача",
+	"$bog_gram_bubble_Task_mark_hint": "Задача",
 	"$bog_gram_bubble_Forward_hint": "Переслать"
 }

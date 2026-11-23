@@ -24,6 +24,8 @@ namespace $ {
 		Forwarded: $giper_baza_atom_bool,
 		Contact: $giper_baza_atom_text,
 		Contact_name: $giper_baza_atom_text,
+		Task: $giper_baza_atom_bool,
+		Task_done: $giper_baza_atom_real,
 	}) {}
 
 }

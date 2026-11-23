@@ -287,7 +287,14 @@ $bog_gram $mol_book2
 			add*? <=> member_add*? null
 			part*? <=> member_drop*? null
 			leave? <=> group_leave? null
+	Tasks_page* $bog_gram_tasks
+		close? <=> tasks_close? null
+		ids <= task_ids* /string
+		text* <= task_text* \
+		done*? <=> task_done*? false
+		jump*? <=> task_jump*? null
 	Chat_page* $bog_gram_chat
+		tasks? <=> tasks_open? null
 		dialog <= chat_dialog* \
 		my_lord <= my_lord
 		Talk <= Talk

@@ -1,0 +1,7 @@
+{
+	"$bog_gram_tasks_title": "任务",
+	"$bog_gram_tasks_Close_hint": "关闭",
+	"$bog_gram_tasks_Empty_title": "还没有任务。以“-- ”开头写消息，或点击已发送消息上的按钮",
+	"$bog_gram_tasks_Done_hint": "完成",
+	"$bog_gram_tasks_Jump_hint": "转到消息"
+}

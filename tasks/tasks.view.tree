@@ -1,0 +1,30 @@
+$bog_gram_tasks $bog_gram_page
+	title @ \Tasks
+	close? null
+	ids /string
+	text* \
+	done*? false
+	jump*? null
+	tools /
+		<= Close $mol_button_minor
+			hint @ \Close
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= List $mol_list
+			rows <= rows /$mol_view
+			Empty <= Empty $mol_paragraph
+				title @ \No tasks yet. Start a message with "-- " or use the button on a sent one
+	Row* $mol_view
+		attr *
+			^
+			bog_gram_tasks_done <= done*?
+		sub /
+			<= Done* $mol_check_box
+				hint @ \Done
+				checked? <=> done*?
+			<= Jump* $mol_button_minor
+				hint @ \Go to message
+				click? <=> jump*?
+				title <= text*

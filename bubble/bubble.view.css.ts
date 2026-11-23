@@ -264,6 +264,21 @@ namespace $.$$ {
 			},
 		},
 
+		Task: {
+			alignSelf: 'flex-start',
+			padding: {
+				top: '0.25rem',
+				bottom: '0.25rem',
+				left: 0,
+				right: '0.5rem',
+			},
+			font: {
+				size: '0.8rem',
+			},
+		},
+
+		Task_mark: control,
+
 		Copy: control,
 
 		Forward: control,
@@ -290,6 +305,10 @@ namespace $.$$ {
 		'@media': {
 			'(max-width: 30rem)': {
 				maxWidth: '85%',
+				Task_mark: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
 				Copy: {
 					minWidth: '2.75rem',
 					minHeight: '2.75rem',

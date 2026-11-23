@@ -86,6 +86,7 @@ namespace $.$$ {
 			this.settings_opened( false )
 			this.group_opened( false )
 			this.members_opened( false )
+			this.tasks_opened( false )
 			this.dialog_current( id )
 			return null
 		}
@@ -93,6 +94,7 @@ namespace $.$$ {
 		@ $mol_action
 		dialog_close( next?: any ) {
 			this.members_opened( false )
+			this.tasks_opened( false )
 			this.dialog_current( '' )
 			return null
 		}
@@ -232,6 +234,47 @@ namespace $.$$ {
 			return null
 		}
 
+		@ $mol_mem
+		tasks_opened( next?: boolean ) {
+			return next ?? false
+		}
+
+		@ $mol_action
+		override tasks_open( next?: any ) {
+			this.tasks_opened( !this.tasks_opened() )
+			return null
+		}
+
+		@ $mol_action
+		override tasks_close( next?: any ) {
+			this.tasks_opened( false )
+			return null
+		}
+
+		override task_ids( dialog: string ) {
+			return this.task_chat( dialog ).task_ids()
+		}
+
+		task_chat( dialog = this.dialog_active() ) {
+			return this.Chat_page( dialog ) as $.$$.$bog_gram_chat
+		}
+
+		override task_text( id: string ) {
+			return this.task_chat().quote_text( id )
+		}
+
+		override task_done( id: string, next?: boolean ) {
+			return this.task_chat().message_task_done( id, next )
+		}
+
+		@ $mol_action
+		override task_jump( id: string, next?: any ) {
+			const chat = this.task_chat()
+			chat.bring()
+			chat.message_show( id )
+			return null
+		}
+
 		/** Открыта ли страница музыки. Как у настроек, состоянием владеет ссылка. */
 		@ $mol_mem
 		music_opened( next?: boolean ) {
@@ -304,6 +347,7 @@ namespace $.$$ {
 				... this.group_opened() ? [ this.Group_page() ] : [],
 				... active ? [ this.Chat_page( active ) ] : [],
 				... this.members_opened() && this.members_shown() ? [ this.Members_page() ] : [],
+				... active && this.tasks_opened() ? [ this.Tasks_page( active ) ] : [],
 				... this.call_current() ? [ this.Call_page( this.call_current() ) ] : [],
 				... this.music_alive() ? [ this.Music_page() ] : [],
 				... this.pick_shown() ? [ this.Pick_page() ] : [],

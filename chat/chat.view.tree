@@ -6,6 +6,7 @@ $bog_gram_chat $bog_gram_page
 	Alerts $bog_gram_alerts
 	close? null
 	members? null
+	tasks? null
 	call_open? null
 	call_invite* \
 	meet_owner false
@@ -100,6 +101,11 @@ $bog_gram_chat $bog_gram_page
 			click? <=> call_start? null
 			sub /
 				<= Call_icon $mol_icon_phone
+		<= Tasks $mol_button_minor
+			hint @ \Tasks
+			click? <=> tasks?
+			sub /
+				<= Tasks_icon $mol_icon_format_list_checks
 		<= Members $mol_button_minor
 			hint @ \Members
 			click? <=> members?
@@ -310,6 +316,8 @@ $bog_gram_chat $bog_gram_page
 		contact <= message_contact* false
 		contact_name <= message_contact_name* \
 		contact_open? <=> message_contact_open*? null
+		task? <=> message_task*? false
+		task_done? <=> message_task_done*? false
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
 		body <= message_body* \
