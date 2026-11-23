@@ -4780,7 +4780,40 @@ $bog_kit_pager $mol_view
 
 $mol_icon_arrow_left $mol_icon path \M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z
 
+$bog_gram_tasks $bog_gram_page
+	title @ \Tasks
+	close? null
+	ids /string
+	text* \
+	done*? false
+	jump*? null
+	tools /
+		<= Close $mol_button_minor
+			hint @ \Close
+			click? <=> close?
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= List $mol_list
+			rows <= rows /$mol_view
+			Empty <= Empty $mol_paragraph
+				title @ \No tasks yet. Start a message with "-- " or use the button on a sent one
+	Row* $mol_view
+		attr *
+			^
+			bog_gram_tasks_done <= done*?
+		sub /
+			<= Done* $mol_check_box
+				hint @ \Done
+				checked? <=> done*?
+			<= Jump* $mol_button_minor
+				hint @ \Go to message
+				click? <=> jump*?
+				title <= text*
+
 $mol_icon_account_arrow_right $mol_icon path \M18 16H14V18H18V20L21 17L18 14V16M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 14C6.6 14 3 15.8 3 18V20H12.5C12.2 19.2 12 18.4 12 17.5C12 16.3 12.3 15.2 12.9 14.1C12.3 14.1 11.7 14 11 14
+
+$mol_icon_format_list_checks $mol_icon path \M3,5H9V11H3V5M5,7V9H7V7H5M11,7H21V9H11V7M11,15H21V17H11V15M5,20L1.5,16.5L2.91,15.09L5,17.17L9.59,12.59L11,14L5,20Z
 
 $mol_icon_reply $mol_icon path \M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z
 
@@ -5118,6 +5151,8 @@ $bog_gram_bubble $mol_view
 	contact false
 	contact_name \
 	contact_open? null
+	task? false
+	task_done? false
 	forwardable true
 	forward? null
 	body \
@@ -5135,6 +5170,7 @@ $bog_gram_bubble $mol_view
 		bog_gram_bubble_out <= out
 		bog_gram_bubble_menu <= menu
 		bog_gram_bubble_bare <= bare false
+		bog_gram_bubble_done <= done false
 	event *
 		^
 		pointerdown? <=> press?
@@ -5153,6 +5189,13 @@ $bog_gram_bubble $mol_view
 			sub /
 				<= Forwarded_icon $mol_icon_share
 				<= forwarded_label @ \Forwarded
+		<= Task $mol_check_box
+			title @ \Task
+			checked? <=> task_done?
+			event *
+				^
+				pointerdown? <=> actions_touch? null
+				pointerup? <=> actions_touch?
 		<= Quote $mol_button_minor
 			hint @ \Go to message
 			click? <=> quote_jump?
@@ -5227,6 +5270,10 @@ $bog_gram_bubble $mol_view
 					hint @ \Copy text
 					text <= body
 					title \
+				<= Task_mark $mol_check_icon
+					hint @ \Task
+					checked? <=> task?
+					Icon <= Task_mark_icon $mol_icon_format_list_checks
 				<= Forward $mol_button_minor
 					hint @ \Forward
 					click? <=> forward?
@@ -5251,6 +5298,7 @@ $bog_gram_chat $bog_gram_page
 	Alerts $bog_gram_alerts
 	close? null
 	members? null
+	tasks? null
 	call_open? null
 	call_invite* \
 	meet_owner false
@@ -5345,6 +5393,11 @@ $bog_gram_chat $bog_gram_page
 			click? <=> call_start? null
 			sub /
 				<= Call_icon $mol_icon_phone
+		<= Tasks $mol_button_minor
+			hint @ \Tasks
+			click? <=> tasks?
+			sub /
+				<= Tasks_icon $mol_icon_format_list_checks
 		<= Members $mol_button_minor
 			hint @ \Members
 			click? <=> members?
@@ -5555,6 +5608,8 @@ $bog_gram_chat $bog_gram_page
 		contact <= message_contact* false
 		contact_name <= message_contact_name* \
 		contact_open? <=> message_contact_open*? null
+		task? <=> message_task*? false
+		task_done? <=> message_task_done*? false
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
 		body <= message_body* \
@@ -5964,7 +6019,14 @@ $bog_gram $mol_book2
 			add*? <=> member_add*? null
 			part*? <=> member_drop*? null
 			leave? <=> group_leave? null
+	Tasks_page* $bog_gram_tasks
+		close? <=> tasks_close? null
+		ids <= task_ids* /string
+		text* <= task_text* \
+		done*? <=> task_done*? false
+		jump*? <=> task_jump*? null
 	Chat_page* $bog_gram_chat
+		tasks? <=> tasks_open? null
 		dialog <= chat_dialog* \
 		my_lord <= my_lord
 		Talk <= Talk

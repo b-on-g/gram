@@ -12091,6 +12091,95 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    var $$;
+    (function ($$) {
+        function stand($) {
+            const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+            const talk = $bog_gram_talk.make({ $,
+                session: () => session,
+                saved_is: () => false,
+                messages_of: () => (session.Messages()?.items() ?? [])
+                    .map(link => session.land().Pawn($bog_gram_message).Head(link.head())),
+            });
+            const alerts = $bog_gram_alerts.make({ $, offer: () => false });
+            const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogTasks', my_lord: () => 'LordMe', Talk: () => talk, Alerts: () => alerts });
+            const send = (html) => {
+                chat.message_html(html);
+                chat.message_send();
+                return talk.messages_of('').at(-1);
+            };
+            return { chat, send };
+        }
+        $mol_test({
+            'Сообщение с двух минусов или тире уходит задачей без префикса, остальное — сообщением'($) {
+                const { send } = stand($);
+                const sent = (text) => {
+                    const message = send($bog_gram_write_html(text));
+                    return [message.Text()?.val(), Boolean(message.Task()?.val())];
+                };
+                $mol_assert_equal(sent('-- купить молоко'), ['купить молоко', true]);
+                $mol_assert_equal(sent('— купить хлеб'), ['купить хлеб', true]);
+                $mol_assert_equal(sent('--force'), ['--force', false]);
+                $mol_assert_equal(sent('--'), ['--', false]);
+                $mol_assert_equal(sent('а -- б'), ['а -- б', false]);
+            },
+            'Префикс срезается и из разметки, даже если разбит на куски'($) {
+                const { send } = stand($);
+                const message = send('<p>-<b>- очень</b> важно</p>');
+                $mol_assert_equal(message.Text()?.val(), 'очень важно');
+                $mol_assert_equal(message.Html()?.val(), '<p><b>очень</b> важно</p>');
+                $mol_assert_equal(message.Task()?.val(), true);
+            },
+            'Сделанные уходят вниз панели, снятая отметка убирает задачу'($) {
+                const { chat, send } = stand($);
+                const [milk, bread] = ['-- молоко', '-- хлеб'].map(text => send($bog_gram_write_html(text)).link().str);
+                const talk = send('<p>болтовня</p>').link().str;
+                const panel = $bog_gram_tasks.make({ $,
+                    ids: () => chat.task_ids(),
+                    done: (id, next) => chat.message_task_done(id, next),
+                });
+                $mol_assert_equal(panel.rows(), [panel.Row(milk), panel.Row(bread)]);
+                panel.done(milk, true);
+                $mol_assert_equal(chat.message_task_done(milk), true);
+                $mol_assert_equal(panel.rows(), [panel.Row(bread), panel.Row(milk)]);
+                panel.done(milk, false);
+                chat.message_task(talk, true);
+                chat.message_task(bread, false);
+                $mol_assert_equal(chat.task_ids(), [milk, talk]);
+            },
+            async 'Чужую задачу закрывает любой участник, и автор открывает её снова'($) {
+                const king = await $.$giper_baza_auth._generate();
+                const mate = await $.$giper_baza_auth._generate();
+                const origin = $giper_baza_land.make({ $, auth: () => king });
+                await $mol_wire_async(() => {
+                    origin.give(mate.pass(), $giper_baza_rank_post('just'));
+                    const message = origin.Data($bog_gram_message);
+                    message.Task('auto').val(true);
+                    return true;
+                })();
+                const copy = $giper_baza_land.make({ $, link: () => origin.link(), auth: () => mate });
+                await $mol_wire_async(copy).units_steal(origin);
+                await $mol_wire_async(() => {
+                    copy.Data($bog_gram_message).Task_done('auto').val(1000);
+                    return true;
+                })();
+                await $mol_wire_async(origin).units_steal(copy);
+                $mol_assert_equal(origin.Data($bog_gram_message).Task_done()?.val(), 1000);
+                await $mol_wire_async(() => {
+                    origin.Data($bog_gram_message).Task_done('auto').val(0);
+                    return true;
+                })();
+                await $mol_wire_async(copy).units_steal(origin);
+                $mol_assert_equal(copy.Data($bog_gram_message).Task_done()?.val(), 0);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     $mol_test({
         async 'Перенос кладёт юниты под их прежние ключи, а не под числовые'($) {
             const old = await $.$mol_db('bog_gram_mine_test_old', mig => mig.store_make('Unit'), mig => mig.store_make('Ball'));

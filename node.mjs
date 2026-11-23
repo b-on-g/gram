@@ -42066,7 +42066,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.215';
+    $.$bog_gram_version = '1.0.216';
 })($ || ($ = {}));
 
 ;
@@ -45720,6 +45720,8 @@ var $;
         Forwarded: $giper_baza_atom_bool,
         Contact: $giper_baza_atom_text,
         Contact_name: $giper_baza_atom_text,
+        Task: $giper_baza_atom_bool,
+        Task_done: $giper_baza_atom_real,
     }) {
     }
     $.$bog_gram_message = $bog_gram_message;
@@ -46894,6 +46896,8 @@ var $;
             const text = String(source.Text()?.val() ?? '');
             if (text)
                 message.Text('auto')?.val(text);
+            if (source.Task()?.val())
+                message.Task('auto')?.val(true);
             if (frames.length) {
                 const stores = frames.map(frame => this.closed(frame.data, passes));
                 const shots = message.Shots('auto');
@@ -51983,9 +51987,206 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_gram_tasks) = class $bog_gram_tasks extends ($.$bog_gram_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_tasks_Close_hint")));
+			(obj.click) = (next) => ((this.close(next)));
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		rows(){
+			return [];
+		}
+		Empty(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_tasks_Empty_title")));
+			return obj;
+		}
+		List(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.rows()));
+			(obj.Empty) = () => ((this.Empty()));
+			return obj;
+		}
+		Done(id){
+			const obj = new this.$.$mol_check_box();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_tasks_Done_hint")));
+			(obj.checked) = (next) => ((this.done(id, next)));
+			return obj;
+		}
+		Jump(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_tasks_Jump_hint")));
+			(obj.click) = (next) => ((this.jump(id, next)));
+			(obj.title) = () => ((this.text(id)));
+			return obj;
+		}
+		title(){
+			return (this.$.$mol_locale.text("$bog_gram_tasks_title"));
+		}
+		close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		ids(){
+			return [];
+		}
+		text(id){
+			return "";
+		}
+		done(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		jump(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [(this.List())];
+		}
+		Row(id){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_gram_tasks_done": (this.done(id))});
+			(obj.sub) = () => ([(this.Done(id)), (this.Jump(id))]);
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_gram_tasks.prototype), "Close_icon"));
+	($mol_mem(($.$bog_gram_tasks.prototype), "Close"));
+	($mol_mem(($.$bog_gram_tasks.prototype), "Empty"));
+	($mol_mem(($.$bog_gram_tasks.prototype), "List"));
+	($mol_mem_key(($.$bog_gram_tasks.prototype), "Done"));
+	($mol_mem_key(($.$bog_gram_tasks.prototype), "Jump"));
+	($mol_mem(($.$bog_gram_tasks.prototype), "close"));
+	($mol_mem_key(($.$bog_gram_tasks.prototype), "done"));
+	($mol_mem_key(($.$bog_gram_tasks.prototype), "jump"));
+	($mol_mem_key(($.$bog_gram_tasks.prototype), "Row"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    const prefix = /^\s*(?:--|—)[^\S\n]+(?=\S)/;
+    function $bog_gram_tasks_is(text) {
+        return prefix.test(text);
+    }
+    $.$bog_gram_tasks_is = $bog_gram_tasks_is;
+    function $bog_gram_tasks_text(text) {
+        return text.replace(prefix, '');
+    }
+    $.$bog_gram_tasks_text = $bog_gram_tasks_text;
+    function $bog_gram_tasks_html(html) {
+        const body = $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
+        let rest = prefix.exec(body.textContent ?? '')?.[0].length ?? 0;
+        const walk = (node) => {
+            if (node.nodeType === node.TEXT_NODE) {
+                const text = node.nodeValue ?? '';
+                node.nodeValue = text.slice(rest);
+                rest = Math.max(0, rest - text.length);
+                return;
+            }
+            for (const kid of node.childNodes)
+                walk(kid);
+        };
+        walk(body);
+        return body.innerHTML;
+    }
+    $.$bog_gram_tasks_html = $bog_gram_tasks_html;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_gram_tasks extends $.$bog_gram_tasks {
+            rows() {
+                const ids = this.ids();
+                return [
+                    ...ids.filter(id => !this.done(id)),
+                    ...ids.filter(id => this.done(id)).reverse(),
+                ].map(id => this.Row(id));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_tasks.prototype, "rows", null);
+        $$.$bog_gram_tasks = $bog_gram_tasks;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_gram_tasks, {
+            Row: {
+                align: {
+                    items: 'flex-start',
+                },
+                minWidth: 0,
+                '@': {
+                    bog_gram_tasks_done: {
+                        true: {
+                            color: $mol_theme.shade,
+                            textDecoration: 'line-through',
+                        },
+                    },
+                },
+            },
+            Done: {
+                flex: {
+                    shrink: 0,
+                },
+            },
+            Jump: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+                textAlign: 'left',
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
+                color: 'inherit',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$mol_icon_account_arrow_right) = class $mol_icon_account_arrow_right extends ($.$mol_icon) {
 		path(){
 			return "M18 16H14V18H18V20L21 17L18 14V16M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 14C6.6 14 3 15.8 3 18V20H12.5C12.2 19.2 12 18.4 12 17.5C12 16.3 12.3 15.2 12.9 14.1C12.3 14.1 11.7 14 11 14";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_list_checks) = class $mol_icon_format_list_checks extends ($.$mol_icon) {
+		path(){
+			return "M3,5H9V11H3V5M5,7V9H7V7H5M11,7H21V9H11V7M11,15H21V17H11V15M5,20L1.5,16.5L2.91,15.09L5,17.17L9.59,12.59L11,14L5,20Z";
 		}
 	};
 
@@ -57058,6 +57259,9 @@ var $;
 		bare(){
 			return false;
 		}
+		done(){
+			return false;
+		}
 		mouse_down(next){
 			if(next !== undefined) return next;
 			return null;
@@ -57078,6 +57282,21 @@ var $;
 		Forwarded(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.Forwarded_icon()), (this.forwarded_label())]);
+			return obj;
+		}
+		actions_touch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Task(){
+			const obj = new this.$.$mol_check_box();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Task_title")));
+			(obj.checked) = (next) => ((this.task_done(next)));
+			(obj.event) = () => ({
+				...(this.$.$mol_check_box.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.actions_touch(next)), 
+				"pointerup": (next) => (this.actions_touch(next))
+			});
 			return obj;
 		}
 		Quote_author(){
@@ -57208,15 +57427,22 @@ var $;
 			]);
 			return obj;
 		}
-		actions_touch(next){
-			if(next !== undefined) return next;
-			return null;
-		}
 		Copy(){
 			const obj = new this.$.$mol_button_copy();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Copy_hint")));
 			(obj.text) = () => ((this.body()));
 			(obj.title) = () => ("");
+			return obj;
+		}
+		Task_mark_icon(){
+			const obj = new this.$.$mol_icon_format_list_checks();
+			return obj;
+		}
+		Task_mark(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Task_mark_hint")));
+			(obj.checked) = (next) => ((this.task(next)));
+			(obj.Icon) = () => ((this.Task_mark_icon()));
 			return obj;
 		}
 		Forward_icon(){
@@ -57261,6 +57487,7 @@ var $;
 			});
 			(obj.sub) = () => ([
 				(this.Copy()), 
+				(this.Task_mark()), 
 				(this.Forward()), 
 				(this.Edit()), 
 				(this.Delete())
@@ -57383,6 +57610,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		task(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		task_done(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		forwardable(){
 			return true;
 		}
@@ -57430,7 +57665,8 @@ var $;
 				...(super.attr()), 
 				"bog_gram_bubble_out": (this.out()), 
 				"bog_gram_bubble_menu": (this.menu()), 
-				"bog_gram_bubble_bare": (this.bare())
+				"bog_gram_bubble_bare": (this.bare()), 
+				"bog_gram_bubble_done": (this.done())
 			};
 		}
 		event(){
@@ -57447,6 +57683,7 @@ var $;
 			return [
 				(this.Author()), 
 				(this.Forwarded()), 
+				(this.Task()), 
 				(this.Quote()), 
 				(this.Shot()), 
 				(this.Sound()), 
@@ -57463,6 +57700,8 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Author"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Forwarded_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Forwarded"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "actions_touch"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Task"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Quote_author"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Quote_text"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Quote"));
@@ -57482,8 +57721,9 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
-	($mol_mem(($.$bog_gram_bubble.prototype), "actions_touch"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Copy"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Task_mark_icon"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Task_mark"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Forward_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Forward"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edit_icon"));
@@ -57499,6 +57739,8 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "round_ended"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "call_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "contact_open"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "task"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "task_done"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "forward"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "edit"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "delete"));
@@ -57534,7 +57776,16 @@ var $;
                 return this.round() ? super.Round() : null;
             }
             bare() {
-                return this.round() && !this.body() && !this.quote_shown();
+                return this.round() && !this.body() && !this.quote_shown() && !this.task();
+            }
+            done() {
+                return this.task() && this.task_done();
+            }
+            Task() {
+                return this.task() ? super.Task() : null;
+            }
+            Task_mark() {
+                return this.forwardable() ? super.Task_mark() : null;
             }
             Clip() {
                 return this.video() ? super.Clip() : null;
@@ -57607,7 +57858,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -57855,6 +58106,19 @@ var $;
                     ],
                 },
             },
+            Task: {
+                alignSelf: 'flex-start',
+                padding: {
+                    top: '0.25rem',
+                    bottom: '0.25rem',
+                    left: 0,
+                    right: '0.5rem',
+                },
+                font: {
+                    size: '0.8rem',
+                },
+            },
+            Task_mark: control,
             Copy: control,
             Forward: control,
             Edit: control,
@@ -57874,6 +58138,10 @@ var $;
             '@media': {
                 '(max-width: 30rem)': {
                     maxWidth: '85%',
+                    Task_mark: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
                     Copy: {
                         minWidth: '2.75rem',
                         minHeight: '2.75rem',
@@ -57972,6 +58240,17 @@ var $;
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Call_hint")));
 			(obj.click) = (next) => ((this.call_start(next)));
 			(obj.sub) = () => ([(this.Call_icon())]);
+			return obj;
+		}
+		Tasks_icon(){
+			const obj = new this.$.$mol_icon_format_list_checks();
+			return obj;
+		}
+		Tasks(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Tasks_hint")));
+			(obj.click) = (next) => ((this.tasks(next)));
+			(obj.sub) = () => ([(this.Tasks_icon())]);
 			return obj;
 		}
 		Members_icon(){
@@ -58427,6 +58706,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_task(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		message_task_done(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		message_forwardable(id){
 			return true;
 		}
@@ -58522,6 +58809,10 @@ var $;
 			return null;
 		}
 		members(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tasks(next){
 			if(next !== undefined) return next;
 			return null;
 		}
@@ -58743,6 +59034,7 @@ var $;
 			return [
 				(this.Share()), 
 				(this.Call()), 
+				(this.Tasks()), 
 				(this.Members()), 
 				(this.Close())
 			];
@@ -58963,6 +59255,8 @@ var $;
 			(obj.contact) = () => ((this.message_contact(id)));
 			(obj.contact_name) = () => ((this.message_contact_name(id)));
 			(obj.contact_open) = (next) => ((this.message_contact_open(id, next)));
+			(obj.task) = (next) => ((this.message_task(id, next)));
+			(obj.task_done) = (next) => ((this.message_task_done(id, next)));
 			(obj.forwardable) = () => ((this.message_forwardable(id)));
 			(obj.forward) = (next) => ((this.message_forward(id, next)));
 			(obj.body) = () => ((this.message_body(id)));
@@ -59014,6 +59308,8 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "call_start"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Call_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Call"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Tasks_icon"));
+	($mol_mem(($.$bog_gram_chat.prototype), "Tasks"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Members_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Members"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Close_icon"));
@@ -59080,6 +59376,8 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_sound_ended"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_call_open"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_contact_open"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_task"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_task_done"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_forward"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_edit"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_delete"));
@@ -59096,6 +59394,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Alerts"));
 	($mol_mem(($.$bog_gram_chat.prototype), "close"));
 	($mol_mem(($.$bog_gram_chat.prototype), "members"));
+	($mol_mem(($.$bog_gram_chat.prototype), "tasks"));
 	($mol_mem(($.$bog_gram_chat.prototype), "call_open"));
 	($mol_mem(($.$bog_gram_chat.prototype), "meet_confirm"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "admit"));
@@ -59898,10 +60197,39 @@ var $;
                 const html = this.message_html();
                 return $bog_gram_write_rich_is(html) ? html : '';
             }
-            rich_put(message) {
+            text_put(message, text) {
+                const task = $bog_gram_tasks_is(text);
+                message.Text('auto')?.val(task ? $bog_gram_tasks_text(text) : text);
+                if (task)
+                    message.Task('auto')?.val(true);
                 const html = this.rich_html();
                 if (html)
-                    message.Html('auto')?.val(html);
+                    message.Html('auto')?.val(task ? $bog_gram_tasks_html(html) : html);
+            }
+            message_task(id, next) {
+                const pawn = this.message_pawn(id);
+                if (next !== undefined && pawn) {
+                    this.message_menu('');
+                    pawn.Task('auto')?.val(next);
+                    if (pawn.Task_done()?.val())
+                        pawn.Task_done('auto')?.val(0);
+                }
+                return Boolean(pawn?.Task()?.val());
+            }
+            message_task_done(id, next) {
+                const pawn = this.message_pawn(id);
+                if (next !== undefined)
+                    pawn?.Task_done('auto')?.val(next ? Date.now() : 0);
+                return Boolean(pawn?.Task_done()?.val());
+            }
+            task_ids() {
+                return this.messages()
+                    .filter(message => message.Task()?.val() && this.Talk().message_live(message))
+                    .map(message => message.link().str);
+            }
+            message_show(id) {
+                if (this.message_alive(id))
+                    this.reveal(this.Line(id), 'center');
             }
             rich_mode(next) {
                 return this.$.$mol_state_local.value('$bog_gram_chat.rich', next) ?? false;
@@ -59966,8 +60294,7 @@ var $;
                 const message = session.Messages('auto').make(null);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
-                message.Text('auto')?.val(text);
-                this.rich_put(message);
+                this.text_put(message, text);
                 const reply = this.reply_id();
                 if (reply)
                     message.Reply('auto')?.val(reply);
@@ -60227,9 +60554,7 @@ var $;
                 message.Image_width('auto')?.val(frames[0].width);
                 message.Image_height('auto')?.val(frames[0].height);
                 if (text)
-                    message.Text('auto')?.val(text);
-                if (text)
-                    this.rich_put(message);
+                    this.text_put(message, text);
                 if (text)
                     this.message_text('');
                 this.voice_hint('');
@@ -60271,9 +60596,7 @@ var $;
                     message.Video_height('auto')?.val(clip.height);
                 }
                 if (text)
-                    message.Text('auto')?.val(text);
-                if (text)
-                    this.rich_put(message);
+                    this.text_put(message, text);
                 if (text)
                     this.message_text('');
                 this.voice_hint('');
@@ -60922,6 +61245,18 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "message_plain", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_task", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_task_done", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "task_ids", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "message_show", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "rich_mode", null);
@@ -63545,6 +63880,28 @@ var $;
 			(obj.leave) = (next) => ((this.group_leave(next)));
 			return obj;
 		}
+		tasks_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		task_ids(id){
+			return [];
+		}
+		task_text(id){
+			return "";
+		}
+		task_done(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		task_jump(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tasks_open(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		chat_dialog(id){
 			return "";
 		}
@@ -63748,8 +64105,18 @@ var $;
 				(this.Members_page())
 			];
 		}
+		Tasks_page(id){
+			const obj = new this.$.$bog_gram_tasks();
+			(obj.close) = (next) => ((this.tasks_close(next)));
+			(obj.ids) = () => ((this.task_ids(id)));
+			(obj.text) = (id) => ((this.task_text(id)));
+			(obj.done) = (id, next) => ((this.task_done(id, next)));
+			(obj.jump) = (id, next) => ((this.task_jump(id, next)));
+			return obj;
+		}
 		Chat_page(id){
 			const obj = new this.$.$bog_gram_chat();
+			(obj.tasks) = (next) => ((this.tasks_open(next)));
 			(obj.dialog) = () => ((this.chat_dialog(id)));
 			(obj.my_lord) = () => ((this.my_lord()));
 			(obj.Talk) = () => ((this.Talk()));
@@ -63848,6 +64215,10 @@ var $;
 	($mol_mem_key(($.$bog_gram.prototype), "member_drop"));
 	($mol_mem(($.$bog_gram.prototype), "group_leave"));
 	($mol_mem(($.$bog_gram.prototype), "Members_page"));
+	($mol_mem(($.$bog_gram.prototype), "tasks_close"));
+	($mol_mem_key(($.$bog_gram.prototype), "task_done"));
+	($mol_mem_key(($.$bog_gram.prototype), "task_jump"));
+	($mol_mem(($.$bog_gram.prototype), "tasks_open"));
 	($mol_mem(($.$bog_gram.prototype), "dialog_close"));
 	($mol_mem(($.$bog_gram.prototype), "members_open"));
 	($mol_mem(($.$bog_gram.prototype), "call_open"));
@@ -63876,6 +64247,7 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Gate_fresh_note"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_retry"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_fresh"));
+	($mol_mem_key(($.$bog_gram.prototype), "Tasks_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Chat_page"));
 	($mol_mem(($.$bog_gram.prototype), "Pick_page"));
 	($mol_mem_key(($.$bog_gram.prototype), "Call_page"));
@@ -64082,11 +64454,13 @@ var $;
                 this.settings_opened(false);
                 this.group_opened(false);
                 this.members_opened(false);
+                this.tasks_opened(false);
                 this.dialog_current(id);
                 return null;
             }
             dialog_close(next) {
                 this.members_opened(false);
+                this.tasks_opened(false);
                 this.dialog_current('');
                 return null;
             }
@@ -64190,6 +64564,35 @@ var $;
                 this.members_opened(false);
                 return null;
             }
+            tasks_opened(next) {
+                return next ?? false;
+            }
+            tasks_open(next) {
+                this.tasks_opened(!this.tasks_opened());
+                return null;
+            }
+            tasks_close(next) {
+                this.tasks_opened(false);
+                return null;
+            }
+            task_ids(dialog) {
+                return this.task_chat(dialog).task_ids();
+            }
+            task_chat(dialog = this.dialog_active()) {
+                return this.Chat_page(dialog);
+            }
+            task_text(id) {
+                return this.task_chat().quote_text(id);
+            }
+            task_done(id, next) {
+                return this.task_chat().message_task_done(id, next);
+            }
+            task_jump(id, next) {
+                const chat = this.task_chat();
+                chat.bring();
+                chat.message_show(id);
+                return null;
+            }
             /** Открыта ли страница музыки. Как у настроек, состоянием владеет ссылка. */
             music_opened(next) {
                 const arg = this.$.$mol_state_arg;
@@ -64251,6 +64654,7 @@ var $;
                     ...this.group_opened() ? [this.Group_page()] : [],
                     ...active ? [this.Chat_page(active)] : [],
                     ...this.members_opened() && this.members_shown() ? [this.Members_page()] : [],
+                    ...active && this.tasks_opened() ? [this.Tasks_page(active)] : [],
                     ...this.call_current() ? [this.Call_page(this.call_current())] : [],
                     ...this.music_alive() ? [this.Music_page()] : [],
                     ...this.pick_shown() ? [this.Pick_page()] : [],
@@ -64799,6 +65203,18 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram.prototype, "members_close", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram.prototype, "tasks_opened", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "tasks_open", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "tasks_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram.prototype, "task_jump", null);
         __decorate([
             $mol_mem
         ], $bog_gram.prototype, "music_opened", null);
