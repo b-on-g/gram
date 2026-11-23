@@ -57,6 +57,7 @@ $bog_gram_chat $bog_gram_page
 	edit_id? \
 	reply_id? \
 	message_menu? \
+	react_id? \
 	zoom_id? \
 	voice_start? 0
 	voice_playing? \
@@ -318,6 +319,9 @@ $bog_gram_chat $bog_gram_page
 		contact_open? <=> message_contact_open*? null
 		task? <=> message_task*? false
 		task_done? <=> message_task_done*? false
+		reactions <= message_reactions* /string
+		react? <=> message_react*? \
+		react_open? <=> message_react_open*? false
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
 		body <= message_body* \

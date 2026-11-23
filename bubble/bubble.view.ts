@@ -86,6 +86,40 @@ namespace $.$$ {
 			return this.out() ? super.Delete() : null!
 		}
 
+		override reaction_chips() {
+			return $bog_gram_react.shown( this.reactions() ).map( kind => this.Reaction( kind ) )
+		}
+
+		override Reactions() {
+			return this.reaction_chips().length ? super.Reactions() : null!
+		}
+
+		override palette_picks() {
+			return $bog_gram_react.kinds.map( kind => this.Pick( kind ) )
+		}
+
+		override Palette() {
+			return this.react_open() ? super.Palette() : null!
+		}
+
+		override reaction_mine( kind: string ) {
+			return this.react() === kind
+		}
+
+		override reaction_label( kind: string ) {
+			return kind + ' ' + $bog_gram_react.count( this.reactions(), kind )
+		}
+
+		override pick_label( kind: string ) {
+			return kind
+		}
+
+		@ $mol_action
+		override reaction_toggle( kind: string, next?: any ) {
+			this.react( this.reaction_mine( kind ) ? '' : kind )
+			return null
+		}
+
 		players() {
 			return [ this.Sound(), this.Round() ].filter( Boolean ) as ( $.$$.$bog_gram_sound | $.$$.$bog_gram_round )[]
 		}

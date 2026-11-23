@@ -37,6 +37,9 @@ $bog_gram_bubble $mol_view
 	contact_open? null
 	task? false
 	task_done? false
+	reactions /string
+	react? \
+	react_open? false
 	forwardable true
 	forward? null
 	body \
@@ -144,32 +147,64 @@ $bog_gram_bubble $mol_view
 						<= Checks $mol_view
 							sub /
 								<= checks
-		<= Actions $mol_view
+				<= Actions $mol_view
+					event *
+						^
+						pointerdown? <=> actions_touch?
+						pointerup? <=> actions_touch?
+					sub /
+						<= React $mol_check_icon
+							hint @ \React
+							checked? <=> react_open?
+							Icon <= React_icon $mol_icon_emoticon_outline
+						<= Copy $mol_button_copy
+							hint @ \Copy text
+							text <= body
+							title \
+						<= Task_mark $mol_check_icon
+							hint @ \Task
+							checked? <=> task?
+							Icon <= Task_mark_icon $mol_icon_format_list_checks
+						<= Forward $mol_button_minor
+							hint @ \Forward
+							click? <=> forward?
+							sub /
+								<= Forward_icon $mol_icon_share
+						<= Edit $mol_button_minor
+							hint @ \Edit
+							click? <=> edit?
+							sub /
+								<= Edit_icon $mol_icon_pencil
+						<= Delete $mol_button_minor
+							hint @ \Delete
+							click? <=> delete?
+							sub /
+								<= Delete_icon $mol_icon_delete
+		<= Reactions $mol_view
 			event *
 				^
-				pointerdown? <=> actions_touch? null
-				pointerup? <=> actions_touch? null
-			sub /
-				<= Copy $mol_button_copy
-					hint @ \Copy text
-					text <= body
-					title \
-				<= Task_mark $mol_check_icon
-					hint @ \Task
-					checked? <=> task?
-					Icon <= Task_mark_icon $mol_icon_format_list_checks
-				<= Forward $mol_button_minor
-					hint @ \Forward
-					click? <=> forward?
-					sub /
-						<= Forward_icon $mol_icon_share
-				<= Edit $mol_button_minor
-					hint @ \Edit
-					click? <=> edit?
-					sub /
-						<= Edit_icon $mol_icon_pencil
-				<= Delete $mol_button_minor
-					hint @ \Delete
-					click? <=> delete?
-					sub /
-						<= Delete_icon $mol_icon_delete
+				pointerdown? <=> actions_touch?
+				pointerup? <=> actions_touch?
+			sub <= reaction_chips /$mol_view
+		<= Palette $mol_view
+			event *
+				^
+				pointerdown? <=> actions_touch?
+				pointerup? <=> actions_touch?
+			sub <= palette_picks /$mol_view
+	Reaction* $mol_button_minor
+		hint @ \Reaction
+		attr *
+			^
+			bog_gram_bubble_mine <= reaction_mine* false
+		click? <=> reaction_toggle*? null
+		sub /
+			<= reaction_label* \
+	Pick* $mol_button_minor
+		hint @ \Reaction
+		attr *
+			^
+			bog_gram_bubble_mine <= reaction_mine*
+		click? <=> reaction_toggle*?
+		sub /
+			<= pick_label* \

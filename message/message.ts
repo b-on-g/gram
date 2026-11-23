@@ -26,6 +26,7 @@ namespace $ {
 		Contact_name: $giper_baza_atom_text,
 		Task: $giper_baza_atom_bool,
 		Task_done: $giper_baza_atom_real,
+		Reactions: $giper_baza_dict_to( $giper_baza_atom_text ),
 	}) {}
 
 }

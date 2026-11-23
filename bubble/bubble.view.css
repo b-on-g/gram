@@ -20,12 +20,21 @@
 	background: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );
 }
 
-[bog_gram_bubble][bog_gram_bubble_menu="true"] > [bog_gram_bubble_actions] {
+[bog_gram_bubble]:not([bog_gram_bubble_out="true"]) [bog_gram_bubble_actions] {
+	right: auto;
+	left: 0;
+}
+
+[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine="true"] {
+	background-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );
+}
+
+[bog_gram_bubble][bog_gram_bubble_menu="true"] [bog_gram_bubble_actions] {
 	display: flex;
 }
 
 @media (hover: hover) and (pointer: fine) {
-	[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {
+	[bog_gram_bubble]:hover [bog_gram_bubble_actions] {
 		display: flex;
 	}
 }

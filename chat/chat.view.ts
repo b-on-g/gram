@@ -402,6 +402,7 @@ namespace $.$$ {
 			if( held ) return null
 
 			if( this.message_menu() === id ) this.message_menu( '' )
+			if( this.react_id() ) this.react_id( '' )
 			if( next?.type === 'pointerup' && this.message_double_tap( id, Date.now() ) ) this.message_reply( id )
 
 			return null
@@ -612,6 +613,36 @@ namespace $.$$ {
 			const pawn = this.message_pawn( id )
 			if( next !== undefined ) pawn?.Task_done( 'auto' )?.val( next ? Date.now() : 0 )
 			return Boolean( pawn?.Task_done()?.val() )
+		}
+
+		@ $mol_mem_key
+		override message_reactions( id: string ) {
+			return $bog_gram_react.list( this.message_pawn( id ) )
+		}
+
+		@ $mol_mem_key
+		override message_react( id: string, next?: string ) {
+
+			const pawn = this.message_pawn( id )
+
+			if( next !== undefined && pawn ) {
+				this.message_menu( '' )
+				this.react_id( '' )
+				$bog_gram_react.put( pawn, this.my_lord(), next )
+			}
+
+			return $bog_gram_react.mine( pawn, this.my_lord() )
+		}
+
+		@ $mol_mem_key
+		override message_react_open( id: string, next?: boolean ) {
+
+			if( next !== undefined ) {
+				this.message_menu( '' )
+				this.react_id( next ? id : '' )
+			}
+
+			return this.react_id() === id
 		}
 
 		@ $mol_mem

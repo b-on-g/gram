@@ -159,6 +159,7 @@ namespace $.$$ {
 		},
 
 		Line: {
+			position: 'relative',
 			flex: {
 				wrap: 'wrap',
 			},
@@ -245,8 +246,8 @@ namespace $.$$ {
 		Actions: {
 			display: 'none',
 			position: 'absolute',
-			right: '0.25rem',
-			bottom: '0.25rem',
+			right: 0,
+			bottom: 0,
 			zIndex: 1,
 			align: {
 				items: 'center',
@@ -277,6 +278,45 @@ namespace $.$$ {
 			},
 		},
 
+		Reactions: {
+			flex: {
+				wrap: 'wrap',
+			},
+			gap: '0.25rem',
+		},
+
+		Reaction: {
+			padding: {
+				top: '0.125rem',
+				bottom: '0.125rem',
+				left: '0.5rem',
+				right: '0.5rem',
+			},
+			borderRadius: '1rem',
+			background: {
+				color: $mol_theme.hover,
+			},
+			font: {
+				size: '0.8rem',
+			},
+			whiteSpace: 'nowrap',
+		},
+
+		Palette: {
+			flex: {
+				wrap: 'wrap',
+			},
+		},
+
+		Pick: {
+			... control,
+			font: {
+				size: '1.25rem',
+			},
+		},
+
+		React: control,
+
 		Task_mark: control,
 
 		Copy: control,
@@ -305,6 +345,14 @@ namespace $.$$ {
 		'@media': {
 			'(max-width: 30rem)': {
 				maxWidth: '85%',
+				Pick: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
+				React: {
+					minWidth: '2.75rem',
+					minHeight: '2.75rem',
+				},
 				Task_mark: {
 					minWidth: '2.75rem',
 					minHeight: '2.75rem',
