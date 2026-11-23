@@ -1304,7 +1304,7 @@ namespace $.$$ {
 
 				if( this.voice_live === take ) this.record_reset()
 
-				this.voice_hint( this.voice_denied() )
+				this.voice_hint( ( error as Error ).name === 'NotReadableError' ? this.voice_busy() : this.voice_denied() )
 
 				return false
 			}

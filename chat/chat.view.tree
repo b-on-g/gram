@@ -32,6 +32,7 @@ $bog_gram_chat $bog_gram_page
 	voice_clock \
 	voice_hint? \
 	voice_denied @ \Microphone unavailable: allow recording in the browser settings
+	voice_busy @ \Recording did not start: check the system privacy settings and that no other program holds the microphone or camera
 	voice_short @ \Too short, recording cancelled
 	call_lost_pattern @ \Call not started: key not delivered — {names}. Call again a bit later
 	read_pattern @ \Read by {count} of {total}

@@ -106,9 +106,17 @@ namespace $ {
 			return { facingMode: facing, width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } }
 		}
 
-		static constraints( kind: $bog_gram_voice_kind, facing: $bog_gram_voice_facing = 'user' ): MediaStreamConstraints {
-			if( kind === 'voice' ) return { audio: this.hearing }
-			return { audio: this.hearing, video: this.sight( facing ) }
+		static async stream_open( kind: $bog_gram_voice_kind, facing: $bog_gram_voice_facing ) {
+
+			const devices = $mol_dom_context.navigator.mediaDevices
+			if( kind === 'voice' ) return $bog_gram_mic.open( devices, this.hearing )
+
+			const { stream, errors } = await $bog_gram_mic.open_both( devices, this.hearing, this.sight( facing ) )
+			const error = errors.audio ?? errors.video
+			if( !error ) return stream
+
+			for( const track of stream.getTracks() ) track.stop()
+			throw error
 		}
 
 		static preview( stream: MediaStream ) {
@@ -189,7 +197,7 @@ namespace $ {
 			const type = $bog_gram_voice.type( kind )
 			if( !type ) throw new Error( this.Text().voice_unsupported() )
 
-			const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia( $bog_gram_voice.constraints( kind, this.face() ) )
+			const stream = await $bog_gram_voice.stream_open( kind, this.face() )
 
 			if( this.asked ) {
 				this.hush( stream )

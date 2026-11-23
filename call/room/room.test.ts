@@ -24,6 +24,7 @@ namespace $ {
 			name: ()=> name,
 			now: ()=> time,
 			cam_able: ()=> true,
+			mic_able: ()=> true,
 		})
 
 		const room_a = room( land_a, auth_a, 'Аня' )

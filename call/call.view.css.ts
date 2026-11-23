@@ -40,6 +40,10 @@ namespace $.$$ {
 			},
 		},
 
+		Mic_lost: {
+			padding: $mol_gap.block,
+		},
+
 		Grid: {
 			flex: {
 				wrap: 'wrap',

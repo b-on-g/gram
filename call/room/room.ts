@@ -205,7 +205,7 @@ namespace $ {
 
 			seat.Lord( 'auto' )!.val( this.lord() )
 			seat.Name( 'auto' )!.val( this.name() )
-			seat.Mic( 'auto' )!.val( this.mic() )
+			seat.Mic( 'auto' )!.val( this.mic() && this.mic_able() )
 			seat.Cam( 'auto' )!.val( ( this.cam() && this.cam_able() ) || this.screen() )
 			seat.Screen( 'auto' )!.val( this.screen() )
 			seat.Beat( 'auto' )!.val( moment )
@@ -298,21 +298,14 @@ namespace $ {
 		@ $mol_mem
 		media() {
 
-			const devices = $mol_wire_sync( navigator.mediaDevices )
-			const audio = this.audio_initial()
+			const { stream, errors } = $mol_wire_sync( $bog_gram_mic ).open_both(
+				navigator.mediaDevices,
+				this.audio_initial(),
+				$bog_gram_call_room.video_constraints( 'user' ),
+			)
 
-			let stream: MediaStream
-
-			try {
-				stream = devices.getUserMedia({
-					audio,
-					video: $bog_gram_call_room.video_constraints( 'user' ),
-				})
-			} catch( error ) {
-				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
-				this.log( `камера не открылась: ${ ( error as Error ).name || error }` )
-				stream = devices.getUserMedia({ audio })
-			}
+			if( errors.audio ) this.log( `микрофон не открылся: ${ errors.audio }` )
+			if( errors.video ) this.log( `камера не открылась: ${ errors.video }` )
 
 			return Object.assign( stream, {
 				destructor: ()=> stream.getTracks().forEach( track => track.stop() )
@@ -399,7 +392,7 @@ namespace $ {
 
 			let fresh: MediaStream
 			try {
-				fresh = $mol_wire_sync( navigator.mediaDevices ).getUserMedia({ audio: $bog_gram_call_room.audio_constraints( id ) })
+				fresh = $mol_wire_sync( $bog_gram_mic ).open( navigator.mediaDevices, $bog_gram_call_room.audio_constraints( id ) )
 			} catch( error ) {
 				if( $mol_promise_like( error ) ) $mol_fail_hidden( error )
 				this.log( `микрофон не открылся: ${ ( error as Error ).name || error }` )
@@ -504,6 +497,12 @@ namespace $ {
 		@ $mol_mem
 		facing( next?: $bog_gram_call_facing ) {
 			return next ?? 'user'
+		}
+
+		@ $mol_mem
+		mic_able() {
+			this.audio_changed()
+			return this.media().getAudioTracks().length > 0
 		}
 
 		@ $mol_mem

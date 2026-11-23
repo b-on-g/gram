@@ -22,6 +22,7 @@ namespace $.$$ {
 		override content() {
 			return [
 				... this.knocks().length ? [ this.Knocks() ] : [],
+				... this.joined() && !this.Room().mic_able() ? [ this.Mic_lost() ] : [],
 				this.joined() ? this.Grid() : this.Lobby(),
 			]
 		}
@@ -78,7 +79,9 @@ namespace $.$$ {
 		}
 
 		override mic( next?: boolean ) {
-			return this.Room().mic( next )
+			const room = this.Room()
+			if( next && !room.mic_able() ) room.audio_open()
+			return room.mic( next ) && room.mic_able()
 		}
 
 		device_dictionary( kind: MediaDeviceKind ) {

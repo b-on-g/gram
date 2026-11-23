@@ -8,6 +8,7 @@
 	"$bog_gram_call_self_name": "你",
 	"$bog_gram_call_Join_title": "加入通话",
 	"$bog_gram_call_title": "通话",
+	"$bog_gram_call_Mic_lost_title": "麦克风未能启动，其他人听不到你。请在系统隐私设置中允许浏览器使用麦克风，并确认没有其他程序占用，然后点击麦克风按钮",
 	"$bog_gram_call_Mic_hint": "麦克风",
 	"$bog_gram_call_Cam_hint": "摄像头",
 	"$bog_gram_call_Screen_hint": "共享屏幕",
