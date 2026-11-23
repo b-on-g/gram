@@ -42066,7 +42066,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.216';
+    $.$bog_gram_version = '1.0.217';
 })($ || ($ = {}));
 
 ;
@@ -64069,6 +64069,21 @@ var $;
 			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_wait_title")));
 			return obj;
 		}
+		Gate_crypto(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_crypto_title")));
+			return obj;
+		}
+		Gate_outdated(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_outdated_title")));
+			return obj;
+		}
+		Gate_update(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_update_title")));
+			return obj;
+		}
 		Gate_lost(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_Gate_lost_title")));
@@ -64243,6 +64258,9 @@ var $;
 	($mol_mem(($.$bog_gram.prototype), "Pager"));
 	($mol_mem(($.$bog_gram.prototype), "Gate"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_wait"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_crypto"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_outdated"));
+	($mol_mem(($.$bog_gram.prototype), "Gate_update"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_lost"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_fresh_note"));
 	($mol_mem(($.$bog_gram.prototype), "Gate_retry"));
@@ -64638,9 +64656,12 @@ var $;
                 return $bog_gram_soft(() => this.account_state(), 'wait') === 'ready';
             }
             gate_sub() {
-                return this.account_state() === 'lost'
-                    ? [this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh()]
-                    : [this.Gate_wait()];
+                const state = $mol_error_fence(() => this.account_state(), error => error.cause?.name === 'NotSupportedError' ? 'outdated' : error);
+                switch (state) {
+                    case 'outdated': return [this.Gate_crypto(), this.Gate_outdated(), this.Gate_update()];
+                    case 'lost': return [this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh()];
+                }
+                return [this.Gate_wait()];
             }
             pages() {
                 if (!this.account_open())

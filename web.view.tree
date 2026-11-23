@@ -5891,6 +5891,12 @@ $bog_gram $mol_book2
 				sub <= gate_sub /
 	Gate_wait $mol_paragraph
 		title @ \Loading account data…
+	Gate_crypto $mol_paragraph
+		title @ \We use the most modern cryptography.
+	Gate_outdated $mol_paragraph
+		title @ \Your browser is outdated and does not support it.
+	Gate_update $mol_paragraph
+		title @ \Please update your browser and come back.
 	Gate_lost $mol_paragraph
 		title @ \Could not load account data
 	Gate_fresh_note $mol_paragraph
