@@ -13,6 +13,7 @@ fs.mkdirSync( DIR, { recursive: true, mode: 0o700 } )
 const config = Object.assign( {
 	group: '',
 	lords: [],
+	members: false,
 	name: 'Клод',
 	masters: null,
 	daily: 10,
@@ -222,7 +223,11 @@ function signers( message ) {
 }
 
 function trusted( message ) {
-	return signers( message ).every( one => config.lords.includes( one ) )
+	return signers( message ).every( one => {
+		if( !one || one === lord ) return false
+		if( config.lords.includes( one ) ) return true
+		return config.members && talk.member_is( config.group, one )
+	} )
 }
 
 function frames( message ) {
@@ -648,7 +653,7 @@ async function main() {
 	config.group = group
 	for( const one of [ owner, via ] ) if( one ) await group_ask( group, one )
 
-	if( !config.group || !config.lords.length ) {
+	if( !config.group || !( config.lords.length || config.members ) ) {
 		console.log( `Впиши group (ссылка-приглашение группы) и lords в ${ at( 'config.json' ) } и запусти снова. Пока бот в сети, его можно добавить в группу.` )
 		await new Promise( ()=> setInterval( ()=> {}, 1 << 30 ) )
 	}
