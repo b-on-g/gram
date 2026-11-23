@@ -331,9 +331,15 @@ namespace $.$$ {
 		}
 
 		override gate_sub() {
-			return this.account_state() === 'lost'
-				? [ this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh() ]
-				: [ this.Gate_wait() ]
+			const state = $mol_error_fence< string >(
+				()=> this.account_state(),
+				error => ( error.cause as Error | undefined )?.name === 'NotSupportedError' ? 'outdated' : error,
+			)
+			switch( state ) {
+				case 'outdated': return [ this.Gate_crypto(), this.Gate_outdated(), this.Gate_update() ]
+				case 'lost': return [ this.Gate_lost(), this.Gate_fresh_note(), this.Gate_retry(), this.Gate_fresh() ]
+			}
+			return [ this.Gate_wait() ]
 		}
 
 		override pages() {
