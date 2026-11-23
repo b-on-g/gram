@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.213";
+    const $bog_gram_version = "1.0.215";
 }
 
 declare namespace $ {
@@ -78727,7 +78727,7 @@ declare namespace $ {
         join_by(): string;
         lost(next?: string): string;
         join_plan(id: string, my: string, member: boolean): 'skip' | 'open' | 'ask';
-        join_take(id: string, by: string): "skip" | "ask" | "open";
+        join_take(id: string, by: string): "open" | "skip" | "ask";
         task(group: string, owner: string): string;
         task_group(entry: string): string;
         task_owner(entry: string): string;
@@ -79163,257 +79163,262 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_call_27 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_call_27 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_view__sub_bog_gram_call_28 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['tiles'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_call_tile__stream_bog_gram_call_28 = $mol_type_enforce<
+	type $bog_gram_call_tile__stream_bog_gram_call_29 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_stream'] >
 		,
 		ReturnType< $bog_gram_call_tile['stream'] >
 	>
-	type $bog_gram_call_tile__muted_bog_gram_call_29 = $mol_type_enforce<
+	type $bog_gram_call_tile__muted_bog_gram_call_30 = $mol_type_enforce<
 		boolean
 		,
 		ReturnType< $bog_gram_call_tile['muted'] >
 	>
-	type $bog_gram_call_tile__mirror_bog_gram_call_30 = $mol_type_enforce<
+	type $bog_gram_call_tile__mirror_bog_gram_call_31 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_mirror'] >
 		,
 		ReturnType< $bog_gram_call_tile['mirror'] >
 	>
-	type $bog_gram_call_tile__screen_bog_gram_call_31 = $mol_type_enforce<
+	type $bog_gram_call_tile__screen_bog_gram_call_32 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_screen'] >
 		,
 		ReturnType< $bog_gram_call_tile['screen'] >
 	>
-	type $bog_gram_call_tile__status_bog_gram_call_32 = $mol_type_enforce<
+	type $bog_gram_call_tile__status_bog_gram_call_33 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_status'] >
 		,
 		ReturnType< $bog_gram_call_tile['status'] >
 	>
-	type $bog_gram_call_tile__awake_bog_gram_call_33 = $mol_type_enforce<
+	type $bog_gram_call_tile__awake_bog_gram_call_34 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['awake'] >
 		,
 		ReturnType< $bog_gram_call_tile['awake'] >
 	>
-	type $bog_gram_call_tile__cam_bog_gram_call_34 = $mol_type_enforce<
+	type $bog_gram_call_tile__cam_bog_gram_call_35 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_cam'] >
 		,
 		ReturnType< $bog_gram_call_tile['cam'] >
 	>
-	type $bog_gram_call_tile__mic_bog_gram_call_35 = $mol_type_enforce<
+	type $bog_gram_call_tile__mic_bog_gram_call_36 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic'] >
 		,
 		ReturnType< $bog_gram_call_tile['mic'] >
 	>
-	type $bog_gram_call_tile__speaker_bog_gram_call_36 = $mol_type_enforce<
+	type $bog_gram_call_tile__speaker_bog_gram_call_37 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_source'] >
 		,
 		ReturnType< $bog_gram_call_tile['speaker'] >
 	>
-	type $bog_gram_call_tile__name_bog_gram_call_37 = $mol_type_enforce<
+	type $bog_gram_call_tile__name_bog_gram_call_38 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['self_name'] >
 		,
 		ReturnType< $bog_gram_call_tile['name'] >
 	>
-	type $bog_gram_call_tile__stream_bog_gram_call_38 = $mol_type_enforce<
+	type $bog_gram_call_tile__stream_bog_gram_call_39 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_stream'] >
 		,
 		ReturnType< $bog_gram_call_tile['stream'] >
 	>
-	type $bog_gram_call_tile__awake_bog_gram_call_39 = $mol_type_enforce<
+	type $bog_gram_call_tile__awake_bog_gram_call_40 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['awake'] >
 		,
 		ReturnType< $bog_gram_call_tile['awake'] >
 	>
-	type $bog_gram_call_tile__cam_bog_gram_call_40 = $mol_type_enforce<
+	type $bog_gram_call_tile__cam_bog_gram_call_41 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_cam'] >
 		,
 		ReturnType< $bog_gram_call_tile['cam'] >
 	>
-	type $bog_gram_call_tile__screen_bog_gram_call_41 = $mol_type_enforce<
+	type $bog_gram_call_tile__screen_bog_gram_call_42 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_screen'] >
 		,
 		ReturnType< $bog_gram_call_tile['screen'] >
 	>
-	type $bog_gram_call_tile__mic_bog_gram_call_42 = $mol_type_enforce<
+	type $bog_gram_call_tile__mic_bog_gram_call_43 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_mic'] >
 		,
 		ReturnType< $bog_gram_call_tile['mic'] >
 	>
-	type $bog_gram_call_tile__speaker_bog_gram_call_43 = $mol_type_enforce<
+	type $bog_gram_call_tile__speaker_bog_gram_call_44 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_source'] >
 		,
 		ReturnType< $bog_gram_call_tile['speaker'] >
 	>
-	type $bog_gram_call_tile__name_bog_gram_call_44 = $mol_type_enforce<
+	type $bog_gram_call_tile__name_bog_gram_call_45 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_name'] >
 		,
 		ReturnType< $bog_gram_call_tile['name'] >
 	>
-	type $bog_gram_call_tile__status_bog_gram_call_45 = $mol_type_enforce<
+	type $bog_gram_call_tile__status_bog_gram_call_46 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_status'] >
 		,
 		ReturnType< $bog_gram_call_tile['status'] >
 	>
-	type $bog_gram_call_tile__stats_bog_gram_call_46 = $mol_type_enforce<
+	type $bog_gram_call_tile__stats_bog_gram_call_47 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mate_stats'] >
 		,
 		ReturnType< $bog_gram_call_tile['stats'] >
 	>
-	type $mol_list__rows_bog_gram_call_47 = $mol_type_enforce<
+	type $mol_list__rows_bog_gram_call_48 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_list['rows'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_48 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_49 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Mic_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_49 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_50 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_50 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_select__hint_bog_gram_call_51 = $mol_type_enforce<
+	type $mol_select__hint_bog_gram_call_52 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_select['hint'] >
 	>
-	type $mol_select__trigger_content_bog_gram_call_52 = $mol_type_enforce<
+	type $mol_select__trigger_content_bog_gram_call_53 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_select['trigger_content'] >
 	>
-	type $mol_select__dictionary_bog_gram_call_53 = $mol_type_enforce<
+	type $mol_select__dictionary_bog_gram_call_54 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic_dictionary'] >
 		,
 		ReturnType< $mol_select['dictionary'] >
 	>
-	type $mol_select__value_bog_gram_call_54 = $mol_type_enforce<
+	type $mol_select__value_bog_gram_call_55 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['mic_source'] >
 		,
 		ReturnType< $mol_select['value'] >
 	>
-	type $mol_select__hint_bog_gram_call_55 = $mol_type_enforce<
+	type $mol_select__hint_bog_gram_call_56 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_select['hint'] >
 	>
-	type $mol_select__trigger_content_bog_gram_call_56 = $mol_type_enforce<
+	type $mol_select__trigger_content_bog_gram_call_57 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_select['trigger_content'] >
 	>
-	type $mol_select__dictionary_bog_gram_call_57 = $mol_type_enforce<
+	type $mol_select__dictionary_bog_gram_call_58 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_dictionary'] >
 		,
 		ReturnType< $mol_select['dictionary'] >
 	>
-	type $mol_select__value_bog_gram_call_58 = $mol_type_enforce<
+	type $mol_select__value_bog_gram_call_59 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['speaker_source'] >
 		,
 		ReturnType< $mol_select['value'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_59 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_60 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Cam_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_60 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_61 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_61 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_62 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__enabled_bog_gram_call_62 = $mol_type_enforce<
+	type $mol_check_icon__enabled_bog_gram_call_63 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam_able'] >
 		,
 		ReturnType< $mol_check_icon['enabled'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_63 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_64 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Screen_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_64 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_65 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_65 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['screen'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_66 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_67 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_67 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_68 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['cam_switch'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_68 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_69 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_call_69 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_call_70 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['Stats_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_check_icon__hint_bog_gram_call_70 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_call_71 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_call_71 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_call_72 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['stats_show'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_72 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_73 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_73 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_74 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['pip'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_74 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_75 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_call_75 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_call_76 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_call_76 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_call_77 = $mol_type_enforce<
 		ReturnType< $bog_gram_call['leave'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_call_77 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_call_78 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
@@ -79494,6 +79499,7 @@ declare namespace $ {
 		Knocks( ): $mol_list
 		Knocks_head( ): $mol_paragraph
 		Knock( id: any): $mol_view
+		Mic_lost( ): $mol_paragraph
 		Grid( ): $mol_view
 		Self( ): $bog_gram_call_tile
 		Mate( id: any): $bog_gram_call_tile
@@ -79521,7 +79527,7 @@ declare namespace $.$$ {
         invite_link(): string;
         Invite_qr_pick(): $.$mol_pick;
         Invite(): $.$mol_button_copy;
-        content(): $mol_view[];
+        content(): ($mol_view | $.$mol_paragraph)[];
         knocks_head(): string;
         knock_rows(): ($mol_view | $.$mol_paragraph)[];
         controls(): ($mol_button_minor | $.$mol_select)[];
@@ -80626,6 +80632,22 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $bog_gram_mic_devices = Pick<MediaDevices, 'getUserMedia' | 'enumerateDevices'>;
+    class $bog_gram_mic extends $mol_object {
+        static raw: MediaTrackConstraints;
+        static refused(error: unknown): boolean;
+        static open(devices: $bog_gram_mic_devices, wanted: MediaTrackConstraints | boolean): Promise<MediaStream>;
+        static open_both(devices: $bog_gram_mic_devices, audio: MediaTrackConstraints | boolean, video: MediaTrackConstraints): Promise<{
+            stream: MediaStream;
+            errors: {
+                audio?: unknown;
+                video?: unknown;
+            };
+        }>;
+    }
+}
+
+declare namespace $ {
     type $bog_gram_call_signal = {
         id: string;
         sdp: string;
@@ -80701,6 +80723,7 @@ declare namespace $ {
         audio_restore_at: number;
         video_changed(next?: number): number;
         facing(next?: $bog_gram_call_facing): $bog_gram_call_facing;
+        mic_able(): boolean;
         cam_able(): boolean;
         cameras(): number;
         cam_switch_able(): boolean;
@@ -80876,7 +80899,7 @@ declare namespace $ {
         late(next?: string): string;
         timer(): $mol_after_timeout | null;
         take(lord: string, key: string): {
-            plan: "start" | "skip" | "open" | "bad";
+            plan: "start" | "open" | "skip" | "bad";
             exist: string;
         };
         ready(): string;
@@ -82258,11 +82281,15 @@ declare namespace $ {
 		ReturnType< $mol_image['attr'] >
 	>
 	export class $bog_gram_gallery extends $mol_view {
+		zoomed( ): boolean
 		dragging( ): boolean
 		swipe_start( next?: any ): any
 		swipe_move( next?: any ): any
 		swipe_end( next?: any ): any
 		swipe_cancel( next?: any ): any
+		drag_block( next?: any ): any
+		gesture_start( next?: any ): any
+		gesture_move( next?: any ): any
 		swipe_wheel( next?: any ): any
 		back_click( next?: any ): any
 		prev( next?: any ): any
@@ -82287,6 +82314,7 @@ declare namespace $ {
 		counter_pattern( ): string
 		attr( ): ({ 
 			'tabindex': number,
+			'bog_gram_gallery_zoomed': ReturnType< $bog_gram_gallery['zoomed'] >,
 			'bog_gram_gallery_drag': ReturnType< $bog_gram_gallery['dragging'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		event( ): ({ 
@@ -82294,6 +82322,9 @@ declare namespace $ {
 			pointermove( next?: ReturnType< $bog_gram_gallery['swipe_move'] > ): ReturnType< $bog_gram_gallery['swipe_move'] >,
 			pointerup( next?: ReturnType< $bog_gram_gallery['swipe_end'] > ): ReturnType< $bog_gram_gallery['swipe_end'] >,
 			pointercancel( next?: ReturnType< $bog_gram_gallery['swipe_cancel'] > ): ReturnType< $bog_gram_gallery['swipe_cancel'] >,
+			dragstart( next?: ReturnType< $bog_gram_gallery['drag_block'] > ): ReturnType< $bog_gram_gallery['drag_block'] >,
+			gesturestart( next?: ReturnType< $bog_gram_gallery['gesture_start'] > ): ReturnType< $bog_gram_gallery['gesture_start'] >,
+			gesturechange( next?: ReturnType< $bog_gram_gallery['gesture_move'] > ): ReturnType< $bog_gram_gallery['gesture_move'] >,
 			wheel( next?: ReturnType< $bog_gram_gallery['swipe_wheel'] > ): ReturnType< $bog_gram_gallery['swipe_wheel'] >,
 			click( next?: ReturnType< $bog_gram_gallery['back_click'] > ): ReturnType< $bog_gram_gallery['back_click'] >,
 		})  & ReturnType< $mol_view['event'] >
@@ -82306,10 +82337,54 @@ declare namespace $ {
 
 //# sourceMappingURL=gallery.view.tree.d.ts.map
 declare namespace $.$$ {
+    type $bog_gram_gallery_point = readonly [x: number, y: number];
+    type $bog_gram_gallery_view = {
+        id: string;
+        zoom: number;
+        pan: $bog_gram_gallery_point;
+    };
     class $bog_gram_gallery extends $.$bog_gram_gallery {
         static step(ids: readonly string[], current: string, dir: number): string;
         static settle(shift: number, speed: number, width: number): 1 | -1 | 0;
         static drop_settle(drop: number, speed: number, height: number): boolean;
+        static zoom_fit(zoom: number): number;
+        static pan_zoom(pan: $bog_gram_gallery_point, from: $bog_gram_gallery_point, to: $bog_gram_gallery_point, scale: number): $bog_gram_gallery_point;
+        static pan_fit(pan: $bog_gram_gallery_point, zoom: number, shot: $bog_gram_gallery_point, box: $bog_gram_gallery_point): $bog_gram_gallery_point;
+        view_state(next?: $bog_gram_gallery_view | null): $bog_gram_gallery_view | null;
+        view(): $bog_gram_gallery_view;
+        zoomed(): boolean;
+        box_size(): $bog_gram_gallery_point;
+        shot_size(): $bog_gram_gallery_point;
+        point(event: {
+            clientX: number;
+            clientY: number;
+        }): $bog_gram_gallery_point;
+        view_put(zoom: number, pan: $bog_gram_gallery_point): void;
+        zoom_to(zoom: number, at: $bog_gram_gallery_point, from?: $bog_gram_gallery_view, at_from?: $bog_gram_gallery_point): void;
+        pan_by(dx: number, dy: number): void;
+        drag_block(event?: Event): null;
+        gesture_from: $bog_gram_gallery_view | null;
+        gesture_start(event?: Event): null;
+        gesture_move(event?: Event): null;
+        fingers: Map<number, $bog_gram_gallery_point>;
+        pinch_from: null | {
+            view: $bog_gram_gallery_view;
+            at: $bog_gram_gallery_point;
+            reach: number;
+        };
+        pinch(): {
+            at: readonly [number, number];
+            reach: number;
+        };
+        pinch_begin(): void;
+        finger_drop(event?: PointerEvent): void;
+        pan_move(event: PointerEvent, prev: $bog_gram_gallery_point, next: $bog_gram_gallery_point): void;
+        pan_from: $bog_gram_gallery_point;
+        tap_last: {
+            time: number;
+            at: $bog_gram_gallery_point;
+        };
+        slide_tap(event: MouseEvent): void;
         index(): number;
         near(dir: number): string;
         go(dir: number): void;
@@ -82327,6 +82402,9 @@ declare namespace $.$$ {
         style(): {
             '--bog_gram_gallery_shift': string;
             '--bog_gram_gallery_drop': string;
+            '--bog_gram_gallery_zoom': string;
+            '--bog_gram_gallery_pan_x': string;
+            '--bog_gram_gallery_pan_y': string;
             '--bog_gram_gallery_fade': string;
         };
         swipe_from: null | {
@@ -82499,7 +82577,7 @@ declare namespace $ {
         static supported(kind?: $bog_gram_voice_kind): boolean;
         static hearing: MediaTrackConstraints;
         static sight(facing: $bog_gram_voice_facing): MediaTrackConstraints;
-        static constraints(kind: $bog_gram_voice_kind, facing?: $bog_gram_voice_facing): MediaStreamConstraints;
+        static stream_open(kind: $bog_gram_voice_kind, facing: $bog_gram_voice_facing): Promise<MediaStream>;
         static preview(stream: MediaStream): MediaStream;
         static turn_live(): boolean;
         static revive(dialog: string): Promise<$bog_gram_voice | null>;
@@ -84851,6 +84929,7 @@ declare namespace $ {
 		voice_clock( ): string
 		voice_hint( next?: string ): string
 		voice_denied( ): string
+		voice_busy( ): string
 		voice_short( ): string
 		call_lost_pattern( ): string
 		read_pattern( ): string
@@ -87229,7 +87308,7 @@ declare namespace $.$$ {
         meet_make(next?: any): null;
         meet_auto(next?: boolean): boolean;
         meet_handle(): string;
-        meet_request(link: string, owner: string): "skip" | "ask" | "open" | "call";
+        meet_request(link: string, owner: string): "open" | "skip" | "ask" | "call";
         meet_enter(): string;
         meet_go(group: string): void;
         meet_join(room: string): void;
@@ -87243,7 +87322,7 @@ declare namespace $.$$ {
         group_leave(next?: any): null;
         unread_count(id: string): number;
         invite_handle(): string;
-        invite_accept(lord: string, key: string): "start" | "skip" | "open" | "bad";
+        invite_accept(lord: string, key: string): "start" | "open" | "skip" | "bad";
         join_link(): string;
         join_handle(): string;
         placeholders(): $mol_view[];
@@ -87252,7 +87331,7 @@ declare namespace $.$$ {
         pager_count(): number;
         page_at(frames: readonly (readonly [number, number])[], middle: number): number;
         page_current(): number;
-        join_request(id: string, by: string): "skip" | "ask" | "open";
+        join_request(id: string, by: string): "open" | "skip" | "ask";
         auto(): void;
     }
 }

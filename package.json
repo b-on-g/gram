@@ -593,6 +593,7 @@
     "$bog_gram_call_peer",
     "$bog_gram_call_land",
     "$bog_gram_call_seat",
+    "$bog_gram_mic",
     "$bog_gram_invite",
     "$bog_gram_alerts",
     "$bog_gram_notify",

@@ -3544,6 +3544,8 @@ $bog_gram_call $mol_page
 				click? <=> deny*?
 				sub /
 					<= Knock_deny_icon* $mol_icon_close
+	Mic_lost $mol_paragraph
+		title @ \Microphone did not start, others cannot hear you. Check that the browser is allowed to use it in the system privacy settings and that no other program holds it, then press the microphone button
 	Grid $mol_view
 		sub <= tiles /
 	Self $bog_gram_call_tile
@@ -3884,6 +3886,7 @@ $bog_gram_gallery $mol_view
 	attr *
 		^
 		tabindex 0
+		bog_gram_gallery_zoomed <= zoomed false
 		bog_gram_gallery_drag <= dragging false
 	event *
 		^
@@ -3891,6 +3894,9 @@ $bog_gram_gallery $mol_view
 		pointermove? <=> swipe_move? null
 		pointerup? <=> swipe_end? null
 		pointercancel? <=> swipe_cancel? null
+		dragstart? <=> drag_block? null
+		gesturestart? <=> gesture_start? null
+		gesturechange? <=> gesture_move? null
 		wheel? <=> swipe_wheel? null
 		click? <=> back_click? null
 	plugins /
@@ -4338,6 +4344,7 @@ $bog_gram_chat $bog_gram_page
 	voice_clock \
 	voice_hint? \
 	voice_denied @ \Microphone unavailable: allow recording in the browser settings
+	voice_busy @ \Recording did not start: check the system privacy settings and that no other program holds the microphone or camera
 	voice_short @ \Too short, recording cancelled
 	call_lost_pattern @ \Call not started: key not delivered — {names}. Call again a bit later
 	read_pattern @ \Read by {count} of {total}

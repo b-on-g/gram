@@ -10414,6 +10414,52 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    const fail = (name) => Object.assign(new Error(name), { name });
+    const setup = (error, good) => {
+        const asked = [];
+        const devices = {
+            async getUserMedia({ audio }) {
+                asked.push(audio);
+                if (!good(audio))
+                    throw fail(error);
+                return 'stream';
+            },
+            async enumerateDevices() {
+                return [
+                    { kind: 'videoinput', deviceId: 'cam' },
+                    { kind: 'audioinput', deviceId: 'default' },
+                    { kind: 'audioinput', deviceId: 'a' },
+                    { kind: 'audioinput', deviceId: 'b' },
+                ];
+            },
+        };
+        return { asked, devices };
+    };
+    $mol_test({
+        async 'Не открывшийся микрофон пробуется без обработки, потом остальные входы'() {
+            const { asked, devices } = setup('NotReadableError', audio => audio.deviceId?.exact === 'b');
+            $mol_assert_equal(await $bog_gram_mic.open(devices, true), 'stream');
+            $mol_assert_equal(asked, [true, $bog_gram_mic.raw, { deviceId: { exact: 'a' } }, { deviceId: { exact: 'b' } }]);
+        },
+        async 'Отказ в доступе не переспрашивается'() {
+            const { asked, devices } = setup('NotAllowedError', () => false);
+            const error = await $bog_gram_mic.open(devices, true).catch(error => error);
+            $mol_assert_equal(error.name, 'NotAllowedError');
+            $mol_assert_equal(asked, [true]);
+        },
+        async 'Если не открылся ни один вход, отдаётся ошибка устройства'() {
+            const { asked, devices } = setup('NotReadableError', () => false);
+            const error = await $bog_gram_mic.open(devices, true).catch(error => error);
+            $mol_assert_equal(error.name, 'NotReadableError');
+            $mol_assert_equal(asked.length, 4);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     async function $bog_gram_call_room_pair($) {
         const king = await $.$giper_baza_auth._generate();
@@ -10434,6 +10480,7 @@ var $;
             name: () => name,
             now: () => time,
             cam_able: () => true,
+            mic_able: () => true,
         });
         const room_a = room(land_a, auth_a, 'Аня');
         const room_b = room(land_b, auth_b, 'Боря');
@@ -11532,6 +11579,34 @@ var $;
                 $mol_assert_equal($bog_gram_gallery.drop_settle(60, 0, 800), false);
                 $mol_assert_equal($bog_gram_gallery.drop_settle(200, 0, 800), true);
                 $mol_assert_equal($bog_gram_gallery.drop_settle(30, 0.5, 800), true);
+            },
+            'Приближение держит точку под пальцем и не выпускает кадр за край'() {
+                $mol_assert_equal($bog_gram_gallery.pan_zoom([0, 0], [50, -20], [50, -20], 2), [-50, 20]);
+                $mol_assert_equal($bog_gram_gallery.pan_zoom([0, 0], [50, 0], [60, 0], 1), [10, 0]);
+                $mol_assert_equal($bog_gram_gallery.pan_fit([500, 500], 2, [400, 300], [400, 800]), [200, 0]);
+                $mol_assert_equal($bog_gram_gallery.pan_fit([30, 5], 1, [400, 300], [400, 800]), [0, 0]);
+                $mol_assert_equal([0.5, 1.01, 3, 50].map(zoom => $bog_gram_gallery.zoom_fit(zoom)), [1, 1, 3, 6]);
+            },
+            'Двойной тап приближает и возвращает, у другого кадра своё приближение'($) {
+                const gallery = $bog_gram_gallery.make({
+                    $,
+                    ids: () => ['a', 'b'],
+                    shot_size: () => [400, 300],
+                    box_size: () => [400, 300],
+                    point: () => [40, 0],
+                });
+                gallery.current('a');
+                const tap = (timeStamp) => gallery.slide_tap({ timeStamp });
+                tap(0);
+                $mol_assert_equal(gallery.zoomed(), false);
+                tap(200);
+                $mol_assert_equal(gallery.view(), { id: 'a', zoom: 2.5, pan: [-60, 0] });
+                gallery.next();
+                $mol_assert_equal(gallery.zoomed(), false);
+                gallery.prev();
+                tap(1000);
+                tap(1200);
+                $mol_assert_equal(gallery.zoomed(), false);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

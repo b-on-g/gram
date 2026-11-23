@@ -42066,7 +42066,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.213';
+    $.$bog_gram_version = '1.0.215';
 })($ || ($ = {}));
 
 ;
@@ -48629,6 +48629,11 @@ var $;
 			]);
 			return obj;
 		}
+		Mic_lost(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_gram_call_Mic_lost_title")));
+			return obj;
+		}
 		Grid(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ((this.tiles()));
@@ -48783,6 +48788,7 @@ var $;
 	($mol_mem(($.$bog_gram_call.prototype), "Knocks"));
 	($mol_mem(($.$bog_gram_call.prototype), "Knocks_head"));
 	($mol_mem_key(($.$bog_gram_call.prototype), "Knock"));
+	($mol_mem(($.$bog_gram_call.prototype), "Mic_lost"));
 	($mol_mem(($.$bog_gram_call.prototype), "Grid"));
 	($mol_mem(($.$bog_gram_call.prototype), "Self"));
 	($mol_mem_key(($.$bog_gram_call.prototype), "Mate"));
@@ -48824,6 +48830,7 @@ var $;
             content() {
                 return [
                     ...this.knocks().length ? [this.Knocks()] : [],
+                    ...this.joined() && !this.Room().mic_able() ? [this.Mic_lost()] : [],
                     this.joined() ? this.Grid() : this.Lobby(),
                 ];
             }
@@ -48872,7 +48879,10 @@ var $;
                 return null;
             }
             mic(next) {
-                return this.Room().mic(next);
+                const room = this.Room();
+                if (next && !room.mic_able())
+                    room.audio_open();
+                return room.mic(next) && room.mic_able();
             }
             device_dictionary(kind) {
                 const dict = { '': this.source_default() };
@@ -49067,6 +49077,9 @@ var $;
                     grow: 1,
                 },
             },
+            Mic_lost: {
+                padding: $mol_gap.block,
+            },
             Grid: {
                 flex: {
                     wrap: 'wrap',
@@ -49136,6 +49149,70 @@ var $;
     }) {
     }
     $.$bog_gram_call_land = $bog_gram_call_land;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_mic extends $mol_object {
+        static raw = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+        static refused(error) {
+            return ['NotAllowedError', 'SecurityError'].includes(error?.name);
+        }
+        static async open(devices, wanted) {
+            let failure;
+            const attempt = async (audio) => {
+                try {
+                    return await devices.getUserMedia({ audio });
+                }
+                catch (error) {
+                    failure = error;
+                    return null;
+                }
+            };
+            for (const audio of [wanted, this.raw]) {
+                const stream = await attempt(audio);
+                if (stream)
+                    return stream;
+                if (this.refused(failure))
+                    throw failure;
+            }
+            const list = await devices.enumerateDevices().catch(() => []);
+            for (const { kind, deviceId } of list) {
+                if (kind !== 'audioinput' || !deviceId || deviceId === 'default')
+                    continue;
+                const stream = await attempt({ deviceId: { exact: deviceId } });
+                if (stream)
+                    return stream;
+                if (this.refused(failure))
+                    throw failure;
+            }
+            throw failure;
+        }
+        static async open_both(devices, audio, video) {
+            try {
+                return { stream: await devices.getUserMedia({ audio, video }), errors: {} };
+            }
+            catch { }
+            const tracks = [];
+            const errors = {};
+            try {
+                tracks.push(...(await this.open(devices, audio)).getTracks());
+            }
+            catch (error) {
+                errors.audio = error;
+            }
+            try {
+                tracks.push(...(await devices.getUserMedia({ video })).getTracks());
+            }
+            catch (error) {
+                errors.video = error;
+            }
+            return { stream: new $mol_dom_context.MediaStream(tracks), errors };
+        }
+    }
+    $.$bog_gram_mic = $bog_gram_mic;
 })($ || ($ = {}));
 
 ;
@@ -49288,7 +49365,7 @@ var $;
             const seat = this.data().Seats('auto').key(this.seat(), 'auto');
             seat.Lord('auto').val(this.lord());
             seat.Name('auto').val(this.name());
-            seat.Mic('auto').val(this.mic());
+            seat.Mic('auto').val(this.mic() && this.mic_able());
             seat.Cam('auto').val((this.cam() && this.cam_able()) || this.screen());
             seat.Screen('auto').val(this.screen());
             seat.Beat('auto').val(moment);
@@ -49359,21 +49436,11 @@ var $;
                 atom.val(text);
         }
         media() {
-            const devices = $mol_wire_sync(navigator.mediaDevices);
-            const audio = this.audio_initial();
-            let stream;
-            try {
-                stream = devices.getUserMedia({
-                    audio,
-                    video: $bog_gram_call_room.video_constraints('user'),
-                });
-            }
-            catch (error) {
-                if ($mol_promise_like(error))
-                    $mol_fail_hidden(error);
-                this.log(`камера не открылась: ${error.name || error}`);
-                stream = devices.getUserMedia({ audio });
-            }
+            const { stream, errors } = $mol_wire_sync($bog_gram_mic).open_both(navigator.mediaDevices, this.audio_initial(), $bog_gram_call_room.video_constraints('user'));
+            if (errors.audio)
+                this.log(`микрофон не открылся: ${errors.audio}`);
+            if (errors.video)
+                this.log(`камера не открылась: ${errors.video}`);
             return Object.assign(stream, {
                 destructor: () => stream.getTracks().forEach(track => track.stop())
             });
@@ -49436,7 +49503,7 @@ var $;
                 this.mic_device(id);
             let fresh;
             try {
-                fresh = $mol_wire_sync(navigator.mediaDevices).getUserMedia({ audio: $bog_gram_call_room.audio_constraints(id) });
+                fresh = $mol_wire_sync($bog_gram_mic).open(navigator.mediaDevices, $bog_gram_call_room.audio_constraints(id));
             }
             catch (error) {
                 if ($mol_promise_like(error))
@@ -49517,6 +49584,10 @@ var $;
         }
         facing(next) {
             return next ?? 'user';
+        }
+        mic_able() {
+            this.audio_changed();
+            return this.media().getAudioTracks().length > 0;
         }
         cam_able() {
             return this.media().getVideoTracks().length > 0;
@@ -49861,6 +49932,9 @@ var $;
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "facing", null);
+    __decorate([
+        $mol_mem
+    ], $bog_gram_call_room.prototype, "mic_able", null);
     __decorate([
         $mol_mem
     ], $bog_gram_call_room.prototype, "cam_able", null);
@@ -53920,6 +53994,9 @@ var $;
 
 ;
 	($.$bog_gram_gallery) = class $bog_gram_gallery extends ($.$mol_view) {
+		zoomed(){
+			return false;
+		}
 		dragging(){
 			return false;
 		}
@@ -53936,6 +54013,18 @@ var $;
 			return null;
 		}
 		swipe_cancel(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		drag_block(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		gesture_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		gesture_move(next){
 			if(next !== undefined) return next;
 			return null;
 		}
@@ -54041,6 +54130,7 @@ var $;
 			return {
 				...(super.attr()), 
 				"tabindex": 0, 
+				"bog_gram_gallery_zoomed": (this.zoomed()), 
 				"bog_gram_gallery_drag": (this.dragging())
 			};
 		}
@@ -54051,6 +54141,9 @@ var $;
 				"pointermove": (next) => (this.swipe_move(next)), 
 				"pointerup": (next) => (this.swipe_end(next)), 
 				"pointercancel": (next) => (this.swipe_cancel(next)), 
+				"dragstart": (next) => (this.drag_block(next)), 
+				"gesturestart": (next) => (this.gesture_start(next)), 
+				"gesturechange": (next) => (this.gesture_move(next)), 
 				"wheel": (next) => (this.swipe_wheel(next)), 
 				"click": (next) => (this.back_click(next))
 			};
@@ -54080,6 +54173,9 @@ var $;
 	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_move"));
 	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_end"));
 	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_cancel"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "drag_block"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "gesture_start"));
+	($mol_mem(($.$bog_gram_gallery.prototype), "gesture_move"));
 	($mol_mem(($.$bog_gram_gallery.prototype), "swipe_wheel"));
 	($mol_mem(($.$bog_gram_gallery.prototype), "back_click"));
 	($mol_mem(($.$bog_gram_gallery.prototype), "prev"));
@@ -54109,6 +54205,10 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const zoom_max = 6;
+        const zoom_tap = 2.5;
+        const tap_span = 300;
+        const tap_reach = 30;
         class $bog_gram_gallery extends $.$bog_gram_gallery {
             static step(ids, current, dir) {
                 const index = ids.indexOf(current);
@@ -54129,6 +54229,135 @@ var $;
             }
             static drop_settle(drop, speed, height) {
                 return speed > 0.3 || drop > height / 5;
+            }
+            static zoom_fit(zoom) {
+                if (zoom < 1.02)
+                    return 1;
+                return Math.min(zoom_max, zoom);
+            }
+            static pan_zoom(pan, from, to, scale) {
+                return [
+                    to[0] - (from[0] - pan[0]) * scale,
+                    to[1] - (from[1] - pan[1]) * scale,
+                ];
+            }
+            static pan_fit(pan, zoom, shot, box) {
+                const fit = (axis) => {
+                    const limit = Math.max(0, (shot[axis] * zoom - box[axis]) / 2);
+                    return Math.max(-limit, Math.min(limit, pan[axis]));
+                };
+                return [fit(0), fit(1)];
+            }
+            view_state(next) {
+                return next ?? null;
+            }
+            view() {
+                const id = this.current();
+                const state = this.view_state();
+                return state?.id === id ? state : { id, zoom: 1, pan: [0, 0] };
+            }
+            zoomed() {
+                return this.view().zoom > 1;
+            }
+            box_size() {
+                const el = this.dom_node();
+                return [el.clientWidth, el.clientHeight];
+            }
+            shot_size() {
+                const img = this.Slide(this.current()).dom_node();
+                const { offsetWidth, offsetHeight, naturalWidth, naturalHeight } = img;
+                if (!naturalWidth || !naturalHeight)
+                    return [offsetWidth, offsetHeight];
+                const scale = Math.min(offsetWidth / naturalWidth, offsetHeight / naturalHeight);
+                return [naturalWidth * scale, naturalHeight * scale];
+            }
+            point(event) {
+                const { left, top, width, height } = this.dom_node().getBoundingClientRect();
+                return [event.clientX - left - width / 2, event.clientY - top - height / 2];
+            }
+            view_put(zoom, pan) {
+                this.view_state({
+                    id: this.current(),
+                    zoom,
+                    pan: $bog_gram_gallery.pan_fit(pan, zoom, this.shot_size(), this.box_size()),
+                });
+            }
+            zoom_to(zoom, at, from = this.view(), at_from = at) {
+                const next = $bog_gram_gallery.zoom_fit(zoom);
+                this.view_put(next, $bog_gram_gallery.pan_zoom(from.pan, at_from, at, next / from.zoom));
+            }
+            pan_by(dx, dy) {
+                const { zoom, pan } = this.view();
+                this.view_put(zoom, [pan[0] + dx, pan[1] + dy]);
+            }
+            drag_block(event) {
+                event?.preventDefault();
+                return null;
+            }
+            gesture_from = null;
+            gesture_start(event) {
+                event?.preventDefault();
+                this.gesture_from = this.fingers.size ? null : this.view();
+                return null;
+            }
+            gesture_move(event) {
+                const from = this.gesture_from;
+                if (!event || !from)
+                    return null;
+                event.preventDefault();
+                const gesture = event;
+                this.zoom_to(from.zoom * gesture.scale, this.point(gesture), from);
+                return null;
+            }
+            fingers = new Map();
+            pinch_from = null;
+            pinch() {
+                const [a, b] = [...this.fingers.values()];
+                return {
+                    at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2],
+                    reach: Math.max(1, Math.hypot(a[0] - b[0], a[1] - b[1])),
+                };
+            }
+            pinch_begin() {
+                this.swipe_from = null;
+                this.swipe_moved = true;
+                this.shift(0);
+                this.drop(0);
+                this.dragging(true);
+                this.pinch_from = { view: this.view(), ...this.pinch() };
+            }
+            finger_drop(event) {
+                if (event)
+                    this.fingers.delete(event.pointerId);
+                else
+                    this.fingers.clear();
+                if (this.fingers.size < 2)
+                    this.pinch_from = null;
+                if (!this.fingers.size)
+                    this.dragging(false);
+            }
+            pan_move(event, prev, next) {
+                if (!this.swipe_moved) {
+                    const from = this.pan_from;
+                    if (Math.hypot(next[0] - from[0], next[1] - from[1]) < 8) {
+                        this.fingers.set(event.pointerId, prev);
+                        return;
+                    }
+                    this.swipe_moved = true;
+                    this.dragging(true);
+                    this.dom_node().setPointerCapture?.(event.pointerId);
+                }
+                this.pan_by(next[0] - prev[0], next[1] - prev[1]);
+            }
+            pan_from = [0, 0];
+            tap_last = { time: Number.NEGATIVE_INFINITY, at: [0, 0] };
+            slide_tap(event) {
+                const at = this.point(event);
+                const last = this.tap_last;
+                const double = event.timeStamp - last.time < tap_span && Math.hypot(at[0] - last.at[0], at[1] - last.at[1]) < tap_reach;
+                this.tap_last = { time: double ? Number.NEGATIVE_INFINITY : event.timeStamp, at };
+                if (double)
+                    this.zoom_to(this.zoomed() ? 1 : zoom_tap, at);
             }
             index() {
                 return this.ids().indexOf(this.current());
@@ -54187,6 +54416,9 @@ var $;
                     ...super.style(),
                     '--bog_gram_gallery_shift': this.shift() + 'px',
                     '--bog_gram_gallery_drop': this.drop() + 'px',
+                    '--bog_gram_gallery_zoom': String(this.view().zoom),
+                    '--bog_gram_gallery_pan_x': this.view().pan[0] + 'px',
+                    '--bog_gram_gallery_pan_y': this.view().pan[1] + 'px',
                     '--bog_gram_gallery_fade': String(fade),
                 };
             }
@@ -54200,10 +54432,23 @@ var $;
                 return dy > 0 ? 'y' : 'skip';
             }
             swipe_start(event) {
-                this.swipe_moved = false;
-                if (!event || event.pointerType === 'mouse')
+                if (!event)
+                    return null;
+                if (event.isPrimary) {
+                    this.swipe_moved = false;
+                    this.finger_drop();
+                }
+                if (event.button > 0)
                     return null;
                 if (event.target.closest?.('[mol_button]'))
+                    return null;
+                this.pan_from = this.point(event);
+                this.fingers.set(event.pointerId, this.pan_from);
+                if (this.fingers.size === 2)
+                    this.pinch_begin();
+                if (this.fingers.size > 1)
+                    return null;
+                if (this.zoomed() || event.pointerType === 'mouse')
                     return null;
                 const rect = this.view_rect();
                 this.height = rect?.height ?? 0;
@@ -54218,9 +54463,25 @@ var $;
                 return null;
             }
             swipe_move(event) {
-                const from = this.swipe_from;
-                if (!event || !from)
+                if (!event)
                     return null;
+                const prev = this.fingers.get(event.pointerId);
+                if (!prev)
+                    return null;
+                const point = this.point(event);
+                this.fingers.set(event.pointerId, point);
+                const pinch = this.pinch_from;
+                if (pinch) {
+                    const { at, reach } = this.pinch();
+                    this.zoom_to(pinch.view.zoom * reach / pinch.reach, at, pinch.view, pinch.at);
+                    return null;
+                }
+                const from = this.swipe_from;
+                if (!from) {
+                    if (this.zoomed())
+                        this.pan_move(event, prev, point);
+                    return null;
+                }
                 const dx = event.clientX - from.x;
                 const dy = event.clientY - from.y;
                 if (from.axis === 'wait') {
@@ -54252,6 +54513,7 @@ var $;
                 return null;
             }
             swipe_end(event) {
+                this.finger_drop(event);
                 const from = this.swipe_from;
                 this.swipe_from = null;
                 if (!from || from.axis === 'wait')
@@ -54283,9 +54545,17 @@ var $;
             swipe_wheel(event) {
                 if (!event)
                     return null;
-                if (Math.abs(event.deltaX) <= Math.abs(event.deltaY))
-                    return null;
                 event.preventDefault();
+                const flat = !event.ctrlKey && Math.abs(event.deltaX) > Math.abs(event.deltaY);
+                if (!flat) {
+                    const delta = Math.max(-100, Math.min(100, event.deltaY * (event.deltaMode ? 33 : 1)));
+                    this.zoom_to(this.view().zoom * Math.exp(-delta * (event.ctrlKey ? 0.01 : 0.003)), this.point(event));
+                    return null;
+                }
+                if (this.zoomed()) {
+                    this.pan_by(-event.deltaX, 0);
+                    return null;
+                }
                 this.wheel_idle?.destructor();
                 this.wheel_idle = new this.$.$mol_after_timeout(200, () => {
                     this.wheel_sum = 0;
@@ -54310,8 +54580,10 @@ var $;
                     return null;
                 if (target.closest?.('[mol_button]'))
                     return null;
-                if (target.closest?.('[bog_gram_gallery_slide]'))
+                if (target.closest?.('[bog_gram_gallery_slide]')) {
+                    this.slide_tap(event);
                     return null;
+                }
                 this.close(null);
                 return null;
             }
@@ -54323,6 +54595,9 @@ var $;
                 this.focus_grab();
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_gallery.prototype, "view_state", null);
         __decorate([
             $mol_action
         ], $bog_gram_gallery.prototype, "go", null);
@@ -54355,7 +54630,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/gallery/gallery.view.css", "[bog_gram_gallery] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tz-index: 2;\n\toverflow: hidden;\n\toutline: none;\n\ttouch-action: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_gallery_back] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tbackground-color: #000000e6;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n\ttransition: opacity .2s ease-out;\n}\n\n[bog_gram_gallery_track] {\n\tposition: absolute;\n\tcontainer-type: size;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n}\n\n[bog_gram_gallery_slide] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tmargin: auto;\n\tmax-width: 100%;\n\tmax-height: 100%;\n\tobject-fit: contain;\n\ttransform: translate( calc( var( --bog_gram_gallery_offset, 0 ) * 100cqw + var( --bog_gram_gallery_shift, 0px ) ), var( --bog_gram_gallery_drop, 0px ) );\n\ttransition: transform .25s ease-out;\n}\n\n[bog_gram_gallery_offset=\"-1\"] {\n\t--bog_gram_gallery_offset: -1;\n}\n\n[bog_gram_gallery_offset=\"1\"] {\n\t--bog_gram_gallery_offset: 1;\n}\n\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_slide],\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_back] {\n\ttransition: none;\n}\n\n[bog_gram_gallery_counter] {\n\tposition: absolute;\n\ttop: calc( 0.75rem + env( safe-area-inset-top ) );\n\tleft: 50%;\n\ttransform: translateX( -50% );\n\tpadding: 0.25rem 0.75rem;\n\tborder-radius: 1rem;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n\tfont-size: 0.875rem;\n\twhite-space: nowrap;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n}\n\n[bog_gram_gallery] > [mol_button] {\n\tposition: absolute;\n\tjustify-content: center;\n\talign-items: center;\n\twidth: 2.75rem;\n\theight: 2.75rem;\n\tborder-radius: 50%;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n}\n\n[bog_gram_gallery] > [mol_button] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_gallery_close] {\n\ttop: calc( 0.5rem + env( safe-area-inset-top ) );\n\tright: 0.5rem;\n}\n\n[bog_gram_gallery_prev] {\n\ttop: 50%;\n\tleft: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_next] {\n\ttop: 50%;\n\tright: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_prev],\n[bog_gram_gallery_next] {\n\topacity: 0;\n\ttransition: opacity .2s ease-out;\n}\n\n@media ( hover: hover ) and ( pointer: fine ) {\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_prev],\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_next] {\n\t\topacity: 1;\n\t}\n}\n\n@media ( hover: none ) {\n\t[bog_gram_gallery_prev],\n\t[bog_gram_gallery_next] {\n\t\tdisplay: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/gallery/gallery.view.css", "[bog_gram_gallery] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tz-index: 2;\n\toverflow: hidden;\n\toutline: none;\n\ttouch-action: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_gallery_back] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tbackground-color: #000000e6;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n\ttransition: opacity .2s ease-out;\n}\n\n[bog_gram_gallery_track] {\n\tposition: absolute;\n\tcontainer-type: size;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n}\n\n[bog_gram_gallery_slide] {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\tleft: 0;\n\tmargin: auto;\n\tmax-width: 100%;\n\tmax-height: 100%;\n\tobject-fit: contain;\n\ttransform: translate( calc( var( --bog_gram_gallery_offset, 0 ) * 100cqw + var( --bog_gram_gallery_shift, 0px ) ), var( --bog_gram_gallery_drop, 0px ) );\n\ttransition: transform .25s ease-out;\n}\n\n[bog_gram_gallery_offset=\"-1\"] {\n\t--bog_gram_gallery_offset: -1;\n}\n\n[bog_gram_gallery_offset=\"1\"] {\n\t--bog_gram_gallery_offset: 1;\n}\n\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_slide],\n[bog_gram_gallery][bog_gram_gallery_drag=\"true\"] [bog_gram_gallery_back] {\n\ttransition: none;\n}\n\n[bog_gram_gallery_offset=\"0\"] {\n\ttransform: translate( calc( var( --bog_gram_gallery_shift, 0px ) + var( --bog_gram_gallery_pan_x, 0px ) ), calc( var( --bog_gram_gallery_drop, 0px ) + var( --bog_gram_gallery_pan_y, 0px ) ) ) scale( var( --bog_gram_gallery_zoom, 1 ) );\n}\n\n[bog_gram_gallery_zoomed=\"true\"] [bog_gram_gallery_offset=\"0\"] {\n\tcursor: grab;\n}\n\n[bog_gram_gallery_counter] {\n\tposition: absolute;\n\ttop: calc( 0.75rem + env( safe-area-inset-top ) );\n\tleft: 50%;\n\ttransform: translateX( -50% );\n\tpadding: 0.25rem 0.75rem;\n\tborder-radius: 1rem;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n\tfont-size: 0.875rem;\n\twhite-space: nowrap;\n\topacity: var( --bog_gram_gallery_fade, 1 );\n}\n\n[bog_gram_gallery] > [mol_button] {\n\tposition: absolute;\n\tjustify-content: center;\n\talign-items: center;\n\twidth: 2.75rem;\n\theight: 2.75rem;\n\tborder-radius: 50%;\n\tbackground-color: #00000080;\n\tcolor: #ffffff;\n}\n\n[bog_gram_gallery] > [mol_button] > [mol_icon] {\n\twidth: 1.5rem;\n\theight: 1.5rem;\n}\n\n[bog_gram_gallery_close] {\n\ttop: calc( 0.5rem + env( safe-area-inset-top ) );\n\tright: 0.5rem;\n}\n\n[bog_gram_gallery_prev] {\n\ttop: 50%;\n\tleft: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_next] {\n\ttop: 50%;\n\tright: 0.5rem;\n\tmargin-top: -1.375rem;\n}\n\n[bog_gram_gallery_prev],\n[bog_gram_gallery_next] {\n\topacity: 0;\n\ttransition: opacity .2s ease-out;\n}\n\n@media ( hover: hover ) and ( pointer: fine ) {\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_prev],\n\t[bog_gram_gallery]:hover > [bog_gram_gallery_next] {\n\t\topacity: 1;\n\t}\n}\n\n@media ( hover: none ) {\n\t[bog_gram_gallery_prev],\n\t[bog_gram_gallery_next] {\n\t\tdisplay: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -54861,10 +55136,17 @@ var $;
         static sight(facing) {
             return { facingMode: facing, width: { ideal: 480 }, height: { ideal: 480 }, aspectRatio: { ideal: 1 } };
         }
-        static constraints(kind, facing = 'user') {
+        static async stream_open(kind, facing) {
+            const devices = $mol_dom_context.navigator.mediaDevices;
             if (kind === 'voice')
-                return { audio: this.hearing };
-            return { audio: this.hearing, video: this.sight(facing) };
+                return $bog_gram_mic.open(devices, this.hearing);
+            const { stream, errors } = await $bog_gram_mic.open_both(devices, this.hearing, this.sight(facing));
+            const error = errors.audio ?? errors.video;
+            if (!error)
+                return stream;
+            for (const track of stream.getTracks())
+                track.stop();
+            throw error;
         }
         static preview(stream) {
             return new $mol_dom_context.MediaStream(stream.getVideoTracks());
@@ -54919,7 +55201,7 @@ var $;
             const type = $bog_gram_voice.type(kind);
             if (!type)
                 throw new Error(this.Text().voice_unsupported());
-            const stream = await $mol_dom_context.navigator.mediaDevices.getUserMedia($bog_gram_voice.constraints(kind, this.face()));
+            const stream = await $bog_gram_voice.stream_open(kind, this.face());
             if (this.asked) {
                 this.hush(stream);
                 this.done(null);
@@ -58331,6 +58613,9 @@ var $;
 		voice_denied(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_voice_denied"));
 		}
+		voice_busy(){
+			return (this.$.$mol_locale.text("$bog_gram_chat_voice_busy"));
+		}
 		voice_short(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_voice_short"));
 		}
@@ -60188,7 +60473,7 @@ var $;
                     $mol_fail_log(error);
                     if (this.voice_live === take)
                         this.record_reset();
-                    this.voice_hint(this.voice_denied());
+                    this.voice_hint(error.name === 'NotReadableError' ? this.voice_busy() : this.voice_denied());
                     return false;
                 }
                 return true;
