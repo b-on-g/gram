@@ -537,7 +537,7 @@ async function solve( id, text, pictures ) {
 
 		const answer = await claude( input, task.session )
 		task.session = answer.session
-		task.status = answer.status
+		task.status = answer.status === 'done' ? 'running' : answer.status
 		state_save()
 
 		const minutes = Math.max( 1, Math.round( ( Date.now() - began ) / 60000 ) )
