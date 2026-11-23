@@ -54,6 +54,45 @@ namespace $.$$ {
 
 		},
 
+		'Приближение держит точку под пальцем и не выпускает кадр за край'() {
+
+			$mol_assert_equal( $bog_gram_gallery.pan_zoom( [ 0, 0 ], [ 50, -20 ], [ 50, -20 ], 2 ), [ -50, 20 ] )
+			$mol_assert_equal( $bog_gram_gallery.pan_zoom( [ 0, 0 ], [ 50, 0 ], [ 60, 0 ], 1 ), [ 10, 0 ] )
+			$mol_assert_equal( $bog_gram_gallery.pan_fit( [ 500, 500 ], 2, [ 400, 300 ], [ 400, 800 ] ), [ 200, 0 ] )
+			$mol_assert_equal( $bog_gram_gallery.pan_fit( [ 30, 5 ], 1, [ 400, 300 ], [ 400, 800 ] ), [ 0, 0 ] )
+			$mol_assert_equal( [ 0.5, 1.01, 3, 50 ].map( zoom => $bog_gram_gallery.zoom_fit( zoom ) ), [ 1, 1, 3, 6 ] )
+
+		},
+
+		'Двойной тап приближает и возвращает, у другого кадра своё приближение'( $ ) {
+
+			const gallery = $bog_gram_gallery.make({
+				$,
+				ids: ()=> [ 'a', 'b' ],
+				shot_size: ()=> [ 400, 300 ] as const,
+				box_size: ()=> [ 400, 300 ] as const,
+				point: ()=> [ 40, 0 ] as const,
+			})
+			gallery.current( 'a' )
+
+			const tap = ( timeStamp: number )=> gallery.slide_tap( { timeStamp } as MouseEvent )
+
+			tap( 0 )
+			$mol_assert_equal( gallery.zoomed(), false )
+
+			tap( 200 )
+			$mol_assert_equal( gallery.view(), { id: 'a', zoom: 2.5, pan: [ -60, 0 ] } )
+
+			gallery.next()
+			$mol_assert_equal( gallery.zoomed(), false )
+
+			gallery.prev()
+			tap( 1000 )
+			tap( 1200 )
+			$mol_assert_equal( gallery.zoomed(), false )
+
+		},
+
 	})
 
 }

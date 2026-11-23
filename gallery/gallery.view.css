@@ -59,6 +59,14 @@
 	transition: none;
 }
 
+[bog_gram_gallery_offset="0"] {
+	transform: translate( calc( var( --bog_gram_gallery_shift, 0px ) + var( --bog_gram_gallery_pan_x, 0px ) ), calc( var( --bog_gram_gallery_drop, 0px ) + var( --bog_gram_gallery_pan_y, 0px ) ) ) scale( var( --bog_gram_gallery_zoom, 1 ) );
+}
+
+[bog_gram_gallery_zoomed="true"] [bog_gram_gallery_offset="0"] {
+	cursor: grab;
+}
+
 [bog_gram_gallery_counter] {
 	position: absolute;
 	top: calc( 0.75rem + env( safe-area-inset-top ) );
