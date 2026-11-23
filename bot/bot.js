@@ -62,12 +62,29 @@ function state_save() {
 	fs.renameSync( at( 'state.tmp' ), at( 'state.json' ) )
 }
 
+let slept = false
+
+/** После сна соединение с мастером мёртвое, а долгий клиент его не всегда догоняет: проще выйти, launchd поднимет заново. */
+function sleep_watch() {
+	let last = Date.now()
+	setInterval( ()=> {
+		if( Date.now() - last > 60000 ) slept = true
+		last = Date.now()
+	}, 5000 ).unref()
+}
+
+function sleep_exit() {
+	if( !slept ) return
+	log( 'мак спал, перезапускаюсь' )
+	process.exit( 0 )
+}
+
 function lock() {
 	const file = at( 'pid' )
 	if( fs.existsSync( file ) ) {
 		const pid = Number( fs.readFileSync( file, 'utf8' ) )
-		let alive = true
-		try { process.kill( pid, 0 ) } catch { alive = false }
+		let alive = false
+		try { alive = /bot\.js/.test( execFileSync( 'ps', [ '-p', String( pid ), '-o', 'command=' ], { encoding: 'utf8' } ) ) } catch {}
 		if( alive ) throw new Error( `Бот уже запущен, pid ${ pid }` )
 	}
 	fs.writeFileSync( file, String( process.pid ) )
@@ -647,6 +664,7 @@ function next( list ) {
 async function main() {
 
 	lock()
+	sleep_watch()
 	await baza_open()
 
 	const [ , group, owner, via ] = String( config.group ).match( /join=([^/&#]+)(?:\/by=([^/&#]+))?(?:\/via=([^/&#]+))?/ ) ?? [ '', config.group ]
@@ -663,6 +681,9 @@ async function main() {
 	let named = false, waiting = 0
 
 	for( ; ; await sleep( 2000 ) ) {
+
+		sleep_exit()
+
 		try {
 
 			const open = await chat_open().catch( error => {
