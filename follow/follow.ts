@@ -2,7 +2,7 @@ namespace $ {
 
 	export class $bog_gram_follow extends $mol_object {
 
-		static keys = [ 'invite', 'key', 'join', 'meet', 'by', 'users', 'settings', 'music' ] as const
+		static keys = [ 'invite', 'key', 'join', 'meet', 'by', 'via', 'users', 'settings', 'music' ] as const
 
 		static params( uri: string ) {
 

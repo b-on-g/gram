@@ -17,6 +17,11 @@ namespace $ {
 			)
 
 			$mol_assert_equal(
+				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!join=' + lord + '/by=CCCCCCCC_DDDDDDDD/via=EEEEEEEE_FFFFFFFF' ),
+				{ join: lord, by: 'CCCCCCCC_DDDDDDDD', via: 'EEEEEEEE_FFFFFFFF' },
+			)
+
+			$mol_assert_equal(
 				$bog_gram_follow.params( 'https://b-on-g.github.io/gram/#!meet=' + lord + '/by=CCCCCCCC_DDDDDDDD' ),
 				{ meet: lord, by: 'CCCCCCCC_DDDDDDDD' },
 			)

@@ -843,7 +843,7 @@ namespace $.$$ {
 		join_handle() {
 			const id = this.Lobby().join_id()
 			if( !id ) return ''
-			$mol_wire_async( this ).join_request( id, this.Lobby().join_by() )
+			$mol_wire_async( this ).join_request( id, this.Lobby().join_by(), this.Lobby().join_via() )
 			return id
 		}
 
@@ -885,8 +885,8 @@ namespace $.$$ {
 			return this.page_at( frames, ( own?.left ?? 0 ) + ( own?.width ?? 0 ) / 2 )
 		}
 
-		join_request( id: string, by: string ) {
-			const plan = this.Lobby().join_take( id, by )
+		join_request( id: string, by: string, via: string ) {
+			const plan = this.Lobby().join_take( id, by, via )
 			if( plan === 'open' ) this.dialog_select( id )
 			return plan
 		}
@@ -908,6 +908,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.notify_auto(), null )
 			$bog_gram_soft( ()=> this.outbox_flush(), null )
 			$bog_gram_soft( ()=> this.asks_flush(), null )
+			$bog_gram_soft( ()=> this.Lobby().asks_sweep(), 0 )
 			$bog_gram_soft( ()=> this.monitor_fill(), null )
 			$bog_gram_soft( ()=> this.names_fill(), 0 )
 		}

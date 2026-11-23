@@ -125,6 +125,23 @@ namespace $ {
 			} )
 		}
 
+		@ $mol_mem
+		asks_sweep() {
+
+			const groups = new Set( $bog_gram_soft( ()=> this.Roster().ids(), [] as string[] ) )
+			let count = 0
+
+			for( const entry of this.asks_all() ) {
+				const ask = $bog_gram_soft( ()=> this.parse( entry ), null )
+				if( !ask || !groups.has( ask.group ) ) continue
+				if( !$bog_gram_soft( ()=> this.Talk().lords( ask.group ).includes( ask.lord ), false ) ) continue
+				this.forget( entry )
+				++ count
+			}
+
+			return count
+		}
+
 		lord_of( entry: string ) {
 			return this.parse( entry )?.lord ?? ''
 		}
@@ -191,7 +208,13 @@ namespace $ {
 		join_uri( id: string ) {
 			if( !id ) return ''
 			const owner = this.join_owner_of( id )
-			return this.$.$mol_state_arg.make_link( owner ? { join: id, by: owner } : { join: id } )
+			if( !owner ) return this.$.$mol_state_arg.make_link({ join: id })
+			const via = this.join_via_of( id )
+			return this.$.$mol_state_arg.make_link( via && via !== owner ? { join: id, by: owner, via } : { join: id, by: owner } )
+		}
+
+		join_via_of( id: string ) {
+			return this.Talk().admin_me( id ) ? this.Account().my_lord() : ''
 		}
 
 		join_id() {
@@ -200,6 +223,10 @@ namespace $ {
 
 		join_by() {
 			return this.$.$mol_state_arg.value( 'by' ) ?? ''
+		}
+
+		join_via() {
+			return this.$.$mol_state_arg.value( 'via' ) ?? ''
 		}
 
 		@ $mol_mem
@@ -214,7 +241,7 @@ namespace $ {
 			return member ? 'open' : 'ask'
 		}
 
-		join_take( id: string, by: string ) {
+		join_take( id: string, by: string, via = '' ) {
 
 			const my = this.Account().my_lord()
 			const member = id !== my && Boolean( $giper_baza_link.check( id ) ) && this.Talk().inside( id ) && this.taken( id )
@@ -223,11 +250,12 @@ namespace $ {
 			if( plan === 'ask' ) {
 				const owner = by || this.join_owner_of( id )
 				this.lost( owner ? '' : id )
-				if( owner ) this.send( id, owner )
+				if( owner ) this.send( id, owner, via )
 			}
 
 			this.$.$mol_state_arg.value( 'join', null )
 			this.$.$mol_state_arg.value( 'by', null )
+			this.$.$mol_state_arg.value( 'via', null )
 
 			return plan
 		}
@@ -336,6 +364,20 @@ namespace $ {
 			join?.State( 'auto' )?.val( state )
 		}
 
+		admin_of( group: string ) {
+			const join = $bog_gram_soft( ()=> this.store().Joining()?.key( group ) ?? null, null )
+			return {
+				lord: $bog_gram_soft( ()=> String( join?.Admin()?.val() ?? '' ), '' ),
+				state: $bog_gram_soft( ()=> String( join?.Admin_state()?.val() ?? '' ), '' ),
+			}
+		}
+
+		admin_put( group: string, admin: string, state: 'queued' | 'sent' ) {
+			const join = this.store().Joining( 'auto' )?.key( group, 'auto' )
+			join?.Admin( 'auto' )?.val( admin )
+			join?.Admin_state( 'auto' )?.val( state )
+		}
+
 		join_drop( group: string ) {
 			const joining = this.store().Joining()
 			if( ( joining?.keys() ?? [] ).map( String ).includes( group ) ) this.store().Joining( 'auto' )!.cut( group )
@@ -356,20 +398,25 @@ namespace $ {
 		}
 
 		@ $mol_action
-		send( id: string, owner: string ) {
+		send( id: string, owner: string, via = '' ) {
 
 			if( !id || !owner ) return
 
 			const store = this.store()
+			const admin = via !== owner && $bog_gram_lord.check( via ) ? via : ''
 
 			if( this.Roster().hidden().includes( id ) ) this.Account().undecide( 'hidden', id )
 
 			const was_denied = this.denied().includes( id )
 			if( was_denied ) this.denial_drop( id )
 
-			if( this.groups().includes( id ) && !was_denied ) return
+			if( this.groups().includes( id ) && !was_denied ) {
+				if( admin && this.admin_of( id ).lord !== admin ) this.admin_put( id, admin, 'queued' )
+				return
+			}
 
 			this.join_put( id, owner, 'queued' )
+			if( admin || this.admin_of( id ).lord ) this.admin_put( id, admin, 'queued' )
 			this.old_drop( id )
 			store.Asks( 'auto' )!.add( this.task( id, owner ) )
 
@@ -450,6 +497,12 @@ namespace $ {
 			for( const id of groups ) {
 
 				if( this.taken( id ) ) continue
+
+				const admin = this.admin_of( id )
+				if( admin.lord && admin.state === 'queued' ) {
+					if( $bog_gram_soft( ()=> this.deliver( id, admin.lord ), false ) ) this.admin_put( id, admin.lord, 'sent' )
+				}
+
 				if( asks[ id ].state !== 'queued' ) continue
 
 				const owner = asks[ id ].owner || $bog_gram_soft< string | null >( ()=> this.Talk().owner( id ), null )
