@@ -11,6 +11,10 @@
 	transform: scaleX(-1);
 }
 
+[bog_gram_chat_line][bog_gram_chat_turn="true"] {
+	padding-top: calc( 10px - 0.125rem );
+}
+
 [bog_gram_chat_line]:empty {
 	padding: 0;
 }

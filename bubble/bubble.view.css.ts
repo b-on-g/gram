@@ -27,7 +27,7 @@ namespace $.$$ {
 			direction: 'column',
 		},
 		gap: '0.125rem',
-		maxWidth: $mol_style_func.calc( 'min( 85%, 480px )' ),
+		maxWidth: $mol_style_func.calc( 'min( 92%, 480px )' ),
 		minWidth: 0,
 		alignSelf: 'flex-start',
 		padding: {

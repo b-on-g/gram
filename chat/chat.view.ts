@@ -252,14 +252,28 @@ namespace $.$$ {
 			const day = this.message_day( id )
 			if( !day ) return ''
 
+			const prev = this.message_prev( id )
+			return prev && this.message_day( prev ) === day ? '' : day
+		}
+
+		@ $mol_mem_key
+		message_prev( id: string ) {
+
 			const messages = this.messages()
 			for( let i = ( this.messages_index().get( id ) ?? 0 ) - 1; i >= 0; -- i ) {
 				const prev = messages[ i ].link().str
-				if( this.message_dead( prev ) ) continue
-				return this.message_day( prev ) === day ? '' : day
+				if( !this.message_dead( prev ) ) return prev
 			}
 
-			return day
+			return ''
+		}
+
+		@ $mol_mem_key
+		override message_turn( id: string ) {
+			if( !this.message_alive( id ) ) return false
+			if( this.message_day_head( id ) ) return false
+			const prev = this.message_prev( id )
+			return Boolean( prev ) && this.message_lord( prev ) !== this.message_lord( id )
 		}
 
 		@ $mol_mem_key

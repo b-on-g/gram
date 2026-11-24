@@ -61,6 +61,24 @@ namespace $.$$ {
 
 		},
 
+		'Смена автора раздвигает сообщения, удалённые и новый день не в счёт'( $ ) {
+
+			const lords: Record< string, string > = { a: 'Me', b: 'Me', dead: 'Peer', c: 'Me', d: 'Peer', e: 'Me' }
+			const chat = $bog_gram_chat.make({ $ })
+			chat.messages = ()=> Object.keys( lords ).map( id => ({ link: ()=> ({ str: id }) }) ) as any
+			chat.message_dead = ( id: string )=> id === 'dead'
+			chat.message_lord = ( id: string )=> lords[ id ]
+			chat.message_day = ( id: string )=> id === 'e' ? '2026-01-02' : '2026-01-01'
+
+			$mol_assert_equal( chat.message_turn( 'a' ), false )
+			$mol_assert_equal( chat.message_turn( 'b' ), false )
+			$mol_assert_equal( chat.message_turn( 'dead' ), false )
+			$mol_assert_equal( chat.message_turn( 'c' ), false )
+			$mol_assert_equal( chat.message_turn( 'd' ), true )
+			$mol_assert_equal( chat.message_turn( 'e' ), false )
+
+		},
+
 		'Прилипание снимает только прокрутка вверх, а не смена высоты'( $ ) {
 
 			const chat = $bog_gram_chat.make({ $ })
