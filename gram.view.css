@@ -74,6 +74,11 @@
 	font-size: 16px;
 }
 
+[bog_gram] :is( input, textarea, [contenteditable] )::selection,
+[bog_gram] [contenteditable] ::selection {
+	background: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );
+}
+
 [mol_view_root] {
 	overscroll-behavior: none;
 	-webkit-text-size-adjust: 100%;
