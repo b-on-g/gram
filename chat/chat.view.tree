@@ -193,19 +193,12 @@ $bog_gram_chat $bog_gram_page
 		event *
 			click? <=> box_click? null
 		sub /
-			<= Message_field $bog_gram_write
+			<= Message_field $bog_rich_edit
 				hint <= message_hint @ \Message…
 				length_max <= text_limit 4096
-				html? <=> message_html? \
-				rich <= rich_mode? false
-				send? <=> message_send? null
-	Rich_toggle $mol_check_icon
-		hint @ \Formatting
-		event *
-			^
-			mousedown? <=> rich_hold? null
-		checked? <=> rich_mode?
-		Icon <= Rich_icon $mol_icon_format_text
+				content? <=> message_content? null
+				submit_with_enter <= enter_sends true
+				submit? <=> message_send? null
 	caption_hint @ \Add a caption…
 	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
@@ -334,8 +327,7 @@ $bog_gram_chat $bog_gram_page
 		react_open? <=> message_react_open*? false
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
-		body <= message_body* \
-		html <= message_rich* \
+		content <= message_rich* null
 		time <= message_time* \
 		edited <= message_edited* false
 		checks <= message_checks* \

@@ -129,10 +129,8 @@ namespace $ {
 
 			message.Forwarded( 'auto' )?.val( true )
 
-			const text = String( source.Text()?.val() ?? '' )
-			if( text ) message.Text( 'auto' )?.val( text )
-			const html = String( source.Html()?.val() ?? '' )
-			if( html ) message.Html( 'auto' )?.val( html )
+			const content = $bog_gram_markup_read( source )
+			if( content.text ) $bog_gram_markup_write( message, content )
 			if( source.Task()?.val() ) message.Task( 'auto' )?.val( true )
 
 			if( frames.length ) {

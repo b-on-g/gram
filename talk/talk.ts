@@ -357,7 +357,7 @@ namespace $ {
 			const last = this.last( id )
 			if( !last ) return ''
 
-			const text = String( last.Text()?.val() ?? '' )
+			const text = $bog_rich_preview( $bog_gram_markup_read( last ) )
 			const words = this.Text()
 			const kind = last.Image()?.val() ? words.talk_photo()
 				: last.Voice()?.val() ? words.talk_voice()

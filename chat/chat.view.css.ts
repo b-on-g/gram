@@ -344,11 +344,6 @@ namespace $.$$ {
 			minWidth: 0,
 		},
 
-		Rich_toggle: {
-			... round,
-			color: $mol_theme.shade,
-		},
-
 		Send: {
 			... round,
 			background: {

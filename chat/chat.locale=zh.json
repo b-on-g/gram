@@ -10,7 +10,6 @@
 	"$bog_gram_chat_Edit_cancel_hint": "取消编辑",
 	"$bog_gram_chat_message_hint": "消息…",
 	"$bog_gram_chat_caption_hint": "添加说明…",
-	"$bog_gram_chat_Rich_toggle_hint": "格式",
 	"$bog_gram_chat_Pending_drop_hint": "移除",
 	"$bog_gram_chat_voice_denied": "麦克风不可用：请在浏览器设置中允许录音",
 	"$bog_gram_chat_voice_busy": "录制未能启动：请检查系统隐私设置，并确认没有其他程序占用麦克风或摄像头",

@@ -301,8 +301,8 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
-		override message_body( id: string ) {
-			return this.message_pawn( id )?.Text()?.val() ?? ''
+		override message_rich( id: string ): $bog_rich_content {
+			return $bog_gram_markup_read( this.message_pawn( id ) )
 		}
 
 		@ $mol_mem_key
@@ -478,7 +478,7 @@ namespace $.$$ {
 		@ $mol_mem
 		field_focus() {
 			if( !this.$.$mol_media.match( '(pointer: fine)' ) ) return false
-			this.Message_field().Content().bring()
+			this.Message_field().bring()
 			return true
 		}
 
@@ -492,7 +492,7 @@ namespace $.$$ {
 			}
 
 			this.reply_id( id )
-			this.Message_field().Content().bring()
+			this.Message_field().bring()
 
 			return null
 		}
@@ -515,7 +515,7 @@ namespace $.$$ {
 			const pawn = this.message_pawn( id )
 			if( !pawn ) return ''
 
-			const text = String( pawn.Text()?.val() ?? '' ).replace( /\s+/g, ' ' ).trim()
+			const text = $bog_rich_preview( $bog_gram_markup_read( pawn ) ).replace( /\s+/g, ' ' ).trim()
 			if( text ) return text
 
 			if( pawn.Image()?.val() ) return this.kind_photo()
@@ -565,7 +565,7 @@ namespace $.$$ {
 			this.message_menu( '' )
 			this.reply_id( '' )
 			this.edit_id( id )
-			this.message_html( this.message_pawn( id )?.Html()?.val() || $bog_gram_write_html( this.message_body( id ) ) )
+			this.message_content( this.message_rich( id ) )
 			return null
 		}
 
@@ -576,54 +576,45 @@ namespace $.$$ {
 		}
 
 		edit_stop() {
-			this.edit_html( '' )
+			this.edit_content( $bog_rich_empty )
 			this.edit_id( '' )
 		}
 
 		@ $mol_mem
-		edit_html( next?: string ) {
-			return next ?? ''
+		edit_content( next?: $bog_rich_content ) {
+			return next ?? $bog_rich_empty
 		}
 
-		draft( next?: string ) {
+		draft( next?: $bog_rich_content ): $bog_rich_content {
 
 			const place = `(${ this.my_lord() },${ this.dialog() })`
 			const store = this.$.$mol_state_local
 
-			if( next !== undefined ) store.value( `$bog_gram_chat.draft${ place }`, null )
+			if( next !== undefined ) {
+				store.value( `$bog_gram_chat.draft${ place }`, null )
+				store.value( `$bog_gram_chat.draft_html${ place }`, null )
+			}
 
-			const html = store.value( `$bog_gram_chat.draft_html${ place }`, next === undefined ? undefined : next || null )
-			return html ?? $bog_gram_write_html( store.value< string >( `$bog_gram_chat.draft${ place }` ) ?? '' )
+			const rich = store.value< $bog_rich_content >( `$bog_gram_chat.draft_rich${ place }`, next && ( next.text ? next : null ) )
+			return rich ?? { text: store.value< string >( `$bog_gram_chat.draft${ place }` ) ?? '', entities: [] }
 		}
 
-		override message_html( next?: string ) {
-			return this.edit_id() ? this.edit_html( next ) : this.draft( next )
-		}
-
-		@ $mol_mem
-		message_plain() {
-			return $bog_gram_write_text( this.message_html() )
+		override message_content( next?: $bog_rich_content ): $bog_rich_content {
+			return this.edit_id() ? this.edit_content( next ) : this.draft( next )
 		}
 
 		override message_text( next?: string ) {
-			if( next === undefined ) return this.message_plain()
-			this.message_html( $bog_gram_write_html( next ) )
+			if( next === undefined ) return this.message_content().text
+			this.message_content({ text: next, entities: [] })
 			return next
 		}
 
-		rich_html() {
-			const html = this.message_html()
-			return $bog_gram_write_rich_is( html ) ? html : ''
-		}
+		text_put( message: $bog_gram_message, content: $bog_rich_content ) {
 
-		text_put( message: $bog_gram_message, text: string ) {
+			const size = $bog_gram_tasks_prefix( content.text )
+			$bog_gram_markup_write( message, size ? $bog_rich_slice( content, size, content.text.length ) : content )
+			if( size ) message.Task( 'auto' )?.val( true )
 
-			const task = $bog_gram_tasks_is( text )
-			message.Text( 'auto' )?.val( task ? $bog_gram_tasks_text( text ) : text )
-			if( task ) message.Task( 'auto' )?.val( true )
-
-			const html = this.rich_html()
-			if( html ) message.Html( 'auto' )?.val( task ? $bog_gram_tasks_html( html ) : html )
 		}
 
 		@ $mol_mem_key
@@ -689,19 +680,12 @@ namespace $.$$ {
 			if( this.message_alive( id ) ) this.reveal( this.Line( id ), 'center' )
 		}
 
-		@ $mol_mem
-		override rich_mode( next?: boolean ) {
-			return this.$.$mol_state_local.value( '$bog_gram_chat.rich', next ) ?? false
-		}
+		override enter_sends() {
 
-		override rich_hold( next?: Event ) {
-			next?.preventDefault()
-			return null
-		}
+			const nav = this.$.$mol_dom_context.navigator
+			if( !nav?.maxTouchPoints ) return true
 
-		@ $mol_mem_key
-		override message_rich( id: string ) {
-			return this.message_pawn( id )?.Html()?.val() ?? ''
+			return this.$.$mol_media.match( '(any-pointer: fine)' ) || this.$.$mol_media.match( '(hover: hover)' )
 		}
 
 		@ $mol_action
@@ -738,7 +722,7 @@ namespace $.$$ {
 		}
 
 		caption() {
-			return this.text_over() ? '' : this.message_text().trim()
+			return this.text_over() ? $bog_rich_empty : $bog_rich_trim( this.message_content() )
 		}
 
 		@ $mol_action
@@ -754,17 +738,16 @@ namespace $.$$ {
 				return null
 			}
 
-			const text = this.message_text().trim()
+			const content = $bog_rich_trim( this.message_content() )
 			const editing = this.edit_id()
 
 			if( editing ) {
 
-				if( !text ) return null
+				if( !content.text ) return null
 
 				const pawn = this.message_pawn( editing )
 				if( pawn ) {
-					pawn.Text( 'auto' )?.val( text )
-					pawn.Html( 'auto' )?.val( this.rich_html() )
+					$bog_gram_markup_write( pawn, content )
 					pawn.Edited( 'auto' )?.val( Date.now() )
 				}
 
@@ -773,7 +756,7 @@ namespace $.$$ {
 				return null
 			}
 
-			if( !text ) return null
+			if( !content.text ) return null
 
 			const session = this.Talk().session( this.dialog() )
 			if( !session ) return null
@@ -781,7 +764,7 @@ namespace $.$$ {
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
-			this.text_put( message, text )
+			this.text_put( message, content )
 
 			const reply = this.reply_id()
 			if( reply ) message.Reply( 'auto' )?.val( reply )
@@ -900,7 +883,7 @@ namespace $.$$ {
 		@ $mol_action
 		override image_files( next?: readonly File[] ) {
 			this.pending_add( next ?? [] )
-			if( this.attach_typing ) this.Message_field().Content().bring()
+			if( this.attach_typing ) this.Message_field().bring()
 			this.attach_typing = false
 			return next ?? null
 		}
@@ -1099,7 +1082,7 @@ namespace $.$$ {
 			const frames = files.map( file => this.image_frame( file ) )
 			if( !frames.length ) return ''
 
-			const text = this.caption()
+			const caption = this.caption()
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
@@ -1115,9 +1098,9 @@ namespace $.$$ {
 			message.Image( 'auto' )!.remote( frames[0].store )
 			message.Image_width( 'auto' )?.val( frames[0].width )
 			message.Image_height( 'auto' )?.val( frames[0].height )
-			if( text ) this.text_put( message, text )
+			if( caption.text ) this.text_put( message, caption )
 
-			if( text ) this.message_text( '' )
+			if( caption.text ) this.message_text( '' )
 			this.voice_hint( '' )
 
 			return message.link().str
@@ -1158,7 +1141,7 @@ namespace $.$$ {
 
 			const store = this.land_closed( clip.bytes, clip.type, passes )
 
-			const text = this.caption()
+			const caption = this.caption()
 			const message = session.Messages( 'auto' )!.make( null )
 			message.Author( 'auto' )?.val( this.my_lord() )
 			message.Moment( 'auto' )?.val( Date.now() )
@@ -1168,9 +1151,9 @@ namespace $.$$ {
 				message.Video_width( 'auto' )?.val( clip.width )
 				message.Video_height( 'auto' )?.val( clip.height )
 			}
-			if( text ) this.text_put( message, text )
+			if( caption.text ) this.text_put( message, caption )
 
-			if( text ) this.message_text( '' )
+			if( caption.text ) this.message_text( '' )
 			this.voice_hint( '' )
 
 			return message.link().str
@@ -1325,7 +1308,7 @@ namespace $.$$ {
 			if( this.edit_mode() ) return true
 			if( this.pending().length ) return true
 			if( !this.voice_ready() ) return true
-			return Boolean( this.message_text().trim() || this.rich_html() )
+			return Boolean( this.message_text().trim() )
 		}
 
 		override Send() {
@@ -1344,7 +1327,7 @@ namespace $.$$ {
 				case 'locked': return [ this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send() ]
 				case 'review': return [ this.Record_drop(), this.Draft(), this.Record_send() ]
 			}
-			return [ this.Attach(), this.Rich_toggle(), this.Message_box(), this.Send(), this.Voice() ]
+			return [ this.Attach(), this.Message_box(), this.Send(), this.Voice() ]
 		}
 
 		press_at = { x: 0, y: 0 }
@@ -1776,7 +1759,7 @@ namespace $.$$ {
 		@ $mol_action
 		override box_click( next?: Event ) {
 			if( this.Message_field().dom_node().contains( next?.target as Node ) ) return null
-			this.Message_field().Content().bring()
+			this.Message_field().bring()
 			return null
 		}
 

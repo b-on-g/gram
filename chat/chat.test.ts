@@ -4,14 +4,10 @@ namespace $.$$ {
 
 		'Открытый десктопный чат фокусирует поле сообщения'( $ ) {
 
-			let outer_focused = 0
-			let edit_focused = 0
+			let focused = 0
 			const chat = $bog_gram_chat.make({ $ })
 			const match = chat.$.$mol_media.match
-			chat.Message_field = ()=> ({
-				bring: ()=> ++ outer_focused,
-				Content: ()=> ({ bring: ()=> ++ edit_focused }),
-			}) as any
+			chat.Message_field = ()=> ({ bring: ()=> ++ focused }) as any
 			chat.$.$mol_media.match = ()=> true
 
 			chat.read_sync = ()=> 0
@@ -20,8 +16,7 @@ namespace $.$$ {
 			chat.stick_observer = ()=> null
 			chat.auto()
 
-			$mol_assert_equal( outer_focused, 0 )
-			$mol_assert_equal( edit_focused, 1 )
+			$mol_assert_equal( focused, 1 )
 			chat.$.$mol_media.match = match
 
 		},
@@ -265,7 +260,77 @@ namespace $.$$ {
 
 		},
 
-		'Форматированное сообщение уходит с разметкой и текстом для старых клиентов, простое — только текстом'( $ ) {
+		'Набор, стили, форма, отмена и очистка поля не трогают Базу: ни home-ленд, ни какой другой'( $ ) {
+
+			const touched = [] as string[]
+			const touch = ( what: string )=> { touched.push( what ); return $mol_fail( new Error( `Поле полезло в Базу: ${ what }` ) ) }
+
+			const context = $.$mol_ambient({
+				$giper_baza_land: class extends $giper_baza_land {
+					static override make(): any { return touch( 'land' ) }
+				},
+				$giper_baza_glob: class extends $giper_baza_glob {
+					static override home(): any { return touch( 'home' ) }
+					static override Land(): any { return touch( 'Land' ) }
+					static override land_grab(): any { return touch( 'land_grab' ) }
+				},
+				$giper_baza_auth: class extends $giper_baza_auth {
+					static override current(): any { return touch( 'auth' ) }
+				},
+			})
+
+			const chat = $bog_gram_chat.make({ $: context, dialog: ()=> 'DialogSafe', my_lord: ()=> 'LordMe' })
+			const field = chat.Message_field() as $.$$.$bog_rich_edit
+			field.dom_tree()
+
+			field.write( 0, 0, 'черновик' )
+			field.selection({ anchor: 0, focus: 8 })
+			for( const type of [ ... $bog_rich_toggles, 'blockquote', 'pre' ] as const ) {
+				field.format_apply( type as any )
+				field.format_apply( type as any )
+			}
+			field.format_apply( 'bold' )
+			field.link_open()
+			field.link_url( 'ya.ru' )
+			field.link_apply()
+			field.date_open()
+			field.menu_close()
+			field.undo()
+			field.redo()
+
+			$mol_assert_equal( chat.message_content().entities.map( mark => mark.type ), [ 'text_link', 'bold' ] )
+			$mol_assert_equal( field.Content().dom_node().textContent, 'черновик' )
+
+			chat.message_text( '' )
+			field.dom_tree()
+			$mol_assert_equal( field.Content().dom_node().textContent, '' )
+			$mol_assert_equal( touched, [] )
+
+		},
+
+		'Старое сообщение с разметкой прежнего вида читается простым текстом'( $ ) {
+
+			const land = $giper_baza_land.make({ $ })
+			const old = land.Data( $giper_baza_dict.with({ Text: $giper_baza_atom_text, Html: $giper_baza_atom_text }) )
+			old.Text( 'auto' )!.val( 'старое' )
+			old.Html( 'auto' )!.val( '<p><strong>старое</strong></p>' )
+
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogOld', my_lord: ()=> 'LordMe', message_pawn: ()=> land.Data( $bog_gram_message ) })
+			$mol_assert_equal( chat.message_rich( 'x' ), { text: 'старое', entities: [] } )
+
+		},
+
+		'Скрытое не видно в цитате ответа'( $ ) {
+
+			const message = $giper_baza_land.make({ $ }).Data( $bog_gram_message )
+			$bog_gram_markup_write( message, { text: 'убийца дворецкий', entities: [ { type: 'spoiler', offset: 7, length: 9 } ] } )
+
+			const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogHide', my_lord: ()=> 'LordMe', message_pawn: ()=> message })
+			$mol_assert_equal( chat.quote_text( 'x' ), 'убийца ▒▒▒▒' )
+
+		},
+
+		'Форматированное сообщение уходит со стилями и текстом для старых клиентов, простое — только текстом'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
 			const talk = $bog_gram_talk.make({ $, session: ()=> session, saved_is: ()=> false })
@@ -274,9 +339,10 @@ namespace $.$$ {
 
 			const sent = ()=> ( session.Messages()!.items() as readonly $giper_baza_link[] )
 				.map( link => session.land().Pawn( $bog_gram_message ).Head( link.head() ) )
-				.map( message => [ message.Text()?.val() ?? '', message.Html()?.val() ?? '' ] )
+				.map( $bog_gram_markup_read )
 
-			chat.message_html( '<p>очень <strong>важно</strong></p><p>второе</p>' )
+			const rich: $bog_rich_content = { text: 'очень важно\nвторое', entities: [ { type: 'bold', offset: 6, length: 5 } ] }
+			chat.message_content( rich )
 			$mol_assert_equal( chat.message_text(), 'очень важно\nвторое' )
 			chat.message_send()
 
@@ -284,16 +350,18 @@ namespace $.$$ {
 			chat.message_send()
 
 			$mol_assert_equal( sent(), [
-				[ 'очень важно\nвторое', '<p>очень <strong>важно</strong></p><p>второе</p>' ],
-				[ 'просто', '' ],
+				rich,
+				{ text: 'просто', entities: [] },
 			] )
-			$mol_assert_equal( chat.message_html(), '' )
+			$mol_assert_equal( chat.message_text(), '' )
 
 			const link = ( session.Messages()!.items() as readonly $giper_baza_link[] )[0]
 			const pawn = session.land().Pawn( $bog_gram_message ).Head( link.head() )
 			chat.message_pawn = ()=> pawn
 			chat.message_edit( link.str )
-			$mol_assert_equal( chat.message_html(), '<p>очень <strong>важно</strong></p><p>второе</p>' )
+			$mol_assert_equal( chat.message_content(), rich )
+			chat.edit_cancel()
+			$mol_assert_equal( chat.message_text(), '' )
 
 		},
 

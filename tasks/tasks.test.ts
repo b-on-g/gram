@@ -12,8 +12,8 @@ namespace $.$$ {
 		const alerts = $bog_gram_alerts.make({ $, offer: ()=> false })
 		const chat = $bog_gram_chat.make({ $, dialog: ()=> 'DialogTasks', my_lord: ()=> 'LordMe', Talk: ()=> talk, Alerts: ()=> alerts })
 
-		const send = ( html: string )=> {
-			chat.message_html( html )
+		const send = ( text: string, ... entities: $bog_rich_entity[] )=> {
+			chat.message_content({ text, entities })
 			chat.message_send()
 			return talk.messages_of( '' ).at( -1 )!
 		}
@@ -27,7 +27,7 @@ namespace $.$$ {
 
 			const { send } = stand( $ )
 			const sent = ( text: string )=> {
-				const message = send( $bog_gram_write_html( text ) )
+				const message = send( text )
 				return [ message.Text()?.val(), Boolean( message.Task()?.val() ) ]
 			}
 
@@ -39,13 +39,12 @@ namespace $.$$ {
 
 		},
 
-		'Префикс срезается и из разметки, даже если разбит на куски'( $ ) {
+		'Префикс и пробелы по краям срезаются вместе со сдвигом стилей'( $ ) {
 
 			const { send } = stand( $ )
 
-			const message = send( '<p>-<b>- очень</b> важно</p>' )
-			$mol_assert_equal( message.Text()?.val(), 'очень важно' )
-			$mol_assert_equal( message.Html()?.val(), '<p><b>очень</b> важно</p>' )
+			const message = send( '  -- очень важно ', { type: 'bold', offset: 3, length: 7 } )
+			$mol_assert_equal( $bog_gram_markup_read( message ), { text: 'очень важно', entities: [ { type: 'bold', offset: 0, length: 5 } ] } )
 			$mol_assert_equal( message.Task()?.val(), true )
 
 		},
@@ -53,8 +52,8 @@ namespace $.$$ {
 		'Сделанные уходят вниз панели, снятая отметка убирает задачу'( $ ) {
 
 			const { chat, send } = stand( $ )
-			const [ milk, bread ] = [ '-- молоко', '-- хлеб' ].map( text => send( $bog_gram_write_html( text ) ).link().str )
-			const talk = send( '<p>болтовня</p>' ).link().str
+			const [ milk, bread ] = [ '-- молоко', '-- хлеб' ].map( text => send( text ).link().str )
+			const talk = send( 'болтовня' ).link().str
 
 			const panel = $bog_gram_tasks.make({ $,
 				ids: ()=> chat.task_ids(),

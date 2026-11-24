@@ -11,7 +11,7 @@
 	padding: 0;
 }
 
-[bog_gram_bubble][bog_gram_bubble_done="true"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {
+[bog_gram_bubble][bog_gram_bubble_done="true"] [bog_gram_bubble_body] {
 	color: var(--mol_theme_shade);
 	text-decoration: line-through;
 }

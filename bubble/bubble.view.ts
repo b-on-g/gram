@@ -46,12 +46,16 @@ namespace $.$$ {
 			return this.call() ? super.Call() : null!
 		}
 
-		override Body() {
-			return this.body() && !this.html() ? super.Body() : null!
+		override content(): $bog_rich_content {
+			return $bog_rich_empty
 		}
 
-		override Rich() {
-			return this.html() ? super.Rich() : null!
+		body() {
+			return this.content().text
+		}
+
+		override Body() {
+			return this.body() ? super.Body() : null!
 		}
 
 		override Edited() {
