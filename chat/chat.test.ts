@@ -15,7 +15,6 @@ namespace $.$$ {
 			chat.$.$mol_media.match = ()=> true
 
 			chat.read_sync = ()=> 0
-			chat.stick_watch = ()=> 0
 			chat.stick_hold = ()=> 0
 			chat.follow = ()=> undefined
 			chat.stick_observer = ()=> null
@@ -46,6 +45,32 @@ namespace $.$$ {
 
 			ids.push( 'mine' )
 			chat.follow()
+			$mol_assert_equal( chat.stick_end(), true )
+
+		},
+
+		'Прилипание снимает только прокрутка вверх, а не смена высоты'( $ ) {
+
+			const chat = $bog_gram_chat.make({ $ })
+
+			chat.stick_track( 500, 1000, 500 )
+			$mol_assert_equal( chat.stick_end(), true )
+
+			chat.stick_track( 450, 1100, 500 )
+			$mol_assert_equal( chat.stick_end(), true )
+
+			chat.stick_track( 600, 1100, 500 )
+			chat.stick_track( 520, 1100, 560 )
+			$mol_assert_equal( chat.stick_end(), true )
+
+			chat.stick_track( 518, 1100, 560 )
+			$mol_assert_equal( chat.stick_end(), false )
+
+			chat.stick_track( 518, 1200, 560 )
+			chat.stick_track( 530, 1200, 560 )
+			$mol_assert_equal( chat.stick_end(), false )
+
+			chat.stick_track( 640, 1200, 560 )
 			$mol_assert_equal( chat.stick_end(), true )
 
 		},
