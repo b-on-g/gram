@@ -42049,7 +42049,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.234';
+    $.$bog_gram_version = '1.0.235';
 })($ || ($ = {}));
 
 ;
@@ -57939,7 +57939,7 @@ var $;
                 direction: 'column',
             },
             gap: '0.125rem',
-            maxWidth: $mol_style_func.calc('min( 85%, 480px )'),
+            maxWidth: $mol_style_func.calc('min( 92%, 480px )'),
             minWidth: 0,
             alignSelf: 'flex-start',
             padding: {
@@ -58685,6 +58685,9 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		message_turn(id){
+			return false;
+		}
 		line_content(id){
 			return [];
 		}
@@ -59327,6 +59330,7 @@ var $;
 		Line(id){
 			const obj = new this.$.$mol_view();
 			(obj.minimal_height) = () => (48);
+			(obj.attr) = () => ({...(this.$.$mol_view.prototype.attr.call(obj)), "bog_gram_chat_turn": (this.message_turn(id))});
 			(obj.sub) = () => ((this.line_content(id)));
 			return obj;
 		}
@@ -60068,14 +60072,25 @@ var $;
                 const day = this.message_day(id);
                 if (!day)
                     return '';
+                const prev = this.message_prev(id);
+                return prev && this.message_day(prev) === day ? '' : day;
+            }
+            message_prev(id) {
                 const messages = this.messages();
                 for (let i = (this.messages_index().get(id) ?? 0) - 1; i >= 0; --i) {
                     const prev = messages[i].link().str;
-                    if (this.message_dead(prev))
-                        continue;
-                    return this.message_day(prev) === day ? '' : day;
+                    if (!this.message_dead(prev))
+                        return prev;
                 }
-                return day;
+                return '';
+            }
+            message_turn(id) {
+                if (!this.message_alive(id))
+                    return false;
+                if (this.message_day_head(id))
+                    return false;
+                const prev = this.message_prev(id);
+                return Boolean(prev) && this.message_lord(prev) !== this.message_lord(id);
             }
             line_content(id) {
                 if (!this.message_alive(id))
@@ -61362,6 +61377,12 @@ var $;
         ], $bog_gram_chat.prototype, "message_day_head", null);
         __decorate([
             $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_prev", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_turn", null);
+        __decorate([
+            $mol_mem_key
         ], $bog_gram_chat.prototype, "line_content", null);
         __decorate([
             $mol_mem
@@ -61659,7 +61680,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_round_live][bog_gram_chat_mirror=\"true\"] {\n\ttransform: scaleX(-1);\n}\n\n[bog_gram_chat_line]:empty {\n\tpadding: 0;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
+    $mol_style_attach("bog/gram/chat/chat.view.css", "@keyframes bog_gram_chat_pulse {\n\tfrom { opacity: 1 }\n\tto { opacity: .2 }\n}\n\n[bog_gram_chat_record_dot] {\n\tanimation: bog_gram_chat_pulse .8s ease-in-out infinite alternate;\n}\n\n[bog_gram_chat_round_live][bog_gram_chat_mirror=\"true\"] {\n\ttransform: scaleX(-1);\n}\n\n[bog_gram_chat_line][bog_gram_chat_turn=\"true\"] {\n\tpadding-top: calc( 10px - 0.125rem );\n}\n\n[bog_gram_chat_line]:empty {\n\tpadding: 0;\n}\n\n[bog_gram_chat_voice] {\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\tuser-select: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -77782,6 +77803,20 @@ var $;
                 $mol_assert_equal(chat.message_last('a'), false);
                 $mol_assert_equal(chat.message_last('b'), true);
                 $mol_assert_equal(chat.message_last('dead'), false);
+            },
+            'Смена автора раздвигает сообщения, удалённые и новый день не в счёт'($) {
+                const lords = { a: 'Me', b: 'Me', dead: 'Peer', c: 'Me', d: 'Peer', e: 'Me' };
+                const chat = $bog_gram_chat.make({ $ });
+                chat.messages = () => Object.keys(lords).map(id => ({ link: () => ({ str: id }) }));
+                chat.message_dead = (id) => id === 'dead';
+                chat.message_lord = (id) => lords[id];
+                chat.message_day = (id) => id === 'e' ? '2026-01-02' : '2026-01-01';
+                $mol_assert_equal(chat.message_turn('a'), false);
+                $mol_assert_equal(chat.message_turn('b'), false);
+                $mol_assert_equal(chat.message_turn('dead'), false);
+                $mol_assert_equal(chat.message_turn('c'), false);
+                $mol_assert_equal(chat.message_turn('d'), true);
+                $mol_assert_equal(chat.message_turn('e'), false);
             },
             'Прилипание снимает только прокрутка вверх, а не смена высоты'($) {
                 const chat = $bog_gram_chat.make({ $ });
