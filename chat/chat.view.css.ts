@@ -128,6 +128,10 @@ namespace $.$$ {
 		},
 
 		Body: {
+			overflow: {
+				x: 'hidden',
+				y: 'auto',
+			},
 			background: {
 				color: $mol_theme.back,
 			},

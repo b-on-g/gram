@@ -1,5 +1,9 @@
-[bog_gram_rich] {
+[bog_gram_rich][mol_view] {
 	display: block;
+	max-width: 100%;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 
 [bog_gram_rich] :is( p, h1, h2, h3, h4, h5, h6 ) {
@@ -59,6 +63,14 @@
 [bog_gram_rich] :is( section > p:first-child, h1, h2, h3, h4, h5, h6 ) {
 	font-size: 1.25rem;
 	font-weight: bold;
+}
+
+[bog_gram_rich] :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) {
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 0;
+	padding-right: 0;
+	list-style-position: inside;
 }
 
 [bog_gram_rich] a {
