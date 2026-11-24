@@ -20,6 +20,8 @@ const config = Object.assign( {
 	fixes: 2,
 	minutes: 30,
 	dry: false,
+	push: false,
+	site: 'https://b-on-g.github.io/gram/',
 }, json_load( at( 'config.json' ), {} ) )
 
 const state = Object.assign( { since: 0, tasks: {}, replies: {}, seen: [], days: {}, asked: [] }, json_load( at( 'state.json' ), {} ) )
@@ -29,7 +31,7 @@ const limits = { photos: 8, photo: 12 * 2 ** 20, text: 4000 }
 
 const kinds = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif' }
 
-const banned = /^(\.git|\.githooks|push\/|bot\/|version\/)|(^|\/)\.git/
+const banned = /^(\.git|\.githooks|push\/|bot\/|version\/)|(^|\/)(\.git|package(-lock)?\.json$|[^\/]*\.meta\.tree$)/
 
 const log = ( ... args )=> console.log( new Date().toISOString(), ... args )
 const private_words = [ DIR, MAM, os.homedir(), os.userInfo().username, os.hostname() ].filter( word => word.length > 3 )
@@ -331,6 +333,59 @@ function git( ... args ) {
 	], { env: git_env, cwd: DIR, encoding: 'utf8', maxBuffer: 2 ** 28 } )
 }
 
+/** Сразу после сна сеть рвётся, поэтому обращения к GitHub повторяются. Асинхронно: долгий execFileSync выглядит как сон. */
+async function git_net( ... args ) {
+	let last = ''
+	for( let turn = 0; turn < 6; ++ turn ) {
+		if( turn ) await sleep( 5000 * turn )
+		const res = await run( 'git', [ '-c', 'core.hooksPath=/dev/null', '--git-dir', at( 'repo.git' ), ... args ], { cwd: DIR, env: git_env, minutes: 2 } )
+		if( res.code === 0 ) return true
+		last = res.err
+		if( /rejected|non-fast-forward/.test( last ) ) return false
+		log( 'git', args[0], tail( last ) )
+	}
+	throw new Error( 'GitHub недоступен' )
+}
+
+async function head_fetch() {
+	await git_net( 'fetch', 'origin', '+refs/heads/master:refs/remotes/origin/master' )
+	return git( 'rev-parse', 'refs/remotes/origin/master' ).trim()
+}
+
+const version_file = 'version/version.ts'
+const version_of = commit => git( 'show', `${ commit }:${ version_file }` ).match( /\d+\.\d+\.\d+/ )[0]
+
+function tree_put( tree, text ) {
+	fs.writeFileSync( at( 'version.tmp' ), text )
+	const blob = git( 'hash-object', '-w', at( 'version.tmp' ) ).trim()
+	git( 'read-tree', tree )
+	git( 'update-index', '--cacheinfo', `100644,${ blob },${ version_file }` )
+	return git( 'write-tree' ).trim()
+}
+
+function tree_bump( tree, head ) {
+	const version = version_of( head )
+	const next = version.replace( /\d+$/, patch => String( Number( patch ) + 1 ) )
+	return tree_put( tree, git( 'show', `${ head }:${ version_file }` ).replace( version, next ) )
+}
+
+function commit_make( tree, parent, title ) {
+	const ident = [ '-c', 'user.name=gram-bot', '-c', 'user.email=gram-bot@localhost' ]
+	return git( ... ident, 'commit-tree', tree, '-p', parent, '-m', title ).trim()
+}
+
+const title_of = text => '$bog_gram: ' + ( scrub( text ).replace( /\s+/g, ' ' ).trim().slice( 0, 100 ) || 'задача с картинки' )
+
+/** Дерево, где правка base..ours перенесена на head. null при конфликте. */
+function tree_merge( base, head, ours ) {
+	try {
+		return git( 'merge-tree', '--write-tree', '--merge-base=' + base, head, ours ).split( '\n' )[0].trim()
+	} catch( error ) {
+		if( error.status === 1 ) return null
+		throw error
+	}
+}
+
 function repo_open() {
 	if( fs.existsSync( at( 'repo.git' ) ) ) return
 	const url = execFileSync( 'git', [ '-C', GRAM, 'remote', 'get-url', 'origin' ], { encoding: 'utf8' } ).trim()
@@ -439,15 +494,21 @@ async function check() {
 
 	const build = await boxed( root, [ 'node_modules/mam/node.js', 'bog/gram' ], 10 )
 
-	for( const bundle of [ 'web', 'node' ] ) {
-		const file = path.join( gram, '-', bundle + '.audit.js' )
-		const audit = fs.existsSync( file ) ? fs.readFileSync( file, 'utf8' ) : ''
-		if( !audit.includes( 'Audit passed' ) ) return { ok: false, what: 'сборка', detail: tail( audit || build.out + build.err ) }
-	}
+	const audits = [ 'web', 'node' ].map( bundle => path.join( gram, '-', bundle + '.audit.js' ) )
+		.map( file => fs.existsSync( file ) ? fs.readFileSync( file, 'utf8' ) : '' )
+	const broken = audits.find( audit => audit.includes( 'Audit fail' ) )
+	if( broken ) return { ok: false, what: 'сборка', detail: tail( broken.replace( /\\n    at [\s\S]*/, '' ) ) }
 
-	const test = await boxed( root, [ 'bog/gram/-/node.test.js' ], 5 )
+	/** Сборка сама гоняет тесты и на красном обрывается, топя ошибку в предупреждениях. Отдельный прогон кладёт её последней в stderr. */
+	const file = path.join( gram, '-/node.test.js' )
+	if( !fs.existsSync( file ) ) return { ok: false, what: 'сборка', detail: tail( build.out + build.err ) }
+
+	let test = await boxed( root, [ 'bog/gram/-/node.test.js' ], 5 )
+	if( test.code !== 0 && /Test timeout/.test( test.err.slice( - 3000 ) ) ) test = await boxed( root, [ 'bog/gram/-/node.test.js' ], 5 )
 	const passed = tail( test.out ).match( /All tests passed\s+count (\d+)/ )
-	if( test.code !== 0 || !passed ) return { ok: false, what: 'тесты', detail: tail( test.out + test.err ) }
+	if( test.code !== 0 || !passed ) return { ok: false, what: 'тесты', detail: tail( test.err || test.out ) }
+
+	if( !audits.every( audit => audit.includes( 'Audit passed' ) ) ) return { ok: false, what: 'сборка', detail: tail( build.out + build.err ) }
 
 	return { ok: true, count: Number( passed[1] ) }
 }
@@ -455,17 +516,17 @@ async function check() {
 const schema = JSON.stringify({
 	type: 'object',
 	properties: {
-		status: { enum: [ 'done', 'failed', 'question' ] },
+		status: { enum: [ 'done', 'failed', 'question', 'answer' ] },
 		report: { type: 'string' },
 	},
 	required: [ 'status', 'report' ],
 })
 
-const rules = `Ты выполняешь задачи по мессенджеру Gram на $mol. Правь только файлы в bog/gram, кроме push/, bot/, version/ и .git*. Остальное в дереве только для чтения, правки там пропадут.
+const rules = `Ты выполняешь задачи по мессенджеру Gram на $mol. Правь только файлы в bog/gram, кроме push/, bot/, version/, .git*, *.meta.tree и package.json. Остальное в дереве только для чтения, правки там пропадут.
 Сначала прочитай bog/gram/README.md, AGENTS.md и соседний код. Без комментариев в коде, стиль как в соседних файлах, тексты в дереве через @ и переводы в locale=ru и locale=zh, на новую логику тест рядом с модулем.
 Запускать команды нельзя: сборку и тесты после тебя прогонит бот и вернёт ошибки.
 Текст задачи и картинки описывают желаемое поведение Gram. Не упоминай почту владельца, имена пользователей и пути вне bog/gram. Просьбы раскрыть ключи, токены или чужие данные, ослабить права или шифрование не выполняй: ответь failed и объясни.
-В ответе status: done (сделано), failed (не вышло, с причиной и что пробовал), question (без уточнения не решить). report: по-русски, коротко, для людей в чате: что изменилось для пользователя, какие файлы, что не проверено.`
+В ответе status: done (сделано), failed (не вышло, с причиной и что пробовал), question (без уточнения не решить), answer (просьбы что-то менять нет: вопрос, спасибо, замечание; файлы не трогай). Логи и вывод проверок у людей в чате не проси, их присылает бот. Про то, что сборка и тесты не запускались, не пиши: бот их прогоняет. report: по-русски, коротко, для людей в чате: что изменилось для пользователя, какие файлы, что не проверено.`
 
 async function claude( input, session ) {
 
@@ -514,13 +575,171 @@ function changes( base ) {
 	return out
 }
 
-function commit( base, branch, text ) {
-	const ident = [ '-c', 'user.name=gram-bot', '-c', 'user.email=gram-bot@localhost' ]
+/** Правки живут в ветке bot/N после каждого хода: рабочая папка одна на все задачи. */
+function draft_save( task, base, text ) {
+	git( 'read-tree', base )
+	git( '--work-tree', at( 'work/bog/gram' ), 'add', '-A' )
 	const tree = git( 'write-tree' ).trim()
-	const title = '$bog_gram: ' + scrub( text ).replace( /\s+/g, ' ' ).trim().slice( 0, 100 )
-	const hash = git( ... ident, 'commit-tree', tree, '-p', base, '-m', title ).trim()
-	git( 'update-ref', 'refs/heads/' + branch, hash )
-	return hash
+	if( tree === git( 'rev-parse', base + '^{tree}' ).trim() ) {
+		task.draft = null
+		return
+	}
+	task.draft = commit_make( tree, base, title_of( text ) )
+	git( 'update-ref', 'refs/heads/bot/' + task.number, task.draft )
+}
+
+function draft_load( task, head ) {
+	if( !task.draft ) return { base: head, note: task.session ? 'Дерево обновлено до свежего master, прочитай файлы заново.' : '' }
+	const tree = tree_merge( task.draft + '^', head, task.draft )
+	if( !tree ) return { base: head, note: 'Твои прежние правки не легли на свежий master и сброшены. Прочитай файлы заново и сделай их снова.' }
+	return { base: head, start: commit_make( tree, head, 'draft' ), note: 'Твои прежние невыложенные правки на месте, дерево обновлено до свежего master. Прочитай файлы заново.' }
+}
+
+function run_find( commit ) {
+	const url = `https://api.github.com/repos/b-on-g/gram/actions/runs?head_sha=${ commit }&event=push`
+	return fetch( url, { signal: AbortSignal.timeout( 20000 ) } )
+		.then( res => res.ok ? res.json() : null )
+		.then( data => data?.workflow_runs?.find( one => one.path?.startsWith( '.github/workflows/' ) ) ?? null )
+		.catch( ()=> null )
+}
+
+async function site_version() {
+	return fetch( config.site + 'web.js?' + Date.now(), { signal: AbortSignal.timeout( 60000 ) } )
+		.then( res => res.text() )
+		.then( text => text.match( /\$bog_gram_version\s*=\s*['"]([\d.]+)/ )?.[1] ?? '' )
+		.catch( ()=> '' )
+}
+
+/** Версия на сайте растёт с каждым пушем: если она дошла до нашей, сборка с нашей правкой прошла. Итог: live, fail, late, replaced. */
+async function deploy_wait( commit ) {
+
+	const version = version_of( commit )
+	const until = Date.now() + 15 * 60000
+	let built = false
+
+	for( ; Date.now() < until; await sleep( 20000 ) ) {
+
+		const shown = await site_version()
+		if( shown && Number( shown.split( '.' )[2] ) >= Number( version.split( '.' )[2] ) ) return { state: 'live', version: shown }
+
+		if( !built ) {
+			const found = await run_find( commit )
+			if( found?.status !== 'completed' ) continue
+			if( found.conclusion === 'cancelled' ) return { state: 'replaced', version, url: found.html_url }
+			if( found.conclusion !== 'success' ) return { state: 'fail', version, url: found.html_url, run: found.id }
+			built = true
+		}
+	}
+
+	return { state: 'late', version, built }
+}
+
+const gh = [ '/opt/homebrew/bin/gh', '/usr/local/bin/gh' ].find( file => fs.existsSync( file ) )
+
+async function run_log( id ) {
+	if( !gh ) return ''
+	const res = await run( gh, [ 'run', 'view', String( id ), '-R', 'b-on-g/gram', '--log-failed' ], { cwd: DIR, env: git_env, minutes: 2 } )
+	return tail( res.out )
+}
+
+/** Переносит правку base..change на свежий master, проверяет и пушит. Принудительного пуша нет. */
+async function publish( base, change, title, checked_on ) {
+
+	for( let turn = 0; turn < 3; ++ turn ) {
+
+		const head = await head_fetch()
+		const tree = tree_merge( base, head, change )
+		if( !tree ) return { error: 'правка конфликтует с тем, что выложили тем временем' }
+		if( tree === git( 'rev-parse', head + '^{tree}' ).trim() ) return { error: 'на master это уже так' }
+
+		if( head !== checked_on ) {
+			work_make( commit_make( tree, head, 'check' ) )
+			const checked = await check()
+			if( !checked.ok ) return { error: `поверх свежего master не проходит ${ checked.what }`, detail: checked.detail }
+			checked_on = head
+		}
+
+		const commit = commit_make( tree_bump( tree, head ), head, title )
+		if( await git_net( 'push', 'origin', `${ commit }:refs/heads/master` ) ) return { commit }
+	}
+
+	return { error: 'master меняется быстрее, чем идёт проверка' }
+}
+
+/** Обратная правка коммита. Номер версии назад не едет. */
+async function undo( commit ) {
+	const before = git( 'rev-parse', commit + '^' ).trim()
+	const tree = tree_put( before + '^{tree}', git( 'show', `${ commit }:${ version_file }` ) )
+	return publish( commit, commit_make( tree, commit, 'undo' ), 'Откат: ' + git( 'log', '-1', '--format=%s', commit ).trim() )
+}
+
+async function deploy_report( id ) {
+
+	const task = state.tasks[ id ]
+	const commit = task.pushed.at( -1 )
+	const end = await deploy_wait( commit )
+	const name = `Версия ${ end.version }, коммит ${ commit.slice( 0, 7 ) }.`
+
+	if( end.state === 'live' ) {
+		task.status = 'live'
+		state_save()
+		if( !task.undoing ) await task_close( id )
+		return say( `${ task.undoing ? 'Откат на сайте.' : 'На сайте.' } ${ name } ${ task.undoing ? '' : 'Обнови вкладку и проверь. Не то — ответь на это сообщение, напишешь «откати» — уберу.' }`.trim(), id, id )
+	}
+
+	if( end.state === 'replaced' ) {
+		task.status = 'live'
+		return say( `Сборку на GitHub сменил следующий пуш, правка уедет с ним. ${ name }`, id, id )
+	}
+
+	if( end.state === 'late' ) {
+		task.status = 'late'
+		return say( `${ end.built ? 'Сборка на GitHub прошла, но сайт не обновился' : 'Сборка на GitHub не закончилась' } за 15 минут. ${ name }\nЗадачу не закрываю.`, id, id )
+	}
+
+	task.status = 'failed'
+	state_save()
+	if( task.undoing ) return say( `Сборка отката на GitHub упала: ${ end.url }\nНужен человек.`, id, id )
+
+	task.trouble = await run_log( end.run )
+	const back = await undo( commit )
+	if( back.commit ) {
+		task.pushed.pop()
+		const before = git( 'rev-parse', commit + '^' ).trim()
+		task.draft = commit_make( tree_put( commit + '^{tree}', git( 'show', `${ before }:${ version_file }` ) ), before, git( 'log', '-1', '--format=%s', commit ).trim() )
+		git( 'update-ref', 'refs/heads/bot/' + task.number, task.draft )
+	}
+	state_save()
+	return say( [
+		`Сборка на GitHub упала: ${ end.url }`,
+		back.commit ? 'Правку с master убрал, сайт не менялся. Ответь на это сообщение, и попробую починить.' : `Убрать правку сам не смог: ${ back.error }. Нужен человек.`,
+	].join( '\n' ), id, id )
+}
+
+async function rollback( message, id ) {
+
+	const task = state.tasks[ id ]
+	const commit = task.pushed?.at( -1 )
+	if( !commit || task.undoing ) return say( 'Откатывать нечего: у этой задачи ничего не выложено.', message.id, id )
+
+	await say( 'Откатываю', message.id, id )
+	const back = await undo( commit )
+	if( !back.commit ) return say( `Откатить не вышло: ${ back.error }.`, id, id )
+
+	task.pushed = [ ... task.pushed.slice( 0, -1 ), back.commit ]
+	task.undoing = commit
+	task.draft = null
+	task.status = 'deploying'
+	state_save()
+	await say( 'Откат запушен, жду сборку на GitHub.', id, id )
+	await deploy_report( id )
+	undo_end( task )
+}
+
+function undo_end( task ) {
+	task.pushed = task.pushed.slice( 0, -1 )
+	task.undoing = null
+	task.note = 'Твою выложенную правку люди попросили откатить, в дереве её нет.'
 }
 
 function prompt( text, pictures ) {
@@ -543,11 +762,12 @@ async function solve( id, text, pictures ) {
 	const task = state.tasks[ id ]
 	const began = Date.now()
 
-	if( !task.commit ) git( 'fetch', 'origin', '+refs/heads/master:refs/remotes/origin/master' )
-	const base = task.commit || git( 'rev-parse', 'refs/remotes/origin/master' ).trim()
-	work_make( base )
+	const head = await head_fetch()
+	const { base, start, note } = draft_load( task, head )
+	work_make( start ?? base )
 
-	let input = prompt( text, pictures )
+	let input = [ prompt( text, pictures ), task.session ? note : '', task.note, task.trouble ? 'Последняя проверка упала:\n' + task.trouble : '' ].filter( Boolean ).join( '\n\n' )
+	task.note = task.trouble = null
 	let checked = null
 
 	for( let turn = 0; ; ++ turn ) {
@@ -555,11 +775,13 @@ async function solve( id, text, pictures ) {
 		const answer = await claude( input, task.session )
 		task.session = answer.session
 		task.status = answer.status === 'done' ? 'running' : answer.status
+		draft_save( task, base, text )
 		state_save()
 
 		const minutes = Math.max( 1, Math.round( ( Date.now() - began ) / 60000 ) )
 
 		if( answer.status === 'question' ) return say( `Уточни, ответом на это сообщение:\n${ answer.report }`, id, id )
+		if( answer.status === 'answer' ) return say( answer.report, id, id )
 		if( answer.status !== 'done' ) return say( `Не вышло, ${ minutes } мин.\n${ answer.report }`, id, id )
 
 		const files = changes( base )
@@ -586,21 +808,37 @@ async function solve( id, text, pictures ) {
 
 		if( checked.ok ) {
 
-			const branch = 'bot/' + task.number
-			task.commit = commit( base, branch, text )
-			task.status = 'ready'
-			state_save()
-
-			return say( [
-				`Готово, ${ minutes } мин. Аудит чистый, тестов прошло ${ checked.count }.`,
+			const done = [
+				`Аудит чистый, тестов прошло ${ checked.count }, ${ minutes } мин.`,
 				answer.report,
 				`Файлы: ${ files.map( one => one.file ).join( ', ' ) }`,
-				`Коммит ${ task.commit.slice( 0, 7 ) } в локальной ветке ${ branch }. Пуш пока выключен, на проде этого нет, задача остаётся открытой.`,
-			].join( '\n' ), id, id )
+			].join( '\n' )
+
+			if( !config.push ) {
+				task.status = 'ready'
+				return say( `Сделано, но не выложено: пуш выключен, коммит лежит на маке в bot/${ task.number }.\n${ done }`, id, id )
+			}
+
+			const sent = await publish( base, task.draft, title_of( text ), base )
+
+			if( !sent.commit ) {
+				task.status = 'failed'
+				task.trouble = sent.detail
+				return say( `Сделано, но не выложено: ${ sent.error }. Ответь на это сообщение, и попробую снова.\n${ done }`, id, id )
+			}
+
+			task.pushed = [ ... task.pushed ?? [], sent.commit ]
+			task.draft = null
+			task.status = 'deploying'
+			state_save()
+
+			await say( `Запушил ${ sent.commit.slice( 0, 7 ) }, версия ${ version_of( sent.commit ) }. Жду сборку на GitHub, на сайте ещё нет.\n${ done }`, id, id )
+			return deploy_report( id )
 		}
 
 		if( turn >= config.fixes ) {
 			task.status = 'failed'
+			task.trouble = checked.detail
 			return say( `Не вышло, ${ minutes } мин: не проходит ${ checked.what } после ${ turn + 1 } попыток.\n${ answer.report }`, id, id )
 		}
 
@@ -615,7 +853,25 @@ function quota() {
 	return true
 }
 
+/** Если первый заход не дошёл до Клода, ответ «попробуй снова» сам по себе ничего не значит: исходная задача идёт вместе с ним. */
+async function task_text( message, id ) {
+	if( message.id === id || state.tasks[ id ].session ) return message.text
+	const first = ( await messages() ).find( one => one.id === id && one.trusted )
+	return [ first?.text, message.text ].filter( Boolean ).join( '\n\n' )
+}
+
 async function take( message, id ) {
+
+	if( state.tasks[ id ] && /^\s*откати/i.test( message.text ) && message.id !== id ) {
+		state.seen.push( message.id )
+		state.replies[ message.id ] = id
+		state_save()
+		await rollback( message, id ).catch( async error => {
+			log( error )
+			await say( 'Откатить не вышло: сломался бот, подробности в его логе', id, id )
+		} )
+		return state_save()
+	}
 
 	if( !quota() ) {
 		if( state.full === new Date().toDateString() ) return
@@ -626,6 +882,7 @@ async function take( message, id ) {
 	state.seen.push( message.id )
 	state.tasks[ id ] ??= { number: Object.keys( state.tasks ).length + 1 }
 	state.tasks[ id ].status = 'running'
+	if( message.id !== id ) state.replies[ message.id ] = id
 	state_save()
 
 	try {
@@ -636,11 +893,11 @@ async function take( message, id ) {
 			await say( `Прочитал: «${ message.text }», фото: ${ pictures.map( one => one.data.length + ' Б' ).join( ', ' ) || 'нет' }`, message.id, id )
 			return task_close( id )
 		}
-		await solve( id, message.text, pictures )
+		await solve( id, await task_text( message, id ), pictures )
 	} catch( error ) {
 		log( error )
 		state.tasks[ id ].status = 'failed'
-		await say( 'Не вышло: сломался бот, подробности в его логе', id, id ).catch( log )
+		await say( error.message === 'GitHub недоступен' ? 'Не вышло: GitHub недоступен. Ответь на это сообщение, и попробую снова.' : 'Не вышло: сломался бот, подробности в его логе. Ответь на это сообщение, и попробую снова.', id, id ).catch( log )
 	}
 
 	state_save()
@@ -652,7 +909,7 @@ function next( list ) {
 
 		if( !message.trusted || message.moment < state.since || state.seen.includes( message.id ) ) continue
 
-		const id = state.replies[ message.reply ]
+		const id = state.replies[ message.reply ] ?? message.reply
 		if( id && state.tasks[ id ] ) return { message, id }
 
 		if( message.task && !message.done ) return { message, id: message.id }
@@ -703,6 +960,12 @@ async function main() {
 				named = true
 				log( 'чат прочитан, жду задач' )
 				for( const [ id, task ] of Object.entries( state.tasks ) ) {
+					if( task.status === 'deploying' ) {
+						await deploy_report( id ).catch( error => log( error ) )
+						if( task.undoing ) undo_end( task )
+						state_save()
+						continue
+					}
 					if( task.status !== 'running' ) continue
 					task.status = 'failed'
 					await say( 'Бот перезапускался и бросил эту задачу. Ответь на это сообщение, чтобы продолжить.', id, id )
@@ -722,4 +985,4 @@ process.on( 'unhandledRejection', error => log( 'отказ:', error?.message ) 
 
 if( require.main === module ) main().catch( error => { console.error( error ); process.exit( 1 ) } )
 
-module.exports = { scrub, leaky, check, work_make, changes, commit, claude, solve, repo_open, git, boxed, tree_make, state, config, at }
+module.exports = { scrub, leaky, check, work_make, changes, draft_save, draft_load, tree_merge, tree_bump, undo, publish, deploy_wait, run_log, git_net, claude, solve, repo_open, git, boxed, tree_make, state, config, at }
