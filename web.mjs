@@ -60459,7 +60459,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.235';
+    $.$bog_gram_version = '1.0.236';
 })($ || ($ = {}));
 
 ;
@@ -63753,7 +63753,7 @@ var $;
 (function ($) {
     class $bog_gram_message extends $giper_baza_dict.with({
         Text: $giper_baza_atom_text,
-        Html: $giper_baza_atom_text,
+        Entities: $giper_baza_atom_text,
         Author: $giper_baza_atom_text,
         Moment: $giper_baza_atom_real,
         Edited: $giper_baza_atom_real,
@@ -63805,6 +63805,851 @@ var $;
     }) {
     }
     $.$bog_gram_session = $bog_gram_session;
+})($ || ($ = {}));
+
+;
+	($.$bog_rich_date) = class $bog_rich_date extends ($.$mol_pick) {
+		full(){
+			return "";
+		}
+		label(){
+			return "";
+		}
+		Full(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.full())]);
+			return obj;
+		}
+		Copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_rich_date_Copy_hint")));
+			(obj.text) = () => ((this.full()));
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_date_Copy_title")));
+			return obj;
+		}
+		ics(){
+			const obj = new this.$.$mol_blob();
+			return obj;
+		}
+		Calendar(){
+			const obj = new this.$.$mol_button_download();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_rich_date_Calendar_hint")));
+			(obj.file_name) = () => ("event.ics");
+			(obj.blob) = () => ((this.ics()));
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_date_Calendar_title")));
+			return obj;
+		}
+		Tools(){
+			const obj = new this.$.$mol_row();
+			(obj.sub) = () => ([(this.Copy()), (this.Calendar())]);
+			return obj;
+		}
+		text(){
+			return "";
+		}
+		timestamp(){
+			return 0;
+		}
+		format(){
+			return "datetime";
+		}
+		hint(){
+			return (this.full());
+		}
+		trigger_content(){
+			return [(this.label())];
+		}
+		bubble_content(){
+			return [(this.Full()), (this.Tools())];
+		}
+	};
+	($mol_mem(($.$bog_rich_date.prototype), "Full"));
+	($mol_mem(($.$bog_rich_date.prototype), "Copy"));
+	($mol_mem(($.$bog_rich_date.prototype), "ics"));
+	($mol_mem(($.$bog_rich_date.prototype), "Calendar"));
+	($mol_mem(($.$bog_rich_date.prototype), "Tools"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_rich_date extends $.$bog_rich_date {
+            now() {
+                const tick = $bog_rich_zone_tick(this.timestamp() - Date.now() / 1000);
+                return Math.floor(this.$.$mol_state_time.now(tick) / 1000);
+            }
+            lang() {
+                return this.$.$mol_locale.lang();
+            }
+            label() {
+                const format = this.format();
+                if (format === 'text')
+                    return this.text();
+                return $bog_rich_zone_text(this.timestamp(), format, this.lang(), format === 'relative' ? this.now() : 0);
+            }
+            full() {
+                return $bog_rich_zone_full(this.timestamp(), this.lang());
+            }
+            ics() {
+                const text = $bog_rich_zone_ics(this.timestamp(), this.text(), Math.floor(Date.now() / 1000));
+                return new this.$.$mol_blob([text], { type: 'text/calendar' });
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_rich_date.prototype, "label", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_date.prototype, "full", null);
+        $$.$bog_rich_date = $bog_rich_date;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/date/date.view.css", "[bog_rich_date][mol_view] {\n\tdisplay: inline;\n}\n\n[bog_rich_date_trigger][mol_view] {\n\tdisplay: inline;\n\tpadding: 0;\n\tmin-width: 0;\n\tmin-height: 0;\n\tcolor: var(--mol_theme_focus);\n\tborder-bottom: 1px dashed currentColor;\n\tborder-radius: 0;\n\twhite-space: inherit;\n\ttext-align: inherit;\n}\n\n[bog_rich_date_full][mol_view] {\n\tpadding: var(--mol_gap_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Часы на стене в поясе для момента в секундах. */
+    function $bog_rich_zone_parts(timestamp, zone) {
+        const format = new Intl.DateTimeFormat('en-US', {
+            timeZone: zone, hourCycle: 'h23', calendar: 'gregory', numberingSystem: 'latn',
+            year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric',
+        });
+        const res = {};
+        for (const part of format.formatToParts(timestamp * 1000))
+            res[part.type] = Number(part.value);
+        return { year: res.year, month: res.month, day: res.day, hour: res.hour % 24, minute: res.minute, second: res.second };
+    }
+    $.$bog_rich_zone_parts = $bog_rich_zone_parts;
+    function utc(parts) {
+        return Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second) / 1000;
+    }
+    /** Моменты, которым в поясе соответствуют эти часы: ни одного, один или два. */
+    function $bog_rich_zone_moments(parts, zone) {
+        const guess = utc(parts);
+        if (Number.isNaN(guess))
+            return [];
+        const found = [guess - 86400, guess, guess + 86400]
+            .map(moment => guess - (utc($bog_rich_zone_parts(moment, zone)) - moment))
+            .filter(moment => utc($bog_rich_zone_parts(moment, zone)) === guess);
+        return [...new Set(found)].sort((a, b) => a - b);
+    }
+    $.$bog_rich_zone_moments = $bog_rich_zone_moments;
+    function $bog_rich_zone_own() {
+        return new Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    }
+    $.$bog_rich_zone_own = $bog_rich_zone_own;
+    function $bog_rich_zone_list() {
+        const all = Intl.supportedValuesOf?.('timeZone');
+        return [...new Set([$bog_rich_zone_own(), 'UTC', ...all ?? []])];
+    }
+    $.$bog_rich_zone_list = $bog_rich_zone_list;
+    const shapes = {
+        date_short: { day: 'numeric', month: 'long' },
+        date_full: { day: 'numeric', month: 'long', year: 'numeric' },
+        time_short: { hour: 'numeric', minute: '2-digit' },
+        time_full: { hour: 'numeric', minute: '2-digit', second: '2-digit' },
+        weekday: { weekday: 'long' },
+        datetime: { day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' },
+        moment: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' },
+    };
+    function shape(timestamp, kind, lang, zone) {
+        return new Intl.DateTimeFormat(lang, { ...shapes[kind], timeZone: zone }).format(timestamp * 1000);
+    }
+    const units = [['year', 31536000], ['month', 2592000], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]];
+    /** Текст даты в выбранном формате, без пояса считается по поясу зрителя. */
+    function $bog_rich_zone_text(timestamp, format, lang, now, zone) {
+        if (format !== 'relative') {
+            const text = shape(timestamp, format === 'text' ? 'datetime' : format, lang, zone);
+            return format === 'weekday' ? text.slice(0, 1).toLocaleUpperCase(lang) + text.slice(1) : text;
+        }
+        const diff = timestamp - now;
+        const [unit, size] = units.find(([, size]) => Math.abs(diff) >= size) ?? units[5];
+        return new Intl.RelativeTimeFormat(lang, { numeric: 'always' }).format(Math.trunc(diff / size), unit);
+    }
+    $.$bog_rich_zone_text = $bog_rich_zone_text;
+    /** Полный момент со днём недели и поясом. */
+    function $bog_rich_zone_full(timestamp, lang, zone) {
+        return shape(timestamp, 'moment', lang, zone);
+    }
+    $.$bog_rich_zone_full = $bog_rich_zone_full;
+    /** Как часто относительной дате нужно обновляться, миллисекунды. */
+    function $bog_rich_zone_tick(diff) {
+        const size = Math.abs(diff);
+        return size < 120 ? 1000 : size < 7200 ? 30000 : 600000;
+    }
+    $.$bog_rich_zone_tick = $bog_rich_zone_tick;
+    /** Событие календаря с временем в UTC. */
+    function $bog_rich_zone_ics(timestamp, title, now) {
+        const stamp = (moment) => new Date(moment * 1000).toISOString().replace(/[-:]|\.\d+/g, '');
+        const safe = title.replace(/[\\;,]/g, '\\$&').replace(/\r?\n/g, '\\n');
+        return [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//bog//rich//EN',
+            'BEGIN:VEVENT',
+            `UID:${timestamp}-${now}@rich`,
+            `DTSTAMP:${stamp(now)}`,
+            `DTSTART:${stamp(timestamp)}`,
+            `SUMMARY:${safe}`,
+            'END:VEVENT',
+            'END:VCALENDAR',
+            '',
+        ].join('\r\n');
+    }
+    $.$bog_rich_zone_ics = $bog_rich_zone_ics;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$bog_rich_empty = { text: '', entities: [] };
+    $.$bog_rich_styles = ['bold', 'italic', 'underline', 'strikethrough'];
+    $.$bog_rich_toggles = [...$.$bog_rich_styles, 'spoiler', 'code'];
+    $.$bog_rich_date_formats = [
+        'datetime', 'date_short', 'date_full', 'time_short', 'time_full', 'weekday', 'relative', 'text',
+    ];
+    const order = [
+        'pre', 'blockquote', 'spoiler', 'text_link', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'date_time',
+    ];
+    function end(entity) {
+        return entity.offset + entity.length;
+    }
+    function place(mark, from, to) {
+        return { ...mark, offset: from, length: to - from };
+    }
+    function subtract(range, holes) {
+        let parts = [range];
+        for (const [from, to] of holes) {
+            parts = parts.flatMap(([head, tail]) => to <= head || from >= tail ? [[head, tail]] : [
+                [head, Math.max(head, from)],
+                [Math.min(tail, to), tail],
+            ]);
+        }
+        return parts.filter(([head, tail]) => head < tail);
+    }
+    function merge(ranges, touch) {
+        const res = [];
+        for (const [from, to] of [...ranges].sort((a, b) => a[0] - b[0] || a[1] - b[1])) {
+            const last = res.at(-1);
+            if (last && (touch ? from <= last[1] : from < last[1]))
+                last[1] = Math.max(last[1], to);
+            else
+                res.push([from, to]);
+        }
+        return res;
+    }
+    function split_lines(text, [from, to]) {
+        const res = [];
+        let head = from;
+        for (let pos = from; pos <= to; ++pos) {
+            if (pos < to && text[pos] !== '\n')
+                continue;
+            if (pos > head)
+                res.push([head, pos]);
+            head = pos + 1;
+        }
+        return res;
+    }
+    function snap(text, pos, dir) {
+        const prev = text.charCodeAt(pos - 1);
+        const next = text.charCodeAt(pos);
+        const torn = prev >= 0xD800 && prev <= 0xDBFF && next >= 0xDC00 && next <= 0xDFFF;
+        return torn ? pos + dir : pos;
+    }
+    function $bog_rich_url(raw) {
+        const uri = raw.trim();
+        if (!uri || /[\p{C}\p{Z}]/u.test(uri))
+            return '';
+        const scheme = /^([a-z][a-z0-9+.-]*):(?!\d+(?:[\/?#]|$))/i.exec(uri)?.[1].toLowerCase();
+        if (scheme === 'mailto')
+            return /^mailto:[^@\s]+@[^@\s]+$/i.test(uri) ? uri : '';
+        if (scheme && scheme !== 'http' && scheme !== 'https')
+            return '';
+        if (scheme && !/^https?:\/\//i.test(uri))
+            return '';
+        if (!scheme && !/^[^\/?#@]+\.[\p{L}\d-]{2,}(?::\d+)?(?:[\/?#]|$)/u.test(uri))
+            return '';
+        try {
+            return new URL(scheme ? uri : 'https://' + uri).href;
+        }
+        catch {
+            return '';
+        }
+    }
+    $.$bog_rich_url = $bog_rich_url;
+    function zone_valid(zone) {
+        try {
+            new Intl.DateTimeFormat('en', { timeZone: zone });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
+    function valid(raw, text) {
+        if (!raw || typeof raw !== 'object')
+            return null;
+        const { type, offset, length } = raw;
+        if (!Number.isSafeInteger(offset) || !Number.isSafeInteger(length))
+            return null;
+        if (offset < 0 || length <= 0 || offset >= text.length)
+            return null;
+        const from = snap(text, offset, 1);
+        const to = snap(text, Math.min(text.length, offset + length), -1);
+        if (from >= to)
+            return null;
+        const base = { offset: from, length: to - from };
+        switch (type) {
+            case 'bold':
+            case 'italic':
+            case 'underline':
+            case 'strikethrough':
+            case 'spoiler':
+            case 'code':
+                return { ...base, type };
+            case 'blockquote':
+                return raw.collapsed === true ? { ...base, type, collapsed: true } : { ...base, type };
+            case 'pre': {
+                const language = typeof raw.language === 'string' ? raw.language.trim() : '';
+                return /^[\w.+#-]{1,32}$/.test(language) ? { ...base, type, language } : { ...base, type };
+            }
+            case 'text_link': {
+                const url = typeof raw.url === 'string' ? $bog_rich_url(raw.url) : '';
+                return url ? { ...base, type, url } : null;
+            }
+            case 'date_time': {
+                if (!Number.isSafeInteger(raw.timestamp) || Math.abs(raw.timestamp) > 8.64e12)
+                    return null;
+                if (!$.$bog_rich_date_formats.includes(raw.format))
+                    return null;
+                const mark = { ...base, type, timestamp: raw.timestamp, format: raw.format };
+                return typeof raw.timezone === 'string' && zone_valid(raw.timezone) ? { ...mark, timezone: raw.timezone } : mark;
+            }
+        }
+        return null;
+    }
+    /** Границы абзаца, в котором стоит позиция. */
+    function $bog_rich_line(text, pos) {
+        const next = text.indexOf('\n', pos);
+        return [pos > 0 ? text.lastIndexOf('\n', pos - 1) + 1 : 0, next < 0 ? text.length : next];
+    }
+    $.$bog_rich_line = $bog_rich_line;
+    /** Абзацы, которых касается диапазон. */
+    function $bog_rich_lines(text, from, to) {
+        const res = [];
+        let pos = from;
+        while (true) {
+            const line = $bog_rich_line(text, pos);
+            if (res.length && line[0] === to && line[1] > to)
+                break;
+            res.push(line);
+            if (line[1] >= to)
+                break;
+            pos = line[1] + 1;
+        }
+        return res;
+    }
+    $.$bog_rich_lines = $bog_rich_lines;
+    function expand(text, from, to) {
+        const lines = $bog_rich_lines(text, from, to);
+        return [lines[0][0], lines.at(-1)[1]];
+    }
+    function overlaps(entity, from, to) {
+        return entity.offset < to && end(entity) > from;
+    }
+    /** Приводит содержимое к единственному правильному виду, отбрасывая негодные сущности. */
+    function $bog_rich_normalize(raw) {
+        const text = typeof raw?.text === 'string' ? raw.text.replace(/\r\n?/g, '\n') : '';
+        const list = (Array.isArray(raw?.entities) ? raw.entities : [])
+            .map(entity => valid(entity, text))
+            .filter($mol_guard_defined)
+            .sort((a, b) => a.offset - b.offset);
+        if (!list.length)
+            return { text, entities: [] };
+        const of = (type) => list.filter(entity => entity.type === type);
+        const res = [];
+        const solid = [];
+        const pres = [];
+        for (const mark of of('pre')) {
+            const [from, to] = expand(text, mark.offset, end(mark));
+            if (from >= to || pres.some(pre => overlaps(pre, from, to)))
+                continue;
+            pres.push(place(mark, from, to));
+            solid.push([from, to]);
+        }
+        res.push(...pres);
+        for (const mark of of('date_time')) {
+            const from = mark.offset;
+            const to = end(mark);
+            if (solid.some(hole => hole[0] < to && hole[1] > from))
+                continue;
+            if (text.slice(from, to).includes('\n'))
+                continue;
+            res.push(mark);
+            solid.push([from, to]);
+        }
+        const quotes = [];
+        for (const mark of of('blockquote')) {
+            const [from, to] = expand(text, mark.offset, end(mark));
+            if (from >= to || quotes.some(quote => overlaps(quote, from, to)))
+                continue;
+            if (solid.some(hole => hole[0] < to && hole[1] > from))
+                continue;
+            quotes.push(place(mark, from, to));
+        }
+        res.push(...quotes);
+        const code = merge(of('code').flatMap(mark => subtract([mark.offset, end(mark)], solid)).flatMap(range => split_lines(text, range)), true);
+        for (const range of code)
+            res.push(place({ type: 'code' }, ...range));
+        const holes = [...solid, ...code];
+        for (const range of merge(of('spoiler').flatMap(mark => subtract([mark.offset, end(mark)], holes)), false)) {
+            res.push(place({ type: 'spoiler' }, ...range));
+        }
+        const taken = [];
+        for (const mark of of('text_link')) {
+            if (mark.type !== 'text_link')
+                continue;
+            const parts = subtract([mark.offset, end(mark)], [...holes, ...taken]).flatMap(range => split_lines(text, range));
+            for (const range of parts) {
+                res.push(place({ type: 'text_link', url: mark.url }, ...range));
+                taken.push(range);
+            }
+        }
+        for (const type of $.$bog_rich_styles) {
+            for (const range of merge(of(type).flatMap(mark => subtract([mark.offset, end(mark)], holes)), true)) {
+                res.push(place({ type }, ...range));
+            }
+        }
+        res.sort((a, b) => a.offset - b.offset || b.length - a.length || order.indexOf(a.type) - order.indexOf(b.type));
+        const entities = res.map(({ type, offset, length, ...rest }) => ({ type, offset, length, ...rest }));
+        return { text, entities };
+    }
+    $.$bog_rich_normalize = $bog_rich_normalize;
+    function $bog_rich_equal(left, right) {
+        return left.text === right.text && $mol_compare_deep(left.entities, right.entities);
+    }
+    $.$bog_rich_equal = $bog_rich_equal;
+    function block_is(mark) {
+        return mark.type === 'pre' || mark.type === 'blockquote';
+    }
+    /** Заменяет кусок текста, сдвигая сущности. Вставке достаются `marks`. */
+    function $bog_rich_replace(content, from, to, insert, marks = []) {
+        const text = content.text.slice(0, from) + insert + content.text.slice(to);
+        const grow = insert.length - (to - from);
+        const edge = from + insert.length;
+        const line_head = from === 0 || content.text[from - 1] === '\n';
+        const res = [];
+        for (const mark of content.entities) {
+            const head = mark.offset;
+            const tail = end(mark);
+            if (mark.type === 'date_time' && head < to && tail > from)
+                continue;
+            if (block_is(mark)) {
+                const until = tail < from ? tail : tail >= to ? tail + grow : edge;
+                let since = head <= from ? head : head > to ? head + grow : -1;
+                if (since < 0 && head === to && line_head && !insert)
+                    since = from;
+                if (since < 0)
+                    since = $bog_rich_line(text, edge)[1] + 1;
+                if (since < until)
+                    res.push(place(mark, since, until));
+                continue;
+            }
+            const since = head < from ? head : head >= to ? head + grow : edge;
+            const until = tail <= from ? tail : tail >= to ? tail + grow : from;
+            if (since < until)
+                res.push(place(mark, since, until));
+        }
+        if (insert)
+            for (const mark of marks)
+                res.push(place(mark, from, edge));
+        return $bog_rich_normalize({ text, entities: res });
+    }
+    $.$bog_rich_replace = $bog_rich_replace;
+    /** Вырезает кусок содержимого, смещая сущности к началу. */
+    function $bog_rich_slice(content, from, to) {
+        const entities = content.entities.flatMap(mark => {
+            const head = Math.max(mark.offset, from);
+            const tail = Math.min(end(mark), to);
+            if (head >= tail)
+                return [];
+            if (mark.type === 'date_time' && tail - head < mark.length)
+                return [];
+            return [place(mark, head - from, tail - from)];
+        });
+        return $bog_rich_normalize({ text: content.text.slice(from, to), entities });
+    }
+    $.$bog_rich_slice = $bog_rich_slice;
+    /** Вставляет содержимое вместе с его стилями. */
+    function $bog_rich_insert(content, from, to, part) {
+        const base = $bog_rich_replace(content, from, to, part.text);
+        const until = from + part.text.length;
+        const styles = base.entities.flatMap(mark => {
+            if (block_is(mark) || mark.offset >= from || end(mark) <= until)
+                return [mark];
+            return [place(mark, mark.offset, from), place(mark, until, end(mark))];
+        });
+        const inner = part.entities.map(mark => place(mark, mark.offset + from, end(mark) + from));
+        const boxed = base.entities.filter(mark => block_is(mark) && mark.offset <= from && end(mark) >= until);
+        const fit = inner.filter(mark => {
+            if (boxed.length)
+                return !block_is(mark);
+            if (mark.type !== 'blockquote' && mark.type !== 'pre')
+                return true;
+            const [head] = $bog_rich_line(base.text, mark.offset);
+            const [, tail] = $bog_rich_line(base.text, end(mark));
+            return head >= from && tail <= until;
+        });
+        return $bog_rich_normalize({ text: base.text, entities: [...styles, ...fit] });
+    }
+    $.$bog_rich_insert = $bog_rich_insert;
+    /** Срезает пробелы по краям, сохраняя стили на местах. */
+    function $bog_rich_trim(content) {
+        const from = content.text.length - content.text.trimStart().length;
+        const to = content.text.trimEnd().length;
+        return from < to ? $bog_rich_slice(content, from, to) : $.$bog_rich_empty;
+    }
+    $.$bog_rich_trim = $bog_rich_trim;
+    /** Текст для превью и уведомлений: скрытое заменено подписью. */
+    function $bog_rich_preview(content, mask = '▒▒▒▒') {
+        let text = content.text;
+        for (const mark of [...content.entities].reverse()) {
+            if (mark.type === 'spoiler')
+                text = text.slice(0, mark.offset) + mask + text.slice(end(mark));
+        }
+        return text;
+    }
+    $.$bog_rich_preview = $bog_rich_preview;
+    function $bog_rich_at(content, type, from, to = from) {
+        return content.entities.find(mark => mark.type === type && (block_is(mark)
+            ? mark.offset <= from && end(mark) >= to
+            : mark.offset <= from && end(mark) >= to && (from < to || mark.offset < from && end(mark) > from))) ?? null;
+    }
+    $.$bog_rich_at = $bog_rich_at;
+    function ranges_of(content, ...types) {
+        return content.entities.filter(mark => types.includes(mark.type)).map(mark => [mark.offset, end(mark)]);
+    }
+    function quotable(content, from, to) {
+        const solid = ranges_of(content, 'pre', 'date_time');
+        return $bog_rich_lines(content.text, from, to)
+            .filter(([head, tail]) => !solid.some(hole => hole[0] < tail && hole[1] > head || hole[0] <= head && hole[1] >= tail));
+    }
+    function room(content, type, from, to) {
+        const solid = ranges_of(content, 'pre', 'date_time');
+        const holes = type === 'code' ? solid : [...solid, ...ranges_of(content, 'code')];
+        return subtract([from, to], holes).flatMap(range => split_lines(content.text, range));
+    }
+    /** Состояние команды на диапазоне. */
+    function $bog_rich_state_of(content, type, from, to) {
+        const { text, entities } = content;
+        if (type === 'date_time') {
+            if (entities.some(mark => mark.type === 'date_time' && mark.offset <= from && end(mark) >= to && from < to))
+                return 'on';
+            if (text.slice(from, to).includes('\n'))
+                return 'disabled';
+            if (['pre', 'blockquote'].some(type => $bog_rich_at(content, type, from, to)))
+                return 'disabled';
+            if (ranges_of(content, 'code').some(hole => from < to ? hole[0] < to && hole[1] > from : hole[0] < from && hole[1] > from))
+                return 'disabled';
+            return 'off';
+        }
+        if (type === 'pre' || type === 'blockquote') {
+            const lines = type === 'pre' ? $bog_rich_lines(text, from, to) : quotable(content, from, to);
+            if (!lines.length)
+                return 'disabled';
+            const boxes = ranges_of(content, type);
+            const inside = lines.filter(([head, tail]) => boxes.some(box => box[0] <= head && box[1] >= tail));
+            return inside.length === 0 ? 'off' : inside.length === lines.length ? 'on' : 'mixed';
+        }
+        if (from === to) {
+            if ($bog_rich_at(content, 'pre', from))
+                return 'disabled';
+            if (type !== 'code' && $bog_rich_at(content, 'code', from))
+                return 'disabled';
+            return $bog_rich_at(content, type, from) ? 'on' : 'off';
+        }
+        if (type === 'code' && text.slice(from, to).includes('\n'))
+            return 'disabled';
+        const parts = room(content, type, from, to);
+        if (!parts.length)
+            return 'disabled';
+        const own = ranges_of(content, type);
+        const bare = parts.flatMap(part => subtract(part, own));
+        const size = (list) => list.reduce((sum, [head, tail]) => sum + tail - head, 0);
+        const rest = size(bare);
+        return rest === 0 ? 'on' : rest === size(parts) ? 'off' : 'mixed';
+    }
+    $.$bog_rich_state_of = $bog_rich_state_of;
+    function cut(entities, from, to, fits) {
+        return entities.flatMap(mark => fits(mark)
+            ? subtract([mark.offset, end(mark)], [[from, to]]).map(range => place(mark, ...range))
+            : [mark]);
+    }
+    function unbox(entities, lines, type) {
+        const from = lines[0][0];
+        const to = lines.at(-1)[1];
+        return entities.flatMap(mark => {
+            if (mark.type !== type || mark.offset > to || end(mark) < from)
+                return [mark];
+            const parts = [[mark.offset, from - 1], [to + 1, end(mark)]];
+            return parts.filter(([head, tail]) => head < tail).map(range => place(mark, ...range));
+        });
+    }
+    /** Снимает стиль с диапазона. */
+    function $bog_rich_remove(content, type, from, to) {
+        const entities = type === 'pre' || type === 'blockquote'
+            ? unbox(content.entities, $bog_rich_lines(content.text, from, to), type)
+            : type === 'date_time'
+                ? content.entities.filter(mark => mark.type !== type || !overlaps(mark, from, to))
+                : cut(content.entities, from, to, mark => mark.type === type);
+        return $bog_rich_normalize({ text: content.text, entities });
+    }
+    $.$bog_rich_remove = $bog_rich_remove;
+    /** Применяет стиль ко всей допустимой части диапазона. */
+    function $bog_rich_apply(content, mark, from, to) {
+        const { text } = content;
+        const done = (entities) => $bog_rich_normalize({ text, entities });
+        if ($bog_rich_state_of(content, mark.type, from, to) === 'disabled')
+            return content;
+        if (mark.type === 'pre') {
+            const [head, tail] = expand(text, from, to);
+            if (head === tail)
+                return content;
+            const clean = content.entities.filter(item => item.type !== 'date_time' || !overlaps(item, head, tail));
+            const free = unbox(unbox(clean, $bog_rich_lines(text, from, to), 'blockquote'), $bog_rich_lines(text, from, to), 'pre');
+            return done([...cut(free, head, tail, item => !block_is(item)), place(mark, head, tail)]);
+        }
+        if (mark.type === 'blockquote') {
+            const groups = [];
+            for (const [head, tail] of quotable(content, from, to)) {
+                const last = groups.at(-1);
+                if (last && last[1] + 1 === head)
+                    last[1] = tail;
+                else
+                    groups.push([head, tail]);
+            }
+            let entities = content.entities;
+            for (const group of groups) {
+                for (const item of entities) {
+                    if (item.type !== 'blockquote' || item.offset > group[1] || end(item) < group[0])
+                        continue;
+                    group[0] = Math.min(group[0], item.offset);
+                    group[1] = Math.max(group[1], end(item));
+                }
+                if (group[0] === group[1])
+                    continue;
+                entities = [...unbox(entities, [group], 'blockquote'), place(mark, ...group)];
+            }
+            return done(entities);
+        }
+        if (from === to)
+            return content;
+        if (mark.type === 'date_time') {
+            const free = content.entities.filter(item => item.type !== 'date_time' || !overlaps(item, from, to));
+            return done([...cut(free, from, to, item => !block_is(item)), place(mark, from, to)]);
+        }
+        const parts = room(content, mark.type, from, to);
+        let entities = content.entities;
+        for (const part of parts) {
+            if (mark.type === 'code')
+                entities = cut(entities, ...part, item => !block_is(item) && item.type !== 'date_time');
+            if (mark.type === 'text_link')
+                entities = cut(entities, ...part, item => item.type === 'text_link');
+        }
+        const spans = mark.type === 'spoiler' && parts.length > 1 && !ranges_of(content, 'pre', 'date_time', 'code').some(hole => hole[0] < to && hole[1] > from)
+            ? [[parts[0][0], parts.at(-1)[1]]]
+            : parts;
+        return done([...entities, ...spans.map(part => place(mark, ...part))]);
+    }
+    $.$bog_rich_apply = $bog_rich_apply;
+    /** Переключает стиль: сплошной снимает, остальное применяет. */
+    function $bog_rich_toggle(content, mark, from, to) {
+        return $bog_rich_state_of(content, mark.type, from, to) === 'on'
+            ? $bog_rich_remove(content, mark.type, from, to)
+            : $bog_rich_apply(content, mark, from, to);
+    }
+    $.$bog_rich_toggle = $bog_rich_toggle;
+    function $bog_rich_clear_able(content, from, to) {
+        return from < to && !$bog_rich_equal(content, $bog_rich_clear(content, from, to));
+    }
+    $.$bog_rich_clear_able = $bog_rich_clear_able;
+    /** Снимает всё оформление с диапазона. */
+    function $bog_rich_clear(content, from, to) {
+        if (from === to)
+            return content;
+        const lines = $bog_rich_lines(content.text, from, to);
+        const boxed = unbox(unbox(content.entities, lines, 'blockquote'), lines, 'pre');
+        const dated = boxed.filter(mark => mark.type !== 'date_time' || !overlaps(mark, from, to));
+        return $bog_rich_normalize({ text: content.text, entities: cut(dated, from, to, mark => !block_is(mark)) });
+    }
+    $.$bog_rich_clear = $bog_rich_clear;
+    /** Стили, которые достанутся набранному здесь тексту. */
+    function $bog_rich_typing(content, from, to) {
+        const bare = (mark) => {
+            const { offset, length, ...rest } = mark;
+            return rest;
+        };
+        return content.entities.filter(mark => {
+            if (block_is(mark) || mark.type === 'date_time')
+                return false;
+            if (from < to)
+                return mark.offset <= from && end(mark) > from;
+            if (mark.offset >= from)
+                return false;
+            return $.$bog_rich_styles.includes(mark.type) ? end(mark) >= from : end(mark) > from;
+        }).map(bare);
+    }
+    $.$bog_rich_typing = $bog_rich_typing;
+    /** Раздвигает диапазон так, чтобы дата не рвалась. */
+    function $bog_rich_whole(content, from, to) {
+        for (const mark of content.entities) {
+            if (mark.type !== 'date_time')
+                continue;
+            if (from < to ? !overlaps(mark, from, to) : !(mark.offset < from && end(mark) > from))
+                continue;
+            from = Math.min(from, mark.offset);
+            to = Math.max(to, end(mark));
+        }
+        return [from, to];
+    }
+    $.$bog_rich_whole = $bog_rich_whole;
+    /** Граница графемы слева или справа от позиции. */
+    function $bog_rich_grapheme(text, pos, dir) {
+        const [head, tail] = $bog_rich_line(text, pos);
+        if (dir < 0 && pos === head)
+            return Math.max(0, pos - 1);
+        if (dir > 0 && pos === tail)
+            return Math.min(text.length, pos + 1);
+        const line = text.slice(head, tail);
+        const sizes = Intl.Segmenter
+            ? [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line)].map(part => part.segment.length)
+            : [...line].map(char => char.length);
+        let at = head;
+        for (const size of sizes) {
+            if (dir < 0 ? at + size >= pos : at + size > pos)
+                return dir < 0 ? at : at + size;
+            at += size;
+        }
+        return pos;
+    }
+    $.$bog_rich_grapheme = $bog_rich_grapheme;
+    /** Обрезает текст по лимиту, не разрывая графему. */
+    function $bog_rich_fit(text, limit) {
+        if (text.length <= limit)
+            return text;
+        if (limit <= 0)
+            return '';
+        const prev = $bog_rich_grapheme(text, limit, -1);
+        return text.slice(0, $bog_rich_grapheme(text, prev, 1) <= limit ? limit : prev);
+    }
+    $.$bog_rich_fit = $bog_rich_fit;
+    /** Блоки содержимого по порядку. Абзацы вне цитат и кода слиты в один блок. */
+    function $bog_rich_blocks(content) {
+        const { text } = content;
+        const res = [];
+        let pos = 0;
+        for (const mark of content.entities) {
+            if (mark.type !== 'pre' && mark.type !== 'blockquote')
+                continue;
+            if (mark.offset > pos)
+                res.push({ type: 'text', from: pos, to: mark.offset - 1, mark: null });
+            res.push({ type: mark.type, from: mark.offset, to: end(mark), mark });
+            pos = end(mark) + 1;
+        }
+        if (pos <= text.length)
+            res.push({ type: 'text', from: pos, to: text.length, mark: null });
+        return res;
+    }
+    $.$bog_rich_blocks = $bog_rich_blocks;
+    /** Дерево вложенных стилей внутри куска текста. */
+    function $bog_rich_tree(content, from, to, level = 2) {
+        if (from >= to)
+            return [];
+        if (level >= order.length)
+            return [content.text.slice(from, to)];
+        const res = [];
+        let pos = from;
+        const plain = (until) => {
+            for (const node of $bog_rich_tree(content, pos, until, level + 1)) {
+                if (typeof node === 'string' && typeof res.at(-1) === 'string')
+                    res.push(res.pop() + node);
+                else
+                    res.push(node);
+            }
+        };
+        for (const [index, mark] of content.entities.entries()) {
+            if (mark.type !== order[level] || !overlaps(mark, from, to))
+                continue;
+            const head = Math.max(mark.offset, from);
+            const tail = Math.min(end(mark), to);
+            plain(head);
+            res.push({ key: `${mark.type}_${head}_${tail}`, from: head, to: tail, mark, index, kids: $bog_rich_tree(content, head, tail, level + 1) });
+            pos = tail;
+        }
+        plain(to);
+        return res;
+    }
+    $.$bog_rich_tree = $bog_rich_tree;
+    /** Минимальная правка, превращающая старый текст в новый, с подсказкой о каретке. */
+    function $bog_rich_diff(prev, next, caret) {
+        const limit = Math.min(prev.length, next.length);
+        let tail = 0;
+        const tail_max = Math.min(limit, Math.max(0, next.length - caret));
+        while (tail < tail_max && prev[prev.length - 1 - tail] === next[next.length - 1 - tail])
+            ++tail;
+        let head = 0;
+        while (head < limit - tail && prev[head] === next[head])
+            ++head;
+        while (tail < limit - head && prev[prev.length - 1 - tail] === next[next.length - 1 - tail])
+            ++tail;
+        const from = Math.min(snap(prev, head, -1), snap(next, head, -1));
+        const tail_safe = Math.min(prev.length - snap(prev, prev.length - tail, 1), next.length - snap(next, next.length - tail, 1));
+        return { from, to: prev.length - tail_safe, insert: next.slice(from, next.length - tail_safe) };
+    }
+    $.$bog_rich_diff = $bog_rich_diff;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Содержимое сообщения. Стили от другой ревизии текста не применяются. */
+    function $bog_gram_markup_read(message) {
+        const text = String(message?.Text()?.val() ?? '');
+        const code = text && String(message?.Entities()?.val() ?? '');
+        if (!code)
+            return { text, entities: [] };
+        const data = $mol_try(() => JSON.parse(code));
+        if (data instanceof Error || data?.hash !== $mol_hash_string(text))
+            return { text, entities: [] };
+        return $bog_rich_normalize({ text, entities: data.entities });
+    }
+    $.$bog_gram_markup_read = $bog_gram_markup_read;
+    /** Пишет текст и стили одной ревизией, связывая их хешем текста. */
+    function $bog_gram_markup_write(message, content) {
+        const { text, entities } = $bog_rich_normalize(content);
+        const code = entities.length ? JSON.stringify({ hash: $mol_hash_string(text), entities }) : '';
+        message.Text('auto')?.val(text);
+        if (code || message.Entities()?.val())
+            message.Entities('auto')?.val(code);
+    }
+    $.$bog_gram_markup_write = $bog_gram_markup_write;
 })($ || ($ = {}));
 
 ;
@@ -64164,7 +65009,7 @@ var $;
             const last = this.last(id);
             if (!last)
                 return '';
-            const text = String(last.Text()?.val() ?? '');
+            const text = $bog_rich_preview($bog_gram_markup_read(last));
             const words = this.Text();
             const kind = last.Image()?.val() ? words.talk_photo()
                 : last.Voice()?.val() ? words.talk_voice()
@@ -64949,12 +65794,9 @@ var $;
             if (!message)
                 return '';
             message.Forwarded('auto')?.val(true);
-            const text = String(source.Text()?.val() ?? '');
-            if (text)
-                message.Text('auto')?.val(text);
-            const html = String(source.Html()?.val() ?? '');
-            if (html)
-                message.Html('auto')?.val(html);
+            const content = $bog_gram_markup_read(source);
+            if (content.text)
+                $bog_gram_markup_write(message, content);
             if (source.Task()?.val())
                 message.Task('auto')?.val(true);
             if (frames.length) {
@@ -69938,31 +70780,10 @@ var $;
 var $;
 (function ($) {
     const prefix = /^\s*(?:--|—)[^\S\n]+(?=\S)/;
-    function $bog_gram_tasks_is(text) {
-        return prefix.test(text);
+    function $bog_gram_tasks_prefix(text) {
+        return prefix.exec(text)?.[0].length ?? 0;
     }
-    $.$bog_gram_tasks_is = $bog_gram_tasks_is;
-    function $bog_gram_tasks_text(text) {
-        return text.replace(prefix, '');
-    }
-    $.$bog_gram_tasks_text = $bog_gram_tasks_text;
-    function $bog_gram_tasks_html(html) {
-        const body = $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
-        let rest = prefix.exec(body.textContent ?? '')?.[0].length ?? 0;
-        const walk = (node) => {
-            if (node.nodeType === node.TEXT_NODE) {
-                const text = node.nodeValue ?? '';
-                node.nodeValue = text.slice(rest);
-                rest = Math.max(0, rest - text.length);
-                return;
-            }
-            for (const kid of node.childNodes)
-                walk(kid);
-        };
-        walk(body);
-        return body.innerHTML;
-    }
-    $.$bog_gram_tasks_html = $bog_gram_tasks_html;
+    $.$bog_gram_tasks_prefix = $bog_gram_tasks_prefix;
 })($ || ($ = {}));
 
 ;
@@ -70081,74 +70902,11 @@ var $;
 
 
 ;
-	($.$bog_gram_write) = class $bog_gram_write extends ($.$giper_baza_rich_edit) {
-		press(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		before_input(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		tools_hold(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		tools_touch(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		tools_tap(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		tools_leave(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		html(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		rich(){
+	($.$bog_rich_hotkey) = class $bog_rich_hotkey extends ($.$mol_hotkey2) {
+		mac(){
 			return false;
 		}
-		length_max(){
-			return +Infinity;
-		}
-		send(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		attr(){
-			return {...(super.attr()), "bog_gram_write_rich": (this.rich())};
-		}
-		event(){
-			return {
-				...(super.event()), 
-				"keydown": (next) => (this.press(next)), 
-				"beforeinput": (next) => (this.before_input(next)), 
-				"mousedown": (next) => (this.tools_hold(next)), 
-				"touchstart": (next) => (this.tools_touch(next)), 
-				"touchend": (next) => (this.tools_tap(next)), 
-				"focusout": (next) => (this.tools_leave(next))
-			};
-		}
-		Hint(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([(this.hint())]);
-			return obj;
-		}
 	};
-	($mol_mem(($.$bog_gram_write.prototype), "press"));
-	($mol_mem(($.$bog_gram_write.prototype), "before_input"));
-	($mol_mem(($.$bog_gram_write.prototype), "tools_hold"));
-	($mol_mem(($.$bog_gram_write.prototype), "tools_touch"));
-	($mol_mem(($.$bog_gram_write.prototype), "tools_tap"));
-	($mol_mem(($.$bog_gram_write.prototype), "tools_leave"));
-	($mol_mem(($.$bog_gram_write.prototype), "html"));
-	($mol_mem(($.$bog_gram_write.prototype), "send"));
-	($mol_mem(($.$bog_gram_write.prototype), "Hint"));
 
 
 ;
@@ -70161,422 +70919,46 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const blocks = new Set(['P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
-        const plain = new Set(['P', 'DIV', 'BR']);
-        const kept = new Set([...blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP']);
-        const blank = String.fromCharCode(0x200b);
-        function body_of(html) {
-            return $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
-        }
-        function tidy(node) {
-            for (const kid of [...node.children]) {
-                tidy(kid);
-                if (!kept.has(kid.nodeName)) {
-                    kid.replaceWith(...kid.childNodes);
-                    continue;
-                }
-                for (const attr of [...kid.attributes]) {
-                    if (kid.nodeName === 'A' && attr.name === 'href')
-                        continue;
-                    kid.removeAttribute(attr.name);
-                }
-            }
-        }
-        function $bog_gram_write_clean(html) {
-            const body = body_of(html);
-            tidy(body);
-            body.normalize();
-            return body.innerHTML.replaceAll(blank, '');
-        }
-        $$.$bog_gram_write_clean = $bog_gram_write_clean;
-        function leaves(root) {
-            if (root.nodeType === root.TEXT_NODE || root.nodeName === 'BR')
-                return [root];
-            return [...root.childNodes].flatMap(leaves);
-        }
-        function leaf_size(leaf) {
-            return leaf.nodeName === 'BR' ? 1 : leaf.nodeValue.length;
-        }
-        function $bog_gram_write_spot(root, node, offset) {
-            const range = root.ownerDocument.createRange();
-            range.setStart(root, 0);
-            range.setEnd(node, offset);
-            const at = leaves(range.cloneContents()).reduce((sum, leaf) => sum + leaf_size(leaf), 0);
-            if (node.nodeType === node.TEXT_NODE)
-                return { at, tail: offset > 0 };
-            const prev = node.childNodes[offset - 1];
-            const next = node.childNodes[offset];
-            const tail = Boolean(prev) && prev.nodeName !== 'BR' && (!next || !blocks.has(prev.nodeName));
-            return { at, tail };
-        }
-        $$.$bog_gram_write_spot = $bog_gram_write_spot;
-        function $bog_gram_write_point(root, spot) {
-            let rest = spot.at;
-            for (const leaf of leaves(root)) {
-                const size = leaf_size(leaf);
-                if (leaf.nodeName === 'BR') {
-                    if (rest === 0)
-                        return [leaf.parentNode, [...leaf.parentNode.childNodes].indexOf(leaf)];
-                }
-                else {
-                    if (spot.tail && rest > 0 ? rest <= size : rest < size)
-                        return [leaf, rest];
-                }
-                rest -= size;
-            }
-            return [root, root.childNodes.length];
-        }
-        $$.$bog_gram_write_point = $bog_gram_write_point;
-        function $bog_gram_write_text(html) {
-            if (!html)
-                return '';
-            const lines = [];
-            let line = '';
-            const walk = (node) => {
-                if (node.nodeType === node.TEXT_NODE) {
-                    line += node.nodeValue;
-                    return;
-                }
-                if (node.nodeName === 'BR') {
-                    lines.push(line);
-                    line = '';
-                    return;
-                }
-                const block = blocks.has(node.nodeName);
-                if (block && line) {
-                    lines.push(line);
-                    line = '';
-                }
-                for (const kid of node.childNodes)
-                    walk(kid);
-                if (block && line) {
-                    lines.push(line);
-                    line = '';
-                }
-            };
-            walk(body_of(html));
-            if (line)
-                lines.push(line);
-            return lines.join('\n');
-        }
-        $$.$bog_gram_write_text = $bog_gram_write_text;
-        function $bog_gram_write_html(text) {
-            if (!text)
-                return '';
-            const escape = (line) => line
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;');
-            return text.split('\n').map(line => `<p>${escape(line) || '<br>'}</p>`).join('');
-        }
-        $$.$bog_gram_write_html = $bog_gram_write_html;
-        function $bog_gram_write_rich_is(html) {
-            if (!html)
-                return false;
-            return [...body_of(html).querySelectorAll('*')].some(el => !plain.has(el.nodeName));
-        }
-        $$.$bog_gram_write_rich_is = $bog_gram_write_rich_is;
-        class $bog_gram_write extends $.$bog_gram_write {
-            pawn(next) {
-                return $mol_fail(new Error('Поле сообщения не пишет в Базу'));
-            }
-            selection(next) {
-                return next ?? [['', 0, 0], ['', 0, 0]];
-            }
-            selection_save() { }
-            selection_load() { }
-            selected(next) {
-                return this.enabled();
-            }
-            html_last = '';
-            nodes(next) {
-                const html = this.html();
-                if (next)
-                    return next;
-                const prev = $mol_mem_cached(() => this.nodes());
-                if (prev && html === this.html_last)
-                    return prev;
-                this.html_last = html;
-                const document = this.$.$mol_dom_context.document;
-                return [...body_of(html).childNodes].map(node => document.importNode(node, true));
-            }
-            content() {
-                const nodes = this.nodes();
-                if (nodes.length)
-                    return nodes;
-                const document = this.$.$mol_dom_context.document;
-                const line = document.createElement('p');
-                line.append(document.createElement('br'));
-                return [line];
-            }
-            save(event) {
-                const root = this.Content().dom_node();
-                const html = $bog_gram_write_clean(root.innerHTML);
-                this.html_last = html;
-                this.nodes([...root.childNodes]);
-                this.html(html);
-            }
-            paste_rich(html) {
-                const body = body_of(html);
-                tidy(body);
-                const range = $mol_dom_range.from_selection();
-                if (!range)
-                    return;
-                const document = this.$.$mol_dom_context.document;
-                const part = document.createDocumentFragment();
-                for (const node of body.childNodes)
-                    part.append(document.importNode(node, true));
-                range.paste(part);
-                this.save();
-            }
-            text() {
-                return $bog_gram_write_text(this.html());
-            }
-            sub() {
-                return [
-                    ...this.text() ? [] : [this.Hint()],
-                    this.Content(),
-                    ...this.rich() && this.enabled() ? [this.Tools()] : [],
-                ];
-            }
-            /**
-             * Enter отправляет только там, где есть физическая клавиатура.
-             * Тач без мыши и трекпада — это телефон: там Enter переносит строку,
-             * а отправка остаётся за кнопкой.
-             */
-            enter_sends() {
+        const names = {
+            Period: 'period',
+            Enter: 'enter',
+            NumpadEnter: 'enter',
+            Tab: 'tab',
+            ArrowDown: 'down',
+        };
+        /** Хоткеи по физической клавише. На маке командная клавиша только Cmd, Ctrl остаётся системе. */
+        class $bog_rich_hotkey extends $.$bog_rich_hotkey {
+            mac() {
                 const nav = this.$.$mol_dom_context.navigator;
-                if (!nav?.maxTouchPoints)
-                    return true;
-                if (this.$.$mol_media.match('(any-pointer: fine)'))
-                    return true;
-                if (this.$.$mol_media.match('(hover: hover)'))
-                    return true;
-                return false;
+                return /Mac|iP(hone|ad|od)/.test(nav?.platform || nav?.userAgent || '');
             }
-            newline() {
-                this.$.$mol_dom_context.document.execCommand('insertLineBreak');
+            name(event) {
+                const code = event.code ?? '';
+                const key = /^Key([A-Z])$/.exec(code)?.[1] ?? names[code] ?? names[event.key] ?? $mol_keyboard_code[event.keyCode] ?? '?';
+                const mod = this.mac() ? event.metaKey : event.ctrlKey;
+                const alien = this.mac() ? event.ctrlKey : event.metaKey;
+                return [
+                    ...mod ? ['ctrl'] : [],
+                    ...alien ? ['alien'] : [],
+                    ...event.altKey ? ['alt'] : [],
+                    ...event.shiftKey ? ['shift'] : [],
+                    key,
+                ].join('_');
             }
-            press(event) {
-                if (!event)
-                    return null;
-                if (event.isComposing)
-                    return null;
-                if (event.keyCode !== $mol_keyboard_code.enter)
-                    return null;
-                if (event.ctrlKey || event.metaKey) {
-                    event.preventDefault();
-                    this.newline();
-                    return null;
-                }
-                if (event.shiftKey || !this.enter_sends())
-                    return null;
-                event.preventDefault();
-                this.send(event);
-                return null;
-            }
-            chosen() {
-                const selection = this.$.$mol_dom_context.document.getSelection();
-                if (!selection?.rangeCount)
-                    return 0;
-                if (!this.Content().dom_node().contains(selection.anchorNode))
-                    return 0;
-                return selection.toString().length;
-            }
-            room() {
-                return Math.max(0, this.length_max() - this.text().length + this.chosen());
-            }
-            before_input(event) {
-                if (!event?.inputType.startsWith('insert'))
-                    return null;
-                if (event.inputType === 'insertCompositionText')
-                    return null;
-                const size = event.data?.length ?? 1;
-                if (size > this.room())
-                    event.preventDefault();
-                return null;
-            }
-            paste(event) {
-                const transfer = event.clipboardData;
-                if (!transfer)
+            keydown(event) {
+                if (!event || event.defaultPrevented)
                     return;
-                if (transfer.files.length)
+                if (event.isComposing || event.keyCode === 229)
                     return;
-                event.preventDefault();
-                const room = this.room();
-                const text = transfer.getData('text/plain');
-                const html = transfer.getData('text/html');
-                if (this.rich() && html && text.length <= room)
-                    return this.paste_rich(html);
-                const part = text.slice(0, room);
-                if (!part)
-                    return;
-                this.$.$mol_dom_context.document.execCommand('insertText', false, part);
-            }
-            aim() {
-                const root = this.Content().dom_node();
-                const document = this.$.$mol_dom_context.document;
-                const selection = document.getSelection();
-                if (!selection)
-                    return false;
-                const line = () => document.createElement('p');
-                if (!root.textContent && !root.querySelector('p')) {
-                    const empty = line();
-                    empty.append(document.createElement('br'));
-                    root.replaceChildren(empty);
-                }
-                for (const kid of [...root.childNodes]) {
-                    if (kid.nodeName !== 'BR')
-                        continue;
-                    const wrap = line();
-                    kid.before(wrap);
-                    wrap.append(kid);
-                }
-                const inner = (node, pos) => {
-                    if (node && node !== root && root.contains(node))
-                        return [node, pos];
-                    const kid = node === root ? root.childNodes[pos] : null;
-                    let leaf = kid ?? root.lastChild;
-                    while (true) {
-                        const next = kid ? leaf.firstChild : leaf.lastChild;
-                        if (!next || next.nodeName === 'BR')
-                            break;
-                        leaf = next;
-                    }
-                    return [leaf, kid ? 0 : leaf.nodeValue?.length ?? 0];
-                };
-                const from = inner(selection.anchorNode, selection.anchorOffset);
-                const to = inner(selection.focusNode, selection.focusOffset);
-                selection.setBaseAndExtent(from[0], from[1], to[0], to[1]);
-                return true;
-            }
-            block_wrap(type, event) {
-                if (this.rich())
-                    this.caret_keep(() => super.block_wrap(type, event));
-            }
-            block_rewrap(event) {
-                if (!this.rich())
-                    return;
-                this.aim();
-                super.block_rewrap(event);
-            }
-            block_unwrap(event) {
-                if (this.rich())
-                    this.caret_keep(() => super.block_unwrap(event));
-            }
-            inline_toggle(type, event) {
-                if (!this.rich())
-                    return;
-                this.menu_hide();
-                if (!this.aim())
-                    return;
-                if (this.inline_start(type))
-                    event.preventDefault();
-                else
-                    this.caret_keep(() => super.inline_toggle(type, event));
-            }
-            caret() {
-                const selection = this.$.$mol_dom_context.document.getSelection();
-                if (!selection?.rangeCount)
-                    return null;
-                const root = this.Content().dom_node();
-                if (!root.contains(selection.anchorNode) || !root.contains(selection.focusNode))
-                    return null;
-                return selection;
-            }
-            caret_keep(change) {
-                if (!this.aim())
-                    return;
-                const selection = this.caret();
-                if (!selection)
-                    return;
-                const root = this.Content().dom_node();
-                const anchor = $bog_gram_write_spot(root, selection.anchorNode, selection.anchorOffset);
-                const focus = $bog_gram_write_spot(root, selection.focusNode, selection.focusOffset);
-                change();
-                root.focus({ preventScroll: true });
-                selection.setBaseAndExtent(...$bog_gram_write_point(root, anchor), ...$bog_gram_write_point(root, focus));
-            }
-            inline_start(type) {
-                const selection = this.caret();
-                if (!selection?.isCollapsed)
-                    return false;
-                const root = this.Content().dom_node();
-                const node = selection.anchorNode;
-                const box = node.nodeType === node.ELEMENT_NODE ? node : node.parentElement;
-                const outer = box.closest(type);
-                if (outer && outer !== root && root.contains(outer))
-                    return false;
-                const document = this.$.$mol_dom_context.document;
-                const text = document.createTextNode(blank);
-                const inline = document.createElement(type);
-                inline.append(text);
-                selection.getRangeAt(0).insertNode(inline);
-                this.save();
-                root.focus({ preventScroll: true });
-                selection.collapse(text, text.length);
-                return true;
-            }
-            menu_hide() {
-                this.Inline_format_menu().showed(false);
-            }
-            tools_hold(event) {
-                const target = event?.target;
-                if (this.Tools().dom_node().contains(target))
-                    event.preventDefault();
-                else
-                    this.menu_hide();
-                return null;
-            }
-            touch_at = null;
-            tools_touch(event) {
-                const touch = event?.touches.length === 1 ? event.touches[0] : null;
-                this.touch_at = touch && { x: touch.clientX, y: touch.clientY };
-                return null;
-            }
-            tools_tap(event) {
-                const from = this.touch_at;
-                this.touch_at = null;
-                if (!event?.cancelable)
-                    return null;
-                const touch = event.changedTouches[0];
-                if (!from || !touch)
-                    return null;
-                if (!this.rich())
-                    return null;
-                const target = event.target;
-                if (!this.Tools().dom_node().contains(target))
-                    return null;
-                if (Math.hypot(touch.clientX - from.x, touch.clientY - from.y) > 10)
-                    return null;
-                event.preventDefault();
-                target.closest('[mol_button]')?.click();
-                return null;
-            }
-            tools_leave(event) {
-                if (!this.dom_node().contains(event?.relatedTarget))
-                    this.menu_hide();
-                return null;
+                const action = this.action();
+                action[this.name(event)]?.(event);
             }
         }
         __decorate([
             $mol_mem
-        ], $bog_gram_write.prototype, "nodes", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "content", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "sub", null);
-        $$.$bog_gram_write = $bog_gram_write;
+        ], $bog_rich_hotkey.prototype, "mac", null);
+        $$.$bog_rich_hotkey = $bog_rich_hotkey;
     })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("bog/gram/write/write.view.css", "[bog_gram_write] {\n\tposition: relative;\n\tbackground: none;\n\toutline: none;\n\tfont: inherit;\n}\n\n[bog_gram_write]:focus-within {\n\toutline: none;\n}\n\n[bog_gram_write_content] {\n\tpadding: var(--mol_gap_text);\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n}\n\n[bog_gram_write_content] p {\n\tpadding: 0;\n}\n\n[bog_gram_write_content] section > p:first-child {\n\tfont-size: inherit;\n\tline-height: inherit;\n\tletter-spacing: normal;\n}\n\n[bog_gram_write_rich] [bog_gram_write_content] section > p:first-child {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_write_hint] {\n\tposition: absolute;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_write_tools] {\n\tmax-width: 100%;\n\toverflow-x: auto;\n}\n\n[bog_gram_write_main] > * {\n\tflex-shrink: 0;\n}\n\n[bog_gram_write_attach] {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -70590,6 +70972,2326 @@ var $;
 ;
 "use strict";
 
+
+;
+	($.$bog_rich_menu) = class $bog_rich_menu extends ($.$mol_pop) {
+		hold(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		touch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tap(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Trigger_icon(){
+			const obj = new this.$.$mol_icon_format_text();
+			return obj;
+		}
+		Trigger(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_rich_menu_Trigger_hint")));
+			(obj.click) = (next) => ((this.trigger_click(next)));
+			(obj.sub) = () => ([(this.Trigger_icon())]);
+			return obj;
+		}
+		spot_rect(){
+			return null;
+		}
+		spot(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		list(){
+			return true;
+		}
+		trigger_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		escape(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		attr(){
+			return {...(super.attr()), "bog_rich_menu_list": (this.list())};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"mousedown": (next) => (this.hold(next)), 
+				"touchstart": (next) => (this.touch(next)), 
+				"touchend": (next) => (this.tap(next)), 
+				"keydown": (next) => (this.press(next))
+			};
+		}
+		Anchor(){
+			return (this.Trigger());
+		}
+		Spot(){
+			const obj = new this.$.$mol_view();
+			(obj.view_rect) = () => ((this.spot_rect()));
+			return obj;
+		}
+		Follower(){
+			const obj = new this.$.$mol_follower();
+			(obj.offset) = () => ((this.bubble_offset()));
+			(obj.align) = () => ((this.bubble_align()));
+			(obj.Anchor) = () => ((this.Spot()));
+			(obj.Sub) = () => ((this.Bubble()));
+			return obj;
+		}
+	};
+	($mol_mem(($.$bog_rich_menu.prototype), "hold"));
+	($mol_mem(($.$bog_rich_menu.prototype), "touch"));
+	($mol_mem(($.$bog_rich_menu.prototype), "tap"));
+	($mol_mem(($.$bog_rich_menu.prototype), "press"));
+	($mol_mem(($.$bog_rich_menu.prototype), "Trigger_icon"));
+	($mol_mem(($.$bog_rich_menu.prototype), "Trigger"));
+	($mol_mem(($.$bog_rich_menu.prototype), "spot"));
+	($mol_mem(($.$bog_rich_menu.prototype), "trigger_click"));
+	($mol_mem(($.$bog_rich_menu.prototype), "escape"));
+	($mol_mem(($.$bog_rich_menu.prototype), "Spot"));
+	($mol_mem(($.$bog_rich_menu.prototype), "Follower"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const typed = 'input, textarea, select';
+        /** Всплывающее меню у выделения или кнопки, которое не отбирает фокус у редактора. */
+        class $bog_rich_menu extends $.$bog_rich_menu {
+            spot(next) {
+                return next ?? null;
+            }
+            spot_rect() {
+                return (this.spot() ?? this.Trigger().view_rect());
+            }
+            screen() {
+                const size = this.$.$mol_window.size();
+                if (this.showed())
+                    $mol_wire_watch();
+                const view = this.$.$mol_dom_context.visualViewport;
+                const top = view?.offsetTop ?? 0;
+                return { top, bottom: top + (view?.height ?? size.height) };
+            }
+            anchor_visible() {
+                return true;
+            }
+            align_vert() {
+                const rect = this.spot_rect();
+                if (!rect)
+                    return 'suspense';
+                const { top, bottom } = this.screen();
+                return rect.top - top > bottom - rect.bottom ? 'top' : 'bottom';
+            }
+            align_hor() {
+                return 'center';
+            }
+            height_max() {
+                const rect = this.spot_rect();
+                if (!rect)
+                    return 0;
+                const { top, bottom } = this.screen();
+                return Math.max(120, this.align_vert() === 'top' ? rect.top - top : bottom - rect.bottom);
+            }
+            outside() {
+                if (!this.showed())
+                    return null;
+                return new this.$.$mol_dom_listener(this.$.$mol_dom_context.document, 'pointerdown', (event) => {
+                    if (!this.dom_node().contains(event.target))
+                        this.showed(false);
+                });
+            }
+            auto() {
+                return [...super.auto(), this.outside()];
+            }
+            free(event) {
+                const target = event?.target;
+                return !this.list() || Boolean(target?.closest?.(typed));
+            }
+            hold(event) {
+                if (!this.free(event))
+                    event.preventDefault();
+                return null;
+            }
+            touch_at = null;
+            touch(event) {
+                const touch = event?.touches.length === 1 ? event.touches[0] : null;
+                this.touch_at = touch && { x: touch.clientX, y: touch.clientY };
+                return null;
+            }
+            tap(event) {
+                const from = this.touch_at;
+                const touch = event?.changedTouches[0];
+                this.touch_at = null;
+                if (!from || !touch || !event.cancelable || this.free(event))
+                    return null;
+                if (Math.hypot(touch.clientX - from.x, touch.clientY - from.y) > 10)
+                    return null;
+                event.preventDefault();
+                event.target.closest('[mol_button]')?.click();
+                return null;
+            }
+            press(event) {
+                if (!event || event.defaultPrevented)
+                    return null;
+                if (event.key === 'Escape' && this.showed()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.escape(event);
+                }
+                if (event.key === ' ' && !this.free(event)) {
+                    event.preventDefault();
+                    event.target.closest('[mol_button]')?.click();
+                }
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_rich_menu.prototype, "spot_rect", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_menu.prototype, "screen", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_menu.prototype, "align_vert", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_menu.prototype, "height_max", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_menu.prototype, "outside", null);
+        $$.$bog_rich_menu = $bog_rich_menu;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/menu/menu.view.css", "[bog_rich_menu_bubble][mol_view] {\n\tmax-width: min( 22rem, calc( 100vw - 1rem ) );\n\tmax-height: 100vh;\n\toverflow: auto;\n\toverscroll-behavior: contain;\n\tborder-radius: 0.75rem;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_format_bold) = class $mol_icon_format_bold extends ($.$mol_icon) {
+		path(){
+			return "M13.5,15.5H10V12.5H13.5A1.5,1.5 0 0,1 15,14A1.5,1.5 0 0,1 13.5,15.5M10,6.5H13A1.5,1.5 0 0,1 14.5,8A1.5,1.5 0 0,1 13,9.5H10M15.6,10.79C16.57,10.11 17.25,9 17.25,8C17.25,5.74 15.5,4 13.25,4H7V18H14.04C16.14,18 17.75,16.3 17.75,14.21C17.75,12.69 16.89,11.39 15.6,10.79Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_italic) = class $mol_icon_format_italic extends ($.$mol_icon) {
+		path(){
+			return "M10,4V7H12.21L8.79,15H6V18H14V15H11.79L15.21,7H18V4H10Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_underline) = class $mol_icon_format_underline extends ($.$mol_icon) {
+		path(){
+			return "M5,21H19V19H5V21M12,17A6,6 0 0,0 18,11V3H15.5V11A3.5,3.5 0 0,1 12,14.5A3.5,3.5 0 0,1 8.5,11V3H6V11A6,6 0 0,0 12,17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_strikethrough) = class $mol_icon_format_strikethrough extends ($.$mol_icon) {
+		path(){
+			return "M3,14H21V12H3M5,4V7H10V10H14V7H19V4M10,19H14V16H10V19Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_quote_close) = class $mol_icon_format_quote_close extends ($.$mol_icon) {
+		path(){
+			return "M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_code_tags) = class $mol_icon_code_tags extends ($.$mol_icon) {
+		path(){
+			return "M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_code_braces) = class $mol_icon_code_braces extends ($.$mol_icon) {
+		path(){
+			return "M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_eye) = class $mol_icon_eye extends ($.$mol_icon) {
+		path(){
+			return "M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_eye_off) = class $mol_icon_eye_off extends ($.$mol_icon) {
+		path(){
+			return "M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_calendar_clock) = class $mol_icon_calendar_clock extends ($.$mol_icon) {
+		path(){
+			return "M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_format_clear) = class $mol_icon_format_clear extends ($.$mol_icon) {
+		path(){
+			return "M6,5V5.18L8.82,8H11.22L10.5,9.68L12.6,11.78L14.21,8H20V5H6M3.27,5L2,6.27L8.97,13.24L6.5,19H9.5L11.07,15.34L16.73,21L18,19.73L3.55,5.27L3.27,5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_arrow_down) = class $mol_icon_arrow_down extends ($.$mol_icon) {
+		path(){
+			return "M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_rich_edit) = class $bog_rich_edit extends ($.$mol_view) {
+		hint(){
+			return "";
+		}
+		Hint(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.hint())]);
+			return obj;
+		}
+		editable(){
+			return "true";
+		}
+		before(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		typed(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		compose_start(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		compose_end(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		copy(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		cut(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		paste(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		context(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		drawn(){
+			return null;
+		}
+		hotkeys(){
+			return {};
+		}
+		Hotkey(){
+			const obj = new this.$.$bog_rich_hotkey();
+			(obj.action) = () => ((this.hotkeys()));
+			return obj;
+		}
+		Content(){
+			const obj = new this.$.$mol_view();
+			(obj.attr) = () => ({
+				...(this.$.$mol_view.prototype.attr.call(obj)), 
+				"contenteditable": (this.editable()), 
+				"role": "textbox", 
+				"aria-multiline": "true", 
+				"aria-label": (this.hint())
+			});
+			(obj.event) = () => ({
+				"beforeinput": (next) => (this.before(next)), 
+				"input": (next) => (this.typed(next)), 
+				"compositionstart": (next) => (this.compose_start(next)), 
+				"compositionend": (next) => (this.compose_end(next)), 
+				"copy": (next) => (this.copy(next)), 
+				"cut": (next) => (this.cut(next)), 
+				"paste": (next) => (this.paste(next)), 
+				"contextmenu": (next) => (this.context(next))
+			});
+			(obj.sub_visible) = () => ((this.drawn()));
+			(obj.plugins) = () => ([(this.Hotkey())]);
+			return obj;
+		}
+		menu_showed(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		menu_spot(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		menu_list(){
+			return true;
+		}
+		menu_toggle(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		menu_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		menu_content(){
+			return [];
+		}
+		Menu(){
+			const obj = new this.$.$bog_rich_menu();
+			(obj.showed) = (next) => ((this.menu_showed(next)));
+			(obj.spot) = (next) => ((this.menu_spot(next)));
+			(obj.list) = () => ((this.menu_list()));
+			(obj.trigger_click) = (next) => ((this.menu_toggle(next)));
+			(obj.escape) = (next) => ((this.menu_close(next)));
+			(obj.bubble_content) = () => ((this.menu_content()));
+			return obj;
+		}
+		command_items(){
+			return [];
+		}
+		command_focused(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		command_cycle(next){
+			if(next !== undefined) return next;
+			return true;
+		}
+		Nav(){
+			const obj = new this.$.$mol_nav();
+			(obj.keys_y) = () => ((this.command_items()));
+			(obj.current_y) = (next) => ((this.command_focused(next)));
+			(obj.cycle) = (next) => ((this.command_cycle(next)));
+			return obj;
+		}
+		command_enabled(id){
+			return true;
+		}
+		command_click(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		command_checked(id){
+			return "false";
+		}
+		command_state(id){
+			return "off";
+		}
+		command_split(id){
+			return false;
+		}
+		command_icon(id){
+			return [];
+		}
+		Command_icon(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.command_icon(id)));
+			return obj;
+		}
+		command_label(id){
+			return "";
+		}
+		Command_label(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.command_label(id))]);
+			return obj;
+		}
+		command_key(id){
+			return "";
+		}
+		Command_key(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.command_key(id))]);
+			return obj;
+		}
+		link_text(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Link_text(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.link_text(next)));
+			return obj;
+		}
+		Link_text_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Link_text_field_name")));
+			(obj.control) = () => ((this.Link_text()));
+			return obj;
+		}
+		link_bid(){
+			return "";
+		}
+		link_url(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		link_apply(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Link_url(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("https://");
+			(obj.keyboard) = () => ("url");
+			(obj.value) = (next) => ((this.link_url(next)));
+			(obj.submit) = (next) => ((this.link_apply(next)));
+			return obj;
+		}
+		Link_url_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Link_url_field_name")));
+			(obj.bids) = () => ([(this.link_bid())]);
+			(obj.control) = () => ((this.Link_url()));
+			return obj;
+		}
+		link_tools(){
+			return [];
+		}
+		Link_tools(){
+			const obj = new this.$.$mol_row();
+			(obj.sub) = () => ((this.link_tools()));
+			return obj;
+		}
+		link_ready(){
+			return false;
+		}
+		link_remove(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		date_rows(){
+			return [];
+		}
+		date_bid(){
+			return "";
+		}
+		date_moment(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Date_moment(){
+			const obj = new this.$.$mol_date();
+			(obj.value) = (next) => ((this.date_moment(next)));
+			return obj;
+		}
+		date_zones(){
+			return [];
+		}
+		date_zone(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Date_zone(){
+			const obj = new this.$.$mol_select();
+			(obj.options) = () => ((this.date_zones()));
+			(obj.value) = (next) => ((this.date_zone(next)));
+			return obj;
+		}
+		date_twin(next){
+			if(next !== undefined) return next;
+			return "0";
+		}
+		date_twins(){
+			return {};
+		}
+		Date_twin(){
+			const obj = new this.$.$mol_switch();
+			(obj.value) = (next) => ((this.date_twin(next)));
+			(obj.options) = () => ((this.date_twins()));
+			return obj;
+		}
+		date_format(next){
+			if(next !== undefined) return next;
+			return "datetime";
+		}
+		date_formats(){
+			return {};
+		}
+		Date_format(){
+			const obj = new this.$.$mol_select();
+			(obj.value) = (next) => ((this.date_format(next)));
+			(obj.dictionary) = () => ((this.date_formats()));
+			return obj;
+		}
+		date_text(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Date_text(){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.date_text(next)));
+			return obj;
+		}
+		date_tools(){
+			return [];
+		}
+		date_ready(){
+			return false;
+		}
+		date_apply(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		date_remove(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		content(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		enabled(){
+			return true;
+		}
+		length_max(){
+			return +Infinity;
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		submit_with_enter(){
+			return false;
+		}
+		paste_files(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		sub(){
+			return [
+				(this.Hint()), 
+				(this.Content()), 
+				(this.Menu())
+			];
+		}
+		Commands(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.command_items()));
+			(obj.plugins) = () => ([(this.Nav())]);
+			return obj;
+		}
+		Command(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.enabled) = () => ((this.command_enabled(id)));
+			(obj.click) = (next) => ((this.command_click(id, next)));
+			(obj.attr) = () => ({
+				...(this.$.$mol_button_minor.prototype.attr.call(obj)), 
+				"role": "menuitemcheckbox", 
+				"aria-checked": (this.command_checked(id)), 
+				"bog_rich_edit_state": (this.command_state(id)), 
+				"bog_rich_edit_split": (this.command_split(id))
+			});
+			(obj.sub) = () => ([
+				(this.Command_icon(id)), 
+				(this.Command_label(id)), 
+				(this.Command_key(id))
+			]);
+			return obj;
+		}
+		Icon_bold(){
+			const obj = new this.$.$mol_icon_format_bold();
+			return obj;
+		}
+		Icon_italic(){
+			const obj = new this.$.$mol_icon_format_italic();
+			return obj;
+		}
+		Icon_underline(){
+			const obj = new this.$.$mol_icon_format_underline();
+			return obj;
+		}
+		Icon_strikethrough(){
+			const obj = new this.$.$mol_icon_format_strikethrough();
+			return obj;
+		}
+		Icon_blockquote(){
+			const obj = new this.$.$mol_icon_format_quote_close();
+			return obj;
+		}
+		Icon_code(){
+			const obj = new this.$.$mol_icon_code_tags();
+			return obj;
+		}
+		Icon_pre(){
+			const obj = new this.$.$mol_icon_code_braces();
+			return obj;
+		}
+		Icon_spoiler(){
+			const obj = new this.$.$mol_icon_eye_off();
+			return obj;
+		}
+		Icon_text_link(){
+			const obj = new this.$.$mol_icon_link();
+			return obj;
+		}
+		Icon_date_time(){
+			const obj = new this.$.$mol_icon_calendar_clock();
+			return obj;
+		}
+		Icon_clear(){
+			const obj = new this.$.$mol_icon_format_clear();
+			return obj;
+		}
+		Icon_collapse(){
+			const obj = new this.$.$mol_icon_chevron_down();
+			return obj;
+		}
+		Icon_leave(){
+			const obj = new this.$.$mol_icon_arrow_down();
+			return obj;
+		}
+		labels(){
+			return {
+				"bold": (this.$.$mol_locale.text("$bog_rich_edit_labels_bold")), 
+				"italic": (this.$.$mol_locale.text("$bog_rich_edit_labels_italic")), 
+				"underline": (this.$.$mol_locale.text("$bog_rich_edit_labels_underline")), 
+				"strikethrough": (this.$.$mol_locale.text("$bog_rich_edit_labels_strikethrough")), 
+				"blockquote": (this.$.$mol_locale.text("$bog_rich_edit_labels_blockquote")), 
+				"code": (this.$.$mol_locale.text("$bog_rich_edit_labels_code")), 
+				"pre": (this.$.$mol_locale.text("$bog_rich_edit_labels_pre")), 
+				"spoiler": (this.$.$mol_locale.text("$bog_rich_edit_labels_spoiler")), 
+				"text_link": (this.$.$mol_locale.text("$bog_rich_edit_labels_text_link")), 
+				"date_time": (this.$.$mol_locale.text("$bog_rich_edit_labels_date_time")), 
+				"clear": (this.$.$mol_locale.text("$bog_rich_edit_labels_clear")), 
+				"collapse": (this.$.$mol_locale.text("$bog_rich_edit_labels_collapse")), 
+				"leave": (this.$.$mol_locale.text("$bog_rich_edit_labels_leave"))
+			};
+		}
+		Link_form(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Link_text_field()), 
+				(this.Link_url_field()), 
+				(this.Link_tools())
+			]);
+			return obj;
+		}
+		link_wrong(){
+			return (this.$.$mol_locale.text("$bog_rich_edit_link_wrong"));
+		}
+		Link_apply(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Link_apply_title")));
+			(obj.enabled) = () => ((this.link_ready()));
+			(obj.click) = (next) => ((this.link_apply(next)));
+			return obj;
+		}
+		Link_remove(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Link_remove_title")));
+			(obj.click) = (next) => ((this.link_remove(next)));
+			return obj;
+		}
+		Cancel(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Cancel_title")));
+			(obj.click) = (next) => ((this.menu_close(next)));
+			return obj;
+		}
+		Date_form(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.date_rows()));
+			return obj;
+		}
+		Date_moment_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_moment_field_name")));
+			(obj.bids) = () => ([(this.date_bid())]);
+			(obj.control) = () => ((this.Date_moment()));
+			return obj;
+		}
+		Date_zone_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_zone_field_name")));
+			(obj.control) = () => ((this.Date_zone()));
+			return obj;
+		}
+		Date_twin_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_twin_field_name")));
+			(obj.control) = () => ((this.Date_twin()));
+			return obj;
+		}
+		Date_format_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_format_field_name")));
+			(obj.control) = () => ((this.Date_format()));
+			return obj;
+		}
+		Date_text_field(){
+			const obj = new this.$.$mol_form_field();
+			(obj.name) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_text_field_name")));
+			(obj.control) = () => ((this.Date_text()));
+			return obj;
+		}
+		Date_tools(){
+			const obj = new this.$.$mol_row();
+			(obj.sub) = () => ((this.date_tools()));
+			return obj;
+		}
+		Date_apply(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_apply_title")));
+			(obj.enabled) = () => ((this.date_ready()));
+			(obj.click) = (next) => ((this.date_apply(next)));
+			return obj;
+		}
+		Date_remove(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_rich_edit_Date_remove_title")));
+			(obj.click) = (next) => ((this.date_remove(next)));
+			return obj;
+		}
+		date_wrong(){
+			return (this.$.$mol_locale.text("$bog_rich_edit_date_wrong"));
+		}
+		date_missing(){
+			return (this.$.$mol_locale.text("$bog_rich_edit_date_missing"));
+		}
+		date_own(){
+			return (this.$.$mol_locale.text("$bog_rich_edit_date_own"));
+		}
+	};
+	($mol_mem(($.$bog_rich_edit.prototype), "Hint"));
+	($mol_mem(($.$bog_rich_edit.prototype), "before"));
+	($mol_mem(($.$bog_rich_edit.prototype), "typed"));
+	($mol_mem(($.$bog_rich_edit.prototype), "compose_start"));
+	($mol_mem(($.$bog_rich_edit.prototype), "compose_end"));
+	($mol_mem(($.$bog_rich_edit.prototype), "copy"));
+	($mol_mem(($.$bog_rich_edit.prototype), "cut"));
+	($mol_mem(($.$bog_rich_edit.prototype), "paste"));
+	($mol_mem(($.$bog_rich_edit.prototype), "context"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Hotkey"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Content"));
+	($mol_mem(($.$bog_rich_edit.prototype), "menu_showed"));
+	($mol_mem(($.$bog_rich_edit.prototype), "menu_spot"));
+	($mol_mem(($.$bog_rich_edit.prototype), "menu_toggle"));
+	($mol_mem(($.$bog_rich_edit.prototype), "menu_close"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Menu"));
+	($mol_mem(($.$bog_rich_edit.prototype), "command_focused"));
+	($mol_mem(($.$bog_rich_edit.prototype), "command_cycle"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Nav"));
+	($mol_mem_key(($.$bog_rich_edit.prototype), "command_click"));
+	($mol_mem_key(($.$bog_rich_edit.prototype), "Command_icon"));
+	($mol_mem_key(($.$bog_rich_edit.prototype), "Command_label"));
+	($mol_mem_key(($.$bog_rich_edit.prototype), "Command_key"));
+	($mol_mem(($.$bog_rich_edit.prototype), "link_text"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_text"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_text_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "link_url"));
+	($mol_mem(($.$bog_rich_edit.prototype), "link_apply"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_url"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_url_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_tools"));
+	($mol_mem(($.$bog_rich_edit.prototype), "link_remove"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_moment"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_moment"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_zone"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_zone"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_twin"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_twin"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_format"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_format"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_text"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_text"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_apply"));
+	($mol_mem(($.$bog_rich_edit.prototype), "date_remove"));
+	($mol_mem(($.$bog_rich_edit.prototype), "content"));
+	($mol_mem(($.$bog_rich_edit.prototype), "submit"));
+	($mol_mem(($.$bog_rich_edit.prototype), "paste_files"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Commands"));
+	($mol_mem_key(($.$bog_rich_edit.prototype), "Command"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_bold"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_italic"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_underline"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_strikethrough"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_blockquote"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_code"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_pre"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_spoiler"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_text_link"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_date_time"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_clear"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_collapse"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Icon_leave"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_form"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_apply"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Link_remove"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Cancel"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_form"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_moment_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_zone_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_twin_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_format_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_text_field"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_tools"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_apply"));
+	($mol_mem(($.$bog_rich_edit.prototype), "Date_remove"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** История правок одного значения. Частые правки копятся в одну запись, новая правка стирает возврат. */
+    class $bog_rich_story extends $mol_object2 {
+        apply;
+        past = [];
+        future = [];
+        open = false;
+        delay = 500;
+        timer = null;
+        constructor(apply) {
+            super();
+            this.apply = apply;
+        }
+        stage(prev, next) {
+            this.future.length = 0;
+            if (this.open)
+                this.past.at(-1).next = next;
+            else
+                this.past.push({ prev, next });
+            this.open = true;
+            this.timer?.destructor();
+            this.timer = new this.$.$mol_after_timeout(this.delay, () => this.seal());
+        }
+        seal() {
+            this.timer?.destructor();
+            this.timer = null;
+            this.open = false;
+        }
+        backward() {
+            this.seal();
+            const twist = this.past.pop();
+            if (!twist)
+                return;
+            this.future.push(twist);
+            this.apply(twist.prev);
+        }
+        forward() {
+            this.seal();
+            const twist = this.future.pop();
+            if (!twist)
+                return;
+            this.past.push(twist);
+            this.apply(twist.next);
+        }
+        clear() {
+            this.seal();
+            this.past.length = 0;
+            this.future.length = 0;
+        }
+    }
+    $.$bog_rich_story = $bog_rich_story;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const blocks = new Set(['P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL']);
+    const tags = {
+        bold: 'strong',
+        italic: 'em',
+        underline: 'u',
+        strikethrough: 's',
+        code: 'code',
+    };
+    function block_is(node) {
+        return !!node && blocks.has(node.nodeName);
+    }
+    /** Читает текст редактируемой области и места её узлов в нём. */
+    function $bog_rich_dom_read(root) {
+        const leaves = [];
+        const lines = [];
+        let text = '';
+        const line = (el, nodes) => {
+            if (lines.length)
+                text += '\n';
+            const from = text.length;
+            const flat = (node) => node.nodeType === 3 || node.nodeName === 'BR' ? [node] : [...node.childNodes].flatMap(flat);
+            const list = nodes.flatMap(flat);
+            for (const [index, node] of list.entries()) {
+                const start = text.length;
+                if (node.nodeType === 3)
+                    text += node.nodeValue.replace(/\r\n?/g, '\n');
+                else if (index < list.length - 1)
+                    text += '\n';
+                leaves.push({ node, from: start, to: text.length });
+            }
+            lines.push({ el, from, to: text.length });
+        };
+        const walk = (box) => {
+            const kids = [...box.childNodes];
+            if (box !== root && !kids.some(block_is))
+                return line(box, kids);
+            let loose = [];
+            const flush = () => {
+                if (loose.length)
+                    line(box, loose);
+                loose = [];
+            };
+            for (const kid of kids) {
+                if (block_is(kid)) {
+                    flush();
+                    walk(kid);
+                }
+                else if (kid.nodeType === 3 || kid.nodeType === 1) {
+                    loose.push(kid);
+                }
+            }
+            flush();
+        };
+        walk(root);
+        return { text, leaves, lines };
+    }
+    $.$bog_rich_dom_read = $bog_rich_dom_read;
+    /** Позиция в тексте для точки документа. */
+    function $bog_rich_dom_offset(map, root, node, pos) {
+        const own = map.leaves.find(leaf => leaf.node === node);
+        if (own)
+            return node.nodeType === 3 ? Math.min(own.from + pos, own.to) : own.from;
+        const inside = (host) => {
+            const leaves = map.leaves.filter(leaf => host.contains(leaf.node));
+            const lines = map.lines.filter(line => line.el !== root && host.contains(line.el));
+            const froms = [...leaves, ...lines].map(item => item.from);
+            const tos = [...leaves, ...lines].map(item => item.to);
+            return froms.length ? [Math.min(...froms), Math.max(...tos)] : null;
+        };
+        const next = node.childNodes[pos];
+        const after = next && inside(next);
+        if (after)
+            return after[0];
+        for (let index = Math.min(pos, node.childNodes.length) - 1; index >= 0; --index) {
+            const before = inside(node.childNodes[index]);
+            if (before)
+                return before[1];
+        }
+        return inside(node)?.[0] ?? 0;
+    }
+    $.$bog_rich_dom_offset = $bog_rich_dom_offset;
+    /** Точка документа для позиции в тексте. */
+    function $bog_rich_dom_point(map, root, offset) {
+        const line = map.lines.find(line => offset >= line.from && offset <= line.to) ?? map.lines.at(-1);
+        if (!line)
+            return [root, 0];
+        const leaves = map.leaves.filter(leaf => leaf.from >= line.from && leaf.to <= line.to && line.el.contains(leaf.node));
+        const hit = leaves.find(leaf => {
+            if (leaf.node.nodeType !== 3 || offset < leaf.from || offset > leaf.to)
+                return false;
+            return !leaf.node.parentElement?.closest('[contenteditable="false"]');
+        });
+        if (hit)
+            return [hit.node, offset - hit.from];
+        const next = leaves.find(leaf => leaf.from >= offset);
+        const spot = next ?? leaves.at(-1);
+        if (!spot)
+            return [line.el, 0];
+        const atom = spot.node.parentElement?.closest('[contenteditable="false"]');
+        const node = atom && root.contains(atom) ? atom : spot.node;
+        const shift = next ? 0 : 1;
+        return [node.parentNode, [...node.parentNode.childNodes].indexOf(node) + shift];
+    }
+    $.$bog_rich_dom_point = $bog_rich_dom_point;
+    /** Строит узлы редактируемой области по содержимому. */
+    function $bog_rich_dom_build(document, content) {
+        const draw = (node) => {
+            if (typeof node === 'string')
+                return document.createTextNode(node);
+            const { mark } = node;
+            const el = document.createElement(tags[mark.type] ?? 'span');
+            if (!tags[mark.type])
+                el.setAttribute('data-rich', mark.type);
+            if (mark.type === 'text_link')
+                el.setAttribute('title', mark.url);
+            if (mark.type === 'date_time')
+                el.setAttribute('contenteditable', 'false');
+            el.append(...node.kids.map(draw));
+            return el;
+        };
+        const lines = (from, to) => {
+            const res = [];
+            let pos = from;
+            while (true) {
+                const [, tail] = $bog_rich_line(content.text, pos);
+                const line = document.createElement('div');
+                const nodes = $bog_rich_tree(content, pos, tail);
+                line.append(...nodes.map(draw));
+                const last = nodes.at(-1);
+                if (!last || typeof last !== 'string' && last.mark.type === 'date_time')
+                    line.append(document.createElement('br'));
+                res.push(line);
+                if (tail >= to)
+                    return res;
+                pos = tail + 1;
+            }
+        };
+        return $bog_rich_blocks(content).flatMap(block => {
+            const list = lines(block.from, block.to);
+            if (!block.mark)
+                return list;
+            const box = document.createElement(block.type);
+            if (block.mark.type === 'blockquote' && block.mark.collapsed)
+                box.setAttribute('data-collapsed', '');
+            if (block.mark.type === 'pre') {
+                box.setAttribute('spellcheck', 'false');
+                if (block.mark.language)
+                    box.setAttribute('data-language', block.mark.language);
+            }
+            box.append(...list);
+            return [box];
+        });
+    }
+    $.$bog_rich_dom_build = $bog_rich_dom_build;
+    /** Приводит область к содержимому, не трогая совпавшие узлы. Отвечает, менялось ли что-то. */
+    function $bog_rich_dom_draw(root, content) {
+        const next = [...$bog_rich_dom_build(root.ownerDocument, content)];
+        const prev = [...root.childNodes];
+        const same = (left, right) => left.isEqualNode(right);
+        let head = 0;
+        while (head < prev.length && head < next.length && same(prev[head], next[head]))
+            ++head;
+        let tail = 0;
+        while (tail < prev.length - head && tail < next.length - head && same(prev[prev.length - 1 - tail], next[next.length - 1 - tail]))
+            ++tail;
+        const drop = prev.slice(head, prev.length - tail);
+        const add = next.slice(head, next.length - tail);
+        if (!drop.length && !add.length)
+            return false;
+        const anchor = prev[prev.length - tail] ?? null;
+        for (const node of drop)
+            node.remove();
+        for (const node of add)
+            root.insertBefore(node, anchor);
+        return true;
+    }
+    $.$bog_rich_dom_draw = $bog_rich_dom_draw;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const marks = {
+        B: { type: 'bold' },
+        STRONG: { type: 'bold' },
+        I: { type: 'italic' },
+        EM: { type: 'italic' },
+        U: { type: 'underline' },
+        INS: { type: 'underline' },
+        S: { type: 'strikethrough' },
+        STRIKE: { type: 'strikethrough' },
+        DEL: { type: 'strikethrough' },
+        CODE: { type: 'code' },
+        KBD: { type: 'code' },
+        SAMP: { type: 'code' },
+        TT: { type: 'code' },
+        'TG-SPOILER': { type: 'spoiler' },
+        BLOCKQUOTE: { type: 'blockquote' },
+        PRE: { type: 'pre' },
+    };
+    const skipped = new Set([
+        'SCRIPT', 'STYLE', 'TEMPLATE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'SVG', 'MATH', 'HEAD', 'TITLE',
+        'META', 'LINK', 'IMG', 'PICTURE', 'VIDEO', 'AUDIO', 'CANVAS', 'INPUT', 'TEXTAREA', 'SELECT', 'BUTTON',
+    ]);
+    const blocks = new Set([
+        'P', 'DIV', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER', 'MAIN', 'ASIDE', 'NAV', 'UL', 'OL', 'LI', 'DL', 'DT', 'DD',
+        'TABLE', 'TR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'PRE', 'HR', 'FIGURE', 'FORM', 'ADDRESS', 'DETAILS', 'SUMMARY',
+    ]);
+    const tags = {
+        bold: 'strong',
+        italic: 'em',
+        underline: 'u',
+        strikethrough: 's',
+        code: 'code',
+    };
+    function marks_of(el) {
+        const res = [];
+        const name = el.nodeName.toUpperCase();
+        const style = (el.getAttribute('style') ?? '').toLowerCase();
+        const heavy = /font-weight\s*:\s*(bold|[6-9]00)/.test(style);
+        const light = /font-weight\s*:\s*(normal|[1-5]00)/.test(style);
+        const own = marks[name];
+        if (own && !(own.type === 'bold' && light))
+            res.push(own);
+        if (heavy)
+            res.push({ type: 'bold' });
+        if (/font-style\s*:\s*italic/.test(style))
+            res.push({ type: 'italic' });
+        if (/text-decoration[a-z-]*\s*:[^;]*underline/.test(style) && name !== 'A')
+            res.push({ type: 'underline' });
+        if (/text-decoration[a-z-]*\s*:[^;]*line-through/.test(style))
+            res.push({ type: 'strikethrough' });
+        if (name === 'A') {
+            const url = $bog_rich_url(el.getAttribute('href') ?? '');
+            if (url)
+                res.push({ type: 'text_link', url });
+        }
+        const kind = el.getAttribute('data-bog-rich');
+        if (kind === 'spoiler' || el.classList.contains('tg-spoiler'))
+            res.push({ type: 'spoiler' });
+        if (kind === 'date_time')
+            res.push({
+                type: 'date_time',
+                timestamp: Number(el.getAttribute('data-timestamp') || NaN),
+                format: el.getAttribute('data-format'),
+                timezone: el.getAttribute('data-timezone') ?? undefined,
+            });
+        return res.map(mark => {
+            if (mark.type === 'blockquote' && el.hasAttribute('data-collapsed'))
+                return { ...mark, collapsed: true };
+            if (mark.type === 'pre' && el.getAttribute('data-language'))
+                return { ...mark, language: el.getAttribute('data-language') };
+            return mark;
+        });
+    }
+    /** Достаёт из чужой разметки текст и разрешённые стили. Чужие узлы в документ не попадают. */
+    function $bog_rich_html_parse(html) {
+        const doc = new this.$mol_dom_context.DOMParser().parseFromString(html, 'text/html');
+        const entities = [];
+        let text = '';
+        let gap = false;
+        let started = false;
+        const put = (part) => {
+            if (gap)
+                text += '\n';
+            gap = false;
+            started = true;
+            text += part;
+        };
+        const walk = (node, pre) => {
+            if (node.nodeType === 3) {
+                const raw = node.nodeValue ?? '';
+                if (pre) {
+                    if (raw)
+                        put(raw);
+                    return;
+                }
+                const calm = raw.replace(/[ \t\r\n\f]+/g, ' ');
+                const part = gap || !text || /[\s]$/.test(text) ? calm.replace(/^ /, '') : calm;
+                if (part)
+                    put(part.replaceAll(' ', ' '));
+                return;
+            }
+            if (node.nodeType !== 1)
+                return;
+            const el = node;
+            const name = el.nodeName.toUpperCase();
+            if (skipped.has(name))
+                return;
+            if (name === 'BR') {
+                if (el.classList.contains('Apple-interchange-newline'))
+                    return;
+                put('\n');
+                return;
+            }
+            const block = blocks.has(name);
+            const keep = pre || name === 'PRE' || /white-space\s*:\s*(pre|break-spaces)/.test(el.getAttribute('style') ?? '');
+            if (block) {
+                if (!pre)
+                    text = text.replace(/ +$/, '');
+                if (started)
+                    gap = true;
+            }
+            if (name === 'LI')
+                put('• ');
+            const size = text.length;
+            const head = size + (gap ? 1 : 0);
+            for (const kid of el.childNodes)
+                walk(kid, keep);
+            if (text.length > size && text.length > head) {
+                for (const mark of marks_of(el))
+                    entities.push({ ...mark, offset: head, length: text.length - head });
+            }
+            if (block && started) {
+                if (text.endsWith('\n') && text.length > size && !gap)
+                    text = text.slice(0, -1);
+                gap = true;
+            }
+            if ((name === 'TD' || name === 'TH') && el.nextElementSibling)
+                put(' ');
+        };
+        for (const kid of doc.body.childNodes)
+            walk(kid, /white-space\s*:\s*pre/.test(doc.body.getAttribute('style') ?? ''));
+        return $bog_rich_normalize({ text, entities });
+    }
+    $.$bog_rich_html_parse = $bog_rich_html_parse;
+    /** Безопасная разметка для буфера обмена. */
+    function $bog_rich_html(content) {
+        const escape = (text) => $mol_html_encode(text).replaceAll('\n', '<br>');
+        const draw = (nodes) => nodes.map(node => {
+            if (typeof node === 'string')
+                return escape(node);
+            const { mark } = node;
+            const inner = draw(node.kids);
+            switch (mark.type) {
+                case 'text_link': return `<a href="${$mol_html_encode(mark.url)}">${inner}</a>`;
+                case 'spoiler': return `<span data-bog-rich="spoiler" class="tg-spoiler">${inner}</span>`;
+                case 'date_time': return `<span data-bog-rich="date_time" data-timestamp="${mark.timestamp}" data-format="${mark.format}"${mark.timezone ? ` data-timezone="${$mol_html_encode(mark.timezone)}"` : ''}>${inner}</span>`;
+            }
+            return `<${tags[mark.type]}>${inner}</${tags[mark.type]}>`;
+        }).join('');
+        const body = $bog_rich_blocks(content).map(block => {
+            const { mark } = block;
+            const code = content.text.slice(block.from, block.to);
+            if (mark?.type === 'pre')
+                return `<pre${mark.language ? ` data-language="${$mol_html_encode(mark.language)}"` : ''}>${code.startsWith('\n') ? '\n' : ''}${$mol_html_encode(code)}${code.endsWith('\n') ? '\n' : ''}</pre>`;
+            const lines = code.split('\n');
+            let pos = block.from;
+            const inner = lines.map(line => {
+                const from = pos;
+                pos += line.length + 1;
+                return `<div>${draw($bog_rich_tree(content, from, from + line.length)) || '<br>'}</div>`;
+            }).join('');
+            return mark?.type === 'blockquote' ? `<blockquote${mark.collapsed ? ' data-collapsed' : ''}>${inner}</blockquote>` : inner;
+        });
+        return `<div style="white-space: pre-wrap">${body.join('')}</div>`;
+    }
+    $.$bog_rich_html = $bog_rich_html;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const commands = [
+            'bold', 'italic', 'underline', 'strikethrough', 'blockquote', 'code', 'pre', 'spoiler', 'text_link', 'date_time', 'clear',
+        ];
+        const keys = {
+            bold: 'ctrl_B',
+            italic: 'ctrl_I',
+            underline: 'ctrl_U',
+            strikethrough: 'ctrl_shift_X',
+            blockquote: 'ctrl_shift_period',
+            code: 'ctrl_shift_M',
+            spoiler: 'ctrl_shift_P',
+            text_link: 'ctrl_K',
+            date_time: 'ctrl_shift_D',
+            clear: 'ctrl_shift_N',
+        };
+        const native = {
+            formatBold: 'bold',
+            formatItalic: 'italic',
+            formatUnderline: 'underline',
+            formatStrikeThrough: 'strikethrough',
+        };
+        const mime = 'application/x-bog-rich';
+        class $bog_rich_edit extends $.$bog_rich_edit {
+            content(next) {
+                return next ?? $bog_rich_empty;
+            }
+            model() {
+                return $bog_rich_normalize(this.content());
+            }
+            last = null;
+            range = { anchor: 0, focus: 0 };
+            typing = null;
+            typing_at = -1;
+            composing = false;
+            story() {
+                const story = new $bog_rich_story(shot => { this.shot(shot); });
+                story.$ = this.$;
+                return story;
+            }
+            destructor() {
+                this.story().clear();
+                super.destructor();
+            }
+            editable() {
+                return this.enabled() ? 'true' : 'false';
+            }
+            root() {
+                return this.Content().dom_node();
+            }
+            document() {
+                return this.$.$mol_dom_context.document;
+            }
+            sub() {
+                return [
+                    ...this.model().text ? [] : [this.Hint()],
+                    this.Content(),
+                    ...this.enabled() ? [this.Menu()] : [],
+                ];
+            }
+            drawn() {
+                const content = this.model();
+                const root = this.root();
+                const known = this.last && $bog_rich_equal(content, this.last);
+                if (!known)
+                    this.adopt(content);
+                if (this.composing)
+                    return null;
+                const held = this.held();
+                if ($bog_rich_dom_draw(root, content) && held)
+                    this.place();
+                return null;
+            }
+            adopt(content) {
+                this.last = content;
+                this.composing = false;
+                this.typing = null;
+                this.range = { anchor: content.text.length, focus: content.text.length };
+                this.story().clear();
+                if ($mol_wire_probe(() => this.menu_showed()))
+                    new this.$.$mol_after_tick(() => this.menu_showed(false));
+            }
+            selection_sync() {
+                return new this.$.$mol_dom_listener(this.document(), 'selectionchange', () => this.track());
+            }
+            auto() {
+                return [this.selection_sync()];
+            }
+            held() {
+                const root = this.root();
+                const active = this.document().activeElement;
+                return active === root;
+            }
+            read_range(map) {
+                const root = this.root();
+                const sel = this.document().getSelection();
+                if (!sel?.rangeCount || !root.contains(sel.anchorNode) || !root.contains(sel.focusNode))
+                    return null;
+                const spot = (node, pos) => $bog_rich_dom_offset(map, root, node, pos);
+                return { anchor: spot(sel.anchorNode, sel.anchorOffset), focus: spot(sel.focusNode, sel.focusOffset) };
+            }
+            track() {
+                if (this.composing)
+                    return;
+                const map = $bog_rich_dom_read(this.root());
+                if (map.text !== this.last?.text)
+                    return;
+                const range = this.read_range(map);
+                if (!range)
+                    return;
+                if (range.anchor !== this.range.anchor || range.focus !== this.range.focus) {
+                    if (range.focus !== this.typing_at || range.anchor !== range.focus)
+                        this.typing = null;
+                    if (!this.menu_list() || !this.menu_showed())
+                        this.story().seal();
+                }
+                this.range = range;
+            }
+            /** Логическое выделение с направлением. */
+            selection(next) {
+                if (next) {
+                    const max = this.model().text.length;
+                    const fit = (pos) => Math.max(0, Math.min(max, pos));
+                    this.range = { anchor: fit(next.anchor), focus: fit(next.focus) };
+                    this.typing = null;
+                    if (this.held())
+                        this.place();
+                }
+                return this.range;
+            }
+            ends() {
+                const max = this.model().text.length;
+                const { anchor, focus } = this.range;
+                return [Math.min(anchor, focus, max), Math.min(Math.max(anchor, focus), max)];
+            }
+            place() {
+                const root = this.root();
+                const map = $bog_rich_dom_read(root);
+                const sel = this.document().getSelection();
+                if (!sel)
+                    return;
+                const from = $bog_rich_dom_point(map, root, this.range.anchor);
+                const to = $bog_rich_dom_point(map, root, this.range.focus);
+                sel.setBaseAndExtent(from[0], from[1], to[0], to[1]);
+            }
+            refocus() {
+                this.root().focus({ preventScroll: true });
+                this.place();
+            }
+            /** Ставит фокус и каретку на прежнее место. */
+            bring() {
+                this.Content().bring();
+                new this.$.$mol_after_timeout(0, () => new this.$.$mol_after_frame(() => {
+                    if (this.held())
+                        this.place();
+                }));
+            }
+            shot(next) {
+                if (next) {
+                    this.last = next.content;
+                    this.range = next.range;
+                    this.typing = null;
+                    this.composing = false;
+                    this.content(next.content);
+                    this.redraw();
+                }
+                return { content: this.model(), range: this.range };
+            }
+            redraw() {
+                const held = this.held();
+                $bog_rich_dom_draw(this.root(), this.last ?? this.model());
+                if (held)
+                    this.place();
+            }
+            push(next, range) {
+                const prev = this.shot();
+                if (!$bog_rich_equal(prev.content, next)) {
+                    this.story().stage(prev, { content: next, range });
+                    this.last = next;
+                    this.content(next);
+                }
+                this.range = range;
+            }
+            /** Отдельная операция: своя запись в истории и перерисовка. */
+            step(next, range) {
+                this.composing = false;
+                this.story().seal();
+                this.push(next, range);
+                this.story().seal();
+                this.redraw();
+            }
+            undo() {
+                this.story().backward();
+                return null;
+            }
+            redo() {
+                this.story().forward();
+                return null;
+            }
+            room(from, to) {
+                return Math.max(0, this.length_max() - this.model().text.length + to - from);
+            }
+            marks(from, to) {
+                return this.typing ?? $bog_rich_typing(this.model(), from, to);
+            }
+            written(from, to, insert) {
+                const edge = from + insert.length;
+                const marks = this.marks(from, to);
+                let next = $bog_rich_replace(this.model(), from, to, insert, marks.filter(mark => mark.type !== 'pre' && mark.type !== 'blockquote'));
+                if (!insert || !this.typing)
+                    return next;
+                for (const type of $bog_rich_toggles) {
+                    if (!this.typing.some(mark => mark.type === type))
+                        next = $bog_rich_remove(next, type, from, edge);
+                }
+                const spoiler = this.typing.some(mark => mark.type === 'spoiler')
+                    && this.model().entities.find(mark => mark.type === 'spoiler' && mark.offset + mark.length === from);
+                if (spoiler)
+                    next = $bog_rich_apply(next, { type: 'spoiler' }, spoiler.offset, edge);
+                for (const mark of this.typing) {
+                    if (mark.type === 'pre' || mark.type === 'blockquote')
+                        next = $bog_rich_apply(next, mark, from, edge);
+                }
+                return next;
+            }
+            keep_typing(pos) {
+                this.typing = this.typing?.filter(mark => mark.type !== 'pre' && mark.type !== 'blockquote') ?? null;
+                this.typing_at = pos;
+            }
+            /** Заменяет диапазон текстом с текущими стилями набора. */
+            write(from, to, text) {
+                const [head, tail] = $bog_rich_whole(this.model(), from, to);
+                const insert = $bog_rich_fit(text, this.room(head, tail));
+                if (!insert && head === tail)
+                    return;
+                const pos = head + insert.length;
+                const next = this.written(head, tail, insert);
+                this.composing = false;
+                this.keep_typing(pos);
+                this.push(next, { anchor: pos, focus: pos });
+                this.redraw();
+            }
+            sync() {
+                const root = this.root();
+                const map = $bog_rich_dom_read(root);
+                const prev = this.model();
+                const range = this.read_range(map) ?? { anchor: map.text.length, focus: map.text.length };
+                if (map.text === prev.text) {
+                    this.range = range;
+                }
+                else {
+                    const { from, to, insert } = $bog_rich_diff(prev.text, map.text, range.focus);
+                    const fit = this.composing ? insert : $bog_rich_fit(insert, this.room(from, to));
+                    const shift = (pos) => pos > from + fit.length ? Math.max(from + fit.length, pos - insert.length + fit.length) : pos;
+                    const next = this.written(from, to, fit);
+                    const caret = { anchor: shift(range.anchor), focus: shift(range.focus) };
+                    this.keep_typing(caret.focus);
+                    this.push(next, caret);
+                }
+                if (!this.composing)
+                    this.redraw();
+            }
+            typed(event) {
+                if (event?.isComposing)
+                    this.composing = true;
+                this.sync();
+                return null;
+            }
+            compose_start(event) {
+                const [from, to] = this.ends();
+                const { text } = this.model();
+                if (from < to && (text.slice(from, to).includes('\n') || this.atom_hit(from, to)))
+                    this.write(from, to, '');
+                this.composing = true;
+                return null;
+            }
+            compose_end(event) {
+                this.composing = false;
+                this.sync();
+                return null;
+            }
+            atom_hit(from, to) {
+                return this.model().entities.some(mark => mark.type === 'date_time' && mark.offset <= to && mark.offset + mark.length >= from);
+            }
+            target(event) {
+                const range = event.getTargetRanges?.()[0];
+                const root = this.root();
+                if (!range || !root.contains(range.startContainer) || !root.contains(range.endContainer))
+                    return this.ends();
+                const map = $bog_rich_dom_read(root);
+                return [
+                    $bog_rich_dom_offset(map, root, range.startContainer, range.startOffset),
+                    $bog_rich_dom_offset(map, root, range.endContainer, range.endOffset),
+                ];
+            }
+            before(event) {
+                if (!event)
+                    return null;
+                const type = event.inputType;
+                if (!this.enabled()) {
+                    event.preventDefault();
+                    return null;
+                }
+                if (type === 'historyUndo' || type === 'historyRedo') {
+                    event.preventDefault();
+                    return type === 'historyUndo' ? this.undo() : this.redo();
+                }
+                if (type.startsWith('format')) {
+                    event.preventDefault();
+                    if (native[type])
+                        this.format_apply(native[type]);
+                    return null;
+                }
+                if (type === 'insertFromPaste' || type === 'insertFromPasteAsQuotation' || type === 'deleteByCut') {
+                    event.preventDefault();
+                    return null;
+                }
+                if (type === 'insertParagraph' || type === 'insertLineBreak') {
+                    event.preventDefault();
+                    this.newline();
+                    return null;
+                }
+                if (event.isComposing || type === 'insertCompositionText' || !event.cancelable)
+                    return null;
+                const [from, to] = this.target(event);
+                if (type === 'insertFromDrop' || type === 'insertFromYank') {
+                    event.preventDefault();
+                    this.range = { anchor: from, focus: to };
+                    const data = event.dataTransfer;
+                    this.insert(data ? this.take(data) : { text: event.data ?? '', entities: [] }, false);
+                    return null;
+                }
+                const { text } = this.model();
+                const data = event.data ?? event.dataTransfer?.getData('text/plain') ?? '';
+                const wide = text.slice(from, to).includes('\n') || data.includes('\n') || this.atom_hit(from, to);
+                const over = type.startsWith('insert') && data.length > this.room(from, to);
+                if (!wide && !over && !(type.startsWith('delete') && from === to))
+                    return null;
+                event.preventDefault();
+                if (type.startsWith('insert'))
+                    this.write(from, to, data);
+                else if (from < to)
+                    this.write(from, to, '');
+                else {
+                    const pos = $bog_rich_grapheme(text, from, type.endsWith('Forward') ? 1 : -1);
+                    if (pos !== from)
+                        this.write(Math.min(from, pos), Math.max(from, pos), '');
+                    else
+                        this.unbox(from);
+                }
+                return null;
+            }
+            unbox(pos) {
+                for (const type of ['blockquote', 'pre']) {
+                    if ($bog_rich_at(this.model(), type, pos))
+                        this.step($bog_rich_remove(this.model(), type, pos, pos), this.range);
+                }
+            }
+            newline() {
+                const [from, to] = this.ends();
+                const content = this.model();
+                const quote = $bog_rich_at(content, 'blockquote', from, to);
+                const line = $bog_rich_line(content.text, from);
+                if (from === to && quote && line[0] === line[1] && quote.offset + quote.length === from) {
+                    this.step($bog_rich_remove(content, 'blockquote', from, from), { anchor: from, focus: from });
+                    return;
+                }
+                const marks = this.marks(from, to).filter(mark => mark.type !== 'code');
+                const own = this.typing || marks.length !== this.marks(from, to).length;
+                this.typing = own ? marks : null;
+                this.write(from, to, '\n');
+            }
+            /** Выводит каретку из цитаты или кода в обычный абзац. */
+            leave() {
+                const content = this.model();
+                const [, pos] = this.ends();
+                const box = $bog_rich_at(content, 'pre', pos) ?? $bog_rich_at(content, 'blockquote', pos);
+                if (!box)
+                    return null;
+                const edge = box.offset + box.length;
+                const caret = { anchor: edge + 1, focus: edge + 1 };
+                if (content.text[edge] === '\n') {
+                    this.selection(caret);
+                    return null;
+                }
+                const grown = $bog_rich_replace(content, edge, edge, '\n');
+                this.step($bog_rich_remove(grown, box.type, edge + 1, edge + 1), caret);
+                return null;
+            }
+            copy(event) {
+                const [from, to] = this.ends();
+                const data = event?.clipboardData;
+                if (!data || from === to)
+                    return null;
+                const part = $bog_rich_slice(this.model(), from, to);
+                event.preventDefault();
+                data.setData('text/plain', part.text);
+                data.setData('text/html', $bog_rich_html(part));
+                data.setData(mime, JSON.stringify(part));
+                return null;
+            }
+            cut(event) {
+                const [from, to] = this.ends();
+                this.copy(event);
+                if (from < to && this.enabled() && event?.defaultPrevented) {
+                    this.story().seal();
+                    this.write(from, to, '');
+                    this.story().seal();
+                }
+                return null;
+            }
+            take(data) {
+                const own = data.getData(mime);
+                if (own) {
+                    const content = $mol_try(() => $bog_rich_normalize(JSON.parse(own)));
+                    if (!(content instanceof Error) && content.text)
+                        return content;
+                }
+                const html = data.getData('text/html');
+                const content = html ? this.$.$bog_rich_html_parse(html) : $bog_rich_empty;
+                if (content.entities.length)
+                    return content;
+                return { text: (data.getData('text/plain') || content.text).replace(/\r\n?/g, '\n'), entities: [] };
+            }
+            insert(part, link) {
+                const content = this.model();
+                const [from, to] = $bog_rich_whole(content, ...this.ends());
+                const url = link && from < to && !/\s/.test(part.text.trim()) && /^https?:\/\//i.test(part.text.trim()) ? $bog_rich_url(part.text) : '';
+                if (url && $bog_rich_state_of(content, 'text_link', from, to) !== 'disabled') {
+                    this.step($bog_rich_apply(content, { type: 'text_link', url }, from, to), this.range);
+                    return;
+                }
+                this.story().seal();
+                if (!part.entities.length)
+                    this.write(from, to, part.text);
+                else {
+                    const fit = $bog_rich_slice(part, 0, $bog_rich_fit(part.text, this.room(from, to)).length);
+                    const pos = from + fit.text.length;
+                    this.step($bog_rich_insert(content, from, to, fit), { anchor: pos, focus: pos });
+                }
+                this.story().seal();
+            }
+            paste(event) {
+                const data = event?.clipboardData;
+                if (!data || !this.enabled())
+                    return null;
+                const part = this.take(data);
+                if (!part.text) {
+                    if (data.files.length)
+                        this.paste_files(data.files);
+                    return null;
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                this.insert(part, true);
+                return null;
+            }
+            /** Состояние команды для текущего выделения. */
+            format_state(type) {
+                const content = this.model();
+                const [from, to] = this.ends();
+                const state = $bog_rich_state_of(content, type, from, to);
+                if (from < to || state === 'disabled' || type === 'date_time' || type === 'text_link')
+                    return state;
+                if (this.typing && ($bog_rich_toggles.includes(type) || state === 'off'))
+                    return this.typing.some(mark => mark.type === type) ? 'on' : 'off';
+                if (!$bog_rich_toggles.includes(type))
+                    return state;
+                return this.marks(from, to).some(mark => mark.type === type) ? 'on' : 'off';
+            }
+            /** Применяет или снимает стиль на выделении, без выделения меняет стиль набора. */
+            format_apply(type) {
+                if (!this.enabled())
+                    return null;
+                const state = this.format_state(type);
+                if (state === 'disabled')
+                    return null;
+                const content = this.model();
+                const [from, to] = this.ends();
+                const mark = { type };
+                const inline = $bog_rich_toggles.includes(type);
+                const line = $bog_rich_line(content.text, from);
+                const blank = from === to && line[0] === line[1] && !$bog_rich_at(content, type, from);
+                if (from === to && (inline || blank)) {
+                    const clash = (item) => inline && (type === 'code' || item.type === 'code') && item.type !== 'blockquote';
+                    const rest = this.marks(from, to).filter(item => item.type !== type && item.type !== 'text_link' && !clash(item) && (inline || $bog_rich_toggles.includes(item.type)));
+                    this.typing = state === 'on' ? rest : [...rest, mark];
+                    this.typing_at = from;
+                    return null;
+                }
+                this.step(state === 'on' ? $bog_rich_remove(content, type, from, to) : $bog_rich_apply(content, mark, from, to), this.range);
+                return null;
+            }
+            format_clear() {
+                const [from, to] = this.ends();
+                if (from === to) {
+                    this.typing = [];
+                    this.typing_at = from;
+                }
+                else {
+                    this.step($bog_rich_clear(this.model(), from, to), this.range);
+                }
+                return null;
+            }
+            collapse() {
+                const content = this.model();
+                const quote = $bog_rich_at(content, 'blockquote', ...this.ends());
+                if (quote?.type !== 'blockquote')
+                    return null;
+                const entities = content.entities.map(mark => mark === quote ? { ...quote, collapsed: !quote.collapsed } : mark);
+                this.step($bog_rich_normalize({ text: content.text, entities }), this.range);
+                return null;
+            }
+            box() {
+                const [from, to] = this.ends();
+                return $bog_rich_at(this.model(), 'pre', from, to) ?? $bog_rich_at(this.model(), 'blockquote', from, to);
+            }
+            run(id) {
+                if (!this.enabled() || this.state(id) === 'disabled')
+                    return false;
+                switch (id) {
+                    case 'text_link':
+                        this.link_open();
+                        break;
+                    case 'date_time':
+                        this.date_open();
+                        break;
+                    case 'clear':
+                        this.format_clear();
+                        break;
+                    case 'collapse':
+                        this.collapse();
+                        break;
+                    case 'leave':
+                        this.leave();
+                        break;
+                    default: this.format_apply(id);
+                }
+                return true;
+            }
+            state(id) {
+                const [from, to] = this.ends();
+                if (id === 'clear') {
+                    const able = from < to ? $bog_rich_clear_able(this.model(), from, to) : this.marks(from, to).length > 0;
+                    return able ? 'off' : 'disabled';
+                }
+                if (id === 'leave')
+                    return this.box() ? 'off' : 'disabled';
+                if (id === 'collapse') {
+                    const box = this.box();
+                    return box?.type === 'blockquote' ? box.collapsed ? 'on' : 'off' : 'disabled';
+                }
+                return this.format_state(id);
+            }
+            hotkeys() {
+                const res = {};
+                const bind = (key, task) => {
+                    res[key] = event => { if (task(event))
+                        event.preventDefault(); };
+                };
+                for (const id of commands) {
+                    const key = keys[id];
+                    if (key)
+                        bind(key, () => this.run(id));
+                }
+                const history = (task) => () => {
+                    if (this.enabled())
+                        task();
+                    return true;
+                };
+                bind('ctrl_Z', history(() => this.undo()));
+                bind('ctrl_shift_Z', history(() => this.redo()));
+                bind('ctrl_Y', history(() => this.redo()));
+                const wrap = () => {
+                    if (!this.enabled())
+                        return false;
+                    this.newline();
+                    return true;
+                };
+                bind('ctrl_enter', wrap);
+                bind('alien_enter', wrap);
+                bind('enter', event => {
+                    const [from, to] = this.ends();
+                    if (!this.enabled() || !this.submit_with_enter() || $bog_rich_at(this.model(), 'pre', from, to))
+                        return false;
+                    if (this.typing?.some(mark => mark.type === 'pre'))
+                        return false;
+                    this.submit(event);
+                    return true;
+                });
+                bind('tab', () => {
+                    const [from, to] = this.ends();
+                    if (!this.enabled() || !$bog_rich_at(this.model(), 'pre', from, to))
+                        return false;
+                    this.write(from, to, '\t');
+                    return true;
+                });
+                bind('down', () => {
+                    const [from, to] = this.ends();
+                    const pre = $bog_rich_at(this.model(), 'pre', to);
+                    const { text } = this.model();
+                    if (from !== to || !pre || pre.offset + pre.length !== text.length)
+                        return false;
+                    if (text.slice(to).includes('\n'))
+                        return false;
+                    this.leave();
+                    return true;
+                });
+                return res;
+            }
+            mode(next) {
+                return next ?? 'list';
+            }
+            menu_list() {
+                return this.mode() === 'list' || !this.menu_showed();
+            }
+            menu_content() {
+                return [this.mode() === 'link' ? this.Link_form() : this.mode() === 'date' ? this.Date_form() : this.Commands()];
+            }
+            menu_open(mode, spot = null) {
+                this.mode(mode);
+                this.menu_spot(spot);
+                this.menu_showed(true);
+            }
+            menu_toggle(event) {
+                if (this.menu_showed())
+                    return this.menu_close();
+                this.menu_open('list');
+                const first = this.command_items()[0];
+                if (event?.type === 'keydown' && first)
+                    first.focused(true);
+                return null;
+            }
+            menu_close(event) {
+                const inside = this.Menu().dom_node().contains(this.document().activeElement);
+                this.menu_showed(false);
+                if (inside || event)
+                    this.refocus();
+                return null;
+            }
+            context(event) {
+                if (!event || !this.enabled())
+                    return null;
+                if (event.pointerType ? event.pointerType !== 'mouse' : !this.$.$mol_media.match('(pointer: fine)'))
+                    return null;
+                const [from, to] = this.ends();
+                if (from === to)
+                    return null;
+                event.preventDefault();
+                const { clientX: x, clientY: y } = event;
+                this.menu_open('list', { left: x, right: x, top: y, bottom: y, width: 0, height: 0 });
+                return null;
+            }
+            command_ids() {
+                this.menu_showed();
+                const box = this.box();
+                return [
+                    ...commands.slice(0, -1),
+                    ...box?.type === 'blockquote' ? ['collapse'] : [],
+                    ...box ? ['leave'] : [],
+                    'clear',
+                ];
+            }
+            command_items() {
+                return this.command_ids().map(id => this.Command(id));
+            }
+            command_focused(next) {
+                if (next)
+                    next.focused(true);
+                return next ?? this.command_items().find(item => item.focused()) ?? null;
+            }
+            command_state(id) {
+                this.menu_showed();
+                return this.state(id);
+            }
+            command_enabled(id) {
+                return this.command_state(id) !== 'disabled';
+            }
+            command_checked(id) {
+                const state = this.command_state(id);
+                return state === 'on' ? 'true' : state === 'mixed' ? 'mixed' : 'false';
+            }
+            command_split(id) {
+                return id === 'text_link' || id === 'clear';
+            }
+            command_icon(id) {
+                return [this[`Icon_${id}`]()];
+            }
+            command_label(id) {
+                return this.labels()[id];
+            }
+            command_key(id) {
+                const key = keys[id];
+                if (!key || !this.$.$mol_media.match('(any-hover: hover)'))
+                    return '';
+                const mac = this.Hotkey().mac();
+                const names = { ctrl: mac ? '⌘' : 'Ctrl', shift: mac ? '⇧' : 'Shift', period: '.' };
+                return key.split('_').map(part => names[part] ?? part).join(mac ? '' : '+');
+            }
+            command_click(id, event) {
+                const inside = this.Menu().dom_node().contains(this.document().activeElement);
+                const form = id === 'text_link' || id === 'date_time';
+                if (!form)
+                    this.menu_showed(false);
+                this.run(id);
+                if (!form && (inside || this.held()))
+                    this.refocus();
+                return null;
+            }
+            form = { content: $bog_rich_empty, from: 0, to: 0 };
+            form_begin(type) {
+                const content = this.model();
+                const [from, to] = this.ends();
+                const mark = $bog_rich_at(content, type, from, to);
+                const [head, tail] = mark ? [mark.offset, mark.offset + mark.length] : $bog_rich_whole(content, from, to);
+                this.form = { content, from: head, to: tail };
+                return mark;
+            }
+            form_valid() {
+                return $bog_rich_equal(this.form.content, this.model());
+            }
+            form_end(next, range) {
+                this.menu_showed(false);
+                this.step(next, range);
+                this.refocus();
+            }
+            form_put(text, mark) {
+                if (!this.form_valid()) {
+                    this.menu_close();
+                    return;
+                }
+                const { content, from, to } = this.form;
+                const fit = $bog_rich_fit(text, this.room(from, to));
+                if (!fit || mark.type === 'date_time' && fit !== text)
+                    return;
+                const same = fit === content.text.slice(from, to);
+                const base = same ? content : $bog_rich_replace(content, from, to, fit, mark.type === 'date_time' ? [] : $bog_rich_typing(content, from, to));
+                const edge = from + fit.length;
+                this.typing = null;
+                this.form_end($bog_rich_apply(base, mark, from, edge), { anchor: edge, focus: edge });
+            }
+            link_open() {
+                const mark = this.form_begin('text_link');
+                const { content, from, to } = this.form;
+                this.link_text(content.text.slice(from, to));
+                this.link_url(mark?.type === 'text_link' ? mark.url : '');
+                this.menu_open('link', this.menu_showed() ? this.menu_spot() : null);
+                const field = from < to ? this.Link_url() : this.Link_text();
+                field.focused(true);
+            }
+            link_bid() {
+                return this.link_url() && !$bog_rich_url(this.link_url()) ? this.link_wrong() : '';
+            }
+            link_ready() {
+                return Boolean(this.link_text().trim() && $bog_rich_url(this.link_url()));
+            }
+            link_apply(event) {
+                const url = $bog_rich_url(this.link_url());
+                event?.preventDefault();
+                if (this.link_ready())
+                    this.form_put(this.link_text(), { type: 'text_link', url });
+                return null;
+            }
+            link_tools() {
+                return [
+                    this.Link_apply(),
+                    ...this.menu_showed() && $bog_rich_at(this.form.content, 'text_link', this.form.from, this.form.to) ? [this.Link_remove()] : [],
+                    this.Cancel(),
+                ];
+            }
+            link_remove(event) {
+                const { content, from, to } = this.form;
+                if (this.form_valid())
+                    this.form_end($bog_rich_remove(content, 'text_link', from, to), { anchor: to, focus: to });
+                else
+                    this.menu_close();
+                return null;
+            }
+            lang() {
+                return this.$.$mol_locale.lang();
+            }
+            date_open() {
+                const mark = this.form_begin('date_time');
+                const { content, from, to } = this.form;
+                const zone = mark?.type === 'date_time' && mark.timezone || $bog_rich_zone_own();
+                const stamp = mark?.type === 'date_time' ? mark.timestamp : Math.ceil(Date.now() / 3600000) * 3600;
+                const parts = $bog_rich_zone_parts(stamp, zone);
+                const two = (num) => String(num).padStart(2, '0');
+                this.date_zone(zone);
+                this.date_moment(`${parts.year}-${two(parts.month)}-${two(parts.day)} ${two(parts.hour)}:${two(parts.minute)}`);
+                this.date_twin(String(Math.max(0, $bog_rich_zone_moments(parts, zone).indexOf(stamp))));
+                this.date_format(mark?.type === 'date_time' ? mark.format : from < to ? 'text' : 'datetime');
+                this.date_text(content.text.slice(from, to));
+                this.menu_open('date', this.menu_showed() ? this.menu_spot() : null);
+            }
+            date_zones() {
+                return $bog_rich_zone_list();
+            }
+            date_moments() {
+                const found = /^(\d{4})-(\d\d)-(\d\d)(?:[ T](\d\d):(\d\d))?/.exec(this.date_moment());
+                if (!found)
+                    return [];
+                const [year, month, day, hour, minute] = found.slice(1).map(part => Number(part ?? 0));
+                return $bog_rich_zone_moments({ year, month, day, hour, minute, second: 0 }, this.date_zone() || $bog_rich_zone_own());
+            }
+            date_bid() {
+                if (!/^\d{4}-\d\d-\d\d/.test(this.date_moment()))
+                    return this.date_wrong();
+                return this.date_moments().length ? '' : this.date_missing();
+            }
+            date_twins() {
+                return Object.fromEntries(this.date_moments().map((moment, index) => [
+                    String(index),
+                    $bog_rich_zone_full(moment, this.lang(), this.date_zone()),
+                ]));
+            }
+            stamp() {
+                const list = this.date_moments();
+                return list[Number(this.date_twin())] ?? list[0];
+            }
+            date_formats() {
+                const stamp = this.stamp() ?? 0;
+                const now = Math.floor(Date.now() / 1000);
+                return Object.fromEntries($bog_rich_date_formats.map(format => [
+                    format,
+                    format === 'text' ? this.date_own() : $bog_rich_zone_text(stamp, format, this.lang(), now, this.date_zone() || undefined),
+                ]));
+            }
+            date_rows() {
+                return [
+                    this.Date_moment_field(),
+                    this.Date_zone_field(),
+                    ...this.date_moments().length > 1 ? [this.Date_twin_field()] : [],
+                    this.Date_format_field(),
+                    ...this.date_format() === 'text' ? [this.Date_text_field()] : [],
+                    this.Date_tools(),
+                ];
+            }
+            date_label() {
+                const format = this.date_format();
+                if (format === 'text')
+                    return this.date_text().replace(/\s+/g, ' ').trim();
+                return $bog_rich_zone_text(this.stamp(), format === 'relative' ? 'datetime' : format, this.lang(), 0, this.date_zone());
+            }
+            date_ready() {
+                return Boolean(this.date_moments().length && this.date_label());
+            }
+            date_apply(event) {
+                if (!this.date_ready())
+                    return null;
+                this.form_put(this.date_label(), {
+                    type: 'date_time',
+                    timestamp: this.stamp(),
+                    format: this.date_format(),
+                    timezone: this.date_zone(),
+                });
+                return null;
+            }
+            date_tools() {
+                return [
+                    this.Date_apply(),
+                    ...this.menu_showed() && $bog_rich_at(this.form.content, 'date_time', this.form.from, this.form.to) ? [this.Date_remove()] : [],
+                    this.Cancel(),
+                ];
+            }
+            date_remove(event) {
+                const { content, from, to } = this.form;
+                if (this.form_valid())
+                    this.form_end($bog_rich_remove(content, 'date_time', from, to), { anchor: to, focus: to });
+                else
+                    this.menu_close();
+                return null;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "content", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "model", null);
+        __decorate([
+            $mol_memo.method
+        ], $bog_rich_edit.prototype, "story", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "sub", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "drawn", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "selection_sync", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "hotkeys", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "mode", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "command_ids", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "command_focused", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_rich_edit.prototype, "command_state", null);
+        __decorate([
+            $mol_action
+        ], $bog_rich_edit.prototype, "link_apply", null);
+        __decorate([
+            $mol_action
+        ], $bog_rich_edit.prototype, "link_remove", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "date_moments", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_edit.prototype, "date_formats", null);
+        __decorate([
+            $mol_action
+        ], $bog_rich_edit.prototype, "date_apply", null);
+        __decorate([
+            $mol_action
+        ], $bog_rich_edit.prototype, "date_remove", null);
+        $$.$bog_rich_edit = $bog_rich_edit;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/edit/edit.view.css", "[bog_rich_edit][mol_view] {\n\tposition: relative;\n\talign-items: flex-end;\n\tmin-width: 0;\n}\n\n[bog_rich_edit_hint][mol_view] {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\tright: 2.5rem;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\twhite-space: nowrap;\n\toverflow: hidden;\n\ttext-overflow: ellipsis;\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_rich_edit_content][mol_view] {\n\tdisplay: block;\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tmin-width: 0;\n\tmin-height: 2.5rem;\n\tpadding: var(--mol_gap_text);\n\toutline: none;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n\ttab-size: 4;\n\tuser-select: text;\n\t-webkit-user-select: text;\n\tcursor: text;\n}\n\n[bog_rich_edit_content] strong {\n\tfont-weight: bold;\n}\n\n[bog_rich_edit_content] em {\n\tfont-style: italic;\n}\n\n[bog_rich_edit_content] u {\n\ttext-decoration: underline;\n}\n\n[bog_rich_edit_content] s {\n\ttext-decoration: line-through;\n}\n\n[bog_rich_edit_content] u s,\n[bog_rich_edit_content] s u {\n\ttext-decoration: underline line-through;\n}\n\n[bog_rich_edit_content] code {\n\tpadding: 0 0.25em;\n\tborder-radius: 0.25em;\n\tfont-family: monospace;\n\tbackground: color-mix( in srgb, currentColor 10%, transparent );\n}\n\n[bog_rich_edit_content] [data-rich=\"spoiler\"] {\n\tborder-radius: 0.25em;\n\tbackground: color-mix( in srgb, var(--mol_theme_shade) 35%, transparent );\n}\n\n[bog_rich_edit_content] [data-rich=\"text_link\"] {\n\tcolor: var(--mol_theme_focus);\n\ttext-decoration: underline;\n\ttext-underline-offset: 0.15em;\n}\n\n[bog_rich_edit_content] [data-rich=\"date_time\"] {\n\tcolor: var(--mol_theme_focus);\n\tborder-bottom: 1px dashed currentColor;\n}\n\n[bog_rich_edit_content] blockquote {\n\tmargin: 0.25rem 0;\n\tpadding: 0.125rem 0.5rem 0.125rem 0.625rem;\n\tborder-radius: 0.25rem;\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 10%, transparent );\n\tbox-shadow: inset 3px 0 var(--mol_theme_control);\n}\n\n[bog_rich_edit_content] blockquote[data-collapsed] {\n\tborder-right: 3px dotted var(--mol_theme_control);\n}\n\n[bog_rich_edit_content] pre {\n\tmargin: 0.25rem 0;\n\tpadding: 0.25rem 0.625rem;\n\tborder-radius: 0.375rem;\n\tfont-family: monospace;\n\twhite-space: pre-wrap;\n\tbackground: color-mix( in srgb, var(--mol_theme_text) 7%, transparent );\n}\n\n[bog_rich_edit_menu][mol_view] {\n\tflex: none;\n\tposition: sticky;\n\tbottom: 0;\n}\n\n[bog_rich_edit_commands][mol_view] {\n\tpadding: 0.25rem 0;\n}\n\n[bog_rich_edit_command][mol_view] {\n\tjustify-content: flex-start;\n\talign-items: center;\n\tgap: 0.75rem;\n\tmin-height: 2.75rem;\n\tpadding: 0 1rem;\n\tborder-radius: 0;\n\tcolor: var(--mol_theme_text);\n\ttouch-action: pan-y;\n}\n\n[bog_rich_edit_command][mol_view][disabled] {\n\tcolor: var(--mol_theme_shade);\n\topacity: 0.6;\n}\n\n[bog_rich_edit_command][mol_view][bog_rich_edit_split=\"true\"] {\n\tborder-top: 1px solid var(--mol_theme_line);\n}\n\n[bog_rich_edit_command][mol_view][bog_rich_edit_state=\"on\"] {\n\tcolor: var(--mol_theme_current);\n}\n\n[bog_rich_edit_command][mol_view][bog_rich_edit_state=\"mixed\"] [bog_rich_edit_command_icon] {\n\tcolor: var(--mol_theme_current);\n\topacity: 0.6;\n}\n\n[bog_rich_edit_command_label][mol_view] {\n\tflex: 1 1 auto;\n}\n\n[bog_rich_edit_command_key][mol_view] {\n\tcolor: var(--mol_theme_shade);\n\tfont-size: 0.8rem;\n}\n\n@media ( hover: hover ) and ( pointer: fine ) {\n\t[bog_rich_edit_command][mol_view] {\n\t\tmin-height: 2rem;\n\t}\n}\n");
+})($ || ($ = {}));
 
 ;
 	($.$mol_icon_send) = class $mol_icon_send extends ($.$mol_icon) {
@@ -72911,31 +75613,400 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$bog_gram_body) = class $bog_gram_body extends ($.$mol_view) {
-		text(){
+	($.$bog_rich_quote) = class $bog_rich_quote extends ($.$mol_view) {
+		clamped(){
+			return false;
+		}
+		Text(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		opened(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		Toggle(){
+			const obj = new this.$.$mol_check_expand();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_rich_quote_Toggle_hint")));
+			(obj.checked) = (next) => ((this.opened(next)));
+			return obj;
+		}
+		dom_name(){
+			return "blockquote";
+		}
+		collapsed(){
+			return false;
+		}
+		long(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		content(){
+			return [];
+		}
+		attr(){
+			return {...(super.attr()), "bog_rich_quote_clamped": (this.clamped())};
+		}
+		sub(){
+			return [(this.Text()), (this.Toggle())];
+		}
+	};
+	($mol_mem(($.$bog_rich_quote.prototype), "Text"));
+	($mol_mem(($.$bog_rich_quote.prototype), "opened"));
+	($mol_mem(($.$bog_rich_quote.prototype), "Toggle"));
+	($mol_mem(($.$bog_rich_quote.prototype), "long"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_rich_quote extends $.$bog_rich_quote {
+            clamped() {
+                return this.collapsed() && !this.opened();
+            }
+            Toggle() {
+                return this.collapsed() && this.long() ? super.Toggle() : null;
+            }
+            measure() {
+                this.$.$mol_window.size();
+                this.content();
+                if (!this.clamped())
+                    return null;
+                return new this.$.$mol_after_frame(() => {
+                    const node = this.Text().dom_node();
+                    this.long(node.scrollHeight > node.clientHeight + 1);
+                });
+            }
+            auto() {
+                return [this.measure()];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_rich_quote.prototype, "measure", null);
+        $$.$bog_rich_quote = $bog_rich_quote;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/quote/quote.view.css", "[bog_rich_quote][mol_view] {\n\tdisplay: flex;\n\tmargin: 0.25rem 0;\n\tpadding: 0.125rem 0.25rem 0.125rem 0.625rem;\n\tborder-radius: 0.25rem;\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 10%, transparent );\n\tbox-shadow: inset 3px 0 var(--mol_theme_control);\n}\n\n[bog_rich_quote_text][mol_view] {\n\tdisplay: block;\n\tflex: 1 1 auto;\n\tmin-width: 0;\n}\n\n[bog_rich_quote_clamped=\"true\"] > [bog_rich_quote_text][mol_view] {\n\tdisplay: -webkit-box;\n\t-webkit-box-orient: vertical;\n\t-webkit-line-clamp: 3;\n\tline-clamp: 3;\n\toverflow: hidden;\n}\n\n[bog_rich_quote_toggle][mol_view] {\n\talign-self: flex-end;\n\tflex: none;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_rich_code) = class $bog_rich_code extends ($.$mol_text_code) {
+		Language(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.language())]);
+			return obj;
+		}
+		Head(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Language()), (this.Copy())]);
+			return obj;
+		}
+		language(){
 			return "";
+		}
+		text_export(){
+			return (this.text());
+		}
+		render_visible_only(){
+			return false;
+		}
+		Row(id){
+			const obj = new this.$.$bog_rich_code_line();
+			(obj.numb_showed) = () => (false);
+			(obj.text) = () => ((this.row_text(id)));
+			return obj;
+		}
+		sub(){
+			return [(this.Head()), (this.Rows())];
+		}
+	};
+	($mol_mem(($.$bog_rich_code.prototype), "Language"));
+	($mol_mem(($.$bog_rich_code.prototype), "Head"));
+	($mol_mem_key(($.$bog_rich_code.prototype), "Row"));
+	($.$bog_rich_code_line) = class $bog_rich_code_line extends ($.$mol_text_code_line) {};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_rich_code_line extends $.$bog_rich_code_line {
+            token_type(path) {
+                const type = super.token_type(path);
+                return type === 'code-link' ? 'code-word' : type;
+            }
+        }
+        $$.$bog_rich_code_line = $bog_rich_code_line;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/code/code.view.css", "[bog_rich_code][mol_view] {\n\tdisplay: flex;\n\tflex-direction: column;\n\tmargin: 0.25rem 0;\n\tmax-width: 100%;\n\tborder-radius: 0.375rem;\n\tbackground: color-mix( in srgb, var(--mol_theme_text) 7%, transparent );\n\twhite-space: pre;\n\ttab-size: 4;\n\toverflow: hidden;\n}\n\n[bog_rich_code_head][mol_view] {\n\talign-items: center;\n\tjustify-content: space-between;\n\tpadding: 0 0 0 0.625rem;\n\tfont-size: 0.8rem;\n\tcolor: var(--mol_theme_shade);\n}\n\n[bog_rich_code_rows][mol_view] {\n\tpadding: 0 0.625rem 0.375rem;\n\tmax-width: 100%;\n\toverflow-x: auto;\n}\n\n[bog_rich_code_row][mol_view] {\n\twhite-space: pre;\n\tword-break: normal;\n\toverflow-wrap: normal;\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_rich_spoiler) = class $bog_rich_spoiler extends ($.$mol_view) {
+		role(){
+			return "button";
+		}
+		tab(){
+			return "0";
+		}
+		label(){
+			return "";
+		}
+		reveal(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		press(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		body(){
+			return [];
 		}
 		dom_name(){
 			return "span";
 		}
+		shown(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		mask(){
+			return "";
+		}
+		content(){
+			return [];
+		}
+		hidden_label(){
+			return (this.$.$mol_locale.text("$bog_rich_spoiler_hidden_label"));
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"bog_rich_spoiler_shown": (this.shown()), 
+				"role": (this.role()), 
+				"tabindex": (this.tab()), 
+				"aria-label": (this.label())
+			};
+		}
+		event(){
+			return {
+				...(super.event()), 
+				"click": (next) => (this.reveal(next)), 
+				"keydown": (next) => (this.press(next))
+			};
+		}
+		sub(){
+			return (this.body());
+		}
+	};
+	($mol_mem(($.$bog_rich_spoiler.prototype), "reveal"));
+	($mol_mem(($.$bog_rich_spoiler.prototype), "press"));
+	($mol_mem(($.$bog_rich_spoiler.prototype), "shown"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_rich_spoiler extends $.$bog_rich_spoiler {
+            role() {
+                return this.shown() ? null : 'button';
+            }
+            tab() {
+                return this.shown() ? null : '0';
+            }
+            label() {
+                return this.shown() ? null : this.hidden_label();
+            }
+            body() {
+                return this.shown() ? this.content() : [this.mask()];
+            }
+            reveal(next) {
+                if (this.shown())
+                    return null;
+                next?.preventDefault();
+                next?.stopPropagation();
+                this.shown(true);
+                return null;
+            }
+            press(next) {
+                if (next?.key === 'Enter' || next?.key === ' ')
+                    this.reveal(next);
+                return null;
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_rich_spoiler.prototype, "reveal", null);
+        __decorate([
+            $mol_action
+        ], $bog_rich_spoiler.prototype, "press", null);
+        $$.$bog_rich_spoiler = $bog_rich_spoiler;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/rich/spoiler/spoiler.view.css", "[bog_rich_spoiler][mol_view] {\n\tdisplay: inline;\n\tborder-radius: 0.25em;\n\tbackground: color-mix( in srgb, currentColor 12%, transparent );\n\t-webkit-box-decoration-break: clone;\n\tbox-decoration-break: clone;\n\ttransition: background-color 0.2s;\n}\n\n[bog_rich_spoiler][mol_view]:not([bog_rich_spoiler_shown=\"true\"]) {\n\tcolor: transparent;\n\tbackground: repeating-linear-gradient( 45deg, var(--mol_theme_shade) 0 2px, var(--mol_theme_line) 2px 5px );\n\tcursor: pointer;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n@media ( prefers-reduced-motion: reduce ) {\n\t[bog_rich_spoiler][mol_view] {\n\t\ttransition: none;\n\t}\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$bog_rich_render) = class $bog_rich_render extends ($.$mol_view) {
+		blocks(){
+			return [];
+		}
+		block_content(id){
+			return [];
+		}
+		quote_collapsed(id){
+			return false;
+		}
+		code_text(id){
+			return "";
+		}
+		code_language(id){
+			return "";
+		}
+		mark_tag(id){
+			return "span";
+		}
+		mark_content(id){
+			return [];
+		}
 		link_uri(id){
 			return "";
 		}
-		link_text(id){
+		auto_uri(id){
+			return "";
+		}
+		spoiler_mask(id){
+			return "";
+		}
+		spoiler_shown(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		date_text(id){
+			return "";
+		}
+		date_timestamp(id){
+			return 0;
+		}
+		date_format(id){
+			return "";
+		}
+		content(){
+			return null;
+		}
+		auto_links(){
+			return true;
+		}
+		shown_text(){
+			return "";
+		}
+		shown_html(){
 			return "";
 		}
 		sub(){
-			return [];
+			return (this.blocks());
+		}
+		Text(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.block_content(id)));
+			return obj;
+		}
+		Quote(id){
+			const obj = new this.$.$bog_rich_quote();
+			(obj.collapsed) = () => ((this.quote_collapsed(id)));
+			(obj.content) = () => ((this.block_content(id)));
+			return obj;
+		}
+		Code(id){
+			const obj = new this.$.$bog_rich_code();
+			(obj.text) = () => ((this.code_text(id)));
+			(obj.language) = () => ((this.code_language(id)));
+			return obj;
+		}
+		Mark(id){
+			const obj = new this.$.$mol_view();
+			(obj.dom_name) = () => ((this.mark_tag(id)));
+			(obj.sub) = () => ((this.mark_content(id)));
+			return obj;
 		}
 		Link(id){
 			const obj = new this.$.$mol_link();
 			(obj.uri) = () => ((this.link_uri(id)));
 			(obj.hint) = () => ((this.link_uri(id)));
-			(obj.sub) = () => ([(this.link_text(id))]);
+			(obj.relation) = () => ("noopener noreferrer");
+			(obj.sub) = () => ((this.mark_content(id)));
+			return obj;
+		}
+		Auto(id){
+			const obj = new this.$.$mol_link();
+			(obj.uri) = () => ((this.auto_uri(id)));
+			(obj.hint) = () => ((this.auto_uri(id)));
+			(obj.relation) = () => ("noopener noreferrer");
+			(obj.sub) = () => ([(this.auto_uri(id))]);
+			return obj;
+		}
+		Spoiler(id){
+			const obj = new this.$.$bog_rich_spoiler();
+			(obj.mask) = () => ((this.spoiler_mask(id)));
+			(obj.shown) = (next) => ((this.spoiler_shown(id, next)));
+			(obj.content) = () => ((this.mark_content(id)));
+			return obj;
+		}
+		Date(id){
+			const obj = new this.$.$bog_rich_date();
+			(obj.text) = () => ((this.date_text(id)));
+			(obj.timestamp) = () => ((this.date_timestamp(id)));
+			(obj.format) = () => ((this.date_format(id)));
 			return obj;
 		}
 	};
-	($mol_mem_key(($.$bog_gram_body.prototype), "Link"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "spoiler_shown"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Text"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Quote"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Code"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Mark"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Link"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Auto"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Spoiler"));
+	($mol_mem_key(($.$bog_rich_render.prototype), "Date"));
 
 
 ;
@@ -72948,103 +76019,214 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        class $bog_gram_body extends $.$bog_gram_body {
-            tokens() {
-                const tokens = [];
-                this.$.$mol_syntax2_md_line.tokenize(this.text(), (name, found, chunks) => tokens.push({ name, found, chunks }));
-                return tokens;
-            }
-            sub() {
-                const parts = [];
-                let text = '';
-                for (const [index, token] of this.tokens().entries()) {
-                    if (token.name !== 'text-link-http' && token.name !== 'text-link') {
-                        text += token.found;
-                        continue;
-                    }
-                    if (text) {
-                        parts.push(text);
-                        text = '';
-                    }
-                    parts.push(this.Link(index));
+        const tags = {
+            bold: 'strong',
+            italic: 'em',
+            underline: 'u',
+            strikethrough: 's',
+            code: 'code',
+        };
+        /** Голые адреса в тексте, без закрывающих знаков на хвосте. */
+        function $bog_rich_render_links(text) {
+            const res = [];
+            for (const found of text.matchAll(/https?:\/\/[^\s<>"«»]+/gi)) {
+                let uri = found[0];
+                while (true) {
+                    const last = uri.at(-1);
+                    const pair = { ')': '(', ']': '[', '}': '{' }[last];
+                    const spare = pair ? uri.split(last).length > uri.split(pair).length : /[.,;:!?'*_~…]/.test(last);
+                    if (!spare)
+                        break;
+                    uri = uri.slice(0, -1);
                 }
-                if (text)
-                    parts.push(text);
-                return parts;
+                if ($bog_rich_url(uri))
+                    res.push({ from: found.index, to: found.index + uri.length });
             }
-            link_uri(index) {
-                const token = this.tokens()[index];
-                return token.name === 'text-link'
-                    ? token.chunks[1]
-                    : token.found;
-            }
-            link_text(index) {
-                const token = this.tokens()[index];
-                return token.name === 'text-link'
-                    ? token.chunks[0]
-                    : token.found;
-            }
+            return res;
         }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_body.prototype, "tokens", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_body.prototype, "sub", null);
-        $$.$bog_gram_body = $bog_gram_body;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("bog/gram/body/body.view.css", "[bog_gram_body][mol_view] {\n\tdisplay: block;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_gram_body_link][mol_view] {\n\tdisplay: inline;\n\tpadding: 0;\n\tmin-width: 0;\n\tmin-height: 0;\n\tborder-radius: 0;\n\tcolor: var(--mol_theme_focus);\n\ttext-decoration: underline;\n\ttext-underline-offset: 0.15em;\n\tcursor: pointer;\n}\n\n[bog_gram_body_link][mol_view]:hover {\n\tbackground: none;\n}\n");
-})($ || ($ = {}));
-
-;
-	($.$bog_gram_rich) = class $bog_gram_rich extends ($.$mol_view) {
-		nodes(){
-			return [];
-		}
-		html(){
-			return "";
-		}
-		sub(){
-			return (this.nodes());
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $bog_gram_rich extends $.$bog_gram_rich {
+        $$.$bog_rich_render_links = $bog_rich_render_links;
+        class $bog_rich_render extends $.$bog_rich_render {
+            content() {
+                return $bog_rich_empty;
+            }
+            model() {
+                return $bog_rich_normalize(this.content());
+            }
+            block_list() {
+                return this.model().text ? $bog_rich_blocks(this.model()) : [];
+            }
+            blocks() {
+                return this.block_list().map(block => {
+                    const key = `${block.type}_${block.from}_${block.to}`;
+                    if (block.type === 'pre')
+                        return this.Code(key);
+                    if (block.type === 'blockquote')
+                        return this.Quote(key);
+                    return this.Text(key);
+                });
+            }
+            block(key) {
+                return this.block_list().find(block => `${block.type}_${block.from}_${block.to}` === key);
+            }
             nodes() {
-                const document = this.$.$mol_dom_context.document;
-                const body = this.$.$mol_dom_parse(`<!doctype html><body>${$bog_gram_write_clean(this.html())}</body>`, 'text/html').body;
-                for (const link of body.querySelectorAll('a')) {
-                    if (!/^(https?:|mailto:|tel:)/i.test(link.getAttribute('href') ?? '')) {
-                        link.replaceWith(...link.childNodes);
+                const res = new Map();
+                const walk = (nodes) => {
+                    for (const node of nodes) {
+                        if (typeof node === 'string')
+                            continue;
+                        res.set(node.key, node);
+                        walk(node.kids);
+                    }
+                };
+                for (const block of this.block_list())
+                    walk(this.block_nodes(block.from, block.to));
+                return res;
+            }
+            block_nodes(from, to) {
+                return $bog_rich_tree(this.model(), from, to);
+            }
+            block_content(key) {
+                const block = this.block(key);
+                if (!block)
+                    return [];
+                const tail = block.to === block.from || this.model().text[block.to - 1] === '\n' ? ['\n'] : [];
+                return [...this.views(this.block_nodes(block.from, block.to), block.from, this.auto_links()), ...tail];
+            }
+            views(nodes, from, links) {
+                const res = [];
+                let pos = from;
+                for (const node of nodes) {
+                    if (typeof node === 'string') {
+                        res.push(...links ? this.text_views(node, pos) : [node]);
+                        pos += node.length;
                         continue;
                     }
-                    link.setAttribute('target', '_blank');
-                    link.setAttribute('rel', 'noopener noreferrer');
+                    res.push(this.view(node));
+                    pos = node.to;
                 }
-                return [...body.childNodes].map(node => document.importNode(node, true));
+                return res;
+            }
+            text_views(text, from) {
+                const res = [];
+                let pos = 0;
+                for (const link of $bog_rich_render_links(text)) {
+                    if (link.from > pos)
+                        res.push(text.slice(pos, link.from));
+                    res.push(this.Auto(`${from + link.from}_${from + link.to}`));
+                    pos = link.to;
+                }
+                if (pos < text.length)
+                    res.push(text.slice(pos));
+                return res;
+            }
+            view(node) {
+                switch (node.mark.type) {
+                    case 'spoiler': return this.Spoiler(node.key);
+                    case 'text_link': return this.Link(node.key);
+                    case 'date_time': return this.Date(node.key);
+                }
+                return this.Mark(node.key);
+            }
+            linked(node) {
+                return this.model().entities.some(mark => (mark.type === 'text_link' || mark.type === 'code')
+                    && mark.offset <= node.from
+                    && mark.offset + mark.length >= node.to);
+            }
+            mark_content(key) {
+                const node = this.nodes().get(key);
+                return node ? this.views(node.kids, node.from, this.auto_links() && !this.linked(node)) : [];
+            }
+            mark_tag(key) {
+                return tags[key.replace(/(_\d+)+$/, '')] ?? 'span';
+            }
+            mark(key) {
+                return this.nodes().get(key)?.mark;
+            }
+            slice(key) {
+                const [, from, to] = /(\d+)_(\d+)$/.exec(key);
+                return this.model().text.slice(Number(from), Number(to));
+            }
+            link_uri(key) {
+                const mark = this.mark(key);
+                return mark?.type === 'text_link' ? mark.url : '';
+            }
+            auto_uri(key) {
+                return this.slice(key);
+            }
+            spoiler_mask(key) {
+                return this.slice(key).replace(/\S/gu, '▒');
+            }
+            spoiler_shown(key, next) {
+                const mark = this.mark(key);
+                return mark ? this.mark_shown(`${mark.offset}_${mark.length}`, next) : false;
+            }
+            mark_shown(place, next) {
+                return next ?? false;
+            }
+            date_text(key) {
+                return this.slice(key);
+            }
+            date_timestamp(key) {
+                const mark = this.mark(key);
+                return mark?.type === 'date_time' ? mark.timestamp : 0;
+            }
+            date_format(key) {
+                const mark = this.mark(key);
+                return mark?.type === 'date_time' ? mark.format : 'text';
+            }
+            quote_collapsed(key) {
+                const mark = this.block(key)?.mark;
+                return mark?.type === 'blockquote' && Boolean(mark.collapsed);
+            }
+            code_text(key) {
+                return this.slice(key);
+            }
+            code_language(key) {
+                const mark = this.block(key)?.mark;
+                return mark?.type === 'pre' ? mark.language ?? '' : '';
+            }
+            /** Содержимое без нераскрытых спойлеров, для копирования. */
+            shown() {
+                let content = this.model();
+                for (const mark of [...content.entities].reverse()) {
+                    if (mark.type !== 'spoiler' || this.mark_shown(`${mark.offset}_${mark.length}`))
+                        continue;
+                    content = $bog_rich_replace(content, mark.offset, mark.offset + mark.length, '▒▒▒▒');
+                }
+                return content;
+            }
+            shown_text() {
+                return this.shown().text;
+            }
+            shown_html() {
+                return $bog_rich_html(this.shown());
             }
         }
         __decorate([
             $mol_mem
-        ], $bog_gram_rich.prototype, "nodes", null);
-        $$.$bog_gram_rich = $bog_gram_rich;
+        ], $bog_rich_render.prototype, "model", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_render.prototype, "block_list", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_render.prototype, "blocks", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_render.prototype, "nodes", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_rich_render.prototype, "block_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_rich_render.prototype, "mark_content", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_rich_render.prototype, "mark_shown", null);
+        __decorate([
+            $mol_mem
+        ], $bog_rich_render.prototype, "shown", null);
+        $$.$bog_rich_render = $bog_rich_render;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -73052,7 +76234,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/rich/rich.view.css", "[bog_gram_rich][mol_view] {\n\tdisplay: block;\n\tmax-width: 100%;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_gram_rich] :is( p, h1, h2, h3, h4, h5, h6 ) {\n\tmargin: 0;\n}\n\n[bog_gram_rich] :is( strong, b ) {\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( em, i ) {\n\tfont-style: italic;\n}\n\n[bog_gram_rich] :is( ins, u ) {\n\ttext-decoration: underline;\n}\n\n[bog_gram_rich] :is( del, s ) {\n\ttext-decoration: line-through;\n}\n\n[bog_gram_rich] :is( code, pre ) {\n\tfont-family: monospace;\n}\n\n[bog_gram_rich] pre {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\twhite-space: pre-wrap;\n\tbox-shadow: inset 2px 0 var(--mol_theme_line);\n}\n\n[bog_gram_rich] blockquote {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\tbox-shadow: inset 2px 0 var(--mol_theme_control);\n}\n\n[bog_gram_rich] :is( ul, ol ) {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n}\n\n[bog_gram_rich] :is( ul, ol ) > p {\n\tdisplay: list-item;\n}\n\n[bog_gram_rich] ul > :is( p, li ) {\n\tlist-style-type: disc;\n}\n\n[bog_gram_rich] ol > :is( p, li ) {\n\tlist-style-type: decimal;\n}\n\n[bog_gram_rich] :is( section > p:first-child, h1, h2, h3, h4, h5, h6 ) {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) {\n\tmargin-left: 0;\n\tmargin-right: 0;\n\tpadding-left: 0;\n\tpadding-right: 0;\n\tlist-style-position: inside;\n}\n\n[bog_gram_rich] a {\n\tcolor: var(--mol_theme_control);\n}\n");
+    $mol_style_attach("bog/rich/render/render.view.css", "[bog_rich_render][mol_view] {\n\tdisplay: block;\n\tmax-width: 100%;\n\tmin-width: 0;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_rich_render_text][mol_view] {\n\tdisplay: block;\n}\n\n[bog_rich_render_mark][mol_view] {\n\tdisplay: inline;\n}\n\nstrong[bog_rich_render_mark] {\n\tfont-weight: bold;\n}\n\nem[bog_rich_render_mark] {\n\tfont-style: italic;\n}\n\nu[bog_rich_render_mark] {\n\ttext-decoration: underline;\n}\n\ns[bog_rich_render_mark] {\n\ttext-decoration: line-through;\n}\n\ncode[bog_rich_render_mark] {\n\tpadding: 0 0.25em;\n\tborder-radius: 0.25em;\n\tfont-family: monospace;\n\tbackground: color-mix( in srgb, currentColor 10%, transparent );\n\t-webkit-box-decoration-break: clone;\n\tbox-decoration-break: clone;\n}\n\n:is( [bog_rich_render_link], [bog_rich_render_auto] )[mol_view] {\n\tdisplay: inline;\n\tpadding: 0;\n\tmin-width: 0;\n\tmin-height: 0;\n\tborder-radius: 0;\n\tcolor: var(--mol_theme_focus);\n\ttext-decoration: underline;\n\ttext-underline-offset: 0.15em;\n\tcursor: pointer;\n}\n\n:is( [bog_rich_render_link], [bog_rich_render_auto] )[mol_view]:hover {\n\tbackground: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -73206,14 +76388,15 @@ var $;
 			]);
 			return obj;
 		}
-		Body(){
-			const obj = new this.$.$bog_gram_body();
-			(obj.text) = () => ((this.body()));
-			return obj;
+		copy_text(){
+			return (this.Body().shown_text());
 		}
-		Rich(){
-			const obj = new this.$.$bog_gram_rich();
-			(obj.html) = () => ((this.html()));
+		copy_html(){
+			return (this.Body().shown_html());
+		}
+		Body(){
+			const obj = new this.$.$bog_rich_render();
+			(obj.content) = () => ((this.content()));
 			return obj;
 		}
 		Time(){
@@ -73257,7 +76440,8 @@ var $;
 		Copy(){
 			const obj = new this.$.$mol_button_copy();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Copy_hint")));
-			(obj.text) = () => ((this.body()));
+			(obj.text) = () => ((this.copy_text()));
+			(obj.html) = () => ((this.copy_html()));
 			(obj.title) = () => ("");
 			return obj;
 		}
@@ -73326,7 +76510,6 @@ var $;
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([
 				(this.Body()), 
-				(this.Rich()), 
 				(this.Meta()), 
 				(this.Actions())
 			]);
@@ -73516,11 +76699,8 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		body(){
-			return "";
-		}
-		html(){
-			return "";
+		content(){
+			return null;
 		}
 		time(){
 			return "";
@@ -73624,7 +76804,6 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Contact"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
-	($mol_mem(($.$bog_gram_bubble.prototype), "Rich"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
@@ -73741,11 +76920,14 @@ var $;
             Call() {
                 return this.call() ? super.Call() : null;
             }
-            Body() {
-                return this.body() && !this.html() ? super.Body() : null;
+            content() {
+                return $bog_rich_empty;
             }
-            Rich() {
-                return this.html() ? super.Rich() : null;
+            body() {
+                return this.content().text;
+            }
+            Body() {
+                return this.body() ? super.Body() : null;
             }
             Edited() {
                 return this.edited() ? super.Edited() : null;
@@ -73834,7 +77016,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n[bog_gram_bubble][bog_gram_bubble_last=\"true\"] [data-mol-tip]:is( :hover, :focus-visible )::after {\n\ttop: auto;\n\tbottom: calc( 100% + 4px );\n\ttransform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] [bog_gram_bubble_body] {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n[bog_gram_bubble][bog_gram_bubble_last=\"true\"] [data-mol-tip]:is( :hover, :focus-visible )::after {\n\ttop: auto;\n\tbottom: calc( 100% + 4px );\n\ttransform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -74003,16 +77185,6 @@ var $;
                 flex: {
                     shrink: 1,
                 },
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
-            },
-            Rich: {
-                minWidth: 0,
-                flex: {
-                    shrink: 1,
-                },
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'anywhere',
             },
             Shot: {
                 alignSelf: 'flex-start',
@@ -74475,33 +77647,24 @@ var $;
 		text_limit(){
 			return 4096;
 		}
-		message_html(next){
+		message_content(next){
 			if(next !== undefined) return next;
-			return "";
+			return null;
 		}
-		rich_mode(next){
-			if(next !== undefined) return next;
-			return false;
+		enter_sends(){
+			return true;
 		}
 		message_send(next){
 			if(next !== undefined) return next;
 			return null;
 		}
 		Message_field(){
-			const obj = new this.$.$bog_gram_write();
+			const obj = new this.$.$bog_rich_edit();
 			(obj.hint) = () => ((this.message_hint()));
 			(obj.length_max) = () => ((this.text_limit()));
-			(obj.html) = (next) => ((this.message_html(next)));
-			(obj.rich) = () => ((this.rich_mode()));
-			(obj.send) = (next) => ((this.message_send(next)));
-			return obj;
-		}
-		rich_hold(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		Rich_icon(){
-			const obj = new this.$.$mol_icon_format_text();
+			(obj.content) = (next) => ((this.message_content(next)));
+			(obj.submit_with_enter) = () => ((this.enter_sends()));
+			(obj.submit) = (next) => ((this.message_send(next)));
 			return obj;
 		}
 		send_enabled(){
@@ -74764,11 +77927,8 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
-		message_body(id){
-			return "";
-		}
 		message_rich(id){
-			return "";
+			return null;
 		}
 		message_time(id){
 			return "";
@@ -75135,14 +78295,6 @@ var $;
 			(obj.sub) = () => ([(this.Message_field())]);
 			return obj;
 		}
-		Rich_toggle(){
-			const obj = new this.$.$mol_check_icon();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Rich_toggle_hint")));
-			(obj.event) = () => ({...(this.$.$mol_check_icon.prototype.event.call(obj)), "mousedown": (next) => (this.rich_hold(next))});
-			(obj.checked) = (next) => ((this.rich_mode(next)));
-			(obj.Icon) = () => ((this.Rich_icon()));
-			return obj;
-		}
 		caption_hint(){
 			return (this.$.$mol_locale.text("$bog_gram_chat_caption_hint"));
 		}
@@ -75313,8 +78465,7 @@ var $;
 			(obj.react_open) = (next) => ((this.message_react_open(id, next)));
 			(obj.forwardable) = () => ((this.message_forwardable(id)));
 			(obj.forward) = (next) => ((this.message_forward(id, next)));
-			(obj.body) = () => ((this.message_body(id)));
-			(obj.html) = () => ((this.message_rich(id)));
+			(obj.content) = () => ((this.message_rich(id)));
 			(obj.time) = () => ((this.message_time(id)));
 			(obj.edited) = () => ((this.message_edited(id)));
 			(obj.checks) = () => ((this.message_checks(id)));
@@ -75398,12 +78549,9 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
-	($mol_mem(($.$bog_gram_chat.prototype), "message_html"));
-	($mol_mem(($.$bog_gram_chat.prototype), "rich_mode"));
+	($mol_mem(($.$bog_gram_chat.prototype), "message_content"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
-	($mol_mem(($.$bog_gram_chat.prototype), "rich_hold"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Rich_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_move"));
@@ -75481,7 +78629,6 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_video"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_box"));
-	($mol_mem(($.$bog_gram_chat.prototype), "Rich_toggle"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Voice_icon"));
@@ -76038,8 +79185,8 @@ var $;
             rows() {
                 return this.messages().map(message => this.Line(message.link().str));
             }
-            message_body(id) {
-                return this.message_pawn(id)?.Text()?.val() ?? '';
+            message_rich(id) {
+                return $bog_gram_markup_read(this.message_pawn(id));
             }
             message_out(id) {
                 return this.message_lord(id) === this.my_lord();
@@ -76169,7 +79316,7 @@ var $;
             field_focus() {
                 if (!this.$.$mol_media.match('(pointer: fine)'))
                     return false;
-                this.Message_field().Content().bring();
+                this.Message_field().bring();
                 return true;
             }
             message_reply(id) {
@@ -76178,7 +79325,7 @@ var $;
                     this.edit_stop();
                 }
                 this.reply_id(id);
-                this.Message_field().Content().bring();
+                this.Message_field().bring();
                 return null;
             }
             reply_cancel(next) {
@@ -76197,7 +79344,7 @@ var $;
                 const pawn = this.message_pawn(id);
                 if (!pawn)
                     return '';
-                const text = String(pawn.Text()?.val() ?? '').replace(/\s+/g, ' ').trim();
+                const text = $bog_rich_preview($bog_gram_markup_read(pawn)).replace(/\s+/g, ' ').trim();
                 if (text)
                     return text;
                 if (pawn.Image()?.val())
@@ -76243,7 +79390,7 @@ var $;
                 this.message_menu('');
                 this.reply_id('');
                 this.edit_id(id);
-                this.message_html(this.message_pawn(id)?.Html()?.val() || $bog_gram_write_html(this.message_body(id)));
+                this.message_content(this.message_rich(id));
                 return null;
             }
             edit_cancel(next) {
@@ -76251,44 +79398,36 @@ var $;
                 return null;
             }
             edit_stop() {
-                this.edit_html('');
+                this.edit_content($bog_rich_empty);
                 this.edit_id('');
             }
-            edit_html(next) {
-                return next ?? '';
+            edit_content(next) {
+                return next ?? $bog_rich_empty;
             }
             draft(next) {
                 const place = `(${this.my_lord()},${this.dialog()})`;
                 const store = this.$.$mol_state_local;
-                if (next !== undefined)
+                if (next !== undefined) {
                     store.value(`$bog_gram_chat.draft${place}`, null);
-                const html = store.value(`$bog_gram_chat.draft_html${place}`, next === undefined ? undefined : next || null);
-                return html ?? $bog_gram_write_html(store.value(`$bog_gram_chat.draft${place}`) ?? '');
+                    store.value(`$bog_gram_chat.draft_html${place}`, null);
+                }
+                const rich = store.value(`$bog_gram_chat.draft_rich${place}`, next && (next.text ? next : null));
+                return rich ?? { text: store.value(`$bog_gram_chat.draft${place}`) ?? '', entities: [] };
             }
-            message_html(next) {
-                return this.edit_id() ? this.edit_html(next) : this.draft(next);
-            }
-            message_plain() {
-                return $bog_gram_write_text(this.message_html());
+            message_content(next) {
+                return this.edit_id() ? this.edit_content(next) : this.draft(next);
             }
             message_text(next) {
                 if (next === undefined)
-                    return this.message_plain();
-                this.message_html($bog_gram_write_html(next));
+                    return this.message_content().text;
+                this.message_content({ text: next, entities: [] });
                 return next;
             }
-            rich_html() {
-                const html = this.message_html();
-                return $bog_gram_write_rich_is(html) ? html : '';
-            }
-            text_put(message, text) {
-                const task = $bog_gram_tasks_is(text);
-                message.Text('auto')?.val(task ? $bog_gram_tasks_text(text) : text);
-                if (task)
+            text_put(message, content) {
+                const size = $bog_gram_tasks_prefix(content.text);
+                $bog_gram_markup_write(message, size ? $bog_rich_slice(content, size, content.text.length) : content);
+                if (size)
                     message.Task('auto')?.val(true);
-                const html = this.rich_html();
-                if (html)
-                    message.Html('auto')?.val(task ? $bog_gram_tasks_html(html) : html);
             }
             message_task(id, next) {
                 const pawn = this.message_pawn(id);
@@ -76334,15 +79473,11 @@ var $;
                 if (this.message_alive(id))
                     this.reveal(this.Line(id), 'center');
             }
-            rich_mode(next) {
-                return this.$.$mol_state_local.value('$bog_gram_chat.rich', next) ?? false;
-            }
-            rich_hold(next) {
-                next?.preventDefault();
-                return null;
-            }
-            message_rich(id) {
-                return this.message_pawn(id)?.Html()?.val() ?? '';
+            enter_sends() {
+                const nav = this.$.$mol_dom_context.navigator;
+                if (!nav?.maxTouchPoints)
+                    return true;
+                return this.$.$mol_media.match('(any-pointer: fine)') || this.$.$mol_media.match('(hover: hover)');
             }
             message_delete(id, next) {
                 this.message_menu('');
@@ -76368,7 +79503,7 @@ var $;
                 return this.voice_hint();
             }
             caption() {
-                return this.text_over() ? '' : this.message_text().trim();
+                return this.text_over() ? $bog_rich_empty : $bog_rich_trim(this.message_content());
             }
             message_send(next) {
                 this.Alerts().offer();
@@ -76379,21 +79514,20 @@ var $;
                     this.pending_send();
                     return null;
                 }
-                const text = this.message_text().trim();
+                const content = $bog_rich_trim(this.message_content());
                 const editing = this.edit_id();
                 if (editing) {
-                    if (!text)
+                    if (!content.text)
                         return null;
                     const pawn = this.message_pawn(editing);
                     if (pawn) {
-                        pawn.Text('auto')?.val(text);
-                        pawn.Html('auto')?.val(this.rich_html());
+                        $bog_gram_markup_write(pawn, content);
                         pawn.Edited('auto')?.val(Date.now());
                     }
                     this.edit_stop();
                     return null;
                 }
-                if (!text)
+                if (!content.text)
                     return null;
                 const session = this.Talk().session(this.dialog());
                 if (!session)
@@ -76401,7 +79535,7 @@ var $;
                 const message = session.Messages('auto').make(null);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
-                this.text_put(message, text);
+                this.text_put(message, content);
                 const reply = this.reply_id();
                 if (reply)
                     message.Reply('auto')?.val(reply);
@@ -76501,7 +79635,7 @@ var $;
             image_files(next) {
                 this.pending_add(next ?? []);
                 if (this.attach_typing)
-                    this.Message_field().Content().bring();
+                    this.Message_field().bring();
                 this.attach_typing = false;
                 return next ?? null;
             }
@@ -76655,7 +79789,7 @@ var $;
                 const frames = files.map(file => this.image_frame(file));
                 if (!frames.length)
                     return '';
-                const text = this.caption();
+                const caption = this.caption();
                 const message = session.Messages('auto').make(null);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
@@ -76669,9 +79803,9 @@ var $;
                 message.Image('auto').remote(frames[0].store);
                 message.Image_width('auto')?.val(frames[0].width);
                 message.Image_height('auto')?.val(frames[0].height);
-                if (text)
-                    this.text_put(message, text);
-                if (text)
+                if (caption.text)
+                    this.text_put(message, caption);
+                if (caption.text)
                     this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
@@ -76702,7 +79836,7 @@ var $;
                     return '';
                 }
                 const store = this.land_closed(clip.bytes, clip.type, passes);
-                const text = this.caption();
+                const caption = this.caption();
                 const message = session.Messages('auto').make(null);
                 message.Author('auto')?.val(this.my_lord());
                 message.Moment('auto')?.val(Date.now());
@@ -76711,9 +79845,9 @@ var $;
                     message.Video_width('auto')?.val(clip.width);
                     message.Video_height('auto')?.val(clip.height);
                 }
-                if (text)
-                    this.text_put(message, text);
-                if (text)
+                if (caption.text)
+                    this.text_put(message, caption);
+                if (caption.text)
                     this.message_text('');
                 this.voice_hint('');
                 return message.link().str;
@@ -76838,7 +79972,7 @@ var $;
                     return true;
                 if (!this.voice_ready())
                     return true;
-                return Boolean(this.message_text().trim() || this.rich_html());
+                return Boolean(this.message_text().trim());
             }
             Send() {
                 return this.send_is() ? super.Send() : null;
@@ -76853,7 +79987,7 @@ var $;
                     case 'locked': return [this.Record_drop(), this.Record_state(), this.Record_turn(), this.Record_stop(), this.Record_send()];
                     case 'review': return [this.Record_drop(), this.Draft(), this.Record_send()];
                 }
-                return [this.Attach(), this.Rich_toggle(), this.Message_box(), this.Send(), this.Voice()];
+                return [this.Attach(), this.Message_box(), this.Send(), this.Voice()];
             }
             press_at = { x: 0, y: 0 };
             tap_timer = null;
@@ -77194,7 +80328,7 @@ var $;
             box_click(next) {
                 if (this.Message_field().dom_node().contains(next?.target))
                     return null;
-                this.Message_field().Content().bring();
+                this.Message_field().bring();
                 return null;
             }
             stick_observer() {
@@ -77317,7 +80451,7 @@ var $;
         ], $bog_gram_chat.prototype, "rows", null);
         __decorate([
             $mol_mem_key
-        ], $bog_gram_chat.prototype, "message_body", null);
+        ], $bog_gram_chat.prototype, "message_rich", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_out", null);
@@ -77377,10 +80511,7 @@ var $;
         ], $bog_gram_chat.prototype, "edit_cancel", null);
         __decorate([
             $mol_mem
-        ], $bog_gram_chat.prototype, "edit_html", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "message_plain", null);
+        ], $bog_gram_chat.prototype, "edit_content", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_task", null);
@@ -77402,12 +80533,6 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_show", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "rich_mode", null);
-        __decorate([
-            $mol_mem_key
-        ], $bog_gram_chat.prototype, "message_rich", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_delete", null);
@@ -77923,10 +81048,6 @@ var $;
                     shrink: 1,
                 },
                 minWidth: 0,
-            },
-            Rich_toggle: {
-                ...round,
-                color: $mol_theme.shade,
             },
             Send: {
                 ...round,

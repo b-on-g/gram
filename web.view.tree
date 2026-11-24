@@ -4547,6 +4547,29 @@ $bog_gram_members $bog_gram_page
 		marks /
 			<= Pick_mark* $mol_icon_account_plus
 
+$bog_rich_date $mol_pick
+	text \
+	timestamp 0
+	format \datetime
+	hint <= full \
+	trigger_content /
+		<= label \
+	bubble_content /
+		<= Full $mol_view
+			sub /
+				<= full
+		<= Tools $mol_row
+			sub /
+				<= Copy $mol_button_copy
+					hint @ \Copy date
+					text <= full
+					title @ \Copy
+				<= Calendar $mol_button_download
+					hint @ \Download calendar event
+					file_name \event.ics
+					blob <= ics $mol_blob
+					title @ \To calendar
+
 $mol_icon_microphone $mol_icon path \M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z
 
 $mol_icon_microphone_settings $mol_icon path \M19,10H17.3C17.3,13 14.76,15.1 12,15.1C9.24,15.1 6.7,13 6.7,10H5C5,13.41 7.72,16.23 11,16.72V20H13V16.72C16.28,16.23 19,13.41 19,10M15,24H17V22H15M11,24H13V22H11M12,13A3,3 0 0,0 15,10V4A3,3 0 0,0 12,1A3,3 0 0,0 9,4V10A3,3 0 0,0 12,13M7,24H9V22H7V24Z
@@ -4819,27 +4842,219 @@ $mol_icon_reply $mol_icon path \M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C
 
 $mol_icon_paperclip $mol_icon path \M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z
 
-$bog_gram_write $giper_baza_rich_edit
-	html? \
-	rich false
-	length_max +Infinity
-	send? null
-	attr *
-		^
-		bog_gram_write_rich <= rich
-	event *
-		^
-		keydown? <=> press? null
-		beforeinput? <=> before_input? null
-		mousedown? <=> tools_hold? null
-		touchstart? <=> tools_touch? null
-		touchend? <=> tools_tap? null
-		focusout? <=> tools_leave? null
-	Hint $mol_view
-		sub /
-			<= hint
+$bog_rich_hotkey $mol_hotkey2
+	mac false
 
 $mol_icon_format_text $mol_icon path \M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,6.87 17.26,6.43C16.73,6 16.11,6 15.5,6H13V16.5C13,17 13,17.5 13.33,17.75C13.67,18 14.33,18 15,18V19H9V18C9.67,18 10.33,18 10.67,17.75C11,17.5 11,17 11,16.5V6H8.5C7.89,6 7.27,6 6.74,6.43C6.21,6.87 5.75,7.74 5.3,8.61L4.34,8.35L5.5,4H18.5Z
+
+$bog_rich_menu $mol_pop
+	spot? null
+	list true
+	trigger_click? null
+	escape? null
+	attr *
+		^
+		bog_rich_menu_list <= list
+	event *
+		^
+		mousedown? <=> hold? null
+		touchstart? <=> touch? null
+		touchend? <=> tap? null
+		keydown? <=> press? null
+	Anchor <= Trigger $mol_button_minor
+		hint @ \Formatting
+		click? <=> trigger_click?
+		sub /
+			<= Trigger_icon $mol_icon_format_text
+	Spot $mol_view
+		view_rect <= spot_rect null
+	Follower $mol_follower
+		offset <= bubble_offset
+		align <= bubble_align
+		Anchor <= Spot
+		Sub <= Bubble
+
+$mol_icon_format_bold $mol_icon path \M13.5,15.5H10V12.5H13.5A1.5,1.5 0 0,1 15,14A1.5,1.5 0 0,1 13.5,15.5M10,6.5H13A1.5,1.5 0 0,1 14.5,8A1.5,1.5 0 0,1 13,9.5H10M15.6,10.79C16.57,10.11 17.25,9 17.25,8C17.25,5.74 15.5,4 13.25,4H7V18H14.04C16.14,18 17.75,16.3 17.75,14.21C17.75,12.69 16.89,11.39 15.6,10.79Z
+
+$mol_icon_format_italic $mol_icon path \M10,4V7H12.21L8.79,15H6V18H14V15H11.79L15.21,7H18V4H10Z
+
+$mol_icon_format_underline $mol_icon path \M5,21H19V19H5V21M12,17A6,6 0 0,0 18,11V3H15.5V11A3.5,3.5 0 0,1 12,14.5A3.5,3.5 0 0,1 8.5,11V3H6V11A6,6 0 0,0 12,17Z
+
+$mol_icon_format_strikethrough $mol_icon path \M3,14H21V12H3M5,4V7H10V10H14V7H19V4M10,19H14V16H10V19Z
+
+$mol_icon_format_quote_close $mol_icon path \M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z
+
+$mol_icon_code_tags $mol_icon path \M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z
+
+$mol_icon_code_braces $mol_icon path \M8,3A2,2 0 0,0 6,5V9A2,2 0 0,1 4,11H3V13H4A2,2 0 0,1 6,15V19A2,2 0 0,0 8,21H10V19H8V14A2,2 0 0,0 6,12A2,2 0 0,0 8,10V5H10V3M16,3A2,2 0 0,1 18,5V9A2,2 0 0,0 20,11H21V13H20A2,2 0 0,0 18,15V19A2,2 0 0,1 16,21H14V19H16V14A2,2 0 0,1 18,12A2,2 0 0,1 16,10V5H14V3H16Z
+
+$mol_icon_eye $mol_icon path \M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z
+
+$mol_icon_eye_off $mol_icon path \M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z
+
+$mol_icon_calendar_clock $mol_icon path \M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z
+
+$mol_icon_format_clear $mol_icon path \M6,5V5.18L8.82,8H11.22L10.5,9.68L12.6,11.78L14.21,8H20V5H6M3.27,5L2,6.27L8.97,13.24L6.5,19H9.5L11.07,15.34L16.73,21L18,19.73L3.55,5.27L3.27,5Z
+
+$mol_icon_arrow_down $mol_icon path \M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z
+
+$bog_rich_edit $mol_view
+	content? null
+	enabled true
+	length_max +Infinity
+	submit? null
+	submit_with_enter false
+	paste_files? null
+	sub /
+		<= Hint $mol_view
+			sub /
+				<= hint \
+		<= Content $mol_view
+			attr *
+				^
+				contenteditable <= editable \true
+				role \textbox
+				aria-multiline \true
+				aria-label <= hint
+			event *
+				beforeinput? <=> before? null
+				input? <=> typed? null
+				compositionstart? <=> compose_start? null
+				compositionend? <=> compose_end? null
+				copy? <=> copy? null
+				cut? <=> cut? null
+				paste? <=> paste? null
+				contextmenu? <=> context? null
+			sub_visible <= drawn null
+			plugins /
+				<= Hotkey $bog_rich_hotkey
+					action <= hotkeys *
+		<= Menu $bog_rich_menu
+			showed? <=> menu_showed? false
+			spot? <=> menu_spot? null
+			list <= menu_list true
+			trigger_click? <=> menu_toggle? null
+			escape? <=> menu_close? null
+			bubble_content <= menu_content /$mol_view
+	Commands $mol_list
+		rows <= command_items /$mol_view
+		plugins /
+			<= Nav $mol_nav
+				keys_y <= command_items
+				current_y? <=> command_focused? null
+				cycle? <=> command_cycle? true
+	Command* $mol_button_minor
+		enabled <= command_enabled* true
+		click? <=> command_click*? null
+		attr *
+			^
+			role \menuitemcheckbox
+			aria-checked <= command_checked* \false
+			bog_rich_edit_state <= command_state* \off
+			bog_rich_edit_split <= command_split* false
+		sub /
+			<= Command_icon* $mol_view
+				sub <= command_icon* /$mol_view
+			<= Command_label* $mol_view
+				sub /
+					<= command_label* \
+			<= Command_key* $mol_view
+				sub /
+					<= command_key* \
+	Icon_bold $mol_icon_format_bold
+	Icon_italic $mol_icon_format_italic
+	Icon_underline $mol_icon_format_underline
+	Icon_strikethrough $mol_icon_format_strikethrough
+	Icon_blockquote $mol_icon_format_quote_close
+	Icon_code $mol_icon_code_tags
+	Icon_pre $mol_icon_code_braces
+	Icon_spoiler $mol_icon_eye_off
+	Icon_text_link $mol_icon_link
+	Icon_date_time $mol_icon_calendar_clock
+	Icon_clear $mol_icon_format_clear
+	Icon_collapse $mol_icon_chevron_down
+	Icon_leave $mol_icon_arrow_down
+	labels *
+		bold @ \Bold
+		italic @ \Italic
+		underline @ \Underline
+		strikethrough @ \Strikethrough
+		blockquote @ \Quote
+		code @ \Monospace
+		pre @ \Code
+		spoiler @ \Spoiler
+		text_link @ \Link
+		date_time @ \Date
+		clear @ \Clear formatting
+		collapse @ \Collapsible quote
+		leave @ \Exit block
+	Link_form $mol_list
+		rows /
+			<= Link_text_field $mol_form_field
+				name @ \Text
+				control <= Link_text $mol_string
+					value? <=> link_text? \
+			<= Link_url_field $mol_form_field
+				name @ \Address
+				bids /
+					<= link_bid \
+				control <= Link_url $mol_string
+					hint \https://
+					keyboard \url
+					value? <=> link_url? \
+					submit? <=> link_apply? null
+			<= Link_tools $mol_row
+				sub <= link_tools /$mol_view
+	link_wrong @ \Only web and mail addresses
+	Link_apply $mol_button_major
+		title @ \Apply
+		enabled <= link_ready false
+		click? <=> link_apply?
+	Link_remove $mol_button_minor
+		title @ \Remove link
+		click? <=> link_remove? null
+	Cancel $mol_button_minor
+		title @ \Cancel
+		click? <=> menu_close?
+	Date_form $mol_list
+		rows <= date_rows /$mol_view
+	Date_moment_field $mol_form_field
+		name @ \Date and time
+		bids /
+			<= date_bid \
+		control <= Date_moment $mol_date
+			value? <=> date_moment? \
+	Date_zone_field $mol_form_field
+		name @ \Time zone
+		control <= Date_zone $mol_select
+			options <= date_zones /string
+			value? <=> date_zone? \
+	Date_twin_field $mol_form_field
+		name @ \This time happens twice
+		control <= Date_twin $mol_switch
+			value? <=> date_twin? \0
+			options <= date_twins *
+	Date_format_field $mol_form_field
+		name @ \Format
+		control <= Date_format $mol_select
+			value? <=> date_format? \datetime
+			dictionary <= date_formats *
+	Date_text_field $mol_form_field
+		name @ \Text
+		control <= Date_text $mol_string
+			value? <=> date_text? \
+	Date_tools $mol_row
+		sub <= date_tools /$mol_view
+	Date_apply $mol_button_major
+		title @ \Apply
+		enabled <= date_ready false
+		click? <=> date_apply? null
+	Date_remove $mol_button_minor
+		title @ \Remove date
+		click? <=> date_remove? null
+	date_wrong @ \Choose date and time
+	date_missing @ \Clocks skip this time in the zone
+	date_own @ \Custom text
 
 $mol_icon_send $mol_icon path \M2,21L23,12L2,3V10L17,12L2,14V21Z
 
@@ -5062,20 +5277,93 @@ $bog_gram_call_card $mol_button_minor
 	count_none @ \Nobody here now, tap to join
 	count_some @ \In the call: {count}
 
-$bog_gram_body $mol_view
-	text \
-	dom_name \span
-	link_uri* \
-	link_text* \
-	sub /$mol_view_content
-	Link* $mol_link
-		uri <= link_uri*
-		hint <= link_uri*
-		sub / <= link_text*
+$bog_rich_quote $mol_view
+	dom_name \blockquote
+	collapsed false
+	long? false
+	content /$mol_view_content
+	attr *
+		^
+		bog_rich_quote_clamped <= clamped false
+	sub /
+		<= Text $mol_view
+			sub <= content
+		<= Toggle $mol_check_expand
+			hint @ \Expand quote
+			checked? <=> opened? false
 
-$bog_gram_rich $mol_view
-	html \
-	sub <= nodes /$mol_view_content
+$bog_rich_code $mol_text_code
+	language \
+	text_export <= text
+	render_visible_only false
+	Row* $bog_rich_code_line
+		numb_showed false
+		text <= row_text*
+	sub /
+		<= Head $mol_view
+			sub /
+				<= Language $mol_view
+					sub /
+						<= language
+				<= Copy
+		<= Rows
+
+$bog_rich_code_line $mol_text_code_line
+
+$bog_rich_spoiler $mol_view
+	dom_name \span
+	shown? false
+	mask \
+	content /$mol_view_content
+	hidden_label @ \Hidden text, press to reveal
+	attr *
+		^
+		bog_rich_spoiler_shown <= shown
+		role <= role \button
+		tabindex <= tab \0
+		aria-label <= label \
+	event *
+		^
+		click? <=> reveal? null
+		keydown? <=> press? null
+	sub <= body /$mol_view_content
+
+$bog_rich_render $mol_view
+	content null
+	auto_links true
+	shown_text \
+	shown_html \
+	sub <= blocks /$mol_view
+	Text* $mol_view
+		sub <= block_content* /$mol_view_content
+	Quote* $bog_rich_quote
+		collapsed <= quote_collapsed* false
+		content <= block_content*
+	Code* $bog_rich_code
+		text <= code_text* \
+		language <= code_language* \
+	Mark* $mol_view
+		dom_name <= mark_tag* \span
+		sub <= mark_content* /$mol_view_content
+	Link* $mol_link
+		uri <= link_uri* \
+		hint <= link_uri*
+		relation \noopener noreferrer
+		sub <= mark_content*
+	Auto* $mol_link
+		uri <= auto_uri* \
+		hint <= auto_uri*
+		relation \noopener noreferrer
+		sub /
+			<= auto_uri*
+	Spoiler* $bog_rich_spoiler
+		mask <= spoiler_mask* \
+		shown? <=> spoiler_shown*? false
+		content <= mark_content*
+	Date* $bog_rich_date
+		text <= date_text* \
+		timestamp <= date_timestamp* 0
+		format <= date_format* \
 
 $mol_icon_emoticon $mol_icon path \M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,1 17,9.5A1.5,1.5 0 0,1 15.5,11A1.5,1.5 0 0,1 14,9.5A1.5,1.5 0 0,1 15.5,8M8.5,8A1.5,1.5 0 0,1 10,9.5A1.5,1.5 0 0,1 8.5,11A1.5,1.5 0 0,1 7,9.5A1.5,1.5 0 0,1 8.5,8M12,17.5C9.67,17.5 7.69,16.04 6.89,14H17.11C16.3,16.04 14.33,17.5 12,17.5Z
 
@@ -5126,8 +5414,7 @@ $bog_gram_bubble $mol_view
 	react_open? false
 	forwardable true
 	forward? null
-	body \
-	html \
+	content null
 	time \
 	edited false
 	checks \
@@ -5217,10 +5504,10 @@ $bog_gram_bubble $mol_view
 					title @ \Write
 		<= Line $mol_view
 			sub /
-				<= Body $bog_gram_body
-					text <= body
-				<= Rich $bog_gram_rich
-					html <= html
+				<= Body $bog_rich_render
+					content <= content
+					shown_text => copy_text
+					shown_html => copy_html
 				<= Meta $mol_view
 					sub /
 						<= Time $mol_view
@@ -5244,7 +5531,8 @@ $bog_gram_bubble $mol_view
 							Icon <= React_icon $mol_icon_emoticon_outline
 						<= Copy $mol_button_copy
 							hint @ \Copy text
-							text <= body
+							text <= copy_text
+							html <= copy_html
 							title \
 						<= Task_mark $mol_check_icon
 							hint @ \Task
@@ -5489,19 +5777,12 @@ $bog_gram_chat $bog_gram_page
 		event *
 			click? <=> box_click? null
 		sub /
-			<= Message_field $bog_gram_write
+			<= Message_field $bog_rich_edit
 				hint <= message_hint @ \Message…
 				length_max <= text_limit 4096
-				html? <=> message_html? \
-				rich <= rich_mode? false
-				send? <=> message_send? null
-	Rich_toggle $mol_check_icon
-		hint @ \Formatting
-		event *
-			^
-			mousedown? <=> rich_hold? null
-		checked? <=> rich_mode?
-		Icon <= Rich_icon $mol_icon_format_text
+				content? <=> message_content? null
+				submit_with_enter <= enter_sends true
+				submit? <=> message_send? null
 	caption_hint @ \Add a caption…
 	text_over_pattern @ \Too long: {over} characters over the {limit} limit
 	Send $mol_button_major
@@ -5630,8 +5911,7 @@ $bog_gram_chat $bog_gram_page
 		react_open? <=> message_react_open*? false
 		forwardable <= message_forwardable* true
 		forward? <=> message_forward*? null
-		body <= message_body* \
-		html <= message_rich* \
+		content <= message_rich* null
 		time <= message_time* \
 		edited <= message_edited* false
 		checks <= message_checks* \

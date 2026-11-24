@@ -55428,7 +55428,7 @@ declare namespace $.$$ {
         col_head_content(colId: string): readonly string[];
         rows(): readonly $mol_view[];
         cells(row_id: string[]): readonly $mol_view[];
-        col_type(col_id: string): "number" | "text" | "branch";
+        col_type(col_id: string): "text" | "number" | "branch";
         Cell(id: {
             row: string[];
             col: string;
@@ -55548,7 +55548,7 @@ declare namespace $.$$ {
         sub_visible(): readonly $mol_view_content[];
         message_receive(event?: MessageEvent<[string, string]>): void;
         uri_change(event: MessageEvent<[string, string]>): void;
-        auto(): (Window | $mol_dom_listener)[];
+        auto(): ($mol_dom_listener | Window)[];
     }
 }
 
@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.235";
+    const $bog_gram_version = "1.0.236";
 }
 
 declare namespace $ {
@@ -71171,7 +71171,7 @@ declare namespace $ {
     const $bog_gram_message_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Text: (auto?: any) => $giper_baza_atom_text | null;
-            readonly Html: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Entities: (auto?: any) => $giper_baza_atom_text | null;
             readonly Author: (auto?: any) => $giper_baza_atom_text | null;
             readonly Moment: (auto?: any) => $giper_baza_atom_real | null;
             readonly Edited: (auto?: any) => $giper_baza_atom_real | null;
@@ -71438,7 +71438,7 @@ declare namespace $ {
             [x: string]: typeof $giper_baza_pawn;
         } & {
             readonly Text: typeof $giper_baza_atom_text;
-            readonly Html: typeof $giper_baza_atom_text;
+            readonly Entities: typeof $giper_baza_atom_text;
             readonly Author: typeof $giper_baza_atom_text;
             readonly Moment: typeof $giper_baza_atom_real;
             readonly Edited: typeof $giper_baza_atom_real;
@@ -78830,6 +78830,217 @@ declare namespace $ {
 }
 
 declare namespace $ {
+
+	type $mol_view__sub_bog_rich_date_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_copy__hint_bog_rich_date_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['hint'] >
+	>
+	type $mol_button_copy__text_bog_rich_date_3 = $mol_type_enforce<
+		ReturnType< $bog_rich_date['full'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_button_copy__title_bog_rich_date_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_download__hint_bog_rich_date_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['hint'] >
+	>
+	type $mol_button_download__file_name_bog_rich_date_6 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['file_name'] >
+	>
+	type $mol_button_download__blob_bog_rich_date_7 = $mol_type_enforce<
+		ReturnType< $bog_rich_date['ics'] >
+		,
+		ReturnType< $mol_button_download['blob'] >
+	>
+	type $mol_button_download__title_bog_rich_date_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['title'] >
+	>
+	type $mol_row__sub_bog_rich_date_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_row['sub'] >
+	>
+	export class $bog_rich_date extends $mol_pick {
+		full( ): string
+		label( ): string
+		Full( ): $mol_view
+		Copy( ): $mol_button_copy
+		ics( ): $mol_blob
+		Calendar( ): $mol_button_download
+		Tools( ): $mol_row
+		text( ): string
+		timestamp( ): number
+		format( ): string
+		hint( ): ReturnType< $bog_rich_date['full'] >
+		trigger_content( ): readonly(any)[]
+		bubble_content( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=date.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_rich_date extends $.$bog_rich_date {
+        now(): number;
+        lang(): string;
+        label(): string;
+        full(): string;
+        ics(): Blob;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    type $bog_rich_zone_parts = {
+        year: number;
+        month: number;
+        day: number;
+        hour: number;
+        minute: number;
+        second: number;
+    };
+    /** Часы на стене в поясе для момента в секундах. */
+    function $bog_rich_zone_parts(timestamp: number, zone: string): $bog_rich_zone_parts;
+    /** Моменты, которым в поясе соответствуют эти часы: ни одного, один или два. */
+    function $bog_rich_zone_moments(parts: $bog_rich_zone_parts, zone: string): readonly number[];
+    function $bog_rich_zone_own(): string;
+    function $bog_rich_zone_list(): readonly string[];
+    /** Текст даты в выбранном формате, без пояса считается по поясу зрителя. */
+    function $bog_rich_zone_text(timestamp: number, format: $bog_rich_date_format, lang: string, now: number, zone?: string): string;
+    /** Полный момент со днём недели и поясом. */
+    function $bog_rich_zone_full(timestamp: number, lang: string, zone?: string): string;
+    /** Как часто относительной дате нужно обновляться, миллисекунды. */
+    function $bog_rich_zone_tick(diff: number): 1000 | 30000 | 600000;
+    /** Событие календаря с временем в UTC. */
+    function $bog_rich_zone_ics(timestamp: number, title: string, now: number): string;
+}
+
+declare namespace $ {
+    export type $bog_rich_style = 'bold' | 'italic' | 'underline' | 'strikethrough';
+    export type $bog_rich_date_format = 'date_short' | 'date_full' | 'time_short' | 'time_full' | 'weekday' | 'datetime' | 'relative' | 'text';
+    export type $bog_rich_mark = {
+        type: $bog_rich_style | 'spoiler' | 'code';
+    } | {
+        type: 'blockquote';
+        collapsed?: boolean;
+    } | {
+        type: 'pre';
+        language?: string;
+    } | {
+        type: 'text_link';
+        url: string;
+    } | {
+        type: 'date_time';
+        timestamp: number;
+        format: $bog_rich_date_format;
+        timezone?: string;
+    };
+    export type $bog_rich_entity = {
+        offset: number;
+        length: number;
+    } & $bog_rich_mark;
+    export type $bog_rich_type = $bog_rich_entity['type'];
+    export type $bog_rich_content = {
+        text: string;
+        entities: readonly $bog_rich_entity[];
+    };
+    export type $bog_rich_state = 'on' | 'off' | 'mixed' | 'disabled';
+    export type $bog_rich_node = string | {
+        key: string;
+        from: number;
+        to: number;
+        mark: $bog_rich_entity;
+        index: number;
+        kids: readonly $bog_rich_node[];
+    };
+    export type $bog_rich_block = {
+        type: 'text' | 'blockquote' | 'pre';
+        from: number;
+        to: number;
+        mark: $bog_rich_entity | null;
+    };
+    export const $bog_rich_empty: $bog_rich_content;
+    export const $bog_rich_styles: readonly $bog_rich_style[];
+    export const $bog_rich_toggles: readonly $bog_rich_type[];
+    export const $bog_rich_date_formats: readonly $bog_rich_date_format[];
+    type Range = readonly [from: number, to: number];
+    export function $bog_rich_url(raw: string): string;
+    /** Границы абзаца, в котором стоит позиция. */
+    export function $bog_rich_line(text: string, pos: number): Range;
+    /** Абзацы, которых касается диапазон. */
+    export function $bog_rich_lines(text: string, from: number, to: number): readonly Range[];
+    /** Приводит содержимое к единственному правильному виду, отбрасывая негодные сущности. */
+    export function $bog_rich_normalize(raw: $bog_rich_content | null | undefined): $bog_rich_content;
+    export function $bog_rich_equal(left: $bog_rich_content, right: $bog_rich_content): boolean;
+    /** Заменяет кусок текста, сдвигая сущности. Вставке достаются `marks`. */
+    export function $bog_rich_replace(content: $bog_rich_content, from: number, to: number, insert: string, marks?: readonly $bog_rich_mark[]): $bog_rich_content;
+    /** Вырезает кусок содержимого, смещая сущности к началу. */
+    export function $bog_rich_slice(content: $bog_rich_content, from: number, to: number): $bog_rich_content;
+    /** Вставляет содержимое вместе с его стилями. */
+    export function $bog_rich_insert(content: $bog_rich_content, from: number, to: number, part: $bog_rich_content): $bog_rich_content;
+    /** Срезает пробелы по краям, сохраняя стили на местах. */
+    export function $bog_rich_trim(content: $bog_rich_content): $bog_rich_content;
+    /** Текст для превью и уведомлений: скрытое заменено подписью. */
+    export function $bog_rich_preview(content: $bog_rich_content, mask?: string): string;
+    export function $bog_rich_at(content: $bog_rich_content, type: $bog_rich_type, from: number, to?: number): $bog_rich_entity | null;
+    /** Состояние команды на диапазоне. */
+    export function $bog_rich_state_of(content: $bog_rich_content, type: $bog_rich_type, from: number, to: number): $bog_rich_state;
+    /** Снимает стиль с диапазона. */
+    export function $bog_rich_remove(content: $bog_rich_content, type: $bog_rich_type, from: number, to: number): $bog_rich_content;
+    /** Применяет стиль ко всей допустимой части диапазона. */
+    export function $bog_rich_apply(content: $bog_rich_content, mark: $bog_rich_mark, from: number, to: number): $bog_rich_content;
+    /** Переключает стиль: сплошной снимает, остальное применяет. */
+    export function $bog_rich_toggle(content: $bog_rich_content, mark: $bog_rich_mark, from: number, to: number): $bog_rich_content;
+    export function $bog_rich_clear_able(content: $bog_rich_content, from: number, to: number): boolean;
+    /** Снимает всё оформление с диапазона. */
+    export function $bog_rich_clear(content: $bog_rich_content, from: number, to: number): $bog_rich_content;
+    /** Стили, которые достанутся набранному здесь тексту. */
+    export function $bog_rich_typing(content: $bog_rich_content, from: number, to: number): readonly $bog_rich_mark[];
+    /** Раздвигает диапазон так, чтобы дата не рвалась. */
+    export function $bog_rich_whole(content: $bog_rich_content, from: number, to: number): Range;
+    /** Граница графемы слева или справа от позиции. */
+    export function $bog_rich_grapheme(text: string, pos: number, dir: -1 | 1): number;
+    /** Обрезает текст по лимиту, не разрывая графему. */
+    export function $bog_rich_fit(text: string, limit: number): string;
+    /** Блоки содержимого по порядку. Абзацы вне цитат и кода слиты в один блок. */
+    export function $bog_rich_blocks(content: $bog_rich_content): readonly $bog_rich_block[];
+    /** Дерево вложенных стилей внутри куска текста. */
+    export function $bog_rich_tree(content: $bog_rich_content, from: number, to: number, level?: number): readonly $bog_rich_node[];
+    /** Минимальная правка, превращающая старый текст в новый, с подсказкой о каретке. */
+    export function $bog_rich_diff(prev: string, next: string, caret: number): {
+        from: number;
+        to: number;
+        insert: string;
+    };
+    export {};
+}
+
+declare namespace $ {
+    /** Содержимое сообщения. Стили от другой ревизии текста не применяются. */
+    function $bog_gram_markup_read(message: $bog_gram_message | null | undefined): $bog_rich_content;
+    /** Пишет текст и стили одной ревизией, связывая их хешем текста. */
+    function $bog_gram_markup_write(message: $bog_gram_message, content: $bog_rich_content): void;
+}
+
+declare namespace $ {
     function $bog_gram_clock_day_title(this: $, key: string): string;
     class $bog_gram_clock extends $mol_object {
         static day_key(moment: number): string;
@@ -81732,9 +81943,7 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    function $bog_gram_tasks_is(text: string): boolean;
-    function $bog_gram_tasks_text(text: string): string;
-    function $bog_gram_tasks_html(html: string): string;
+    function $bog_gram_tasks_prefix(text: string): number;
 }
 
 declare namespace $ {
@@ -81874,777 +82083,21 @@ declare namespace $ {
 
 //# sourceMappingURL=paperclip.view.tree.d.ts.map
 declare namespace $ {
-    let $giper_baza_text_tokens: $mol_regexp<{
-        [x: string]: string;
-        readonly token: string;
-        readonly space: string;
-        readonly emoji: string;
-        readonly 'line-break': string;
-        readonly indents: string;
-        readonly Word: string;
-        readonly word: string;
-        readonly spaces: string;
-        readonly others: string;
-        readonly link: string;
-        readonly win_end: string;
-        readonly mac_end: string;
-    }>;
-}
 
-declare namespace $ {
-    /** Mergeable text Pawn */
-    class $giper_baza_text extends $giper_baza_pawn {
-        static tag: keyof typeof $giper_baza_unit_sand_tag;
-        value(next?: string): string;
-        /** Text representation. Based on list of rows. */
-        text(next?: string): string;
-        /** Text representation. Based on list of tokens. */
-        str(next?: string): string;
-        write(next: string, str_from?: number, str_to?: number): this;
-        point_by_offset(offset: number): readonly [head: string, x: number, y: number];
-        offset_by_point([self, offset]: readonly [head: string, x: number, y: number]): readonly [head: string, pos: number];
-        selection(lord: $giper_baza_link, next?: readonly [begin: number, end: number]): readonly [begin: number, end: number];
-    }
-}
-
-/** @jsx $mol_jsx */
-/** @jsxFrag $mol_jsx_frag */
-declare namespace $ {
-    class $giper_baza_rich extends $giper_baza_pawn {
-        dom(next?: (Element | Attr | Text)[]): (Element | Attr | Text)[];
-        html(next?: string): string;
-        selection(lord: $giper_baza_link, next?: readonly [from: readonly [self: string, x: number, y: number], to: readonly [self: string, x: number, y: number]]): Exclude<typeof next, undefined>;
-    }
-}
-
-declare namespace $ {
-
-	export class $mol_icon_arrow_collapse extends $mol_icon {
-		path( ): string
+	export class $bog_rich_hotkey extends $mol_hotkey2 {
+		mac( ): boolean
 	}
 	
 }
 
-//# sourceMappingURL=collapse.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_arrow_collapse_left extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=left.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_format_size extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=size.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_order_bool_ascending extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=ascending.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_order_numeric_ascending extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=ascending.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_comment extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=comment.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_comment_quote extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=quote.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_comment_quote_outline extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=outline.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_xml extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=xml.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_marker extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=marker.view.tree.d.ts.map
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $mol_bar extends $mol_view {
-	}
-	
-}
-
-//# sourceMappingURL=bar.view.tree.d.ts.map
-declare namespace $ {
-    function $mol_jsx_attach<Result>(next: typeof $mol_jsx_document, action: () => Result): Result;
-}
-
-declare namespace $ {
-    class $mol_dom_point extends Object {
-        readonly node: Node;
-        readonly pos: number;
-        constructor(node: Node, pos: number);
-        /** Iterator for deep comparison. */
-        [Symbol.iterator](): ArrayIterator<number | Node>;
-        /** Point before the node. */
-        static nose(node: Node): $mol_dom_point;
-        /** Point after start of the node. */
-        static head(node: Node): $mol_dom_point;
-        /** Point before end of the node. */
-        static foot(node: Node): $mol_dom_point;
-        /** Point after the node. */
-        static tail(node: Node): $mol_dom_point;
-        /** Is point after start of the node. */
-        is_head(): boolean;
-        /** Is point before end of the node. */
-        is_foot(): boolean;
-        /** Is point after end of the node. */
-        is_tail(): boolean;
-        /** Point after start of the node. */
-        head(): $mol_dom_point;
-        /** Point before end of the node. */
-        foot(): $mol_dom_point;
-        /** Point after end of the node. */
-        tail(): $mol_dom_point;
-        native(): readonly [Node, number];
-        /** Finds child of container which contains this point. */
-        lifted_to(container: Node): Node;
-        /** Point near the node. -1: before, +1: after. */
-        static near(node: Node, axis: -1 | 1): $mol_dom_point | null;
-        /** Point near the node. -1: before, +1: after. */
-        jump(axis: -1 | 1): $mol_dom_point | null;
-        /** Point at one step in some direction. */
-        move_step(axis: -1 | 1): $mol_dom_point | null;
-        move_chars(root: Element, offset: number): $mol_dom_point;
-    }
-}
-
-declare namespace $ {
-    class $mol_dom_range extends Object {
-        readonly anchor: $mol_dom_point;
-        readonly extend: $mol_dom_point;
-        constructor(anchor: $mol_dom_point, extend?: $mol_dom_point);
-        /** Iterator for deep comparison. */
-        [Symbol.iterator](): ArrayIterator<$mol_dom_point>;
-        /** Makes range from selection with direction storing. */
-        static from_selection(sel?: Selection): $mol_dom_range | null;
-        /** Converts from native Range. */
-        static from_native(range: Range): $mol_dom_range;
-        /** Surrounds whole node content. */
-        static inside(node: Node): $mol_dom_range;
-        /** Around node itself. */
-        static around(node: Node): $mol_dom_range;
-        /** Deeper Element which contain whole selection. */
-        container(): Node;
-        /** Returns range with points ordered in document order. */
-        ordered(): $mol_dom_range;
-        /** Raises range boundaries to a common parent. */
-        lifted(): $mol_dom_range;
-        /** Has now content. */
-        is_empty(): boolean;
-        /** Swap start and end points. */
-        swap(): $mol_dom_range;
-        /** Returns new range expanded outside by one point steps. */
-        expand(): $mol_dom_range;
-        /** Returns fragment of cloned content. */
-        copy(): DocumentFragment;
-        /** Removes all content and returns new collapsed range. */
-        clear(): $mol_dom_range;
-        /** Removes all content and inserts given instead. */
-        paste(node: Node): $mol_dom_range;
-        /** Wraps content by given element. */
-        surround(el: Element): $mol_dom_range;
-        /**
-         * Returns position of point relate to this range.
-         * Before: -1
-         * Inside: 0
-         * After: +1
-         */
-        point_compare(point: $mol_dom_point): number;
-        /** Is given range inside this. */
-        range_contains(range: $mol_dom_range): boolean;
-        /**
-         * Returns point which bounded by this range.
-         * Actualy returns middle of three points: anchor, given point, extend.
-         */
-        point_bound(point: $mol_dom_point): $mol_dom_point;
-        /** Returns new range which bounded by giiven. */
-        range_bounds(range: $mol_dom_range): $mol_dom_range;
-        /** Aim selection to this range. */
-        select(): this;
-        /**
-         * Returns native DOM Range object.
-         * It's always forward direction.
-         */
-        native(): Range;
-    }
-}
-
-declare namespace $ {
-    /** Image processing. */
-    class $mol_picture extends $mol_object2 {
-        readonly canvas: HTMLCanvasElement;
-        constructor(canvas: HTMLCanvasElement);
-        get context(): CanvasRenderingContext2D | null;
-        get bitmap(): ImageData;
-        static fit(image: Exclude<CanvasImageSource, VideoFrame> | Blob | string, width?: number, height?: number): $mol_picture;
-        static make(image: Exclude<CanvasImageSource, VideoFrame>, width: number, height?: number): $mol_picture;
-        static sizes(image: Exclude<CanvasImageSource, VideoFrame>): number[];
-        static load(uri: string): Promise<HTMLImageElement>;
-        format(type: 'image/png' | 'image/jpeg' | 'image/webp', quality?: number): Blob | null;
-        url(type?: "image/png" | "image/jpeg" | "image/webp", quality?: number): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	type $mol_hotkey2__action_giper_baza_rich_edit_1 = $mol_type_enforce<
-		({ 
-			alt_S( next?: ReturnType< $giper_baza_rich_edit['inline_toggle'] > ): ReturnType< $giper_baza_rich_edit['inline_toggle'] >,
-			alt_E( next?: ReturnType< $giper_baza_rich_edit['inline_toggle'] > ): ReturnType< $giper_baza_rich_edit['inline_toggle'] >,
-			alt_I( next?: ReturnType< $giper_baza_rich_edit['inline_toggle'] > ): ReturnType< $giper_baza_rich_edit['inline_toggle'] >,
-			alt_R( next?: ReturnType< $giper_baza_rich_edit['inline_toggle'] > ): ReturnType< $giper_baza_rich_edit['inline_toggle'] >,
-			alt_C( next?: ReturnType< $giper_baza_rich_edit['inline_toggle'] > ): ReturnType< $giper_baza_rich_edit['inline_toggle'] >,
-			alt_T( next?: ReturnType< $giper_baza_rich_edit['block_wrap'] > ): ReturnType< $giper_baza_rich_edit['block_wrap'] >,
-			alt_Q( next?: ReturnType< $giper_baza_rich_edit['block_wrap'] > ): ReturnType< $giper_baza_rich_edit['block_wrap'] >,
-			alt_U( next?: ReturnType< $giper_baza_rich_edit['block_wrap'] > ): ReturnType< $giper_baza_rich_edit['block_wrap'] >,
-			alt_O( next?: ReturnType< $giper_baza_rich_edit['block_wrap'] > ): ReturnType< $giper_baza_rich_edit['block_wrap'] >,
-			alt_P( next?: ReturnType< $giper_baza_rich_edit['block_wrap'] > ): ReturnType< $giper_baza_rich_edit['block_wrap'] >,
-			tab( next?: ReturnType< $giper_baza_rich_edit['block_rewrap'] > ): ReturnType< $giper_baza_rich_edit['block_rewrap'] >,
-			shift_tab( next?: ReturnType< $giper_baza_rich_edit['block_unwrap'] > ): ReturnType< $giper_baza_rich_edit['block_unwrap'] >,
-			ctrl_Z( next?: ReturnType< $giper_baza_rich_edit['undo'] > ): ReturnType< $giper_baza_rich_edit['undo'] >,
-			ctrl_shift_Z( next?: ReturnType< $giper_baza_rich_edit['redo'] > ): ReturnType< $giper_baza_rich_edit['redo'] >,
-		}) 
-		,
-		ReturnType< $mol_hotkey2['action'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_2 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_3 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_4 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_unwrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_5 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_6 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_7 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_8 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_wrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_9 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_10 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_11 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_12 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_wrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_13 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_14 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_15 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_16 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_wrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_17 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_18 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_19 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_20 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_wrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_21 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_22 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_23 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_24 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['block_wrap'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_giper_baza_rich_edit_25 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_minor__title_giper_baza_rich_edit_26 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['title'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_27 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_28 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_29 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['inline_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__title_giper_baza_rich_edit_30 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['title'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_31 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_32 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_33 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['inline_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__title_giper_baza_rich_edit_34 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['title'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_35 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_36 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_37 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['inline_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__title_giper_baza_rich_edit_38 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['title'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_39 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_40 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_41 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['inline_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__title_giper_baza_rich_edit_42 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['title'] >
-	>
-	type $mol_button_minor__hint_giper_baza_rich_edit_43 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__enabled_giper_baza_rich_edit_44 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_minor['enabled'] >
-	>
-	type $mol_button_minor__click_giper_baza_rich_edit_45 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['inline_toggle'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_pick__hint_giper_baza_rich_edit_46 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_pick['hint'] >
-	>
-	type $mol_pick__trigger_enabled_giper_baza_rich_edit_47 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_pick['trigger_enabled'] >
-	>
-	type $mol_pick__trigger_content_giper_baza_rich_edit_48 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_pick['trigger_content'] >
-	>
-	type $mol_pick__bubble_content_giper_baza_rich_edit_49 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_pick['bubble_content'] >
-	>
-	type $mol_button_open__hint_giper_baza_rich_edit_50 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_open['hint'] >
-	>
-	type $mol_button_open__enabled_giper_baza_rich_edit_51 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['selected'] >
-		,
-		ReturnType< $mol_button_open['enabled'] >
-	>
-	type $mol_button_open__files_giper_baza_rich_edit_52 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['attach_files'] >
-		,
-		ReturnType< $mol_button_open['files'] >
-	>
-	type $mol_bar__sub_giper_baza_rich_edit_53 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_bar['sub'] >
-	>
-	type $mol_string__hint_giper_baza_rich_edit_54 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_string__hint_giper_baza_rich_edit_55 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_string['hint'] >
-	>
-	type $mol_bar__sub_giper_baza_rich_edit_56 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_bar['sub'] >
-	>
-	type $mol_float__sub_giper_baza_rich_edit_57 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['tools'] >
-		,
-		ReturnType< $mol_float['sub'] >
-	>
-	type $mol_view__attr_giper_baza_rich_edit_58 = $mol_type_enforce<
-		({ 
-			'contenteditable': ReturnType< $giper_baza_rich_edit['editable'] >,
-		}) 
-		,
-		ReturnType< $mol_view['attr'] >
-	>
-	type $mol_view__event_giper_baza_rich_edit_59 = $mol_type_enforce<
-		({ 
-			input( next?: ReturnType< $giper_baza_rich_edit['save'] > ): ReturnType< $giper_baza_rich_edit['save'] >,
-			paste( next?: ReturnType< $giper_baza_rich_edit['paste'] > ): ReturnType< $giper_baza_rich_edit['paste'] >,
-			pointermove( next?: ReturnType< $giper_baza_rich_edit['hover'] > ): ReturnType< $giper_baza_rich_edit['hover'] >,
-		}) 
-		,
-		ReturnType< $mol_view['event'] >
-	>
-	type $mol_view__sub_giper_baza_rich_edit_60 = $mol_type_enforce<
-		ReturnType< $giper_baza_rich_edit['content'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	export class $giper_baza_rich_edit extends $mol_view {
-		enabled( ): boolean
-		selection_load( ): any
-		selection_sync( ): any
-		inline_toggle( id: any, next?: any ): any
-		block_wrap( id: any, next?: any ): any
-		block_rewrap( next?: any ): any
-		block_unwrap( next?: any ): any
-		undo( next?: any ): any
-		redo( next?: any ): any
-		Hotkey( ): $mol_hotkey2
-		selected( next?: boolean ): boolean
-		Unwrap_icon( ): $mol_icon_arrow_collapse_left
-		Unwrap_button( ): $mol_button_minor
-		Section_icon( ): $mol_icon_format_size
-		Section_button( ): $mol_button_minor
-		List_bullet_icon( ): $mol_icon_order_bool_ascending
-		List_bullet_button( ): $mol_button_minor
-		List_number_icon( ): $mol_icon_order_numeric_ascending
-		List_number_button( ): $mol_button_minor
-		Quote_icon( ): $mol_icon_comment_quote_outline
-		Quote_button( ): $mol_button_minor
-		Preformat_icon( ): $mol_icon_xml
-		Preformat_button( ): $mol_button_minor
-		Inline_format_menu_icon( ): $mol_icon_marker
-		Strong_button( ): $mol_button_minor
-		Em_button( ): $mol_button_minor
-		Ins_button( ): $mol_button_minor
-		Del_button( ): $mol_button_minor
-		Code_button( ): $mol_button_minor
-		Inline_format_menu( ): $mol_pick
-		attach_files( next?: readonly(any)[] ): readonly(any)[]
-		Attach( ): $mol_button_open
-		Main( ): $mol_bar
-		Search_query( ): $mol_string
-		Search_replace( ): $mol_string
-		Search_panel( ): $mol_bar
-		tools( ): readonly(any)[]
-		Tools( ): $mol_float
-		editable( next?: string ): string
-		save( next?: any ): any
-		paste( next?: any ): any
-		hover( next?: any ): any
-		content( ): readonly(any)[]
-		Content( ): $mol_view
-		pawn( next?: $giper_baza_rich ): $giper_baza_rich
-		attr( ): ({ 
-			'giper_baza_rich_edit_enabled': ReturnType< $giper_baza_rich_edit['enabled'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		hint( ): string
-		auto( ): readonly(any)[]
-		plugins( ): readonly(any)[]
-		sub( ): readonly(any)[]
-	}
-	
-}
-
-//# sourceMappingURL=edit.view.tree.d.ts.map
-/** @jsx $mol_jsx */
-/** @jsxFrag $mol_jsx_frag */
+//# sourceMappingURL=hotkey.view.tree.d.ts.map
 declare namespace $.$$ {
-    class $giper_baza_rich_edit extends $.$giper_baza_rich_edit {
-        editable(next?: string | null): string;
-        sub(): $mol_view[];
-        tools(): $mol_bar[];
-        content(): ChildNode[];
-        selection(next?: readonly [from: readonly [self: string, x: number, y: number], to: readonly [self: string, x: number, y: number]]): readonly [from: readonly [self: string, x: number, y: number], to: readonly [self: string, x: number, y: number]];
-        save(event?: Event): void;
-        selection_sync(): $mol_dom_listener;
-        selected(): boolean;
-        selection_save(): void;
-        selection_load(): void;
-        blocks_selected(): $mol_dom_range;
-        block_wrap(Type: string, event: KeyboardEvent): void;
-        block_rewrap(event: KeyboardEvent): void;
-        block_unwrap(event: KeyboardEvent): void;
-        /** Wraps selecion to given element type. */
-        inline_toggle(Type: string, event: KeyboardEvent): void;
-        attach_files(files: readonly File[]): never[];
-        paste(event: ClipboardEvent): void;
-        hover(event: PointerEvent): void;
+    /** Хоткеи по физической клавише. На маке командная клавиша только Cmd, Ctrl остаётся системе. */
+    class $bog_rich_hotkey extends $.$bog_rich_hotkey {
+        mac(): boolean;
+        name(event: KeyboardEvent): string;
+        keydown(event?: KeyboardEvent): void;
     }
-}
-
-declare namespace $ {
-
-	type $mol_view__sub_bog_gram_write_1 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	export class $bog_gram_write extends $giper_baza_rich_edit {
-		press( next?: any ): any
-		before_input( next?: any ): any
-		tools_hold( next?: any ): any
-		tools_touch( next?: any ): any
-		tools_tap( next?: any ): any
-		tools_leave( next?: any ): any
-		html( next?: string ): string
-		rich( ): boolean
-		length_max( ): number
-		send( next?: any ): any
-		attr( ): ({ 
-			'bog_gram_write_rich': ReturnType< $bog_gram_write['rich'] >,
-		})  & ReturnType< $giper_baza_rich_edit['attr'] >
-		event( ): ({ 
-			keydown( next?: ReturnType< $bog_gram_write['press'] > ): ReturnType< $bog_gram_write['press'] >,
-			beforeinput( next?: ReturnType< $bog_gram_write['before_input'] > ): ReturnType< $bog_gram_write['before_input'] >,
-			mousedown( next?: ReturnType< $bog_gram_write['tools_hold'] > ): ReturnType< $bog_gram_write['tools_hold'] >,
-			touchstart( next?: ReturnType< $bog_gram_write['tools_touch'] > ): ReturnType< $bog_gram_write['tools_touch'] >,
-			touchend( next?: ReturnType< $bog_gram_write['tools_tap'] > ): ReturnType< $bog_gram_write['tools_tap'] >,
-			focusout( next?: ReturnType< $bog_gram_write['tools_leave'] > ): ReturnType< $bog_gram_write['tools_leave'] >,
-		})  & ReturnType< $giper_baza_rich_edit['event'] >
-		Hint( ): $mol_view
-	}
-	
-}
-
-//# sourceMappingURL=write.view.tree.d.ts.map
-declare namespace $.$$ {
-    type Caret = ReturnType<$giper_baza_rich_edit['selection']>;
-    export function $bog_gram_write_clean(html: string): string;
-    export function $bog_gram_write_spot(root: Node, node: Node, offset: number): {
-        at: number;
-        tail: boolean;
-    };
-    export function $bog_gram_write_point(root: Node, spot: {
-        at: number;
-        tail: boolean;
-    }): [Node, number];
-    export function $bog_gram_write_text(html: string): string;
-    export function $bog_gram_write_html(text: string): string;
-    export function $bog_gram_write_rich_is(html: string): boolean;
-    export class $bog_gram_write extends $.$bog_gram_write {
-        pawn(next?: $giper_baza_rich): $giper_baza_rich;
-        selection(next?: Caret): Caret;
-        selection_save(): void;
-        selection_load(): void;
-        selected(next?: boolean): boolean;
-        html_last: string;
-        nodes(next?: readonly Node[]): readonly Node[];
-        content(): $mol_view_content[];
-        save(event?: Event): void;
-        paste_rich(html: string): void;
-        text(): string;
-        sub(): $mol_view[];
-        /**
-         * Enter отправляет только там, где есть физическая клавиатура.
-         * Тач без мыши и трекпада — это телефон: там Enter переносит строку,
-         * а отправка остаётся за кнопкой.
-         */
-        enter_sends(): boolean;
-        newline(): void;
-        press(event?: KeyboardEvent): null;
-        chosen(): number;
-        room(): number;
-        before_input(event?: InputEvent): null;
-        paste(event: ClipboardEvent): void;
-        aim(): boolean;
-        block_wrap(type: string, event: KeyboardEvent): void;
-        block_rewrap(event: KeyboardEvent): void;
-        block_unwrap(event: KeyboardEvent): void;
-        inline_toggle(type: string, event: KeyboardEvent): void;
-        caret(): Selection | null;
-        caret_keep(change: () => void): void;
-        inline_start(type: string): boolean;
-        menu_hide(): void;
-        tools_hold(event?: Event): null;
-        touch_at: null | {
-            x: number;
-            y: number;
-        };
-        tools_touch(event?: TouchEvent): null;
-        tools_tap(event?: TouchEvent): null;
-        tools_leave(event?: FocusEvent): null;
-    }
-    export {};
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -82656,6 +82109,1442 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=text.view.tree.d.ts.map
+declare namespace $ {
+
+	type $mol_button_minor__hint_bog_rich_menu_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_rich_menu_2 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['trigger_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_rich_menu_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__view_rect_bog_rich_menu_4 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['spot_rect'] >
+		,
+		ReturnType< $mol_view['view_rect'] >
+	>
+	type $mol_follower__offset_bog_rich_menu_5 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['bubble_offset'] >
+		,
+		ReturnType< $mol_follower['offset'] >
+	>
+	type $mol_follower__align_bog_rich_menu_6 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['bubble_align'] >
+		,
+		ReturnType< $mol_follower['align'] >
+	>
+	type $mol_follower__Anchor_bog_rich_menu_7 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['Spot'] >
+		,
+		ReturnType< $mol_follower['Anchor'] >
+	>
+	type $mol_follower__Sub_bog_rich_menu_8 = $mol_type_enforce<
+		ReturnType< $bog_rich_menu['Bubble'] >
+		,
+		ReturnType< $mol_follower['Sub'] >
+	>
+	export class $bog_rich_menu extends $mol_pop {
+		hold( next?: any ): any
+		touch( next?: any ): any
+		tap( next?: any ): any
+		press( next?: any ): any
+		Trigger_icon( ): $mol_icon_format_text
+		Trigger( ): $mol_button_minor
+		spot_rect( ): any
+		spot( next?: any ): any
+		list( ): boolean
+		trigger_click( next?: any ): any
+		escape( next?: any ): any
+		attr( ): ({ 
+			'bog_rich_menu_list': ReturnType< $bog_rich_menu['list'] >,
+		})  & ReturnType< $mol_pop['attr'] >
+		event( ): ({ 
+			mousedown( next?: ReturnType< $bog_rich_menu['hold'] > ): ReturnType< $bog_rich_menu['hold'] >,
+			touchstart( next?: ReturnType< $bog_rich_menu['touch'] > ): ReturnType< $bog_rich_menu['touch'] >,
+			touchend( next?: ReturnType< $bog_rich_menu['tap'] > ): ReturnType< $bog_rich_menu['tap'] >,
+			keydown( next?: ReturnType< $bog_rich_menu['press'] > ): ReturnType< $bog_rich_menu['press'] >,
+		})  & ReturnType< $mol_pop['event'] >
+		Anchor( ): ReturnType< $bog_rich_menu['Trigger'] >
+		Spot( ): $mol_view
+		Follower( ): $mol_follower
+	}
+	
+}
+
+//# sourceMappingURL=menu.view.tree.d.ts.map
+declare namespace $.$$ {
+    type Rect = {
+        left: number;
+        right: number;
+        top: number;
+        bottom: number;
+        width: number;
+        height: number;
+    };
+    /** Всплывающее меню у выделения или кнопки, которое не отбирает фокус у редактора. */
+    export class $bog_rich_menu extends $.$bog_rich_menu {
+        spot(next?: Rect | null): Rect | null;
+        spot_rect(): any;
+        screen(): {
+            top: number;
+            bottom: number;
+        };
+        anchor_visible(): boolean;
+        align_vert(): "suspense" | "top" | "bottom";
+        align_hor(): string;
+        height_max(): number;
+        outside(): $mol_dom_listener | null;
+        auto(): any;
+        free(event?: Event): boolean;
+        hold(event?: Event): null;
+        touch_at: null | {
+            x: number;
+            y: number;
+        };
+        touch(event?: TouchEvent): null;
+        tap(event?: TouchEvent): null;
+        press(event?: KeyboardEvent): null;
+    }
+    export {};
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_calendar extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=calendar.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_calendar_today extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=today.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_format extends $mol_string {
+		mask( id: any): string
+		allow( ): string
+		hint( ): ReturnType< $mol_format['mask'] >
+		keyboard( ): string
+	}
+	
+}
+
+//# sourceMappingURL=format.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Formatted string input/output
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_format_demo
+     */
+    class $mol_format extends $.$mol_format {
+        selection([from, to]?: [number, number]): number[];
+        value_changed(next?: string): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_trash_can extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=can.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_trash_can_outline extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=outline.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_chevron_double_left extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=left.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_chevron_right extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=right.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_chevron_double_right extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=right.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_hor extends $mol_view {
+	}
+	
+}
+
+//# sourceMappingURL=hor.view.tree.d.ts.map
+declare namespace $.$$ {
+    /** Horizontal list of blocks. */
+    class $mol_hor extends $.$mol_hor {
+        minimal_width(): number;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_view__minimal_height_mol_calendar_1 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_view['minimal_height'] >
+	>
+	type $mol_view__sub_mol_calendar_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_mol_calendar_3 = $mol_type_enforce<
+		ReturnType< $mol_calendar['head'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_hor__sub_mol_calendar_4 = $mol_type_enforce<
+		ReturnType< $mol_calendar['weekdays'] >
+		,
+		ReturnType< $mol_hor['sub'] >
+	>
+	type $mol_calendar_day__holiday_mol_calendar_5 = $mol_type_enforce<
+		ReturnType< $mol_calendar['weekend'] >
+		,
+		ReturnType< $mol_calendar_day['holiday'] >
+	>
+	type $mol_calendar_day__sub_mol_calendar_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_calendar_day['sub'] >
+	>
+	type $mol_hor__sub_mol_calendar_7 = $mol_type_enforce<
+		ReturnType< $mol_calendar['week_days'] >
+		,
+		ReturnType< $mol_hor['sub'] >
+	>
+	type $mol_calendar_day__ghost_mol_calendar_8 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_ghost'] >
+		,
+		ReturnType< $mol_calendar_day['ghost'] >
+	>
+	type $mol_calendar_day__holiday_mol_calendar_9 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_holiday'] >
+		,
+		ReturnType< $mol_calendar_day['holiday'] >
+	>
+	type $mol_calendar_day__selected_mol_calendar_10 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_selected'] >
+		,
+		ReturnType< $mol_calendar_day['selected'] >
+	>
+	type $mol_calendar_day__today_mol_calendar_11 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_today'] >
+		,
+		ReturnType< $mol_calendar_day['today'] >
+	>
+	type $mol_calendar_day__theme_mol_calendar_12 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_theme'] >
+		,
+		ReturnType< $mol_calendar_day['theme'] >
+	>
+	type $mol_calendar_day__sub_mol_calendar_13 = $mol_type_enforce<
+		ReturnType< $mol_calendar['day_content'] >
+		,
+		ReturnType< $mol_calendar_day['sub'] >
+	>
+	export class $mol_calendar extends $mol_list {
+		title( ): string
+		Title( ): $mol_view
+		head( ): readonly(any)[]
+		Head( ): $mol_view
+		weekdays( ): readonly($mol_view)[]
+		Weekdays( ): $mol_hor
+		weekend( id: any): boolean
+		weekday( id: any): string
+		week_days( id: any): readonly($mol_view)[]
+		day_ghost( id: any): boolean
+		day_holiday( id: any): boolean
+		day_selected( id: any): boolean
+		day_today( id: any): boolean
+		day_theme( id: any): any
+		day_text( id: any): string
+		day_content( id: any): readonly(any)[]
+		sub( ): readonly(any)[]
+		weeks( ): readonly($mol_view)[]
+		weeks_count( ): number
+		Weekday( id: any): $mol_calendar_day
+		Week( id: any): $mol_hor
+		Day( id: any): $mol_calendar_day
+		month_string( ): string
+		month_moment( ): $mol_time_moment
+	}
+	
+	export class $mol_calendar_day extends $mol_view {
+		holiday( ): boolean
+		ghost( ): boolean
+		selected( ): boolean
+		today( ): boolean
+		theme( ): any
+		minimal_height( ): number
+		minimal_width( ): number
+		attr( ): ({ 
+			'mol_calendar_holiday': ReturnType< $mol_calendar_day['holiday'] >,
+			'mol_calendar_ghost': ReturnType< $mol_calendar_day['ghost'] >,
+			'mol_calendar_selected': ReturnType< $mol_calendar_day['selected'] >,
+			'mol_calendar_today': ReturnType< $mol_calendar_day['today'] >,
+			'mol_theme': ReturnType< $mol_calendar_day['theme'] >,
+		}) 
+	}
+	
+}
+
+//# sourceMappingURL=calendar.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Draws all days of month as table.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_calendar_demo_holiday
+     */
+    class $mol_calendar extends $.$mol_calendar {
+        month_moment(): $mol_time_moment;
+        lang(): string;
+        title(): string;
+        day_first(): $mol_time_moment;
+        day_last(): $mol_time_moment;
+        day_draw_from(): $mol_time_moment;
+        weekdays(): $mol_view[];
+        weekday(index: number): string;
+        weekend(index: number): boolean;
+        sub(): any[];
+        weeks(): $mol_view[];
+        week_days(index: number): $mol_view[];
+        day_text(day: string): string;
+        day_holiday(day: string): boolean;
+        today(): $mol_time_moment;
+        day_today(day: string): boolean;
+        day_ghost(day: string): boolean;
+        day_theme(day: string): any;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_button_minor__hint_mol_date_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__enabled_mol_date_2 = $mol_type_enforce<
+		ReturnType< $mol_date['enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	type $mol_button_minor__click_mol_date_3 = $mol_type_enforce<
+		ReturnType< $mol_date['today_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type __mol_date_5 = $mol_type_enforce<
+		Parameters< $mol_date['value_changed'] >[0]
+		,
+		Parameters< ReturnType< $mol_date['Input'] >['value_changed'] >[0]
+	>
+	type $mol_format__value_mol_date_6 = $mol_type_enforce<
+		ReturnType< $mol_date['value'] >
+		,
+		ReturnType< $mol_format['value'] >
+	>
+	type $mol_format__mask_mol_date_7 = $mol_type_enforce<
+		ReturnType< $mol_date['input_mask'] >
+		,
+		ReturnType< $mol_format['mask'] >
+	>
+	type $mol_format__enabled_mol_date_8 = $mol_type_enforce<
+		ReturnType< $mol_date['enabled'] >
+		,
+		ReturnType< $mol_format['enabled'] >
+	>
+	type $mol_button_minor__hint_mol_date_9 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__enabled_mol_date_10 = $mol_type_enforce<
+		ReturnType< $mol_date['enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	type $mol_button_minor__click_mol_date_11 = $mol_type_enforce<
+		ReturnType< $mol_date['clear'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_mol_date_13 = $mol_type_enforce<
+		ReturnType< $mol_date['input_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_mol_date_14 = $mol_type_enforce<
+		ReturnType< $mol_date['year_prev_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_mol_date_15 = $mol_type_enforce<
+		ReturnType< $mol_date['year_prev'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_mol_date_17 = $mol_type_enforce<
+		ReturnType< $mol_date['prev_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_mol_date_18 = $mol_type_enforce<
+		ReturnType< $mol_date['prev'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_19 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_mol_date_20 = $mol_type_enforce<
+		ReturnType< $mol_date['next_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_mol_date_21 = $mol_type_enforce<
+		ReturnType< $mol_date['next'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_mol_date_23 = $mol_type_enforce<
+		ReturnType< $mol_date['year_next_hint'] >
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_mol_date_24 = $mol_type_enforce<
+		ReturnType< $mol_date['year_next'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_mol_date_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_mol_date_26 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_date_calendar__enabled_mol_date_27 = $mol_type_enforce<
+		ReturnType< $mol_date['enabled'] >
+		,
+		ReturnType< $mol_date_calendar['enabled'] >
+	>
+	type $mol_date_calendar__month_moment_mol_date_28 = $mol_type_enforce<
+		ReturnType< $mol_date['month_moment'] >
+		,
+		ReturnType< $mol_date_calendar['month_moment'] >
+	>
+	type $mol_date_calendar__day_selected_mol_date_29 = $mol_type_enforce<
+		ReturnType< $mol_date['day_selected'] >
+		,
+		ReturnType< $mol_date_calendar['day_selected'] >
+	>
+	type $mol_date_calendar__day_click_mol_date_30 = $mol_type_enforce<
+		ReturnType< $mol_date['day_click'] >
+		,
+		ReturnType< $mol_date_calendar['day_click'] >
+	>
+	type $mol_date_calendar__head_mol_date_31 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_date_calendar['head'] >
+	>
+	type $mol_speck__value_mol_date_32 = $mol_type_enforce<
+		ReturnType< $mol_date['error'] >
+		,
+		ReturnType< $mol_speck['value'] >
+	>
+	export class $mol_date extends $mol_pick {
+		error( ): string
+		enabled( ): boolean
+		today_click( next?: any ): any
+		Today_icon( ): $mol_icon_calendar_today
+		Today( ): $mol_button_minor
+		value( next?: string ): string
+		value_changed( next?: ReturnType< ReturnType< $mol_date['Input'] >['value_changed'] > ): ReturnType< ReturnType< $mol_date['Input'] >['value_changed'] >
+		input_mask( id: any): string
+		Input( ): $mol_format
+		clear( next?: any ): any
+		Clear_icon( ): $mol_icon_trash_can_outline
+		Clear( ): $mol_button_minor
+		input_content( ): readonly(any)[]
+		Input_row( ): $mol_view
+		month_moment( ): ReturnType< $mol_date['value_moment'] >
+		day_selected( id: any): boolean
+		day_click( id: any, next?: any ): any
+		Calendar_title( ): ReturnType< ReturnType< $mol_date['Calendar'] >['Title'] >
+		year_prev_hint( ): string
+		year_prev( next?: any ): any
+		Year_prev_icon( ): $mol_icon_chevron_double_left
+		Year_prev( ): $mol_button_minor
+		month_prev_hint( ): string
+		prev_hint( ): ReturnType< $mol_date['month_prev_hint'] >
+		month_prev( next?: any ): any
+		prev( next?: ReturnType< $mol_date['month_prev'] > ): ReturnType< $mol_date['month_prev'] >
+		Month_prev_icon( ): $mol_icon_chevron_left
+		Prev_icon( ): ReturnType< $mol_date['Month_prev_icon'] >
+		Month_prev( ): $mol_button_minor
+		Prev( ): ReturnType< $mol_date['Month_prev'] >
+		month_next_hint( ): string
+		next_hint( ): ReturnType< $mol_date['month_next_hint'] >
+		month_next( next?: any ): any
+		next( next?: ReturnType< $mol_date['month_next'] > ): ReturnType< $mol_date['month_next'] >
+		Month_next_icon( ): $mol_icon_chevron_right
+		Next_icon( ): ReturnType< $mol_date['Month_next_icon'] >
+		Month_next( ): $mol_button_minor
+		Next( ): ReturnType< $mol_date['Month_next'] >
+		year_next_hint( ): string
+		year_next( next?: any ): any
+		Year_next_icon( ): $mol_icon_chevron_double_right
+		Year_next( ): $mol_button_minor
+		Calendar_tools( ): $mol_view
+		Calendar( ): $mol_date_calendar
+		Icon( ): $mol_icon_calendar
+		Error( ): $mol_speck
+		bubble_content( ): readonly(any)[]
+		value_number( next?: number ): number
+		value_moment( next?: $mol_time_moment ): $mol_time_moment
+	}
+	
+	type $mol_button_minor__title_mol_date_calendar_1 = $mol_type_enforce<
+		ReturnType< $mol_date_calendar['day_text'] >
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__event_click_mol_date_calendar_2 = $mol_type_enforce<
+		ReturnType< $mol_date_calendar['day_click'] >
+		,
+		ReturnType< $mol_button_minor['event_click'] >
+	>
+	type $mol_button_minor__minimal_height_mol_date_calendar_3 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_button_minor['minimal_height'] >
+	>
+	type $mol_button_minor__enabled_mol_date_calendar_4 = $mol_type_enforce<
+		ReturnType< $mol_date_calendar['enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	export class $mol_date_calendar extends $mol_calendar {
+		day_click( id: any, next?: any ): any
+		enabled( ): boolean
+		Day_button( id: any): $mol_button_minor
+		day_content( id: any): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=date.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Date presenter and picker.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_date_demo
+     */
+    class $mol_date extends $.$mol_date {
+        trigger_content(): ($mol_speck | $mol_icon_calendar)[] | (string | $mol_icon_calendar)[];
+        input_mask(val: string): "____-__-__ __:__" | "____-__-__ ";
+        input_content(): ($mol_button_minor | $.$mol_format)[];
+        error(): string;
+        value(val?: string): string;
+        value_moment(next?: $mol_time_moment): $mol_time_moment;
+        value_number(next?: number): number;
+        value_moment_today(): $mol_time_moment;
+        clear(): void;
+        month_moment(next?: $mol_time_moment): $mol_time_moment;
+        protected value_moment_safe(): $mol_time_moment | null;
+        day_selected(day: string): boolean;
+        day_click(day: string): void;
+        month_prev(): void;
+        month_next(): void;
+        year_prev(): void;
+        year_next(): void;
+        today_click(): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $mol_icon_format_bold extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=bold.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_format_italic extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=italic.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_format_underline extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=underline.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_format_strikethrough extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=strikethrough.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_format_quote_close extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=close.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_code_tags extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=tags.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_code_braces extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=braces.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_eye extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=eye.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_eye_off extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=off.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_link extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=link.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_calendar_clock extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=clock.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_format_clear extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=clear.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_arrow_down extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=down.view.tree.d.ts.map
+declare namespace $ {
+    /** История правок одного значения. Частые правки копятся в одну запись, новая правка стирает возврат. */
+    class $bog_rich_story<Shot> extends $mol_object2 {
+        readonly apply: (shot: Shot) => void;
+        past: {
+            prev: Shot;
+            next: Shot;
+        }[];
+        future: {
+            prev: Shot;
+            next: Shot;
+        }[];
+        open: boolean;
+        delay: number;
+        timer: null | $mol_after_timeout;
+        constructor(apply: (shot: Shot) => void);
+        stage(prev: Shot, next: Shot): void;
+        seal(): void;
+        backward(): void;
+        forward(): void;
+        clear(): void;
+    }
+}
+
+declare namespace $ {
+    type Leaf = {
+        node: Node;
+        from: number;
+        to: number;
+    };
+    export type $bog_rich_dom_map = {
+        text: string;
+        leaves: readonly Leaf[];
+        lines: readonly {
+            el: Node;
+            from: number;
+            to: number;
+        }[];
+    };
+    /** Читает текст редактируемой области и места её узлов в нём. */
+    export function $bog_rich_dom_read(root: Node): $bog_rich_dom_map;
+    /** Позиция в тексте для точки документа. */
+    export function $bog_rich_dom_offset(map: $bog_rich_dom_map, root: Node, node: Node, pos: number): number;
+    /** Точка документа для позиции в тексте. */
+    export function $bog_rich_dom_point(map: $bog_rich_dom_map, root: Node, offset: number): readonly [Node, number];
+    /** Строит узлы редактируемой области по содержимому. */
+    export function $bog_rich_dom_build(document: Document, content: $bog_rich_content): readonly Element[];
+    /** Приводит область к содержимому, не трогая совпавшие узлы. Отвечает, менялось ли что-то. */
+    export function $bog_rich_dom_draw(root: Element, content: $bog_rich_content): boolean;
+    export {};
+}
+
+declare namespace $ {
+    /** Достаёт из чужой разметки текст и разрешённые стили. Чужие узлы в документ не попадают. */
+    function $bog_rich_html_parse(this: $, html: string): $bog_rich_content;
+    /** Безопасная разметка для буфера обмена. */
+    function $bog_rich_html(content: $bog_rich_content): string;
+}
+
+declare namespace $ {
+
+	type $mol_view__sub_bog_rich_edit_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_rich_hotkey__action_bog_rich_edit_2 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['hotkeys'] >
+		,
+		ReturnType< $bog_rich_hotkey['action'] >
+	>
+	type $mol_view__attr_bog_rich_edit_3 = $mol_type_enforce<
+		({ 
+			'contenteditable': ReturnType< $bog_rich_edit['editable'] >,
+			'role': string,
+			'aria-multiline': string,
+			'aria-label': ReturnType< $bog_rich_edit['hint'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		,
+		ReturnType< $mol_view['attr'] >
+	>
+	type $mol_view__event_bog_rich_edit_4 = $mol_type_enforce<
+		({ 
+			beforeinput( next?: ReturnType< $bog_rich_edit['before'] > ): ReturnType< $bog_rich_edit['before'] >,
+			input( next?: ReturnType< $bog_rich_edit['typed'] > ): ReturnType< $bog_rich_edit['typed'] >,
+			compositionstart( next?: ReturnType< $bog_rich_edit['compose_start'] > ): ReturnType< $bog_rich_edit['compose_start'] >,
+			compositionend( next?: ReturnType< $bog_rich_edit['compose_end'] > ): ReturnType< $bog_rich_edit['compose_end'] >,
+			copy( next?: ReturnType< $bog_rich_edit['copy'] > ): ReturnType< $bog_rich_edit['copy'] >,
+			cut( next?: ReturnType< $bog_rich_edit['cut'] > ): ReturnType< $bog_rich_edit['cut'] >,
+			paste( next?: ReturnType< $bog_rich_edit['paste'] > ): ReturnType< $bog_rich_edit['paste'] >,
+			contextmenu( next?: ReturnType< $bog_rich_edit['context'] > ): ReturnType< $bog_rich_edit['context'] >,
+		}) 
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_visible_bog_rich_edit_5 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['drawn'] >
+		,
+		ReturnType< $mol_view['sub_visible'] >
+	>
+	type $mol_view__plugins_bog_rich_edit_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['plugins'] >
+	>
+	type $bog_rich_menu__showed_bog_rich_edit_7 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_showed'] >
+		,
+		ReturnType< $bog_rich_menu['showed'] >
+	>
+	type $bog_rich_menu__spot_bog_rich_edit_8 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_spot'] >
+		,
+		ReturnType< $bog_rich_menu['spot'] >
+	>
+	type $bog_rich_menu__list_bog_rich_edit_9 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_list'] >
+		,
+		ReturnType< $bog_rich_menu['list'] >
+	>
+	type $bog_rich_menu__trigger_click_bog_rich_edit_10 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_toggle'] >
+		,
+		ReturnType< $bog_rich_menu['trigger_click'] >
+	>
+	type $bog_rich_menu__escape_bog_rich_edit_11 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_close'] >
+		,
+		ReturnType< $bog_rich_menu['escape'] >
+	>
+	type $bog_rich_menu__bubble_content_bog_rich_edit_12 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_content'] >
+		,
+		ReturnType< $bog_rich_menu['bubble_content'] >
+	>
+	type $mol_nav__keys_y_bog_rich_edit_13 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_items'] >
+		,
+		ReturnType< $mol_nav['keys_y'] >
+	>
+	type $mol_nav__current_y_bog_rich_edit_14 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_focused'] >
+		,
+		ReturnType< $mol_nav['current_y'] >
+	>
+	type $mol_nav__cycle_bog_rich_edit_15 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_cycle'] >
+		,
+		ReturnType< $mol_nav['cycle'] >
+	>
+	type $mol_view__sub_bog_rich_edit_16 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_icon'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_rich_edit_17 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_rich_edit_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_string__value_bog_rich_edit_19 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_text'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_20 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_21 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Link_text'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_string__hint_bog_rich_edit_22 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__keyboard_bog_rich_edit_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['keyboard'] >
+	>
+	type $mol_string__value_bog_rich_edit_24 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_url'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_rich_edit_25 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_apply'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_26 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__bids_bog_rich_edit_27 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_form_field['bids'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_28 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Link_url'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_row__sub_bog_rich_edit_29 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_tools'] >
+		,
+		ReturnType< $mol_row['sub'] >
+	>
+	type $mol_date__value_bog_rich_edit_30 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_moment'] >
+		,
+		ReturnType< $mol_date['value'] >
+	>
+	type $mol_select__options_bog_rich_edit_31 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_zones'] >
+		,
+		ReturnType< $mol_select['options'] >
+	>
+	type $mol_select__value_bog_rich_edit_32 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_zone'] >
+		,
+		ReturnType< $mol_select['value'] >
+	>
+	type $mol_switch__value_bog_rich_edit_33 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_twin'] >
+		,
+		ReturnType< $mol_switch['value'] >
+	>
+	type $mol_switch__options_bog_rich_edit_34 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_twins'] >
+		,
+		ReturnType< $mol_switch['options'] >
+	>
+	type $mol_select__value_bog_rich_edit_35 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_format'] >
+		,
+		ReturnType< $mol_select['value'] >
+	>
+	type $mol_select__dictionary_bog_rich_edit_36 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_formats'] >
+		,
+		ReturnType< $mol_select['dictionary'] >
+	>
+	type $mol_string__value_bog_rich_edit_37 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_text'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_list__rows_bog_rich_edit_38 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_items'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_list__plugins_bog_rich_edit_39 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['plugins'] >
+	>
+	type $mol_button_minor__enabled_bog_rich_edit_40 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_enabled'] >
+		,
+		ReturnType< $mol_button_minor['enabled'] >
+	>
+	type $mol_button_minor__click_bog_rich_edit_41 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['command_click'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__attr_bog_rich_edit_42 = $mol_type_enforce<
+		({ 
+			'role': string,
+			'aria-checked': ReturnType< $bog_rich_edit['command_checked'] >,
+			'bog_rich_edit_state': ReturnType< $bog_rich_edit['command_state'] >,
+			'bog_rich_edit_split': ReturnType< $bog_rich_edit['command_split'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__sub_bog_rich_edit_43 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_bog_rich_edit_44 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_button_major__title_bog_rich_edit_45 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__enabled_bog_rich_edit_46 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_ready'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_rich_edit_47 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_apply'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_minor__title_bog_rich_edit_48 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_rich_edit_49 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['link_remove'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__title_bog_rich_edit_50 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_rich_edit_51 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['menu_close'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_list__rows_bog_rich_edit_52 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_53 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__bids_bog_rich_edit_54 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_form_field['bids'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_55 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Date_moment'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_56 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_57 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Date_zone'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_58 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_59 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Date_twin'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_60 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_61 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Date_format'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_form_field__name_bog_rich_edit_62 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_form_field['name'] >
+	>
+	type $mol_form_field__control_bog_rich_edit_63 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['Date_text'] >
+		,
+		ReturnType< $mol_form_field['control'] >
+	>
+	type $mol_row__sub_bog_rich_edit_64 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_tools'] >
+		,
+		ReturnType< $mol_row['sub'] >
+	>
+	type $mol_button_major__title_bog_rich_edit_65 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__enabled_bog_rich_edit_66 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_ready'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_rich_edit_67 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_apply'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_button_minor__title_bog_rich_edit_68 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_rich_edit_69 = $mol_type_enforce<
+		ReturnType< $bog_rich_edit['date_remove'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	export class $bog_rich_edit extends $mol_view {
+		hint( ): string
+		Hint( ): $mol_view
+		editable( ): string
+		before( next?: any ): any
+		typed( next?: any ): any
+		compose_start( next?: any ): any
+		compose_end( next?: any ): any
+		copy( next?: any ): any
+		cut( next?: any ): any
+		paste( next?: any ): any
+		context( next?: any ): any
+		drawn( ): any
+		hotkeys( ): Record<string, any>
+		Hotkey( ): $bog_rich_hotkey
+		Content( ): $mol_view
+		menu_showed( next?: boolean ): boolean
+		menu_spot( next?: any ): any
+		menu_list( ): boolean
+		menu_toggle( next?: any ): any
+		menu_close( next?: any ): any
+		menu_content( ): readonly($mol_view)[]
+		Menu( ): $bog_rich_menu
+		command_items( ): readonly($mol_view)[]
+		command_focused( next?: any ): any
+		command_cycle( next?: boolean ): boolean
+		Nav( ): $mol_nav
+		command_enabled( id: any): boolean
+		command_click( id: any, next?: any ): any
+		command_checked( id: any): string
+		command_state( id: any): string
+		command_split( id: any): boolean
+		command_icon( id: any): readonly($mol_view)[]
+		Command_icon( id: any): $mol_view
+		command_label( id: any): string
+		Command_label( id: any): $mol_view
+		command_key( id: any): string
+		Command_key( id: any): $mol_view
+		link_text( next?: string ): string
+		Link_text( ): $mol_string
+		Link_text_field( ): $mol_form_field
+		link_bid( ): string
+		link_url( next?: string ): string
+		link_apply( next?: any ): any
+		Link_url( ): $mol_string
+		Link_url_field( ): $mol_form_field
+		link_tools( ): readonly($mol_view)[]
+		Link_tools( ): $mol_row
+		link_ready( ): boolean
+		link_remove( next?: any ): any
+		date_rows( ): readonly($mol_view)[]
+		date_bid( ): string
+		date_moment( next?: string ): string
+		Date_moment( ): $mol_date
+		date_zones( ): readonly(string)[]
+		date_zone( next?: string ): string
+		Date_zone( ): $mol_select
+		date_twin( next?: string ): string
+		date_twins( ): Record<string, any>
+		Date_twin( ): $mol_switch
+		date_format( next?: string ): string
+		date_formats( ): Record<string, any>
+		Date_format( ): $mol_select
+		date_text( next?: string ): string
+		Date_text( ): $mol_string
+		date_tools( ): readonly($mol_view)[]
+		date_ready( ): boolean
+		date_apply( next?: any ): any
+		date_remove( next?: any ): any
+		content( next?: any ): any
+		enabled( ): boolean
+		length_max( ): number
+		submit( next?: any ): any
+		submit_with_enter( ): boolean
+		paste_files( next?: any ): any
+		sub( ): readonly(any)[]
+		Commands( ): $mol_list
+		Command( id: any): $mol_button_minor
+		Icon_bold( ): $mol_icon_format_bold
+		Icon_italic( ): $mol_icon_format_italic
+		Icon_underline( ): $mol_icon_format_underline
+		Icon_strikethrough( ): $mol_icon_format_strikethrough
+		Icon_blockquote( ): $mol_icon_format_quote_close
+		Icon_code( ): $mol_icon_code_tags
+		Icon_pre( ): $mol_icon_code_braces
+		Icon_spoiler( ): $mol_icon_eye_off
+		Icon_text_link( ): $mol_icon_link
+		Icon_date_time( ): $mol_icon_calendar_clock
+		Icon_clear( ): $mol_icon_format_clear
+		Icon_collapse( ): $mol_icon_chevron_down
+		Icon_leave( ): $mol_icon_arrow_down
+		labels( ): ({ 
+			'bold': string,
+			'italic': string,
+			'underline': string,
+			'strikethrough': string,
+			'blockquote': string,
+			'code': string,
+			'pre': string,
+			'spoiler': string,
+			'text_link': string,
+			'date_time': string,
+			'clear': string,
+			'collapse': string,
+			'leave': string,
+		}) 
+		Link_form( ): $mol_list
+		link_wrong( ): string
+		Link_apply( ): $mol_button_major
+		Link_remove( ): $mol_button_minor
+		Cancel( ): $mol_button_minor
+		Date_form( ): $mol_list
+		Date_moment_field( ): $mol_form_field
+		Date_zone_field( ): $mol_form_field
+		Date_twin_field( ): $mol_form_field
+		Date_format_field( ): $mol_form_field
+		Date_text_field( ): $mol_form_field
+		Date_tools( ): $mol_row
+		Date_apply( ): $mol_button_major
+		Date_remove( ): $mol_button_minor
+		date_wrong( ): string
+		date_missing( ): string
+		date_own( ): string
+	}
+	
+}
+
+//# sourceMappingURL=edit.view.tree.d.ts.map
+declare namespace $.$$ {
+    export type $bog_rich_edit_range = {
+        anchor: number;
+        focus: number;
+    };
+    export type $bog_rich_edit_command = $bog_rich_type | 'clear' | 'collapse' | 'leave';
+    type Shot = {
+        content: $bog_rich_content;
+        range: $bog_rich_edit_range;
+    };
+    export class $bog_rich_edit extends $.$bog_rich_edit {
+        content(next?: $bog_rich_content): $bog_rich_content;
+        model(): $bog_rich_content;
+        last: null | $bog_rich_content;
+        range: $bog_rich_edit_range;
+        typing: null | readonly $bog_rich_mark[];
+        typing_at: number;
+        composing: boolean;
+        story(): $bog_rich_story<Shot>;
+        destructor(): void;
+        editable(): "true" | "false";
+        root(): HTMLElement;
+        document(): Document;
+        sub(): ($mol_view | $.$bog_rich_menu)[];
+        drawn(): any;
+        adopt(content: $bog_rich_content): void;
+        selection_sync(): $mol_dom_listener;
+        auto(): any;
+        held(): boolean;
+        read_range(map: $bog_rich_dom_map): $bog_rich_edit_range | null;
+        track(): void;
+        /** Логическое выделение с направлением. */
+        selection(next?: $bog_rich_edit_range): $bog_rich_edit_range;
+        ends(): readonly [number, number];
+        place(): void;
+        refocus(): void;
+        /** Ставит фокус и каретку на прежнее место. */
+        bring(): void;
+        shot(next?: Shot): Shot;
+        redraw(): void;
+        push(next: $bog_rich_content, range: $bog_rich_edit_range): void;
+        /** Отдельная операция: своя запись в истории и перерисовка. */
+        step(next: $bog_rich_content, range: $bog_rich_edit_range): void;
+        undo(): null;
+        redo(): null;
+        room(from: number, to: number): number;
+        marks(from: number, to: number): readonly $bog_rich_mark[];
+        written(from: number, to: number, insert: string): $bog_rich_content;
+        keep_typing(pos: number): void;
+        /** Заменяет диапазон текстом с текущими стилями набора. */
+        write(from: number, to: number, text: string): void;
+        sync(): void;
+        typed(event?: InputEvent): null;
+        compose_start(event?: Event): null;
+        compose_end(event?: Event): null;
+        atom_hit(from: number, to: number): boolean;
+        target(event: InputEvent): readonly [number, number];
+        before(event?: InputEvent): null;
+        unbox(pos: number): void;
+        newline(): void;
+        /** Выводит каретку из цитаты или кода в обычный абзац. */
+        leave(): null;
+        copy(event?: ClipboardEvent): null;
+        cut(event?: ClipboardEvent): null;
+        take(data: DataTransfer): $bog_rich_content;
+        insert(part: $bog_rich_content, link: boolean): void;
+        paste(event?: ClipboardEvent): null;
+        /** Состояние команды для текущего выделения. */
+        format_state(type: $bog_rich_type): $bog_rich_state;
+        /** Применяет или снимает стиль на выделении, без выделения меняет стиль набора. */
+        format_apply(type: Exclude<$bog_rich_type, 'text_link' | 'date_time'>): null;
+        format_clear(): null;
+        collapse(): null;
+        box(): $bog_rich_entity | null;
+        run(id: $bog_rich_edit_command): boolean;
+        state(id: $bog_rich_edit_command): $bog_rich_state;
+        hotkeys(): any;
+        mode(next?: 'list' | 'link' | 'date'): "link" | "list" | "date";
+        menu_list(): boolean;
+        menu_content(): $.$mol_list[];
+        menu_open(mode: 'list' | 'link' | 'date', spot?: any): void;
+        menu_toggle(event?: Event): null;
+        menu_close(event?: Event): null;
+        context(event?: PointerEvent): null;
+        command_ids(): $bog_rich_edit_command[];
+        command_items(): $mol_button_minor[];
+        command_focused(next?: $mol_view): $mol_view | null;
+        command_state(id: $bog_rich_edit_command): $bog_rich_state;
+        command_enabled(id: $bog_rich_edit_command): boolean;
+        command_checked(id: $bog_rich_edit_command): "true" | "false" | "mixed";
+        command_split(id: $bog_rich_edit_command): id is "text_link" | "clear";
+        command_icon(id: $bog_rich_edit_command): ($mol_icon_format_bold | $mol_icon_format_italic | $mol_icon_format_underline | $mol_icon_format_strikethrough | $mol_icon_eye_off | $mol_icon_code_tags | $mol_icon_format_quote_close | $mol_icon_code_braces | $mol_icon_link | $mol_icon_calendar_clock | $mol_icon_format_clear | $mol_icon_chevron_down | $mol_icon_arrow_down)[];
+        command_label(id: $bog_rich_edit_command): string;
+        command_key(id: $bog_rich_edit_command): string;
+        command_click(id: $bog_rich_edit_command, event?: Event): null;
+        form: {
+            content: $bog_rich_content;
+            from: number;
+            to: number;
+        };
+        form_begin(type: 'text_link' | 'date_time'): $bog_rich_entity | null;
+        form_valid(): boolean;
+        form_end(next: $bog_rich_content, range: $bog_rich_edit_range): void;
+        form_put(text: string, mark: $bog_rich_mark): void;
+        link_open(): void;
+        link_bid(): string;
+        link_ready(): boolean;
+        link_apply(event?: Event): null;
+        link_tools(): $mol_button_minor[];
+        link_remove(event?: Event): null;
+        lang(): string;
+        date_open(): void;
+        date_zones(): readonly string[];
+        date_moments(): readonly number[];
+        date_bid(): string;
+        date_twins(): any;
+        stamp(): number;
+        date_formats(): any;
+        date_rows(): ($.$mol_form_field | $mol_row)[];
+        date_label(): string;
+        date_ready(): boolean;
+        date_apply(event?: Event): null;
+        date_tools(): $mol_button_minor[];
+        date_remove(event?: Event): null;
+    }
+    export {};
+}
+
+declare namespace $ {
+}
+
 declare namespace $ {
 
 	export class $mol_icon_send extends $mol_icon {
@@ -82683,15 +83572,6 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=record.view.tree.d.ts.map
-declare namespace $ {
-
-	export class $mol_icon_chevron_right extends $mol_icon {
-		path( ): string
-	}
-	
-}
-
-//# sourceMappingURL=right.view.tree.d.ts.map
 declare namespace $ {
 
 	type $mol_hotkey__key_bog_gram_gallery_1 = $mol_type_enforce<
@@ -83693,64 +84573,330 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
-	type $mol_link__uri_bog_gram_body_1 = $mol_type_enforce<
-		ReturnType< $bog_gram_body['link_uri'] >
+	type $mol_view__sub_bog_rich_quote_1 = $mol_type_enforce<
+		ReturnType< $bog_rich_quote['content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_check_expand__hint_bog_rich_quote_2 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_expand['hint'] >
+	>
+	type $mol_check_expand__checked_bog_rich_quote_3 = $mol_type_enforce<
+		ReturnType< $bog_rich_quote['opened'] >
+		,
+		ReturnType< $mol_check_expand['checked'] >
+	>
+	export class $bog_rich_quote extends $mol_view {
+		clamped( ): boolean
+		Text( ): $mol_view
+		opened( next?: boolean ): boolean
+		Toggle( ): $mol_check_expand
+		dom_name( ): string
+		collapsed( ): boolean
+		long( next?: boolean ): boolean
+		content( ): readonly($mol_view_content)[]
+		attr( ): ({ 
+			'bog_rich_quote_clamped': ReturnType< $bog_rich_quote['clamped'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=quote.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_rich_quote extends $.$bog_rich_quote {
+        clamped(): boolean;
+        Toggle(): $.$mol_check_expand;
+        measure(): $mol_after_frame | null;
+        auto(): ($mol_after_frame | null)[];
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_view__sub_bog_rich_code_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_rich_code_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_rich_code_line__numb_showed_bog_rich_code_3 = $mol_type_enforce<
+		boolean
+		,
+		ReturnType< $bog_rich_code_line['numb_showed'] >
+	>
+	type $bog_rich_code_line__text_bog_rich_code_4 = $mol_type_enforce<
+		ReturnType< $bog_rich_code['row_text'] >
+		,
+		ReturnType< $bog_rich_code_line['text'] >
+	>
+	export class $bog_rich_code extends $mol_text_code {
+		Language( ): $mol_view
+		Head( ): $mol_view
+		language( ): string
+		text_export( ): ReturnType< $bog_rich_code['text'] >
+		render_visible_only( ): boolean
+		Row( id: any): $bog_rich_code_line
+		sub( ): readonly(any)[]
+	}
+	
+	export class $bog_rich_code_line extends $mol_text_code_line {
+	}
+	
+}
+
+//# sourceMappingURL=code.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_rich_code_line extends $.$bog_rich_code_line {
+        token_type(path: number[]): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	export class $bog_rich_spoiler extends $mol_view {
+		role( ): string
+		tab( ): string
+		label( ): string
+		reveal( next?: any ): any
+		press( next?: any ): any
+		body( ): readonly($mol_view_content)[]
+		dom_name( ): string
+		shown( next?: boolean ): boolean
+		mask( ): string
+		content( ): readonly($mol_view_content)[]
+		hidden_label( ): string
+		attr( ): ({ 
+			'bog_rich_spoiler_shown': ReturnType< $bog_rich_spoiler['shown'] >,
+			'role': ReturnType< $bog_rich_spoiler['role'] >,
+			'tabindex': ReturnType< $bog_rich_spoiler['tab'] >,
+			'aria-label': ReturnType< $bog_rich_spoiler['label'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		event( ): ({ 
+			click( next?: ReturnType< $bog_rich_spoiler['reveal'] > ): ReturnType< $bog_rich_spoiler['reveal'] >,
+			keydown( next?: ReturnType< $bog_rich_spoiler['press'] > ): ReturnType< $bog_rich_spoiler['press'] >,
+		})  & ReturnType< $mol_view['event'] >
+		sub( ): ReturnType< $bog_rich_spoiler['body'] >
+	}
+	
+}
+
+//# sourceMappingURL=spoiler.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_rich_spoiler extends $.$bog_rich_spoiler {
+        role(): string;
+        tab(): string;
+        label(): string;
+        body(): readonly $mol_view_content[];
+        reveal(next?: Event): null;
+        press(next?: KeyboardEvent): null;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+
+	type $mol_view__sub_bog_rich_render_1 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['block_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $bog_rich_quote__collapsed_bog_rich_render_2 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['quote_collapsed'] >
+		,
+		ReturnType< $bog_rich_quote['collapsed'] >
+	>
+	type $bog_rich_quote__content_bog_rich_render_3 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['block_content'] >
+		,
+		ReturnType< $bog_rich_quote['content'] >
+	>
+	type $bog_rich_code__text_bog_rich_render_4 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['code_text'] >
+		,
+		ReturnType< $bog_rich_code['text'] >
+	>
+	type $bog_rich_code__language_bog_rich_render_5 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['code_language'] >
+		,
+		ReturnType< $bog_rich_code['language'] >
+	>
+	type $mol_view__dom_name_bog_rich_render_6 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['mark_tag'] >
+		,
+		ReturnType< $mol_view['dom_name'] >
+	>
+	type $mol_view__sub_bog_rich_render_7 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['mark_content'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_link__uri_bog_rich_render_8 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['link_uri'] >
 		,
 		ReturnType< $mol_link['uri'] >
 	>
-	type $mol_link__hint_bog_gram_body_2 = $mol_type_enforce<
-		ReturnType< $bog_gram_body['link_uri'] >
+	type $mol_link__hint_bog_rich_render_9 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['link_uri'] >
 		,
 		ReturnType< $mol_link['hint'] >
 	>
-	type $mol_link__sub_bog_gram_body_3 = $mol_type_enforce<
+	type $mol_link__relation_bog_rich_render_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['relation'] >
+	>
+	type $mol_link__sub_bog_rich_render_11 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['mark_content'] >
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	type $mol_link__uri_bog_rich_render_12 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['auto_uri'] >
+		,
+		ReturnType< $mol_link['uri'] >
+	>
+	type $mol_link__hint_bog_rich_render_13 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['auto_uri'] >
+		,
+		ReturnType< $mol_link['hint'] >
+	>
+	type $mol_link__relation_bog_rich_render_14 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['relation'] >
+	>
+	type $mol_link__sub_bog_rich_render_15 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_link['sub'] >
 	>
-	export class $bog_gram_body extends $mol_view {
-		text( ): string
-		dom_name( ): string
+	type $bog_rich_spoiler__mask_bog_rich_render_16 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['spoiler_mask'] >
+		,
+		ReturnType< $bog_rich_spoiler['mask'] >
+	>
+	type $bog_rich_spoiler__shown_bog_rich_render_17 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['spoiler_shown'] >
+		,
+		ReturnType< $bog_rich_spoiler['shown'] >
+	>
+	type $bog_rich_spoiler__content_bog_rich_render_18 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['mark_content'] >
+		,
+		ReturnType< $bog_rich_spoiler['content'] >
+	>
+	type $bog_rich_date__text_bog_rich_render_19 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['date_text'] >
+		,
+		ReturnType< $bog_rich_date['text'] >
+	>
+	type $bog_rich_date__timestamp_bog_rich_render_20 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['date_timestamp'] >
+		,
+		ReturnType< $bog_rich_date['timestamp'] >
+	>
+	type $bog_rich_date__format_bog_rich_render_21 = $mol_type_enforce<
+		ReturnType< $bog_rich_render['date_format'] >
+		,
+		ReturnType< $bog_rich_date['format'] >
+	>
+	export class $bog_rich_render extends $mol_view {
+		blocks( ): readonly($mol_view)[]
+		block_content( id: any): readonly($mol_view_content)[]
+		quote_collapsed( id: any): boolean
+		code_text( id: any): string
+		code_language( id: any): string
+		mark_tag( id: any): string
+		mark_content( id: any): readonly($mol_view_content)[]
 		link_uri( id: any): string
-		link_text( id: any): string
-		sub( ): readonly($mol_view_content)[]
+		auto_uri( id: any): string
+		spoiler_mask( id: any): string
+		spoiler_shown( id: any, next?: boolean ): boolean
+		date_text( id: any): string
+		date_timestamp( id: any): number
+		date_format( id: any): string
+		content( ): any
+		auto_links( ): boolean
+		shown_text( ): string
+		shown_html( ): string
+		sub( ): ReturnType< $bog_rich_render['blocks'] >
+		Text( id: any): $mol_view
+		Quote( id: any): $bog_rich_quote
+		Code( id: any): $bog_rich_code
+		Mark( id: any): $mol_view
 		Link( id: any): $mol_link
+		Auto( id: any): $mol_link
+		Spoiler( id: any): $bog_rich_spoiler
+		Date( id: any): $bog_rich_date
 	}
 	
 }
 
-//# sourceMappingURL=body.view.tree.d.ts.map
+//# sourceMappingURL=render.view.tree.d.ts.map
 declare namespace $.$$ {
-    class $bog_gram_body extends $.$bog_gram_body {
-        tokens(): readonly {
-            name: string;
-            found: string;
-            chunks: readonly string[];
-        }[];
-        sub(): $mol_view_content[];
-        link_uri(index: number): string;
-        link_text(index: number): string;
+    type Node = Exclude<$bog_rich_node, string>;
+    /** Голые адреса в тексте, без закрывающих знаков на хвосте. */
+    export function $bog_rich_render_links(text: string): {
+        from: number;
+        to: number;
+    }[];
+    export class $bog_rich_render extends $.$bog_rich_render {
+        content(): $bog_rich_content;
+        model(): $bog_rich_content;
+        block_list(): readonly $bog_rich_block[];
+        blocks(): ($mol_view | $.$bog_rich_quote | $bog_rich_code)[];
+        block(key: string): $bog_rich_block | undefined;
+        nodes(): Map<string, {
+            key: string;
+            from: number;
+            to: number;
+            mark: $bog_rich_entity;
+            index: number;
+            kids: readonly $bog_rich_node[];
+        }>;
+        block_nodes(from: number, to: number): readonly $bog_rich_node[];
+        block_content(key: string): $mol_view_content[];
+        views(nodes: readonly $bog_rich_node[], from: number, links: boolean): $mol_view_content[];
+        text_views(text: string, from: number): $mol_view_content[];
+        view(node: Node): $mol_view;
+        linked(node: Node): boolean;
+        mark_content(key: string): $mol_view_content[];
+        mark_tag(key: string): string;
+        mark(key: string): $bog_rich_entity | undefined;
+        slice(key: string): string;
+        link_uri(key: string): string;
+        auto_uri(key: string): string;
+        spoiler_mask(key: string): string;
+        spoiler_shown(key: string, next?: boolean): boolean;
+        mark_shown(place: string, next?: boolean): boolean;
+        date_text(key: string): string;
+        date_timestamp(key: string): number;
+        date_format(key: string): $bog_rich_date_format;
+        quote_collapsed(key: string): boolean;
+        code_text(key: string): string;
+        code_language(key: string): string;
+        /** Содержимое без нераскрытых спойлеров, для копирования. */
+        shown(): $bog_rich_content;
+        shown_text(): string;
+        shown_html(): string;
     }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-
-	export class $bog_gram_rich extends $mol_view {
-		nodes( ): readonly($mol_view_content)[]
-		html( ): string
-		sub( ): ReturnType< $bog_gram_rich['nodes'] >
-	}
-	
-}
-
-//# sourceMappingURL=rich.view.tree.d.ts.map
-declare namespace $.$$ {
-    class $bog_gram_rich extends $.$bog_gram_rich {
-        nodes(): $mol_view_content[];
-    }
+    export {};
 }
 
 declare namespace $ {
@@ -83974,15 +85120,15 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_body__text_bog_gram_bubble_37 = $mol_type_enforce<
-		ReturnType< $bog_gram_bubble['body'] >
+	type $bog_rich_render__content_bog_gram_bubble_37 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['content'] >
 		,
-		ReturnType< $bog_gram_body['text'] >
+		ReturnType< $bog_rich_render['content'] >
 	>
-	type $bog_gram_rich__html_bog_gram_bubble_38 = $mol_type_enforce<
-		ReturnType< $bog_gram_bubble['html'] >
+	type $mol_view__sub_bog_gram_bubble_38 = $mol_type_enforce<
+		readonly(any)[]
 		,
-		ReturnType< $bog_gram_rich['html'] >
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_bubble_39 = $mol_type_enforce<
 		readonly(any)[]
@@ -83999,35 +85145,35 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_42 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_check_icon__hint_bog_gram_bubble_43 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_bubble_42 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_bubble_44 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_bubble_43 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['react_open'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_bubble_45 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_bubble_44 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['React_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_button_copy__hint_bog_gram_bubble_46 = $mol_type_enforce<
+	type $mol_button_copy__hint_bog_gram_bubble_45 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_copy['hint'] >
 	>
-	type $mol_button_copy__text_bog_gram_bubble_47 = $mol_type_enforce<
-		ReturnType< $bog_gram_bubble['body'] >
+	type $mol_button_copy__text_bog_gram_bubble_46 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['copy_text'] >
 		,
 		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_button_copy__html_bog_gram_bubble_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['copy_html'] >
+		,
+		ReturnType< $mol_button_copy['html'] >
 	>
 	type $mol_button_copy__title_bog_gram_bubble_48 = $mol_type_enforce<
 		string
@@ -84204,8 +85350,9 @@ declare namespace $ {
 		Contact_name( ): $mol_view
 		Contact_open( ): $mol_button_minor
 		Contact( ): $mol_view
-		Body( ): $bog_gram_body
-		Rich( ): $bog_gram_rich
+		copy_text( ): ReturnType< ReturnType< $bog_gram_bubble['Body'] >['shown_text'] >
+		copy_html( ): ReturnType< ReturnType< $bog_gram_bubble['Body'] >['shown_html'] >
+		Body( ): $bog_rich_render
 		Time( ): $mol_view
 		edited_label( ): string
 		Edited( ): $mol_view
@@ -84276,8 +85423,7 @@ declare namespace $ {
 		react_open( next?: boolean ): boolean
 		forwardable( ): boolean
 		forward( next?: any ): any
-		body( ): string
-		html( ): string
+		content( ): any
 		time( ): string
 		edited( ): boolean
 		checks( ): string
@@ -84321,8 +85467,9 @@ declare namespace $.$$ {
         Task_mark(): $mol_check_icon;
         Clip(): $.$mol_video_player;
         Call(): $.$bog_gram_call_card;
-        Body(): $.$bog_gram_body;
-        Rich(): $.$bog_gram_rich;
+        content(): $bog_rich_content;
+        body(): string;
+        Body(): $.$bog_rich_render;
         Edited(): $mol_view;
         Checks(): $mol_view;
         Forwarded(): $mol_view;
@@ -84670,30 +85817,30 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $bog_gram_write__hint_bog_gram_chat_51 = $mol_type_enforce<
+	type $bog_rich_edit__hint_bog_gram_chat_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_hint'] >
 		,
-		ReturnType< $bog_gram_write['hint'] >
+		ReturnType< $bog_rich_edit['hint'] >
 	>
-	type $bog_gram_write__length_max_bog_gram_chat_52 = $mol_type_enforce<
+	type $bog_rich_edit__length_max_bog_gram_chat_52 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['text_limit'] >
 		,
-		ReturnType< $bog_gram_write['length_max'] >
+		ReturnType< $bog_rich_edit['length_max'] >
 	>
-	type $bog_gram_write__html_bog_gram_chat_53 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['message_html'] >
+	type $bog_rich_edit__content_bog_gram_chat_53 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_content'] >
 		,
-		ReturnType< $bog_gram_write['html'] >
+		ReturnType< $bog_rich_edit['content'] >
 	>
-	type $bog_gram_write__rich_bog_gram_chat_54 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['rich_mode'] >
+	type $bog_rich_edit__submit_with_enter_bog_gram_chat_54 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['enter_sends'] >
 		,
-		ReturnType< $bog_gram_write['rich'] >
+		ReturnType< $bog_rich_edit['submit_with_enter'] >
 	>
-	type $bog_gram_write__send_bog_gram_chat_55 = $mol_type_enforce<
+	type $bog_rich_edit__submit_bog_gram_chat_55 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
-		ReturnType< $bog_gram_write['send'] >
+		ReturnType< $bog_rich_edit['submit'] >
 	>
 	type $mol_view__sub_bog_gram_chat_56 = $mol_type_enforce<
 		readonly(any)[]
@@ -84819,102 +85966,100 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_check_icon__hint_bog_gram_chat_80 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_check_icon['hint'] >
-	>
-	type $mol_check_icon__event_bog_gram_chat_81 = $mol_type_enforce<
-		({ 
-			mousedown( next?: ReturnType< $bog_gram_chat['rich_hold'] > ): ReturnType< $bog_gram_chat['rich_hold'] >,
-		})  & ReturnType< $mol_check_icon['event'] >
-		,
-		ReturnType< $mol_check_icon['event'] >
-	>
-	type $mol_check_icon__checked_bog_gram_chat_82 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['rich_mode'] >
-		,
-		ReturnType< $mol_check_icon['checked'] >
-	>
-	type $mol_check_icon__Icon_bog_gram_chat_83 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['Rich_icon'] >
-		,
-		ReturnType< $mol_check_icon['Icon'] >
-	>
-	type $mol_button_major__hint_bog_gram_chat_84 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_80 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__enabled_bog_gram_chat_85 = $mol_type_enforce<
+	type $mol_button_major__enabled_bog_gram_chat_81 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['send_enabled'] >
 		,
 		ReturnType< $mol_button_major['enabled'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_86 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_82 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_87 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_83 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $bog_gram_hold__hint_bog_gram_chat_88 = $mol_type_enforce<
+	type $bog_gram_hold__hint_bog_gram_chat_84 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_hint_text'] >
 		,
 		ReturnType< $bog_gram_hold['hint'] >
 	>
-	type $bog_gram_hold__press_bog_gram_chat_89 = $mol_type_enforce<
+	type $bog_gram_hold__press_bog_gram_chat_85 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_press'] >
 		,
 		ReturnType< $bog_gram_hold['press'] >
 	>
-	type $bog_gram_hold__move_bog_gram_chat_90 = $mol_type_enforce<
+	type $bog_gram_hold__move_bog_gram_chat_86 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_move'] >
 		,
 		ReturnType< $bog_gram_hold['move'] >
 	>
-	type $bog_gram_hold__release_bog_gram_chat_91 = $mol_type_enforce<
+	type $bog_gram_hold__release_bog_gram_chat_87 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_release'] >
 		,
 		ReturnType< $bog_gram_hold['release'] >
 	>
-	type $bog_gram_hold__abort_bog_gram_chat_92 = $mol_type_enforce<
+	type $bog_gram_hold__abort_bog_gram_chat_88 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_abort'] >
 		,
 		ReturnType< $bog_gram_hold['abort'] >
 	>
-	type $bog_gram_hold__sub_bog_gram_chat_93 = $mol_type_enforce<
+	type $bog_gram_hold__sub_bog_gram_chat_89 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_hold['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_94 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_90 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_95 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_91 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_96 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_92 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_97 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_93 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_98 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_94 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_95 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_gram_chat_96 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['record_stop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_chat_97 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_gram_chat_98 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_button_minor__hint_bog_gram_chat_99 = $mol_type_enforce<
 		string
@@ -84922,7 +86067,7 @@ declare namespace $ {
 		ReturnType< $mol_button_minor['hint'] >
 	>
 	type $mol_button_minor__click_bog_gram_chat_100 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['record_stop'] >
+		ReturnType< $bog_gram_chat['record_turn'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
@@ -84931,429 +86076,404 @@ declare namespace $ {
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_102 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_minor__hint_bog_gram_chat_103 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_minor['hint'] >
-	>
-	type $mol_button_minor__click_bog_gram_chat_104 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['record_turn'] >
-		,
-		ReturnType< $mol_button_minor['click'] >
-	>
-	type $mol_button_minor__sub_bog_gram_chat_105 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_button_minor['sub'] >
-	>
-	type $mol_button_major__hint_bog_gram_chat_106 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_102 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_107 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_103 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_go'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_108 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_104 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_109 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_105 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_110 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_106 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_111 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_107 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_112 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_108 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_sub'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_sound__uri_bog_gram_chat_113 = $mol_type_enforce<
+	type $bog_gram_sound__uri_bog_gram_chat_109 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_sound['uri'] >
 	>
-	type $bog_gram_sound__span_bog_gram_chat_114 = $mol_type_enforce<
+	type $bog_gram_sound__span_bog_gram_chat_110 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_sound['span'] >
 	>
-	type $bog_gram_sound__wave_bog_gram_chat_115 = $mol_type_enforce<
+	type $bog_gram_sound__wave_bog_gram_chat_111 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_wave'] >
 		,
 		ReturnType< $bog_gram_sound['wave'] >
 	>
-	type $bog_gram_sound__playing_bog_gram_chat_116 = $mol_type_enforce<
+	type $bog_gram_sound__playing_bog_gram_chat_112 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_sound['playing'] >
 	>
-	type $bog_gram_sound__toggle_bog_gram_chat_117 = $mol_type_enforce<
+	type $bog_gram_sound__toggle_bog_gram_chat_113 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_sound['toggle'] >
 	>
-	type $bog_gram_sound__ended_bog_gram_chat_118 = $mol_type_enforce<
+	type $bog_gram_sound__ended_bog_gram_chat_114 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_sound['ended'] >
 	>
-	type $bog_gram_round__uri_bog_gram_chat_119 = $mol_type_enforce<
+	type $bog_gram_round__uri_bog_gram_chat_115 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_round['uri'] >
 	>
-	type $bog_gram_round__span_bog_gram_chat_120 = $mol_type_enforce<
+	type $bog_gram_round__span_bog_gram_chat_116 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_round['span'] >
 	>
-	type $bog_gram_round__playing_bog_gram_chat_121 = $mol_type_enforce<
+	type $bog_gram_round__playing_bog_gram_chat_117 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_round['playing'] >
 	>
-	type $bog_gram_round__toggle_bog_gram_chat_122 = $mol_type_enforce<
+	type $bog_gram_round__toggle_bog_gram_chat_118 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_round['toggle'] >
 	>
-	type $bog_gram_round__ended_bog_gram_chat_123 = $mol_type_enforce<
+	type $bog_gram_round__ended_bog_gram_chat_119 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_round['ended'] >
 	>
-	type $mol_view__minimal_height_bog_gram_chat_124 = $mol_type_enforce<
+	type $mol_view__minimal_height_bog_gram_chat_120 = $mol_type_enforce<
 		number
 		,
 		ReturnType< $mol_view['minimal_height'] >
 	>
-	type $mol_view__attr_bog_gram_chat_125 = $mol_type_enforce<
+	type $mol_view__attr_bog_gram_chat_121 = $mol_type_enforce<
 		({ 
 			'bog_gram_chat_turn': ReturnType< $bog_gram_chat['message_turn'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		,
 		ReturnType< $mol_view['attr'] >
 	>
-	type $mol_view__sub_bog_gram_chat_126 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_122 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['line_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_127 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_123 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_bubble__out_bog_gram_chat_128 = $mol_type_enforce<
+	type $bog_gram_bubble__out_bog_gram_chat_124 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_out'] >
 		,
 		ReturnType< $bog_gram_bubble['out'] >
 	>
-	type $bog_gram_bubble__menu_bog_gram_chat_129 = $mol_type_enforce<
+	type $bog_gram_bubble__menu_bog_gram_chat_125 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_menu_is'] >
 		,
 		ReturnType< $bog_gram_bubble['menu'] >
 	>
-	type $bog_gram_bubble__last_bog_gram_chat_130 = $mol_type_enforce<
+	type $bog_gram_bubble__last_bog_gram_chat_126 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_last'] >
 		,
 		ReturnType< $bog_gram_bubble['last'] >
 	>
-	type $bog_gram_bubble__author_bog_gram_chat_131 = $mol_type_enforce<
+	type $bog_gram_bubble__author_bog_gram_chat_127 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author'] >
 		,
 		ReturnType< $bog_gram_bubble['author'] >
 	>
-	type $bog_gram_bubble__author_tint_bog_gram_chat_132 = $mol_type_enforce<
+	type $bog_gram_bubble__author_tint_bog_gram_chat_128 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author_tint'] >
 		,
 		ReturnType< $bog_gram_bubble['author_tint'] >
 	>
-	type $bog_gram_bubble__quote_shown_bog_gram_chat_133 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_129 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_shown'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_shown'] >
 	>
-	type $bog_gram_bubble__quote_author_bog_gram_chat_134 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_author_bog_gram_chat_130 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_author'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_author'] >
 	>
-	type $bog_gram_bubble__quote_text_bog_gram_chat_135 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_text_bog_gram_chat_131 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_text'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_text'] >
 	>
-	type $bog_gram_bubble__quote_jump_bog_gram_chat_136 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_132 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_jump'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_jump'] >
 	>
-	type $bog_gram_bubble__shot_bog_gram_chat_137 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_bog_gram_chat_133 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot'] >
 		,
 		ReturnType< $bog_gram_bubble['shot'] >
 	>
-	type $bog_gram_bubble__shots_bog_gram_chat_138 = $mol_type_enforce<
+	type $bog_gram_bubble__shots_bog_gram_chat_134 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shots'] >
 		,
 		ReturnType< $bog_gram_bubble['shots'] >
 	>
-	type $bog_gram_bubble__shot_uri_bog_gram_chat_139 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_135 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_uri'] >
 	>
-	type $bog_gram_bubble__shot_ratio_bog_gram_chat_140 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_136 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_ratio'] >
 	>
-	type $bog_gram_bubble__shot_width_bog_gram_chat_141 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_width_bog_gram_chat_137 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_width'] >
 	>
-	type $bog_gram_bubble__shot_open_bog_gram_chat_142 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_open_bog_gram_chat_138 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_zoom'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_open'] >
 	>
-	type $bog_gram_bubble__sound_bog_gram_chat_143 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_bog_gram_chat_139 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound'] >
 		,
 		ReturnType< $bog_gram_bubble['sound'] >
 	>
-	type $bog_gram_bubble__sound_uri_bog_gram_chat_144 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_140 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_uri'] >
 	>
-	type $bog_gram_bubble__sound_span_bog_gram_chat_145 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_span_bog_gram_chat_141 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_span'] >
 	>
-	type $bog_gram_bubble__sound_wave_bog_gram_chat_146 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_wave_bog_gram_chat_142 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_wave'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_wave'] >
 	>
-	type $bog_gram_bubble__sound_playing_bog_gram_chat_147 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_143 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_playing'] >
 	>
-	type $bog_gram_bubble__sound_toggle_bog_gram_chat_148 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_144 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_toggle'] >
 	>
-	type $bog_gram_bubble__sound_ended_bog_gram_chat_149 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_145 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_ended'] >
 	>
-	type $bog_gram_bubble__round_bog_gram_chat_150 = $mol_type_enforce<
+	type $bog_gram_bubble__round_bog_gram_chat_146 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round'] >
 		,
 		ReturnType< $bog_gram_bubble['round'] >
 	>
-	type $bog_gram_bubble__round_uri_bog_gram_chat_151 = $mol_type_enforce<
+	type $bog_gram_bubble__round_uri_bog_gram_chat_147 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['round_uri'] >
 	>
-	type $bog_gram_bubble__round_span_bog_gram_chat_152 = $mol_type_enforce<
+	type $bog_gram_bubble__round_span_bog_gram_chat_148 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_span'] >
 		,
 		ReturnType< $bog_gram_bubble['round_span'] >
 	>
-	type $bog_gram_bubble__round_toggle_bog_gram_chat_153 = $mol_type_enforce<
+	type $bog_gram_bubble__round_toggle_bog_gram_chat_149 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['round_toggle'] >
 	>
-	type $bog_gram_bubble__round_ended_bog_gram_chat_154 = $mol_type_enforce<
+	type $bog_gram_bubble__round_ended_bog_gram_chat_150 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['round_ended'] >
 	>
-	type $bog_gram_bubble__video_bog_gram_chat_155 = $mol_type_enforce<
+	type $bog_gram_bubble__video_bog_gram_chat_151 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video'] >
 		,
 		ReturnType< $bog_gram_bubble['video'] >
 	>
-	type $bog_gram_bubble__video_uri_bog_gram_chat_156 = $mol_type_enforce<
+	type $bog_gram_bubble__video_uri_bog_gram_chat_152 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['video_uri'] >
 	>
-	type $bog_gram_bubble__video_ratio_bog_gram_chat_157 = $mol_type_enforce<
+	type $bog_gram_bubble__video_ratio_bog_gram_chat_153 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['video_ratio'] >
 	>
-	type $bog_gram_bubble__call_bog_gram_chat_158 = $mol_type_enforce<
+	type $bog_gram_bubble__call_bog_gram_chat_154 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call'] >
 		,
 		ReturnType< $bog_gram_bubble['call'] >
 	>
-	type $bog_gram_bubble__call_land_bog_gram_chat_159 = $mol_type_enforce<
+	type $bog_gram_bubble__call_land_bog_gram_chat_155 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_land'] >
 		,
 		ReturnType< $bog_gram_bubble['call_land'] >
 	>
-	type $bog_gram_bubble__call_open_bog_gram_chat_160 = $mol_type_enforce<
+	type $bog_gram_bubble__call_open_bog_gram_chat_156 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_open'] >
 		,
 		ReturnType< $bog_gram_bubble['call_open'] >
 	>
-	type $bog_gram_bubble__forwarded_bog_gram_chat_161 = $mol_type_enforce<
+	type $bog_gram_bubble__forwarded_bog_gram_chat_157 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwarded'] >
 		,
 		ReturnType< $bog_gram_bubble['forwarded'] >
 	>
-	type $bog_gram_bubble__contact_bog_gram_chat_162 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_bog_gram_chat_158 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact'] >
 		,
 		ReturnType< $bog_gram_bubble['contact'] >
 	>
-	type $bog_gram_bubble__contact_name_bog_gram_chat_163 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_name_bog_gram_chat_159 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_name'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_name'] >
 	>
-	type $bog_gram_bubble__contact_open_bog_gram_chat_164 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_open_bog_gram_chat_160 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_open'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_open'] >
 	>
-	type $bog_gram_bubble__task_bog_gram_chat_165 = $mol_type_enforce<
+	type $bog_gram_bubble__task_bog_gram_chat_161 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_task'] >
 		,
 		ReturnType< $bog_gram_bubble['task'] >
 	>
-	type $bog_gram_bubble__task_done_bog_gram_chat_166 = $mol_type_enforce<
+	type $bog_gram_bubble__task_done_bog_gram_chat_162 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_task_done'] >
 		,
 		ReturnType< $bog_gram_bubble['task_done'] >
 	>
-	type $bog_gram_bubble__reactions_bog_gram_chat_167 = $mol_type_enforce<
+	type $bog_gram_bubble__reactions_bog_gram_chat_163 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_reactions'] >
 		,
 		ReturnType< $bog_gram_bubble['reactions'] >
 	>
-	type $bog_gram_bubble__react_bog_gram_chat_168 = $mol_type_enforce<
+	type $bog_gram_bubble__react_bog_gram_chat_164 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_react'] >
 		,
 		ReturnType< $bog_gram_bubble['react'] >
 	>
-	type $bog_gram_bubble__react_open_bog_gram_chat_169 = $mol_type_enforce<
+	type $bog_gram_bubble__react_open_bog_gram_chat_165 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_react_open'] >
 		,
 		ReturnType< $bog_gram_bubble['react_open'] >
 	>
-	type $bog_gram_bubble__forwardable_bog_gram_chat_170 = $mol_type_enforce<
+	type $bog_gram_bubble__forwardable_bog_gram_chat_166 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwardable'] >
 		,
 		ReturnType< $bog_gram_bubble['forwardable'] >
 	>
-	type $bog_gram_bubble__forward_bog_gram_chat_171 = $mol_type_enforce<
+	type $bog_gram_bubble__forward_bog_gram_chat_167 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forward'] >
 		,
 		ReturnType< $bog_gram_bubble['forward'] >
 	>
-	type $bog_gram_bubble__body_bog_gram_chat_172 = $mol_type_enforce<
-		ReturnType< $bog_gram_chat['message_body'] >
-		,
-		ReturnType< $bog_gram_bubble['body'] >
-	>
-	type $bog_gram_bubble__html_bog_gram_chat_173 = $mol_type_enforce<
+	type $bog_gram_bubble__content_bog_gram_chat_168 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_rich'] >
 		,
-		ReturnType< $bog_gram_bubble['html'] >
+		ReturnType< $bog_gram_bubble['content'] >
 	>
-	type $bog_gram_bubble__time_bog_gram_chat_174 = $mol_type_enforce<
+	type $bog_gram_bubble__time_bog_gram_chat_169 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_time'] >
 		,
 		ReturnType< $bog_gram_bubble['time'] >
 	>
-	type $bog_gram_bubble__edited_bog_gram_chat_175 = $mol_type_enforce<
+	type $bog_gram_bubble__edited_bog_gram_chat_170 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edited'] >
 		,
 		ReturnType< $bog_gram_bubble['edited'] >
 	>
-	type $bog_gram_bubble__checks_bog_gram_chat_176 = $mol_type_enforce<
+	type $bog_gram_bubble__checks_bog_gram_chat_171 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_checks'] >
 		,
 		ReturnType< $bog_gram_bubble['checks'] >
 	>
-	type $bog_gram_bubble__edit_bog_gram_chat_177 = $mol_type_enforce<
+	type $bog_gram_bubble__edit_bog_gram_chat_172 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edit'] >
 		,
 		ReturnType< $bog_gram_bubble['edit'] >
 	>
-	type $bog_gram_bubble__delete_bog_gram_chat_178 = $mol_type_enforce<
+	type $bog_gram_bubble__delete_bog_gram_chat_173 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_delete'] >
 		,
 		ReturnType< $bog_gram_bubble['delete'] >
 	>
-	type $bog_gram_bubble__press_bog_gram_chat_179 = $mol_type_enforce<
+	type $bog_gram_bubble__press_bog_gram_chat_174 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_press'] >
 		,
 		ReturnType< $bog_gram_bubble['press'] >
 	>
-	type $bog_gram_bubble__release_bog_gram_chat_180 = $mol_type_enforce<
+	type $bog_gram_bubble__release_bog_gram_chat_175 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_release'] >
 		,
 		ReturnType< $bog_gram_bubble['release'] >
 	>
-	type $bog_gram_bubble__context_bog_gram_chat_181 = $mol_type_enforce<
+	type $bog_gram_bubble__context_bog_gram_chat_176 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_context'] >
 		,
 		ReturnType< $bog_gram_bubble['context'] >
 	>
-	type $mol_check_box__title_bog_gram_chat_182 = $mol_type_enforce<
+	type $mol_check_box__title_bog_gram_chat_177 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_box['title'] >
 	>
-	type $mol_check_box__hint_bog_gram_chat_183 = $mol_type_enforce<
+	type $mol_check_box__hint_bog_gram_chat_178 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_box['hint'] >
 	>
-	type $mol_check_box__checked_bog_gram_chat_184 = $mol_type_enforce<
+	type $mol_check_box__checked_bog_gram_chat_179 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['meet_confirm'] >
 		,
 		ReturnType< $mol_check_box['checked'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_185 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_180 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['knocks_head'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_chat_186 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_181 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -85421,12 +86541,10 @@ declare namespace $ {
 		box_click( next?: any ): any
 		message_hint( ): string
 		text_limit( ): number
-		message_html( next?: string ): string
-		rich_mode( next?: boolean ): boolean
+		message_content( next?: any ): any
+		enter_sends( ): boolean
 		message_send( next?: any ): any
-		Message_field( ): $bog_gram_write
-		rich_hold( next?: any ): any
-		Rich_icon( ): $mol_icon_format_text
+		Message_field( ): $bog_rich_edit
 		send_enabled( ): boolean
 		Send_icon( ): $mol_icon_send
 		voice_hint_text( ): string
@@ -85502,8 +86620,7 @@ declare namespace $ {
 		message_react_open( id: any, next?: boolean ): boolean
 		message_forwardable( id: any): boolean
 		message_forward( id: any, next?: any ): any
-		message_body( id: any): string
-		message_rich( id: any): string
+		message_rich( id: any): any
 		message_time( id: any): string
 		message_edited( id: any): boolean
 		message_checks( id: any): string
@@ -85600,7 +86717,6 @@ declare namespace $ {
 		Pending_video( id: any): $mol_icon_video
 		Attach( ): $bog_gram_attach
 		Message_box( ): $mol_view
-		Rich_toggle( ): $mol_check_icon
 		caption_hint( ): string
 		text_over_pattern( ): string
 		Send( ): $mol_button_major
@@ -85683,7 +86799,7 @@ declare namespace $.$$ {
         message_moment(id: string): number;
         day_title(key: string): string;
         rows(): $mol_view[];
-        message_body(id: string): string;
+        message_rich(id: string): $bog_rich_content;
         message_out(id: string): boolean;
         message_time(id: string): string;
         message_edited(id: string): boolean;
@@ -85724,13 +86840,11 @@ declare namespace $.$$ {
         message_edit(id: string, next?: any): null;
         edit_cancel(next?: any): null;
         edit_stop(): void;
-        edit_html(next?: string): string;
-        draft(next?: string): string;
-        message_html(next?: string): string;
-        message_plain(): string;
+        edit_content(next?: $bog_rich_content): $bog_rich_content;
+        draft(next?: $bog_rich_content): $bog_rich_content;
+        message_content(next?: $bog_rich_content): $bog_rich_content;
         message_text(next?: string): string;
-        rich_html(): string;
-        text_put(message: $bog_gram_message, text: string): void;
+        text_put(message: $bog_gram_message, content: $bog_rich_content): void;
         message_task(id: string, next?: boolean): boolean;
         message_task_done(id: string, next?: boolean): boolean;
         message_reactions(id: string): string[];
@@ -85738,14 +86852,12 @@ declare namespace $.$$ {
         message_react_open(id: string, next?: boolean): boolean;
         task_ids(): string[];
         message_show(id: string): void;
-        rich_mode(next?: boolean): boolean;
-        rich_hold(next?: Event): null;
-        message_rich(id: string): string;
+        enter_sends(): boolean;
         message_delete(id: string, next?: any): null;
         text_over(): number;
         send_enabled(): boolean;
         voice_note_text(): string;
-        caption(): string;
+        caption(): $bog_rich_content;
         message_send(next?: any): null;
         message_frames(id: string): {
             file: () => $giper_baza_file | null;

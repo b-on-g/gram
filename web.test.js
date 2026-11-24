@@ -9391,6 +9391,276 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    const parts = (year, month, day, hour, minute = 0) => ({ year, month, day, hour, minute, second: 0 });
+    $mol_test({
+        '19:00 в Москве в декабре это 17:00 в Берлине'() {
+            const [moment] = $bog_rich_zone_moments(parts(2026, 12, 3, 19), 'Europe/Moscow');
+            $mol_assert_equal($bog_rich_zone_parts(moment, 'Europe/Berlin'), parts(2026, 12, 3, 17));
+            $mol_assert_equal($bog_rich_zone_text(moment, 'time_short', 'ru', 0, 'Europe/Berlin'), '17:00');
+            $mol_assert_equal($bog_rich_zone_text(moment, 'weekday', 'ru', 0, 'Europe/Moscow'), 'Четверг');
+            $mol_assert_equal($bog_rich_zone_text(moment, 'date_short', 'ru', 0, 'Europe/Moscow'), '3 декабря');
+        },
+        'При переводе часов время бывает несуществующим и двойным'() {
+            $mol_assert_equal($bog_rich_zone_moments(parts(2026, 3, 29, 2, 30), 'Europe/Berlin'), []);
+            const twice = $bog_rich_zone_moments(parts(2026, 10, 25, 2, 30), 'Europe/Berlin');
+            $mol_assert_equal(twice.length, 2);
+            $mol_assert_equal(twice[1] - twice[0], 3600);
+        },
+        'Относительное время до и после события'() {
+            const day = 86400;
+            $mol_assert_equal($bog_rich_zone_text(9 * day, 'relative', 'ru', 0), 'через 9 дней');
+            $mol_assert_equal($bog_rich_zone_text(0, 'relative', 'ru', 9 * day), '9 дней назад');
+            $mol_assert_equal($bog_rich_zone_text(60, 'relative', 'ru', 0), 'через 1 минуту');
+        },
+        'Событие календаря пишет UTC и экранирует название'() {
+            const ics = $bog_rich_zone_ics(Date.UTC(2026, 11, 3, 16) / 1000, 'Встреча; важная\nочень', 0);
+            $mol_assert_equal(ics.includes('DTSTART:20261203T160000Z\r\n'), true);
+            $mol_assert_equal(ics.includes('SUMMARY:Встреча\\; важная\\nочень\r\n'), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function rich(text, ...entities) {
+        return $bog_rich_normalize({ text, entities });
+    }
+    function seen(content) {
+        return content.entities.map(mark => `${mark.type}:${mark.offset}-${mark.offset + mark.length}`).join(' ');
+    }
+    const compatible = {
+        bold: ['italic', 'underline', 'strikethrough', 'blockquote', 'spoiler', 'text_link'],
+        italic: ['bold', 'underline', 'strikethrough', 'blockquote', 'spoiler', 'text_link'],
+        underline: ['bold', 'italic', 'strikethrough', 'blockquote', 'spoiler', 'text_link'],
+        strikethrough: ['bold', 'italic', 'underline', 'blockquote', 'spoiler', 'text_link'],
+        blockquote: ['bold', 'italic', 'underline', 'strikethrough', 'code', 'spoiler', 'text_link'],
+        code: ['blockquote'],
+        pre: [],
+        spoiler: ['bold', 'italic', 'underline', 'strikethrough', 'blockquote', 'text_link'],
+        text_link: ['bold', 'italic', 'underline', 'strikethrough', 'blockquote', 'spoiler'],
+        date_time: [],
+    };
+    const marks = {
+        bold: { type: 'bold' },
+        italic: { type: 'italic' },
+        underline: { type: 'underline' },
+        strikethrough: { type: 'strikethrough' },
+        blockquote: { type: 'blockquote' },
+        code: { type: 'code' },
+        pre: { type: 'pre' },
+        spoiler: { type: 'spoiler' },
+        text_link: { type: 'text_link', url: 'https://ya.ru/' },
+        date_time: { type: 'date_time', timestamp: 0, format: 'datetime' },
+    };
+    $mol_test({
+        'Матрица совместимости: вместе живут только разрешённые пары'() {
+            for (const one in marks)
+                for (const two in marks) {
+                    if (one === two)
+                        continue;
+                    const both = rich('слово', { ...marks[one], offset: 0, length: 5 }, { ...marks[two], offset: 0, length: 5 }).entities.length === 2;
+                    $mol_assert_equal([one, two, both], [one, two, compatible[one].includes(two)]);
+                }
+        },
+        'Каждый стиль применяется, даёт on и снимается без следа'() {
+            for (const type in marks) {
+                const off = rich('раз два');
+                $mol_assert_equal([type, $bog_rich_state_of(off, marks[type].type, 0, 7)], [type, 'off']);
+                const on = $bog_rich_toggle(off, marks[type], 0, 7);
+                $mol_assert_equal([type, $bog_rich_state_of(on, marks[type].type, 0, 7)], [type, 'on']);
+                $mol_assert_equal(on.text, off.text);
+                $mol_assert_equal($bog_rich_toggle(on, marks[type], 0, 7), off);
+            }
+        },
+        'Частичное снятие оставляет два куска, смешанное состояние заливается целиком'() {
+            const all = rich('abcdef', { type: 'bold', offset: 0, length: 6 });
+            const part = $bog_rich_toggle(all, { type: 'bold' }, 2, 4);
+            $mol_assert_equal(seen(part), 'bold:0-2 bold:4-6');
+            $mol_assert_equal($bog_rich_state_of(part, 'bold', 0, 6), 'mixed');
+            $mol_assert_equal($bog_rich_toggle(part, { type: 'bold' }, 0, 6), all);
+        },
+        'Стиль на выделении с датой и кодом ложится на допустимые части'() {
+            const content = rich('ab cd ef gh', { ...marks.date_time, offset: 3, length: 2 }, { type: 'code', offset: 6, length: 2 });
+            $mol_assert_equal(seen($bog_rich_toggle(content, { type: 'bold' }, 0, 11)), 'bold:0-3 date_time:3-5 bold:5-6 code:6-8 bold:8-11');
+            $mol_assert_equal($bog_rich_state_of(content, 'bold', 3, 5), 'disabled');
+        },
+        'Моноширинный снимает начертания и ссылку, но не цитату, и не бывает многострочным'() {
+            const content = rich('a b\nc', { type: 'blockquote', offset: 0, length: 5 }, { type: 'bold', offset: 0, length: 3 }, { ...marks.text_link, offset: 0, length: 3 });
+            $mol_assert_equal(seen($bog_rich_toggle(content, { type: 'code' }, 2, 3)), 'blockquote:0-5 text_link:0-2 bold:0-2 code:2-3');
+            $mol_assert_equal($bog_rich_state_of(content, 'code', 0, 5), 'disabled');
+        },
+        'Код занимает целые абзацы, снимает стили и превращает дату в текст'() {
+            const content = rich('aa\nbb\ncc', { type: 'bold', offset: 0, length: 8 }, { ...marks.date_time, offset: 3, length: 2 });
+            $mol_assert_equal(seen($bog_rich_toggle(content, { type: 'pre' }, 4, 4)), 'bold:0-3 pre:3-5 bold:5-8');
+        },
+        'Цитата обходит абзац с датой и сливается с соседней при повторе'() {
+            const content = rich('aa\nbb\ncc\ndd', { ...marks.date_time, offset: 3, length: 2 });
+            const quoted = $bog_rich_toggle(content, { type: 'blockquote' }, 0, 8);
+            $mol_assert_equal(seen(quoted), 'blockquote:0-2 date_time:3-5 blockquote:6-8');
+            $mol_assert_equal(seen($bog_rich_apply(quoted, { type: 'blockquote' }, 7, 10)), 'blockquote:0-2 date_time:3-5 blockquote:6-11');
+        },
+        'Снятие цитаты со среднего абзаца делит её надвое'() {
+            const content = rich('aa\nbb\ncc', { type: 'blockquote', offset: 0, length: 8 }, { type: 'bold', offset: 3, length: 2 });
+            $mol_assert_equal(seen($bog_rich_toggle(content, { type: 'blockquote' }, 4, 4)), 'blockquote:0-2 bold:3-5 blockquote:6-8');
+        },
+        'Очистка убирает всё в выделении, а снаружи оставляет'() {
+            const content = rich('abcdef', { type: 'bold', offset: 0, length: 6 }, { type: 'spoiler', offset: 2, length: 2 });
+            $mol_assert_equal(seen($bog_rich_clear(content, 2, 4)), 'bold:0-2 bold:4-6');
+            $mol_assert_equal($bog_rich_clear_able(rich('abc'), 0, 3), false);
+            const dated = rich('ab cd', { ...marks.date_time, offset: 0, length: 5 });
+            $mol_assert_equal(seen($bog_rich_clear(dated, 1, 2)), '');
+        },
+        'Набор внутри растит стиль, на краях не растит, удаление целиком стирает'() {
+            const content = rich('abcd', { type: 'spoiler', offset: 1, length: 2 });
+            $mol_assert_equal(seen($bog_rich_replace(content, 2, 2, 'xx')), 'spoiler:1-5');
+            $mol_assert_equal(seen($bog_rich_replace(content, 1, 1, 'x')), 'spoiler:2-4');
+            $mol_assert_equal(seen($bog_rich_replace(content, 3, 3, 'x')), 'spoiler:1-3');
+            $mol_assert_equal(seen($bog_rich_replace(content, 1, 3, '')), '');
+            $mol_assert_equal(seen($bog_rich_replace(content, 2, 4, '')), 'spoiler:1-2');
+        },
+        'На правом краю продолжается начертание, но не спойлер и не ссылка'() {
+            const content = rich('ab', { type: 'bold', offset: 0, length: 2 }, { type: 'spoiler', offset: 0, length: 2 }, { ...marks.text_link, offset: 0, length: 2 });
+            $mol_assert_equal($bog_rich_typing(content, 2, 2), [{ type: 'bold' }]);
+            $mol_assert_equal($bog_rich_typing(content, 0, 0), []);
+            $mol_assert_equal($bog_rich_typing(content, 1, 1).length, 3);
+        },
+        'Абзацы цитаты растут с переносом, слияние с обычным абзацем отдаёт его стиль'() {
+            const content = rich('aa\nbb\ncc', { type: 'blockquote', offset: 3, length: 2 });
+            $mol_assert_equal(seen($bog_rich_replace(content, 5, 5, '\n')), 'blockquote:3-6');
+            $mol_assert_equal(seen($bog_rich_replace(content, 2, 3, '')), '');
+            $mol_assert_equal(seen($bog_rich_replace(content, 5, 6, '')), 'blockquote:3-7');
+            $mol_assert_equal(seen($bog_rich_replace(content, 0, 3, '')), 'blockquote:0-2');
+        },
+        'Пустая строка на конце цитаты остаётся в цитате'() {
+            $mol_assert_equal(seen(rich('ab\n', { type: 'blockquote', offset: 0, length: 3 })), 'blockquote:0-3');
+            $mol_assert_equal(seen(rich('ab\ncd', { type: 'blockquote', offset: 0, length: 3 })), 'blockquote:0-2');
+        },
+        'Ссылка: новая поверх старой её обрезает, перенос её делит'() {
+            const content = rich('abcdef', { type: 'text_link', url: 'https://a.ru', offset: 0, length: 4 });
+            const next = $bog_rich_apply(content, { type: 'text_link', url: 'https://b.ru' }, 2, 6);
+            $mol_assert_equal(next.entities, [
+                { type: 'text_link', offset: 0, length: 2, url: 'https://a.ru/' },
+                { type: 'text_link', offset: 2, length: 4, url: 'https://b.ru/' },
+            ]);
+            $mol_assert_equal(seen(rich('ab\ncd', { ...marks.text_link, offset: 0, length: 5 })), 'text_link:0-2 text_link:3-5');
+        },
+        'Опасные и кривые адреса не проходят'() {
+            const bad = ['javascript:alert(1)', 'data:text/html,x', 'file:///etc', 'vbscript:x', 'java\nscript:x', 'https://', 'https:ya.ru', '//ya.ru', 'слово', '', 'http://a b'];
+            for (const uri of bad)
+                $mol_assert_equal([uri, $bog_rich_url(uri)], [uri, '']);
+            $mol_assert_equal($bog_rich_url('ya.ru/a?b=1'), 'https://ya.ru/a?b=1');
+            $mol_assert_equal($bog_rich_url('ya.ru:8080/a'), 'https://ya.ru:8080/a');
+            $mol_assert_equal($bog_rich_url('mailto:a@b.ru'), 'mailto:a@b.ru');
+        },
+        'Негодные сущности отбрасываются, текст остаётся'() {
+            const bad = [
+                { type: 'bold', offset: -1, length: 2 },
+                { type: 'bold', offset: 0, length: 0 },
+                { type: 'bold', offset: 9, length: 1 },
+                { type: 'script', offset: 0, length: 1 },
+                { type: 'text_link', url: 'javascript:x', offset: 0, length: 1 },
+                { type: 'date_time', timestamp: 1.5, format: 'datetime', offset: 0, length: 1 },
+                { type: 'date_time', timestamp: 1, format: '<b>', offset: 0, length: 1 },
+                null,
+            ];
+            $mol_assert_equal($bog_rich_normalize({ text: 'abc', entities: bad }), { text: 'abc', entities: [] });
+            $mol_assert_equal($bog_rich_normalize(null), $bog_rich_empty);
+        },
+        'Эмодзи не рвутся: ни границей стиля, ни удалением, ни лимитом'() {
+            $mol_assert_equal(seen(rich('a😀b', { type: 'bold', offset: 0, length: 2 })), 'bold:0-1');
+            for (const sign of ['😀', '👨‍👩‍👧‍👦', '🇷🇺', 'й', '👍🏽']) {
+                const text = 'a' + sign + 'b';
+                $mol_assert_equal($bog_rich_grapheme(text, 1 + sign.length, -1), 1);
+                $mol_assert_equal($bog_rich_grapheme(text, 1, 1), 1 + sign.length);
+                $mol_assert_equal($bog_rich_fit(text, sign.length), 'a');
+                $mol_assert_equal($bog_rich_fit(text, 1 + sign.length), 'a' + sign);
+            }
+        },
+        'Дата удаляется целиком и не растягивается набором рядом'() {
+            const content = rich('😀 завтра', { ...marks.date_time, offset: 3, length: 6 });
+            $mol_assert_equal(seen($bog_rich_replace(content, 9, 9, '!')), 'date_time:3-9');
+            $mol_assert_equal(seen($bog_rich_replace(content, 0, 2, '')), 'date_time:1-7');
+            $mol_assert_equal($bog_rich_whole(content, 8, 9), [3, 9]);
+            $mol_assert_equal(seen($bog_rich_replace(content, 4, 5, '')), '');
+        },
+        'Обрезка краёв и кусок текста сдвигают стили'() {
+            const content = rich('  ab cd \n', { type: 'bold', offset: 5, length: 2 });
+            $mol_assert_equal($bog_rich_trim(content), rich('ab cd', { type: 'bold', offset: 3, length: 2 }));
+            $mol_assert_equal($bog_rich_trim(rich(' \n ')), $bog_rich_empty);
+        },
+        'Превью прячет скрытое'() {
+            const content = rich('кот съел рыбу, рыбу', { type: 'spoiler', offset: 9, length: 4 }, { type: 'spoiler', offset: 15, length: 4 });
+            $mol_assert_equal($bog_rich_preview(content, '…'), 'кот съел …, …');
+        },
+        'Вставка с чужими стилями не наследует стиль места'() {
+            const content = rich('abcd', { type: 'bold', offset: 0, length: 4 });
+            const part = rich('XY', { type: 'italic', offset: 0, length: 1 });
+            $mol_assert_equal(seen($bog_rich_insert(content, 2, 2, part)), 'bold:0-2 italic:2-3 bold:4-6');
+        },
+        'Разность текстов находит правку у каретки и не рвёт суррогаты'() {
+            $mol_assert_equal($bog_rich_diff('aaa', 'aaaa', 2), { from: 1, to: 1, insert: 'a' });
+            $mol_assert_equal($bog_rich_diff('привет', 'привёт', 6), { from: 4, to: 5, insert: 'ё' });
+            $mol_assert_equal($bog_rich_diff('😀', '😁', 2), { from: 0, to: 2, insert: '😁' });
+            $mol_assert_equal($bog_rich_diff('abc', 'ac', 1), { from: 1, to: 2, insert: '' });
+        },
+        'Дерево стилей повторяет текст, пересечения делятся на сегменты'() {
+            const content = rich('abcdef', { type: 'bold', offset: 0, length: 4 }, { type: 'italic', offset: 2, length: 4 });
+            const flat = (nodes) => nodes.map(node => typeof node === 'string' ? node : `<${node.mark.type}>${flat(node.kids)}</>`).join('');
+            $mol_assert_equal(flat($bog_rich_tree(content, 0, 6)), '<bold>ab<italic>cd</></><italic>ef</>');
+        },
+        'Блоки покрывают все абзацы, включая пустые'() {
+            const content = rich('\nab\n\ncd', { type: 'blockquote', offset: 1, length: 2 });
+            $mol_assert_equal($bog_rich_blocks(content).map(block => [block.type, block.from, block.to]), [
+                ['text', 0, 0],
+                ['blockquote', 1, 3],
+                ['text', 4, 7],
+            ]);
+        },
+        'Нормализация повторно ничего не меняет и переживает сериализацию'() {
+            const content = rich('ab\ncd\nef', { type: 'spoiler', offset: 1, length: 6 }, { type: 'bold', offset: 0, length: 4 }, { type: 'blockquote', offset: 3, length: 1, collapsed: true }, { type: 'code', offset: 6, length: 1 });
+            $mol_assert_equal($bog_rich_normalize(JSON.parse(JSON.stringify(content))), content);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    const bold = { text: 'очень важно', entities: [{ type: 'bold', offset: 6, length: 5 }] };
+    $mol_test({
+        'Стили возвращаются вместе с текстом, простое сообщение их не пишет'($) {
+            const message = $giper_baza_land.make({ $ }).Data($bog_gram_message);
+            $bog_gram_markup_write(message, { text: 'просто', entities: [] });
+            $mol_assert_equal([message.Text()?.val(), message.Entities()?.val() ?? null], ['просто', null]);
+            $bog_gram_markup_write(message, bold);
+            $mol_assert_equal($bog_gram_markup_read(message), bold);
+            $bog_gram_markup_write(message, { text: 'просто', entities: [] });
+            $mol_assert_equal($bog_gram_markup_read(message), { text: 'просто', entities: [] });
+        },
+        'Старый клиент поправил только текст: стили прежней ревизии не показываются'($) {
+            const message = $giper_baza_land.make({ $ }).Data($bog_gram_message);
+            $bog_gram_markup_write(message, bold);
+            message.Text('auto').val('важно очень');
+            $mol_assert_equal($bog_gram_markup_read(message), { text: 'важно очень', entities: [] });
+        },
+        'Чужой мусор в поле стилей не роняет сообщение'($) {
+            const message = $giper_baza_land.make({ $ }).Data($bog_gram_message);
+            message.Text('auto').val('текст');
+            for (const code of ['{', 'null', '[]', '{"hash":1}']) {
+                message.Entities('auto').val(code);
+                $mol_assert_equal($bog_gram_markup_read(message), { text: 'текст', entities: [] });
+            }
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test({
         'Заголовок дня и время сообщения форматируются по-человечески'($) {
@@ -9992,12 +10262,12 @@ var $;
         async 'Пересланный текст — копия без автора оригинала и без ответа'($) {
             const { forward, write, sent } = await stand($);
             const source = write();
-            source.Text('auto')?.val('привет');
-            source.Html('auto')?.val('<p><strong>привет</strong></p>');
+            const content = { text: 'привет', entities: [{ type: 'bold', offset: 0, length: 6 }] };
+            $bog_gram_markup_write(source, content);
             source.Reply('auto')?.val('Somewhere');
             $mol_assert_equal(Boolean(await $mol_wire_async(forward).copy(source, 'Target')), true);
             const [copy] = sent();
-            $mol_assert_equal(copy.Html()?.val(), '<p><strong>привет</strong></p>');
+            $mol_assert_equal($bog_gram_markup_read(copy), content);
             $mol_assert_equal(sent().length, 1);
             $mol_assert_equal(copy.Text()?.val(), 'привет');
             $mol_assert_equal(copy.Forwarded()?.val(), true);
@@ -11446,6 +11716,447 @@ var $;
 ;
 "use strict";
 var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        function press(mods) {
+            return { code: 'KeyB', keyCode: 66, ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, isComposing: false, defaultPrevented: false, ...mods };
+        }
+        $mol_test({
+            'На маке жирный только по Cmd, Ctrl+B остаётся системе'($) {
+                let count = 0;
+                const hotkey = $bog_rich_hotkey.make({ $, mac: () => true, action: () => ({ ctrl_B: () => ++count }) });
+                hotkey.keydown(press({ ctrlKey: true }));
+                $mol_assert_equal(count, 0);
+                hotkey.keydown(press({ metaKey: true }));
+                $mol_assert_equal(count, 1);
+            },
+            'На остальных жирный по Ctrl, в том числе в русской раскладке, но не во время IME и не с Alt'($) {
+                let count = 0;
+                const hotkey = $bog_rich_hotkey.make({ $, mac: () => false, action: () => ({ ctrl_B: () => ++count }) });
+                hotkey.keydown(press({ ctrlKey: true, key: 'и' }));
+                hotkey.keydown(press({ ctrlKey: true, isComposing: true }));
+                hotkey.keydown(press({ ctrlKey: true, altKey: true }));
+                hotkey.keydown(press({ metaKey: true }));
+                $mol_assert_equal(count, 1);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'Частые правки отменяются разом, отмена возвращается, новая правка стирает возврат'($) {
+            let value = 0;
+            const story = new $bog_rich_story(next => { value = next; });
+            story.$ = $;
+            const set = (next) => {
+                story.stage(value, next);
+                value = next;
+            };
+            set(1);
+            $.$mol_after_mock_warp();
+            set(2);
+            set(3);
+            story.backward();
+            $mol_assert_equal(value, 1);
+            story.forward();
+            $mol_assert_equal(value, 3);
+            story.backward();
+            set(5);
+            story.forward();
+            $mol_assert_equal(value, 5);
+            story.backward();
+            story.backward();
+            $mol_assert_equal(value, 0);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function area($, content) {
+        const root = $.$mol_dom_context.document.createElement('div');
+        $bog_rich_dom_draw(root, content);
+        return root;
+    }
+    const content = $bog_rich_normalize({
+        text: '\nжирный и обычный\n\nцитата\n\n  код\n\tещё\nдата',
+        entities: [
+            { type: 'bold', offset: 1, length: 6 },
+            { type: 'blockquote', offset: 19, length: 6 },
+            { type: 'pre', offset: 27, length: 10 },
+            { type: 'date_time', timestamp: 0, format: 'text', offset: 38, length: 4 },
+        ],
+    });
+    $mol_test({
+        'Текст читается из области точно таким, каким нарисован'($) {
+            $mol_assert_equal($bog_rich_dom_read(area($, content)).text, content.text);
+            $mol_assert_equal($bog_rich_dom_read(area($, $bog_rich_empty)).text, '');
+        },
+        'Каждая позиция текста переживает путь в документ и обратно'($) {
+            const root = area($, content);
+            const map = $bog_rich_dom_read(root);
+            for (let pos = 0; pos <= content.text.length; ++pos) {
+                if (pos > 38 && pos < 42)
+                    continue;
+                const [node, at] = $bog_rich_dom_point(map, root, pos);
+                $mol_assert_equal([pos, $bog_rich_dom_offset(map, root, node, at)], [pos, pos]);
+            }
+        },
+        'Перерисовка трогает только изменившиеся абзацы'($) {
+            const root = area($, content);
+            const before = [...root.childNodes];
+            $mol_assert_equal($bog_rich_dom_draw(root, content), false);
+            $bog_rich_dom_draw(root, $bog_rich_replace(content, 2, 2, 'х'));
+            const after = [...root.childNodes];
+            $mol_assert_equal(before.map((node, index) => node === after[index]), before.map((_, index) => index !== 1));
+        },
+        'Мусор браузера читается как текст: голые узлы, переносы и вложенные блоки'($) {
+            const root = $.$mol_dom_context.document.createElement('div');
+            root.innerHTML = 'раз<br><div>два<br></div><blockquote>три<br>четыре</blockquote>';
+            $mol_assert_equal($bog_rich_dom_read(root).text, 'раз\nдва\nтри\nчетыре');
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function types(content) {
+        return content.entities.map(mark => `${mark.type}:${content.text.slice(mark.offset, mark.offset + mark.length)}`);
+    }
+    $mol_test({
+        'Чужая разметка превращается в текст и знакомые стили'($) {
+            const got = $.$bog_rich_html_parse('<meta charset="utf-8"><h1>Тема</h1><p>очень <b>важ<i>но</i></b> и <a href="ya.ru">ссылка</a></p><ul><li>раз</li><li>два</li></ul>');
+            $mol_assert_equal(got.text, 'Тема\nочень важно и ссылка\n• раз\n• два');
+            $mol_assert_equal(types(got), ['bold:важно', 'italic:но', 'text_link:ссылка']);
+        },
+        'Опасная разметка не доезжает и не исполняется'($) {
+            const got = $.$bog_rich_html_parse('<p onclick="x()">а<img src=x onerror="hack()"><script>hack()</script><svg><text>s</text></svg><iframe src="//e"></iframe><a href="javascript:x()">б</a></p>');
+            $mol_assert_equal(got, { text: 'аб', entities: [] });
+        },
+        'Стили из Google Docs и Word берутся из атрибута, обёртка b с обычным весом не жирнит'($) {
+            const got = $.$bog_rich_html_parse('<b style="font-weight:normal"><span style="font-weight:700">а</span><span style="font-style:italic">б</span><span style="text-decoration:line-through">в</span></b>');
+            $mol_assert_equal(types(got), ['bold:а', 'italic:б', 'strikethrough:в']);
+        },
+        'Разметка из редактора возвращается тем же содержимым'($) {
+            const mark = (type, offset, length, rest = {}) => ({ type, offset, length, ...rest });
+            const content = $bog_rich_normalize({
+                text: 'жир  кур\n\nцитата\nдве\nconst a = 1\n\n  b\nскрыт завтра',
+                entities: [
+                    mark('bold', 0, 3), mark('italic', 5, 3), mark('blockquote', 10, 10, { collapsed: true }),
+                    mark('pre', 21, 16, { language: 'js' }), mark('spoiler', 38, 5),
+                    mark('date_time', 44, 6, { timestamp: 1796313600, format: 'text', timezone: 'Europe/Moscow' }),
+                ],
+            });
+            $mol_assert_equal($.$bog_rich_html_parse($bog_rich_html(content)), content);
+            const plain = $bog_rich_normalize({ text: 'a  <b>\n\nб & в', entities: [] });
+            $mol_assert_equal($.$bog_rich_html_parse($bog_rich_html(plain)), plain);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        function stand($, text = '', ...entities) {
+            const edit = $bog_rich_edit.make({ $ });
+            edit.content($bog_rich_normalize({ text, entities }));
+            edit.dom_tree();
+            const select = (anchor, focus = anchor) => { edit.selection({ anchor, focus }); };
+            return { edit, select, root: edit.Content().dom_node() };
+        }
+        function seen(edit) {
+            const { text, entities } = edit.model();
+            return entities.map(mark => `${mark.type}:${text.slice(mark.offset, mark.offset + mark.length)}`).join(' ');
+        }
+        function transfer(data, files = []) {
+            return { getData: (type) => data[type] ?? '', setData: (type, text) => { data[type] = text; }, files };
+        }
+        function event(mods) {
+            const self = {
+                defaultPrevented: false,
+                preventDefault() { self.defaultPrevented = true; },
+                stopPropagation() { },
+                ...mods,
+            };
+            return self;
+        }
+        function key(code, mods = {}) {
+            return event({ code, keyCode: 0, key: '', ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, isComposing: false, ...mods });
+        }
+        function input(inputType, data = null) {
+            return event({ inputType, data, cancelable: true, isComposing: false });
+        }
+        $mol_test({
+            'Каждая команда применяется к выделению, снимается повтором и отменяется'($) {
+                for (const type of [...$bog_rich_toggles, 'blockquote', 'pre']) {
+                    const { edit, select } = stand($, 'раз два');
+                    select(7, 0);
+                    edit.format_apply(type);
+                    $mol_assert_equal(seen(edit), `${type}:раз два`);
+                    $mol_assert_equal(edit.selection(), { anchor: 7, focus: 0 });
+                    edit.format_apply(type);
+                    $mol_assert_equal(seen(edit), '');
+                    edit.undo();
+                    $mol_assert_equal(seen(edit), `${type}:раз два`);
+                    edit.undo();
+                    $mol_assert_equal(seen(edit), '');
+                    edit.redo();
+                    $mol_assert_equal(seen(edit), `${type}:раз два`);
+                }
+            },
+            'Без выделения стиль достаётся следующему набору и отключается повтором'($) {
+                const { edit, select } = stand($, 'a');
+                select(1);
+                edit.format_apply('spoiler');
+                $mol_assert_equal(edit.format_state('spoiler'), 'on');
+                edit.write(1, 1, 'b');
+                edit.write(2, 2, 'c');
+                edit.format_apply('spoiler');
+                edit.write(3, 3, 'd');
+                $mol_assert_equal([edit.model().text, seen(edit)], ['abcd', 'spoiler:bc']);
+            },
+            'Жирный внутри жирного можно выключить для набора'($) {
+                const { edit, select } = stand($, 'ab', { type: 'bold', offset: 0, length: 2 });
+                select(1);
+                edit.format_apply('bold');
+                edit.write(1, 1, 'x');
+                $mol_assert_equal(seen(edit), 'bold:a bold:b');
+            },
+            'Набор браузера подхватывается из документа и получает стиль места'($) {
+                const { edit, root } = stand($, 'жир', { type: 'bold', offset: 0, length: 3 });
+                root.querySelector('strong').firstChild.nodeValue = 'жирно';
+                edit.typed(event({}));
+                $mol_assert_equal([edit.model().text, seen(edit)], ['жирно', 'bold:жирно']);
+            },
+            'Во время IME документ не перестраивается, после согласуется'($) {
+                const { edit, root, select } = stand($, 'a');
+                select(1);
+                edit.format_apply('bold');
+                edit.compose_start();
+                const text = root.querySelector('div').firstChild;
+                text.nodeValue = 'aに';
+                edit.typed(event({ isComposing: true }));
+                $mol_assert_equal(root.querySelector('div').firstChild, text);
+                $mol_assert_equal([edit.model().text, seen(edit)], ['aに', 'bold:に']);
+                edit.compose_end();
+                $mol_assert_equal(root.querySelector('strong').textContent, 'に');
+            },
+            'Очистка снаружи во время IME не теряется'($) {
+                const { edit, root } = stand($, 'a');
+                edit.compose_start();
+                edit.content($bog_rich_empty);
+                edit.dom_tree();
+                $mol_assert_equal([root.textContent, edit.composing], ['', false]);
+            },
+            'Внешняя замена стирает историю и выделение прошлого содержимого'($) {
+                const { edit, select } = stand($, 'первый');
+                select(0, 6);
+                edit.format_apply('bold');
+                edit.content({ text: 'второй', entities: [] });
+                edit.dom_tree();
+                edit.undo();
+                $mol_assert_equal(edit.model(), { text: 'второй', entities: [] });
+                $mol_assert_equal(edit.selection(), { anchor: 6, focus: 6 });
+            },
+            'Enter продолжает цитату, на пустой последней строке выходит из неё'($) {
+                const { edit, select } = stand($, 'ab', { type: 'blockquote', offset: 0, length: 2 });
+                select(2);
+                edit.before(input('insertParagraph'));
+                $mol_assert_equal(edit.model().entities[0].length, 3);
+                edit.before(input('insertParagraph'));
+                $mol_assert_equal(edit.model(), { text: 'ab\n', entities: [{ type: 'blockquote', offset: 0, length: 2 }] });
+                edit.write(3, 3, 'c');
+                $mol_assert_equal(seen(edit), 'blockquote:ab');
+            },
+            'Из кода выходят командой и стрелкой вниз, Enter и Tab в нём пишут текст'($) {
+                const { edit, select } = stand($, 'ab', { type: 'pre', offset: 0, length: 2 });
+                let sent = 0;
+                edit.submit_with_enter = () => true;
+                edit.submit = () => ++sent;
+                select(2);
+                const enter = key('Enter');
+                edit.Hotkey().keydown(enter);
+                $mol_assert_equal([sent, enter.defaultPrevented], [0, false]);
+                edit.before(input('insertParagraph'));
+                edit.Hotkey().keydown(key('Tab'));
+                $mol_assert_equal(edit.model().text, 'ab\n\t');
+                edit.Hotkey().keydown(key('ArrowDown'));
+                edit.write(edit.selection().focus, edit.selection().focus, 'c');
+                $mol_assert_equal([edit.model().text, seen(edit)], ['ab\n\t\nc', 'pre:ab\n\t']);
+            },
+            'Цитата на пустой строке ждёт набора'($) {
+                const { edit, select } = stand($, '');
+                select(0);
+                edit.format_apply('blockquote');
+                $mol_assert_equal(edit.format_state('blockquote'), 'on');
+                edit.write(0, 0, 'a');
+                edit.write(1, 1, 'b');
+                $mol_assert_equal(seen(edit), 'blockquote:ab');
+            },
+            'Enter отправляет только когда просили, Shift+Enter нет'($) {
+                const { edit } = stand($, 'a');
+                let sent = 0;
+                edit.submit = () => ++sent;
+                edit.Hotkey().keydown(key('Enter'));
+                edit.submit_with_enter = () => true;
+                edit.Hotkey().keydown(key('Enter', { shiftKey: true }));
+                edit.Hotkey().keydown(key('Enter', { isComposing: true }));
+                $mol_assert_equal(sent, 0);
+                edit.Hotkey().keydown(key('Enter'));
+                $mol_assert_equal(sent, 1);
+            },
+            'Хоткей без допустимого действия не перехватывается'($) {
+                const { edit, select } = stand($, 'ab', { type: 'pre', offset: 0, length: 2 });
+                edit.Hotkey().mac = () => false;
+                select(0, 2);
+                const bold = key('KeyB', { ctrlKey: true });
+                edit.Hotkey().keydown(bold);
+                $mol_assert_equal([bold.defaultPrevented, seen(edit)], [false, 'pre:ab']);
+            },
+            'Ссылка: новая по выделению, правка целиком, удаление, опасный адрес не применяется'($) {
+                const { edit, select } = stand($, 'мой сайт');
+                select(4, 8);
+                edit.link_open();
+                $mol_assert_equal(edit.link_text(), 'сайт');
+                edit.link_url('javascript:alert(1)');
+                $mol_assert_equal(edit.link_ready(), false);
+                edit.link_apply();
+                $mol_assert_equal(seen(edit), '');
+                edit.link_url('ya.ru');
+                edit.link_apply();
+                $mol_assert_equal(edit.model().entities, [{ type: 'text_link', offset: 4, length: 4, url: 'https://ya.ru/' }]);
+                select(6);
+                edit.link_open();
+                $mol_assert_equal([edit.link_text(), edit.link_url()], ['сайт', 'https://ya.ru/']);
+                edit.link_text('дом');
+                edit.link_apply();
+                $mol_assert_equal([edit.model().text, seen(edit)], ['мой дом', 'text_link:дом']);
+                select(5);
+                edit.link_open();
+                edit.link_remove();
+                $mol_assert_equal(seen(edit), '');
+            },
+            'Форма не применяется к подменённому содержимому'($) {
+                const { edit, select } = stand($, 'один');
+                select(0, 4);
+                edit.link_open();
+                edit.link_url('ya.ru');
+                edit.content({ text: 'другой', entities: [] });
+                edit.dom_tree();
+                edit.link_apply();
+                $mol_assert_equal(edit.model(), { text: 'другой', entities: [] });
+            },
+            'Дата вставляется атомом, удаляется целиком и правится с прежними значениями'($) {
+                const { edit, select } = stand($, '😀 ');
+                select(3);
+                edit.date_open();
+                edit.date_zone('Europe/Moscow');
+                edit.date_moment('2026-12-03 19:00');
+                edit.date_format('text');
+                edit.date_text('старт');
+                edit.date_apply();
+                $mol_assert_equal(edit.model().entities, [
+                    { type: 'date_time', offset: 3, length: 5, timestamp: Date.UTC(2026, 11, 3, 16) / 1000, format: 'text', timezone: 'Europe/Moscow' },
+                ]);
+                select(3, 8);
+                edit.date_open();
+                $mol_assert_equal([edit.date_moment(), edit.date_zone(), edit.date_text()], ['2026-12-03 19:00', 'Europe/Moscow', 'старт']);
+                edit.menu_close();
+                select(8);
+                edit.before(input('deleteContentBackward'));
+                $mol_assert_equal([edit.model().text, seen(edit)], ['😀 ', '']);
+            },
+            'Несуществующее время не применяется, двойное просит выбрать'($) {
+                const { edit } = stand($, '');
+                edit.date_open();
+                edit.date_zone('Europe/Berlin');
+                edit.date_moment('2026-03-29 02:30');
+                $mol_assert_equal([edit.date_ready(), edit.date_bid()], [false, edit.date_missing()]);
+                edit.date_moment('2026-10-25 02:30');
+                $mol_assert_equal(edit.date_rows().includes(edit.Date_twin_field()), true);
+                edit.date_twin('1');
+                $mol_assert_equal(edit.stamp(), Date.UTC(2026, 9, 25, 1, 30) / 1000);
+            },
+            'Вставка: своё содержимое, чужой HTML, адрес поверх выделения и файлы хозяину'($) {
+                const { edit, select } = stand($, 'ab');
+                select(0, 2);
+                const data = {};
+                edit.format_apply('spoiler');
+                edit.copy(event({ clipboardData: transfer(data) }));
+                select(2);
+                edit.paste(event({ clipboardData: transfer(data) }));
+                $mol_assert_equal([edit.model().text, seen(edit)], ['abab', 'spoiler:ab spoiler:ab']);
+                select(0, 4);
+                edit.paste(event({ clipboardData: transfer({ 'text/html': '<b>x</b><img src=1 onerror="y()">', 'text/plain': 'x' }) }));
+                $mol_assert_equal([edit.model().text, seen(edit)], ['x', 'bold:x']);
+                select(0, 1);
+                edit.paste(event({ clipboardData: transfer({ 'text/plain': 'https://ya.ru' }) }));
+                $mol_assert_equal(seen(edit), 'text_link:x bold:x');
+                let files = 0;
+                edit.paste_files = (list) => files = list.length;
+                const photo = event({ clipboardData: transfer({ 'text/html': '<img src=x>' }, [{}]) });
+                edit.paste(photo);
+                $mol_assert_equal([files, photo.defaultPrevented, edit.model().text], [1, false, 'x']);
+            },
+            'Лимит не пускает лишнее и не рвёт эмодзи'($) {
+                const { edit, select } = stand($, 'ab');
+                edit.length_max = () => 4;
+                select(2);
+                edit.paste(event({ clipboardData: transfer({ 'text/plain': 'c😀' }) }));
+                $mol_assert_equal(edit.model().text, 'abc');
+                edit.before(input('insertText', 'de'));
+                $mol_assert_equal(edit.model().text, 'abcd');
+            },
+            'Выключенный редактор ничего не меняет'($) {
+                const { edit, select } = stand($, 'ab');
+                edit.enabled = () => false;
+                select(0, 2);
+                edit.run('bold');
+                edit.undo();
+                const typed = input('insertText', 'x');
+                edit.before(typed);
+                edit.paste(event({ clipboardData: transfer({ 'text/plain': 'x' }) }));
+                $mol_assert_equal([edit.model(), typed.defaultPrevented], [{ text: 'ab', entities: [] }, true]);
+            },
+            'Два редактора независимы'($) {
+                const one = stand($, 'ab');
+                const two = stand($, 'ab');
+                one.select(0, 2);
+                one.edit.format_apply('bold');
+                two.edit.undo();
+                $mol_assert_equal([seen(one.edit), seen(two.edit)], ['bold:ab', '']);
+            },
+            'Меню: порядок команд, состояния и действия внутри цитаты'($) {
+                const { edit, select } = stand($, 'ab', { type: 'bold', offset: 0, length: 1 });
+                select(0, 2);
+                edit.menu_toggle();
+                $mol_assert_equal(edit.command_ids(), ['bold', 'italic', 'underline', 'strikethrough', 'blockquote', 'code', 'pre', 'spoiler', 'text_link', 'date_time', 'clear']);
+                $mol_assert_equal([edit.command_checked('bold'), edit.command_checked('italic'), edit.command_enabled('clear')], ['mixed', 'false', true]);
+                edit.command_click('blockquote');
+                $mol_assert_equal(edit.menu_showed(), false);
+                edit.menu_toggle();
+                edit.command_click('collapse');
+                $mol_assert_equal(edit.model().entities.find(mark => mark.type === 'blockquote'), { type: 'blockquote', offset: 0, length: 2, collapsed: true });
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($) {
     $mol_test({
         'Большая сторона вписывается в предел с сохранением пропорций'() {
@@ -11488,222 +12199,6 @@ var $;
             $mol_assert_equal($bog_gram_shrink.sniff(bytes()), '');
         },
     });
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        function key(mods = {}) {
-            const event = {
-                keyCode: $mol_keyboard_code.enter,
-                ctrlKey: false,
-                metaKey: false,
-                altKey: false,
-                shiftKey: false,
-                isComposing: false,
-                defaultPrevented: false,
-                preventDefault() { event.defaultPrevented = true; },
-                ...mods,
-            };
-            return event;
-        }
-        function input(data, inputType = 'insertText') {
-            const event = {
-                inputType,
-                data,
-                defaultPrevented: false,
-                preventDefault() { event.defaultPrevented = true; },
-            };
-            return event;
-        }
-        function make($, fine) {
-            let sent = 0;
-            const write = $bog_gram_write.make({ $, enter_sends: () => fine, send: () => (++sent, null) });
-            return { write, sent: () => sent };
-        }
-        $mol_test({
-            'Набор, правка и очистка поля не трогают Базу: ни home-ленд, ни какой другой'($) {
-                const touched = [];
-                const touch = (what) => { touched.push(what); return $mol_fail(new Error(`Поле полезло в Базу: ${what}`)); };
-                const context = $.$mol_ambient({
-                    $giper_baza_land: class extends $giper_baza_land {
-                        static make() { return touch('land'); }
-                    },
-                    $giper_baza_glob: class extends $giper_baza_glob {
-                        static home() { return touch('home'); }
-                        static Land() { return touch('Land'); }
-                        static land_grab() { return touch('land_grab'); }
-                    },
-                    $giper_baza_auth: class extends $giper_baza_auth {
-                        static current() { return touch('auth'); }
-                    },
-                });
-                const write = $bog_gram_write.make({ $: context, rich: () => true });
-                write.html('<p>черновик</p>');
-                const content = write.Content().dom_tree();
-                $mol_assert_equal(content.textContent, 'черновик');
-                content.querySelector('p').textContent = 'черновик и ещё';
-                write.save();
-                $mol_assert_equal(write.html(), '<p>черновик и ещё</p>');
-                $mol_assert_equal(content.querySelector('p'), write.nodes()[0]);
-                write.html('');
-                $mol_assert_equal(write.Content().dom_tree().textContent, '');
-                $mol_assert_equal(touched, []);
-            },
-            'Enter отправляет, Shift+Enter переносит строку'($) {
-                const { write, sent } = make($, true);
-                const shift = key({ shiftKey: true });
-                write.press(shift);
-                $mol_assert_equal(sent(), 0);
-                $mol_assert_equal(shift.defaultPrevented, false);
-                const enter = key();
-                write.press(enter);
-                $mol_assert_equal(sent(), 1);
-                $mol_assert_equal(enter.defaultPrevented, true);
-            },
-            'На тач-экране Enter переносит строку, отправка кнопкой'($) {
-                const { write, sent } = make($, false);
-                const enter = key();
-                write.press(enter);
-                $mol_assert_equal(sent(), 0);
-                $mol_assert_equal(enter.defaultPrevented, false);
-            },
-            'Enter, подтверждающий набор иероглифов, сообщение не отправляет'($) {
-                const { write, sent } = make($, true);
-                const enter = key({ isComposing: true });
-                write.press(enter);
-                $mol_assert_equal(sent(), 0);
-                $mol_assert_equal(enter.defaultPrevented, false);
-            },
-            'Строки текста и абзацы поля переводятся друг в друга без потерь'($) {
-                const text = 'Привет\n\n<мир> & всё';
-                const html = $bog_gram_write_html(text);
-                $mol_assert_equal(html, '<p>Привет</p><p><br></p><p>&lt;мир&gt; &amp; всё</p>');
-                $mol_assert_equal($bog_gram_write_text(html), text);
-                $mol_assert_equal($bog_gram_write_text('<section><p>раз<br>два</p></section><p>три<br></p>'), 'раз\nдва\nтри');
-            },
-            'Форматирование отличается от простых абзацев, чистка убирает ссылки на ленд и картинки'($) {
-                $mol_assert_equal($bog_gram_write_rich_is('<p>просто<br></p>'), false);
-                $mol_assert_equal($bog_gram_write_rich_is('<section><p>заголовок</p></section>'), true);
-                $mol_assert_equal($bog_gram_write_rich_is('<p>очень <strong>важно</strong></p>'), true);
-                $mol_assert_equal($bog_gram_write_clean('<p id="x" xmlns="http://www.w3.org/1999/xhtml"><span id="y">раз</span><span id="z"> два</span><img src="https://evil/track.png"><a href="https://ya.ru" onclick="alert()">ссылка</a></p>'), '<p>раз два<a href="https://ya.ru">ссылка</a></p>');
-            },
-            'Черновик с неразрывным пробелом и прочими сущностями HTML поле открывает, а не падает'($) {
-                const { write } = make($, true);
-                write.html($bog_gram_write_clean('<p>раз два&nbsp;&laquo;три&raquo; </p>'));
-                $mol_assert_equal(write.nodes().map(node => node.textContent).join(''), 'раз два «три» ');
-            },
-            'Ввод сверх лимита браузер не вставляет, удаление и набор в пределах лимита проходят'($) {
-                const { write } = make($, true);
-                write.length_max = () => 5;
-                write.html('<p>абвг</p>');
-                const fits = input('д');
-                write.before_input(fits);
-                $mol_assert_equal(fits.defaultPrevented, false);
-                const long = input('де');
-                write.before_input(long);
-                $mol_assert_equal(long.defaultPrevented, true);
-                write.html('<p>абвгд</p>');
-                const more = input('е');
-                write.before_input(more);
-                $mol_assert_equal(more.defaultPrevented, true);
-                const line = input(null, 'insertParagraph');
-                write.before_input(line);
-                $mol_assert_equal(line.defaultPrevented, true);
-                const erase = input(null, 'deleteContentBackward');
-                write.before_input(erase);
-                $mol_assert_equal(erase.defaultPrevented, false);
-            },
-            'Каретка в корне поля уходит внутрь абзаца, чтобы форматирование не задело само поле'($) {
-                const write = $bog_gram_write.make({ $, rich: () => true });
-                write.html('<p>раз</p><p>два</p>');
-                const document = $.$mol_dom_context.document;
-                const root = write.Content().dom_tree();
-                document.body.append(root);
-                try {
-                    const selection = document.getSelection();
-                    selection.setBaseAndExtent(root, 0, root, 2);
-                    write.aim();
-                    $mol_assert_equal(selection.anchorNode.nodeValue, 'раз');
-                    $mol_assert_equal(selection.focusNode.nodeValue, 'два');
-                    $mol_assert_equal(selection.focusOffset, 3);
-                }
-                finally {
-                    root.remove();
-                }
-            },
-            'В простом режиме нет панели форматирования и Tab не превращает строку в список'($) {
-                const { write } = make($, true);
-                $mol_assert_equal(write.sub().includes(write.Tools()), false);
-                const tab = key({ keyCode: $mol_keyboard_code.tab });
-                write.block_rewrap(tab);
-                $mol_assert_equal(tab.defaultPrevented, false);
-                const rich = $bog_gram_write.make({ $, rich: () => true });
-                $mol_assert_equal(rich.sub().includes(rich.Tools()), true);
-            },
-            'Нажатие на панель не уводит фокус из поля, нажатие на текст остаётся браузеру'($) {
-                const write = $bog_gram_write.make({ $, rich: () => true });
-                const down = (target) => {
-                    let prevented = false;
-                    write.tools_hold({ target, preventDefault: () => { prevented = true; } });
-                    return prevented;
-                };
-                $mol_assert_equal(down(write.Tools().dom_node()), true);
-                $mol_assert_equal(down(write.Content().dom_node()), false);
-            },
-            'Кнопки панели не выключаются, когда каретка не в поле'($) {
-                const write = $bog_gram_write.make({ $, rich: () => true });
-                $mol_assert_equal(write.Strong_button().enabled(), true);
-            },
-            'Тап по кнопке панели нажимает её без мышиных событий, прокрутка пальцем не нажимает'($) {
-                const write = $bog_gram_write.make({ $, rich: () => true });
-                const button = write.Quote_button().dom_node();
-                write.Tools().dom_node().append(button);
-                let clicks = 0;
-                button.click = () => { ++clicks; };
-                const tap = (target, shift) => {
-                    let prevented = false;
-                    write.tools_touch({ touches: [{ clientX: 0, clientY: 0 }] });
-                    write.tools_tap({
-                        target,
-                        cancelable: true,
-                        changedTouches: [{ clientX: shift, clientY: 0 }],
-                        preventDefault: () => { prevented = true; },
-                    });
-                    return prevented;
-                };
-                $mol_assert_equal(tap(button, 2), true);
-                $mol_assert_equal(clicks, 1);
-                $mol_assert_equal(tap(button, 50), false);
-                $mol_assert_equal(tap(write.Content().dom_node(), 0), false);
-                $mol_assert_equal(clicks, 1);
-            },
-            'Каретка остаётся на своём месте, когда абзацы оборачиваются заново'($) {
-                const document = $.$mol_dom_context.document;
-                const root = document.createElement('div');
-                root.innerHTML = '<p>раз</p><p><br></p><p>два</p>';
-                const end = $bog_gram_write_spot(root, root.childNodes[0].firstChild, 3);
-                const empty = $bog_gram_write_spot(root, root.childNodes[1], 0);
-                const start = $bog_gram_write_spot(root, root.childNodes[2].firstChild, 0);
-                root.innerHTML = '<ul><p><strong>ра</strong>з</p></ul><blockquote><p><br></p></blockquote><p>два</p>';
-                const [list, quote, last] = [...root.childNodes];
-                const same = (point, node, offset) => {
-                    $mol_assert_equal(point[0] === node, true);
-                    $mol_assert_equal(point[1], offset);
-                };
-                same($bog_gram_write_point(root, end), list.firstChild.lastChild, 1);
-                same($bog_gram_write_point(root, empty), quote.firstChild, 0);
-                same($bog_gram_write_point(root, start), last.firstChild, 0);
-            },
-            'Невидимая заготовка под каретку в сообщение не попадает'($) {
-                const blank = String.fromCharCode(0x200b);
-                $mol_assert_equal($bog_gram_write_clean(`<p><strong>${blank}раз</strong></p>`), '<p><strong>раз</strong></p>');
-            },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
 })($ || ($ = {}));
 
 ;
@@ -11808,49 +12303,62 @@ var $;
 (function ($_1) {
     var $$;
     (function ($$) {
+        function render($, text, ...entities) {
+            const context = $.$mol_ambient({
+                $mol_state_arg: class extends $.$mol_state_arg {
+                    static href() { return 'https://example.org/'; }
+                },
+            });
+            return $bog_rich_render.make({ $: context, content: () => ({ text, entities }) });
+        }
+        function tree(view) {
+            return view.dom_tree();
+        }
         $mol_test({
-            'В тексте сообщения http-адрес становится ссылкой, остальное остаётся текстом'($) {
-                const body = $bog_gram_body.make({ $, text: () => 'смотри https://example.com/a?b=1 или https://ya.ru. всё' });
-                const parts = body.sub();
-                $mol_assert_equal(parts.length, 5);
-                $mol_assert_equal(parts[0], 'смотри ');
-                $mol_assert_equal(String(parts[1]), '$bog_gram_body<>.Link<1>');
-                $mol_assert_equal(parts[2], ' или ');
-                $mol_assert_equal(String(parts[3]), '$bog_gram_body<>.Link<3>');
-                $mol_assert_equal(parts[4], '. всё');
+            'Без стилей Markdown и HTML остаются текстом'($) {
+                const text = '**не жирный** `код` <b>тег</b> [подпись](адрес)';
+                const node = tree(render($, text));
+                $mol_assert_equal(node.textContent, text);
+                $mol_assert_equal(node.querySelectorAll('strong,code,b,a').length, 0);
             },
-            'Ссылка ведёт по адресу из текста и подписана им же'($) {
-                const body = $bog_gram_body.make({ $, text: () => 'https://example.com/a?b=1' });
-                $mol_assert_equal(body.link_uri(0), 'https://example.com/a?b=1');
-                $mol_assert_equal(body.link_text(0), 'https://example.com/a?b=1');
+            'Голый адрес становится ссылкой без точки на хвосте, в коде не становится'($) {
+                const node = tree(render($, 'смотри https://ya.ru/a?b=1. и https://ya.ru/код', { type: 'code', offset: 29, length: 18 }));
+                $mol_assert_equal([...node.querySelectorAll('a')].map(link => link.getAttribute('href')), ['https://ya.ru/a?b=1']);
+                $mol_assert_equal($bog_rich_render_links('(https://a.ru/x_(y))'), [{ from: 1, to: 19 }]);
             },
-            'Разметка в тексте сообщения не толкуется: звёздочки и обратные кавычки остаются как есть'($) {
-                const body = $bog_gram_body.make({ $, text: () => '**жирный** и `код` без адресов' });
-                $mol_assert_equal(body.sub(), ['**жирный** и `код` без адресов']);
+            'Стили вкладываются семантическими тегами, ссылка открывается безопасно'($) {
+                const node = tree(render($, 'ab cd', { type: 'bold', offset: 0, length: 5 }, { type: 'italic', offset: 0, length: 2 }, { type: 'text_link', url: 'https://ya.ru/', offset: 3, length: 2 }));
+                $mol_assert_equal(node.querySelector('strong em').textContent, 'ab');
+                const link = node.querySelector('a');
+                $mol_assert_equal([link.textContent, link.getAttribute('rel'), link.getAttribute('target'), link.title], ['cd', 'noopener noreferrer', '_blank', 'https://ya.ru/']);
             },
-            'Пустой текст не даёт ни частей, ни ссылок'($) {
-                const body = $bog_gram_body.make({ $, text: () => '' });
-                $mol_assert_equal(body.sub(), []);
+            'Спойлер прячет текст из документа и из копирования, первый тап только раскрывает'($) {
+                const view = render($, 'кот съел рыбу и хлеб', { type: 'spoiler', offset: 9, length: 4 }, { type: 'text_link', url: 'https://ya.ru/', offset: 9, length: 4 }, { type: 'spoiler', offset: 16, length: 4 });
+                $mol_assert_equal(tree(view).textContent.includes('рыбу'), false);
+                $mol_assert_equal(tree(view).querySelectorAll('a').length, 0);
+                $mol_assert_equal(view.shown_text(), 'кот съел ▒▒▒▒ и ▒▒▒▒');
+                const [, first, , second] = view.Text('text_0_20').sub();
+                first.reveal();
+                $mol_assert_equal([first.shown(), second.shown()], [true, false]);
+                $mol_assert_equal(tree(view).querySelector('a').textContent, 'рыбу');
+                $mol_assert_equal(view.shown_text(), 'кот съел рыбу и ▒▒▒▒');
             },
-        });
-    })($$ = $_1.$$ || ($_1.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($_1) {
-    var $$;
-    (function ($$) {
-        $mol_test({
-            'Заголовок, списки и пробелы между выделениями доезжают до пузыря'($) {
-                const html = '<section><p>тема</p></section><ol><p>раз</p></ol><p><strong>а</strong> <em>б</em></p>';
-                const rich = $bog_gram_rich.make({ $, html: () => html });
-                $mol_assert_equal(rich.dom_tree().innerHTML, html);
+            'Блок кода сохраняет отступы и пустые строки, адреса в нём не ссылки'($) {
+                const text = 'if( a ) {\n\tgo( "https://ya.ru" )\n\n}';
+                const view = render($, text, { type: 'pre', language: 'js', offset: 0, length: text.length });
+                const [code] = view.blocks();
+                $mol_assert_equal(code.Rows().rows().map(row => row.dom_tree().textContent.trimEnd()), ['if( a ) {', '\tgo( "https://ya.ru" )', '', '}']);
+                $mol_assert_equal(code.text_export(), text);
+                $mol_assert_equal(tree(view).querySelectorAll('a').length, 0);
             },
-            'Чужая разметка чистится: нет картинок, обработчиков и опасных ссылок'($) {
-                const rich = $bog_gram_rich.make({ $, html: () => '<p onclick="x()">а<img src="https://evil/x.png"><a href="javascript:x()">б</a></p>' });
-                $mol_assert_equal(rich.dom_tree().innerHTML, '<p>аб</p>');
+            'Дата показывает подпись, а рядом с эмодзи не съезжает'($) {
+                const view = render($, '😀 старт!', { type: 'date_time', timestamp: 0, format: 'text', offset: 3, length: 5 });
+                $mol_assert_equal(tree(view).textContent.startsWith('😀 старт!'), true);
+            },
+            'Порядок блоков и пустых строк сохраняется'($) {
+                const view = render($, 'a\n\nb\nc', { type: 'blockquote', offset: 3, length: 1 });
+                $mol_assert_equal(view.blocks().map(block => block.dom_tree().nodeName.toLowerCase()).includes('blockquote'), true);
+                $mol_assert_equal(view.blocks().length, 3);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
@@ -11973,22 +12481,17 @@ var $;
     (function ($$) {
         $mol_test({
             'Открытый десктопный чат фокусирует поле сообщения'($) {
-                let outer_focused = 0;
-                let edit_focused = 0;
+                let focused = 0;
                 const chat = $bog_gram_chat.make({ $ });
                 const match = chat.$.$mol_media.match;
-                chat.Message_field = () => ({
-                    bring: () => ++outer_focused,
-                    Content: () => ({ bring: () => ++edit_focused }),
-                });
+                chat.Message_field = () => ({ bring: () => ++focused });
                 chat.$.$mol_media.match = () => true;
                 chat.read_sync = () => 0;
                 chat.stick_hold = () => 0;
                 chat.follow = () => undefined;
                 chat.stick_observer = () => null;
                 chat.auto();
-                $mol_assert_equal(outer_focused, 0);
-                $mol_assert_equal(edit_focused, 1);
+                $mol_assert_equal(focused, 1);
                 chat.$.$mol_media.match = match;
             },
             'Чужое новое сообщение не срывает прокрутку вниз, своё возвращает к низу'($) {
@@ -12162,29 +12665,86 @@ var $;
                 $mol_assert_equal(sent[0].Author()?.val(), 'LordMe');
                 $mol_assert_equal(chat.message_text(), '');
             },
-            'Форматированное сообщение уходит с разметкой и текстом для старых клиентов, простое — только текстом'($) {
+            'Набор, стили, форма, отмена и очистка поля не трогают Базу: ни home-ленд, ни какой другой'($) {
+                const touched = [];
+                const touch = (what) => { touched.push(what); return $mol_fail(new Error(`Поле полезло в Базу: ${what}`)); };
+                const context = $.$mol_ambient({
+                    $giper_baza_land: class extends $giper_baza_land {
+                        static make() { return touch('land'); }
+                    },
+                    $giper_baza_glob: class extends $giper_baza_glob {
+                        static home() { return touch('home'); }
+                        static Land() { return touch('Land'); }
+                        static land_grab() { return touch('land_grab'); }
+                    },
+                    $giper_baza_auth: class extends $giper_baza_auth {
+                        static current() { return touch('auth'); }
+                    },
+                });
+                const chat = $bog_gram_chat.make({ $: context, dialog: () => 'DialogSafe', my_lord: () => 'LordMe' });
+                const field = chat.Message_field();
+                field.dom_tree();
+                field.write(0, 0, 'черновик');
+                field.selection({ anchor: 0, focus: 8 });
+                for (const type of [...$bog_rich_toggles, 'blockquote', 'pre']) {
+                    field.format_apply(type);
+                    field.format_apply(type);
+                }
+                field.format_apply('bold');
+                field.link_open();
+                field.link_url('ya.ru');
+                field.link_apply();
+                field.date_open();
+                field.menu_close();
+                field.undo();
+                field.redo();
+                $mol_assert_equal(chat.message_content().entities.map(mark => mark.type), ['text_link', 'bold']);
+                $mol_assert_equal(field.Content().dom_node().textContent, 'черновик');
+                chat.message_text('');
+                field.dom_tree();
+                $mol_assert_equal(field.Content().dom_node().textContent, '');
+                $mol_assert_equal(touched, []);
+            },
+            'Старое сообщение с разметкой прежнего вида читается простым текстом'($) {
+                const land = $giper_baza_land.make({ $ });
+                const old = land.Data($giper_baza_dict.with({ Text: $giper_baza_atom_text, Html: $giper_baza_atom_text }));
+                old.Text('auto').val('старое');
+                old.Html('auto').val('<p><strong>старое</strong></p>');
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogOld', my_lord: () => 'LordMe', message_pawn: () => land.Data($bog_gram_message) });
+                $mol_assert_equal(chat.message_rich('x'), { text: 'старое', entities: [] });
+            },
+            'Скрытое не видно в цитате ответа'($) {
+                const message = $giper_baza_land.make({ $ }).Data($bog_gram_message);
+                $bog_gram_markup_write(message, { text: 'убийца дворецкий', entities: [{ type: 'spoiler', offset: 7, length: 9 }] });
+                const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogHide', my_lord: () => 'LordMe', message_pawn: () => message });
+                $mol_assert_equal(chat.quote_text('x'), 'убийца ▒▒▒▒');
+            },
+            'Форматированное сообщение уходит со стилями и текстом для старых клиентов, простое — только текстом'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
                 const talk = $bog_gram_talk.make({ $, session: () => session, saved_is: () => false });
                 const alerts = $bog_gram_alerts.make({ $, offer: () => false });
                 const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogRich', my_lord: () => 'LordMe', Talk: () => talk, Alerts: () => alerts });
                 const sent = () => session.Messages().items()
                     .map(link => session.land().Pawn($bog_gram_message).Head(link.head()))
-                    .map(message => [message.Text()?.val() ?? '', message.Html()?.val() ?? '']);
-                chat.message_html('<p>очень <strong>важно</strong></p><p>второе</p>');
+                    .map($bog_gram_markup_read);
+                const rich = { text: 'очень важно\nвторое', entities: [{ type: 'bold', offset: 6, length: 5 }] };
+                chat.message_content(rich);
                 $mol_assert_equal(chat.message_text(), 'очень важно\nвторое');
                 chat.message_send();
                 chat.message_text('просто');
                 chat.message_send();
                 $mol_assert_equal(sent(), [
-                    ['очень важно\nвторое', '<p>очень <strong>важно</strong></p><p>второе</p>'],
-                    ['просто', ''],
+                    rich,
+                    { text: 'просто', entities: [] },
                 ]);
-                $mol_assert_equal(chat.message_html(), '');
+                $mol_assert_equal(chat.message_text(), '');
                 const link = session.Messages().items()[0];
                 const pawn = session.land().Pawn($bog_gram_message).Head(link.head());
                 chat.message_pawn = () => pawn;
                 chat.message_edit(link.str);
-                $mol_assert_equal(chat.message_html(), '<p>очень <strong>важно</strong></p><p>второе</p>');
+                $mol_assert_equal(chat.message_content(), rich);
+                chat.edit_cancel();
+                $mol_assert_equal(chat.message_text(), '');
             },
             'Удержание кружка открывает камеру без записи, запись начинается кнопкой'($) {
                 const chat = $bog_gram_chat.make({ $ });
@@ -12401,8 +12961,8 @@ var $;
             });
             const alerts = $bog_gram_alerts.make({ $, offer: () => false });
             const chat = $bog_gram_chat.make({ $, dialog: () => 'DialogTasks', my_lord: () => 'LordMe', Talk: () => talk, Alerts: () => alerts });
-            const send = (html) => {
-                chat.message_html(html);
+            const send = (text, ...entities) => {
+                chat.message_content({ text, entities });
                 chat.message_send();
                 return talk.messages_of('').at(-1);
             };
@@ -12412,7 +12972,7 @@ var $;
             'Сообщение с двух минусов или тире уходит задачей без префикса, остальное — сообщением'($) {
                 const { send } = stand($);
                 const sent = (text) => {
-                    const message = send($bog_gram_write_html(text));
+                    const message = send(text);
                     return [message.Text()?.val(), Boolean(message.Task()?.val())];
                 };
                 $mol_assert_equal(sent('-- купить молоко'), ['купить молоко', true]);
@@ -12421,17 +12981,16 @@ var $;
                 $mol_assert_equal(sent('--'), ['--', false]);
                 $mol_assert_equal(sent('а -- б'), ['а -- б', false]);
             },
-            'Префикс срезается и из разметки, даже если разбит на куски'($) {
+            'Префикс и пробелы по краям срезаются вместе со сдвигом стилей'($) {
                 const { send } = stand($);
-                const message = send('<p>-<b>- очень</b> важно</p>');
-                $mol_assert_equal(message.Text()?.val(), 'очень важно');
-                $mol_assert_equal(message.Html()?.val(), '<p><b>очень</b> важно</p>');
+                const message = send('  -- очень важно ', { type: 'bold', offset: 3, length: 7 });
+                $mol_assert_equal($bog_gram_markup_read(message), { text: 'очень важно', entities: [{ type: 'bold', offset: 0, length: 5 }] });
                 $mol_assert_equal(message.Task()?.val(), true);
             },
             'Сделанные уходят вниз панели, снятая отметка убирает задачу'($) {
                 const { chat, send } = stand($);
-                const [milk, bread] = ['-- молоко', '-- хлеб'].map(text => send($bog_gram_write_html(text)).link().str);
-                const talk = send('<p>болтовня</p>').link().str;
+                const [milk, bread] = ['-- молоко', '-- хлеб'].map(text => send(text).link().str);
+                const talk = send('болтовня').link().str;
                 const panel = $bog_gram_tasks.make({ $,
                     ids: () => chat.task_ids(),
                     done: (id, next) => chat.message_task_done(id, next),
