@@ -42049,7 +42049,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.231';
+    $.$bog_gram_version = '1.0.232';
 })($ || ($ = {}));
 
 ;
@@ -57124,7 +57124,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/rich/rich.view.css", "[bog_gram_rich] {\n\tdisplay: block;\n}\n\n[bog_gram_rich] :is( p, h1, h2, h3, h4, h5, h6 ) {\n\tmargin: 0;\n}\n\n[bog_gram_rich] :is( strong, b ) {\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( em, i ) {\n\tfont-style: italic;\n}\n\n[bog_gram_rich] :is( ins, u ) {\n\ttext-decoration: underline;\n}\n\n[bog_gram_rich] :is( del, s ) {\n\ttext-decoration: line-through;\n}\n\n[bog_gram_rich] :is( code, pre ) {\n\tfont-family: monospace;\n}\n\n[bog_gram_rich] pre {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\twhite-space: pre-wrap;\n\tbox-shadow: inset 2px 0 var(--mol_theme_line);\n}\n\n[bog_gram_rich] blockquote {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\tbox-shadow: inset 2px 0 var(--mol_theme_control);\n}\n\n[bog_gram_rich] :is( ul, ol ) {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n}\n\n[bog_gram_rich] :is( ul, ol ) > p {\n\tdisplay: list-item;\n}\n\n[bog_gram_rich] ul > :is( p, li ) {\n\tlist-style-type: disc;\n}\n\n[bog_gram_rich] ol > :is( p, li ) {\n\tlist-style-type: decimal;\n}\n\n[bog_gram_rich] :is( section > p:first-child, h1, h2, h3, h4, h5, h6 ) {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] a {\n\tcolor: var(--mol_theme_control);\n}\n");
+    $mol_style_attach("bog/gram/rich/rich.view.css", "[bog_gram_rich][mol_view] {\n\tdisplay: block;\n\tmax-width: 100%;\n\twhite-space: pre-wrap;\n\toverflow-wrap: anywhere;\n\tword-break: break-word;\n}\n\n[bog_gram_rich] :is( p, h1, h2, h3, h4, h5, h6 ) {\n\tmargin: 0;\n}\n\n[bog_gram_rich] :is( strong, b ) {\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( em, i ) {\n\tfont-style: italic;\n}\n\n[bog_gram_rich] :is( ins, u ) {\n\ttext-decoration: underline;\n}\n\n[bog_gram_rich] :is( del, s ) {\n\ttext-decoration: line-through;\n}\n\n[bog_gram_rich] :is( code, pre ) {\n\tfont-family: monospace;\n}\n\n[bog_gram_rich] pre {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\twhite-space: pre-wrap;\n\tbox-shadow: inset 2px 0 var(--mol_theme_line);\n}\n\n[bog_gram_rich] blockquote {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\tbox-shadow: inset 2px 0 var(--mol_theme_control);\n}\n\n[bog_gram_rich] :is( ul, ol ) {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n}\n\n[bog_gram_rich] :is( ul, ol ) > p {\n\tdisplay: list-item;\n}\n\n[bog_gram_rich] ul > :is( p, li ) {\n\tlist-style-type: disc;\n}\n\n[bog_gram_rich] ol > :is( p, li ) {\n\tlist-style-type: decimal;\n}\n\n[bog_gram_rich] :is( section > p:first-child, h1, h2, h3, h4, h5, h6 ) {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) :is( ul, ol, blockquote, pre ) {\n\tmargin-left: 0;\n\tmargin-right: 0;\n\tpadding-left: 0;\n\tpadding-right: 0;\n\tlist-style-position: inside;\n}\n\n[bog_gram_rich] a {\n\tcolor: var(--mol_theme_control);\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -61756,6 +61756,10 @@ var $;
                 height: '1.25rem',
             },
             Body: {
+                overflow: {
+                    x: 'hidden',
+                    y: 'auto',
+                },
                 background: {
                     color: $mol_theme.back,
                 },
