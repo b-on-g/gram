@@ -318,8 +318,17 @@ async function say( raw, reply, task ) {
 	return id
 }
 
+/** После паузы лента читается холодной: первое чтение отдаёт пустой список. */
 async function task_close( id ) {
-	await fiber( ()=> { message_of( id ).Task_done( 'auto' ).val( Date.now() ) } )
+	for( let turn = 0; turn < 30; ++ turn ) {
+		try {
+			return await fiber( ()=> { message_of( id ).Task_done( 'auto' ).val( Date.now() ) } )
+		} catch( error ) {
+			if( turn % 10 === 0 ) log( 'закрытие задачи:', error.message )
+			await sleep( 1000 )
+		}
+	}
+	log( 'задача не закрыта', id )
 }
 
 const git_env = { PATH: process.env.PATH, HOME: os.homedir(), GIT_CONFIG_NOSYSTEM: '1', GIT_TERMINAL_PROMPT: '0' }
