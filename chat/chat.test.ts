@@ -458,6 +458,10 @@ namespace $.$$ {
 
 			const messages = ()=> session.Messages()?.remote_list() ?? []
 
+			let held = false
+			chat.attach_hold({ preventDefault: ()=> { held = true } } as unknown as Event )
+			$mol_assert_equal( held, true )
+
 			chat.image_files([ new File( [], 'shot.png', { type: 'image/png' } ), new File( [], 'notes.txt', { type: 'text/plain' } ) ])
 			$mol_assert_equal( chat.pending().length, 1 )
 			$mol_assert_equal( messages().length, 0 )

@@ -226,6 +226,41 @@ namespace $.$$ {
 
 		},
 
+		'Кнопки панели не выключаются, когда каретка не в поле'( $ ) {
+			const write = $bog_gram_write.make({ $, rich: ()=> true })
+			$mol_assert_equal( write.Strong_button().enabled(), true )
+		},
+
+		'Тап по кнопке панели нажимает её без мышиных событий, прокрутка пальцем не нажимает'( $ ) {
+
+			const write = $bog_gram_write.make({ $, rich: ()=> true })
+			const button = write.Quote_button().dom_node() as HTMLElement
+			write.Tools().dom_node().append( button )
+
+			let clicks = 0
+			button.click = ()=> { ++ clicks }
+
+			const tap = ( target: Node, shift: number )=> {
+				let prevented = false
+				write.tools_touch({ touches: [ { clientX: 0, clientY: 0 } ] } as unknown as TouchEvent )
+				write.tools_tap({
+					target,
+					cancelable: true,
+					changedTouches: [ { clientX: shift, clientY: 0 } ],
+					preventDefault: ()=> { prevented = true },
+				} as unknown as TouchEvent )
+				return prevented
+			}
+
+			$mol_assert_equal( tap( button, 2 ), true )
+			$mol_assert_equal( clicks, 1 )
+
+			$mol_assert_equal( tap( button, 50 ), false )
+			$mol_assert_equal( tap( write.Content().dom_node(), 0 ), false )
+			$mol_assert_equal( clicks, 1 )
+
+		},
+
 		'Каретка остаётся на своём месте, когда абзацы оборачиваются заново'( $ ) {
 
 			const document = $.$mol_dom_context.document

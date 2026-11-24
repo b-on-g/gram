@@ -868,7 +868,17 @@ namespace $.$$ {
 		@ $mol_action
 		override image_files( next?: readonly File[] ) {
 			this.pending_add( next ?? [] )
+			if( this.attach_typing ) this.Message_field().Content().bring()
+			this.attach_typing = false
 			return next ?? null
+		}
+
+		attach_typing = false
+
+		override attach_hold( next?: Event ) {
+			next?.preventDefault()
+			this.attach_typing = this.Message_field().Content().dom_node() === this.$.$mol_dom_context.document.activeElement
+			return null
 		}
 
 		@ $mol_mem

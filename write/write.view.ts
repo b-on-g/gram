@@ -157,18 +157,8 @@ namespace $.$$ {
 
 		selection_load() {}
 
-		@ $mol_mem
 		override selected( next?: boolean ) {
-
-			$mol_wire_watch()
-
-			const root = this.Content().dom_node()
-			if( !root.isConnected ) return false
-
-			const selection = this.$.$mol_dom_context.document.getSelection()
-			if( !selection?.rangeCount ) return false
-
-			return root.contains( selection.anchorNode ) && root.contains( selection.focusNode )
+			return this.enabled()
 		}
 
 		html_last = ''
@@ -468,6 +458,37 @@ namespace $.$$ {
 
 			if( this.Tools().dom_node().contains( target ) ) event!.preventDefault()
 			else this.menu_hide()
+
+			return null
+		}
+
+		touch_at = null as null | { x: number, y: number }
+
+		override tools_touch( event?: TouchEvent ) {
+
+			const touch = event?.touches.length === 1 ? event.touches[0] : null
+			this.touch_at = touch && { x: touch.clientX, y: touch.clientY }
+
+			return null
+		}
+
+		override tools_tap( event?: TouchEvent ) {
+
+			const from = this.touch_at
+			this.touch_at = null
+
+			if( !event?.cancelable ) return null
+
+			const touch = event.changedTouches[0]
+			if( !from || !touch ) return null
+			if( !this.rich() ) return null
+
+			const target = event.target as Element
+			if( !this.Tools().dom_node().contains( target ) ) return null
+			if( Math.hypot( touch.clientX - from.x, touch.clientY - from.y ) > 10 ) return null
+
+			event.preventDefault()
+			target.closest< HTMLElement >( '[mol_button]' )?.click()
 
 			return null
 		}

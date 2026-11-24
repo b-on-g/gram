@@ -184,6 +184,9 @@ $bog_gram_chat $bog_gram_page
 		hint @ \Send photo or video
 		accept \image/*,video/*
 		multiple true
+		event *
+			^
+			mousedown? <=> attach_hold? null
 		files? <=> image_files? null
 		Icon <= Attach_icon $mol_icon_paperclip
 	Message_box $mol_view
