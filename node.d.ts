@@ -55548,7 +55548,7 @@ declare namespace $.$$ {
         sub_visible(): readonly $mol_view_content[];
         message_receive(event?: MessageEvent<[string, string]>): void;
         uri_change(event: MessageEvent<[string, string]>): void;
-        auto(): ($mol_dom_listener | Window)[];
+        auto(): (Window | $mol_dom_listener)[];
     }
 }
 
@@ -63103,6 +63103,87 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    /**
+     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+     */
+    function $mol_lights(this: $, next?: boolean): boolean;
+}
+
+declare namespace $ {
+
+	export class $giper_web_frame extends $mol_frame {
+		uri( ): string
+		query( ): string
+	}
+	
+}
+
+//# sourceMappingURL=frame.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $giper_web_frame extends $.$giper_web_frame {
+        uri(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	export class $bog_dock_frame extends $giper_web_frame {
+		host( ): string
+		lights( ): boolean
+		clipboard_read( ): boolean
+		clipboard_write( ): boolean
+	}
+	
+}
+
+//# sourceMappingURL=frame.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_dock_frame extends $.$bog_dock_frame {
+        lights(): boolean;
+        uri(): string;
+    }
+}
+
+declare namespace $ {
+
+	type $bog_dock_frame__lights_bog_dock_side_1 = $mol_type_enforce<
+		ReturnType< $bog_dock_side['lights'] >
+		,
+		ReturnType< $bog_dock_frame['lights'] >
+	>
+	export class $bog_dock_side extends $mol_view {
+		lights( ): boolean
+		Frame( ): $bog_dock_frame
+		shown( ): boolean
+		attr( ): ({ 
+			'bog_dock_side_shown': ReturnType< $bog_dock_side['shown'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=side.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_dock_side extends $.$bog_dock_side {
+        embedded(): boolean;
+        shown(): boolean;
+        lights(): boolean;
+        sub(): readonly any[];
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     let $bog_music_version: string;
 }
 
@@ -64534,7 +64615,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.239";
+    const $bog_gram_version = "1.0.240";
 }
 
 declare namespace $ {
@@ -84972,6 +85053,7 @@ declare namespace $ {
 		Kind( ): $mol_view
 		link( ): string
 		host( ): string
+		profile_kind( ): string
 		target( ): string
 		sub( ): readonly(any)[]
 	}
@@ -84984,6 +85066,8 @@ declare namespace $.$$ {
         pawn(): $giper_baza_dict | null;
         meta(): $giper_baza_dict | null;
         pick(pawn: $giper_baza_dict | null, ...keys: string[]): string;
+        profile(): $giper_baza_dict | null;
+        profile_name(): string;
         name(): string;
         descr(): string;
         kind(): string;
@@ -87201,14 +87285,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $.$$ {
-}
-
-declare namespace $ {
-    /**
-     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
-     */
-    function $mol_lights(this: $, next?: boolean): boolean;
 }
 
 declare namespace $ {

@@ -38765,11 +38765,210 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$giper_web_frame) = class $giper_web_frame extends ($.$mol_frame) {
+		uri(){
+			return "https://web.giper.dev/#mol_lights={lights}/current={current}/query={query}";
+		}
+		query(){
+			return "";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function parse(theme) {
+        if (theme === 'true')
+            return true;
+        if (theme === 'false')
+            return false;
+        return null;
+    }
+    // Get once because chrome switches to light on print
+    const base = $.$mol_media.match('(prefers-color-scheme: light)');
+    /**
+     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
+     */
+    function $mol_lights(next) {
+        const arg = parse(this.$mol_state_arg.value('mol_lights'));
+        if (next === undefined) {
+            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
+        }
+        else {
+            if (arg === null) {
+                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
+            }
+            else {
+                this.$mol_state_arg.value('mol_lights', String(next));
+            }
+            return next;
+        }
+    }
+    $.$mol_lights = $mol_lights;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $giper_web_frame extends $.$giper_web_frame {
+            uri() {
+                return super.uri()
+                    .replace('{lights}', String(this.$.$mol_lights()))
+                    .replace('{query}', encodeURIComponent(this.query()))
+                    .replace('{current}', encodeURIComponent(this.$.$mol_state_arg.href().replace(/^https?:\/\/|\/?\??#.*$/, '')));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $giper_web_frame.prototype, "uri", null);
+        $$.$giper_web_frame = $giper_web_frame;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("giper/web/frame/frame.view.css", "/* @keyframes giper_web_frame_show {\n\tfrom {\n\t\topacity: 0;\n\t}\n}\n\n[giper_web_frame] {\n\tanimation: 5s -1s ease-in giper_web_frame_show;\n} */\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($giper_web_frame, {
+            flex: {
+                basis: '4rem',
+                shrink: 0,
+                grow: 0,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_dock_frame) = class $bog_dock_frame extends ($.$giper_web_frame) {
+		host(){
+			return "https://b-on-g.github.io/dock/";
+		}
+		lights(){
+			return true;
+		}
+		clipboard_read(){
+			return false;
+		}
+		clipboard_write(){
+			return false;
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_dock_frame extends $.$bog_dock_frame {
+            lights() {
+                return this.$.$mol_lights();
+            }
+            uri() {
+                return super.uri()
+                    .replace(/^[^#]*/, this.host())
+                    .replace(/mol_lights=\w+/, `mol_lights=${this.lights()}`);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_dock_frame.prototype, "uri", null);
+        $$.$bog_dock_frame = $bog_dock_frame;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_dock_side) = class $bog_dock_side extends ($.$mol_view) {
+		lights(){
+			return true;
+		}
+		Frame(){
+			const obj = new this.$.$bog_dock_frame();
+			(obj.lights) = () => ((this.lights()));
+			return obj;
+		}
+		shown(){
+			return false;
+		}
+		attr(){
+			return {...(super.attr()), "bog_dock_side_shown": (this.shown())};
+		}
+		sub(){
+			return [(this.Frame())];
+		}
+	};
+	($mol_mem(($.$bog_dock_side.prototype), "Frame"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_dock_side extends $.$bog_dock_side {
+            embedded() {
+                const win = this.$.$mol_dom_context;
+                return win.parent !== win.self;
+            }
+            shown() {
+                return !this.embedded() && this.$.$mol_media.match('(min-width: 60rem)');
+            }
+            lights() {
+                const root = this.$.$mol_view.roots()[0];
+                const theme = root?.Theme?.() ?? root?.Theme_auto?.();
+                return theme?.is_light_now?.() ?? this.$.$mol_lights();
+            }
+            sub() {
+                return this.shown() ? super.sub() : [];
+            }
+        }
+        $$.$bog_dock_side = $bog_dock_side;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/dock/side/side.view.css", "[bog_dock_side][mol_view_root] {\n\tdisplay: none;\n\tposition: fixed;\n\tz-index: 1;\n\ttop: 0;\n\tleft: 0;\n\twidth: 4rem;\n\theight: 100%;\n\ttransition: none;\n}\n\n[bog_dock_side][mol_view_root][bog_dock_side_shown=\"true\"] {\n\tdisplay: flex;\n}\n\n[bog_dock_side_frame] {\n\theight: 100%;\n}\n\nbody:has( > [bog_dock_side_shown=\"true\"] ) {\n\tpadding-left: 4rem;\n}\n\n@media print {\n\t[bog_dock_side][mol_view_root][bog_dock_side_shown=\"true\"] { display: none; }\n\tbody:has( > [bog_dock_side_shown=\"true\"] ) { padding-left: 0; }\n}\n");
+})($ || ($ = {}));
+
+;
 "use strict";
 var $;
 (function ($) {
     // Инкрементится автоматически git-хуком hooks/pre-push при каждом push.
-    $.$bog_music_version = 'v1.104';
+    $.$bog_music_version = 'v1.105';
 })($ || ($ = {}));
 
 ;
@@ -42049,7 +42248,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.239';
+    $.$bog_gram_version = '1.0.240';
 })($ || ($ = {}));
 
 ;
@@ -59724,6 +59923,9 @@ var $;
 		host(){
 			return "https://b-on-g.github.io/dock/card/";
 		}
+		profile_kind(){
+			return (this.$.$mol_locale.text("$bog_dock_card_profile_kind"));
+		}
 		target(){
 			return "_blank";
 		}
@@ -59781,16 +59983,26 @@ var $;
                 }
                 return '';
             }
+            profile() {
+                return this.pawn()?.dive('bog_id', $giper_baza_dict) ?? null;
+            }
+            profile_name() {
+                return this.pick(this.profile(), 'Name');
+            }
             name() {
-                return this.pick(this.pawn(), 'Subj:Name', 'Title', 'Name');
+                return this.profile_name() || this.pick(this.pawn(), 'Subj:Name', 'Title', 'Name');
             }
             descr() {
                 return this.pick(this.pawn(), 'Subj:Hint', 'Hint', 'Artist', 'Note');
             }
             kind() {
+                if (this.profile_name())
+                    return this.profile_kind();
                 return this.pick(this.meta(), 'Subj:Name');
             }
             icon() {
+                if (this.profile_name())
+                    return '👤';
                 return this.pick(this.pawn(), 'Subj:Icon', 'Icon') || this.pick(this.meta(), 'Subj:Icon') || '💠';
             }
             uri() {
@@ -59803,6 +60015,12 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_dock_card.prototype, "meta", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "profile", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "profile_name", null);
         __decorate([
             $mol_mem
         ], $bog_dock_card.prototype, "name", null);
@@ -65100,41 +65318,6 @@ var $;
 		}
 	};
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    function parse(theme) {
-        if (theme === 'true')
-            return true;
-        if (theme === 'false')
-            return false;
-        return null;
-    }
-    // Get once because chrome switches to light on print
-    const base = $.$mol_media.match('(prefers-color-scheme: light)');
-    /**
-     * Switcher between light/dark themes (usually for `mol_theme_auto` plugin).
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_lights_demo
-     */
-    function $mol_lights(next) {
-        const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        if (next === undefined) {
-            return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
-        }
-        else {
-            if (arg === null) {
-                this.$mol_state_local.value('$mol_lights', next === base ? null : next);
-            }
-            else {
-                this.$mol_state_arg.value('mol_lights', String(next));
-            }
-            return next;
-        }
-    }
-    $.$mol_lights = $mol_lights;
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -76386,6 +76569,48 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        'frame opens own dock with lights, current app and query'($) {
+            const frame = $bog_dock_frame.make({
+                $,
+                query: () => 'a/b c',
+            });
+            const [host, hash] = frame.uri().split('#');
+            $mol_assert_equal(host, 'https://b-on-g.github.io/dock/');
+            $mol_assert_equal(hash.includes('query=a%2Fb%20c'), true);
+            $mol_assert_equal(hash.includes('{'), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'dock is shown only on wide screen and never inside of frame'($) {
+                const make = (wide, embedded) => $bog_dock_side.make({
+                    $: $.$mol_ambient({
+                        $mol_media: class extends $mol_media {
+                            static match() { return wide; }
+                        },
+                    }),
+                    embedded: () => embedded,
+                });
+                $mol_assert_equal(make(true, false).sub().length, 1);
+                $mol_assert_equal(make(false, false).sub().length, 0);
+                $mol_assert_equal(make(true, true).sub().length, 0);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
         async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
             const auth = await $.$giper_baza_auth._generate();
             const key = auth.toString() + auth.toStringPrivate();
@@ -80394,6 +80619,20 @@ var $;
                 $mol_assert_equal(await $mol_wire_async(card).name(), 'First');
                 await $mol_wire_async(subj).name('Second');
                 $mol_assert_equal(await $mol_wire_async(card).name(), 'Second');
+            },
+            async 'profile from ID wins over foreign name in the root of home'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_dock_card_test_profile', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const dict = land.Data($giper_baza_dict);
+                await $mol_wire_async(() => dict.dive('Name', $giper_baza_atom, 'auto').vary('Gram'))();
+                const card = $bog_dock_card.make({ $, link: () => land.link().str });
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Gram');
+                await $mol_wire_async(() => dict.dive('bog_id', $giper_baza_dict, 'auto').dive('Name', $giper_baza_atom, 'auto').vary('Anna'))();
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Anna');
+                $mol_assert_equal(await $mol_wire_async(card).icon(), '👤');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

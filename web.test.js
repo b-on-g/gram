@@ -8407,6 +8407,48 @@ var $;
 var $;
 (function ($_1) {
     $mol_test({
+        'frame opens own dock with lights, current app and query'($) {
+            const frame = $bog_dock_frame.make({
+                $,
+                query: () => 'a/b c',
+            });
+            const [host, hash] = frame.uri().split('#');
+            $mol_assert_equal(host, 'https://b-on-g.github.io/dock/');
+            $mol_assert_equal(hash.includes('query=a%2Fb%20c'), true);
+            $mol_assert_equal(hash.includes('{'), false);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'dock is shown only on wide screen and never inside of frame'($) {
+                const make = (wide, embedded) => $bog_dock_side.make({
+                    $: $.$mol_ambient({
+                        $mol_media: class extends $mol_media {
+                            static match() { return wide; }
+                        },
+                    }),
+                    embedded: () => embedded,
+                });
+                $mol_assert_equal(make(true, false).sub().length, 1);
+                $mol_assert_equal(make(false, false).sub().length, 0);
+                $mol_assert_equal(make(true, true).sub().length, 0);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
         async 'Ключ из QR встаёт в поле входа, чужой QR даёт ошибку'($) {
             const auth = await $.$giper_baza_auth._generate();
             const key = auth.toString() + auth.toStringPrivate();
@@ -12415,6 +12457,20 @@ var $;
                 $mol_assert_equal(await $mol_wire_async(card).name(), 'First');
                 await $mol_wire_async(subj).name('Second');
                 $mol_assert_equal(await $mol_wire_async(card).name(), 'Second');
+            },
+            async 'profile from ID wins over foreign name in the root of home'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_dock_card_test_profile', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const dict = land.Data($giper_baza_dict);
+                await $mol_wire_async(() => dict.dive('Name', $giper_baza_atom, 'auto').vary('Gram'))();
+                const card = $bog_dock_card.make({ $, link: () => land.link().str });
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Gram');
+                await $mol_wire_async(() => dict.dive('bog_id', $giper_baza_dict, 'auto').dive('Name', $giper_baza_atom, 'auto').vary('Anna'))();
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Anna');
+                $mol_assert_equal(await $mol_wire_async(card).icon(), '👤');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

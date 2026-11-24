@@ -249,6 +249,7 @@
 \/bog/music/app
 	include \/mol/offline/install
 	deploy \/bog/music/app/favicon.svg
+	include \/bog/dock/side
 \/bog/gram
 	include \/bog/gram/mine
 	include \/bog/gram/hash
@@ -257,3 +258,4 @@
 	include \/bog/gram/notify
 	include \/mol/offline/install
 	deploy \/bog/gram/logo
+	include \/bog/dock/side
