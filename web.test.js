@@ -12008,6 +12008,14 @@ var $;
                 chat.follow();
                 $mol_assert_equal(chat.stick_end(), true);
             },
+            'Последним считается последнее живое сообщение'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                chat.messages = () => ['a', 'b', 'dead'].map(id => ({ link: () => ({ str: id }) }));
+                chat.message_alive = (id) => id !== 'dead';
+                $mol_assert_equal(chat.message_last('a'), false);
+                $mol_assert_equal(chat.message_last('b'), true);
+                $mol_assert_equal(chat.message_last('dead'), false);
+            },
             'Прилипание снимает только прокрутка вверх, а не смена высоты'($) {
                 const chat = $bog_gram_chat.make({ $ });
                 chat.stick_track(500, 1000, 500);

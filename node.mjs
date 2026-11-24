@@ -42058,7 +42058,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.232';
+    $.$bog_gram_version = '1.0.233';
 })($ || ($ = {}));
 
 ;
@@ -57458,6 +57458,9 @@ var $;
 		menu(){
 			return false;
 		}
+		last(){
+			return false;
+		}
 		author(){
 			return "";
 		}
@@ -57634,6 +57637,7 @@ var $;
 				...(super.attr()), 
 				"bog_gram_bubble_out": (this.out()), 
 				"bog_gram_bubble_menu": (this.menu()), 
+				"bog_gram_bubble_last": (this.last()), 
 				"bog_gram_bubble_bare": (this.bare()), 
 				"bog_gram_bubble_done": (this.done())
 			};
@@ -57911,7 +57915,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n[bog_gram_bubble][bog_gram_bubble_last=\"true\"] [data-mol-tip]:is( :hover, :focus-visible )::after {\n\ttop: auto;\n\tbottom: calc( 100% + 4px );\n\ttransform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -58708,6 +58712,9 @@ var $;
 		message_menu_is(id){
 			return false;
 		}
+		message_last(id){
+			return false;
+		}
 		message_author(id){
 			return "";
 		}
@@ -59342,6 +59349,7 @@ var $;
 			const obj = new this.$.$bog_gram_bubble();
 			(obj.out) = () => ((this.message_out(id)));
 			(obj.menu) = () => ((this.message_menu_is(id)));
+			(obj.last) = () => ((this.message_last(id)));
 			(obj.author) = () => ((this.message_author(id)));
 			(obj.author_tint) = () => ((this.message_author_tint(id)));
 			(obj.quote_shown) = () => ((this.message_quote_shown(id)));
@@ -60151,6 +60159,18 @@ var $;
             }
             message_menu_is(id) {
                 return this.message_menu() === id;
+            }
+            last_id() {
+                const messages = this.messages();
+                for (let i = messages.length - 1; i >= 0; --i) {
+                    const id = messages[i].link().str;
+                    if (this.message_alive(id))
+                        return id;
+                }
+                return '';
+            }
+            message_last(id) {
+                return $bog_gram_soft(() => this.last_id(), '') === id;
             }
             press_timer = null;
             press_row = '';
@@ -61380,6 +61400,12 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_menu_is", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "last_id", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_last", null);
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_press", null);

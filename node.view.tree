@@ -4151,6 +4151,7 @@ $mol_icon_emoticon_outline $mol_icon path \M12,17.5C14.33,17.5 16.3,16.04 17.11,
 $bog_gram_bubble $mol_view
 	out false
 	menu false
+	last false
 	author \
 	author_tint 0
 	quote_shown false
@@ -4206,6 +4207,7 @@ $bog_gram_bubble $mol_view
 		^
 		bog_gram_bubble_out <= out
 		bog_gram_bubble_menu <= menu
+		bog_gram_bubble_last <= last
 		bog_gram_bubble_bare <= bare false
 		bog_gram_bubble_done <= done false
 	event *
@@ -4650,6 +4652,7 @@ $bog_gram_chat $bog_gram_page
 	Bubble* $bog_gram_bubble
 		out <= message_out* false
 		menu <= message_menu_is* false
+		last <= message_last* false
 		author <= message_author* \
 		author_tint <= message_author_tint* 0
 		quote_shown <= message_quote_shown* false
