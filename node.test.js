@@ -46440,9 +46440,7 @@ var $;
                 return false;
             if (from < to)
                 return mark.offset <= from && end(mark) > from;
-            if (mark.offset >= from)
-                return false;
-            return $.$bog_rich_styles.includes(mark.type) ? end(mark) >= from : end(mark) > from;
+            return mark.offset < from && end(mark) > from;
         }).map(bare);
     }
     $.$bog_rich_typing = $bog_rich_typing;
@@ -55835,9 +55833,7 @@ var $;
                     this.step($bog_rich_remove(content, 'blockquote', from, from), { anchor: from, focus: from });
                     return;
                 }
-                const marks = this.marks(from, to).filter(mark => mark.type !== 'code');
-                const own = this.typing || marks.length !== this.marks(from, to).length;
-                this.typing = own ? marks : null;
+                this.typing = null;
                 this.write(from, to, '\n');
             }
             /** Выводит каретку из цитаты или кода в обычный абзац. */
@@ -77251,9 +77247,9 @@ var $;
             $mol_assert_equal(seen($bog_rich_replace(content, 1, 3, '')), '');
             $mol_assert_equal(seen($bog_rich_replace(content, 2, 4, '')), 'spoiler:1-2');
         },
-        'На правом краю продолжается начертание, но не спойлер и не ссылка'() {
+        'На краях стиль не продолжается, внутри наследуется'() {
             const content = rich('ab', { type: 'bold', offset: 0, length: 2 }, { type: 'spoiler', offset: 0, length: 2 }, { ...marks.text_link, offset: 0, length: 2 });
-            $mol_assert_equal($bog_rich_typing(content, 2, 2), [{ type: 'bold' }]);
+            $mol_assert_equal($bog_rich_typing(content, 2, 2), []);
             $mol_assert_equal($bog_rich_typing(content, 0, 0), []);
             $mol_assert_equal($bog_rich_typing(content, 1, 1).length, 3);
         },
@@ -79666,9 +79662,31 @@ var $;
             },
             'Набор браузера подхватывается из документа и получает стиль места'($) {
                 const { edit, root } = stand($, 'жир', { type: 'bold', offset: 0, length: 3 });
-                root.querySelector('strong').firstChild.nodeValue = 'жирно';
+                root.querySelector('strong').firstChild.nodeValue = 'жиир';
                 edit.typed(event({}));
-                $mol_assert_equal([edit.model().text, seen(edit)], ['жирно', 'bold:жирно']);
+                $mol_assert_equal([edit.model().text, seen(edit)], ['жиир', 'bold:жиир']);
+            },
+            'После жирного выделения дальше пишется обычным, и после переноса тоже'($) {
+                const { edit, root, select } = stand($, 'слово');
+                select(0, 5);
+                edit.format_apply('bold');
+                select(5);
+                $mol_assert_equal(edit.format_state('bold'), 'off');
+                root.querySelector('strong').firstChild.nodeValue = 'слово ещё';
+                edit.typed(event({}));
+                edit.before(input('insertParagraph'));
+                edit.write(edit.model().text.length, edit.model().text.length, 'строка');
+                $mol_assert_equal([edit.model().text, seen(edit)], ['слово ещё\nстрока', 'bold:слово']);
+            },
+            'Включённый для набора стиль держится до переноса строки'($) {
+                const { edit, select } = stand($, '');
+                select(0);
+                edit.format_apply('bold');
+                edit.write(0, 0, 'a');
+                edit.write(1, 1, 'b');
+                edit.before(input('insertParagraph'));
+                edit.write(3, 3, 'c');
+                $mol_assert_equal([edit.model().text, seen(edit)], ['ab\nc', 'bold:ab']);
             },
             'Во время IME документ не перестраивается, после согласуется'($) {
                 const { edit, root, select } = stand($, 'a');

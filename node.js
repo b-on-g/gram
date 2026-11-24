@@ -46449,9 +46449,7 @@ var $;
                 return false;
             if (from < to)
                 return mark.offset <= from && end(mark) > from;
-            if (mark.offset >= from)
-                return false;
-            return $.$bog_rich_styles.includes(mark.type) ? end(mark) >= from : end(mark) > from;
+            return mark.offset < from && end(mark) > from;
         }).map(bare);
     }
     $.$bog_rich_typing = $bog_rich_typing;
@@ -55844,9 +55842,7 @@ var $;
                     this.step($bog_rich_remove(content, 'blockquote', from, from), { anchor: from, focus: from });
                     return;
                 }
-                const marks = this.marks(from, to).filter(mark => mark.type !== 'code');
-                const own = this.typing || marks.length !== this.marks(from, to).length;
-                this.typing = own ? marks : null;
+                this.typing = null;
                 this.write(from, to, '\n');
             }
             /** Выводит каретку из цитаты или кода в обычный абзац. */
