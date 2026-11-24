@@ -42049,7 +42049,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.233';
+    $.$bog_gram_version = '1.0.234';
 })($ || ($ = {}));
 
 ;
@@ -57939,7 +57939,7 @@ var $;
                 direction: 'column',
             },
             gap: '0.125rem',
-            maxWidth: '70%',
+            maxWidth: $mol_style_func.calc('min( 85%, 480px )'),
             minWidth: 0,
             alignSelf: 'flex-start',
             padding: {
@@ -58220,7 +58220,6 @@ var $;
             },
             '@media': {
                 '(max-width: 30rem)': {
-                    maxWidth: '85%',
                     Pick: {
                         minWidth: '2.75rem',
                         minHeight: '2.75rem',
