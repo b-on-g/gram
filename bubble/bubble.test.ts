@@ -24,6 +24,16 @@ namespace $.$$ {
 
 		},
 
+		'Пузырь растянут под сетку только при нескольких кадрах'( $ ) {
+
+			const album = ( shots: string[] )=> $bog_gram_bubble.make({ $, shot: ()=> shots.length > 0, shots: ()=> shots }).album()
+
+			$mol_assert_equal( album([]), false )
+			$mol_assert_equal( album([ 'a' ]), false )
+			$mol_assert_equal( album([ 'a', 'b' ]), true )
+
+		},
+
 		'Без реакций строки плашек нет, выбор открыт только по кнопке'( $ ) {
 
 			const bubble = $bog_gram_bubble.make({ $ })

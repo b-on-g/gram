@@ -418,7 +418,7 @@ namespace $.$$ {
 
 		},
 
-		'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'( $ ) {
+		'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат'( $ ) {
 
 			const session = $giper_baza_land.make({ $ }).Data( $bog_gram_session )
 			const picture = $giper_baza_land.make({ $ }).link()
@@ -444,7 +444,7 @@ namespace $.$$ {
 				$mol_assert_equal( chat.shot_ratio( id + '/0' ), 1 )
 			}
 
-			$mol_assert_equal( chat.message_shot_width( wide.link().str ), '15.00rem' )
+			$mol_assert_equal( chat.message_shot_width( wide.link().str ), '30.00rem' )
 			$mol_assert_equal( chat.shot_ratio( wide.link().str + '/0' ), 4 / 3 )
 			$mol_assert_equal( chat.message_shots( text.link().str ), [] )
 

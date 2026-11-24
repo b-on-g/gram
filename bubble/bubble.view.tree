@@ -58,6 +58,7 @@ $bog_gram_bubble $mol_view
 		bog_gram_bubble_menu <= menu
 		bog_gram_bubble_last <= last
 		bog_gram_bubble_bare <= bare false
+		bog_gram_bubble_album <= album false
 		bog_gram_bubble_done <= done false
 	event *
 		^

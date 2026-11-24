@@ -45,6 +45,11 @@ namespace $.$$ {
 					alignSelf: 'flex-end',
 				},
 			},
+			bog_gram_bubble_album: {
+				true: {
+					width: '100%',
+				},
+			},
 		},
 
 		Author: {
@@ -178,12 +183,13 @@ namespace $.$$ {
 		},
 
 		Shot: {
-			alignSelf: 'flex-start',
+			alignSelf: 'center',
 			maxWidth: '100%',
 		},
 
 		Clip: {
 			display: 'block',
+			alignSelf: 'center',
 			width: '15rem',
 			maxWidth: '100%',
 			maxHeight: '60vh',

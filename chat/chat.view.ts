@@ -4,7 +4,9 @@ namespace $.$$ {
 
 	const double_tap_delay = 350
 
-	const shot_side = 15
+	const shot_side = 30
+
+	const shot_blank = 15
 
 	const rem_px = 16
 
@@ -815,7 +817,7 @@ namespace $.$$ {
 
 		shot_size( shot: string ) {
 			const frame = this.shot_frame( shot )
-			if( !frame?.width || !frame?.height ) return { width: shot_side * rem_px, height: shot_side * rem_px }
+			if( !frame?.width || !frame?.height ) return { width: shot_blank * rem_px, height: shot_blank * rem_px }
 			return { width: frame.width, height: frame.height }
 		}
 
@@ -828,7 +830,7 @@ namespace $.$$ {
 		@ $mol_mem_key
 		override message_shot_width( id: string ) {
 			const shots = this.message_shots( id )
-			if( shots.length !== 1 ) return shot_side + 'rem'
+			if( shots.length !== 1 ) return '100%'
 			const size = this.shot_size( shots[0] )
 			const side = Math.max( size.width, size.height )
 			const limit = Math.min( shot_side, side / rem_px )
