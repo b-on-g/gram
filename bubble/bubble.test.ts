@@ -33,6 +33,25 @@ namespace $.$$ {
 
 		},
 
+		async 'Ссылка на объект Базы даёт карточку, без имени или без ссылки её нет'( $ ) {
+
+			const land = await $mol_wire_async( ()=> {
+				const land = $.$giper_baza_glob.land_grab()
+				new $mol_wire_atom( 'bog_gram_bubble_card', ()=> $.$giper_baza_glob.Land( land.link() ) ).fresh()
+				return land
+			} )()
+
+			const make = ( text: string )=> $bog_gram_bubble.make({ $, body: ()=> text })
+			const bubble = make( `глянь https://x.y/#!link=${ land.link().str }` )
+
+			$mol_assert_equal( make( 'привет personal_property' ).Card(), null! )
+			$mol_assert_equal( await $mol_wire_async( bubble ).Card(), null! )
+
+			await $mol_wire_async( land.Data( $giper_baza_flex_subj ) ).name( 'Молоко' )
+			$mol_assert_equal( ( await $mol_wire_async( bubble ).Card() ).name(), 'Молоко' )
+
+		},
+
 	})
 
 }

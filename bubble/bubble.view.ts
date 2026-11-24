@@ -58,6 +58,17 @@ namespace $.$$ {
 			return this.body() ? super.Body() : null!
 		}
 
+		@ $mol_mem
+		override card_link() {
+			return $bog_dock_card_find( this.body() )
+		}
+
+		override Card() {
+			if( !this.card_link() ) return null!
+			const card = super.Card()
+			return $bog_gram_soft( ()=> card.name(), '' ) ? card : null!
+		}
+
 		override Edited() {
 			return this.edited() ? super.Edited() : null!
 		}

@@ -182,6 +182,8 @@ $bog_gram_bubble $mol_view
 							click? <=> delete?
 							sub /
 								<= Delete_icon $mol_icon_delete
+		<= Card $bog_dock_card
+			link <= card_link \
 		<= Reactions $mol_view
 			event *
 				^
