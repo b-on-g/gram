@@ -69171,7 +69171,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.228";
+    const $bog_gram_version = "1.0.229";
 }
 
 declare namespace $ {
@@ -89275,8 +89275,13 @@ declare namespace $.$$ {
         stick_observer(): {
             destructor: () => void;
         } | null;
+        stick_last: {
+            top: number;
+            full: number;
+            view: number;
+        };
+        stick_track(top: number, full: number, view: number): void;
         reveal(row: $mol_view, align: ScrollLogicalPosition): void;
-        stick_watch(): number;
         content_height(): number;
         stick_hold(): number;
         auto(): void;

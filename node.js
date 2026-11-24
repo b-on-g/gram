@@ -42058,7 +42058,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.228';
+    $.$bog_gram_version = '1.0.229';
 })($ || ($ = {}));
 
 ;
@@ -61207,31 +61207,40 @@ var $;
                 const Observer = this.$.$mol_dom_context.ResizeObserver;
                 if (!Observer)
                     return null;
+                const track = () => this.stick_track(body.scrollTop, body.scrollHeight, body.clientHeight);
                 const observer = new Observer(() => {
-                    if (!$mol_wire_probe(() => this.stick_end()))
-                        return;
-                    body.scrollTop = body.scrollHeight;
+                    if ($mol_wire_probe(() => this.stick_end()))
+                        body.scrollTop = body.scrollHeight;
+                    track();
                 });
                 observer.observe(this.Body_content().dom_node());
+                observer.observe(body);
+                body.addEventListener('scroll', track, { passive: true });
                 return {
-                    destructor: () => observer.disconnect(),
+                    destructor: () => {
+                        observer.disconnect();
+                        body.removeEventListener('scroll', track);
+                    },
                 };
+            }
+            stick_last = { top: 0, full: 0, view: 0 };
+            stick_track(top, full, view) {
+                const last = this.stick_last;
+                this.stick_last = { top, full, view };
+                if (full - top - view <= 4) {
+                    this.stick_end(true);
+                    return;
+                }
+                if (full !== last.full || view !== last.view)
+                    return;
+                if (top < last.top)
+                    this.stick_end(false);
             }
             reveal(row, align) {
                 this.stick_end(align === 'end');
                 new this.$.$mol_after_tick(() => {
                     $mol_wire_async(this).ensure_visible(row, align).catch($mol_fail_log);
                 });
-            }
-            stick_watch() {
-                const top = this.Body().scroll_top();
-                const gap = this.content_height() - top - (this.Body().view_rect()?.height ?? 0);
-                const last = $mol_wire_probe(() => this.stick_watch()) ?? top;
-                if (gap <= 4)
-                    this.stick_end(true);
-                else if (top < last - 4)
-                    this.stick_end(false);
-                return top;
             }
             content_height() {
                 return this.Body_content().view_rect()?.height ?? 0;
@@ -61242,13 +61251,12 @@ var $;
                     return 0;
                 if (!this.stick_end())
                     return 0;
-                return this.Body().scroll_top(height);
+                return this.Body().scroll_top(this.Body().dom_node().scrollHeight);
             }
             auto() {
                 super.auto();
                 $bog_gram_soft(() => this.read_sync(), 0);
                 $bog_gram_soft(() => this.field_focus(), false);
-                $bog_gram_soft(() => this.stick_watch(), 0);
                 $bog_gram_soft(() => this.stick_hold(), 0);
                 $bog_gram_soft(() => this.stick_observer(), null);
                 $bog_gram_soft(() => this.follow(), undefined);
@@ -61579,9 +61587,6 @@ var $;
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "stick_observer", null);
-        __decorate([
-            $mol_mem
-        ], $bog_gram_chat.prototype, "stick_watch", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "content_height", null);
