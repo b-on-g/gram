@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.238";
+    const $bog_gram_version = "1.0.239";
 }
 
 declare namespace $ {
@@ -84929,6 +84929,73 @@ declare namespace $ {
 
 //# sourceMappingURL=outline.view.tree.d.ts.map
 declare namespace $ {
+    /** Baza link from `#!link=...` inside of text */
+    function $bog_dock_card_find(text: string): string;
+}
+
+declare namespace $ {
+
+	type $mol_view__sub_bog_dock_card_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_dock_card_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_dock_card_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_dock_card_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_dock_card_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	export class $bog_dock_card extends $mol_link {
+		icon( ): string
+		Icon( ): $mol_view
+		name( ): string
+		Name( ): $mol_view
+		descr( ): string
+		Hint( ): $mol_view
+		Info( ): $mol_view
+		kind( ): string
+		Kind( ): $mol_view
+		link( ): string
+		host( ): string
+		target( ): string
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=card.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_dock_card extends $.$bog_dock_card {
+        pawn(): $giper_baza_dict | null;
+        meta(): $giper_baza_dict | null;
+        pick(pawn: $giper_baza_dict | null, ...keys: string[]): string;
+        name(): string;
+        descr(): string;
+        kind(): string;
+        icon(): string;
+        uri(): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
     class $bog_gram_react extends $mol_object {
         static kinds: readonly string[];
         static shown(all: readonly string[]): string[];
@@ -85266,7 +85333,12 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__event_bog_gram_bubble_64 = $mol_type_enforce<
+	type $bog_dock_card__link_bog_gram_bubble_64 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['card_link'] >
+		,
+		ReturnType< $bog_dock_card['link'] >
+	>
+	type $mol_view__event_bog_gram_bubble_65 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
 			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
@@ -85274,12 +85346,12 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_65 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_66 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['reaction_chips'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__event_bog_gram_bubble_66 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_bubble_67 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
 			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
@@ -85287,51 +85359,51 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_67 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_68 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['palette_picks'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_68 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_69 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__attr_bog_gram_bubble_69 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_bubble_70 = $mol_type_enforce<
 		({ 
 			'bog_gram_bubble_mine': ReturnType< $bog_gram_bubble['reaction_mine'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_70 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_71 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['reaction_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_71 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_72 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_72 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_73 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__attr_bog_gram_bubble_73 = $mol_type_enforce<
+	type $mol_button_minor__attr_bog_gram_bubble_74 = $mol_type_enforce<
 		({ 
 			'bog_gram_bubble_mine': ReturnType< $bog_gram_bubble['reaction_mine'] >,
 		})  & ReturnType< $mol_button_minor['attr'] >
 		,
 		ReturnType< $mol_button_minor['attr'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_74 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_75 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['reaction_toggle'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_75 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_76 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
@@ -85380,6 +85452,8 @@ declare namespace $ {
 		Delete( ): $mol_button_minor
 		Actions( ): $mol_view
 		Line( ): $mol_view
+		card_link( ): string
+		Card( ): $bog_dock_card
 		reaction_chips( ): readonly($mol_view)[]
 		Reactions( ): $mol_view
 		palette_picks( ): readonly($mol_view)[]
@@ -85481,6 +85555,8 @@ declare namespace $.$$ {
         content(): $bog_rich_content;
         body(): string;
         Body(): $.$bog_rich_render;
+        card_link(): string;
+        Card(): $.$bog_dock_card;
         Edited(): $mol_view;
         Checks(): $mol_view;
         Forwarded(): $mol_view;

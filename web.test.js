@@ -12394,6 +12394,36 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'link is found only in link argument'($) {
+                $mol_assert_equal($bog_dock_card_find('see https://x.y/#!link=aaaaaaaa_bbbbbbbb ok'), 'aaaaaaaa_bbbbbbbb');
+                $mol_assert_equal($bog_dock_card_find('https://x.y/#!a=1/link=aaaaaaaa_bbbbbbbb'), 'aaaaaaaa_bbbbbbbb');
+                $mol_assert_equal($bog_dock_card_find('personal_property'), '');
+                $mol_assert_equal($bog_dock_card_find('#!link=short'), '');
+            },
+            async 'card shows object without its class and follows changes'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_dock_card_test', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const subj = land.Data($giper_baza_flex_subj);
+                await $mol_wire_async(subj).name('First');
+                const card = $bog_dock_card.make({ $, link: () => land.link().str });
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'First');
+                await $mol_wire_async(subj).name('Second');
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Second');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function message_make($) {
         const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
         return session.Messages('auto').make(null);
@@ -12461,6 +12491,19 @@ var $;
                 const bubble = $bog_gram_bubble.make({ $ });
                 $mol_assert_equal(bubble.Reactions(), null);
                 $mol_assert_equal(bubble.Palette(), null);
+            },
+            async 'Ссылка на объект Базы даёт карточку, без имени или без ссылки её нет'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_gram_bubble_card', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const make = (text) => $bog_gram_bubble.make({ $, body: () => text });
+                const bubble = make(`глянь https://x.y/#!link=${land.link().str}`);
+                $mol_assert_equal(make('привет personal_property').Card(), null);
+                $mol_assert_equal(await $mol_wire_async(bubble).Card(), null);
+                await $mol_wire_async(land.Data($giper_baza_flex_subj)).name('Молоко');
+                $mol_assert_equal((await $mol_wire_async(bubble).Card()).name(), 'Молоко');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

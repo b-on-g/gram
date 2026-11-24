@@ -42049,7 +42049,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.238';
+    $.$bog_gram_version = '1.0.239';
 })($ || ($ = {}));
 
 ;
@@ -59680,6 +59680,197 @@ var $;
 
 
 ;
+	($.$bog_dock_card) = class $bog_dock_card extends ($.$mol_link) {
+		icon(){
+			return "";
+		}
+		Icon(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.icon())]);
+			return obj;
+		}
+		name(){
+			return "";
+		}
+		Name(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.name())]);
+			return obj;
+		}
+		descr(){
+			return "";
+		}
+		Hint(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.descr())]);
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Name()), (this.Hint())]);
+			return obj;
+		}
+		kind(){
+			return "";
+		}
+		Kind(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.kind())]);
+			return obj;
+		}
+		link(){
+			return "";
+		}
+		host(){
+			return "https://b-on-g.github.io/dock/card/";
+		}
+		target(){
+			return "_blank";
+		}
+		sub(){
+			return [
+				(this.Icon()), 
+				(this.Info()), 
+				(this.Kind())
+			];
+		}
+	};
+	($mol_mem(($.$bog_dock_card.prototype), "Icon"));
+	($mol_mem(($.$bog_dock_card.prototype), "Name"));
+	($mol_mem(($.$bog_dock_card.prototype), "Hint"));
+	($mol_mem(($.$bog_dock_card.prototype), "Info"));
+	($mol_mem(($.$bog_dock_card.prototype), "Kind"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Baza link from `#!link=...` inside of text */
+    function $bog_dock_card_find(text) {
+        const str = text.match(/[#!/]link=([a-zæA-ZÆ0-9_]+)/)?.[1] ?? '';
+        return str.length >= 17 && $giper_baza_link.check(str) ? str : '';
+    }
+    $.$bog_dock_card_find = $bog_dock_card_find;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_dock_card extends $.$bog_dock_card {
+            pawn() {
+                const link = $giper_baza_link.check(this.link());
+                return link?.str ? this.$.$giper_baza_glob.Pawn(link, $giper_baza_dict) : null;
+            }
+            meta() {
+                const link = this.pawn()?.meta();
+                return link ? this.$.$giper_baza_glob.Pawn(link, $giper_baza_dict) : null;
+            }
+            pick(pawn, ...keys) {
+                for (const key of keys) {
+                    const val = pawn?.dive(key, $giper_baza_atom)?.vary();
+                    if (typeof val === 'string' && val)
+                        return val;
+                }
+                return '';
+            }
+            name() {
+                return this.pick(this.pawn(), 'Subj:Name', 'Title', 'Name');
+            }
+            descr() {
+                return this.pick(this.pawn(), 'Subj:Hint', 'Hint', 'Artist', 'Note');
+            }
+            kind() {
+                return this.pick(this.meta(), 'Subj:Name');
+            }
+            icon() {
+                return this.pick(this.pawn(), 'Subj:Icon', 'Icon') || this.pick(this.meta(), 'Subj:Icon') || '💠';
+            }
+            uri() {
+                return `${this.host()}#!link=${this.link()}`;
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "pawn", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "meta", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "name", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "descr", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "kind", null);
+        __decorate([
+            $mol_mem
+        ], $bog_dock_card.prototype, "icon", null);
+        $$.$bog_dock_card = $bog_dock_card;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_dock_card, {
+            align: {
+                items: 'center',
+            },
+            gap: '.75rem',
+            padding: '.75rem',
+            maxWidth: '24rem',
+            background: {
+                color: $mol_theme.card,
+            },
+            border: {
+                radius: $mol_gap.round,
+            },
+            Icon: {
+                font: {
+                    size: '2rem',
+                },
+                lineHeight: '1',
+            },
+            Info: {
+                flex: {
+                    direction: 'column',
+                    grow: 1,
+                    shrink: 1,
+                },
+                minWidth: 0,
+            },
+            Name: {
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Hint: {
+                color: $mol_theme.shade,
+            },
+            Kind: {
+                color: $mol_theme.shade,
+                font: {
+                    size: '.75rem',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
 		bare(){
 			return false;
@@ -59936,6 +60127,14 @@ var $;
 			]);
 			return obj;
 		}
+		card_link(){
+			return "";
+		}
+		Card(){
+			const obj = new this.$.$bog_dock_card();
+			(obj.link) = () => ((this.card_link()));
+			return obj;
+		}
 		reaction_chips(){
 			return [];
 		}
@@ -60186,6 +60385,7 @@ var $;
 				(this.Call()), 
 				(this.Contact()), 
 				(this.Line()), 
+				(this.Card()), 
 				(this.Reactions()), 
 				(this.Palette())
 			];
@@ -60243,6 +60443,7 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Delete"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Actions"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Card"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Reactions"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Palette"));
 	($mol_mem_key(($.$bog_gram_bubble.prototype), "reaction_toggle"));
@@ -60354,6 +60555,15 @@ var $;
             Body() {
                 return this.body() ? super.Body() : null;
             }
+            card_link() {
+                return $bog_dock_card_find(this.body());
+            }
+            Card() {
+                if (!this.card_link())
+                    return null;
+                const card = super.Card();
+                return $bog_gram_soft(() => card.name(), '') ? card : null;
+            }
             Edited() {
                 return this.edited() ? super.Edited() : null;
             }
@@ -60424,6 +60634,9 @@ var $;
                 return null;
             }
         }
+        __decorate([
+            $mol_mem
+        ], $bog_gram_bubble.prototype, "card_link", null);
         __decorate([
             $mol_action
         ], $bog_gram_bubble.prototype, "reaction_toggle", null);
@@ -80160,6 +80373,36 @@ var $;
 "use strict";
 var $;
 (function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'link is found only in link argument'($) {
+                $mol_assert_equal($bog_dock_card_find('see https://x.y/#!link=aaaaaaaa_bbbbbbbb ok'), 'aaaaaaaa_bbbbbbbb');
+                $mol_assert_equal($bog_dock_card_find('https://x.y/#!a=1/link=aaaaaaaa_bbbbbbbb'), 'aaaaaaaa_bbbbbbbb');
+                $mol_assert_equal($bog_dock_card_find('personal_property'), '');
+                $mol_assert_equal($bog_dock_card_find('#!link=short'), '');
+            },
+            async 'card shows object without its class and follows changes'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_dock_card_test', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const subj = land.Data($giper_baza_flex_subj);
+                await $mol_wire_async(subj).name('First');
+                const card = $bog_dock_card.make({ $, link: () => land.link().str });
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'First');
+                await $mol_wire_async(subj).name('Second');
+                $mol_assert_equal(await $mol_wire_async(card).name(), 'Second');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
     function message_make($) {
         const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
         return session.Messages('auto').make(null);
@@ -80227,6 +80470,19 @@ var $;
                 const bubble = $bog_gram_bubble.make({ $ });
                 $mol_assert_equal(bubble.Reactions(), null);
                 $mol_assert_equal(bubble.Palette(), null);
+            },
+            async 'Ссылка на объект Базы даёт карточку, без имени или без ссылки её нет'($) {
+                const land = await $mol_wire_async(() => {
+                    const land = $.$giper_baza_glob.land_grab();
+                    new $mol_wire_atom('bog_gram_bubble_card', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                    return land;
+                })();
+                const make = (text) => $bog_gram_bubble.make({ $, body: () => text });
+                const bubble = make(`глянь https://x.y/#!link=${land.link().str}`);
+                $mol_assert_equal(make('привет personal_property').Card(), null);
+                $mol_assert_equal(await $mol_wire_async(bubble).Card(), null);
+                await $mol_wire_async(land.Data($giper_baza_flex_subj)).name('Молоко');
+                $mol_assert_equal((await $mol_wire_async(bubble).Card()).name(), 'Молоко');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));

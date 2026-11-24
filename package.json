@@ -702,6 +702,8 @@
     "$bog_rich_spoiler",
     "$mol_icon_emoticon_outline",
     "$mol_icon_emoticon",
+    "$bog_dock_card",
+    "$bog_dock",
     "$bog_gram_react",
     "$bog_gram_href",
     "$bog_gram_clip",
