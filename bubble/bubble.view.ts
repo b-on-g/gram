@@ -14,6 +14,10 @@ namespace $.$$ {
 			return this.shot() ? super.Shot() : null!
 		}
 
+		override album() {
+			return this.shot() && this.shots().length > 1
+		}
+
 		override Sound() {
 			return this.sound() ? super.Sound() : null!
 		}

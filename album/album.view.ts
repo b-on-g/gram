@@ -1,5 +1,9 @@
 namespace $.$$ {
 
+	const row_target = 2.5
+
+	const cost_step = 1e-9
+
 	export type $bog_gram_album_cell = {
 		tiles: readonly number[],
 		grow: number,
@@ -17,14 +21,27 @@ namespace $.$$ {
 			return Math.min( 2, Math.max( 0.5, ratio ) )
 		}
 
-		static chunks( count: number ) {
-			const sizes = count % 3 === 1 ? [ 2, 2 ] : count % 3 === 2 ? [ 2 ] : []
-			let rest = count - sizes.reduce( ( sum, size )=> sum + size, 0 )
-			while( rest > 0 ) {
-				sizes.push( 3 )
-				rest -= 3
+		static chunks( ratios: readonly number[] ): readonly number[] {
+
+			const count = ratios.length
+			const best = [] as { cost: number, sizes: readonly number[] }[]
+			best[ count ] = { cost: 0, sizes: [] }
+
+			for( let from = count - 1; from >= 0; -- from ) {
+
+				best[ from ] = { cost: Infinity, sizes: [] }
+				let sum = 0
+
+				for( let till = from + 1; till <= count; ++ till ) {
+					sum += this.clamp( ratios[ till - 1 ] )
+					const cost = Math.log( sum / row_target ) ** 2 + best[ till ].cost
+					if( cost > best[ from ].cost - cost_step ) continue
+					best[ from ] = { cost, sizes: [ till - from, ... best[ till ].sizes ] }
+				}
+
 			}
-			return sizes
+
+			return best[ 0 ].sizes
 		}
 
 		static strip( ratios: readonly number[], from: number, size: number ): $bog_gram_album_row {
@@ -43,18 +60,17 @@ namespace $.$$ {
 
 			if( count === 1 ) return [ { ratio: ratios[0] > 0 ? ratios[0] : 1, cells: [ { tiles: [ 0 ], grow: 1 } ] } ]
 
-			if( count === 2 ) return [ this.strip( ratios, 0, 2 ) ]
-
-			if( count === 3 ) return [ { ratio: 1.5, cells: [ { tiles: [ 0 ], grow: 2 }, { tiles: [ 1, 2 ], grow: 1 } ] } ]
-
-			if( count === 4 ) return [
-				{ ratio: 2, cells: [ { tiles: [ 0 ], grow: 1 }, { tiles: [ 1 ], grow: 1 } ] },
-				{ ratio: 2, cells: [ { tiles: [ 2 ], grow: 1 }, { tiles: [ 3 ], grow: 1 } ] },
-			]
+			if( count === 3 ) {
+				const [ big, upper, lower ] = ratios.map( ratio => this.clamp( ratio ) )
+				if( big < 1 && upper >= 1 && lower >= 1 ) {
+					const side = 1 / ( 1 / upper + 1 / lower )
+					return [ { ratio: big + side, cells: [ { tiles: [ 0 ], grow: big }, { tiles: [ 1, 2 ], grow: side } ] } ]
+				}
+			}
 
 			const rows = [] as $bog_gram_album_row[]
 			let from = 0
-			for( const size of this.chunks( count ) ) {
+			for( const size of this.chunks( ratios ) ) {
 				rows.push( this.strip( ratios, from, size ) )
 				from += size
 			}
@@ -64,6 +80,10 @@ namespace $.$$ {
 		@ $mol_mem
 		layout() {
 			return $bog_gram_album.layout( this.shots().map( shot => this.ratio( shot ) ) )
+		}
+
+		override single() {
+			return this.shots().length === 1
 		}
 
 		cell( key: string ) {
@@ -100,7 +120,10 @@ namespace $.$$ {
 			const out = new Map< string, number >()
 			for( const row of this.layout() ) {
 				for( const cell of row.cells ) {
-					for( const index of cell.tiles ) out.set( this.shots()[ index ], cell.tiles.length > 1 ? 1 : cell.grow )
+					for( const index of cell.tiles ) {
+						const shot = this.shots()[ index ]
+						out.set( shot, cell.tiles.length > 1 ? 1 / $bog_gram_album.clamp( this.ratio( shot ) ) : cell.grow )
+					}
 				}
 			}
 			return out
