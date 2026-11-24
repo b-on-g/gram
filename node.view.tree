@@ -4280,7 +4280,10 @@ $bog_gram_album $mol_view
 	uri* \
 	ratio* 1
 	open*? null
-	width \15rem
+	width \100%
+	attr *
+		^
+		bog_gram_album_single <= single false
 	style *
 		width <= width
 	sub <= rows /
@@ -4470,6 +4473,7 @@ $bog_gram_bubble $mol_view
 		bog_gram_bubble_menu <= menu
 		bog_gram_bubble_last <= last
 		bog_gram_bubble_bare <= bare false
+		bog_gram_bubble_album <= album false
 		bog_gram_bubble_done <= done false
 	event *
 		^

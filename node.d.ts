@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.237";
+    const $bog_gram_version = "1.0.238";
 }
 
 declare namespace $ {
@@ -84471,6 +84471,7 @@ declare namespace $ {
 		ReturnType< $bog_gram_photo['style'] >
 	>
 	export class $bog_gram_album extends $mol_view {
+		single( ): boolean
 		rows( ): readonly(any)[]
 		row_ratio( id: any): string
 		row_cells( id: any): readonly(any)[]
@@ -84482,6 +84483,9 @@ declare namespace $ {
 		ratio( id: any): number
 		open( id: any, next?: any ): any
 		width( ): string
+		attr( ): ({ 
+			'bog_gram_album_single': ReturnType< $bog_gram_album['single'] >,
+		})  & ReturnType< $mol_view['attr'] >
 		style( ): ({ 
 			'width': ReturnType< $bog_gram_album['width'] >,
 		}) 
@@ -84505,10 +84509,11 @@ declare namespace $.$$ {
     };
     class $bog_gram_album extends $.$bog_gram_album {
         static clamp(ratio: number): number;
-        static chunks(count: number): number[];
+        static chunks(ratios: readonly number[]): readonly number[];
         static strip(ratios: readonly number[], from: number, size: number): $bog_gram_album_row;
         static layout(ratios: readonly number[]): readonly $bog_gram_album_row[];
         layout(): readonly $bog_gram_album_row[];
+        single(): boolean;
         cell(key: string): $bog_gram_album_cell;
         rows(): $mol_view[];
         row_ratio(index: number): string;
@@ -84518,6 +84523,9 @@ declare namespace $.$$ {
         grows(): Map<string, number>;
         tile_grow(shot: string): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $.$$ {
@@ -85330,6 +85338,7 @@ declare namespace $ {
 	>
 	export class $bog_gram_bubble extends $mol_view {
 		bare( ): boolean
+		album( ): boolean
 		done( ): boolean
 		mouse_down( next?: any ): any
 		Author( ): $mol_view
@@ -85437,6 +85446,7 @@ declare namespace $ {
 			'bog_gram_bubble_menu': ReturnType< $bog_gram_bubble['menu'] >,
 			'bog_gram_bubble_last': ReturnType< $bog_gram_bubble['last'] >,
 			'bog_gram_bubble_bare': ReturnType< $bog_gram_bubble['bare'] >,
+			'bog_gram_bubble_album': ReturnType< $bog_gram_bubble['album'] >,
 			'bog_gram_bubble_done': ReturnType< $bog_gram_bubble['done'] >,
 		})  & ReturnType< $mol_view['attr'] >
 		event( ): ({ 
@@ -85459,6 +85469,7 @@ declare namespace $.$$ {
         Author(): $mol_view;
         Quote(): $mol_button_minor;
         Shot(): $.$bog_gram_album;
+        album(): boolean;
         Sound(): $.$bog_gram_sound;
         Round(): $.$bog_gram_round;
         bare(): boolean;

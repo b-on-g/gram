@@ -12303,13 +12303,17 @@ var $;
     var $$;
     (function ($$) {
         $mol_test({
-            'Раскладка альбома как в TG: рядом, большой и два, сетка, дальше рядами'() {
+            'Ряды альбома подбираются по пропорциям кадров, порядок сохраняется'() {
                 const shape = (ratios) => $bog_gram_album.layout(ratios).map(row => row.cells.map(cell => cell.tiles));
                 $mol_assert_equal($bog_gram_album.layout([4 / 3]), [{ ratio: 4 / 3, cells: [{ tiles: [0], grow: 1 }] }]);
                 $mol_assert_equal($bog_gram_album.layout([0])[0].ratio, 1);
                 $mol_assert_equal($bog_gram_album.layout([1.5, 0.5]), [{ ratio: 2, cells: [{ tiles: [0], grow: 1.5 }, { tiles: [1], grow: 0.5 }] }]);
                 $mol_assert_equal($bog_gram_album.layout([10, 0.01])[0].ratio, 2.5);
-                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1, 2]]]);
+                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1], [2]]]);
+                $mol_assert_equal(shape([2, 2]), [[[0]], [[1]]]);
+                $mol_assert_equal(shape([1.5, 1.5, 1.5]), [[[0]], [[1], [2]]]);
+                $mol_assert_equal(shape([0.5, 0.5, 0.5, 0.5]), [[[0], [1], [2], [3]]]);
+                $mol_assert_equal($bog_gram_album.layout([0.5, 2, 2]), [{ ratio: 1.5, cells: [{ tiles: [0], grow: 0.5 }, { tiles: [1, 2], grow: 1 }] }]);
                 $mol_assert_equal(shape([1, 1, 1, 1]), [[[0], [1]], [[2], [3]]]);
                 $mol_assert_equal(shape([1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3], [4]]]);
                 $mol_assert_equal(shape([1, 1, 1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3]], [[4], [5], [6]]]);
@@ -12446,6 +12450,12 @@ var $;
                 bubble.reaction_toggle('👍');
                 bubble.reaction_toggle('🔥');
                 $mol_assert_equal(puts, ['👍', '']);
+            },
+            'Пузырь растянут под сетку только при нескольких кадрах'($) {
+                const album = (shots) => $bog_gram_bubble.make({ $, shot: () => shots.length > 0, shots: () => shots }).album();
+                $mol_assert_equal(album([]), false);
+                $mol_assert_equal(album(['a']), false);
+                $mol_assert_equal(album(['a', 'b']), true);
             },
             'Без реакций строки плашек нет, выбор открыт только по кнопке'($) {
                 const bubble = $bog_gram_bubble.make({ $ });
@@ -12805,7 +12815,7 @@ var $;
                 chat.record_restore(other);
                 $mol_assert_equal(chat.voice_live, take);
             },
-            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'($) {
+            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
                 const picture = $giper_baza_land.make({ $ }).link();
                 const bare = session.Messages('auto').make(null);
@@ -12826,7 +12836,7 @@ var $;
                     $mol_assert_equal(chat.message_shot_width(id), '15.00rem');
                     $mol_assert_equal(chat.shot_ratio(id + '/0'), 1);
                 }
-                $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
+                $mol_assert_equal(chat.message_shot_width(wide.link().str), '30.00rem');
                 $mol_assert_equal(chat.shot_ratio(wide.link().str + '/0'), 4 / 3);
                 $mol_assert_equal(chat.message_shots(text.link().str), []);
             },

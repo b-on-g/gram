@@ -42049,7 +42049,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.237';
+    $.$bog_gram_version = '1.0.238';
 })($ || ($ = {}));
 
 ;
@@ -58657,6 +58657,9 @@ var $;
 
 ;
 	($.$bog_gram_album) = class $bog_gram_album extends ($.$mol_view) {
+		single(){
+			return false;
+		}
 		rows(){
 			return [];
 		}
@@ -58689,7 +58692,10 @@ var $;
 			return null;
 		}
 		width(){
-			return "15rem";
+			return "100%";
+		}
+		attr(){
+			return {...(super.attr()), "bog_gram_album_single": (this.single())};
 		}
 		style(){
 			return {"width": (this.width())};
@@ -58738,20 +58744,30 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const row_target = 2.5;
+        const cost_step = 1e-9;
         class $bog_gram_album extends $.$bog_gram_album {
             static clamp(ratio) {
                 if (!(ratio > 0))
                     return 1;
                 return Math.min(2, Math.max(0.5, ratio));
             }
-            static chunks(count) {
-                const sizes = count % 3 === 1 ? [2, 2] : count % 3 === 2 ? [2] : [];
-                let rest = count - sizes.reduce((sum, size) => sum + size, 0);
-                while (rest > 0) {
-                    sizes.push(3);
-                    rest -= 3;
+            static chunks(ratios) {
+                const count = ratios.length;
+                const best = [];
+                best[count] = { cost: 0, sizes: [] };
+                for (let from = count - 1; from >= 0; --from) {
+                    best[from] = { cost: Infinity, sizes: [] };
+                    let sum = 0;
+                    for (let till = from + 1; till <= count; ++till) {
+                        sum += this.clamp(ratios[till - 1]);
+                        const cost = Math.log(sum / row_target) ** 2 + best[till].cost;
+                        if (cost > best[from].cost - cost_step)
+                            continue;
+                        best[from] = { cost, sizes: [till - from, ...best[till].sizes] };
+                    }
                 }
-                return sizes;
+                return best[0].sizes;
             }
             static strip(ratios, from, size) {
                 const cells = [];
@@ -58766,18 +58782,16 @@ var $;
                     return [];
                 if (count === 1)
                     return [{ ratio: ratios[0] > 0 ? ratios[0] : 1, cells: [{ tiles: [0], grow: 1 }] }];
-                if (count === 2)
-                    return [this.strip(ratios, 0, 2)];
-                if (count === 3)
-                    return [{ ratio: 1.5, cells: [{ tiles: [0], grow: 2 }, { tiles: [1, 2], grow: 1 }] }];
-                if (count === 4)
-                    return [
-                        { ratio: 2, cells: [{ tiles: [0], grow: 1 }, { tiles: [1], grow: 1 }] },
-                        { ratio: 2, cells: [{ tiles: [2], grow: 1 }, { tiles: [3], grow: 1 }] },
-                    ];
+                if (count === 3) {
+                    const [big, upper, lower] = ratios.map(ratio => this.clamp(ratio));
+                    if (big < 1 && upper >= 1 && lower >= 1) {
+                        const side = 1 / (1 / upper + 1 / lower);
+                        return [{ ratio: big + side, cells: [{ tiles: [0], grow: big }, { tiles: [1, 2], grow: side }] }];
+                    }
+                }
                 const rows = [];
                 let from = 0;
-                for (const size of this.chunks(count)) {
+                for (const size of this.chunks(ratios)) {
                     rows.push(this.strip(ratios, from, size));
                     from += size;
                 }
@@ -58785,6 +58799,9 @@ var $;
             }
             layout() {
                 return $bog_gram_album.layout(this.shots().map(shot => this.ratio(shot)));
+            }
+            single() {
+                return this.shots().length === 1;
             }
             cell(key) {
                 const [row, cell] = key.split(':').map(Number);
@@ -58811,8 +58828,10 @@ var $;
                 const out = new Map();
                 for (const row of this.layout()) {
                     for (const cell of row.cells) {
-                        for (const index of cell.tiles)
-                            out.set(this.shots()[index], cell.tiles.length > 1 ? 1 : cell.grow);
+                        for (const index of cell.tiles) {
+                            const shot = this.shots()[index];
+                            out.set(shot, cell.tiles.length > 1 ? 1 / $bog_gram_album.clamp(this.ratio(shot)) : cell.grow);
+                        }
                     }
                 }
                 return out;
@@ -58832,6 +58851,13 @@ var $;
         ], $bog_gram_album.prototype, "grows", null);
         $$.$bog_gram_album = $bog_gram_album;
     })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/album/album.view.css", "[bog_gram_album][bog_gram_album_single=\"true\"] [mol_image] {\n\tobject-fit: scale-down;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -59658,6 +59684,9 @@ var $;
 		bare(){
 			return false;
 		}
+		album(){
+			return false;
+		}
 		done(){
 			return false;
 		}
@@ -60130,6 +60159,7 @@ var $;
 				"bog_gram_bubble_menu": (this.menu()), 
 				"bog_gram_bubble_last": (this.last()), 
 				"bog_gram_bubble_bare": (this.bare()), 
+				"bog_gram_bubble_album": (this.album()), 
 				"bog_gram_bubble_done": (this.done())
 			};
 		}
@@ -60287,6 +60317,9 @@ var $;
             }
             Shot() {
                 return this.shot() ? super.Shot() : null;
+            }
+            album() {
+                return this.shot() && this.shots().length > 1;
             }
             Sound() {
                 return this.sound() ? super.Sound() : null;
@@ -60458,6 +60491,11 @@ var $;
                         alignSelf: 'flex-end',
                     },
                 },
+                bog_gram_bubble_album: {
+                    true: {
+                        width: '100%',
+                    },
+                },
             },
             Author: {
                 ...line,
@@ -60579,11 +60617,12 @@ var $;
                 },
             },
             Shot: {
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 maxWidth: '100%',
             },
             Clip: {
                 display: 'block',
+                alignSelf: 'center',
                 width: '15rem',
                 maxWidth: '100%',
                 maxHeight: '60vh',
@@ -62345,7 +62384,8 @@ var $;
     (function ($$) {
         const press_delay = 400;
         const double_tap_delay = 350;
-        const shot_side = 15;
+        const shot_side = 30;
+        const shot_blank = 15;
         const rem_px = 16;
         const clock_tick = 200;
         const image_limit = 10;
@@ -62969,7 +63009,7 @@ var $;
             shot_size(shot) {
                 const frame = this.shot_frame(shot);
                 if (!frame?.width || !frame?.height)
-                    return { width: shot_side * rem_px, height: shot_side * rem_px };
+                    return { width: shot_blank * rem_px, height: shot_blank * rem_px };
                 return { width: frame.width, height: frame.height };
             }
             shot_ratio(shot) {
@@ -62979,7 +63019,7 @@ var $;
             message_shot_width(id) {
                 const shots = this.message_shots(id);
                 if (shots.length !== 1)
-                    return shot_side + 'rem';
+                    return '100%';
                 const size = this.shot_size(shots[0]);
                 const side = Math.max(size.width, size.height);
                 const limit = Math.min(shot_side, side / rem_px);
@@ -80029,13 +80069,17 @@ var $;
     var $$;
     (function ($$) {
         $mol_test({
-            'Раскладка альбома как в TG: рядом, большой и два, сетка, дальше рядами'() {
+            'Ряды альбома подбираются по пропорциям кадров, порядок сохраняется'() {
                 const shape = (ratios) => $bog_gram_album.layout(ratios).map(row => row.cells.map(cell => cell.tiles));
                 $mol_assert_equal($bog_gram_album.layout([4 / 3]), [{ ratio: 4 / 3, cells: [{ tiles: [0], grow: 1 }] }]);
                 $mol_assert_equal($bog_gram_album.layout([0])[0].ratio, 1);
                 $mol_assert_equal($bog_gram_album.layout([1.5, 0.5]), [{ ratio: 2, cells: [{ tiles: [0], grow: 1.5 }, { tiles: [1], grow: 0.5 }] }]);
                 $mol_assert_equal($bog_gram_album.layout([10, 0.01])[0].ratio, 2.5);
-                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1, 2]]]);
+                $mol_assert_equal(shape([1, 1, 1]), [[[0], [1], [2]]]);
+                $mol_assert_equal(shape([2, 2]), [[[0]], [[1]]]);
+                $mol_assert_equal(shape([1.5, 1.5, 1.5]), [[[0]], [[1], [2]]]);
+                $mol_assert_equal(shape([0.5, 0.5, 0.5, 0.5]), [[[0], [1], [2], [3]]]);
+                $mol_assert_equal($bog_gram_album.layout([0.5, 2, 2]), [{ ratio: 1.5, cells: [{ tiles: [0], grow: 0.5 }, { tiles: [1, 2], grow: 1 }] }]);
                 $mol_assert_equal(shape([1, 1, 1, 1]), [[[0], [1]], [[2], [3]]]);
                 $mol_assert_equal(shape([1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3], [4]]]);
                 $mol_assert_equal(shape([1, 1, 1, 1, 1, 1, 1]), [[[0], [1]], [[2], [3]], [[4], [5], [6]]]);
@@ -80172,6 +80216,12 @@ var $;
                 bubble.reaction_toggle('👍');
                 bubble.reaction_toggle('🔥');
                 $mol_assert_equal(puts, ['👍', '']);
+            },
+            'Пузырь растянут под сетку только при нескольких кадрах'($) {
+                const album = (shots) => $bog_gram_bubble.make({ $, shot: () => shots.length > 0, shots: () => shots }).album();
+                $mol_assert_equal(album([]), false);
+                $mol_assert_equal(album(['a']), false);
+                $mol_assert_equal(album(['a', 'b']), true);
             },
             'Без реакций строки плашек нет, выбор открыт только по кнопке'($) {
                 const bubble = $bog_gram_bubble.make({ $ });
@@ -80682,7 +80732,7 @@ var $;
                 chat.record_restore(other);
                 $mol_assert_equal(chat.voice_live, take);
             },
-            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат на полный предел'($) {
+            'Старое сообщение с одним кадром — альбом из одного, кадр без размеров — квадрат'($) {
                 const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
                 const picture = $giper_baza_land.make({ $ }).link();
                 const bare = session.Messages('auto').make(null);
@@ -80703,7 +80753,7 @@ var $;
                     $mol_assert_equal(chat.message_shot_width(id), '15.00rem');
                     $mol_assert_equal(chat.shot_ratio(id + '/0'), 1);
                 }
-                $mol_assert_equal(chat.message_shot_width(wide.link().str), '15.00rem');
+                $mol_assert_equal(chat.message_shot_width(wide.link().str), '30.00rem');
                 $mol_assert_equal(chat.shot_ratio(wide.link().str + '/0'), 4 / 3);
                 $mol_assert_equal(chat.message_shots(text.link().str), []);
             },
