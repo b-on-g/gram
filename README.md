@@ -25,7 +25,7 @@
 - Домен: `account` (свои ленды, ключ, лобби), `registry` (реестры пользователей), `people` (имена, подписи, ключи собеседников), `talk` (модель диалога), `roster` (список диалогов, архив, запросы), `crew` (состав групп), `lobby` (приглашения и заявки через чужие лобби), `invite` (личная ссылка), `alerts` (пуши).
 - Страницы: `menu` (список диалогов), `chat` (открытый диалог, по странице на диалог), `call` (звонилка, по странице на комнату), `settings`, `compose`, `group`, `members`, `tasks` (задачи чата), `music`. Общая основа страницы — `page`.
 - Компоненты: `row` (строка списка), `bubble` (пузырь сообщения), `hold` (кнопка удержания), `attach` (выбор файла со сбросом), `avatar`, `field`, `photo`, `sound`, `zoom`.
-- Помощники: `pass`, `lord`, `clock`, `count`, `soft`, `tone`, `seal`, `shrink`, `voice`, `link`, `notify`, `push`, `auth`, `mine`, `nozoom`, `scan`, `version`.
+- Помощники: `react` (реакции), `pass`, `lord`, `clock`, `count`, `soft`, `tone`, `seal`, `shrink`, `voice`, `link`, `notify`, `push`, `auth`, `mine`, `nozoom`, `scan`, `version`.
 
 ## Корень
 

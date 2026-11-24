@@ -64534,7 +64534,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.226";
+    const $bog_gram_version = "1.0.227";
 }
 
 declare namespace $ {
@@ -71393,6 +71393,44 @@ declare namespace $ {
             readonly Contact_name: (auto?: any) => $giper_baza_atom_text | null;
             readonly Task: (auto?: any) => $giper_baza_atom_bool | null;
             readonly Task_done: (auto?: any) => $giper_baza_atom_real | null;
+            readonly Reactions: (auto?: any) => {
+                Value: typeof $giper_baza_atom_text;
+                key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
         }>;
         path: string;
     } & {
@@ -77378,6 +77416,303 @@ declare namespace $ {
             readonly Contact_name: typeof $giper_baza_atom_text;
             readonly Task: typeof $giper_baza_atom_bool;
             readonly Task_done: typeof $giper_baza_atom_real;
+            readonly Reactions: {
+                new (): {
+                    Value: typeof $giper_baza_atom_text;
+                    key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
         };
     };
     export class $bog_gram_message extends $bog_gram_message_base {
@@ -82224,6 +82559,8 @@ declare namespace $ {
 	export class $bog_gram_write extends $giper_baza_rich_edit {
 		press( next?: any ): any
 		before_input( next?: any ): any
+		tools_hold( next?: any ): any
+		tools_leave( next?: any ): any
 		html( next?: string ): string
 		rich( ): boolean
 		length_max( ): number
@@ -82234,6 +82571,8 @@ declare namespace $ {
 		event( ): ({ 
 			keydown( next?: ReturnType< $bog_gram_write['press'] > ): ReturnType< $bog_gram_write['press'] >,
 			beforeinput( next?: ReturnType< $bog_gram_write['before_input'] > ): ReturnType< $bog_gram_write['before_input'] >,
+			mousedown( next?: ReturnType< $bog_gram_write['tools_hold'] > ): ReturnType< $bog_gram_write['tools_hold'] >,
+			focusout( next?: ReturnType< $bog_gram_write['tools_leave'] > ): ReturnType< $bog_gram_write['tools_leave'] >,
 		})  & ReturnType< $giper_baza_rich_edit['event'] >
 		Hint( ): $mol_view
 	}
@@ -82244,6 +82583,14 @@ declare namespace $ {
 declare namespace $.$$ {
     type Caret = ReturnType<$giper_baza_rich_edit['selection']>;
     export function $bog_gram_write_clean(html: string): string;
+    export function $bog_gram_write_spot(root: Node, node: Node, offset: number): {
+        at: number;
+        tail: boolean;
+    };
+    export function $bog_gram_write_point(root: Node, spot: {
+        at: number;
+        tail: boolean;
+    }): [Node, number];
     export function $bog_gram_write_text(html: string): string;
     export function $bog_gram_write_html(text: string): string;
     export function $bog_gram_write_rich_is(html: string): boolean;
@@ -82272,10 +82619,17 @@ declare namespace $.$$ {
         room(): number;
         before_input(event?: InputEvent): null;
         paste(event: ClipboardEvent): void;
+        aim(): boolean;
         block_wrap(type: string, event: KeyboardEvent): void;
         block_rewrap(event: KeyboardEvent): void;
         block_unwrap(event: KeyboardEvent): void;
         inline_toggle(type: string, event: KeyboardEvent): void;
+        caret(): Selection | null;
+        caret_keep(change: () => void): void;
+        inline_start(type: string): boolean;
+        menu_hide(): void;
+        tools_hold(event?: Event): null;
+        tools_leave(event?: FocusEvent): null;
     }
     export {};
 }
@@ -83374,153 +83728,50 @@ declare namespace $ {
 
 declare namespace $ {
 
-	type $mol_html_view_heading__level_mol_html_view_1 = $mol_type_enforce<
-		ReturnType< $mol_html_view['heading_level'] >
-		,
-		ReturnType< $mol_html_view_heading['level'] >
-	>
-	type $mol_html_view_heading__sub_mol_html_view_2 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_html_view_heading['sub'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_3 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_list__rows_mol_html_view_4 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_list__rows_mol_html_view_5 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_list['rows'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_6 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_7 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_8 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_9 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_view__sub_mol_html_view_10 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_mol_html_view_11 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_12 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_link_iconed__uri_mol_html_view_13 = $mol_type_enforce<
-		ReturnType< $mol_html_view['link_uri'] >
-		,
-		ReturnType< $mol_link_iconed['uri'] >
-	>
-	type $mol_link_iconed__content_mol_html_view_14 = $mol_type_enforce<
-		ReturnType< $mol_html_view['content'] >
-		,
-		ReturnType< $mol_link_iconed['content'] >
-	>
-	type $mol_image__uri_mol_html_view_15 = $mol_type_enforce<
-		ReturnType< $mol_html_view['image_uri'] >
-		,
-		ReturnType< $mol_image['uri'] >
-	>
-	type $mol_paragraph__sub_mol_html_view_16 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_paragraph['sub'] >
-	>
-	type $mol_dimmer__needle_mol_html_view_17 = $mol_type_enforce<
-		ReturnType< $mol_html_view['highlight'] >
-		,
-		ReturnType< $mol_dimmer['needle'] >
-	>
-	type $mol_dimmer__haystack_mol_html_view_18 = $mol_type_enforce<
-		ReturnType< $mol_html_view['text'] >
-		,
-		ReturnType< $mol_dimmer['haystack'] >
-	>
-	export class $mol_html_view extends $mol_list {
-		heading_level( id: any): number
-		content( id: any): readonly(any)[]
-		link_uri( id: any): string
-		image_uri( id: any): string
-		highlight( ): string
-		text( id: any): string
+	export class $bog_gram_rich extends $mol_view {
+		nodes( ): readonly($mol_view_content)[]
 		html( ): string
-		dom( ): any
-		safe_link( id: any): string
-		views( id: any): readonly(any)[]
-		xss_uri( ): string
-		Heading( id: any): $mol_html_view_heading
-		Paragraph( id: any): $mol_paragraph
-		List( id: any): $mol_list
-		Quote( id: any): $mol_list
-		Strong( id: any): $mol_paragraph
-		Emphasis( id: any): $mol_paragraph
-		Deleted( id: any): $mol_paragraph
-		Inserted( id: any): $mol_paragraph
-		Subscript( id: any): $mol_view
-		Superscript( id: any): $mol_view
-		Code( id: any): $mol_paragraph
-		Link( id: any): $mol_link_iconed
-		Image( id: any): $mol_image
-		Break( id: any): $mol_paragraph
-		Text( id: any): $mol_dimmer
-	}
-	
-	export class $mol_html_view_heading extends $mol_paragraph {
-		level( ): number
-		attr( ): ({ 
-			'mol_html_view_heading': ReturnType< $mol_html_view_heading['level'] >,
-		})  & ReturnType< $mol_paragraph['attr'] >
+		sub( ): ReturnType< $bog_gram_rich['nodes'] >
 	}
 	
 }
 
-//# sourceMappingURL=view.view.tree.d.ts.map
+//# sourceMappingURL=rich.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_gram_rich extends $.$bog_gram_rich {
+        nodes(): $mol_view_content[];
+    }
+}
+
 declare namespace $ {
 }
 
-declare namespace $.$$ {
-    /**
-     * Safe virtualized view of raw HTML.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_html_view_demo
-     */
-    class $mol_html_view extends $.$mol_html_view {
-        dom(): HTMLElement;
-        sub(): $mol_view[];
-        content(node: Node): $mol_view[];
-        views(node: Node): $mol_view[] | $.$mol_image[] | $.$mol_paragraph[] | $.$mol_link_iconed[];
-        text(node: Node): string;
-        safe_link(uri: string): string;
-        link_uri(node: HTMLAnchorElement): string;
-        image_uri(node: HTMLImageElement): string;
-        heading_level(node: HTMLHeadingElement): number;
+declare namespace $ {
+
+	export class $mol_icon_emoticon extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=emoticon.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_emoticon_outline extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=outline.view.tree.d.ts.map
+declare namespace $ {
+    class $bog_gram_react extends $mol_object {
+        static kinds: readonly string[];
+        static shown(all: readonly string[]): string[];
+        static count(all: readonly string[], kind: string): number;
+        static list(message: $bog_gram_message | null): string[];
+        static mine(message: $bog_gram_message | null, lord: string): string;
+        static put(message: $bog_gram_message, lord: string, kind: string): void;
     }
 }
 
@@ -83718,10 +83969,10 @@ declare namespace $ {
 		,
 		ReturnType< $bog_gram_body['text'] >
 	>
-	type $mol_html_view__html_bog_gram_bubble_38 = $mol_type_enforce<
+	type $bog_gram_rich__html_bog_gram_bubble_38 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['html'] >
 		,
-		ReturnType< $mol_html_view['html'] >
+		ReturnType< $bog_gram_rich['html'] >
 	>
 	type $mol_view__sub_bog_gram_bubble_39 = $mol_type_enforce<
 		readonly(any)[]
@@ -83743,87 +83994,97 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_43 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_button_copy__hint_bog_gram_bubble_44 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['hint'] >
-	>
-	type $mol_button_copy__text_bog_gram_bubble_45 = $mol_type_enforce<
-		ReturnType< $bog_gram_bubble['body'] >
-		,
-		ReturnType< $mol_button_copy['text'] >
-	>
-	type $mol_button_copy__title_bog_gram_bubble_46 = $mol_type_enforce<
-		string
-		,
-		ReturnType< $mol_button_copy['title'] >
-	>
-	type $mol_check_icon__hint_bog_gram_bubble_47 = $mol_type_enforce<
+	type $mol_check_icon__hint_bog_gram_bubble_43 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_bubble_48 = $mol_type_enforce<
+	type $mol_check_icon__checked_bog_gram_bubble_44 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['react_open'] >
+		,
+		ReturnType< $mol_check_icon['checked'] >
+	>
+	type $mol_check_icon__Icon_bog_gram_bubble_45 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['React_icon'] >
+		,
+		ReturnType< $mol_check_icon['Icon'] >
+	>
+	type $mol_button_copy__hint_bog_gram_bubble_46 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['hint'] >
+	>
+	type $mol_button_copy__text_bog_gram_bubble_47 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['body'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_button_copy__title_bog_gram_bubble_48 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_check_icon__hint_bog_gram_bubble_49 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_check_icon['hint'] >
+	>
+	type $mol_check_icon__checked_bog_gram_bubble_50 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['task'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_bubble_49 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_bubble_51 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['Task_mark_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_50 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_52 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_51 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_53 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['forward'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_52 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_54 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_53 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_55 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_54 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_56 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['edit'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_55 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_57 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_bubble_56 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_bubble_58 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_bubble_57 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_bubble_59 = $mol_type_enforce<
 		ReturnType< $bog_gram_bubble['delete'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_bubble_58 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_bubble_60 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__event_bog_gram_bubble_59 = $mol_type_enforce<
+	type $mol_view__event_bog_gram_bubble_61 = $mol_type_enforce<
 		({ 
 			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
 			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
@@ -83831,10 +84092,85 @@ declare namespace $ {
 		,
 		ReturnType< $mol_view['event'] >
 	>
-	type $mol_view__sub_bog_gram_bubble_60 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_bubble_62 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_63 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__event_bog_gram_bubble_64 = $mol_type_enforce<
+		({ 
+			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+		})  & ReturnType< $mol_view['event'] >
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_65 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['reaction_chips'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__event_bog_gram_bubble_66 = $mol_type_enforce<
+		({ 
+			pointerdown( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+			pointerup( next?: ReturnType< $bog_gram_bubble['actions_touch'] > ): ReturnType< $bog_gram_bubble['actions_touch'] >,
+		})  & ReturnType< $mol_view['event'] >
+		,
+		ReturnType< $mol_view['event'] >
+	>
+	type $mol_view__sub_bog_gram_bubble_67 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['palette_picks'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_68 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_bubble_69 = $mol_type_enforce<
+		({ 
+			'bog_gram_bubble_mine': ReturnType< $bog_gram_bubble['reaction_mine'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_bubble_70 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['reaction_toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_bubble_71 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_bubble_72 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__attr_bog_gram_bubble_73 = $mol_type_enforce<
+		({ 
+			'bog_gram_bubble_mine': ReturnType< $bog_gram_bubble['reaction_mine'] >,
+		})  & ReturnType< $mol_button_minor['attr'] >
+		,
+		ReturnType< $mol_button_minor['attr'] >
+	>
+	type $mol_button_minor__click_bog_gram_bubble_74 = $mol_type_enforce<
+		ReturnType< $bog_gram_bubble['reaction_toggle'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_gram_bubble_75 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
 	>
 	export class $bog_gram_bubble extends $mol_view {
 		bare( ): boolean
@@ -83859,13 +84195,14 @@ declare namespace $ {
 		Contact_open( ): $mol_button_minor
 		Contact( ): $mol_view
 		Body( ): $bog_gram_body
-		Rich( ): $mol_html_view
+		Rich( ): $bog_gram_rich
 		Time( ): $mol_view
 		edited_label( ): string
 		Edited( ): $mol_view
 		Checks( ): $mol_view
 		Meta( ): $mol_view
-		Line( ): $mol_view
+		React_icon( ): $mol_icon_emoticon_outline
+		React( ): $mol_check_icon
 		Copy( ): $mol_button_copy
 		Task_mark_icon( ): $mol_icon_format_list_checks
 		Task_mark( ): $mol_check_icon
@@ -83876,6 +84213,15 @@ declare namespace $ {
 		Delete_icon( ): $mol_icon_delete
 		Delete( ): $mol_button_minor
 		Actions( ): $mol_view
+		Line( ): $mol_view
+		reaction_chips( ): readonly($mol_view)[]
+		Reactions( ): $mol_view
+		palette_picks( ): readonly($mol_view)[]
+		Palette( ): $mol_view
+		reaction_mine( id: any): boolean
+		reaction_toggle( id: any, next?: any ): any
+		reaction_label( id: any): string
+		pick_label( id: any): string
 		out( ): boolean
 		menu( ): boolean
 		author( ): string
@@ -83914,6 +84260,9 @@ declare namespace $ {
 		contact_open( next?: any ): any
 		task( next?: boolean ): boolean
 		task_done( next?: boolean ): boolean
+		reactions( ): readonly(string)[]
+		react( next?: string ): string
+		react_open( next?: boolean ): boolean
 		forwardable( ): boolean
 		forward( next?: any ): any
 		body( ): string
@@ -83940,6 +84289,8 @@ declare namespace $ {
 			mousedown( next?: ReturnType< $bog_gram_bubble['mouse_down'] > ): ReturnType< $bog_gram_bubble['mouse_down'] >,
 		})  & ReturnType< $mol_view['event'] >
 		sub( ): readonly(any)[]
+		Reaction( id: any): $mol_button_minor
+		Pick( id: any): $mol_button_minor
 	}
 	
 }
@@ -83959,7 +84310,7 @@ declare namespace $.$$ {
         Clip(): $.$mol_video_player;
         Call(): $.$bog_gram_call_card;
         Body(): $.$bog_gram_body;
-        Rich(): $.$mol_html_view;
+        Rich(): $.$bog_gram_rich;
         Edited(): $mol_view;
         Checks(): $mol_view;
         Forwarded(): $mol_view;
@@ -83968,6 +84319,14 @@ declare namespace $.$$ {
         Forward(): $mol_button_minor;
         Edit(): $mol_button_minor;
         Delete(): $mol_button_minor;
+        reaction_chips(): $mol_button_minor[];
+        Reactions(): $mol_view;
+        palette_picks(): $mol_button_minor[];
+        Palette(): $mol_view;
+        reaction_mine(kind: string): boolean;
+        reaction_label(kind: string): string;
+        pick_label(kind: string): string;
+        reaction_toggle(kind: string, next?: any): null;
         players(): ($.$$.$bog_gram_sound | $.$$.$bog_gram_round)[];
         sound_start(): void;
         sound_stop(): void;
@@ -84446,502 +84805,524 @@ declare namespace $ {
 		,
 		ReturnType< $mol_check_icon['hint'] >
 	>
-	type $mol_check_icon__checked_bog_gram_chat_80 = $mol_type_enforce<
+	type $mol_check_icon__event_bog_gram_chat_80 = $mol_type_enforce<
+		({ 
+			mousedown( next?: ReturnType< $bog_gram_chat['rich_hold'] > ): ReturnType< $bog_gram_chat['rich_hold'] >,
+		})  & ReturnType< $mol_check_icon['event'] >
+		,
+		ReturnType< $mol_check_icon['event'] >
+	>
+	type $mol_check_icon__checked_bog_gram_chat_81 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['rich_mode'] >
 		,
 		ReturnType< $mol_check_icon['checked'] >
 	>
-	type $mol_check_icon__Icon_bog_gram_chat_81 = $mol_type_enforce<
+	type $mol_check_icon__Icon_bog_gram_chat_82 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['Rich_icon'] >
 		,
 		ReturnType< $mol_check_icon['Icon'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_82 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_83 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__enabled_bog_gram_chat_83 = $mol_type_enforce<
+	type $mol_button_major__enabled_bog_gram_chat_84 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['send_enabled'] >
 		,
 		ReturnType< $mol_button_major['enabled'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_84 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_85 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_85 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_86 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $bog_gram_hold__hint_bog_gram_chat_86 = $mol_type_enforce<
+	type $bog_gram_hold__hint_bog_gram_chat_87 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_hint_text'] >
 		,
 		ReturnType< $bog_gram_hold['hint'] >
 	>
-	type $bog_gram_hold__press_bog_gram_chat_87 = $mol_type_enforce<
+	type $bog_gram_hold__press_bog_gram_chat_88 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_press'] >
 		,
 		ReturnType< $bog_gram_hold['press'] >
 	>
-	type $bog_gram_hold__move_bog_gram_chat_88 = $mol_type_enforce<
+	type $bog_gram_hold__move_bog_gram_chat_89 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_move'] >
 		,
 		ReturnType< $bog_gram_hold['move'] >
 	>
-	type $bog_gram_hold__release_bog_gram_chat_89 = $mol_type_enforce<
+	type $bog_gram_hold__release_bog_gram_chat_90 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_release'] >
 		,
 		ReturnType< $bog_gram_hold['release'] >
 	>
-	type $bog_gram_hold__abort_bog_gram_chat_90 = $mol_type_enforce<
+	type $bog_gram_hold__abort_bog_gram_chat_91 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_abort'] >
 		,
 		ReturnType< $bog_gram_hold['abort'] >
 	>
-	type $bog_gram_hold__sub_bog_gram_chat_91 = $mol_type_enforce<
+	type $bog_gram_hold__sub_bog_gram_chat_92 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $bog_gram_hold['sub'] >
-	>
-	type $mol_view__sub_bog_gram_chat_92 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_gram_chat_93 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_94 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_94 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__hint_bog_gram_chat_95 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_95 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_96 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['voice_cancel'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_96 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_97 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_97 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_98 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_98 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_99 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_stop'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_99 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_100 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_100 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_101 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_gram_chat_101 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_gram_chat_102 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_gram_chat_102 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_gram_chat_103 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_turn'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_gram_chat_103 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_gram_chat_104 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_104 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_105 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_105 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_106 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_go'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_106 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_107 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_button_major__hint_bog_gram_chat_107 = $mol_type_enforce<
+	type $mol_button_major__hint_bog_gram_chat_108 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['hint'] >
 	>
-	type $mol_button_major__click_bog_gram_chat_108 = $mol_type_enforce<
+	type $mol_button_major__click_bog_gram_chat_109 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['record_send'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_button_major__sub_bog_gram_chat_109 = $mol_type_enforce<
+	type $mol_button_major__sub_bog_gram_chat_110 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_major['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_110 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_111 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_sub'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_sound__uri_bog_gram_chat_111 = $mol_type_enforce<
+	type $bog_gram_sound__uri_bog_gram_chat_112 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_sound['uri'] >
 	>
-	type $bog_gram_sound__span_bog_gram_chat_112 = $mol_type_enforce<
+	type $bog_gram_sound__span_bog_gram_chat_113 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_sound['span'] >
 	>
-	type $bog_gram_sound__wave_bog_gram_chat_113 = $mol_type_enforce<
+	type $bog_gram_sound__wave_bog_gram_chat_114 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_wave'] >
 		,
 		ReturnType< $bog_gram_sound['wave'] >
 	>
-	type $bog_gram_sound__playing_bog_gram_chat_114 = $mol_type_enforce<
+	type $bog_gram_sound__playing_bog_gram_chat_115 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_sound['playing'] >
 	>
-	type $bog_gram_sound__toggle_bog_gram_chat_115 = $mol_type_enforce<
+	type $bog_gram_sound__toggle_bog_gram_chat_116 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_sound['toggle'] >
 	>
-	type $bog_gram_sound__ended_bog_gram_chat_116 = $mol_type_enforce<
+	type $bog_gram_sound__ended_bog_gram_chat_117 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_sound['ended'] >
 	>
-	type $bog_gram_round__uri_bog_gram_chat_117 = $mol_type_enforce<
+	type $bog_gram_round__uri_bog_gram_chat_118 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_uri'] >
 		,
 		ReturnType< $bog_gram_round['uri'] >
 	>
-	type $bog_gram_round__span_bog_gram_chat_118 = $mol_type_enforce<
+	type $bog_gram_round__span_bog_gram_chat_119 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_span'] >
 		,
 		ReturnType< $bog_gram_round['span'] >
 	>
-	type $bog_gram_round__playing_bog_gram_chat_119 = $mol_type_enforce<
+	type $bog_gram_round__playing_bog_gram_chat_120 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_playing'] >
 		,
 		ReturnType< $bog_gram_round['playing'] >
 	>
-	type $bog_gram_round__toggle_bog_gram_chat_120 = $mol_type_enforce<
+	type $bog_gram_round__toggle_bog_gram_chat_121 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_toggle'] >
 		,
 		ReturnType< $bog_gram_round['toggle'] >
 	>
-	type $bog_gram_round__ended_bog_gram_chat_121 = $mol_type_enforce<
+	type $bog_gram_round__ended_bog_gram_chat_122 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['draft_ended'] >
 		,
 		ReturnType< $bog_gram_round['ended'] >
 	>
-	type $mol_view__minimal_height_bog_gram_chat_122 = $mol_type_enforce<
+	type $mol_view__minimal_height_bog_gram_chat_123 = $mol_type_enforce<
 		number
 		,
 		ReturnType< $mol_view['minimal_height'] >
 	>
-	type $mol_view__sub_bog_gram_chat_123 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_124 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['line_content'] >
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_view__sub_bog_gram_chat_124 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_125 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $bog_gram_bubble__out_bog_gram_chat_125 = $mol_type_enforce<
+	type $bog_gram_bubble__out_bog_gram_chat_126 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_out'] >
 		,
 		ReturnType< $bog_gram_bubble['out'] >
 	>
-	type $bog_gram_bubble__menu_bog_gram_chat_126 = $mol_type_enforce<
+	type $bog_gram_bubble__menu_bog_gram_chat_127 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_menu_is'] >
 		,
 		ReturnType< $bog_gram_bubble['menu'] >
 	>
-	type $bog_gram_bubble__author_bog_gram_chat_127 = $mol_type_enforce<
+	type $bog_gram_bubble__author_bog_gram_chat_128 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author'] >
 		,
 		ReturnType< $bog_gram_bubble['author'] >
 	>
-	type $bog_gram_bubble__author_tint_bog_gram_chat_128 = $mol_type_enforce<
+	type $bog_gram_bubble__author_tint_bog_gram_chat_129 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_author_tint'] >
 		,
 		ReturnType< $bog_gram_bubble['author_tint'] >
 	>
-	type $bog_gram_bubble__quote_shown_bog_gram_chat_129 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_shown_bog_gram_chat_130 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_shown'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_shown'] >
 	>
-	type $bog_gram_bubble__quote_author_bog_gram_chat_130 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_author_bog_gram_chat_131 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_author'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_author'] >
 	>
-	type $bog_gram_bubble__quote_text_bog_gram_chat_131 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_text_bog_gram_chat_132 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_text'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_text'] >
 	>
-	type $bog_gram_bubble__quote_jump_bog_gram_chat_132 = $mol_type_enforce<
+	type $bog_gram_bubble__quote_jump_bog_gram_chat_133 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_quote_jump'] >
 		,
 		ReturnType< $bog_gram_bubble['quote_jump'] >
 	>
-	type $bog_gram_bubble__shot_bog_gram_chat_133 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_bog_gram_chat_134 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot'] >
 		,
 		ReturnType< $bog_gram_bubble['shot'] >
 	>
-	type $bog_gram_bubble__shots_bog_gram_chat_134 = $mol_type_enforce<
+	type $bog_gram_bubble__shots_bog_gram_chat_135 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shots'] >
 		,
 		ReturnType< $bog_gram_bubble['shots'] >
 	>
-	type $bog_gram_bubble__shot_uri_bog_gram_chat_135 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_uri_bog_gram_chat_136 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_uri'] >
 	>
-	type $bog_gram_bubble__shot_ratio_bog_gram_chat_136 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_ratio_bog_gram_chat_137 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_ratio'] >
 	>
-	type $bog_gram_bubble__shot_width_bog_gram_chat_137 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_width_bog_gram_chat_138 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_shot_width'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_width'] >
 	>
-	type $bog_gram_bubble__shot_open_bog_gram_chat_138 = $mol_type_enforce<
+	type $bog_gram_bubble__shot_open_bog_gram_chat_139 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['shot_zoom'] >
 		,
 		ReturnType< $bog_gram_bubble['shot_open'] >
 	>
-	type $bog_gram_bubble__sound_bog_gram_chat_139 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_bog_gram_chat_140 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound'] >
 		,
 		ReturnType< $bog_gram_bubble['sound'] >
 	>
-	type $bog_gram_bubble__sound_uri_bog_gram_chat_140 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_uri_bog_gram_chat_141 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_uri'] >
 	>
-	type $bog_gram_bubble__sound_span_bog_gram_chat_141 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_span_bog_gram_chat_142 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_span'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_span'] >
 	>
-	type $bog_gram_bubble__sound_wave_bog_gram_chat_142 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_wave_bog_gram_chat_143 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_wave'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_wave'] >
 	>
-	type $bog_gram_bubble__sound_playing_bog_gram_chat_143 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_playing_bog_gram_chat_144 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_playing'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_playing'] >
 	>
-	type $bog_gram_bubble__sound_toggle_bog_gram_chat_144 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_toggle_bog_gram_chat_145 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_toggle'] >
 	>
-	type $bog_gram_bubble__sound_ended_bog_gram_chat_145 = $mol_type_enforce<
+	type $bog_gram_bubble__sound_ended_bog_gram_chat_146 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['sound_ended'] >
 	>
-	type $bog_gram_bubble__round_bog_gram_chat_146 = $mol_type_enforce<
+	type $bog_gram_bubble__round_bog_gram_chat_147 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round'] >
 		,
 		ReturnType< $bog_gram_bubble['round'] >
 	>
-	type $bog_gram_bubble__round_uri_bog_gram_chat_147 = $mol_type_enforce<
+	type $bog_gram_bubble__round_uri_bog_gram_chat_148 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['round_uri'] >
 	>
-	type $bog_gram_bubble__round_span_bog_gram_chat_148 = $mol_type_enforce<
+	type $bog_gram_bubble__round_span_bog_gram_chat_149 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_round_span'] >
 		,
 		ReturnType< $bog_gram_bubble['round_span'] >
 	>
-	type $bog_gram_bubble__round_toggle_bog_gram_chat_149 = $mol_type_enforce<
+	type $bog_gram_bubble__round_toggle_bog_gram_chat_150 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_toggle'] >
 		,
 		ReturnType< $bog_gram_bubble['round_toggle'] >
 	>
-	type $bog_gram_bubble__round_ended_bog_gram_chat_150 = $mol_type_enforce<
+	type $bog_gram_bubble__round_ended_bog_gram_chat_151 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_sound_ended'] >
 		,
 		ReturnType< $bog_gram_bubble['round_ended'] >
 	>
-	type $bog_gram_bubble__video_bog_gram_chat_151 = $mol_type_enforce<
+	type $bog_gram_bubble__video_bog_gram_chat_152 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video'] >
 		,
 		ReturnType< $bog_gram_bubble['video'] >
 	>
-	type $bog_gram_bubble__video_uri_bog_gram_chat_152 = $mol_type_enforce<
+	type $bog_gram_bubble__video_uri_bog_gram_chat_153 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_uri'] >
 		,
 		ReturnType< $bog_gram_bubble['video_uri'] >
 	>
-	type $bog_gram_bubble__video_ratio_bog_gram_chat_153 = $mol_type_enforce<
+	type $bog_gram_bubble__video_ratio_bog_gram_chat_154 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_video_ratio'] >
 		,
 		ReturnType< $bog_gram_bubble['video_ratio'] >
 	>
-	type $bog_gram_bubble__call_bog_gram_chat_154 = $mol_type_enforce<
+	type $bog_gram_bubble__call_bog_gram_chat_155 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call'] >
 		,
 		ReturnType< $bog_gram_bubble['call'] >
 	>
-	type $bog_gram_bubble__call_land_bog_gram_chat_155 = $mol_type_enforce<
+	type $bog_gram_bubble__call_land_bog_gram_chat_156 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_land'] >
 		,
 		ReturnType< $bog_gram_bubble['call_land'] >
 	>
-	type $bog_gram_bubble__call_open_bog_gram_chat_156 = $mol_type_enforce<
+	type $bog_gram_bubble__call_open_bog_gram_chat_157 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_call_open'] >
 		,
 		ReturnType< $bog_gram_bubble['call_open'] >
 	>
-	type $bog_gram_bubble__forwarded_bog_gram_chat_157 = $mol_type_enforce<
+	type $bog_gram_bubble__forwarded_bog_gram_chat_158 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwarded'] >
 		,
 		ReturnType< $bog_gram_bubble['forwarded'] >
 	>
-	type $bog_gram_bubble__contact_bog_gram_chat_158 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_bog_gram_chat_159 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact'] >
 		,
 		ReturnType< $bog_gram_bubble['contact'] >
 	>
-	type $bog_gram_bubble__contact_name_bog_gram_chat_159 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_name_bog_gram_chat_160 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_name'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_name'] >
 	>
-	type $bog_gram_bubble__contact_open_bog_gram_chat_160 = $mol_type_enforce<
+	type $bog_gram_bubble__contact_open_bog_gram_chat_161 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_contact_open'] >
 		,
 		ReturnType< $bog_gram_bubble['contact_open'] >
 	>
-	type $bog_gram_bubble__task_bog_gram_chat_161 = $mol_type_enforce<
+	type $bog_gram_bubble__task_bog_gram_chat_162 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_task'] >
 		,
 		ReturnType< $bog_gram_bubble['task'] >
 	>
-	type $bog_gram_bubble__task_done_bog_gram_chat_162 = $mol_type_enforce<
+	type $bog_gram_bubble__task_done_bog_gram_chat_163 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_task_done'] >
 		,
 		ReturnType< $bog_gram_bubble['task_done'] >
 	>
-	type $bog_gram_bubble__forwardable_bog_gram_chat_163 = $mol_type_enforce<
+	type $bog_gram_bubble__reactions_bog_gram_chat_164 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_reactions'] >
+		,
+		ReturnType< $bog_gram_bubble['reactions'] >
+	>
+	type $bog_gram_bubble__react_bog_gram_chat_165 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_react'] >
+		,
+		ReturnType< $bog_gram_bubble['react'] >
+	>
+	type $bog_gram_bubble__react_open_bog_gram_chat_166 = $mol_type_enforce<
+		ReturnType< $bog_gram_chat['message_react_open'] >
+		,
+		ReturnType< $bog_gram_bubble['react_open'] >
+	>
+	type $bog_gram_bubble__forwardable_bog_gram_chat_167 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forwardable'] >
 		,
 		ReturnType< $bog_gram_bubble['forwardable'] >
 	>
-	type $bog_gram_bubble__forward_bog_gram_chat_164 = $mol_type_enforce<
+	type $bog_gram_bubble__forward_bog_gram_chat_168 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_forward'] >
 		,
 		ReturnType< $bog_gram_bubble['forward'] >
 	>
-	type $bog_gram_bubble__body_bog_gram_chat_165 = $mol_type_enforce<
+	type $bog_gram_bubble__body_bog_gram_chat_169 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_body'] >
 		,
 		ReturnType< $bog_gram_bubble['body'] >
 	>
-	type $bog_gram_bubble__html_bog_gram_chat_166 = $mol_type_enforce<
+	type $bog_gram_bubble__html_bog_gram_chat_170 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_rich'] >
 		,
 		ReturnType< $bog_gram_bubble['html'] >
 	>
-	type $bog_gram_bubble__time_bog_gram_chat_167 = $mol_type_enforce<
+	type $bog_gram_bubble__time_bog_gram_chat_171 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_time'] >
 		,
 		ReturnType< $bog_gram_bubble['time'] >
 	>
-	type $bog_gram_bubble__edited_bog_gram_chat_168 = $mol_type_enforce<
+	type $bog_gram_bubble__edited_bog_gram_chat_172 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edited'] >
 		,
 		ReturnType< $bog_gram_bubble['edited'] >
 	>
-	type $bog_gram_bubble__checks_bog_gram_chat_169 = $mol_type_enforce<
+	type $bog_gram_bubble__checks_bog_gram_chat_173 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_checks'] >
 		,
 		ReturnType< $bog_gram_bubble['checks'] >
 	>
-	type $bog_gram_bubble__edit_bog_gram_chat_170 = $mol_type_enforce<
+	type $bog_gram_bubble__edit_bog_gram_chat_174 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_edit'] >
 		,
 		ReturnType< $bog_gram_bubble['edit'] >
 	>
-	type $bog_gram_bubble__delete_bog_gram_chat_171 = $mol_type_enforce<
+	type $bog_gram_bubble__delete_bog_gram_chat_175 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_delete'] >
 		,
 		ReturnType< $bog_gram_bubble['delete'] >
 	>
-	type $bog_gram_bubble__press_bog_gram_chat_172 = $mol_type_enforce<
+	type $bog_gram_bubble__press_bog_gram_chat_176 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_press'] >
 		,
 		ReturnType< $bog_gram_bubble['press'] >
 	>
-	type $bog_gram_bubble__release_bog_gram_chat_173 = $mol_type_enforce<
+	type $bog_gram_bubble__release_bog_gram_chat_177 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_release'] >
 		,
 		ReturnType< $bog_gram_bubble['release'] >
 	>
-	type $bog_gram_bubble__context_bog_gram_chat_174 = $mol_type_enforce<
+	type $bog_gram_bubble__context_bog_gram_chat_178 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['message_context'] >
 		,
 		ReturnType< $bog_gram_bubble['context'] >
 	>
-	type $mol_check_box__title_bog_gram_chat_175 = $mol_type_enforce<
+	type $mol_check_box__title_bog_gram_chat_179 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_box['title'] >
 	>
-	type $mol_check_box__hint_bog_gram_chat_176 = $mol_type_enforce<
+	type $mol_check_box__hint_bog_gram_chat_180 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_check_box['hint'] >
 	>
-	type $mol_check_box__checked_bog_gram_chat_177 = $mol_type_enforce<
+	type $mol_check_box__checked_bog_gram_chat_181 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['meet_confirm'] >
 		,
 		ReturnType< $mol_check_box['checked'] >
 	>
-	type $mol_paragraph__title_bog_gram_chat_178 = $mol_type_enforce<
+	type $mol_paragraph__title_bog_gram_chat_182 = $mol_type_enforce<
 		ReturnType< $bog_gram_chat['knocks_head'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_view__sub_bog_gram_chat_179 = $mol_type_enforce<
+	type $mol_view__sub_bog_gram_chat_183 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
@@ -85012,6 +85393,7 @@ declare namespace $ {
 		rich_mode( next?: boolean ): boolean
 		message_send( next?: any ): any
 		Message_field( ): $bog_gram_write
+		rich_hold( next?: any ): any
 		Rich_icon( ): $mol_icon_format_text
 		send_enabled( ): boolean
 		Send_icon( ): $mol_icon_send
@@ -85081,6 +85463,9 @@ declare namespace $ {
 		message_contact_open( id: any, next?: any ): any
 		message_task( id: any, next?: boolean ): boolean
 		message_task_done( id: any, next?: boolean ): boolean
+		message_reactions( id: any): readonly(string)[]
+		message_react( id: any, next?: string ): string
+		message_react_open( id: any, next?: boolean ): boolean
 		message_forwardable( id: any): boolean
 		message_forward( id: any, next?: any ): any
 		message_body( id: any): string
@@ -85157,6 +85542,7 @@ declare namespace $ {
 		edit_id( next?: string ): string
 		reply_id( next?: string ): string
 		message_menu( next?: string ): string
+		react_id( next?: string ): string
 		zoom_id( next?: string ): string
 		voice_start( next?: number ): number
 		voice_playing( next?: string ): string
@@ -85309,9 +85695,13 @@ declare namespace $.$$ {
         text_put(message: $bog_gram_message, text: string): void;
         message_task(id: string, next?: boolean): boolean;
         message_task_done(id: string, next?: boolean): boolean;
+        message_reactions(id: string): string[];
+        message_react(id: string, next?: string): string;
+        message_react_open(id: string, next?: boolean): boolean;
         task_ids(): string[];
         message_show(id: string): void;
         rich_mode(next?: boolean): boolean;
+        rich_hold(next?: Event): null;
         message_rich(id: string): string;
         message_delete(id: string, next?: any): null;
         text_over(): number;

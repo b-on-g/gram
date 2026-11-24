@@ -42058,7 +42058,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.226';
+    $.$bog_gram_version = '1.0.227';
 })($ || ($ = {}));
 
 ;
@@ -45716,6 +45716,7 @@ var $;
         Contact_name: $giper_baza_atom_text,
         Task: $giper_baza_atom_bool,
         Task_done: $giper_baza_atom_real,
+        Reactions: $giper_baza_dict_to($giper_baza_atom_text),
     }) {
     }
     $.$bog_gram_message = $bog_gram_message;
@@ -46890,6 +46891,9 @@ var $;
             const text = String(source.Text()?.val() ?? '');
             if (text)
                 message.Text('auto')?.val(text);
+            const html = String(source.Html()?.val() ?? '');
+            if (html)
+                message.Html('auto')?.val(html);
             if (source.Task()?.val())
                 message.Task('auto')?.val(true);
             if (frames.length) {
@@ -53870,6 +53874,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		tools_hold(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools_leave(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		html(next){
 			if(next !== undefined) return next;
 			return "";
@@ -53891,7 +53903,9 @@ var $;
 			return {
 				...(super.event()), 
 				"keydown": (next) => (this.press(next)), 
-				"beforeinput": (next) => (this.before_input(next))
+				"beforeinput": (next) => (this.before_input(next)), 
+				"mousedown": (next) => (this.tools_hold(next)), 
+				"focusout": (next) => (this.tools_leave(next))
 			};
 		}
 		Hint(){
@@ -53902,6 +53916,8 @@ var $;
 	};
 	($mol_mem(($.$bog_gram_write.prototype), "press"));
 	($mol_mem(($.$bog_gram_write.prototype), "before_input"));
+	($mol_mem(($.$bog_gram_write.prototype), "tools_hold"));
+	($mol_mem(($.$bog_gram_write.prototype), "tools_leave"));
 	($mol_mem(($.$bog_gram_write.prototype), "html"));
 	($mol_mem(($.$bog_gram_write.prototype), "send"));
 	($mol_mem(($.$bog_gram_write.prototype), "Hint"));
@@ -53918,8 +53934,9 @@ var $;
     var $$;
     (function ($$) {
         const blocks = new Set(['P', 'DIV', 'SECTION', 'LI', 'PRE', 'BLOCKQUOTE', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
-        const plain = new Set(['SECTION', 'P', 'DIV', 'BR']);
+        const plain = new Set(['P', 'DIV', 'BR']);
         const kept = new Set([...blocks, 'BR', 'STRONG', 'B', 'EM', 'I', 'INS', 'U', 'DEL', 'S', 'CODE', 'A', 'SUB', 'SUP']);
+        const blank = String.fromCharCode(0x200b);
         function body_of(html) {
             return $mol_dom_parse(`<!doctype html><body>${html}</body>`, 'text/html').body;
         }
@@ -53941,9 +53958,47 @@ var $;
             const body = body_of(html);
             tidy(body);
             body.normalize();
-            return body.innerHTML;
+            return body.innerHTML.replaceAll(blank, '');
         }
         $$.$bog_gram_write_clean = $bog_gram_write_clean;
+        function leaves(root) {
+            if (root.nodeType === root.TEXT_NODE || root.nodeName === 'BR')
+                return [root];
+            return [...root.childNodes].flatMap(leaves);
+        }
+        function leaf_size(leaf) {
+            return leaf.nodeName === 'BR' ? 1 : leaf.nodeValue.length;
+        }
+        function $bog_gram_write_spot(root, node, offset) {
+            const range = root.ownerDocument.createRange();
+            range.setStart(root, 0);
+            range.setEnd(node, offset);
+            const at = leaves(range.cloneContents()).reduce((sum, leaf) => sum + leaf_size(leaf), 0);
+            if (node.nodeType === node.TEXT_NODE)
+                return { at, tail: offset > 0 };
+            const prev = node.childNodes[offset - 1];
+            const next = node.childNodes[offset];
+            const tail = Boolean(prev) && prev.nodeName !== 'BR' && (!next || !blocks.has(prev.nodeName));
+            return { at, tail };
+        }
+        $$.$bog_gram_write_spot = $bog_gram_write_spot;
+        function $bog_gram_write_point(root, spot) {
+            let rest = spot.at;
+            for (const leaf of leaves(root)) {
+                const size = leaf_size(leaf);
+                if (leaf.nodeName === 'BR') {
+                    if (rest === 0)
+                        return [leaf.parentNode, [...leaf.parentNode.childNodes].indexOf(leaf)];
+                }
+                else {
+                    if (spot.tail && rest > 0 ? rest <= size : rest < size)
+                        return [leaf, rest];
+                }
+                rest -= size;
+            }
+            return [root, root.childNodes.length];
+        }
+        $$.$bog_gram_write_point = $bog_gram_write_point;
         function $bog_gram_write_text(html) {
             if (!html)
                 return '';
@@ -54137,21 +54192,125 @@ var $;
                     return;
                 this.$.$mol_dom_context.document.execCommand('insertText', false, part);
             }
+            aim() {
+                const root = this.Content().dom_node();
+                const document = this.$.$mol_dom_context.document;
+                const selection = document.getSelection();
+                if (!selection)
+                    return false;
+                const line = () => document.createElement('p');
+                if (!root.textContent && !root.querySelector('p')) {
+                    const empty = line();
+                    empty.append(document.createElement('br'));
+                    root.replaceChildren(empty);
+                }
+                for (const kid of [...root.childNodes]) {
+                    if (kid.nodeName !== 'BR')
+                        continue;
+                    const wrap = line();
+                    kid.before(wrap);
+                    wrap.append(kid);
+                }
+                const inner = (node, pos) => {
+                    if (node && node !== root && root.contains(node))
+                        return [node, pos];
+                    const kid = node === root ? root.childNodes[pos] : null;
+                    let leaf = kid ?? root.lastChild;
+                    while (true) {
+                        const next = kid ? leaf.firstChild : leaf.lastChild;
+                        if (!next || next.nodeName === 'BR')
+                            break;
+                        leaf = next;
+                    }
+                    return [leaf, kid ? 0 : leaf.nodeValue?.length ?? 0];
+                };
+                const from = inner(selection.anchorNode, selection.anchorOffset);
+                const to = inner(selection.focusNode, selection.focusOffset);
+                selection.setBaseAndExtent(from[0], from[1], to[0], to[1]);
+                return true;
+            }
             block_wrap(type, event) {
                 if (this.rich())
-                    super.block_wrap(type, event);
+                    this.caret_keep(() => super.block_wrap(type, event));
             }
             block_rewrap(event) {
-                if (this.rich())
-                    super.block_rewrap(event);
+                if (!this.rich())
+                    return;
+                this.aim();
+                super.block_rewrap(event);
             }
             block_unwrap(event) {
                 if (this.rich())
-                    super.block_unwrap(event);
+                    this.caret_keep(() => super.block_unwrap(event));
             }
             inline_toggle(type, event) {
-                if (this.rich())
-                    super.inline_toggle(type, event);
+                if (!this.rich())
+                    return;
+                this.menu_hide();
+                if (!this.aim())
+                    return;
+                if (this.inline_start(type))
+                    event.preventDefault();
+                else
+                    this.caret_keep(() => super.inline_toggle(type, event));
+            }
+            caret() {
+                const selection = this.$.$mol_dom_context.document.getSelection();
+                if (!selection?.rangeCount)
+                    return null;
+                const root = this.Content().dom_node();
+                if (!root.contains(selection.anchorNode) || !root.contains(selection.focusNode))
+                    return null;
+                return selection;
+            }
+            caret_keep(change) {
+                if (!this.aim())
+                    return;
+                const selection = this.caret();
+                if (!selection)
+                    return;
+                const root = this.Content().dom_node();
+                const anchor = $bog_gram_write_spot(root, selection.anchorNode, selection.anchorOffset);
+                const focus = $bog_gram_write_spot(root, selection.focusNode, selection.focusOffset);
+                change();
+                root.focus({ preventScroll: true });
+                selection.setBaseAndExtent(...$bog_gram_write_point(root, anchor), ...$bog_gram_write_point(root, focus));
+            }
+            inline_start(type) {
+                const selection = this.caret();
+                if (!selection?.isCollapsed)
+                    return false;
+                const root = this.Content().dom_node();
+                const node = selection.anchorNode;
+                const box = node.nodeType === node.ELEMENT_NODE ? node : node.parentElement;
+                const outer = box.closest(type);
+                if (outer && outer !== root && root.contains(outer))
+                    return false;
+                const document = this.$.$mol_dom_context.document;
+                const text = document.createTextNode(blank);
+                const inline = document.createElement(type);
+                inline.append(text);
+                selection.getRangeAt(0).insertNode(inline);
+                this.save();
+                root.focus({ preventScroll: true });
+                selection.collapse(text, text.length);
+                return true;
+            }
+            menu_hide() {
+                this.Inline_format_menu().showed(false);
+            }
+            tools_hold(event) {
+                const target = event?.target;
+                if (this.Tools().dom_node().contains(target))
+                    event.preventDefault();
+                else
+                    this.menu_hide();
+                return null;
+            }
+            tools_leave(event) {
+                if (!this.dom_node().contains(event?.relatedTarget))
+                    this.menu_hide();
+                return null;
             }
         }
         __decorate([
@@ -54174,7 +54333,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/write/write.view.css", "[bog_gram_write] {\n\tposition: relative;\n\tbackground: none;\n\toutline: none;\n\tfont: inherit;\n}\n\n[bog_gram_write]:focus-within {\n\toutline: none;\n}\n\n[bog_gram_write_content] {\n\tpadding: var(--mol_gap_text);\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n}\n\n[bog_gram_write_content] p {\n\tpadding: 0;\n}\n\n[bog_gram_write_content] section > p:first-child {\n\tfont-size: inherit;\n\tline-height: inherit;\n\tletter-spacing: normal;\n}\n\n[bog_gram_write_rich] [bog_gram_write_content] section > p:first-child {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_write_hint] {\n\tposition: absolute;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_write_attach] {\n\tdisplay: none;\n}\n");
+    $mol_style_attach("bog/gram/write/write.view.css", "[bog_gram_write] {\n\tposition: relative;\n\tbackground: none;\n\toutline: none;\n\tfont: inherit;\n}\n\n[bog_gram_write]:focus-within {\n\toutline: none;\n}\n\n[bog_gram_write_content] {\n\tpadding: var(--mol_gap_text);\n\twhite-space: pre-wrap;\n\tword-break: break-word;\n}\n\n[bog_gram_write_content] p {\n\tpadding: 0;\n}\n\n[bog_gram_write_content] section > p:first-child {\n\tfont-size: inherit;\n\tline-height: inherit;\n\tletter-spacing: normal;\n}\n\n[bog_gram_write_rich] [bog_gram_write_content] section > p:first-child {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_write_hint] {\n\tposition: absolute;\n\tpadding: var(--mol_gap_text);\n\tcolor: var(--mol_theme_shade);\n\tpointer-events: none;\n\tuser-select: none;\n\t-webkit-user-select: none;\n}\n\n[bog_gram_write_tools] {\n\tmax-width: 100%;\n\toverflow-x: auto;\n}\n\n[bog_gram_write_main] > * {\n\tflex-shrink: 0;\n}\n\n[bog_gram_write_attach] {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -56898,140 +57057,15 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_html_view) = class $mol_html_view extends ($.$mol_list) {
-		heading_level(id){
-			return 1;
-		}
-		content(id){
+	($.$bog_gram_rich) = class $bog_gram_rich extends ($.$mol_view) {
+		nodes(){
 			return [];
-		}
-		link_uri(id){
-			return "";
-		}
-		image_uri(id){
-			return "";
-		}
-		highlight(){
-			return "";
-		}
-		text(id){
-			return "";
 		}
 		html(){
 			return "";
 		}
-		dom(){
-			return null;
-		}
-		safe_link(id){
-			return "";
-		}
-		views(id){
-			return [];
-		}
-		xss_uri(){
-			return "https://en.wikipedia.org/wiki/XSS#";
-		}
-		Heading(id){
-			const obj = new this.$.$mol_html_view_heading();
-			(obj.level) = () => ((this.heading_level(id)));
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Paragraph(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		List(id){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.content(id)));
-			return obj;
-		}
-		Quote(id){
-			const obj = new this.$.$mol_list();
-			(obj.rows) = () => ((this.content(id)));
-			return obj;
-		}
-		Strong(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Emphasis(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Deleted(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Inserted(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Subscript(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Superscript(id){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Code(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ((this.content(id)));
-			return obj;
-		}
-		Link(id){
-			const obj = new this.$.$mol_link_iconed();
-			(obj.uri) = () => ((this.link_uri(id)));
-			(obj.content) = () => ((this.content(id)));
-			return obj;
-		}
-		Image(id){
-			const obj = new this.$.$mol_image();
-			(obj.uri) = () => ((this.image_uri(id)));
-			return obj;
-		}
-		Break(id){
-			const obj = new this.$.$mol_paragraph();
-			(obj.sub) = () => ([]);
-			return obj;
-		}
-		Text(id){
-			const obj = new this.$.$mol_dimmer();
-			(obj.needle) = () => ((this.highlight()));
-			(obj.haystack) = () => ((this.text(id)));
-			return obj;
-		}
-	};
-	($mol_mem_key(($.$mol_html_view.prototype), "Heading"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Paragraph"));
-	($mol_mem_key(($.$mol_html_view.prototype), "List"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Quote"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Strong"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Emphasis"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Deleted"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Inserted"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Subscript"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Superscript"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Code"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Link"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Image"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Break"));
-	($mol_mem_key(($.$mol_html_view.prototype), "Text"));
-	($.$mol_html_view_heading) = class $mol_html_view_heading extends ($.$mol_paragraph) {
-		level(){
-			return 1;
-		}
-		attr(){
-			return {...(super.attr()), "mol_html_view_heading": (this.level())};
+		sub(){
+			return (this.nodes());
 		}
 	};
 
@@ -57039,144 +57073,6 @@ var $;
 ;
 "use strict";
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    const { rem } = $mol_style_unit;
-    $mol_style_define($mol_html_view, {
-        Heading: {
-            padding: $mol_gap.text,
-            textShadow: '0 0',
-            '@': {
-                'mol_html_view_heading': {
-                    '1': {
-                        font: {
-                            size: rem(1.5),
-                        },
-                    },
-                    '2': {
-                        font: {
-                            size: rem(1.5),
-                            style: 'italic',
-                        },
-                    },
-                    '3': {
-                        font: {
-                            size: rem(1.25),
-                        },
-                    },
-                    '4': {
-                        font: {
-                            size: rem(1.25),
-                            style: 'italic',
-                        },
-                    },
-                    '5': {
-                        font: {
-                            size: rem(1),
-                        },
-                    },
-                    '6': {
-                        font: {
-                            size: rem(1),
-                            style: 'italic',
-                        },
-                    },
-                },
-            },
-        },
-        Paragraph: {
-            display: 'block',
-            flex: {
-                wrap: 'wrap',
-            },
-            padding: $mol_gap.text,
-        },
-        List: {
-            display: 'block',
-            flex: {
-                wrap: 'wrap',
-            },
-            padding: $mol_gap.block,
-        },
-        Quote: {
-            display: 'block',
-            flex: {
-                'wrap': 'wrap',
-            },
-            padding: $mol_gap.block,
-            margin: {
-                inlineStart: '.75rem',
-            },
-            box: {
-                shadow: [{
-                        inset: true,
-                        x: rem(.25),
-                        y: 0,
-                        blur: 0,
-                        spread: 0,
-                        color: $mol_theme.line,
-                    }],
-            },
-        },
-        Strong: {
-            display: 'inline',
-            textShadow: '0 0',
-        },
-        Emphasis: {
-            display: 'inline',
-            font: {
-                style: 'italic',
-            },
-        },
-        Deleted: {
-            display: 'inline',
-            color: $mol_theme.shade,
-        },
-        Inserted: {
-            display: 'inline',
-            color: $mol_theme.special,
-        },
-        Subscript: {
-            display: 'inline',
-            font: {
-                size: '.75em',
-            },
-            position: 'relative',
-            bottom: '-0.5em',
-        },
-        Superscript: {
-            display: 'inline',
-            font: {
-                size: '.75em',
-            },
-            position: 'relative',
-            top: '-0.25em',
-        },
-        Link: {
-            margin: rem(-.5),
-        },
-        Code: {
-            display: 'inline',
-            font: {
-                family: 'monospace',
-            },
-            whiteSpace: 'pre-wrap',
-        },
-        Image: {
-            display: 'inline-block',
-        },
-        Break: {
-            display: 'block',
-            height: $mol_gap.block,
-        },
-        Text: {
-            display: 'inline',
-        },
-    });
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -57184,119 +57080,58 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const warned = new Set();
-        /**
-         * Safe virtualized view of raw HTML.
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_html_view_demo
-         */
-        class $mol_html_view extends $.$mol_html_view {
-            dom() {
-                return this.$.$mol_dom_parse(this.html(), 'text/html').body;
-            }
-            sub() {
-                return this.content(this.dom());
-            }
-            content(node) {
-                const res = [];
-                for (const child of node.childNodes) {
-                    res.push(...this.views(child));
+        class $bog_gram_rich extends $.$bog_gram_rich {
+            nodes() {
+                const document = this.$.$mol_dom_context.document;
+                const body = this.$.$mol_dom_parse(`<!doctype html><body>${$bog_gram_write_clean(this.html())}</body>`, 'text/html').body;
+                for (const link of body.querySelectorAll('a')) {
+                    if (!/^(https?:|mailto:|tel:)/i.test(link.getAttribute('href') ?? '')) {
+                        link.replaceWith(...link.childNodes);
+                        continue;
+                    }
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
                 }
-                return res;
-            }
-            views(node) {
-                switch (node.nodeName) {
-                    case '#comment':
-                        return [];
-                    case '#text':
-                    case '#cdata-section':
-                        if (!node.textContent.trim())
-                            return [];
-                        return [this.Text(node)];
-                    case 'H1':
-                    case 'H2':
-                    case 'H3':
-                    case 'H4':
-                    case 'H5':
-                    case 'H6':
-                        return [this.Heading(node)];
-                    case 'P':
-                    case 'LI':
-                    case 'PRE':
-                    case 'DIV':
-                        return [this.Paragraph(node)];
-                    case 'UL':
-                    case 'OL':
-                        return [this.List(node)];
-                    case 'BLOCKQUOTE':
-                        return [this.Quote(node)];
-                    case 'STRONG':
-                    case 'B':
-                        return [this.Strong(node)];
-                    case 'EM':
-                    case 'I':
-                        return [this.Emphasis(node)];
-                    case 'DEL':
-                    case 'S':
-                        return [this.Deleted(node)];
-                    case 'INS':
-                    case 'U':
-                        return [this.Inserted(node)];
-                    case 'SUB':
-                        return [this.Subscript(node)];
-                    case 'SUP':
-                        return [this.Superscript(node)];
-                    case 'A':
-                        return [this.Link(node)];
-                    case 'PRE':
-                    case 'CODE':
-                        return [this.Code(node)];
-                    case 'IMG':
-                        return [this.Image(node)];
-                    case 'BR':
-                        return [this.Break(node)];
-                    default:
-                        if (!warned.has(node.nodeName)) {
-                            this.$.$mol_log3_warn({
-                                place: `${this}.views()`,
-                                message: 'Unsupported tag',
-                                tag: node.nodeName,
-                                hint: 'Add support to $mol_html_view',
-                            });
-                            warned.add(node.nodeName);
-                        }
-                        return this.content(node);
-                }
-            }
-            text(node) {
-                return node.textContent ?? '???';
-            }
-            safe_link(uri) {
-                const base = $mol_dom_context.location.href;
-                const url = new $mol_dom_context.URL(uri, base);
-                if (/^\w*script:/i.test(url.protocol)) {
-                    return this.xss_uri() + uri;
-                }
-                return uri;
-            }
-            link_uri(node) {
-                return this.safe_link(node.href);
-            }
-            image_uri(node) {
-                return this.safe_link(node.src);
-            }
-            heading_level(node) {
-                return Number(node.nodeName.substring(1));
+                return [...body.childNodes].map(node => document.importNode(node, true));
             }
         }
         __decorate([
             $mol_mem
-        ], $mol_html_view.prototype, "dom", null);
-        __decorate([
-            $mol_mem_key
-        ], $mol_html_view.prototype, "content", null);
-        $$.$mol_html_view = $mol_html_view;
+        ], $bog_gram_rich.prototype, "nodes", null);
+        $$.$bog_gram_rich = $bog_gram_rich;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("bog/gram/rich/rich.view.css", "[bog_gram_rich] {\n\tdisplay: block;\n}\n\n[bog_gram_rich] :is( p, h1, h2, h3, h4, h5, h6 ) {\n\tmargin: 0;\n}\n\n[bog_gram_rich] :is( strong, b ) {\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] :is( em, i ) {\n\tfont-style: italic;\n}\n\n[bog_gram_rich] :is( ins, u ) {\n\ttext-decoration: underline;\n}\n\n[bog_gram_rich] :is( del, s ) {\n\ttext-decoration: line-through;\n}\n\n[bog_gram_rich] :is( code, pre ) {\n\tfont-family: monospace;\n}\n\n[bog_gram_rich] pre {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\twhite-space: pre-wrap;\n\tbox-shadow: inset 2px 0 var(--mol_theme_line);\n}\n\n[bog_gram_rich] blockquote {\n\tmargin: 0.25rem 0;\n\tpadding: 0 0.5rem;\n\tbox-shadow: inset 2px 0 var(--mol_theme_control);\n}\n\n[bog_gram_rich] :is( ul, ol ) {\n\tmargin: 0;\n\tpadding: 0 0 0 1.5rem;\n}\n\n[bog_gram_rich] :is( ul, ol ) > p {\n\tdisplay: list-item;\n}\n\n[bog_gram_rich] ul > :is( p, li ) {\n\tlist-style-type: disc;\n}\n\n[bog_gram_rich] ol > :is( p, li ) {\n\tlist-style-type: decimal;\n}\n\n[bog_gram_rich] :is( section > p:first-child, h1, h2, h3, h4, h5, h6 ) {\n\tfont-size: 1.25rem;\n\tfont-weight: bold;\n}\n\n[bog_gram_rich] a {\n\tcolor: var(--mol_theme_control);\n}\n");
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_emoticon) = class $mol_icon_emoticon extends ($.$mol_icon) {
+		path(){
+			return "M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,1 17,9.5A1.5,1.5 0 0,1 15.5,11A1.5,1.5 0 0,1 14,9.5A1.5,1.5 0 0,1 15.5,8M8.5,8A1.5,1.5 0 0,1 10,9.5A1.5,1.5 0 0,1 8.5,11A1.5,1.5 0 0,1 7,9.5A1.5,1.5 0 0,1 8.5,8M12,17.5C9.67,17.5 7.69,16.04 6.89,14H17.11C16.3,16.04 14.33,17.5 12,17.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_emoticon_outline) = class $mol_icon_emoticon_outline extends ($.$mol_icon) {
+		path(){
+			return "M12,17.5C14.33,17.5 16.3,16.04 17.11,14H6.89C7.69,16.04 9.67,17.5 12,17.5M8.5,11A1.5,1.5 0 0,0 10,9.5A1.5,1.5 0 0,0 8.5,8A1.5,1.5 0 0,0 7,9.5A1.5,1.5 0 0,0 8.5,11M15.5,11A1.5,1.5 0 0,0 17,9.5A1.5,1.5 0 0,0 15.5,8A1.5,1.5 0 0,0 14,9.5A1.5,1.5 0 0,0 15.5,11M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z";
+		}
+	};
+
+
+;
+"use strict";
+
 
 ;
 	($.$bog_gram_bubble) = class $bog_gram_bubble extends ($.$mol_view) {
@@ -57431,7 +57266,7 @@ var $;
 			return obj;
 		}
 		Rich(){
-			const obj = new this.$.$mol_html_view();
+			const obj = new this.$.$bog_gram_rich();
 			(obj.html) = () => ((this.html()));
 			return obj;
 		}
@@ -57462,13 +57297,15 @@ var $;
 			]);
 			return obj;
 		}
-		Line(){
-			const obj = new this.$.$mol_view();
-			(obj.sub) = () => ([
-				(this.Body()), 
-				(this.Rich()), 
-				(this.Meta())
-			]);
+		React_icon(){
+			const obj = new this.$.$mol_icon_emoticon_outline();
+			return obj;
+		}
+		React(){
+			const obj = new this.$.$mol_check_icon();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_React_hint")));
+			(obj.checked) = (next) => ((this.react_open(next)));
+			(obj.Icon) = () => ((this.React_icon()));
 			return obj;
 		}
 		Copy(){
@@ -57530,6 +57367,7 @@ var $;
 				"pointerup": (next) => (this.actions_touch(next))
 			});
 			(obj.sub) = () => ([
+				(this.React()), 
 				(this.Copy()), 
 				(this.Task_mark()), 
 				(this.Forward()), 
@@ -57537,6 +57375,55 @@ var $;
 				(this.Delete())
 			]);
 			return obj;
+		}
+		Line(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Body()), 
+				(this.Rich()), 
+				(this.Meta()), 
+				(this.Actions())
+			]);
+			return obj;
+		}
+		reaction_chips(){
+			return [];
+		}
+		Reactions(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				...(this.$.$mol_view.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.actions_touch(next)), 
+				"pointerup": (next) => (this.actions_touch(next))
+			});
+			(obj.sub) = () => ((this.reaction_chips()));
+			return obj;
+		}
+		palette_picks(){
+			return [];
+		}
+		Palette(){
+			const obj = new this.$.$mol_view();
+			(obj.event) = () => ({
+				...(this.$.$mol_view.prototype.event.call(obj)), 
+				"pointerdown": (next) => (this.actions_touch(next)), 
+				"pointerup": (next) => (this.actions_touch(next))
+			});
+			(obj.sub) = () => ((this.palette_picks()));
+			return obj;
+		}
+		reaction_mine(id){
+			return false;
+		}
+		reaction_toggle(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		reaction_label(id){
+			return "";
+		}
+		pick_label(id){
+			return "";
 		}
 		out(){
 			return false;
@@ -57662,6 +57549,17 @@ var $;
 			if(next !== undefined) return next;
 			return false;
 		}
+		reactions(){
+			return [];
+		}
+		react(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		react_open(next){
+			if(next !== undefined) return next;
+			return false;
+		}
 		forwardable(){
 			return true;
 		}
@@ -57736,8 +57634,25 @@ var $;
 				(this.Call()), 
 				(this.Contact()), 
 				(this.Line()), 
-				(this.Actions())
+				(this.Reactions()), 
+				(this.Palette())
 			];
+		}
+		Reaction(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Reaction_hint")));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_bubble_mine": (this.reaction_mine(id))});
+			(obj.click) = (next) => ((this.reaction_toggle(id, next)));
+			(obj.sub) = () => ([(this.reaction_label(id))]);
+			return obj;
+		}
+		Pick(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_bubble_Pick_hint")));
+			(obj.attr) = () => ({...(this.$.$mol_button_minor.prototype.attr.call(obj)), "bog_gram_bubble_mine": (this.reaction_mine(id))});
+			(obj.click) = (next) => ((this.reaction_toggle(id, next)));
+			(obj.sub) = () => ([(this.pick_label(id))]);
+			return obj;
 		}
 	};
 	($mol_mem(($.$bog_gram_bubble.prototype), "mouse_down"));
@@ -57764,7 +57679,8 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
-	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "React_icon"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "React"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Copy"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Task_mark_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Task_mark"));
@@ -57775,6 +57691,10 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Delete_icon"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Delete"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Actions"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Line"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Reactions"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Palette"));
+	($mol_mem_key(($.$bog_gram_bubble.prototype), "reaction_toggle"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "quote_jump"));
 	($mol_mem_key(($.$bog_gram_bubble.prototype), "shot_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "sound_toggle"));
@@ -57785,13 +57705,47 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "contact_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "task"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "task_done"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "react"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "react_open"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "forward"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "edit"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "delete"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "press"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "release"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "context"));
+	($mol_mem_key(($.$bog_gram_bubble.prototype), "Reaction"));
+	($mol_mem_key(($.$bog_gram_bubble.prototype), "Pick"));
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_gram_react extends $mol_object {
+        static kinds = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
+        static shown(all) {
+            return this.kinds.filter(kind => all.includes(kind));
+        }
+        static count(all, kind) {
+            return all.filter(item => item === kind).length;
+        }
+        static list(message) {
+            const store = message?.Reactions();
+            if (!store)
+                return [];
+            return store.keys()
+                .map(lord => String(store.key(lord)?.val() ?? ''))
+                .filter(kind => this.kinds.includes(kind));
+        }
+        static mine(message, lord) {
+            return String(message?.Reactions()?.key(lord)?.val() ?? '');
+        }
+        static put(message, lord, kind) {
+            message.Reactions('auto')?.key(lord, 'auto')?.val(kind);
+        }
+    }
+    $.$bog_gram_react = $bog_gram_react;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -57867,6 +57821,31 @@ var $;
             Delete() {
                 return this.out() ? super.Delete() : null;
             }
+            reaction_chips() {
+                return $bog_gram_react.shown(this.reactions()).map(kind => this.Reaction(kind));
+            }
+            Reactions() {
+                return this.reaction_chips().length ? super.Reactions() : null;
+            }
+            palette_picks() {
+                return $bog_gram_react.kinds.map(kind => this.Pick(kind));
+            }
+            Palette() {
+                return this.react_open() ? super.Palette() : null;
+            }
+            reaction_mine(kind) {
+                return this.react() === kind;
+            }
+            reaction_label(kind) {
+                return kind + ' ' + $bog_gram_react.count(this.reactions(), kind);
+            }
+            pick_label(kind) {
+                return kind;
+            }
+            reaction_toggle(kind, next) {
+                this.react(this.reaction_mine(kind) ? '' : kind);
+                return null;
+            }
             players() {
                 return [this.Sound(), this.Round()].filter(Boolean);
             }
@@ -57890,6 +57869,9 @@ var $;
         }
         __decorate([
             $mol_action
+        ], $bog_gram_bubble.prototype, "reaction_toggle", null);
+        __decorate([
+            $mol_action
         ], $bog_gram_bubble.prototype, "actions_touch", null);
         __decorate([
             $mol_action
@@ -57902,7 +57884,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] > [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover > [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] :is( [bog_gram_bubble_body], [bog_gram_bubble_rich] ) {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -58056,6 +58038,7 @@ var $;
                 color: $mol_theme.shade,
             },
             Line: {
+                position: 'relative',
                 flex: {
                     wrap: 'wrap',
                 },
@@ -58132,8 +58115,8 @@ var $;
             Actions: {
                 display: 'none',
                 position: 'absolute',
-                right: '0.25rem',
-                bottom: '0.25rem',
+                right: 0,
+                bottom: 0,
                 zIndex: 1,
                 align: {
                     items: 'center',
@@ -58162,6 +58145,40 @@ var $;
                     size: '0.8rem',
                 },
             },
+            Reactions: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                gap: '0.25rem',
+            },
+            Reaction: {
+                padding: {
+                    top: '0.125rem',
+                    bottom: '0.125rem',
+                    left: '0.5rem',
+                    right: '0.5rem',
+                },
+                borderRadius: '1rem',
+                background: {
+                    color: $mol_theme.hover,
+                },
+                font: {
+                    size: '0.8rem',
+                },
+                whiteSpace: 'nowrap',
+            },
+            Palette: {
+                flex: {
+                    wrap: 'wrap',
+                },
+            },
+            Pick: {
+                ...control,
+                font: {
+                    size: '1.25rem',
+                },
+            },
+            React: control,
             Task_mark: control,
             Copy: control,
             Forward: control,
@@ -58182,6 +58199,14 @@ var $;
             '@media': {
                 '(max-width: 30rem)': {
                     maxWidth: '85%',
+                    Pick: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
+                    React: {
+                        minWidth: '2.75rem',
+                        minHeight: '2.75rem',
+                    },
                     Task_mark: {
                         minWidth: '2.75rem',
                         minHeight: '2.75rem',
@@ -58518,6 +58543,10 @@ var $;
 			(obj.send) = (next) => ((this.message_send(next)));
 			return obj;
 		}
+		rich_hold(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		Rich_icon(){
 			const obj = new this.$.$mol_icon_format_text();
 			return obj;
@@ -58755,6 +58784,17 @@ var $;
 			return false;
 		}
 		message_task_done(id, next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		message_reactions(id){
+			return [];
+		}
+		message_react(id, next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		message_react_open(id, next){
 			if(next !== undefined) return next;
 			return false;
 		}
@@ -59025,6 +59065,10 @@ var $;
 			if(next !== undefined) return next;
 			return "";
 		}
+		react_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
 		zoom_id(next){
 			if(next !== undefined) return next;
 			return "";
@@ -59134,6 +59178,7 @@ var $;
 		Rich_toggle(){
 			const obj = new this.$.$mol_check_icon();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Rich_toggle_hint")));
+			(obj.event) = () => ({...(this.$.$mol_check_icon.prototype.event.call(obj)), "mousedown": (next) => (this.rich_hold(next))});
 			(obj.checked) = (next) => ((this.rich_mode(next)));
 			(obj.Icon) = () => ((this.Rich_icon()));
 			return obj;
@@ -59301,6 +59346,9 @@ var $;
 			(obj.contact_open) = (next) => ((this.message_contact_open(id, next)));
 			(obj.task) = (next) => ((this.message_task(id, next)));
 			(obj.task_done) = (next) => ((this.message_task_done(id, next)));
+			(obj.reactions) = () => ((this.message_reactions(id)));
+			(obj.react) = (next) => ((this.message_react(id, next)));
+			(obj.react_open) = (next) => ((this.message_react_open(id, next)));
 			(obj.forwardable) = () => ((this.message_forwardable(id)));
 			(obj.forward) = (next) => ((this.message_forward(id, next)));
 			(obj.body) = () => ((this.message_body(id)));
@@ -59391,6 +59439,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "rich_mode"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_send"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Message_field"));
+	($mol_mem(($.$bog_gram_chat.prototype), "rich_hold"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Rich_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Send_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_press"));
@@ -59422,6 +59471,8 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_contact_open"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_task"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_task_done"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_react"));
+	($mol_mem_key(($.$bog_gram_chat.prototype), "message_react_open"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_forward"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_edit"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "message_delete"));
@@ -59454,6 +59505,7 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "edit_id"));
 	($mol_mem(($.$bog_gram_chat.prototype), "reply_id"));
 	($mol_mem(($.$bog_gram_chat.prototype), "message_menu"));
+	($mol_mem(($.$bog_gram_chat.prototype), "react_id"));
 	($mol_mem(($.$bog_gram_chat.prototype), "zoom_id"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_start"));
 	($mol_mem(($.$bog_gram_chat.prototype), "voice_playing"));
@@ -60097,6 +60149,8 @@ var $;
                     return null;
                 if (this.message_menu() === id)
                     this.message_menu('');
+                if (this.react_id())
+                    this.react_id('');
                 if (next?.type === 'pointerup' && this.message_double_tap(id, Date.now()))
                     this.message_reply(id);
                 return null;
@@ -60266,6 +60320,25 @@ var $;
                     pawn?.Task_done('auto')?.val(next ? Date.now() : 0);
                 return Boolean(pawn?.Task_done()?.val());
             }
+            message_reactions(id) {
+                return $bog_gram_react.list(this.message_pawn(id));
+            }
+            message_react(id, next) {
+                const pawn = this.message_pawn(id);
+                if (next !== undefined && pawn) {
+                    this.message_menu('');
+                    this.react_id('');
+                    $bog_gram_react.put(pawn, this.my_lord(), next);
+                }
+                return $bog_gram_react.mine(pawn, this.my_lord());
+            }
+            message_react_open(id, next) {
+                if (next !== undefined) {
+                    this.message_menu('');
+                    this.react_id(next ? id : '');
+                }
+                return this.react_id() === id;
+            }
             task_ids() {
                 return this.messages()
                     .filter(message => message.Task()?.val() && this.Talk().message_live(message))
@@ -60277,6 +60350,10 @@ var $;
             }
             rich_mode(next) {
                 return this.$.$mol_state_local.value('$bog_gram_chat.rich', next) ?? false;
+            }
+            rich_hold(next) {
+                next?.preventDefault();
+                return null;
             }
             message_rich(id) {
                 return this.message_pawn(id)?.Html()?.val() ?? '';
@@ -60766,7 +60843,7 @@ var $;
                     return true;
                 if (!this.voice_ready())
                     return true;
-                return Boolean(this.message_text().trim());
+                return Boolean(this.message_text().trim() || this.rich_html());
             }
             Send() {
                 return this.send_is() ? super.Send() : null;
@@ -61295,6 +61372,15 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_task_done", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_reactions", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_react", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_react_open", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "task_ids", null);

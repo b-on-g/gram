@@ -9993,9 +9993,11 @@ var $;
             const { forward, write, sent } = await stand($);
             const source = write();
             source.Text('auto')?.val('привет');
+            source.Html('auto')?.val('<p><strong>привет</strong></p>');
             source.Reply('auto')?.val('Somewhere');
             $mol_assert_equal(Boolean(await $mol_wire_async(forward).copy(source, 'Target')), true);
             const [copy] = sent();
+            $mol_assert_equal(copy.Html()?.val(), '<p><strong>привет</strong></p>');
             $mol_assert_equal(sent().length, 1);
             $mol_assert_equal(copy.Text()?.val(), 'привет');
             $mol_assert_equal(copy.Forwarded()?.val(), true);
@@ -11584,7 +11586,8 @@ var $;
                 $mol_assert_equal($bog_gram_write_text('<section><p>раз<br>два</p></section><p>три<br></p>'), 'раз\nдва\nтри');
             },
             'Форматирование отличается от простых абзацев, чистка убирает ссылки на ленд и картинки'($) {
-                $mol_assert_equal($bog_gram_write_rich_is('<section><p>просто<br></p></section>'), false);
+                $mol_assert_equal($bog_gram_write_rich_is('<p>просто<br></p>'), false);
+                $mol_assert_equal($bog_gram_write_rich_is('<section><p>заголовок</p></section>'), true);
                 $mol_assert_equal($bog_gram_write_rich_is('<p>очень <strong>важно</strong></p>'), true);
                 $mol_assert_equal($bog_gram_write_clean('<p id="x" xmlns="http://www.w3.org/1999/xhtml"><span id="y">раз</span><span id="z"> два</span><img src="https://evil/track.png"><a href="https://ya.ru" onclick="alert()">ссылка</a></p>'), '<p>раз два<a href="https://ya.ru">ссылка</a></p>');
             },
@@ -11614,6 +11617,24 @@ var $;
                 write.before_input(erase);
                 $mol_assert_equal(erase.defaultPrevented, false);
             },
+            'Каретка в корне поля уходит внутрь абзаца, чтобы форматирование не задело само поле'($) {
+                const write = $bog_gram_write.make({ $, rich: () => true });
+                write.html('<p>раз</p><p>два</p>');
+                const document = $.$mol_dom_context.document;
+                const root = write.Content().dom_tree();
+                document.body.append(root);
+                try {
+                    const selection = document.getSelection();
+                    selection.setBaseAndExtent(root, 0, root, 2);
+                    write.aim();
+                    $mol_assert_equal(selection.anchorNode.nodeValue, 'раз');
+                    $mol_assert_equal(selection.focusNode.nodeValue, 'два');
+                    $mol_assert_equal(selection.focusOffset, 3);
+                }
+                finally {
+                    root.remove();
+                }
+            },
             'В простом режиме нет панели форматирования и Tab не превращает строку в список'($) {
                 const { write } = make($, true);
                 $mol_assert_equal(write.sub().includes(write.Tools()), false);
@@ -11622,6 +11643,37 @@ var $;
                 $mol_assert_equal(tab.defaultPrevented, false);
                 const rich = $bog_gram_write.make({ $, rich: () => true });
                 $mol_assert_equal(rich.sub().includes(rich.Tools()), true);
+            },
+            'Нажатие на панель не уводит фокус из поля, нажатие на текст остаётся браузеру'($) {
+                const write = $bog_gram_write.make({ $, rich: () => true });
+                const down = (target) => {
+                    let prevented = false;
+                    write.tools_hold({ target, preventDefault: () => { prevented = true; } });
+                    return prevented;
+                };
+                $mol_assert_equal(down(write.Tools().dom_node()), true);
+                $mol_assert_equal(down(write.Content().dom_node()), false);
+            },
+            'Каретка остаётся на своём месте, когда абзацы оборачиваются заново'($) {
+                const document = $.$mol_dom_context.document;
+                const root = document.createElement('div');
+                root.innerHTML = '<p>раз</p><p><br></p><p>два</p>';
+                const end = $bog_gram_write_spot(root, root.childNodes[0].firstChild, 3);
+                const empty = $bog_gram_write_spot(root, root.childNodes[1], 0);
+                const start = $bog_gram_write_spot(root, root.childNodes[2].firstChild, 0);
+                root.innerHTML = '<ul><p><strong>ра</strong>з</p></ul><blockquote><p><br></p></blockquote><p>два</p>';
+                const [list, quote, last] = [...root.childNodes];
+                const same = (point, node, offset) => {
+                    $mol_assert_equal(point[0] === node, true);
+                    $mol_assert_equal(point[1], offset);
+                };
+                same($bog_gram_write_point(root, end), list.firstChild.lastChild, 1);
+                same($bog_gram_write_point(root, empty), quote.firstChild, 0);
+                same($bog_gram_write_point(root, start), last.firstChild, 0);
+            },
+            'Невидимая заготовка под каретку в сообщение не попадает'($) {
+                const blank = String.fromCharCode(0x200b);
+                $mol_assert_equal($bog_gram_write_clean(`<p><strong>${blank}раз</strong></p>`), '<p><strong>раз</strong></p>');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
@@ -11752,6 +11804,96 @@ var $;
             'Пустой текст не даёт ни частей, ни ссылок'($) {
                 const body = $bog_gram_body.make({ $, text: () => '' });
                 $mol_assert_equal(body.sub(), []);
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Заголовок, списки и пробелы между выделениями доезжают до пузыря'($) {
+                const html = '<section><p>тема</p></section><ol><p>раз</p></ol><p><strong>а</strong> <em>б</em></p>';
+                const rich = $bog_gram_rich.make({ $, html: () => html });
+                $mol_assert_equal(rich.dom_tree().innerHTML, html);
+            },
+            'Чужая разметка чистится: нет картинок, обработчиков и опасных ссылок'($) {
+                const rich = $bog_gram_rich.make({ $, html: () => '<p onclick="x()">а<img src="https://evil/x.png"><a href="javascript:x()">б</a></p>' });
+                $mol_assert_equal(rich.dom_tree().innerHTML, '<p>аб</p>');
+            },
+        });
+    })($$ = $_1.$$ || ($_1.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    function message_make($) {
+        const session = $giper_baza_land.make({ $ }).Data($bog_gram_session);
+        return session.Messages('auto').make(null);
+    }
+    $mol_test({
+        'Без реакций список пуст'($) {
+            $mol_assert_equal($bog_gram_react.list(null), []);
+            $mol_assert_equal($bog_gram_react.list(message_make($)), []);
+            $mol_assert_equal($bog_gram_react.mine(message_make($), 'LordA'), '');
+        },
+        'У человека одна реакция: новая заменяет прежнюю, пустая снимает'($) {
+            const message = message_make($);
+            $bog_gram_react.put(message, 'LordA', '👍');
+            $bog_gram_react.put(message, 'LordB', '👍');
+            $mol_assert_equal($bog_gram_react.list(message), ['👍', '👍']);
+            $bog_gram_react.put(message, 'LordA', '🔥');
+            $mol_assert_equal($bog_gram_react.mine(message, 'LordA'), '🔥');
+            $mol_assert_equal($bog_gram_react.count($bog_gram_react.list(message), '👍'), 1);
+            $bog_gram_react.put(message, 'LordA', '');
+            $mol_assert_equal($bog_gram_react.mine(message, 'LordA'), '');
+            $mol_assert_equal($bog_gram_react.list(message), ['👍']);
+        },
+        'Посторонний текст вместо реакции не показывается, порядок постоянный'($) {
+            const message = message_make($);
+            $bog_gram_react.put(message, 'LordA', 'не реакция');
+            $mol_assert_equal($bog_gram_react.list(message), []);
+            $mol_assert_equal($bog_gram_react.shown(['🔥', '👍', '🔥']), ['👍', '🔥']);
+            $mol_assert_equal($bog_gram_react.count(['🔥', '👍', '🔥'], '🔥'), 2);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    var $$;
+    (function ($$) {
+        $mol_test({
+            'Плашка реакции несёт счёт, повторное нажатие на свою снимает её'($) {
+                const puts = [];
+                const bubble = $bog_gram_bubble.make({ $,
+                    reactions: () => ['🔥', '👍', '🔥'],
+                    react: (next) => {
+                        if (next !== undefined)
+                            puts.push(next);
+                        return '🔥';
+                    },
+                });
+                $mol_assert_equal(bubble.reaction_chips().length, 2);
+                $mol_assert_equal(bubble.reaction_label('🔥'), '🔥 2');
+                $mol_assert_equal(bubble.reaction_mine('🔥'), true);
+                $mol_assert_equal(bubble.reaction_mine('👍'), false);
+                bubble.reaction_toggle('👍');
+                bubble.reaction_toggle('🔥');
+                $mol_assert_equal(puts, ['👍', '']);
+            },
+            'Без реакций строки плашек нет, выбор открыт только по кнопке'($) {
+                const bubble = $bog_gram_bubble.make({ $ });
+                $mol_assert_equal(bubble.Reactions(), null);
+                $mol_assert_equal(bubble.Palette(), null);
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
