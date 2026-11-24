@@ -60459,7 +60459,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.230';
+    $.$bog_gram_version = '1.0.231';
 })($ || ($ = {}));
 
 ;
