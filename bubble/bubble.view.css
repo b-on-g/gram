@@ -33,6 +33,12 @@
 	display: flex;
 }
 
+[bog_gram_bubble][bog_gram_bubble_last="true"] [data-mol-tip]:is( :hover, :focus-visible )::after {
+	top: auto;
+	bottom: calc( 100% + 4px );
+	transform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );
+}
+
 @media (hover: hover) and (pointer: fine) {
 	[bog_gram_bubble]:hover [bog_gram_bubble_actions] {
 		display: flex;

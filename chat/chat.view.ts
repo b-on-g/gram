@@ -360,6 +360,24 @@ namespace $.$$ {
 			return this.message_menu() === id
 		}
 
+		@ $mol_mem
+		last_id() {
+
+			const messages = this.messages()
+
+			for( let i = messages.length - 1; i >= 0; -- i ) {
+				const id = messages[ i ].link().str
+				if( this.message_alive( id ) ) return id
+			}
+
+			return ''
+		}
+
+		@ $mol_mem_key
+		override message_last( id: string ) {
+			return $bog_gram_soft( ()=> this.last_id(), '' ) === id
+		}
+
 		press_timer: $mol_after_timeout | null = null
 		press_row = ''
 		press_held = false
