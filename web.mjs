@@ -60459,7 +60459,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.229';
+    $.$bog_gram_version = '1.0.230';
 })($ || ($ = {}));
 
 ;
@@ -70094,6 +70094,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		tools_touch(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		tools_tap(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		tools_leave(next){
 			if(next !== undefined) return next;
 			return null;
@@ -70121,6 +70129,8 @@ var $;
 				"keydown": (next) => (this.press(next)), 
 				"beforeinput": (next) => (this.before_input(next)), 
 				"mousedown": (next) => (this.tools_hold(next)), 
+				"touchstart": (next) => (this.tools_touch(next)), 
+				"touchend": (next) => (this.tools_tap(next)), 
 				"focusout": (next) => (this.tools_leave(next))
 			};
 		}
@@ -70133,6 +70143,8 @@ var $;
 	($mol_mem(($.$bog_gram_write.prototype), "press"));
 	($mol_mem(($.$bog_gram_write.prototype), "before_input"));
 	($mol_mem(($.$bog_gram_write.prototype), "tools_hold"));
+	($mol_mem(($.$bog_gram_write.prototype), "tools_touch"));
+	($mol_mem(($.$bog_gram_write.prototype), "tools_tap"));
 	($mol_mem(($.$bog_gram_write.prototype), "tools_leave"));
 	($mol_mem(($.$bog_gram_write.prototype), "html"));
 	($mol_mem(($.$bog_gram_write.prototype), "send"));
@@ -70274,14 +70286,7 @@ var $;
             selection_save() { }
             selection_load() { }
             selected(next) {
-                $mol_wire_watch();
-                const root = this.Content().dom_node();
-                if (!root.isConnected)
-                    return false;
-                const selection = this.$.$mol_dom_context.document.getSelection();
-                if (!selection?.rangeCount)
-                    return false;
-                return root.contains(selection.anchorNode) && root.contains(selection.focusNode);
+                return this.enabled();
             }
             html_last = '';
             nodes(next) {
@@ -70523,15 +70528,37 @@ var $;
                     this.menu_hide();
                 return null;
             }
+            touch_at = null;
+            tools_touch(event) {
+                const touch = event?.touches.length === 1 ? event.touches[0] : null;
+                this.touch_at = touch && { x: touch.clientX, y: touch.clientY };
+                return null;
+            }
+            tools_tap(event) {
+                const from = this.touch_at;
+                this.touch_at = null;
+                if (!event?.cancelable)
+                    return null;
+                const touch = event.changedTouches[0];
+                if (!from || !touch)
+                    return null;
+                if (!this.rich())
+                    return null;
+                const target = event.target;
+                if (!this.Tools().dom_node().contains(target))
+                    return null;
+                if (Math.hypot(touch.clientX - from.x, touch.clientY - from.y) > 10)
+                    return null;
+                event.preventDefault();
+                target.closest('[mol_button]')?.click();
+                return null;
+            }
             tools_leave(event) {
                 if (!this.dom_node().contains(event?.relatedTarget))
                     this.menu_hide();
                 return null;
             }
         }
-        __decorate([
-            $mol_mem
-        ], $bog_gram_write.prototype, "selected", null);
         __decorate([
             $mol_mem
         ], $bog_gram_write.prototype, "nodes", null);
@@ -74423,6 +74450,10 @@ var $;
 		pending_uri(id){
 			return "";
 		}
+		attach_hold(next){
+			if(next !== undefined) return next;
+			return null;
+		}
 		image_files(next){
 			if(next !== undefined) return next;
 			return null;
@@ -75084,6 +75115,7 @@ var $;
 			(obj.hint) = () => ((this.$.$mol_locale.text("$bog_gram_chat_Attach_hint")));
 			(obj.accept) = () => ("image/*,video/*");
 			(obj.multiple) = () => (true);
+			(obj.event) = () => ({...(this.$.$bog_gram_attach.prototype.event.call(obj)), "mousedown": (next) => (this.attach_hold(next))});
 			(obj.files) = (next) => ((this.image_files(next)));
 			(obj.Icon) = () => ((this.Attach_icon()));
 			return obj;
@@ -75351,6 +75383,7 @@ var $;
 	($mol_mem_key(($.$bog_gram_chat.prototype), "pending_drop"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_drop_icon"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Pending_drop"));
+	($mol_mem(($.$bog_gram_chat.prototype), "attach_hold"));
 	($mol_mem(($.$bog_gram_chat.prototype), "image_files"));
 	($mol_mem(($.$bog_gram_chat.prototype), "Attach_icon"));
 	($mol_mem(($.$bog_gram_chat.prototype), "box_click"));
@@ -76433,7 +76466,16 @@ var $;
             }
             image_files(next) {
                 this.pending_add(next ?? []);
+                if (this.attach_typing)
+                    this.Message_field().Content().bring();
+                this.attach_typing = false;
                 return next ?? null;
+            }
+            attach_typing = false;
+            attach_hold(next) {
+                next?.preventDefault();
+                this.attach_typing = this.Message_field().Content().dom_node() === this.$.$mol_dom_context.document.activeElement;
+                return null;
             }
             pending(next) {
                 return next ?? [];

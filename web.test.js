@@ -11654,6 +11654,33 @@ var $;
                 $mol_assert_equal(down(write.Tools().dom_node()), true);
                 $mol_assert_equal(down(write.Content().dom_node()), false);
             },
+            'Кнопки панели не выключаются, когда каретка не в поле'($) {
+                const write = $bog_gram_write.make({ $, rich: () => true });
+                $mol_assert_equal(write.Strong_button().enabled(), true);
+            },
+            'Тап по кнопке панели нажимает её без мышиных событий, прокрутка пальцем не нажимает'($) {
+                const write = $bog_gram_write.make({ $, rich: () => true });
+                const button = write.Quote_button().dom_node();
+                write.Tools().dom_node().append(button);
+                let clicks = 0;
+                button.click = () => { ++clicks; };
+                const tap = (target, shift) => {
+                    let prevented = false;
+                    write.tools_touch({ touches: [{ clientX: 0, clientY: 0 }] });
+                    write.tools_tap({
+                        target,
+                        cancelable: true,
+                        changedTouches: [{ clientX: shift, clientY: 0 }],
+                        preventDefault: () => { prevented = true; },
+                    });
+                    return prevented;
+                };
+                $mol_assert_equal(tap(button, 2), true);
+                $mol_assert_equal(clicks, 1);
+                $mol_assert_equal(tap(button, 50), false);
+                $mol_assert_equal(tap(write.Content().dom_node(), 0), false);
+                $mol_assert_equal(clicks, 1);
+            },
             'Каретка остаётся на своём месте, когда абзацы оборачиваются заново'($) {
                 const document = $.$mol_dom_context.document;
                 const root = document.createElement('div');
@@ -12285,6 +12312,9 @@ var $;
                 const chat = $bog_gram_chat.make({ $: context, dialog: () => 'DialogShot', my_lord: () => 'LordMe', Talk: () => talk, People: () => people, Alerts: () => alerts });
                 chat.land_closed = () => $giper_baza_land.make({ $ }).Data($giper_baza_file);
                 const messages = () => session.Messages()?.remote_list() ?? [];
+                let held = false;
+                chat.attach_hold({ preventDefault: () => { held = true; } });
+                $mol_assert_equal(held, true);
                 chat.image_files([new File([], 'shot.png', { type: 'image/png' }), new File([], 'notes.txt', { type: 'text/plain' })]);
                 $mol_assert_equal(chat.pending().length, 1);
                 $mol_assert_equal(messages().length, 0);
