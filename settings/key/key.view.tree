@@ -10,6 +10,7 @@ $bog_gram_settings_key $mol_view
 	sub <= rows /
 	Id $bog_id_enter
 		apply? <=> id_apply? \
+		apply_fresh? <=> id_apply?
 	Toggle $mol_button_minor
 		click? <=> toggle? null
 		sub /
