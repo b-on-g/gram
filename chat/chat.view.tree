@@ -330,6 +330,7 @@ $bog_gram_chat $bog_gram_page
 		content <= message_rich* null
 		time <= message_time* \
 		edited <= message_edited* false
+		sent <= message_sent* \
 		checks <= message_checks* \
 		edit? <=> message_edit*? null
 		delete? <=> message_delete*? null

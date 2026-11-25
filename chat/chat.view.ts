@@ -328,6 +328,18 @@ namespace $.$$ {
 		}
 
 		@ $mol_mem_key
+		override message_sent( id: string ) {
+
+			if( !this.message_out( id ) ) return ''
+			if( this.message_checks( id ) === '✓✓' ) return ''
+
+			const pawn = this.message_pawn( id )
+			if( !pawn ) return ''
+
+			return $bog_gram_soft( ()=> this.$.$bog_gram_sent.done( pawn ), false ) ? 'done' : 'wait'
+		}
+
+		@ $mol_mem_key
 		override message_checks( id: string ) {
 
 			if( !this.message_out( id ) ) return ''
@@ -352,9 +364,9 @@ namespace $.$$ {
 			}
 
 			const peer = this.Talk().peer( dialog )
-			if( !peer ) return '✓'
+			if( !peer ) return ''
 
-			return this.Talk().read_moment_of( dialog, peer ) >= moment ? '✓✓' : '✓'
+			return this.Talk().read_moment_of( dialog, peer ) >= moment ? '✓✓' : ''
 		}
 
 		@ $mol_mem_key

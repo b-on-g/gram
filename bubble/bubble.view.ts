@@ -77,6 +77,14 @@ namespace $.$$ {
 			return this.edited() ? super.Edited() : null!
 		}
 
+		override Sent_wait() {
+			return this.sent() === 'wait' ? super.Sent_wait() : null!
+		}
+
+		override Sent_done() {
+			return this.sent() === 'done' ? super.Sent_done() : null!
+		}
+
 		override Checks() {
 			return this.checks() ? super.Checks() : null!
 		}

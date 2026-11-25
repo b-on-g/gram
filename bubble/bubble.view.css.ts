@@ -233,6 +233,17 @@ namespace $.$$ {
 			},
 		},
 
+		Sent_wait: {
+			width: '1em',
+			height: '1em',
+		},
+
+		Sent_done: {
+			width: '1.2em',
+			height: '1.2em',
+			color: '#2e9e4f',
+		},
+
 		Checks: {
 			color: $mol_theme.control,
 			whiteSpace: 'nowrap',
