@@ -8,6 +8,8 @@ $bog_gram_settings_key $mol_view
 	error_bad @ \This does not look like an account key
 	error_qr @ \The QR does not contain an account key
 	sub <= rows /
+	Id $bog_id_enter
+		apply? <=> id_apply? \
 	Toggle $mol_button_minor
 		click? <=> toggle? null
 		sub /

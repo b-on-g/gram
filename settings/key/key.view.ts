@@ -28,8 +28,8 @@ namespace $.$$ {
 
 		@ $mol_mem
 		override rows() {
-			if( !this.shown() ) return [ this.Toggle(), this.Import_form() ]
-			return [ this.Toggle(), this.Warning(), this.Row(), this.Qr_box(), this.Save(), this.Import_form() ]
+			if( !this.shown() ) return [ this.Id(), this.Toggle(), this.Import_form() ]
+			return [ this.Id(), this.Toggle(),this.Warning(), this.Row(), this.Qr_box(), this.Save(), this.Import_form() ]
 		}
 
 		override Error() {
@@ -72,11 +72,23 @@ namespace $.$$ {
 				return null
 			}
 
+			this.enter( auth )
+
+			return null
+		}
+
+		@ $mol_action
+		enter( auth: $giper_baza_auth ) {
 			this.notify_on( false )
 			this.$.$giper_baza_auth.current( auth )
 			this.$.$mol_dom_context.location.reload()
+		}
 
-			return null
+		@ $mol_action
+		override id_apply( next?: string ) {
+			const auth = next ? this.auth_from( next ) : null
+			if( auth ) this.enter( auth )
+			return ''
 		}
 
 		override file( next?: readonly File[] ) {
