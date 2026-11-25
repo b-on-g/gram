@@ -42395,7 +42395,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.240';
+    $.$bog_gram_version = '1.0.242';
 })($ || ($ = {}));
 
 ;
@@ -60002,6 +60002,30 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_clock) = class $mol_icon_clock extends ($.$mol_icon) {
+		path(){
+			return "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_clock_outline) = class $mol_icon_clock_outline extends ($.$mol_icon) {
+		path(){
+			return "M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
 	($.$mol_icon_emoticon) = class $mol_icon_emoticon extends ($.$mol_icon) {
 		path(){
 			return "M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,1 17,9.5A1.5,1.5 0 0,1 15.5,11A1.5,1.5 0 0,1 14,9.5A1.5,1.5 0 0,1 15.5,8M8.5,8A1.5,1.5 0 0,1 10,9.5A1.5,1.5 0 0,1 8.5,11A1.5,1.5 0 0,1 7,9.5A1.5,1.5 0 0,1 8.5,8M12,17.5C9.67,17.5 7.69,16.04 6.89,14H17.11C16.3,16.04 14.33,17.5 12,17.5Z";
@@ -60389,6 +60413,14 @@ var $;
 			(obj.sub) = () => ([(this.edited_label())]);
 			return obj;
 		}
+		Sent_wait(){
+			const obj = new this.$.$mol_icon_clock_outline();
+			return obj;
+		}
+		Sent_done(){
+			const obj = new this.$.$mol_icon_check();
+			return obj;
+		}
 		Checks(){
 			const obj = new this.$.$mol_view();
 			(obj.sub) = () => ([(this.checks())]);
@@ -60399,6 +60431,8 @@ var $;
 			(obj.sub) = () => ([
 				(this.Time()), 
 				(this.Edited()), 
+				(this.Sent_wait()), 
+				(this.Sent_done()), 
 				(this.Checks())
 			]);
 			return obj;
@@ -60693,6 +60727,9 @@ var $;
 		edited(){
 			return false;
 		}
+		sent(){
+			return "";
+		}
 		checks(){
 			return "";
 		}
@@ -60793,6 +60830,8 @@ var $;
 	($mol_mem(($.$bog_gram_bubble.prototype), "Body"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Time"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Edited"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Sent_wait"));
+	($mol_mem(($.$bog_gram_bubble.prototype), "Sent_done"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Checks"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "Meta"));
 	($mol_mem(($.$bog_gram_bubble.prototype), "React_icon"));
@@ -60931,6 +60970,12 @@ var $;
             }
             Edited() {
                 return this.edited() ? super.Edited() : null;
+            }
+            Sent_wait() {
+                return this.sent() === 'wait' ? super.Sent_wait() : null;
+            }
+            Sent_done() {
+                return this.sent() === 'done' ? super.Sent_done() : null;
             }
             Checks() {
                 return this.checks() ? super.Checks() : null;
@@ -61238,6 +61283,15 @@ var $;
                 font: {
                     style: 'italic',
                 },
+            },
+            Sent_wait: {
+                width: '1em',
+                height: '1em',
+            },
+            Sent_done: {
+                width: '1.2em',
+                height: '1.2em',
+                color: '#2e9e4f',
             },
             Checks: {
                 color: $mol_theme.control,
@@ -61945,6 +61999,9 @@ var $;
 		message_edited(id){
 			return false;
 		}
+		message_sent(id){
+			return "";
+		}
 		message_checks(id){
 			return "";
 		}
@@ -62477,6 +62534,7 @@ var $;
 			(obj.content) = () => ((this.message_rich(id)));
 			(obj.time) = () => ((this.message_time(id)));
 			(obj.edited) = () => ((this.message_edited(id)));
+			(obj.sent) = () => ((this.message_sent(id)));
 			(obj.checks) = () => ((this.message_checks(id)));
 			(obj.edit) = (next) => ((this.message_edit(id, next)));
 			(obj.delete) = (next) => ((this.message_delete(id, next)));
@@ -62660,6 +62718,211 @@ var $;
 	($mol_mem(($.$bog_gram_chat.prototype), "Knocks_head"));
 	($mol_mem_key(($.$bog_gram_chat.prototype), "Knock"));
 
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Public Giper ID profile of Lord, stored under own key in home Land */
+    function $bog_id_profile_of(lord, auto) {
+        return this.$giper_baza_glob.Land(new $giper_baza_link(lord))
+            .Data($giper_baza_dict)
+            .dive('bog_id', $bog_id_profile, auto);
+    }
+    $.$bog_id_profile_of = $bog_id_profile_of;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_id_grant extends $giper_baza_dict.with({
+        App: $giper_baza_atom_text,
+        Scope: $giper_baza_atom_text,
+        Pointer: $giper_baza_atom_text,
+        Land: $giper_baza_atom_text,
+        Lands: $giper_baza_list_str,
+        Apps: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_id_grant = $bog_id_grant;
+    class $bog_id_store extends $giper_baza_dict.with({
+        Grants: $giper_baza_list_link_to(() => $bog_id_grant),
+    }) {
+    }
+    $.$bog_id_store = $bog_id_store;
+    class $bog_id_profile extends $giper_baza_dict.with({
+        Name: $giper_baza_atom_text,
+        Vault: $giper_baza_atom_text,
+        Stores: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_id_profile = $bog_id_profile;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Resolves Pointer from Giper ID grant to current data Land */
+    function $bog_id_land(pointer) {
+        const glob = this.$giper_baza_glob;
+        const link = glob.Land(new $giper_baza_link(pointer)).Data($giper_baza_atom_text).val();
+        return link ? glob.Land(new $giper_baza_link(link)) : null;
+    }
+    $.$bog_id_land = $bog_id_land;
+    /** Has Land got everything that master knows */
+    function $bog_id_land_synced(str) {
+        const link = new $giper_baza_link(str);
+        const glob = this.$giper_baza_glob;
+        const land = glob.Land(link);
+        land.sync();
+        const faces = glob.yard().masters().map(port => glob.yard().face_port_land([port, link]));
+        this.$mol_state_time.now(500);
+        return faces.some(map => map && $bog_id_land_covers(land.faces, map));
+    }
+    $.$bog_id_land_synced = $bog_id_land_synced;
+    /** What master really has for Land, asked by separate connection */
+    function $bog_id_land_ask(master, land) {
+        return new Promise(done => {
+            const socket = new $mol_dom_context.WebSocket(master.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
+            socket.binaryType = 'arraybuffer';
+            const finish = (faces) => {
+                clearTimeout(timer);
+                socket.onopen = socket.onerror = socket.onmessage = null;
+                socket.close();
+                done(faces);
+            };
+            const timer = setTimeout(() => finish(null), 6000);
+            socket.onopen = () => socket.send(land.face_pack().asArray());
+            socket.onerror = () => finish(null);
+            socket.onmessage = event => {
+                if (!event.data?.byteLength)
+                    return;
+                const pack = new $giper_baza_pack(event.data);
+                const part = new Map(pack.parts()).get(land.link().str);
+                if (part)
+                    finish(part.faces);
+            };
+        });
+    }
+    $.$bog_id_land_ask = $bog_id_land_ask;
+    /** Sends Lands to master and checks that it really has them */
+    async function $bog_id_land_push(lands) {
+        const yard = this.$giper_baza_glob.yard();
+        for (let i = 0; i < 4; ++i) {
+            await Promise.all(lands.map(land => $mol_wire_async(land).units_saving()));
+            const master = await $mol_wire_async(yard).master_current();
+            const faces = await Promise.all(lands.map(land => this.$bog_id_land_ask(master, land)));
+            if (lands.every((land, at) => faces[at] && $bog_id_land_covers(faces[at], land.faces)))
+                return true;
+            if (!faces.every(Boolean))
+                await $mol_wire_async(yard).master_next();
+            else if (i)
+                yard.reconnects(null);
+            await new Promise(done => setTimeout(done, 800));
+        }
+        return false;
+    }
+    $.$bog_id_land_push = $bog_id_land_push;
+    function $bog_id_land_covers(left, right) {
+        return [...right].every(([peer, face]) => {
+            const own = left.get(peer);
+            return (own?.time_tick ?? 0) >= face.time_tick && (own?.summ ?? 0) >= face.summ;
+        });
+    }
+    $.$bog_id_land_covers = $bog_id_land_covers;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const ask_period = 3000;
+    class $bog_gram_sent extends $mol_object {
+        static asking = new Set();
+        static peer(land) {
+            return land.auth().pass().peer().str;
+        }
+        static tick_of(pawn) {
+            const land = pawn.land();
+            const peer = this.peer(land);
+            let last = 0;
+            const visit = (sand) => {
+                if (sand.lord().peer().str === peer)
+                    last = Math.max(last, sand.time_tick());
+                if (sand.tag() === 'term')
+                    return;
+                land.Pawn($giper_baza_pawn).Head(sand.self()).units_of(null).forEach(visit);
+            };
+            pawn.units_of(null).forEach(visit);
+            return last;
+        }
+        static covered(land, faces) {
+            const peer = this.peer(land);
+            const face = faces.get(peer);
+            if (!face)
+                return 0;
+            let mass = 0;
+            const count = (unit) => {
+                if (unit.lord().peer().str === peer && unit.time_tick() <= face.time_tick)
+                    ++mass;
+            };
+            for (const gift of land._gift.values())
+                count(gift);
+            for (const peers of land._sand.values()) {
+                for (const sands of peers.values()) {
+                    for (const sand of sands.values())
+                        count(sand);
+                }
+            }
+            return mass <= face.summ ? face.time_tick : 0;
+        }
+        static key(land) {
+            return `bog_gram_sent:${this.peer(land)}:${land.link().str}`;
+        }
+        static confirmed(land, next) {
+            return this.$.$mol_state_local.value(this.key(land), next) ?? 0;
+        }
+        static done(pawn) {
+            const land = pawn.land();
+            if (this.confirmed(land) >= this.tick_of(pawn))
+                return true;
+            this.poll(land);
+            return false;
+        }
+        static poll(land) {
+            this.$.$mol_state_time.now(ask_period);
+            if (!this.$.$bog_gram_awake.active())
+                return null;
+            const master = this.$.$giper_baza_glob.yard().master_current();
+            if (master)
+                this.ask(master, land);
+            return null;
+        }
+        static async ask(master, land) {
+            const key = this.key(land);
+            if (this.asking.has(key))
+                return;
+            this.asking.add(key);
+            try {
+                const faces = await this.$.$bog_id_land_ask(master, land);
+                if (faces)
+                    this.confirmed(land, this.covered(land, faces));
+            }
+            catch (error) {
+                $mol_fail_log(error);
+            }
+            finally {
+                this.asking.delete(key);
+            }
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $bog_gram_sent, "poll", null);
+    $.$bog_gram_sent = $bog_gram_sent;
+})($ || ($ = {}));
 
 ;
 "use strict";
@@ -63211,6 +63474,16 @@ var $;
             read_tally(reads, mates, moment) {
                 return mates.filter(lord => (reads[lord] ?? 0) >= moment).length;
             }
+            message_sent(id) {
+                if (!this.message_out(id))
+                    return '';
+                if (this.message_checks(id) === '✓✓')
+                    return '';
+                const pawn = this.message_pawn(id);
+                if (!pawn)
+                    return '';
+                return $bog_gram_soft(() => this.$.$bog_gram_sent.done(pawn), false) ? 'done' : 'wait';
+            }
             message_checks(id) {
                 if (!this.message_out(id))
                     return '';
@@ -63232,8 +63505,8 @@ var $;
                 }
                 const peer = this.Talk().peer(dialog);
                 if (!peer)
-                    return '✓';
-                return this.Talk().read_moment_of(dialog, peer) >= moment ? '✓✓' : '✓';
+                    return '';
+                return this.Talk().read_moment_of(dialog, peer) >= moment ? '✓✓' : '';
             }
             message_author(id) {
                 if (this.message_out(id))
@@ -64471,6 +64744,9 @@ var $;
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_edited", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_gram_chat.prototype, "message_sent", null);
         __decorate([
             $mol_mem_key
         ], $bog_gram_chat.prototype, "message_checks", null);
@@ -67651,11 +67927,10 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        // 	const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
-        // 
-        // 	$giper_baza_yard.masters = (): string[] => $giper_baza_yard.masters_override() ?? [
-        // 		local ? 'http://localhost:9090/' : 'https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/',
-        // 	]
+        const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+        $giper_baza_yard.masters = () => $giper_baza_yard.masters_override() ?? [
+            local ? 'http://localhost:9090/' : 'https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/',
+        ];
         class $bog_gram extends $.$bog_gram {
             saved_preview() {
                 const id = this.saved_id();

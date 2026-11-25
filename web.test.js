@@ -12593,6 +12593,65 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'land covers faces only when it has the latest time and all units of every peer'() {
+            const master = new $giper_baza_face_map;
+            const land = new $giper_baza_face_map;
+            $mol_assert_equal($bog_id_land_covers(land, master), true);
+            master.peer_time('peer', 2, 1);
+            $mol_assert_equal($bog_id_land_covers(land, master), false);
+            land.peer_time('peer', 2, 0);
+            $mol_assert_equal($bog_id_land_covers(land, master), false);
+            land.peer_time('peer', 2, 1);
+            land.peer_time('other', 3, 0);
+            $mol_assert_equal($bog_id_land_covers(land, master), true);
+            master.peer_summ('peer', 2);
+            land.peer_summ('peer', 1);
+            $mol_assert_equal($bog_id_land_covers(land, master), false);
+            land.peer_summ('peer', 2);
+            $mol_assert_equal($bog_id_land_covers(land, master), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        async 'Сообщение отправлено, только когда мастер назвал его время и все юниты'($) {
+            class Sent extends $bog_gram_sent {
+                static $ = $;
+                static poll() { return null; }
+            }
+            const land = await $mol_wire_async(() => {
+                const land = $.$giper_baza_glob.land_grab();
+                new $mol_wire_atom('bog_gram_sent_test', () => $.$giper_baza_glob.Land(land.link())).fresh();
+                return land;
+            })();
+            const pawn = land.Data($bog_gram_message);
+            await $mol_wire_async(() => pawn.Text('auto').val('привет'))();
+            const peer = Sent.peer(land);
+            const tick = await $mol_wire_async(() => Sent.tick_of(pawn))();
+            const done = $mol_wire_async(() => Sent.done(pawn));
+            const own = land.faces.get(peer);
+            $mol_assert_equal(tick > 0, true);
+            $mol_assert_equal(await done(), false);
+            $mol_assert_equal(Sent.covered(land, new $giper_baza_face_map), 0);
+            $mol_assert_equal(Sent.covered(land, new $giper_baza_face_map([[peer, new $giper_baza_face(own.time, own.tick, own.summ - 1)]])), 0);
+            $mol_assert_equal(Sent.covered(land, land.faces) >= tick, true);
+            Sent.confirmed(land, tick - 1);
+            $mol_assert_equal(await done(), false);
+            Sent.confirmed(land, tick);
+            $mol_assert_equal(await done(), true);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'видео узнаётся по типу и по расширению, картинка нет'() {
             const file = (name, type = '') => new File([], name, { type });
             $mol_assert_equal([
