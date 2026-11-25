@@ -82,7 +82,7 @@ npx mam bog/gram
 # http://localhost:9080/bog/gram/-/index.html
 ```
 
-Локальный мастер: `node giper/baza/app/run/-/node.js port=9090`, затем `#!giper_baza_yard_masters=http%3A%2F%2Flocalhost%3A9090%2F`.
+Локальный мастер: `node giper/baza/app/run/-/node.js port=9090`, на `localhost` приложение подключается к нему само.
 
 ## Версия
 

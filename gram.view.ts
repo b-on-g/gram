@@ -1,10 +1,10 @@
 namespace $.$$ {
 
-// 	const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
-// 
-// 	$giper_baza_yard.masters = (): string[] => $giper_baza_yard.masters_override() ?? [
-// 		local ? 'http://localhost:9090/' : 'https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/',
-// 	]
+	const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
+
+	$giper_baza_yard.masters = (): string[] => $giper_baza_yard.masters_override() ?? [
+		local ? 'http://localhost:9090/' : 'https://cmyser-nd-pony.5.230.182.101.ip.giper.dev/',
+	]
 
 	export class $bog_gram extends $.$bog_gram {
 
