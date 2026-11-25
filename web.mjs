@@ -45064,6 +45064,611 @@ var $;
 })($ || ($ = {}));
 
 ;
+"use strict";
+var $;
+(function ($) {
+    /** Public Giper ID profile of Lord, stored under own key in home Land */
+    function $bog_id_profile_of(lord, auto) {
+        return this.$giper_baza_glob.Land(new $giper_baza_link(lord))
+            .Data($giper_baza_dict)
+            .dive('bog_id', $bog_id_profile, auto);
+    }
+    $.$bog_id_profile_of = $bog_id_profile_of;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_id_grant extends $giper_baza_dict.with({
+        App: $giper_baza_atom_text,
+        Scope: $giper_baza_atom_text,
+        Pointer: $giper_baza_atom_text,
+        Land: $giper_baza_atom_text,
+        Lands: $giper_baza_list_str,
+        Apps: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_id_grant = $bog_id_grant;
+    class $bog_id_store extends $giper_baza_dict.with({
+        Grants: $giper_baza_list_link_to(() => $bog_id_grant),
+    }) {
+    }
+    $.$bog_id_store = $bog_id_store;
+    class $bog_id_profile extends $giper_baza_dict.with({
+        Name: $giper_baza_atom_text,
+        Vault: $giper_baza_atom_text,
+        Stores: $giper_baza_list_str,
+    }) {
+    }
+    $.$bog_id_profile = $bog_id_profile;
+})($ || ($ = {}));
+
+;
+	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
+		theme(){
+			return "$mol_theme_base";
+		}
+	};
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_id_enter) = class $bog_id_enter extends ($.$mol_list) {
+		parts(){
+			return [];
+		}
+		enter(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		status(){
+			return "";
+		}
+		idle(){
+			return true;
+		}
+		save(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		fresh_title(){
+			return (this.$.$mol_locale.text("$bog_id_enter_fresh_title"));
+		}
+		fresh(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		replace_title(){
+			return (this.$.$mol_locale.text("$bog_id_enter_replace_title"));
+		}
+		replace(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		error(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		provider(){
+			return "https://dev-cmyser.github.io/id/";
+		}
+		scope(){
+			return "account";
+		}
+		apply(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		apply_fresh(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		rows(){
+			return (this.parts());
+		}
+		Enter(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Enter_title")));
+			(obj.click) = (next) => ((this.enter(next)));
+			return obj;
+		}
+		Hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Hint_title")));
+			return obj;
+		}
+		Status(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.status()));
+			return obj;
+		}
+		Save(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Save_title")));
+			(obj.enabled) = () => ((this.idle()));
+			(obj.click) = (next) => ((this.save(next)));
+			return obj;
+		}
+		Fresh(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.fresh_title()));
+			(obj.enabled) = () => ((this.idle()));
+			(obj.click) = (next) => ((this.fresh(next)));
+			return obj;
+		}
+		Replace(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.replace_title()));
+			(obj.click) = (next) => ((this.replace(next)));
+			return obj;
+		}
+		Change(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Change_title")));
+			(obj.click) = (next) => ((this.enter(next)));
+			return obj;
+		}
+		Error(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.error()));
+			return obj;
+		}
+		busy(next){
+			if(next !== undefined) return next;
+			return false;
+		}
+		armed(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		switch_sure(){
+			return (this.$.$mol_locale.text("$bog_id_enter_switch_sure"));
+		}
+		wait(){
+			return (this.$.$mol_locale.text("$bog_id_enter_wait"));
+		}
+		vacant_text(){
+			return (this.$.$mol_locale.text("$bog_id_enter_vacant_text"));
+		}
+		conflict(){
+			return (this.$.$mol_locale.text("$bog_id_enter_conflict"));
+		}
+		done(){
+			return (this.$.$mol_locale.text("$bog_id_enter_done"));
+		}
+		sending(){
+			return (this.$.$mol_locale.text("$bog_id_enter_sending"));
+		}
+		error_bad(){
+			return (this.$.$mol_locale.text("$bog_id_enter_error_bad"));
+		}
+		error_sent(){
+			return (this.$.$mol_locale.text("$bog_id_enter_error_sent"));
+		}
+	};
+	($mol_mem(($.$bog_id_enter.prototype), "enter"));
+	($mol_mem(($.$bog_id_enter.prototype), "save"));
+	($mol_mem(($.$bog_id_enter.prototype), "fresh"));
+	($mol_mem(($.$bog_id_enter.prototype), "replace"));
+	($mol_mem(($.$bog_id_enter.prototype), "error"));
+	($mol_mem(($.$bog_id_enter.prototype), "apply"));
+	($mol_mem(($.$bog_id_enter.prototype), "apply_fresh"));
+	($mol_mem(($.$bog_id_enter.prototype), "Enter"));
+	($mol_mem(($.$bog_id_enter.prototype), "Hint"));
+	($mol_mem(($.$bog_id_enter.prototype), "Status"));
+	($mol_mem(($.$bog_id_enter.prototype), "Save"));
+	($mol_mem(($.$bog_id_enter.prototype), "Fresh"));
+	($mol_mem(($.$bog_id_enter.prototype), "Replace"));
+	($mol_mem(($.$bog_id_enter.prototype), "Change"));
+	($mol_mem(($.$bog_id_enter.prototype), "Error"));
+	($mol_mem(($.$bog_id_enter.prototype), "busy"));
+	($mol_mem(($.$bog_id_enter.prototype), "armed"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Opens Giper ID popup, sends app Pass and resolves with Pointer to granted Land */
+    function $bog_id_login(provider, pass, scope) {
+        const win = $mol_dom_context;
+        const origin = new URL(provider, win.location.href).origin;
+        return new Promise((done, fail) => {
+            const popup = win.open(provider, 'bog_id', 'popup,width=440,height=640');
+            if (!popup)
+                return fail(new Error('Popup blocked'));
+            const timer = win.setInterval(() => {
+                if (popup.closed)
+                    finish(new Error('Popup closed'));
+            }, 500);
+            const finish = (error, grant) => {
+                win.clearInterval(timer);
+                win.removeEventListener('message', listen);
+                if (error)
+                    fail(error);
+                else
+                    done(grant);
+            };
+            const listen = (event) => {
+                if (event.origin !== origin)
+                    return;
+                if (event.source !== popup)
+                    return;
+                const data = event.data;
+                if (data?.bog_id === 'ready')
+                    popup.postMessage({ bog_id: 'request', pass, scope }, origin);
+                if (data?.bog_id === 'deny')
+                    finish(new Error('Access denied'));
+                if (data?.bog_id === 'grant') {
+                    popup.close();
+                    finish(null, {
+                        lord: String(data.lord),
+                        name: String(data.name ?? ''),
+                        pointer: String(data.pointer),
+                    });
+                }
+            };
+            win.addEventListener('message', listen);
+        });
+    }
+    $.$bog_id_login = $bog_id_login;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /** Resolves Pointer from Giper ID grant to current data Land */
+    function $bog_id_land(pointer) {
+        const glob = this.$giper_baza_glob;
+        const link = glob.Land(new $giper_baza_link(pointer)).Data($giper_baza_atom_text).val();
+        return link ? glob.Land(new $giper_baza_link(link)) : null;
+    }
+    $.$bog_id_land = $bog_id_land;
+    /** Has Land got everything that master knows */
+    function $bog_id_land_synced(str) {
+        const link = new $giper_baza_link(str);
+        const glob = this.$giper_baza_glob;
+        const land = glob.Land(link);
+        land.sync();
+        const faces = glob.yard().masters().map(port => glob.yard().face_port_land([port, link]));
+        this.$mol_state_time.now(500);
+        return faces.some(map => map && $bog_id_land_covers(land.faces, map));
+    }
+    $.$bog_id_land_synced = $bog_id_land_synced;
+    /** What master really has for Land, asked by separate connection */
+    function $bog_id_land_ask(master, land) {
+        return new Promise(done => {
+            const socket = new $mol_dom_context.WebSocket(master.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
+            socket.binaryType = 'arraybuffer';
+            const finish = (faces) => {
+                clearTimeout(timer);
+                socket.onopen = socket.onerror = socket.onmessage = null;
+                socket.close();
+                done(faces);
+            };
+            const timer = setTimeout(() => finish(null), 6000);
+            socket.onopen = () => socket.send(land.face_pack().asArray());
+            socket.onerror = () => finish(null);
+            socket.onmessage = event => {
+                if (!event.data?.byteLength)
+                    return;
+                const pack = new $giper_baza_pack(event.data);
+                const part = new Map(pack.parts()).get(land.link().str);
+                if (part)
+                    finish(part.faces);
+            };
+        });
+    }
+    $.$bog_id_land_ask = $bog_id_land_ask;
+    /** Sends Lands to master and checks that it really has them */
+    async function $bog_id_land_push(lands) {
+        const yard = this.$giper_baza_glob.yard();
+        for (let i = 0; i < 4; ++i) {
+            await Promise.all(lands.map(land => $mol_wire_async(land).units_saving()));
+            const master = await $mol_wire_async(yard).master_current();
+            const faces = await Promise.all(lands.map(land => this.$bog_id_land_ask(master, land)));
+            if (lands.every((land, at) => faces[at] && $bog_id_land_covers(faces[at], land.faces)))
+                return true;
+            if (!faces.every(Boolean))
+                await $mol_wire_async(yard).master_next();
+            else if (i)
+                yard.reconnects(null);
+            await new Promise(done => setTimeout(done, 800));
+        }
+        return false;
+    }
+    $.$bog_id_land_push = $bog_id_land_push;
+    function $bog_id_land_covers(left, right) {
+        return [...right].every(([peer, face]) => {
+            const own = left.get(peer);
+            return (own?.time_tick ?? 0) >= face.time_tick && (own?.summ ?? 0) >= face.summ;
+        });
+    }
+    $.$bog_id_land_covers = $bog_id_land_covers;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $bog_id_key_store extends $giper_baza_dict.with({
+        Key: $giper_baza_atom_text,
+    }) {
+    }
+    $.$bog_id_key_store = $bog_id_key_store;
+    /** Store of app key in granted Land. Null while Land is not synced or not writable */
+    function $bog_id_key_ready(pointer) {
+        const land = this.$bog_id_land(pointer);
+        if (!land)
+            return null;
+        const tines = land.Tine().items_vary()
+            .map(tine => $giper_baza_link_schema.cast(tine)?.str)
+            .filter($mol_guard_defined);
+        const synced = [pointer, land.link().str, ...tines].map(link => this.$bog_id_land_synced(link));
+        if (!synced.every(Boolean))
+            return null;
+        const rank = land.lord_rank(land.auth().pass().lord());
+        if (rank < $giper_baza_rank_post('late'))
+            return null;
+        return land.Data($bog_id_key_store);
+    }
+    $.$bog_id_key_ready = $bog_id_key_ready;
+    /** Own key of app, the same on all devices: the first device puts it to granted Land. Empty while Land is not synced */
+    function $bog_id_key(pointer, own) {
+        const store = this.$bog_id_key_ready(pointer);
+        if (!store)
+            return '';
+        const key = store.Key()?.val();
+        if (key)
+            return key;
+        store.Key('auto').val(own);
+        store.land().units_saving();
+        return own;
+    }
+    $.$bog_id_key = $bog_id_key;
+    /** Key of app from granted Land without putting own one. Null while Land is not synced, empty when there is no key yet */
+    function $bog_id_key_peek(pointer) {
+        const store = this.$bog_id_key_ready(pointer);
+        return store && (store.Key()?.val() ?? '');
+    }
+    $.$bog_id_key_peek = $bog_id_key_peek;
+    /** Puts key to granted Land if it is vacant, waits for master and tells whether it has the key */
+    async function $bog_id_key_put(pointer, key) {
+        const actual = await $mol_wire_async(this).$bog_id_key(pointer, key);
+        if (actual !== key)
+            return false;
+        const land = await $mol_wire_async(this).$bog_id_land(pointer);
+        return this.$bog_id_land_push([land]);
+    }
+    $.$bog_id_key_put = $bog_id_key_put;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_id_enter extends $.$bog_id_enter {
+            key_of(auth) {
+                return auth.toString() + auth.toStringPrivate();
+            }
+            own() {
+                return this.key_of(this.$.$giper_baza_auth.current());
+            }
+            lord() {
+                return this.$.$giper_baza_auth.current().pass().lord().str;
+            }
+            grant(next) {
+                return this.$.$mol_state_local.value('bog_id_enter', next) ?? null;
+            }
+            enter() {
+                this.error('');
+                this.armed('');
+                const pass = this.$.$giper_baza_auth.current().pass().toString();
+                this.$.$bog_id_login(this.provider(), pass, this.scope())
+                    .then(grant => this.grant(grant))
+                    .catch(error => this.error(error.message));
+            }
+            joined() {
+                return this.grant()?.done === this.lord();
+            }
+            join(lord) {
+                this.grant({ ...this.grant(), done: lord });
+            }
+            key() {
+                const grant = this.grant();
+                if (!grant || this.joined())
+                    return null;
+                return this.$.$bog_id_key_peek(grant.pointer);
+            }
+            key_ready() {
+                try {
+                    return this.key();
+                }
+                catch (error) {
+                    if (!$mol_promise_like(error))
+                        $mol_fail_log(error);
+                    return null;
+                }
+            }
+            vacant() {
+                return this.key_ready() === '';
+            }
+            conflicted() {
+                const key = this.key_ready();
+                return Boolean(key) && key !== this.own();
+            }
+            joining() {
+                if (this.busy() || this.key_ready() !== this.own())
+                    return null;
+                return new this.$.$mol_after_tick(() => this.join(this.lord()));
+            }
+            auto() {
+                this.joining();
+            }
+            idle() {
+                return !this.busy();
+            }
+            status() {
+                const grant = this.grant();
+                if (!grant)
+                    return '';
+                if (this.busy())
+                    return this.sending();
+                const text = this.joined() ? this.done()
+                    : this.vacant() ? this.vacant_text()
+                        : this.conflicted() ? this.conflict()
+                            : this.wait();
+                return text.replace('{name}', () => grant.name || grant.lord);
+            }
+            replace_title() {
+                return this.armed() === 'replace' ? this.switch_sure() : super.replace_title();
+            }
+            fresh_title() {
+                return this.armed() === 'fresh' ? this.switch_sure() : super.fresh_title();
+            }
+            arm(kind) {
+                if (this.armed() === kind)
+                    return true;
+                this.armed(kind);
+                return false;
+            }
+            auth_from(str) {
+                try {
+                    const auth = this.$.$giper_baza_auth.from(str);
+                    return auth.byteLength === 128 ? auth : null;
+                }
+                catch (error) {
+                    if ($mol_promise_like(error))
+                        $mol_fail_hidden(error);
+                    return null;
+                }
+            }
+            keep() {
+                const prev = this.$.$mol_state_local.value('bog_id_enter_prev') ?? [];
+                const own = this.own();
+                if (!prev.includes(own))
+                    this.$.$mol_state_local.value('bog_id_enter_prev', [...prev, own]);
+            }
+            async sent(key) {
+                this.error('');
+                this.busy(true);
+                try {
+                    const done = await this.$.$bog_id_key_put(this.grant().pointer, key);
+                    if (!done)
+                        this.error(this.error_sent());
+                    return done;
+                }
+                catch (error) {
+                    this.error(this.error_sent());
+                    $mol_fail_log(error);
+                    return false;
+                }
+                finally {
+                    this.busy(false);
+                }
+            }
+            save() {
+                this.armed('');
+                return this.save_run();
+            }
+            async save_run() {
+                if (this.busy() || !this.vacant())
+                    return;
+                if (await this.sent(this.own()))
+                    this.join(this.lord());
+            }
+            fresh() {
+                if (this.arm('fresh'))
+                    return this.fresh_run();
+            }
+            async fresh_run() {
+                if (this.busy() || !this.vacant())
+                    return;
+                const auth = await $mol_wire_async(this.$.$giper_baza_auth).grab();
+                const key = this.key_of(auth);
+                if (!await this.sent(key))
+                    return;
+                this.keep();
+                this.join(auth.pass().lord().str);
+                this.apply_fresh(key);
+            }
+            replace() {
+                const key = this.key_ready();
+                if (!key)
+                    return;
+                const auth = this.auth_from(key);
+                this.error(auth ? '' : this.error_bad());
+                if (!auth)
+                    return;
+                if (!this.arm('replace'))
+                    return;
+                this.keep();
+                this.join(auth.pass().lord().str);
+                this.apply(key);
+            }
+            switch(key) {
+                this.$.$giper_baza_auth.current(this.$.$giper_baza_auth.from(key));
+                this.$.$mol_dom_context.location.reload();
+            }
+            apply(next) {
+                if (next)
+                    this.switch(next);
+                return '';
+            }
+            apply_fresh(next) {
+                if (next)
+                    this.switch(next);
+                return '';
+            }
+            parts() {
+                const grant = this.grant();
+                return [
+                    ...grant ? [this.Status()] : [this.Enter(), this.Hint()],
+                    ...this.vacant() ? [this.Save(), this.Fresh()] : [],
+                    ...this.conflicted() && this.idle() ? [this.Replace()] : [],
+                    ...grant && this.idle() ? [this.Change()] : [],
+                    ...this.error() ? [this.Error()] : [],
+                ];
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $bog_id_enter.prototype, "key", null);
+        __decorate([
+            $mol_mem
+        ], $bog_id_enter.prototype, "joining", null);
+        __decorate([
+            $mol_action
+        ], $bog_id_enter.prototype, "replace", null);
+        __decorate([
+            $mol_action
+        ], $bog_id_enter.prototype, "apply", null);
+        __decorate([
+            $mol_action
+        ], $bog_id_enter.prototype, "apply_fresh", null);
+        $$.$bog_id_enter = $bog_id_enter;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_qr) = class $bog_qr extends ($.$mol_svg_root) {
 		stop_offset(id){
 			return "0%";
@@ -45645,25 +46250,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
-		theme(){
-			return "$mol_theme_base";
-		}
-	};
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major] {\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n}\n");
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
 	($.$mol_status) = class $mol_status extends ($.$mol_view) {
 		message(){
 			return "";
@@ -46092,6 +46678,10 @@ var $;
 			]);
 			return obj;
 		}
+		Id(){
+			const obj = new this.$.$bog_id_enter();
+			return obj;
+		}
 		Warning(){
 			const obj = new this.$.$mol_paragraph();
 			(obj.title) = () => ("Ссылка ниже — СЕКРЕТ. Не делись ей публично.");
@@ -46226,6 +46816,7 @@ var $;
 				(this.Profile()), 
 				(this.Telegram()), 
 				(this.Lastfm()), 
+				(this.Id()), 
 				(this.Export()), 
 				(this.Import()), 
 				(this.Reset())
@@ -46277,6 +46868,7 @@ var $;
 	($mol_mem(($.$bog_music_account.prototype), "Fm_connect"));
 	($mol_mem(($.$bog_music_account.prototype), "Fm_status"));
 	($mol_mem(($.$bog_music_account.prototype), "Lastfm"));
+	($mol_mem(($.$bog_music_account.prototype), "Id"));
 	($mol_mem(($.$bog_music_account.prototype), "Warning"));
 	($mol_mem(($.$bog_music_account.prototype), "copy"));
 	($mol_mem(($.$bog_music_account.prototype), "Copy"));
@@ -57584,7 +58176,7 @@ var $;
 var $;
 (function ($) {
     // Инкрементится автоматически git-хуком hooks/pre-push при каждом push.
-    $.$bog_music_version = 'v1.105';
+    $.$bog_music_version = 'v1.107';
 })($ || ($ = {}));
 
 ;
@@ -59821,435 +60413,6 @@ var $;
 })($ || ($ = {}));
 
 ;
-"use strict";
-var $;
-(function ($) {
-    /** Public Giper ID profile of Lord, stored under own key in home Land */
-    function $bog_id_profile_of(lord, auto) {
-        return this.$giper_baza_glob.Land(new $giper_baza_link(lord))
-            .Data($giper_baza_dict)
-            .dive('bog_id', $bog_id_profile, auto);
-    }
-    $.$bog_id_profile_of = $bog_id_profile_of;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_id_grant extends $giper_baza_dict.with({
-        App: $giper_baza_atom_text,
-        Scope: $giper_baza_atom_text,
-        Pointer: $giper_baza_atom_text,
-        Land: $giper_baza_atom_text,
-        Lands: $giper_baza_list_str,
-        Apps: $giper_baza_list_str,
-    }) {
-    }
-    $.$bog_id_grant = $bog_id_grant;
-    class $bog_id_store extends $giper_baza_dict.with({
-        Grants: $giper_baza_list_link_to(() => $bog_id_grant),
-    }) {
-    }
-    $.$bog_id_store = $bog_id_store;
-    class $bog_id_profile extends $giper_baza_dict.with({
-        Name: $giper_baza_atom_text,
-        Vault: $giper_baza_atom_text,
-        Stores: $giper_baza_list_str,
-    }) {
-    }
-    $.$bog_id_profile = $bog_id_profile;
-})($ || ($ = {}));
-
-;
-	($.$bog_id_enter) = class $bog_id_enter extends ($.$mol_list) {
-		parts(){
-			return [];
-		}
-		enter(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		status(){
-			return "";
-		}
-		replace_title(){
-			return (this.$.$mol_locale.text("$bog_id_enter_replace_title"));
-		}
-		replace(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		error(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		provider(){
-			return "https://dev-cmyser.github.io/id/";
-		}
-		scope(){
-			return "account";
-		}
-		apply(next){
-			if(next !== undefined) return next;
-			return "";
-		}
-		rows(){
-			return (this.parts());
-		}
-		Enter(){
-			const obj = new this.$.$mol_button_major();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Enter_title")));
-			(obj.click) = (next) => ((this.enter(next)));
-			return obj;
-		}
-		Hint(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.$.$mol_locale.text("$bog_id_enter_Hint_title")));
-			return obj;
-		}
-		Status(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.status()));
-			return obj;
-		}
-		Replace(){
-			const obj = new this.$.$mol_button_minor();
-			(obj.title) = () => ((this.replace_title()));
-			(obj.click) = (next) => ((this.replace(next)));
-			return obj;
-		}
-		Error(){
-			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ((this.error()));
-			return obj;
-		}
-		armed(next){
-			if(next !== undefined) return next;
-			return false;
-		}
-		replace_sure(){
-			return (this.$.$mol_locale.text("$bog_id_enter_replace_sure"));
-		}
-		wait(){
-			return (this.$.$mol_locale.text("$bog_id_enter_wait"));
-		}
-		conflict(){
-			return (this.$.$mol_locale.text("$bog_id_enter_conflict"));
-		}
-		done(){
-			return (this.$.$mol_locale.text("$bog_id_enter_done"));
-		}
-		error_bad(){
-			return (this.$.$mol_locale.text("$bog_id_enter_error_bad"));
-		}
-	};
-	($mol_mem(($.$bog_id_enter.prototype), "enter"));
-	($mol_mem(($.$bog_id_enter.prototype), "replace"));
-	($mol_mem(($.$bog_id_enter.prototype), "error"));
-	($mol_mem(($.$bog_id_enter.prototype), "apply"));
-	($mol_mem(($.$bog_id_enter.prototype), "Enter"));
-	($mol_mem(($.$bog_id_enter.prototype), "Hint"));
-	($mol_mem(($.$bog_id_enter.prototype), "Status"));
-	($mol_mem(($.$bog_id_enter.prototype), "Replace"));
-	($mol_mem(($.$bog_id_enter.prototype), "Error"));
-	($mol_mem(($.$bog_id_enter.prototype), "armed"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Opens Giper ID popup, sends app Pass and resolves with Pointer to granted Land */
-    function $bog_id_login(provider, pass, scope) {
-        const win = $mol_dom_context;
-        const origin = new URL(provider, win.location.href).origin;
-        return new Promise((done, fail) => {
-            const popup = win.open(provider, 'bog_id', 'popup,width=440,height=640');
-            if (!popup)
-                return fail(new Error('Popup blocked'));
-            const timer = win.setInterval(() => {
-                if (popup.closed)
-                    finish(new Error('Popup closed'));
-            }, 500);
-            const finish = (error, grant) => {
-                win.clearInterval(timer);
-                win.removeEventListener('message', listen);
-                if (error)
-                    fail(error);
-                else
-                    done(grant);
-            };
-            const listen = (event) => {
-                if (event.origin !== origin)
-                    return;
-                if (event.source !== popup)
-                    return;
-                const data = event.data;
-                if (data?.bog_id === 'ready')
-                    popup.postMessage({ bog_id: 'request', pass, scope }, origin);
-                if (data?.bog_id === 'deny')
-                    finish(new Error('Access denied'));
-                if (data?.bog_id === 'grant') {
-                    popup.close();
-                    finish(null, {
-                        lord: String(data.lord),
-                        name: String(data.name ?? ''),
-                        pointer: String(data.pointer),
-                    });
-                }
-            };
-            win.addEventListener('message', listen);
-        });
-    }
-    $.$bog_id_login = $bog_id_login;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    /** Resolves Pointer from Giper ID grant to current data Land */
-    function $bog_id_land(pointer) {
-        const glob = this.$giper_baza_glob;
-        const link = glob.Land(new $giper_baza_link(pointer)).Data($giper_baza_atom_text).val();
-        return link ? glob.Land(new $giper_baza_link(link)) : null;
-    }
-    $.$bog_id_land = $bog_id_land;
-    /** Has Land got everything that master knows */
-    function $bog_id_land_synced(str) {
-        const link = new $giper_baza_link(str);
-        const glob = this.$giper_baza_glob;
-        const land = glob.Land(link);
-        land.sync();
-        const faces = glob.yard().masters().map(port => glob.yard().face_port_land([port, link]));
-        this.$mol_state_time.now(500);
-        return faces.some(map => map && $bog_id_land_covers(land.faces, map));
-    }
-    $.$bog_id_land_synced = $bog_id_land_synced;
-    /** What master really has for Land, asked by separate connection */
-    function $bog_id_land_ask(master, land) {
-        return new Promise(done => {
-            const socket = new $mol_dom_context.WebSocket(master.replace(/^http/, 'ws'), ['$giper_baza_yard_2']);
-            socket.binaryType = 'arraybuffer';
-            const finish = (faces) => {
-                clearTimeout(timer);
-                socket.onopen = socket.onerror = socket.onmessage = null;
-                socket.close();
-                done(faces);
-            };
-            const timer = setTimeout(() => finish(null), 6000);
-            socket.onopen = () => socket.send(land.face_pack().asArray());
-            socket.onerror = () => finish(null);
-            socket.onmessage = event => {
-                if (!event.data?.byteLength)
-                    return;
-                const pack = new $giper_baza_pack(event.data);
-                const part = new Map(pack.parts()).get(land.link().str);
-                if (part)
-                    finish(part.faces);
-            };
-        });
-    }
-    $.$bog_id_land_ask = $bog_id_land_ask;
-    /** Sends Lands to master and checks that it really has them */
-    async function $bog_id_land_push(lands) {
-        const yard = this.$giper_baza_glob.yard();
-        for (let i = 0; i < 4; ++i) {
-            await Promise.all(lands.map(land => $mol_wire_async(land).units_saving()));
-            const master = await $mol_wire_async(yard).master_current();
-            const faces = await Promise.all(lands.map(land => this.$bog_id_land_ask(master, land)));
-            if (lands.every((land, at) => faces[at] && $bog_id_land_covers(faces[at], land.faces)))
-                return true;
-            if (!faces.every(Boolean))
-                await $mol_wire_async(yard).master_next();
-            else if (i)
-                yard.reconnects(null);
-            await new Promise(done => setTimeout(done, 800));
-        }
-        return false;
-    }
-    $.$bog_id_land_push = $bog_id_land_push;
-    function $bog_id_land_covers(left, right) {
-        return [...right].every(([peer, face]) => {
-            const own = left.get(peer);
-            return (own?.time_tick ?? 0) >= face.time_tick && (own?.summ ?? 0) >= face.summ;
-        });
-    }
-    $.$bog_id_land_covers = $bog_id_land_covers;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $bog_id_key_store extends $giper_baza_dict.with({
-        Key: $giper_baza_atom_text,
-    }) {
-    }
-    $.$bog_id_key_store = $bog_id_key_store;
-    /** Own key of app, the same on all devices: the first device puts it to granted Land. Empty while Land is not synced */
-    function $bog_id_key(pointer, own) {
-        const land = this.$bog_id_land(pointer);
-        if (!land)
-            return '';
-        const tines = land.Tine().items_vary()
-            .map(tine => $giper_baza_link_schema.cast(tine)?.str)
-            .filter($mol_guard_defined);
-        const synced = [pointer, land.link().str, ...tines].map(link => this.$bog_id_land_synced(link));
-        if (!synced.every(Boolean))
-            return '';
-        const rank = land.lord_rank(land.auth().pass().lord());
-        if (rank < $giper_baza_rank_post('late'))
-            return '';
-        const store = land.Data($bog_id_key_store);
-        const key = store.Key()?.val();
-        if (key)
-            return key;
-        store.Key('auto').val(own);
-        land.units_saving();
-        return own;
-    }
-    $.$bog_id_key = $bog_id_key;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $bog_id_enter extends $.$bog_id_enter {
-            own() {
-                const auth = this.$.$giper_baza_auth.current();
-                return auth.toString() + auth.toStringPrivate();
-            }
-            lord() {
-                return this.$.$giper_baza_auth.current().pass().lord().str;
-            }
-            grant(next) {
-                return this.$.$mol_state_local.value('bog_id_enter', next) ?? null;
-            }
-            enter() {
-                this.error('');
-                const pass = this.$.$giper_baza_auth.current().pass().toString();
-                this.$.$bog_id_login(this.provider(), pass, this.scope())
-                    .then(grant => this.grant(grant))
-                    .catch(error => this.error(error.message));
-            }
-            joined() {
-                return this.grant()?.done === this.lord();
-            }
-            key() {
-                const grant = this.grant();
-                if (!grant || this.joined())
-                    return '';
-                return this.$.$bog_id_key(grant.pointer, this.own());
-            }
-            key_ready() {
-                try {
-                    return this.key();
-                }
-                catch (error) {
-                    if (!$mol_promise_like(error))
-                        $mol_fail_log(error);
-                    return '';
-                }
-            }
-            conflicted() {
-                const key = this.key_ready();
-                return Boolean(key) && key !== this.own();
-            }
-            joining() {
-                const grant = this.grant();
-                if (!grant || this.key_ready() !== this.own())
-                    return null;
-                return new this.$.$mol_after_tick(() => this.grant({ ...grant, done: this.lord() }));
-            }
-            auto() {
-                this.joining();
-            }
-            status() {
-                const grant = this.grant();
-                if (!grant)
-                    return '';
-                if (this.joined())
-                    return this.done().replace('{name}', () => grant.name || grant.lord);
-                return this.conflicted() ? this.conflict() : this.wait();
-            }
-            replace_title() {
-                return this.armed() ? this.replace_sure() : super.replace_title();
-            }
-            auth_from(str) {
-                try {
-                    const auth = this.$.$giper_baza_auth.from(str);
-                    return auth.byteLength === 128 ? auth : null;
-                }
-                catch (error) {
-                    if ($mol_promise_like(error))
-                        $mol_fail_hidden(error);
-                    return null;
-                }
-            }
-            keep() {
-                const prev = this.$.$mol_state_local.value('bog_id_enter_prev') ?? [];
-                const own = this.own();
-                if (!prev.includes(own))
-                    this.$.$mol_state_local.value('bog_id_enter_prev', [...prev, own]);
-            }
-            replace() {
-                const key = this.key_ready();
-                if (!key)
-                    return;
-                const auth = this.auth_from(key);
-                this.error(auth ? '' : this.error_bad());
-                if (!auth)
-                    return;
-                if (!this.armed()) {
-                    this.armed(true);
-                    return;
-                }
-                this.keep();
-                this.apply(key);
-            }
-            apply(next) {
-                if (!next)
-                    return '';
-                this.$.$giper_baza_auth.current(this.$.$giper_baza_auth.from(next));
-                this.$.$mol_dom_context.location.reload();
-                return next;
-            }
-            parts() {
-                const grant = this.grant();
-                return [
-                    ...this.joined() ? [] : [this.Enter()],
-                    ...grant ? [this.Status()] : [this.Hint()],
-                    ...this.conflicted() ? [this.Replace()] : [],
-                    ...this.error() ? [this.Error()] : [],
-                ];
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $bog_id_enter.prototype, "key", null);
-        __decorate([
-            $mol_mem
-        ], $bog_id_enter.prototype, "joining", null);
-        __decorate([
-            $mol_action
-        ], $bog_id_enter.prototype, "replace", null);
-        __decorate([
-            $mol_action
-        ], $bog_id_enter.prototype, "apply", null);
-        $$.$bog_id_enter = $bog_id_enter;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
 	($.$bog_gram_settings_key) = class $bog_gram_settings_key extends ($.$mol_view) {
 		rows(){
 			return [];
@@ -60387,6 +60550,7 @@ var $;
 		Id(){
 			const obj = new this.$.$bog_id_enter();
 			(obj.apply) = (next) => ((this.id_apply(next)));
+			(obj.apply_fresh) = (next) => ((this.id_apply(next)));
 			return obj;
 		}
 		Toggle(){
@@ -61251,7 +61415,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.243';
+    $.$bog_gram_version = '1.0.244';
 })($ || ($ = {}));
 
 ;
