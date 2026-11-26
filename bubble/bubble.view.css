@@ -39,12 +39,6 @@
 	transform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );
 }
 
-@media (hover: hover) and (pointer: fine) {
-	[bog_gram_bubble]:hover [bog_gram_bubble_actions] {
-		display: flex;
-	}
-}
-
 @media (hover: none) {
 	[bog_gram_bubble] {
 		-webkit-touch-callout: none;

@@ -421,6 +421,7 @@ namespace $.$$ {
 		override message_press( id: string, next?: Event ) {
 
 			this.press_stop()
+			if( !this.message_primary( next ) ) return null
 			this.press_row = id
 			this.press_held = false
 
@@ -440,6 +441,8 @@ namespace $.$$ {
 		@ $mol_action
 		override message_release( id: string, next?: Event ) {
 
+			if( !this.message_primary( next ) ) return null
+
 			const held = this.press_held && this.press_row === id
 
 			this.press_stop()
@@ -452,6 +455,10 @@ namespace $.$$ {
 			if( next?.type === 'pointerup' && this.message_double_tap( id, Date.now() ) ) this.message_reply( id )
 
 			return null
+		}
+
+		message_primary( next?: Event ) {
+			return ( ( next as MouseEvent | undefined )?.button ?? 0 ) <= 0
 		}
 
 		message_double_tap( id: string, now: number ) {
