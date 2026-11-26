@@ -486,6 +486,28 @@ namespace $.$$ {
 			return null
 		}
 
+		@ $mol_mem
+		menu_dismiss() {
+
+			const id = this.message_menu()
+			if( !id ) return null
+
+			const doc = this.$.$mol_dom_context.document
+			return new this.$.$mol_dom_listener( doc, 'pointerdown', ( event: Event )=> this.menu_outside( id, event.target as Node | null ), true )
+		}
+
+		@ $mol_action
+		menu_outside( id: string, target: Node | null ) {
+
+			if( this.message_menu() !== id ) return false
+			if( target && ( this.Bubble( id ).dom_node() as Node ).contains( target ) ) return false
+
+			this.message_menu( '' )
+			if( this.react_id() ) this.react_id( '' )
+
+			return true
+		}
+
 		override edit_mode() {
 			return Boolean( this.edit_id() )
 		}
@@ -1858,6 +1880,7 @@ namespace $.$$ {
 			$bog_gram_soft( ()=> this.field_focus(), false )
 			$bog_gram_soft( ()=> this.stick_hold(), 0 )
 			$bog_gram_soft( ()=> this.stick_observer(), null )
+			$bog_gram_soft( ()=> this.menu_dismiss(), null )
 			$bog_gram_soft( ()=> this.follow(), undefined )
 			this.record_revive()
 		}

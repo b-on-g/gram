@@ -157,6 +157,24 @@ namespace $.$$ {
 
 		},
 
+		'Нажатие мимо открытой панели закрывает её и выбор реакции'( $ ) {
+
+			const chat = $bog_gram_chat.make({ $ })
+
+			$mol_assert_equal( chat.menu_dismiss(), null )
+
+			chat.message_menu( 'a' )
+			chat.react_id( 'a' )
+
+			$mol_assert_equal( chat.menu_outside( 'b', null ), false )
+			$mol_assert_equal( chat.message_menu(), 'a' )
+
+			$mol_assert_equal( chat.menu_outside( 'a', null ), true )
+			$mol_assert_equal( chat.message_menu(), '' )
+			$mol_assert_equal( chat.react_id(), '' )
+
+		},
+
 		'Удержание левой кнопки мыши панель не открывает, удержание пальца открывает'( $ ) {
 
 			const chat = $bog_gram_chat.make({ $ })
