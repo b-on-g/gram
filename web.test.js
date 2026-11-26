@@ -12939,6 +12939,15 @@ var $;
                 $mol_assert_equal(chat.message_double_tap('b', 1400), false);
                 $mol_assert_equal(chat.message_double_tap('b', 2000), false);
             },
+            'Правая кнопка мыши не жмёт на пузырь: ни удержания, ни двойного тапа'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                $mol_assert_equal(chat.message_primary(), true);
+                $mol_assert_equal(chat.message_primary({ button: 0 }), true);
+                $mol_assert_equal(chat.message_primary({ button: -1 }), true);
+                $mol_assert_equal(chat.message_primary({ button: 2 }), false);
+                chat.message_press('a', { button: 2 });
+                $mol_assert_equal(chat.press_timer, null);
+            },
             'В группе вместо галочек — сколько человек прочитало'($) {
                 const chat = $bog_gram_chat.make({ $ });
                 const mates = ['LordA', 'LordB', 'LordC'];

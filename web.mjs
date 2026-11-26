@@ -61415,7 +61415,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.245';
+    $.$bog_gram_version = '1.0.246';
 })($ || ($ = {}));
 
 ;
@@ -78254,7 +78254,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] [bog_gram_bubble_body] {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n[bog_gram_bubble][bog_gram_bubble_last=\"true\"] [data-mol-tip]:is( :hover, :focus-visible )::after {\n\ttop: auto;\n\tbottom: calc( 100% + 4px );\n\ttransform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );\n}\n\n@media (hover: hover) and (pointer: fine) {\n\t[bog_gram_bubble]:hover [bog_gram_bubble_actions] {\n\t\tdisplay: flex;\n\t}\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
+    $mol_style_attach("bog/gram/bubble/bubble.view.css", "[bog_gram_bubble] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_text) 7%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_out=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 20%, var(--mol_theme_back) );\n}\n\n[bog_gram_bubble][bog_gram_bubble_bare=\"true\"] {\n\tbackground-color: transparent;\n\tpadding: 0;\n}\n\n[bog_gram_bubble][bog_gram_bubble_done=\"true\"] [bog_gram_bubble_body] {\n\tcolor: var(--mol_theme_shade);\n\ttext-decoration: line-through;\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) ::selection {\n\tbackground: color-mix( in srgb, var(--mol_theme_control) 40%, transparent );\n}\n\n[bog_gram_bubble]:not([bog_gram_bubble_out=\"true\"]) [bog_gram_bubble_actions] {\n\tright: auto;\n\tleft: 0;\n}\n\n[bog_gram_bubble] :is( [bog_gram_bubble_reaction], [bog_gram_bubble_pick] )[bog_gram_bubble_mine=\"true\"] {\n\tbackground-color: color-mix( in srgb, var(--mol_theme_control) 30%, transparent );\n}\n\n[bog_gram_bubble][bog_gram_bubble_menu=\"true\"] [bog_gram_bubble_actions] {\n\tdisplay: flex;\n}\n\n[bog_gram_bubble][bog_gram_bubble_last=\"true\"] [data-mol-tip]:is( :hover, :focus-visible )::after {\n\ttop: auto;\n\tbottom: calc( 100% + 4px );\n\ttransform: translateX( clamp( calc( 8px - var(--bog_tooltip_left, 100vw) ), -50%, calc( var(--bog_tooltip_right, 100vw) - 8px - 100% ) ) );\n}\n\n@media (hover: none) {\n\t[bog_gram_bubble] {\n\t\t-webkit-touch-callout: none;\n\t\t-webkit-user-select: none;\n\t\tuser-select: none;\n\t}\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -80621,6 +80621,8 @@ var $;
             }
             message_press(id, next) {
                 this.press_stop();
+                if (!this.message_primary(next))
+                    return null;
                 this.press_row = id;
                 this.press_held = false;
                 this.press_timer = new this.$.$mol_after_timeout(press_delay, () => this.message_hold(id));
@@ -80633,6 +80635,8 @@ var $;
                 return null;
             }
             message_release(id, next) {
+                if (!this.message_primary(next))
+                    return null;
                 const held = this.press_held && this.press_row === id;
                 this.press_stop();
                 this.press_held = false;
@@ -80645,6 +80649,9 @@ var $;
                 if (next?.type === 'pointerup' && this.message_double_tap(id, Date.now()))
                     this.message_reply(id);
                 return null;
+            }
+            message_primary(next) {
+                return (next?.button ?? 0) <= 0;
             }
             message_double_tap(id, now) {
                 const double = this.tap_row === id && now - this.tap_at < double_tap_delay;
