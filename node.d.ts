@@ -65687,7 +65687,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.247";
+    const $bog_gram_version = "1.0.248";
 }
 
 declare namespace $ {
@@ -88110,6 +88110,8 @@ declare namespace $.$$ {
         message_primary(next?: Event): boolean;
         message_double_tap(id: string, now: number): boolean;
         message_context(id: string, next?: Event): null;
+        menu_dismiss(): $mol_dom_listener | null;
+        menu_outside(id: string, target: Node | null): boolean;
         edit_mode(): boolean;
         reply_mode(): boolean;
         Edit_banner(): $mol_view;

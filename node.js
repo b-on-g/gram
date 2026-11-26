@@ -43014,7 +43014,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.247';
+    $.$bog_gram_version = '1.0.248';
 })($ || ($ = {}));
 
 ;
@@ -64100,6 +64100,23 @@ var $;
                 this.message_menu(id);
                 return null;
             }
+            menu_dismiss() {
+                const id = this.message_menu();
+                if (!id)
+                    return null;
+                const doc = this.$.$mol_dom_context.document;
+                return new this.$.$mol_dom_listener(doc, 'pointerdown', (event) => this.menu_outside(id, event.target), true);
+            }
+            menu_outside(id, target) {
+                if (this.message_menu() !== id)
+                    return false;
+                if (target && this.Bubble(id).dom_node().contains(target))
+                    return false;
+                this.message_menu('');
+                if (this.react_id())
+                    this.react_id('');
+                return true;
+            }
             edit_mode() {
                 return Boolean(this.edit_id());
             }
@@ -65187,6 +65204,7 @@ var $;
                 $bog_gram_soft(() => this.field_focus(), false);
                 $bog_gram_soft(() => this.stick_hold(), 0);
                 $bog_gram_soft(() => this.stick_observer(), null);
+                $bog_gram_soft(() => this.menu_dismiss(), null);
                 $bog_gram_soft(() => this.follow(), undefined);
                 this.record_revive();
             }
@@ -65293,6 +65311,12 @@ var $;
         __decorate([
             $mol_action
         ], $bog_gram_chat.prototype, "message_context", null);
+        __decorate([
+            $mol_mem
+        ], $bog_gram_chat.prototype, "menu_dismiss", null);
+        __decorate([
+            $mol_action
+        ], $bog_gram_chat.prototype, "menu_outside", null);
         __decorate([
             $mol_mem
         ], $bog_gram_chat.prototype, "field_focus", null);
