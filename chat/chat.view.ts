@@ -425,9 +425,15 @@ namespace $.$$ {
 			this.press_row = id
 			this.press_held = false
 
+			if( this.message_mouse( next ) ) return null
+
 			this.press_timer = new this.$.$mol_after_timeout( press_delay, ()=> this.message_hold( id ) )
 
 			return null
+		}
+
+		message_mouse( next?: Event ) {
+			return ( next as PointerEvent | undefined )?.pointerType === 'mouse'
 		}
 
 		@ $mol_action
