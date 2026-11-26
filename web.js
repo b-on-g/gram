@@ -61415,7 +61415,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.244';
+    $.$bog_gram_version = '1.0.245';
 })($ || ($ = {}));
 
 ;
@@ -82174,16 +82174,37 @@ var $;
                 color: $mol_theme.back,
             },
             Head: {
+                flex: {
+                    wrap: 'nowrap',
+                },
                 align: {
                     items: 'center',
                 },
+                gap: '0.25rem',
             },
             Title: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: 0,
+                },
                 minWidth: 0,
                 font: {
                     weight: 'bold',
                 },
             },
+            Tools: {
+                flex: {
+                    wrap: 'nowrap',
+                    shrink: 0,
+                },
+                align: {
+                    items: 'center',
+                },
+            },
+            Share: square,
+            Call: square,
+            Tasks: square,
             Note_field: {
                 flex: {
                     grow: 1,

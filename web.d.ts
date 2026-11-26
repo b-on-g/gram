@@ -70324,7 +70324,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.244";
+    const $bog_gram_version = "1.0.245";
 }
 
 declare namespace $ {
