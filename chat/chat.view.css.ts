@@ -78,17 +78,42 @@ namespace $.$$ {
 		},
 
 		Head: {
+			flex: {
+				wrap: 'nowrap',
+			},
 			align: {
 				items: 'center',
 			},
+			gap: '0.25rem',
 		},
 
 		Title: {
+			flex: {
+				grow: 1,
+				shrink: 1,
+				basis: 0,
+			},
 			minWidth: 0,
 			font: {
 				weight: 'bold',
 			},
 		},
+
+		Tools: {
+			flex: {
+				wrap: 'nowrap',
+				shrink: 0,
+			},
+			align: {
+				items: 'center',
+			},
+		},
+
+		Share: square,
+
+		Call: square,
+
+		Tasks: square,
 
 		Note_field: {
 			flex: {
