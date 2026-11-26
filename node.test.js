@@ -43005,7 +43005,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.246';
+    $.$bog_gram_version = '1.0.247';
 })($ || ($ = {}));
 
 ;
@@ -64045,8 +64045,13 @@ var $;
                     return null;
                 this.press_row = id;
                 this.press_held = false;
+                if (this.message_mouse(next))
+                    return null;
                 this.press_timer = new this.$.$mol_after_timeout(press_delay, () => this.message_hold(id));
                 return null;
+            }
+            message_mouse(next) {
+                return next?.pointerType === 'mouse';
             }
             message_hold(id) {
                 this.press_timer = null;
@@ -82205,6 +82210,14 @@ var $;
                 $mol_assert_equal(chat.message_primary({ button: 2 }), false);
                 chat.message_press('a', { button: 2 });
                 $mol_assert_equal(chat.press_timer, null);
+            },
+            'Удержание левой кнопки мыши панель не открывает, удержание пальца открывает'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                chat.message_press('a', { button: 0, pointerType: 'mouse' });
+                $mol_assert_equal(chat.press_timer, null);
+                chat.message_press('a', { button: 0, pointerType: 'touch' });
+                $mol_assert_equal(chat.press_timer !== null, true);
+                chat.press_stop();
             },
             'В группе вместо галочек — сколько человек прочитало'($) {
                 const chat = $bog_gram_chat.make({ $ });

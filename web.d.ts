@@ -70324,7 +70324,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    const $bog_gram_version = "1.0.246";
+    const $bog_gram_version = "1.0.247";
 }
 
 declare namespace $ {
@@ -91667,6 +91667,7 @@ declare namespace $.$$ {
         tap_at: number;
         press_stop(): void;
         message_press(id: string, next?: Event): null;
+        message_mouse(next?: Event): boolean;
         message_hold(id: string): null;
         message_release(id: string, next?: Event): null;
         message_primary(next?: Event): boolean;

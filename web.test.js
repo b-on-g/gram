@@ -12948,6 +12948,14 @@ var $;
                 chat.message_press('a', { button: 2 });
                 $mol_assert_equal(chat.press_timer, null);
             },
+            'Удержание левой кнопки мыши панель не открывает, удержание пальца открывает'($) {
+                const chat = $bog_gram_chat.make({ $ });
+                chat.message_press('a', { button: 0, pointerType: 'mouse' });
+                $mol_assert_equal(chat.press_timer, null);
+                chat.message_press('a', { button: 0, pointerType: 'touch' });
+                $mol_assert_equal(chat.press_timer !== null, true);
+                chat.press_stop();
+            },
             'В группе вместо галочек — сколько человек прочитало'($) {
                 const chat = $bog_gram_chat.make({ $ });
                 const mates = ['LordA', 'LordB', 'LordC'];

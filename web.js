@@ -61415,7 +61415,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$bog_gram_version = '1.0.246';
+    $.$bog_gram_version = '1.0.247';
 })($ || ($ = {}));
 
 ;
@@ -80625,8 +80625,13 @@ var $;
                     return null;
                 this.press_row = id;
                 this.press_held = false;
+                if (this.message_mouse(next))
+                    return null;
                 this.press_timer = new this.$.$mol_after_timeout(press_delay, () => this.message_hold(id));
                 return null;
+            }
+            message_mouse(next) {
+                return next?.pointerType === 'mouse';
             }
             message_hold(id) {
                 this.press_timer = null;
